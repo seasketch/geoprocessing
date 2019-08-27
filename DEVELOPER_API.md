@@ -1,5 +1,5 @@
 ```ts
-interface SeaSketchReportingParameters = Map<string, any>;
+
 
 const nearbyPorts = async (features: SeaSketchFeatures, parameters: SeaSketchReportingParameters) => {
   const ports = await fetchPorts();

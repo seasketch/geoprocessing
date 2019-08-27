@@ -1,9 +1,9 @@
 // response
 export interface GeoprocessingProject {
   serviceUri: string;
-  sourceUri?: string; //github repo
-  published: string; //ISO 8601
-  apiVersion: string;
+  sourceUri?: string; // github repo
+  published: string; //  ISO 8601 date
+  apiVersion: string; // semver
   services: Array<GeoprocessingService>;
   clients: Array<ReportClient>;
 }

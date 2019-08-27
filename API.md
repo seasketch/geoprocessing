@@ -39,9 +39,9 @@ is updated each time the project is published.
 // response
 interface GeoprocessingProject {
   serviceUri: string;
-  sourceUri?: string; //github repo
-  published: string; //ISO 8601
-  apiVersion: string;
+  sourceUri?: string; // github repo or similar
+  published: string; //  ISO 8601 date
+  apiVersion: string; // semver
   services: Array<GeoprocessingService>;
   clients: Array<ReportClient>;
 }
@@ -50,6 +50,7 @@ interface GeoprocessingService {
   id: string;
   endpoint: string;
   executionMode: ExecutionMode;
+  usesAttributes: Array<string>;
   medianDuration: number; //ms
   medianCost: number; //usd
   rateLimited: boolean;
@@ -80,7 +81,7 @@ endpoint in the following format:
 interface GeoprocessingRequest {
   geometry?: SeaSketchFeature | SeaSketchFeatureCollection;
   geometryUri?: string; // must be https
-  token?: string;
+  token?: string; // jwt token that can be verified using .well-known/jwks.json
   cacheKey?: string;
 }
 ```
@@ -132,13 +133,24 @@ respond with a 403 error.
 ### caching
 
 Responding to requests as quickly as possible means first and foremost avoiding
-extra work. Clients can optionally provide a cache key that the system can use
-to lookup results from previous executions. This cache key is opaque to the
-server, but clients should do some smart like md5(id, geometry, key-props) to
-generate a key that will be both unique and also change if any pertinent
-properties are updated. Not including a cacheKey will result in always executing
-a new task, and so should be avoided for long async reports. The system may even
-reject requests that have a long estimated runtime without a cacheKey.
+extra work. Clients are ultimately responsible for providing a cache key with 
+their request. This will be combined with either a hash of the geojson provided 
+or the geometryUri to avoid security issues with users requesting access to results
+that don't belong to them. Clients can create these cache keys using varying 
+complexities of approaches.
+
+  1. The easiest, don't provide a key
+  2. Use the sketches updatedAt date and provide it as a string
+  3. Use the `usesAttributes` service metadata to determine what attributes are utilized 
+     by the service, and create an appropriate hash e.g. 
+     hash(geometryLastUpdatedAt + propA + propB)
+
+Note that the server will hash the cacheKey and geometryUri together, meaning copied
+sketches with different id's will not get a cache hit when requesting results. To 
+address this there will have to be a `copyResults` API endpoint that creates these
+result copies. **On second thought, is that really necessary? Can we rather just exclude 
+sensitive information from the geometryUri?**
+
 
 ### Responses
 

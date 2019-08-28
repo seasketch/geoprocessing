@@ -44,10 +44,16 @@ interface GeoprocessingProject {
   apiVersion: string; // semver
   services: Array<GeoprocessingService>;
   clients: Array<ReportClient>;
+  // Labelling and attribution information may be displayed 
+  // in the SeaSketch admin interface
+  title: string;
+  author: string;
+  organization?: string;
+  relatedUrl?: string; // May link to github or an org url
 }
 
 interface GeoprocessingService {
-  id: string;
+  title: string;
   endpoint: string;
   executionMode: ExecutionMode;
   usesAttributes: Array<string>;
@@ -57,14 +63,24 @@ interface GeoprocessingService {
   rateLimitPeriod: RateLimitPeriod;
   rateLimit: number;
   rateLimitConsumed: number;
+  // if set, requests must include a token with an allowed issuer (iss)
   restrictedAccess: boolean;
+  // e.g. [sensitive-project.seasketch.org]
+  issAllowList?: Array<string>; 
 }
 
 interface ReportClient {
-  id: string;
+  title: string;
   uri: string;
   bundleSize: number; //bytes
   apiVersion: string;
+  tabs: Array<ReportTab>
+}
+
+interface ReportTab {
+  title: string;
+  // List of geoprocessing service uris depended on by the tab
+  services: Array<string>;
 }
 
 type ExecutionMode = "async" | "sync";
@@ -121,23 +137,19 @@ interface SeaSketchFeatureCollection extends GeoJSONFeatureCollection {
 
 Certain reports may be restricted because they contain sensitive data or are
 just to costly to run for unauthorized users. Project authors can in these cases
-set the service to have `restrictedAccess` as seen in the metadata endpoint.
-Clients in this case must provide a [JSON Web
-Token](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html) in
-each request. This token must be verifiable using the issuer's [JSON Web Key
-Set](https://tools.ietf.org/html/rfc7517) endpoint and the service will respect
-the token's expiration field. By default the framework only respects seasketch.org
-as an issuer, but authors may provide other hosts to include in the whitelist.
-The jwt payload should be a JSON object matching the following format:
+set the service to have `restrictedAccess` along with a set of allowed token issuers as seen in the metadata endpoint. Clients in this case must provide a [JSON Web Token](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html) in each request. This token must be verifiable using the issuer's [JSON Web Key Set](https://tools.ietf.org/html/rfc7517) endpoint and the service will respect the token's expiration field. 
+
+The token itself will identify the issuer so that the service can evaluate whether to grant access. There is also a deeper level of access control that token issuers may use to limit their own users to a subset of services. The jwt payload may include an `allowedEndpoints` list.
 
 ```json
   {
-    "allowedGeoprocessingHosts": ["1234abcd.execute-api.us-west-2.amazonaws.com", "..."]
+    "allowedEndpoints": ["1234abcd.execute-api.us-west-2.amazonaws.com/serviceA", "..."]
   }
 ```
 
-Restricted services which do not find themselves in the allowed hosts will
-respond with a 403 error.
+Using this scheme clients such as SeaSketch may provide project administrators the option to limit certain services to certain users, and pass those restrictions on to the geoprocessing service to enforce.
+
+In all cases, failed authorization will result in a `403 Forbidden` response.
 
 ### caching
 

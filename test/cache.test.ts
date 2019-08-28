@@ -3,6 +3,7 @@ import { SeaSketchFeature } from "../src/geometry";
 
 const exampleSketch: SeaSketchFeature = {
   type: "Feature",
+  bbox: [0,1,2,3,4,5],
   properties: {
     id: "1234abcd",
     updatedAt: new Date().toISOString(),

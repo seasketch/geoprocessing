@@ -1,10 +1,11 @@
 import { fetchGeoJSON, Sketch } from '../src/geometry';
-import { GeoprocessingRequest } from '../src/request';
 
+// @ts-ignore
 global.fetch = require('jest-fetch-mock');
 
 const exampleSketch: Sketch = {
   type: "Feature",
+  bbox: [0, 1, 2, 3, 4, 5],
   properties: {
     id: "1234abcd",
     updatedAt: new Date().toISOString(),
@@ -28,13 +29,14 @@ test("Basic extraction from request", async () => {
   const sketch = await fetchGeoJSON({
     geometry: exampleSketch, 
   });
-  expect(sketch.properties["id"]).toBe("1234abcd");
+  expect(sketch.properties && sketch.properties["id"]).toBe("1234abcd");
 });
 
 test("Fetch sketch from a server", async () => {
+  // @ts-ignore
   global.fetch.mockResponseOnce(JSON.stringify(exampleSketch));
   const sketch = await fetchGeoJSON({
     geometryUri: "https://seasketch.org/p/1/sketch/1234abcd?token=paralabrax"
   });
-  expect(sketch.properties["id"]).toBe("1234abcd");
+  expect(sketch.properties && sketch.properties["id"]).toBe("1234abcd");
 })

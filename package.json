@@ -2,7 +2,7 @@
   "name": "@seasketch/geoprocessing",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "module": "dist/index.js",
   "dependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
@@ -13,6 +13,7 @@
     "@types/node": "^12.0.12",
     "@types/uuid": "^3.4.5",
     "tslint": "^5.18.0",
+    "typescript": "^3.6.2",
     "uri-templates": "^0.2.0",
     "uuid": "^3.3.2"
   },
@@ -24,7 +25,9 @@
     "babel-jest": "^24.8.0"
   },
   "scripts": {
-    "test": "jest -i"
+    "test": "jest -i",
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "author": "Chad Burt",
   "license": "UNLICENSED"

@@ -2,6 +2,7 @@ import { GeoprocessingTask } from "./tasks";
 import { SeaSketchFeature, SeaSketchFeatureCollection } from "./geometry";
 import crypto from "crypto";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { GeoJsonProperties } from "geojson";
 
 export default function CacheModel(TableName: string, db: DocumentClient) {
   return {
@@ -24,11 +25,13 @@ export const makeCacheKey = (
   geojson: SeaSketchFeature | SeaSketchFeatureCollection,
   propNames: Array<string>=["updatedAt"]
 ): string => {
-  const filteredProperties = {};
-  for (const key in geojson.properties || {}) {
-    if (propNames.indexOf(key) !== -1) {
-      filteredProperties[key] = geojson.properties[key];
-    }
+  const filteredProperties = {} as GeoJsonProperties;
+  if (geojson.properties && filteredProperties) {
+    for (const key in geojson.properties) {
+      if (propNames.indexOf(key) !== -1) {
+        filteredProperties[key] = geojson.properties[key];
+      }
+    }  
   }
   return hash({
     ...geojson,

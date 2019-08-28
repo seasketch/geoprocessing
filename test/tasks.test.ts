@@ -9,7 +9,7 @@ const db = new DynamoDB.DocumentClient({
 const Tasks = TaskModel("localhost", "tasks-core", db);
 
 test("create new task", async () => {
-  const task = await Tasks.create(null, "abc123");
+  const task = await Tasks.create(undefined, "abc123");
   expect(typeof task.id).toBe("string");
   expect(/https\:\/\/localhost/.test(task.location)).toBe(true);
   expect(task.status).toBe("pending");
@@ -20,8 +20,8 @@ test("create new task", async () => {
       id: task.id
     }
   }).promise();
-  expect(item.Item.id).toBe(task.id);
-  expect(item.Item.correlationIds.length).toBe(1);
+  expect(item && item.Item && item.Item.id).toBe(task.id);
+  expect(item && item.Item && item.Item.correlationIds.length).toBe(1);
 });
 
 test("create task with a cacheKey id", async () => {
@@ -36,11 +36,11 @@ test("create task with a cacheKey id", async () => {
       id: task.id
     }
   }).promise();
-  expect(item.Item.id).toBe("my-cache-key");
+  expect(item && item.Item && item.Item.id).toBe("my-cache-key");
 });
 
 test("assign a correlation id", async () => {
-  const task = await Tasks.create(null, "12345");
+  const task = await Tasks.create(undefined, "12345");
   await Tasks.assignCorrelationId(task.id, "1-2-3");
   const item = await db.get({
     TableName: "tasks-core",
@@ -48,8 +48,8 @@ test("assign a correlation id", async () => {
       id: task.id
     }
   }).promise();
-  expect(item.Item.correlationIds.length).toBe(2);
-  expect(item.Item.correlationIds.indexOf("1-2-3")).not.toBe(-1);
+  expect(item && item.Item && item.Item.correlationIds.length).toBe(2);
+  expect(item && item.Item && item.Item.correlationIds.indexOf("1-2-3")).not.toBe(-1);
 });
 
 test("complete an existing task", async () => {
@@ -63,9 +63,9 @@ test("complete an existing task", async () => {
   }).promise();
   expect(response.statusCode).toBe(200);
   expect(JSON.parse(response.body).data.area).toBe(1234556);
-  expect(item.Item.status).toBe("completed");
-  expect(item.Item.data.area).toBe(1234556);
-  expect(item.Item.duration).toBeGreaterThan(0);
+  expect(item && item.Item && item.Item.status).toBe("completed");
+  expect(item && item.Item && item.Item.data.area).toBe(1234556);
+  expect(item && item.Item && item.Item.duration).toBeGreaterThan(0);
 });
 
 
@@ -80,6 +80,6 @@ test("fail a task", async () => {
   }).promise();
   expect(response.statusCode).toBe(500);
   expect(JSON.parse(response.body).error).toBe("It broken");
-  expect(item.Item.status).toBe("failed");
-  expect(item.Item.duration).toBeGreaterThan(0);
+  expect(item && item.Item && item.Item.status).toBe("failed");
+  expect(item && item.Item && item.Item.duration).toBeGreaterThan(0);
 });

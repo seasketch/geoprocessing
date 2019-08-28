@@ -108,6 +108,15 @@ could be considered a superset of GeoJSON. FeatureCollections may (and should)
 contain a *properties* member, and a FeatureCollection may include nested 
 FeatureCollections as members of the *features* array.
 
+```ts
+
+interface SeaSketchFeatureCollection extends GeoJSONFeatureCollection {
+  properties: Map<string, any>;
+  features: Array<SeaSketchFeature | SeaSketchFeatureCollection>;
+}
+
+```
+
 #### access control tokens
 
 Certain reports may be restricted because they contain sensitive data or are
@@ -135,22 +144,14 @@ respond with a 403 error.
 Responding to requests as quickly as possible means first and foremost avoiding
 extra work. Clients are ultimately responsible for providing a cache key with 
 their request. This will be combined with either a hash of the geojson provided 
-or the geometryUri to avoid security issues with users requesting access to results
-that don't belong to them. Clients can create these cache keys using varying 
-complexities of approaches.
+or the geometryUri to avoid security issues with users requesting access to results that don't belong to them. Clients can create these cache keys using varying complexities of approaches.
 
-  1. The easiest, don't provide a key
-  2. Use the sketches updatedAt date and provide it as a string
-  3. Use the `usesAttributes` service metadata to determine what attributes are utilized 
-     by the service, and create an appropriate hash e.g. 
-     hash(geometryLastUpdatedAt + propA + propB)
+  1. The easiest, don't provide a key but get no caching
+  2. hash(updatedAt.toString() + id)
+  3. Use the `usesAttributes` service metadata to determine what attributes are utilized by the service, and create an appropriate hash e.g. hash(geometryHash + propA + propB)
+  4. hash(geometryHash + sketchPropertiesHash)
 
-Note that the server will hash the cacheKey and geometryUri together, meaning copied
-sketches with different id's will not get a cache hit when requesting results. To 
-address this there will have to be a `copyResults` API endpoint that creates these
-result copies. **On second thought, is that really necessary? Can we rather just exclude 
-sensitive information from the geometryUri?**
-
+Note that for collections, hashes must be combined for each child recursively. #3 & #4 could get complicated, but also could be very efficient if geometryHashes are pre-calculated on the server. This is the approach we should take for seasketch-next ultimately, but in the meantime approach #2 should be adequate.
 
 ### Responses
 

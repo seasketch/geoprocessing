@@ -1,5 +1,6 @@
 import { Feature, BBox, GeoJsonProperties } from "geojson";
 import { GeoprocessingRequest } from "./request";
+import 'isomorphic-fetch';
 
 export interface SeaSketchFeature extends Feature {
   properties: GeoJsonProperties;

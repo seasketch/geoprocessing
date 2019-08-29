@@ -21,7 +21,7 @@ export interface SeaSketchGeoprocessingSettings {
   /** Defaults to sync */
   executionMode?: ExecutionMode;
   /** Specify a subset of attributes used by the analysis. May improve cache performance if unrelated attributes are changed. */
-  usesAttributes?: Array<string>;
+  requiredAttributes?: Array<string>;
   /** Defaults to false */
   rateLimited?: boolean;
   /** Defaults to daily */
@@ -100,7 +100,6 @@ const handlerFactory = function(
   functionOrContainerImage: LambdaGeoprocessingFunction | string,
   settings?: SeaSketchGeoprocessingSettings
 ) {
-  // TODO: Detect LambdaGeoprocessingFunctions that don't return a Promise
   // TODO: Rate limiting
   let lastRequestId: string | null = null;
   return async function handler(

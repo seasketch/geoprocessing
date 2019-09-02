@@ -4,6 +4,7 @@ import { DynamoDB } from "aws-sdk";
 
 export interface GeoprocessingTask {
   id: string;
+  service: string;
   location: string;
   startedAt: string; //ISO 8601
   duration?: number; //ms
@@ -13,37 +14,45 @@ export interface GeoprocessingTask {
   wss: string; // websocket for listening to status updates
   data?: any; // result data can take any json-serializable form
   error?: string;
+  ttl?: number;
 }
 
 type GeoprocessingTaskStatus = "pending" | "completed" | "failed";
 
 export default function TasksModel(
-  HOST: string,
   TASK_TABLE: string,
   db: DynamoDB.DocumentClient
 ) {
   const init = (
+    service: string,
     id?: string,
     startedAt?: string,
     duration?: number,
     status?: GeoprocessingTaskStatus,
     data?: any
   ) => {
+    let ttl = undefined;
+    if (!id) {
+      ttl = new Date().getTime() + 86400 // 24 hours from now
+    }
     id = id || uuid();
+    const location = `/${service}/tasks/${id}`;
     const task: GeoprocessingTask = {
       id,
-      location: `https://${HOST}/tasks/${id}`,
+      service,
+      location,
       startedAt: startedAt || new Date().toISOString(),
-      logUriTemplate: `https://${HOST}/tasks/${id}/logs{?limit,nextToken}`,
-      geometryUri: `https://${HOST}/tasks/${id}/geometry`,
+      logUriTemplate: `${location}/logs{?limit,nextToken}`,
+      geometryUri: `${location}/geometry`,
       status: status || "pending",
-      wss: `https://${HOST}/tasks/${id}/socket`
+      wss: `${location}/socket`,
+      ttl
     };
     return task;
   };
 
-  const create = async (id?: string, correlationId?: string) => {
-    const task = init(id);
+  const create = async (service: string, id?: string, correlationId?: string) => {
+    const task = init(service, id);
     await db
       .put({
         TableName: TASK_TABLE,
@@ -56,12 +65,13 @@ export default function TasksModel(
     return task;
   };
 
-  const assignCorrelationId = async (taskId: string, correlationId: string) => {
+  const assignCorrelationId = async (service: string, taskId: string, correlationId: string) => {
     return db
       .update({
         TableName: TASK_TABLE,
         Key: {
-          id: taskId
+          id: taskId,
+          service
         },
         UpdateExpression:
           "set #correlationIds = list_append(#correlationIds, :val)",
@@ -87,7 +97,8 @@ export default function TasksModel(
       .update({
         TableName: TASK_TABLE,
         Key: {
-          id: task.id
+          id: task.id,
+          service: task.service
         },
         UpdateExpression:
           "set #data = :data, #status = :status, #duration = :duration",
@@ -123,7 +134,8 @@ export default function TasksModel(
       .update({
         TableName: TASK_TABLE,
         Key: {
-          id: task.id
+          id: task.id,
+          service: task.service
         },
         UpdateExpression:
           "set #error = :error, #status = :status, #duration = :duration",
@@ -145,11 +157,27 @@ export default function TasksModel(
     };
   };
 
+  const get = async (service: string, taskId: string): Promise<GeoprocessingTask | undefined> => {
+    try {
+      const response = await db.get({
+        TableName: TASK_TABLE,
+        Key: {
+          id: taskId,
+          service
+        }
+      }).promise();
+      return response.Item as GeoprocessingTask;
+    } catch (e) {
+      return undefined;
+    }
+  }
+
   return {
     fail,
     complete,
     assignCorrelationId,
     create,
-    init
+    init,
+    get
   };
 }

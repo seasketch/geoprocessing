@@ -1,10 +1,13 @@
-import { lambdaService, dockerService } from "./src/handlers";
+import { SeaSketchGeoprocessingSettings } from "./src/handlers";
 import { isSeaSketchFeature, isSeaSketchFeatureCollection, Sketch } from './src/geometry';
+// @ts-ignore
+import pluginInternals from './src/plugin/internals';
 
 export {
-  lambdaService,
-  dockerService,
   isSeaSketchFeature,
   isSeaSketchFeatureCollection,
   Sketch,
+  pluginInternals,
+  SeaSketchGeoprocessingSettings
 }
+// module.exports = plugin;

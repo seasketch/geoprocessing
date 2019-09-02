@@ -1,0 +1,34 @@
+service: ProtectedSeas
+plugins:
+    - @seasketch/geoprocessing/dist/src/plugin
+    - serverless-plugin-typescript
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: production
+  region: us-west-2
+package:
+  include:
+    - src/**/data/dist/*
+
+custom:
+  geoprocessing:
+    # metadata
+    description: Geoprocessing functions in support of protectedseas.seasketch.org
+    author: Chad Burt
+    email: chad@underbluewaters.net
+    organization: SeaSketch
+    relatedUrl: https://protectedseas.seasketch.org
+    # used in interactive debugging tools.
+    center:
+      - -119.673198
+      - 34.216841
+    zoom: 9
+    # service definitions will be converted to functions by the plugin
+    services:
+      level-of-protection:
+        handler: src/levelOfProtection/lop
+        memorySize: 1024
+        timeout: 5
+        executionMode: sync
+        requiresAttributes: []

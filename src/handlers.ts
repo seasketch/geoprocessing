@@ -1,23 +1,31 @@
-import { ExecutionMode, RateLimitPeriod } from "./service";
 import TaskModel, { GeoprocessingTask } from "./tasks";
-import { GeoprocessingRequest } from "./request";
 import { fetchGeoJSON, Sketch } from "./geometry";
+// END HEADER
 import {
-  APIGatewayEvent,
-  APIGatewayEventRequestContext,
-  APIGatewayProxyResult
+  Context,
+  APIGatewayProxyResult,
+  APIGatewayEvent
 } from "aws-lambda";
-import CacheModel from "./cache";
 import AWS from "aws-sdk";
-const Lambda = new AWS.Lambda();
 import { DynamoDB } from "aws-sdk";
+
+const Lambda = new AWS.Lambda();
 const db = new DynamoDB.DocumentClient();
-const Tasks = TaskModel(process.env["HOST"] as string, process.env["TASK_TABLE"] as string, db);
-const Cache = CacheModel(process.env["TASK_TABLE"] as string, db);
 
 const { ASYNC_HANDLER_FUNCTION_NAME } = process.env;
 
+export type ExecutionMode = "async" | "sync";
+export type RateLimitPeriod = "monthly" | "daily";
+
+export interface GeoprocessingRequest {
+  geometry?: Sketch;
+  geometryUri?: string; // must be https
+  token?: string;
+  cacheKey?: string;
+}
+
 export interface SeaSketchGeoprocessingSettings {
+  // User-defined settings from serverless.yml
   /** Defaults to sync */
   executionMode?: ExecutionMode;
   /** Specify a subset of attributes used by the analysis. May improve cache performance if unrelated attributes are changed. */
@@ -32,13 +40,16 @@ export interface SeaSketchGeoprocessingSettings {
   restrictedAccess?: boolean;
   /** Required if restrictedAccess is set. e.g. [sensitive-project.seasketch.org] */
   issAllowList?: Array<string>;
+  // Settings inserted by plugin
+  serviceName: string;
+  tasksTable: string;
 }
 
 export interface LambdaGeoprocessingFunction {
   (sketch: Sketch): Promise<any>;
 }
 
-export interface GeoprocessingServiceHandler {}
+export interface GeoprocessingServiceHandler { }
 
 /**
  * Create a new lambda-based geoprocessing service
@@ -49,13 +60,9 @@ export interface GeoprocessingServiceHandler {}
  */
 function lambdaService(
   lambda: LambdaGeoprocessingFunction,
-  settings?: SeaSketchGeoprocessingSettings
+  settings: SeaSketchGeoprocessingSettings
 ) {
-  if (process.env.NODE_ENV === 'test') {
-    return lambda;
-  } else {
-    return handlerFactory(lambda, settings) as GeoprocessingServiceHandler;
-  }
+  return handlerFactory(lambda, settings)
 }
 
 /**
@@ -67,7 +74,7 @@ function lambdaService(
  */
 function dockerService(
   image: string,
-  settings?: SeaSketchGeoprocessingSettings
+  settings: SeaSketchGeoprocessingSettings
 ) {
   return handlerFactory(image, settings) as GeoprocessingServiceHandler;
 }
@@ -96,18 +103,28 @@ function isContainerImage(obj: any): obj is string {
  * @param {SeaSketchGeoprocessingSettings} settings
  * @returns Handler function that can be passed to serverless framework
  */
-const handlerFactory = function(
+const handlerFactory = function (
   functionOrContainerImage: LambdaGeoprocessingFunction | string,
-  settings?: SeaSketchGeoprocessingSettings
+  settings: SeaSketchGeoprocessingSettings
 ) {
+  const Tasks = TaskModel(settings.tasksTable, db);
   // TODO: Rate limiting
   let lastRequestId: string | null = null;
   return async function handler(
     event: APIGatewayEvent,
-    context: APIGatewayEventRequestContext
+    context: Context
   ): Promise<APIGatewayProxyResult> {
+    let request: GeoprocessingRequest;
+    if ('geometry' in event) {
+      // likely coming from aws console
+      request = event as GeoprocessingRequest;
+    } else if (event.body && typeof event.body === 'string') {
+      request = JSON.parse(event.body);
+    } else {
+      throw new Error("Could not interpret incoming request");
+    }
     // Bail out if replaying previous task
-    if (context.requestId === lastRequestId) {
+    if (context.awsRequestId && context.awsRequestId === lastRequestId) {
       // don't replay
       console.log("cancelling since event is being replayed");
       return {
@@ -115,12 +132,11 @@ const handlerFactory = function(
         body: ""
       };
     } else {
-      lastRequestId = context.requestId;
+      lastRequestId = context.awsRequestId;
     }
-    const request: GeoprocessingRequest = JSON.parse(event.body || "{}");
     // check and respond with cache first if available
     if (request.cacheKey) {
-      const cachedResult = await Cache.get(request.cacheKey);
+      const cachedResult = await Tasks.get(settings.serviceName, request.cacheKey);
       if (cachedResult) {
         return {
           statusCode: 200,
@@ -129,14 +145,15 @@ const handlerFactory = function(
       }
     }
     let task: GeoprocessingTask = await Tasks.create(
+      settings.serviceName,
       request.cacheKey,
-      context.requestId
+      context.awsRequestId
     );
     if (isContainerImage(functionOrContainerImage)) {
       // return launchTask(ecrTask, featureSet);
       // TODO: Container tasks
       return Tasks.fail(task, "Docker tasks not yet implemented");
-    } else if (!settings || settings.executionMode === "sync") {
+    } else if (settings.executionMode === "sync") {
       const lambda = functionOrContainerImage;
       // wrap geojson fetching in a try block in case the origin server fails
       try {
@@ -183,4 +200,4 @@ const handlerFactory = function(
   };
 };
 
-const asyncTaskHandler = async (task: GeoprocessingTask) => {};
+const asyncTaskHandler = async (task: GeoprocessingTask) => { };

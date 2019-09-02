@@ -5,13 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const tasks_1 = __importDefault(require("./tasks"));
 const geometry_1 = require("./geometry");
-const cache_1 = __importDefault(require("./cache"));
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const Lambda = new aws_sdk_1.default.Lambda();
 const aws_sdk_2 = require("aws-sdk");
+const Lambda = new aws_sdk_1.default.Lambda();
 const db = new aws_sdk_2.DynamoDB.DocumentClient();
-const Tasks = tasks_1.default(process.env["HOST"], process.env["TASK_TABLE"], db);
-const Cache = cache_1.default(process.env["TASK_TABLE"], db);
 const { ASYNC_HANDLER_FUNCTION_NAME } = process.env;
 /**
  * Create a new lambda-based geoprocessing service
@@ -21,12 +18,7 @@ const { ASYNC_HANDLER_FUNCTION_NAME } = process.env;
  * @returns Lamda handler
  */
 function lambdaService(lambda, settings) {
-    if (process.env.NODE_ENV === 'test') {
-        return lambda;
-    }
-    else {
-        return handlerFactory(lambda, settings);
-    }
+    return handlerFactory(lambda, settings);
 }
 exports.lambdaService = lambdaService;
 /**
@@ -61,12 +53,23 @@ function isContainerImage(obj) {
  * @returns Handler function that can be passed to serverless framework
  */
 const handlerFactory = function (functionOrContainerImage, settings) {
-    // TODO: Detect LambdaGeoprocessingFunctions that don't return a Promise
+    const Tasks = tasks_1.default(settings.tasksTable, db);
     // TODO: Rate limiting
     let lastRequestId = null;
     return async function handler(event, context) {
+        let request;
+        if ('geometry' in event) {
+            // likely coming from aws console
+            request = event;
+        }
+        else if (event.body && typeof event.body === 'string') {
+            request = JSON.parse(event.body);
+        }
+        else {
+            throw new Error("Could not interpret incoming request");
+        }
         // Bail out if replaying previous task
-        if (context.requestId === lastRequestId) {
+        if (context.awsRequestId && context.awsRequestId === lastRequestId) {
             // don't replay
             console.log("cancelling since event is being replayed");
             return {
@@ -75,12 +78,11 @@ const handlerFactory = function (functionOrContainerImage, settings) {
             };
         }
         else {
-            lastRequestId = context.requestId;
+            lastRequestId = context.awsRequestId;
         }
-        const request = JSON.parse(event.body || "{}");
         // check and respond with cache first if available
         if (request.cacheKey) {
-            const cachedResult = await Cache.get(request.cacheKey);
+            const cachedResult = await Tasks.get(settings.serviceName, request.cacheKey);
             if (cachedResult) {
                 return {
                     statusCode: 200,
@@ -88,13 +90,13 @@ const handlerFactory = function (functionOrContainerImage, settings) {
                 };
             }
         }
-        let task = await Tasks.create(request.cacheKey, context.requestId);
+        let task = await Tasks.create(settings.serviceName, request.cacheKey, context.awsRequestId);
         if (isContainerImage(functionOrContainerImage)) {
             // return launchTask(ecrTask, featureSet);
             // TODO: Container tasks
             return Tasks.fail(task, "Docker tasks not yet implemented");
         }
-        else if (!settings || settings.executionMode === "sync") {
+        else if (settings.executionMode === "sync") {
             const lambda = functionOrContainerImage;
             // wrap geojson fetching in a try block in case the origin server fails
             try {

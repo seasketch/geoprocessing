@@ -6,46 +6,61 @@ const db = new DynamoDB.DocumentClient({
   sslEnabled: false,
   region: 'local-env'
 });
-const Tasks = TaskModel("localhost", "tasks-core", db);
+const Tasks = TaskModel("tasks-core", db);
+const SERVICE_NAME = 'jest-test-serviceName';
 
 test("create new task", async () => {
-  const task = await Tasks.create(undefined, "abc123");
+  const task = await Tasks.create(SERVICE_NAME, undefined, "abc123");
   expect(typeof task.id).toBe("string");
-  expect(/https\:\/\/localhost/.test(task.location)).toBe(true);
   expect(task.status).toBe("pending");
   // make sure it saves to the db
   const item = await db.get({
     TableName: "tasks-core",
     Key: {
-      id: task.id
+      id: task.id,
+      service: SERVICE_NAME
     }
   }).promise();
   expect(item && item.Item && item.Item.id).toBe(task.id);
   expect(item && item.Item && item.Item.correlationIds.length).toBe(1);
 });
 
-test("create task with a cacheKey id", async () => {
-  const task = await Tasks.create("my-cache-key");
+test("get() a created task", async () => {
+  const task = await Tasks.create(SERVICE_NAME, undefined, "abc123");
   expect(typeof task.id).toBe("string");
-  expect(/https\:\/\/localhost/.test(task.location)).toBe(true);
+  const retrieved = await Tasks.get(SERVICE_NAME, task.id);
+  expect(retrieved && retrieved.id).toBe(task.id);
+});
+
+test("get() return undefined for unknown ids", async () => {
+  const retrieved = await Tasks.get(SERVICE_NAME, "unknown-id");
+  expect(retrieved).toBe(undefined);
+});
+
+test("create task with a cacheKey id", async () => {
+  const task = await Tasks.create(SERVICE_NAME, "my-cache-key");
+  expect(typeof task.id).toBe("string");
   expect(task.status).toBe("pending");
   // make sure it saves to the db
   const item = await db.get({
     TableName: "tasks-core",
     Key: {
-      id: task.id
+      id: task.id,
+      service: SERVICE_NAME
     }
   }).promise();
   expect(item && item.Item && item.Item.id).toBe("my-cache-key");
 });
 
 test("assign a correlation id", async () => {
-  const task = await Tasks.create(undefined, "12345");
-  await Tasks.assignCorrelationId(task.id, "1-2-3");
+  const task = await Tasks.create(SERVICE_NAME, undefined, "12345");
+  await Tasks.assignCorrelationId(SERVICE_NAME, task.id, "1-2-3");
   const item = await db.get({
     TableName: "tasks-core",
     Key: {
-      id: task.id
+      id: task.id,
+      service: SERVICE_NAME
+
     }
   }).promise();
   expect(item && item.Item && item.Item.correlationIds.length).toBe(2);
@@ -53,12 +68,13 @@ test("assign a correlation id", async () => {
 });
 
 test("complete an existing task", async () => {
-  const task = await Tasks.create();
-  const response = await Tasks.complete(task, {area: 1234556});
+  const task = await Tasks.create(SERVICE_NAME);
+  const response = await Tasks.complete(task, { area: 1234556 });
   const item = await db.get({
     TableName: "tasks-core",
     Key: {
-      id: task.id
+      id: task.id,
+      service: SERVICE_NAME
     }
   }).promise();
   expect(response.statusCode).toBe(200);
@@ -70,12 +86,13 @@ test("complete an existing task", async () => {
 
 
 test("fail a task", async () => {
-  const task = await Tasks.create();
+  const task = await Tasks.create(SERVICE_NAME);
   const response = await Tasks.fail(task, "It broken");
   const item = await db.get({
     TableName: "tasks-core",
     Key: {
-      id: task.id
+      id: task.id,
+      service: SERVICE_NAME
     }
   }).promise();
   expect(response.statusCode).toBe(500);

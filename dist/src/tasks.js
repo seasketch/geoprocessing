@@ -1,22 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid_1 = require("uuid");
-function TasksModel(HOST, TASK_TABLE, db) {
-    const init = (id, startedAt, duration, status, data) => {
+function TasksModel(TASK_TABLE, db) {
+    const init = (service, id, startedAt, duration, status, data) => {
+        let ttl = undefined;
+        if (!id) {
+            ttl = new Date().getTime() + 86400; // 24 hours from now
+        }
         id = id || uuid_1.v4();
+        const location = `/${service}/tasks/${id}`;
         const task = {
             id,
-            location: `https://${HOST}/tasks/${id}`,
+            service,
+            location,
             startedAt: startedAt || new Date().toISOString(),
-            logUriTemplate: `https://${HOST}/tasks/${id}/logs{?limit,nextToken}`,
-            geometryUri: `https://${HOST}/tasks/${id}/geometry`,
+            logUriTemplate: `${location}/logs{?limit,nextToken}`,
+            geometryUri: `${location}/geometry`,
             status: status || "pending",
-            wss: `https://${HOST}/tasks/${id}/socket`
+            wss: `${location}/socket`,
+            ttl
         };
         return task;
     };
-    const create = async (id, correlationId) => {
-        const task = init(id);
+    const create = async (service, id, correlationId) => {
+        const task = init(service, id);
         await db
             .put({
             TableName: TASK_TABLE,
@@ -28,12 +35,13 @@ function TasksModel(HOST, TASK_TABLE, db) {
             .promise();
         return task;
     };
-    const assignCorrelationId = async (taskId, correlationId) => {
+    const assignCorrelationId = async (service, taskId, correlationId) => {
         return db
             .update({
             TableName: TASK_TABLE,
             Key: {
-                id: taskId
+                id: taskId,
+                service
             },
             UpdateExpression: "set #correlationIds = list_append(#correlationIds, :val)",
             ExpressionAttributeNames: {
@@ -53,7 +61,8 @@ function TasksModel(HOST, TASK_TABLE, db) {
             .update({
             TableName: TASK_TABLE,
             Key: {
-                id: task.id
+                id: task.id,
+                service: task.service
             },
             UpdateExpression: "set #data = :data, #status = :status, #duration = :duration",
             ExpressionAttributeNames: {
@@ -83,7 +92,8 @@ function TasksModel(HOST, TASK_TABLE, db) {
             .update({
             TableName: TASK_TABLE,
             Key: {
-                id: task.id
+                id: task.id,
+                service: task.service
             },
             UpdateExpression: "set #error = :error, #status = :status, #duration = :duration",
             ExpressionAttributeNames: {
@@ -103,12 +113,28 @@ function TasksModel(HOST, TASK_TABLE, db) {
             body: JSON.stringify(task)
         };
     };
+    const get = async (service, taskId) => {
+        try {
+            const response = await db.get({
+                TableName: TASK_TABLE,
+                Key: {
+                    id: taskId,
+                    service
+                }
+            }).promise();
+            return response.Item;
+        }
+        catch (e) {
+            return undefined;
+        }
+    };
     return {
         fail,
         complete,
         assignCorrelationId,
         create,
-        init
+        init,
+        get
     };
 }
 exports.default = TasksModel;

@@ -1,2 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+// import { Sketch } from './geometry';
+// export interface GeoprocessingRequest {
+//   geometry?: Sketch;
+//   geometryUri?: string; // must be https
+//   token?: string;
+//   cacheKey?: string;
+// }

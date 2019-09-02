@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+require("isomorphic-fetch");
 function isSeaSketchFeatureCollection(obj) {
     return typeof obj.features === 'object';
 }

@@ -1,5 +1,5 @@
 import { Feature, BBox, GeoJsonProperties } from "geojson";
-import { GeoprocessingRequest } from "./request";
+import { GeoprocessingRequest } from "./handlers";
 import 'isomorphic-fetch';
 
 export interface SeaSketchFeature extends Feature {
@@ -36,10 +36,10 @@ export const fetchGeoJSON = async (
       // only send Authorization header if token is provided
       request.token
         ? {
-            headers: {
-              Authorization: request.token
-            }
+          headers: {
+            Authorization: request.token
           }
+        }
         : {}
     );
     return response.json();

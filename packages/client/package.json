@@ -11,25 +11,7 @@
   },
   "author": "Chad Burt",
   "license": "UNLICENSED",
-  "dependencies": {},
-  "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-typescript": "^7.3.3",
-    "@storybook/addon-actions": "^5.1.11",
-    "@storybook/addon-knobs": "^5.1.11",
-    "@storybook/addon-links": "^5.1.11",
-    "@storybook/addon-notes": "^5.1.11",
-    "@storybook/addons": "^5.1.11",
-    "@storybook/preset-typescript": "^1.1.0",
-    "@storybook/react": "^5.1.11",
-    "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.4",
-    "@types/react": "^16.9.2",
-    "@types/storybook__addon-knobs": "^5.0.3",
-    "@types/storybook__react": "^4.0.2",
-    "babel-loader": "^8.0.6",
-    "react-docgen-typescript-loader": "^3.2.0",
-    "ts-loader": "^6.0.4",
-    "typescript": "^3.6.2"
+  "peerDependencies": {
+    "react": "^16.9.0"
   }
 }

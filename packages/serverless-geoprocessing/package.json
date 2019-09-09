@@ -1,0 +1,21 @@
+{
+  "name": "@seasketch/serverless-geoprocessing",
+  "version": "0.1.12",
+  "description": "",
+  "main": "dist/index.js",
+  "dependencies": {
+    "geobuf": "^3.0.1",
+    "isomorphic-fetch": "^2.2.1",
+    "ncp": "^2.0.0",
+    "uri-templates": "^0.2.0",
+    "uuid": "^3.3.3",
+    "yawn-yaml": "^1.4.0"
+  },
+  "scripts": {
+    "test": "jest -i",
+    "build": "tsc",
+    "prepublish": "npm run build"
+  },
+  "author": "Chad Burt",
+  "license": "UNLICENSED"
+}

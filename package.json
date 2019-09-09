@@ -1,39 +1,26 @@
 {
-  "name": "@seasketch/geoprocessing",
-  "version": "0.1.12",
-  "description": "",
-  "main": "dist/index.js",
-  "dependencies": {
+  "name": "root",
+  "private": true,
+  "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-typescript": "^7.3.3",
+    "@shelf/jest-dynamodb": "^1.4.0",
     "@types/aws-lambda": "^8.10.31",
     "@types/geojson": "^7946.0.7",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^24.0.15",
     "@types/node": "^12.0.12",
     "@types/uuid": "^3.4.5",
-    "geobuf": "^3.0.1",
-    "isomorphic-fetch": "^2.2.1",
-    "ncp": "^2.0.0",
-    "tslint": "^5.18.0",
-    "typescript": "^3.6.2",
-    "uri-templates": "^0.2.0",
-    "uuid": "^3.3.3",
-    "yawn-yaml": "^1.4.0"
-  },
-  "devDependencies": {
-    "@shelf/jest-dynamodb": "^1.4.0",
     "aws-sdk": "^2.521.0",
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0",
-    "jest-fetch-mock": "^2.1.2"
+    "jest-fetch-mock": "^2.1.2",
+    "lerna": "^3.16.4",
+    "tslint": "^5.18.0",
+    "typescript": "^3.6.2"
   },
-  "scripts": {
-    "test": "jest -i",
-    "build": "tsc",
-    "prepublish": "npm run build"
-  },
-  "author": "Chad Burt",
-  "license": "UNLICENSED"
+  "dependencies": {
+    "@seasketch/serverless-geoprocessing": "file:packages/plugin"
+  }
 }

@@ -1,0 +1,4 @@
+# Use this file to implement git large file support for your source datasets
+# https://git-lfs.github.com
+# For example:
+# src/services/myService/data/src/big-file.geojson filter=lfs diff=lfs merge=lfs -text

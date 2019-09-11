@@ -1,0 +1,68 @@
+{
+  "name": "@seasketch/geoprocessing-template-project",
+  "version": "0.0.0",
+  "description": "Template project used to implement the SeaSketch geoprocessing and reporting framework",
+  "author": "Chad Burt <chad@underbluewaters.net>",
+  "homepage": "https://github.com/seasketch/geoprocessing#readme",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seasketch/geoprocessing.git"
+  },
+  "scripts": {
+    "test": "jest",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "bugs": {
+    "url": "https://github.com/seasketch/geoprocessing/issues"
+  },
+  "dependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.6.0",
+    "@seasketch/geoprocessing": "^0.1.12",
+    "@seasketch/geoprocessing-client": "^0.1.0",
+    "@storybook/addon-actions": "^5.1.11",
+    "@storybook/addon-knobs": "^5.1.11",
+    "@storybook/addon-links": "^5.1.11",
+    "@storybook/addon-notes": "^5.1.11",
+    "@storybook/addons": "^5.1.11",
+    "@storybook/preset-typescript": "^1.1.0",
+    "@storybook/react": "^5.1.11",
+    "@testing-library/jest-dom": "^4.1.0",
+    "@testing-library/react": "^9.1.4",
+    "@turf/area": "^6.0.1",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.4",
+    "@types/react": "^16.9.2",
+    "@types/storybook__addon-knobs": "^5.0.3",
+    "@types/storybook__react": "^4.0.2",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0",
+    "react-dom": "^16.9.0",
+    "react-scripts": "^3.1.1",
+    "serverless": "^1.51.0",
+    "serverless-plugin-typescript": "^1.1.9",
+    "typescript": "^3.6.2"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

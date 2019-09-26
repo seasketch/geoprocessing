@@ -28,7 +28,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.6.0",
     "@seasketch/geoprocessing-client": "^0.1.0",
-    "@seasketch/serverless-geoprocessing": "file:../serverless-geoprocessing",
+    "@seasketch/serverless-geoprocessing": "^0.1.12",
     "@testing-library/jest-dom": "^4.1.0",
     "@testing-library/react": "^9.1.4",
     "@turf/area": "^6.0.1",
@@ -44,9 +44,7 @@
   "devDependencies": {
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.4",
-    "@types/react": "^16.9.2",
-    "@types/storybook__addon-knobs": "^5.0.3",
-    "@types/storybook__react": "^4.0.2"
+    "@types/react": "^16.9.2"
   },
   "eslintConfig": {
     "extends": "react-app"

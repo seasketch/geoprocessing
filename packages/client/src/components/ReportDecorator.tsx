@@ -1,5 +1,4 @@
 import React, { ReactChildren, CSSProperties, useState } from "react";
-import { RenderFunction } from "@storybook/react";
 
 const containerStyle = {
   height: "auto",
@@ -26,7 +25,8 @@ const headerStyle = {
   borderBottom: '1px solid rgba(0,0,0,0.13)',
 }
 
-const ReportWindow = ({ storyFn }: { storyFn: RenderFunction }) => {
+// @ts-ignore
+const ReportWindow = ({ storyFn }: { storyFn }) => {
   const [width, setWidth] = useState(500);
   return <><div style={{ width, ...containerStyle }}>
     <div style={headerStyle}>
@@ -48,5 +48,6 @@ const ReportWindow = ({ storyFn }: { storyFn: RenderFunction }) => {
   </>
 }
 
-export default (storyFn: RenderFunction) => <ReportWindow storyFn={storyFn} />
+// @ts-ignore
+export default (storyFn) => <ReportWindow storyFn={storyFn} />
 

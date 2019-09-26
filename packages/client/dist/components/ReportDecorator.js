@@ -30,6 +30,7 @@ const headerStyle = {
     zIndex: 2,
     borderBottom: '1px solid rgba(0,0,0,0.13)',
 };
+// @ts-ignore
 const ReportWindow = ({ storyFn }) => {
     const [width, setWidth] = react_1.useState(500);
     return react_1.default.createElement(react_1.default.Fragment, null,
@@ -47,4 +48,5 @@ const ReportWindow = ({ storyFn }) => {
                 react_1.default.createElement("option", { value: 412 }, "Nexus 5x"),
                 react_1.default.createElement("option", { value: 540 }, "Pixel"))));
 };
+// @ts-ignore
 exports.default = (storyFn) => react_1.default.createElement(ReportWindow, { storyFn: storyFn });

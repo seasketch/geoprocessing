@@ -1,0 +1,14 @@
+{
+  "Example": {
+    "description": "Zone area",
+    "tabs": {
+      "area": {
+        "label": "Area",
+        "handler": "src/client/area/AreaTab",
+        "requiredServices": [
+          "area"
+        ]
+      }
+    }
+  }
+}

@@ -13,5 +13,11 @@
   "license": "UNLICENSED",
   "peerDependencies": {
     "react": "^16.9.0"
+  },
+  "dependencies": {
+    "@types/styled-components": "^4.1.19",
+    "styled-components": "^4.4.0",
+    "styled-loaders": "^0.3.0",
+    "styled-spinkit": "^0.7.4"
   }
 }

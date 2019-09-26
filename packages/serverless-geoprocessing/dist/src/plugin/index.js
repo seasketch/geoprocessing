@@ -6,19 +6,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='./Serverless.d.ts' />
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
-const templateContents = fs_1.default.readFileSync(path_1.default.join(__dirname, '../../../src/', 'handlers.ts')).toString();
-const body = templateContents.split('// END HEADER')[1];
+const slugify_1 = __importDefault(require("slugify"));
+const HANDLER_PATH = ".handlers";
 const makeHandler = (name, path, settings) => {
     return `// Generated file. Edit the contents of serverless.yml to change output.
-// @ts-ignore
-import { pluginInternals, GeoprocessingTask } from "@seasketch/geoprocessing";
-import { Sketch } from "@seasketch/geoprocessing";
-const { TaskModel, fetchGeoJSON } = pluginInternals;
-${name && name.length ? `import { ${name} as func } from '${path}'` : `import func from '${path}'`}
-${body}
+const { 
+  pluginInternals, 
+  GeoprocessingTask, 
+  Sketch,
+  SeaSketchGeoprocessingSettings
+} = require("@seasketch/serverless-geoprocessing");
+const { TaskModel, fetchGeoJSON, handlerFactory } = pluginInternals;
+${name && name.length
+        ? `const func = require('${path}').${name};`
+        : `const func = require('${path}');`}
 
-const settings = ${JSON.stringify(settings, null, "  ")} as SeaSketchGeoprocessingSettings;
-export const handler = lambdaService(func, settings);
+const settings = ${JSON.stringify(settings, null, "  ")};
+module.exports = {
+  handler: handlerFactory(func, settings)
+};
 `;
 };
 const pathAndNameForHandler = (handlerPath, servicePath) => {
@@ -31,8 +37,17 @@ const pathAndNameForHandler = (handlerPath, servicePath) => {
     index = handler.indexOf(".");
     if (index !== -1) {
         const extension = handler.slice(index + 1);
-        if (extension === "js" || extension === "ts") {
+        if (extension === "js") {
             return [path_1.default.join(servicePath, handler.slice(0, index)), null];
+        }
+        else if (extension === "ts") {
+            return [
+                path_1.default.join(servicePath, HANDLER_PATH, handler
+                    .slice(0, index)
+                    .split("/")
+                    .slice(-1)[0]),
+                "default"
+            ];
         }
         else {
             return [path_1.default.join(servicePath, handler.slice(0, index)), extension];
@@ -46,44 +61,75 @@ class SeaSketchSLSGeoprocessingPlugin {
     constructor(serverless, options) {
         this.options = options;
         this.serverless = serverless;
-        this.tasksTableName = serverless.service.service + "-tasks";
+        this.tasksTableName = slugify_1.default(serverless.service.service) + "-tasks";
+        this.clientBucketName =
+            slugify_1.default(serverless.service.service).toLowerCase() + "-client";
         this.hooks = {
-            "package:initialize": async () => {
+            "before:package:setupProviderConfiguration": async () => {
                 await this.addCommonResources();
                 await this.addFunctionDefinitions();
-            },
-            "after:deploy:functions": async () => {
-                await this.cleanup();
-            },
+            }
+            // "aws:package:finalize:cleanupFiles": async () => {
+            //   await this.cleanup();
+            // }
         };
     }
     async addCommonResources() {
         this.serverless.cli.log("Create common resources: database");
-        if (!this.serverless.service.resources || !this.serverless.service.resources.Resources) {
+        if (!this.serverless.service.resources ||
+            !this.serverless.service.resources.Resources) {
             this.serverless.service.resources = { Resources: {} };
         }
+        if (!this.serverless.service.provider.environment) {
+            this.serverless.service.provider.environment = {};
+        }
+        this.serverless.service.provider.environment.SERVICE_URL = {
+            "Fn::Join": [
+                "",
+                [
+                    "https://",
+                    { Ref: "ApiGatewayRestApi" },
+                    ".execute-api.",
+                    this.serverless.service.provider.region,
+                    ".amazonaws.com/",
+                    this.serverless.service.provider.stage
+                ]
+            ]
+        };
+        const pkg = JSON.parse(fs_1.default.readFileSync("./package.json").toString());
+        const pluginPkg = JSON.parse(fs_1.default.readFileSync(`${__dirname}/../../../package.json`).toString());
+        this.serverless.service.provider.environment.GEOPROCESSING_CONFIG = JSON.stringify({
+            ...this.serverless.service.custom.geoprocessing,
+            publishedDate: new Date().toISOString(),
+            relatedUri: pkg.homepage,
+            clientUri: `https://${this.clientBucketName}.s3-${this.serverless.service.provider.region}.amazonaws.com/index.html`,
+            author: pkg.author,
+            description: pkg.description,
+            apiVersion: pluginPkg.version,
+            title: this.serverless.service.service
+        });
         this.serverless.service.resources.Resources.tasksTable = {
             Type: "AWS::DynamoDB::Table",
             Properties: {
                 TableName: this.tasksTableName,
                 KeySchema: [
                     {
-                        AttributeName: 'id',
-                        KeyType: 'HASH'
+                        AttributeName: "id",
+                        KeyType: "HASH"
                     },
                     {
-                        AttributeName: 'service',
+                        AttributeName: "service",
                         KeyType: "RANGE"
                     }
                 ],
                 AttributeDefinitions: [
-                    { AttributeName: 'id', AttributeType: 'S' },
-                    { AttributeName: 'service', AttributeType: 'S' },
+                    { AttributeName: "id", AttributeType: "S" },
+                    { AttributeName: "service", AttributeType: "S" }
                 ],
-                BillingMode: 'PAY_PER_REQUEST',
+                BillingMode: "PAY_PER_REQUEST",
                 TimeToLiveSpecification: {
-                    "AttributeName": "ttl",
-                    "Enabled": true
+                    AttributeName: "ttl",
+                    Enabled: true
                 }
             }
         };
@@ -105,45 +151,81 @@ class SeaSketchSLSGeoprocessingPlugin {
                 "dynamodb:Update*",
                 "dynamodb:PutItem"
             ],
-            Resource: { 'Fn::GetAtt': ["tasksTable", "Arn"] }
+            Resource: { "Fn::GetAtt": ["tasksTable", "Arn"] }
         });
-    }
-    async cleanup() {
-        const custom = this.serverless.service.custom || {};
-        if ('geoprocessing' in custom) {
-            const geoprocessingConfig = custom.geoprocessing;
-            if ('services' in geoprocessingConfig) {
-                for (const serviceName in geoprocessingConfig.services) {
-                    const newHandlerPath = path_1.default.join(".", `${serviceName}.ts`);
-                    fs_1.default.unlinkSync(newHandlerPath);
-                }
+        this.serverless.service.resources.Resources.clientBucket = {
+            Type: "AWS::S3::Bucket",
+            Properties: {
+                BucketName: this.clientBucketName
             }
+        };
+        if (!this.serverless.service.custom) {
+            this.serverless.service.custom = {};
         }
+        this.serverless.service.custom.includeDependencies = {
+            always: ["src/services/**.js", "handlers/*.js"]
+        };
+        this.serverless.service.custom.s3Sync = [
+            {
+                bucketName: this.clientBucketName,
+                localDir: path_1.default.join("./", "build"),
+                acl: "public-read"
+            }
+        ];
     }
     async addFunctionDefinitions() {
-        this.serverless.cli.log("Add function definitions");
+        this.serverless.cli.log("Add function definitions.... handler");
         const custom = this.serverless.service.custom || {};
-        if ('geoprocessing' in custom) {
+        if ("geoprocessing" in custom) {
             const geoprocessingConfig = custom.geoprocessing;
-            if ('services' in geoprocessingConfig) {
+            if ("services" in geoprocessingConfig) {
+                const handlerDir = HANDLER_PATH;
+                if (!fs_1.default.existsSync(handlerDir)) {
+                    fs_1.default.mkdirSync(handlerDir);
+                }
                 for (const serviceName in geoprocessingConfig.services) {
                     const conf = geoprocessingConfig.services[serviceName];
                     const [handlerPath, funcName] = pathAndNameForHandler(conf.handler, this.serverless.config.servicePath);
-                    const handler = makeHandler(funcName, "./" + path_1.default.relative(this.serverless.config.servicePath, handlerPath), {
+                    const handler = makeHandler(funcName, "./" +
+                        path_1.default.relative(path_1.default.join(this.serverless.config.servicePath, handlerDir), handlerPath), {
                         executionMode: conf.executionMode || "sync",
                         restrictedAccess: conf.restrictedAccess || false,
                         serviceName: serviceName,
                         tasksTable: this.tasksTableName
                     });
-                    const newHandlerPath = path_1.default.join(".", `${serviceName}.ts`);
+                    const newHandlerPath = path_1.default.join(handlerDir, `${serviceName}-handler.js`);
                     fs_1.default.writeFileSync(newHandlerPath, handler);
                     this.serverless.service.functions[serviceName] = {
                         ...conf,
-                        handler: newHandlerPath.replace(".ts", ".handler"),
-                        events: [{ http: { method: 'post', path: serviceName } }],
-                        name: [this.serverless.service.service, this.serverless.service.provider.stage, serviceName].join("-")
+                        handler: newHandlerPath.replace(".js", ".handler"),
+                        events: [
+                            { http: { method: "post", path: serviceName, cors: true } }
+                        ],
+                        name: [
+                            this.serverless.service.service,
+                            this.serverless.service.provider.stage,
+                            serviceName
+                        ].join("-")
                     };
                 }
+                const metadataHandlerPath = ".handlers/metadata.js";
+                fs_1.default.writeFileSync(metadataHandlerPath, `
+          const { pluginInternals } = require("@seasketch/serverless-geoprocessing");
+          module.exports = {
+            handler: pluginInternals.metadataHandler
+          }
+        `);
+                this.serverless.service.functions["metadata"] = {
+                    handler: metadataHandlerPath.replace(".js", ".handler"),
+                    memorySize: 256,
+                    timeout: 3,
+                    events: [{ http: { method: "get", path: "/", cors: true } }],
+                    name: [
+                        this.serverless.service.service,
+                        this.serverless.service.provider.stage,
+                        "metadata"
+                    ].join("-")
+                };
             }
             else {
                 throw new Error("Services list not found in custom:geoprocessing config");

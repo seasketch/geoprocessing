@@ -2,12 +2,12 @@
 declare namespace Serverless {
   interface Instance {
     cli: {
-      log(str: string): void
-    }
+      log(str: string): void;
+    };
 
     config: {
-      servicePath: string
-    }
+      servicePath: string;
+    };
 
     service: {
       service: string;
@@ -15,37 +15,44 @@ declare namespace Serverless {
         name: string;
         stage: string;
         iamRoleStatements: Array<any>;
-      }
+        environment?: any;
+        region: string;
+      };
       functions: {
-        [key: string]: Serverless.Function
-      }
+        [key: string]: Serverless.Function;
+      };
       package: Serverless.Package;
       getAllFunctions(): string[];
       resources: any;
-    }
+      custom: any;
+    };
 
-    pluginManager: PluginManager
+    pluginManager: PluginManager;
   }
 
   interface Options {
-    function?: string
-    watch?: boolean
-    extraServicePath?: string
+    function?: string;
+    watch?: boolean;
+    extraServicePath?: string;
   }
 
   interface Function {
-    handler: string
-    package: Serverless.Package
+    handler: string;
+    package?: Serverless.Package;
+    memorySize: number;
+    timeout: number;
+    events: any;
+    name: string;
   }
 
   interface Package {
-    include: string[]
-    exclude: string[]
-    artifact?: string
-    individually?: boolean
+    include: string[];
+    exclude: string[];
+    artifact?: string;
+    individually?: boolean;
   }
 
   interface PluginManager {
-    spawn(command: string): Promise<void>
+    spawn(command: string): Promise<void>;
   }
 }

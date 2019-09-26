@@ -9,5 +9,6 @@ const Card_1 = __importDefault(require("./components/Card"));
 exports.Card = Card_1.default;
 function loadStories() {
     require("./components/Card.stories.js");
+    require("./components/ReportSidebar.stories.js");
 }
 exports.loadStories = loadStories;

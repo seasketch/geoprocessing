@@ -17,7 +17,11 @@ export interface GeoprocessingTask {
   ttl?: number;
 }
 
-type GeoprocessingTaskStatus = "pending" | "completed" | "failed";
+export enum GeoprocessingTaskStatus {
+  Pending = "pending",
+  Completed = "completed",
+  Failed = "failed"
+}
 
 export default function TasksModel(
   TASK_TABLE: string,
@@ -33,7 +37,7 @@ export default function TasksModel(
   ) => {
     let ttl = undefined;
     if (!id) {
-      ttl = new Date().getTime() + 86400 // 24 hours from now
+      ttl = new Date().getTime() + 86400; // 24 hours from now
     }
     id = id || uuid();
     const location = `/${service}/tasks/${id}`;
@@ -44,14 +48,18 @@ export default function TasksModel(
       startedAt: startedAt || new Date().toISOString(),
       logUriTemplate: `${location}/logs{?limit,nextToken}`,
       geometryUri: `${location}/geometry`,
-      status: status || "pending",
+      status: status || GeoprocessingTaskStatus.Pending,
       wss: `${location}/socket`,
       ttl
     };
     return task;
   };
 
-  const create = async (service: string, id?: string, correlationId?: string) => {
+  const create = async (
+    service: string,
+    id?: string,
+    correlationId?: string
+  ) => {
     const task = init(service, id);
     await db
       .put({
@@ -65,7 +73,11 @@ export default function TasksModel(
     return task;
   };
 
-  const assignCorrelationId = async (service: string, taskId: string, correlationId: string) => {
+  const assignCorrelationId = async (
+    service: string,
+    taskId: string,
+    correlationId: string
+  ) => {
     return db
       .update({
         TableName: TASK_TABLE,
@@ -90,7 +102,7 @@ export default function TasksModel(
     results: any
   ): Promise<APIGatewayProxyResult> => {
     task.data = results;
-    task.status = "completed";
+    task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
     await db
@@ -117,6 +129,10 @@ export default function TasksModel(
 
     return {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true
+      },
       body: JSON.stringify(task)
     };
   };
@@ -127,7 +143,7 @@ export default function TasksModel(
     error?: Error
   ): Promise<APIGatewayProxyResult> => {
     if (error) console.error(error);
-    task.status = "failed";
+    task.status = GeoprocessingTaskStatus.Failed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
     task.error = errorDescription;
     await db
@@ -153,24 +169,33 @@ export default function TasksModel(
       .promise();
     return {
       statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true
+      },
       body: JSON.stringify(task)
     };
   };
 
-  const get = async (service: string, taskId: string): Promise<GeoprocessingTask | undefined> => {
+  const get = async (
+    service: string,
+    taskId: string
+  ): Promise<GeoprocessingTask | undefined> => {
     try {
-      const response = await db.get({
-        TableName: TASK_TABLE,
-        Key: {
-          id: taskId,
-          service
-        }
-      }).promise();
+      const response = await db
+        .get({
+          TableName: TASK_TABLE,
+          Key: {
+            id: taskId,
+            service
+          }
+        })
+        .promise();
       return response.Item as GeoprocessingTask;
     } catch (e) {
       return undefined;
     }
-  }
+  };
 
   return {
     fail,

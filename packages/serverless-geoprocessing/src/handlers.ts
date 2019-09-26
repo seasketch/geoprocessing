@@ -1,15 +1,10 @@
 import TaskModel, { GeoprocessingTask } from "./tasks";
 import { fetchGeoJSON, Sketch } from "./geometry";
 // END HEADER
-import {
-  Context,
-  APIGatewayProxyResult,
-  APIGatewayEvent
-} from "aws-lambda";
-import AWS from "aws-sdk";
-import { DynamoDB } from "aws-sdk";
+import { Context, APIGatewayProxyResult, APIGatewayEvent } from "aws-lambda";
+import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
 
-const Lambda = new AWS.Lambda();
+const Lambda = new LambdaClient();
 const db = new DynamoDB.DocumentClient();
 
 const { ASYNC_HANDLER_FUNCTION_NAME } = process.env;
@@ -46,10 +41,10 @@ export interface SeaSketchGeoprocessingSettings {
 }
 
 export interface LambdaGeoprocessingFunction {
-  (sketch: Sketch): Promise<any>;
+  (sketch: Sketch): Promise<any> | any;
 }
 
-export interface GeoprocessingServiceHandler { }
+export interface GeoprocessingServiceHandler {}
 
 /**
  * Create a new lambda-based geoprocessing service
@@ -62,12 +57,12 @@ function lambdaService(
   lambda: LambdaGeoprocessingFunction,
   settings: SeaSketchGeoprocessingSettings
 ) {
-  return handlerFactory(lambda, settings)
+  return handlerFactory(lambda, settings);
 }
 
 /**
  * Create a new Docker-based geoprocessing service
- * 
+ *
  * @param {string} String identifier for an Image hosted on AWS ECR. https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definitions
  * @param {SeaSketchGeoprocessingSettings} [settings]
  * @returns
@@ -103,7 +98,7 @@ function isContainerImage(obj: any): obj is string {
  * @param {SeaSketchGeoprocessingSettings} settings
  * @returns Handler function that can be passed to serverless framework
  */
-const handlerFactory = function (
+export const handlerFactory = function(
   functionOrContainerImage: LambdaGeoprocessingFunction | string,
   settings: SeaSketchGeoprocessingSettings
 ) {
@@ -115,10 +110,10 @@ const handlerFactory = function (
     context: Context
   ): Promise<APIGatewayProxyResult> {
     let request: GeoprocessingRequest;
-    if ('geometry' in event) {
+    if ("geometry" in event) {
       // likely coming from aws console
       request = event as GeoprocessingRequest;
-    } else if (event.body && typeof event.body === 'string') {
+    } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);
     } else {
       throw new Error("Could not interpret incoming request");
@@ -136,10 +131,17 @@ const handlerFactory = function (
     }
     // check and respond with cache first if available
     if (request.cacheKey) {
-      const cachedResult = await Tasks.get(settings.serviceName, request.cacheKey);
+      const cachedResult = await Tasks.get(
+        settings.serviceName,
+        request.cacheKey
+      );
       if (cachedResult) {
         return {
           statusCode: 200,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true
+          },
           body: JSON.stringify(cachedResult)
         };
       }
@@ -190,6 +192,10 @@ const handlerFactory = function (
           }).promise();
           return {
             statusCode: 200,
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Credentials": true
+            },
             body: JSON.stringify(task)
           };
         } catch (e) {
@@ -200,4 +206,4 @@ const handlerFactory = function (
   };
 };
 
-const asyncTaskHandler = async (task: GeoprocessingTask) => { };
+const asyncTaskHandler = async (task: GeoprocessingTask) => {};

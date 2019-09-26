@@ -5,10 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const tasks_1 = __importDefault(require("./tasks"));
 const geometry_1 = require("./geometry");
-const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const aws_sdk_2 = require("aws-sdk");
-const Lambda = new aws_sdk_1.default.Lambda();
-const db = new aws_sdk_2.DynamoDB.DocumentClient();
+const aws_sdk_1 = require("aws-sdk");
+const Lambda = new aws_sdk_1.Lambda();
+const db = new aws_sdk_1.DynamoDB.DocumentClient();
 const { ASYNC_HANDLER_FUNCTION_NAME } = process.env;
 /**
  * Create a new lambda-based geoprocessing service
@@ -18,7 +17,7 @@ const { ASYNC_HANDLER_FUNCTION_NAME } = process.env;
  * @returns Lamda handler
  */
 function lambdaService(lambda, settings) {
-    return handlerFactory(lambda, settings);
+    return exports.handlerFactory(lambda, settings);
 }
 exports.lambdaService = lambdaService;
 /**
@@ -29,7 +28,7 @@ exports.lambdaService = lambdaService;
  * @returns
  */
 function dockerService(image, settings) {
-    return handlerFactory(image, settings);
+    return exports.handlerFactory(image, settings);
 }
 exports.dockerService = dockerService;
 function isLambda(obj) {
@@ -52,17 +51,17 @@ function isContainerImage(obj) {
  * @param {SeaSketchGeoprocessingSettings} settings
  * @returns Handler function that can be passed to serverless framework
  */
-const handlerFactory = function (functionOrContainerImage, settings) {
+exports.handlerFactory = function (functionOrContainerImage, settings) {
     const Tasks = tasks_1.default(settings.tasksTable, db);
     // TODO: Rate limiting
     let lastRequestId = null;
     return async function handler(event, context) {
         let request;
-        if ('geometry' in event) {
+        if ("geometry" in event) {
             // likely coming from aws console
             request = event;
         }
-        else if (event.body && typeof event.body === 'string') {
+        else if (event.body && typeof event.body === "string") {
             request = JSON.parse(event.body);
         }
         else {
@@ -86,6 +85,10 @@ const handlerFactory = function (functionOrContainerImage, settings) {
             if (cachedResult) {
                 return {
                     statusCode: 200,
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Credentials": true
+                    },
                     body: JSON.stringify(cachedResult)
                 };
             }
@@ -129,6 +132,10 @@ const handlerFactory = function (functionOrContainerImage, settings) {
                     }).promise();
                     return {
                         statusCode: 200,
+                        headers: {
+                            "Access-Control-Allow-Origin": "*",
+                            "Access-Control-Allow-Credentials": true
+                        },
                         body: JSON.stringify(task)
                     };
                 }

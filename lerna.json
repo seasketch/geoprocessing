@@ -2,5 +2,8 @@
   "packages": [
     "packages/*"
   ],
+  "nohoist": [
+    "**/geoprocessing-template-project"
+  ],
   "version": "0.0.0"
 }

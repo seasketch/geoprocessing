@@ -38,6 +38,8 @@
   },
   "dependencies": {
     "@seasketch/geoprocessing-client": "file:packages/client",
-    "@seasketch/serverless-geoprocessing": "file:packages/serverless-geoprocessing"
+    "@seasketch/geoprocessing-template-project": "file:packages/geoprocessing-template-project",
+    "@seasketch/serverless-geoprocessing": "file:packages/serverless-geoprocessing",
+    "serverless": "^1.52.2"
   }
 }

@@ -1,6 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid_1 = require("uuid");
+var GeoprocessingTaskStatus;
+(function (GeoprocessingTaskStatus) {
+    GeoprocessingTaskStatus["Pending"] = "pending";
+    GeoprocessingTaskStatus["Completed"] = "completed";
+    GeoprocessingTaskStatus["Failed"] = "failed";
+})(GeoprocessingTaskStatus = exports.GeoprocessingTaskStatus || (exports.GeoprocessingTaskStatus = {}));
 function TasksModel(TASK_TABLE, db) {
     const init = (service, id, startedAt, duration, status, data) => {
         let ttl = undefined;
@@ -16,7 +22,7 @@ function TasksModel(TASK_TABLE, db) {
             startedAt: startedAt || new Date().toISOString(),
             logUriTemplate: `${location}/logs{?limit,nextToken}`,
             geometryUri: `${location}/geometry`,
-            status: status || "pending",
+            status: status || GeoprocessingTaskStatus.Pending,
             wss: `${location}/socket`,
             ttl
         };
@@ -55,7 +61,7 @@ function TasksModel(TASK_TABLE, db) {
     };
     const complete = async (task, results) => {
         task.data = results;
-        task.status = "completed";
+        task.status = GeoprocessingTaskStatus.Completed;
         task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
         await db
             .update({
@@ -79,13 +85,17 @@ function TasksModel(TASK_TABLE, db) {
             .promise();
         return {
             statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": true
+            },
             body: JSON.stringify(task)
         };
     };
     const fail = async (task, errorDescription, error) => {
         if (error)
             console.error(error);
-        task.status = "failed";
+        task.status = GeoprocessingTaskStatus.Failed;
         task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
         task.error = errorDescription;
         await db
@@ -110,18 +120,24 @@ function TasksModel(TASK_TABLE, db) {
             .promise();
         return {
             statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": true
+            },
             body: JSON.stringify(task)
         };
     };
     const get = async (service, taskId) => {
         try {
-            const response = await db.get({
+            const response = await db
+                .get({
                 TableName: TASK_TABLE,
                 Key: {
                     id: taskId,
                     service
                 }
-            }).promise();
+            })
+                .promise();
             return response.Item;
         }
         catch (e) {

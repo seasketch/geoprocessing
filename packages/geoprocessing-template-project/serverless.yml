@@ -1,0 +1,34 @@
+# service name cannot include spaces
+service: GeoprocessingTemplateProject
+plugins:
+  - '@seasketch/serverless-geoprocessing/dist/src/plugin'
+  - serverless-s3-sync
+  - serverless-plugin-include-dependencies
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: production
+  region: us-west-2
+
+custom:
+  geoprocessing:
+    # metadata
+    services:
+      area:
+        handler: src/services/area/area.ts
+        memorySize: 256
+        timeout: 3
+        executionMode: sync
+        requiresAttributes: []
+    clients:
+      Example:
+        description: "Zone area"
+        tabs:
+          area:
+            title: "Area"
+            handler: src/client/area/AreaTab
+            requiredServices:
+              - area
+package:
+  include:
+    - src/**/data/dist/*

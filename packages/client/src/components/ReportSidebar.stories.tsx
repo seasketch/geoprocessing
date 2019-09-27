@@ -1,10 +1,11 @@
-import * as React from 'react';
-import { storiesOf } from '@storybook/react';
-import Card from './Card';
-import { withKnobs, text, boolean, number, object } from '@storybook/addon-knobs';
+import React from 'react';
 import ReportSidebar from './ReportSidebar';
-import { BBox } from 'geojson';
 import { Sketch } from '@seasketch/serverless-geoprocessing';
+
+export default {
+  component: ReportSidebar,
+  title: 'ReportSidebar'
+};
 
 const sketch: Sketch = {
   "type": "Feature",
@@ -41,26 +42,11 @@ const sketch: Sketch = {
   }
 };
 
-const stories = storiesOf('Components', module)
-  .addDecorator(withKnobs);
-
-stories.add(
-  'ReportSidebar',
-  () => 
-    <ReportSidebar style={{position: 'relative'}} sketch={sketch} geoprocessingProjectUri={text("geoprocessing project uri", "https://peartedq8b.execute-api.us-west-2.amazonaws.com/production/")} clientTitle={text("clientTitle", "Example")} />,
-  {
-    info: { text: "Usage instructions" },
-    notes: {
-      markdown: `
-      ### Usage
-
-      ~~~javascript
-      <ReportSidebar 
-        geoprocessingProjectUri="https://peartedq8b.execute-api.us-west-2.amazonaws.com/production/" 
-        clientTitle="Example" 
-        sketch="sketch" 
-      />
-      ~~~
-    ` },
-  }
+export const areaReport = () => (
+  <ReportSidebar 
+    style={{position: 'relative'}} 
+    sketch={sketch} 
+    geoprocessingProjectUri="https://peartedq8b.execute-api.us-west-2.amazonaws.com/production/" 
+    clientTitle="Example" 
+  />
 );

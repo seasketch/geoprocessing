@@ -7,8 +7,11 @@ const ReportDecorator_1 = __importDefault(require("./components/ReportDecorator"
 exports.ReportDecorator = ReportDecorator_1.default;
 const Card_1 = __importDefault(require("./components/Card"));
 exports.Card = Card_1.default;
-function loadStories() {
-    require("./components/Card.stories.js");
-    require("./components/ReportSidebar.stories.js");
+function storyLoader() {
+    return [
+        require("./components/Card.stories.js")
+        // Don't include the sidebar in report implementations
+        // require("./components/ReportSidebar.stories.js")
+    ];
 }
-exports.loadStories = loadStories;
+exports.storyLoader = storyLoader;

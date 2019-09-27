@@ -2,11 +2,9 @@ import { useState, useReducer, useEffect } from "react";
 import {
   Sketch,
   ReportClient,
-  GeoprocessingTask,
   GeoprocessingTaskStatus
 } from "@seasketch/serverless-geoprocessing";
 import { GeoprocessingClientOptions } from "../components/ReportSidebar";
-import { GeoprocessingRequest } from "@seasketch/serverless-geoprocessing/src/handlers";
 import TaskRunner, { TaskState } from "../taskRunner";
 
 interface ResultsState {

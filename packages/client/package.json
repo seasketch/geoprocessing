@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Component library and browser client for SeaSketch geoprocessing tools",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "module": "dist/index.js",
   "scripts": {
     "test": "jest",
@@ -15,6 +16,7 @@
     "react": "^16.9.0"
   },
   "dependencies": {
+    "@seasketch/serverless-geoprocessing": "^0.1.12",
     "@storybook/react": "^5.3.0-alpha.3",
     "@types/react-color": "^3.0.1",
     "@types/styled-components": "4.1.8",

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Sketch } from "@seasketch/serverless-geoprocessing/src/geometry";
+import { Sketch } from "@seasketch/serverless-geoprocessing";
 import useGeoprocessingResults from "../hooks/useGeoprocessingResults";
 import {
   GeoprocessingProject,

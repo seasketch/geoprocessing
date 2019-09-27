@@ -7,4 +7,3 @@ var internals_1 = require("./src/plugin/internals");
 exports.pluginInternals = internals_1.default;
 var tasks_1 = require("./src/tasks");
 exports.GeoprocessingTaskStatus = tasks_1.GeoprocessingTaskStatus;
-// export type GeoprocessingTask = GeoprocessingTask;

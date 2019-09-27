@@ -3,6 +3,7 @@
   "version": "0.1.12",
   "description": "",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "@types/node": "^12.7.8",
     "geobuf": "^3.0.1",

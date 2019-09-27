@@ -5,7 +5,7 @@ import {
   GeoprocessingTaskStatus,
   GeoprocessingTask
 } from "@seasketch/serverless-geoprocessing";
-import { GeoprocessingRequest } from "@seasketch/serverless-geoprocessing/src/handlers";
+import { GeoprocessingRequest } from "@seasketch/serverless-geoprocessing";
 import { v4 as uuid } from "uuid";
 
 /**

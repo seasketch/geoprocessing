@@ -4,7 +4,7 @@ import { Sketch } from '@seasketch/serverless-geoprocessing';
 
 export default {
   component: ReportSidebar,
-  title: 'ReportSidebar'
+  title: 'Private|ReportSidebar'
 };
 
 const sketch: Sketch = {

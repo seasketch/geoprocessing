@@ -7,7 +7,7 @@ const react_1 = __importDefault(require("react"));
 const ReportSidebar_1 = __importDefault(require("./ReportSidebar"));
 exports.default = {
     component: ReportSidebar_1.default,
-    title: 'ReportSidebar'
+    title: 'Private|ReportSidebar'
 };
 const sketch = {
     "type": "Feature",

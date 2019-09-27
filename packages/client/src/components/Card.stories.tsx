@@ -4,7 +4,7 @@ import ReportDecorator from './ReportDecorator';
 
 export default {
   component: Card,
-  title: 'Card',
+  title: 'Components|Card',
   decorators: [ReportDecorator],
 };
 

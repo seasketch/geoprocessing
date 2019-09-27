@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import AreaTab from "./AreaTab";
 import { ReportDecorator } from "@seasketch/geoprocessing-client";
 
-storiesOf("Zone Area", module)
+storiesOf("Reports|Zone Area", module)
   .addDecorator(ReportDecorator)
   .add("Campus Point", () => (
     <AreaTab

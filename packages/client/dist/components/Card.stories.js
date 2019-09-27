@@ -8,7 +8,7 @@ const Card_1 = __importDefault(require("./Card"));
 const ReportDecorator_1 = __importDefault(require("./ReportDecorator"));
 exports.default = {
     component: Card_1.default,
-    title: 'Card',
+    title: 'Components|Card',
     decorators: [ReportDecorator_1.default],
 };
 exports.simple = () => react_1.default.createElement(Card_1.default, { title: "Card Title" },

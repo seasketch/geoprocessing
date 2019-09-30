@@ -14,6 +14,9 @@ const react_1 = __importStar(require("react"));
 const styled_components_1 = __importStar(require("styled-components"));
 const ReportSidebarContents_1 = __importDefault(require("./ReportSidebarContents"));
 const styled_spinkit_1 = require("styled-spinkit");
+const Close_1 = require("styled-icons/material/Close");
+const MoveHorizontal_1 = require("styled-icons/boxicons-regular/MoveHorizontal");
+const Cog_1 = require("styled-icons/fa-solid/Cog");
 var ReportSidebarSize;
 (function (ReportSidebarSize) {
     ReportSidebarSize[ReportSidebarSize["Normal"] = 0] = "Normal";
@@ -28,10 +31,11 @@ const Container = styled_components_1.default.div `
     : styled_components_1.css `
           width: 800px;
         `}
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px 0px 0px 0px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
   margin-left: auto;
   margin-right: auto;
-  border-radius: 2px;
   position: absolute;
   right: 0;
   display: flex;
@@ -51,12 +55,44 @@ const ContentContainer = styled_components_1.default.div `
 const Header = styled_components_1.default.div `
   font-family: sans-serif;
   padding: 10px;
+  padding-left: 14px;
   background-color: #f5f5f5;
   z-index: 2;
   border-bottom: 1px solid rgba(0, 0, 0, 0.13);
   flex: 0;
+  border-radius: 3px 0px 0px 0px;
 `;
-const ReportSidebar = ({ size, sketch, geoprocessingProjectUri, clientOptions, clientTitle, style }) => {
+const Actions = styled_components_1.default.div `
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  padding: 12px;
+`;
+const ActionButton = styled_components_1.default.button `
+  float: right;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-radius: 24px;
+  padding: 4px;
+  width: 25px;
+  height: 25px;
+  margin-left: 4px;
+  font-weight: bold;
+  &:focus {
+    border: none;
+    box-shadow: none;
+    outline: none;
+  }
+
+  &:hover {
+    background-color: #ddd;
+  }
+  &:active {
+    background-color: #ccc;
+  }
+`;
+const ReportSidebar = ({ size, sketch, geoprocessingProjectUri, clientOptions, clientTitle, style, contextMenuItems, onClose }) => {
     size = size || ReportSidebarSize.Normal;
     const [project, setProject] = react_1.useState();
     const [error, setError] = react_1.useState();
@@ -104,7 +140,14 @@ const ReportSidebar = ({ size, sketch, geoprocessingProjectUri, clientOptions, c
     }, [geoprocessingProjectUri]);
     return (react_1.default.createElement(Container, { size: size, style: style },
         react_1.default.createElement(Header, null,
-            react_1.default.createElement("h1", { style: { fontWeight: 500, fontSize: 18 } }, sketch.properties && sketch.properties.name)),
+            react_1.default.createElement("h1", { style: { fontWeight: 500, fontSize: 18 } }, sketch.properties && sketch.properties.name),
+            react_1.default.createElement(Actions, null,
+                react_1.default.createElement(ActionButton, { onClick: onClose },
+                    react_1.default.createElement(Close_1.Close, { color: "#333" })),
+                react_1.default.createElement(ActionButton, null,
+                    react_1.default.createElement(Cog_1.Cog, { color: "#333" })),
+                react_1.default.createElement(ActionButton, null,
+                    react_1.default.createElement(MoveHorizontal_1.MoveHorizontal, { color: "#333" })))),
         react_1.default.createElement(ContentContainer, null,
             loading && react_1.default.createElement(styled_spinkit_1.WanderingCubes, null),
             error && react_1.default.createElement("div", null, error),

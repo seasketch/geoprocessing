@@ -21,6 +21,7 @@
     "@types/react-color": "^3.0.1",
     "@types/styled-components": "4.1.8",
     "styled-components": "^4.4.0",
+    "styled-icons": "^8.4.2",
     "styled-loaders": "^0.3.0",
     "styled-spinkit": "^0.7.4"
   }

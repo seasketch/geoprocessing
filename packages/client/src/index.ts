@@ -1,5 +1,9 @@
 import ReportDecorator from "./components/ReportDecorator";
 import Card from "./components/Card";
+import ReportSidebar, {
+  ReportContextMenuItem
+} from "./components/ReportSidebar";
+import { Sketch } from "@seasketch/serverless-geoprocessing";
 
 function storyLoader() {
   return [
@@ -9,4 +13,11 @@ function storyLoader() {
   ];
 }
 
-export { storyLoader, ReportDecorator, Card };
+export {
+  storyLoader,
+  ReportDecorator,
+  Card,
+  ReportSidebar,
+  ReportContextMenuItem,
+  Sketch
+};

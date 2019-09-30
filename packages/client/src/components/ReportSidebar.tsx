@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Sketch } from "@seasketch/serverless-geoprocessing";
-import useGeoprocessingResults from "../hooks/useGeoprocessingResults";
 import {
   GeoprocessingProject,
   ReportClient
@@ -8,6 +7,9 @@ import {
 import styled, { css } from "styled-components";
 import ReportSidebarContents from "./ReportSidebarContents";
 import { FoldingCube, Circle, WaveLoading, WanderingCubes } from "styled-spinkit";
+import { Close } from "styled-icons/material/Close";
+import { MoveHorizontal } from "styled-icons/boxicons-regular/MoveHorizontal";
+import { Cog } from "styled-icons/fa-solid/Cog";
 
 export interface Props {
   size?: ReportSidebarSize;
@@ -16,6 +18,13 @@ export interface Props {
   clientTitle: string;
   clientOptions?: GeoprocessingClientOptions;
   style?: React.CSSProperties;
+  contextMenuItems?: Array<ReportContextMenuItem>;
+  onClose?: () => void;
+}
+
+export interface ReportContextMenuItem {
+  label: string;
+  onClick: () => void;
 }
 
 export interface GeoprocessingClientOptions {
@@ -41,10 +50,11 @@ const Container = styled.div<{ size: ReportSidebarSize }>`
       : css`
           width: 800px;
         `}
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px 0px 0px 0px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
   margin-left: auto;
   margin-right: auto;
-  border-radius: 2px;
   position: absolute;
   right: 0;
   display: flex;
@@ -66,11 +76,45 @@ const ContentContainer = styled.div`
 const Header = styled.div`
   font-family: sans-serif;
   padding: 10px;
+  padding-left: 14px;
   background-color: #f5f5f5;
   z-index: 2;
   border-bottom: 1px solid rgba(0, 0, 0, 0.13);
   flex: 0;
+  border-radius: 3px 0px 0px 0px;
 `;
+
+const Actions = styled.div`
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  padding: 12px;
+`
+
+const ActionButton = styled.button`
+  float: right;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-radius: 24px;
+  padding: 4px;
+  width: 25px;
+  height: 25px;
+  margin-left: 4px;
+  font-weight: bold;
+  &:focus {
+    border: none;
+    box-shadow: none;
+    outline: none;
+  }
+
+  &:hover {
+    background-color: #ddd;
+  }
+  &:active {
+    background-color: #ccc;
+  }
+`
 
 const ReportSidebar = ({
   size,
@@ -78,7 +122,9 @@ const ReportSidebar = ({
   geoprocessingProjectUri,
   clientOptions,
   clientTitle,
-  style
+  style,
+  contextMenuItems,
+  onClose
 }: Props) => {
   size = size || ReportSidebarSize.Normal;
   const [project, setProject] = useState<GeoprocessingProject>();
@@ -132,6 +178,11 @@ const ReportSidebar = ({
     <Container size={size} style={style}>
       <Header>
         <h1 style={{fontWeight: 500, fontSize: 18}}>{sketch.properties && sketch.properties.name}</h1>
+        <Actions>
+          <ActionButton onClick={onClose}><Close color="#333" /></ActionButton>
+        <ActionButton><Cog color="#333" /></ActionButton>
+        <ActionButton><MoveHorizontal color="#333" /></ActionButton>
+        </Actions>
       </Header>
       <ContentContainer>
         {loading && <WanderingCubes />}

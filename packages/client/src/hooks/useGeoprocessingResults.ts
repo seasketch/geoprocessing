@@ -2,7 +2,8 @@ import { useState, useReducer, useEffect } from "react";
 import {
   Sketch,
   ReportClient,
-  GeoprocessingTaskStatus
+  GeoprocessingTaskStatus,
+  SketchProperties
 } from "@seasketch/serverless-geoprocessing";
 import { GeoprocessingClientOptions } from "../components/ReportSidebar";
 import TaskRunner, { TaskState } from "../taskRunner";
@@ -16,7 +17,8 @@ interface ResultsState {
 }
 
 const useGeoprocessingResults = (
-  sketch: Sketch,
+  sketchProperties: SketchProperties,
+  geometryUri: string,
   client: ReportClient,
   tabId: string,
   clientOptions?: GeoprocessingClientOptions
@@ -73,12 +75,12 @@ const useGeoprocessingResults = (
     }) as EventListener;
     runner.addEventListener("update", onUpdate);
     for (const service of tab.requiredServices) {
-      runner.request(sketch, service);
+      runner.request(sketchProperties, geometryUri, service);
     }
     return () => {
       runner.removeEventListener("update", onUpdate);
     };
-  }, [sketch, client, tabId, clientOptions]);
+  }, [sketchProperties, geometryUri, client, tabId, clientOptions]);
   return state;
 };
 

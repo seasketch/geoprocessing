@@ -2,13 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const geometry_1 = require("../src/geometry");
 // @ts-ignore
-global.fetch = require('jest-fetch-mock');
+global.fetch = require("jest-fetch-mock");
 const exampleSketch = {
     type: "Feature",
     bbox: [0, 1, 2, 3, 4, 5],
     properties: {
         id: "1234abcd",
         updatedAt: new Date().toISOString(),
+        name: "Sketch A",
+        sketchClassId: "123abc",
         foo: "bar"
     },
     geometry: {
@@ -26,7 +28,7 @@ const exampleSketch = {
 };
 test("Basic extraction from request", async () => {
     const sketch = await geometry_1.fetchGeoJSON({
-        geometry: exampleSketch,
+        geometry: exampleSketch
     });
     expect(sketch.properties && sketch.properties["id"]).toBe("1234abcd");
 });

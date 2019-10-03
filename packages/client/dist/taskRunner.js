@@ -13,18 +13,16 @@ class TaskRunner extends EventTarget {
     }
     updatePendingTask(taskDetail) {
         this.pendingTasks = [
-            ...this.pendingTasks.filter(t => t.sketch !== taskDetail.sketch)
+            ...this.pendingTasks.filter(t => t.sketchProperties !== taskDetail.sketchProperties)
         ];
         if (taskDetail.status === serverless_geoprocessing_1.GeoprocessingTaskStatus.Pending) {
             this.pendingTasks.push(taskDetail);
             this.pendingTasks.sort((a, b) => a.service.localeCompare(b.service));
         }
     }
-    async request(sketch, service) {
-        const existing = this.pendingTasks.find(t => t.sketch === sketch ||
-            (t.sketch.properties &&
-                sketch.properties &&
-                t.sketch.properties.id === sketch.properties.id));
+    async request(sketchProperties, geometryUri, service) {
+        const existing = this.pendingTasks.find(t => t.sketchProperties === sketchProperties ||
+            t.sketchProperties.id === sketchProperties.id);
         if (existing) {
             return existing;
         }
@@ -32,7 +30,7 @@ class TaskRunner extends EventTarget {
             const taskDetail = {
                 // TODO: generate cachekeys properly
                 id: uuid_1.v4(),
-                sketch: sketch,
+                sketchProperties,
                 service: service.id,
                 executionMode: service.executionMode,
                 startedAt: new Date(),
@@ -41,8 +39,8 @@ class TaskRunner extends EventTarget {
             this.pendingTasks.push(taskDetail);
             this.pendingTasks.sort((a, b) => a.service.localeCompare(b.service));
             this.dispatchEvent(new CustomEvent("update", { detail: taskDetail }));
-            const payload = {
-                geometry: sketch,
+            let payload = {
+                geometryUri: geometryUri,
                 cacheKey: taskDetail.id
             };
             try {
@@ -57,7 +55,7 @@ class TaskRunner extends EventTarget {
                 const taskDetail = {
                     ...task,
                     startedAt: new Date(task.startedAt),
-                    sketch
+                    sketchProperties
                 };
                 this.updatePendingTask(taskDetail);
                 this.dispatchEvent(new CustomEvent("update", {

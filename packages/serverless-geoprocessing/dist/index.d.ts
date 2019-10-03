@@ -1,5 +1,5 @@
 export { SeaSketchGeoprocessingSettings, GeoprocessingRequest } from "./src/handlers";
-export { isSeaSketchFeature, isSeaSketchFeatureCollection } from "./src/geometry";
+export { isSeaSketchFeature, isSeaSketchFeatureCollection, SketchProperties } from "./src/geometry";
 export { GeoprocessingProject, GeoprocessingService, ReportClient, ReportTab } from "./src/metadata";
 export { Sketch } from "./src/geometry";
 export { default as pluginInternals } from "./src/plugin/internals";

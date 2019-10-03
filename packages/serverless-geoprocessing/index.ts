@@ -4,7 +4,8 @@ export {
 } from "./src/handlers";
 export {
   isSeaSketchFeature,
-  isSeaSketchFeatureCollection
+  isSeaSketchFeatureCollection,
+  SketchProperties
 } from "./src/geometry";
 export {
   GeoprocessingProject,

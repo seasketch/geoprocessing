@@ -23,7 +23,7 @@ var ReportSidebarSize;
     ReportSidebarSize[ReportSidebarSize["Large"] = 1] = "Large";
 })(ReportSidebarSize = exports.ReportSidebarSize || (exports.ReportSidebarSize = {}));
 const Container = styled_components_1.default.div `
-  height: calc(100vh - 40px);
+  height: calc(100vh - 60px);
   ${props => props.size === ReportSidebarSize.Normal
     ? styled_components_1.css `
           width: 500px;
@@ -33,22 +33,23 @@ const Container = styled_components_1.default.div `
         `}
   border: 1px solid rgba(0,0,0,0.2);
   border-radius: 3px 0px 0px 0px;
-  box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4px;
   margin-left: auto;
   margin-right: auto;
   position: absolute;
-  right: 0;
+  right: -1px;
   display: flex;
   flex-direction: column;
-  bottom: 0;
+  bottom: -1px;
+  z-index: 10000;
+  transition: right 250ms;
 `;
 const ContentContainer = styled_components_1.default.div `
-  background-color: #efefef;
+  background-color: rgb(244,247,249);
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
-  /* box-shadow: 0px 0px 0px transparent, 0px 4px 4px 0px rgba(0, 0, 0, 0.06) inset, */
-    /* 0px 0px 0px transparent, 0px 0px 0px transparent; */
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.12);
   flex: 1;
   overflow-y: scroll;
 `;
@@ -58,9 +59,9 @@ const Header = styled_components_1.default.div `
   padding-left: 14px;
   background-color: #f5f5f5;
   z-index: 2;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
   flex: 0;
-  border-radius: 3px 0px 0px 0px;
+  border-radius: 3px 3px 0px 0px;
+  border-bottom: 1px solid rgba(0,0,0,0.16);
 `;
 const Actions = styled_components_1.default.div `
   position: absolute;
@@ -79,6 +80,8 @@ const ActionButton = styled_components_1.default.button `
   height: 25px;
   margin-left: 4px;
   font-weight: bold;
+  color: #555;
+  line-height: normal;
   &:focus {
     border: none;
     box-shadow: none;
@@ -86,18 +89,20 @@ const ActionButton = styled_components_1.default.button `
   }
 
   &:hover {
-    background-color: #ddd;
+    background-color: #efefef;
+    color: black;
   }
   &:active {
     background-color: #ccc;
   }
 `;
-const ReportSidebar = ({ size, sketch, geoprocessingProjectUri, clientOptions, clientTitle, style, contextMenuItems, onClose }) => {
+const ReportSidebar = ({ size, sketchProperties, geometryUri, geoprocessingProjectUri, clientOptions, clientTitle, style, contextMenuItems, onClose }) => {
     size = size || ReportSidebarSize.Normal;
     const [project, setProject] = react_1.useState();
     const [error, setError] = react_1.useState();
     const [loading, setLoading] = react_1.useState(true);
     const [tab, setTab] = react_1.useState();
+    const [offset, setOffset] = react_1.useState(false);
     let client;
     if (project) {
         client = project.clients.find(c => c.title === clientTitle);
@@ -138,19 +143,19 @@ const ReportSidebar = ({ size, sketch, geoprocessingProjectUri, clientOptions, c
             didCancel = true;
         };
     }, [geoprocessingProjectUri]);
-    return (react_1.default.createElement(Container, { size: size, style: style },
+    return (react_1.default.createElement(Container, { size: size, style: { ...(style || {}), ...(offset ? { right: 499 } : {}) } },
         react_1.default.createElement(Header, null,
-            react_1.default.createElement("h1", { style: { fontWeight: 500, fontSize: 18 } }, sketch.properties && sketch.properties.name),
+            react_1.default.createElement("h1", { style: { fontWeight: 500, fontSize: 18 } }, sketchProperties.name || "Untitled Sketch"),
             react_1.default.createElement(Actions, null,
                 react_1.default.createElement(ActionButton, { onClick: onClose },
-                    react_1.default.createElement(Close_1.Close, { color: "#333" })),
+                    react_1.default.createElement(Close_1.Close, null)),
                 react_1.default.createElement(ActionButton, null,
-                    react_1.default.createElement(Cog_1.Cog, { color: "#333" })),
-                react_1.default.createElement(ActionButton, null,
-                    react_1.default.createElement(MoveHorizontal_1.MoveHorizontal, { color: "#333" })))),
+                    react_1.default.createElement(Cog_1.Cog, null)),
+                react_1.default.createElement(ActionButton, { onClick: () => setOffset(!offset) },
+                    react_1.default.createElement(MoveHorizontal_1.MoveHorizontal, null)))),
         react_1.default.createElement(ContentContainer, null,
             loading && react_1.default.createElement(styled_spinkit_1.WanderingCubes, null),
             error && react_1.default.createElement("div", null, error),
-            !loading && !error && client && project && tab && (react_1.default.createElement(ReportSidebarContents_1.default, { sketch: sketch, client: client, clientUri: project.clientUri, clientOptions: clientOptions, tabId: tab })))));
+            !loading && !error && client && project && tab && (react_1.default.createElement(ReportSidebarContents_1.default, { sketchProperties: sketchProperties, geometryUri: geometryUri, client: client, clientUri: project.clientUri, clientOptions: clientOptions, tabId: tab })))));
 };
 exports.default = ReportSidebar;

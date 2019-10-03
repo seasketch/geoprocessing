@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(require("react"));
 const ReportSidebar_1 = __importDefault(require("./ReportSidebar"));
+const index_1 = require("../index");
 exports.default = {
     component: ReportSidebar_1.default,
     title: 'Private|ReportSidebar'
@@ -12,7 +13,9 @@ exports.default = {
 const sketch = {
     "type": "Feature",
     "properties": {
-        "name": "Campus Point"
+        "name": "Campus Point",
+        "sketchClassId": "abc123",
+        "updatedAt": new Date().toISOString()
     },
     "bbox": [0, 1, 2, 3],
     "geometry": {
@@ -43,4 +46,4 @@ const sketch = {
         ]
     }
 };
-exports.areaReport = () => (react_1.default.createElement(ReportSidebar_1.default, { style: { position: 'relative' }, sketch: sketch, geoprocessingProjectUri: "https://peartedq8b.execute-api.us-west-2.amazonaws.com/production/", clientTitle: "Example" }));
+exports.areaReport = () => (react_1.default.createElement(ReportSidebar_1.default, { style: { position: 'relative' }, sketchProperties: sketch.properties, geometryUri: index_1.toDataURI(sketch), geoprocessingProjectUri: "https://peartedq8b.execute-api.us-west-2.amazonaws.com/production/", clientTitle: "Example" }));

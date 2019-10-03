@@ -13,7 +13,8 @@
   "author": "Chad Burt",
   "license": "UNLICENSED",
   "peerDependencies": {
-    "react": "^16.9.0"
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   },
   "dependencies": {
     "@seasketch/serverless-geoprocessing": "^0.1.12",

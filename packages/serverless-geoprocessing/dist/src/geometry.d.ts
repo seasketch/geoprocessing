@@ -1,13 +1,22 @@
-import { Feature, BBox, GeoJsonProperties } from "geojson";
+import { Feature, BBox } from "geojson";
 import { GeoprocessingRequest } from "./handlers";
-import 'isomorphic-fetch';
+import "isomorphic-fetch";
+export interface SketchProperties {
+    /** string id of parent collection, if any */
+    parent?: string;
+    sketchClassId: string;
+    name: string;
+    /** ISO 8601 date string */
+    updatedAt: string;
+    [name: string]: any;
+}
 export interface SeaSketchFeature extends Feature {
-    properties: GeoJsonProperties;
+    properties: SketchProperties;
     bbox: BBox;
 }
 export interface SeaSketchFeatureCollection {
     type: "FeatureCollection";
-    properties: GeoJsonProperties;
+    properties: SketchProperties;
     features: Array<SeaSketchFeature | SeaSketchFeatureCollection>;
     bbox: BBox;
 }

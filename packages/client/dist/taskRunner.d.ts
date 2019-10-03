@@ -1,4 +1,4 @@
-import { Sketch, GeoprocessingService, GeoprocessingTaskStatus } from "@seasketch/serverless-geoprocessing";
+import { GeoprocessingService, GeoprocessingTaskStatus, SketchProperties } from "@seasketch/serverless-geoprocessing";
 /**
  * Essentially GeoprocessingTask but with some properties changed
  * to optional since the client will not have all these values
@@ -8,7 +8,7 @@ import { Sketch, GeoprocessingService, GeoprocessingTaskStatus } from "@seasketc
  * @interface TaskState
  */
 export interface TaskState {
-    sketch: Sketch;
+    sketchProperties: SketchProperties;
     id: string;
     service: string;
     location?: string;
@@ -26,6 +26,6 @@ declare class TaskRunner extends EventTarget {
     pendingTasks: Array<TaskState>;
     constructor();
     private updatePendingTask;
-    request(sketch: Sketch, service: GeoprocessingService): Promise<TaskState>;
+    request(sketchProperties: SketchProperties, geometryUri: string, service: GeoprocessingService): Promise<TaskState>;
 }
 export default TaskRunner;

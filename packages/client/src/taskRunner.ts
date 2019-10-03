@@ -3,7 +3,8 @@ import {
   Sketch,
   GeoprocessingService,
   GeoprocessingTaskStatus,
-  GeoprocessingTask
+  GeoprocessingTask,
+  SketchProperties
 } from "@seasketch/serverless-geoprocessing";
 import { GeoprocessingRequest } from "@seasketch/serverless-geoprocessing";
 import { v4 as uuid } from "uuid";
@@ -17,7 +18,7 @@ import { v4 as uuid } from "uuid";
  * @interface TaskState
  */
 export interface TaskState {
-  sketch: Sketch;
+  sketchProperties: SketchProperties;
   id: string;
   service: string;
   location?: string;
@@ -40,7 +41,9 @@ class TaskRunner extends EventTarget {
 
   private updatePendingTask(taskDetail: TaskState) {
     this.pendingTasks = [
-      ...this.pendingTasks.filter(t => t.sketch !== taskDetail.sketch)
+      ...this.pendingTasks.filter(
+        t => t.sketchProperties !== taskDetail.sketchProperties
+      )
     ];
     if (taskDetail.status === GeoprocessingTaskStatus.Pending) {
       this.pendingTasks.push(taskDetail);
@@ -49,15 +52,14 @@ class TaskRunner extends EventTarget {
   }
 
   async request(
-    sketch: Sketch,
+    sketchProperties: SketchProperties,
+    geometryUri: string,
     service: GeoprocessingService
   ): Promise<TaskState> {
     const existing = this.pendingTasks.find(
       t =>
-        t.sketch === sketch ||
-        (t.sketch.properties &&
-          sketch.properties &&
-          t.sketch.properties.id === sketch.properties.id)
+        t.sketchProperties === sketchProperties ||
+        t.sketchProperties.id === sketchProperties.id
     );
     if (existing) {
       return existing;
@@ -65,7 +67,7 @@ class TaskRunner extends EventTarget {
       const taskDetail = {
         // TODO: generate cachekeys properly
         id: uuid(),
-        sketch: sketch,
+        sketchProperties,
         service: service.id,
         executionMode: service.executionMode,
         startedAt: new Date(),
@@ -76,8 +78,8 @@ class TaskRunner extends EventTarget {
       this.dispatchEvent(
         new CustomEvent<TaskState>("update", { detail: taskDetail })
       );
-      const payload: GeoprocessingRequest = {
-        geometry: sketch,
+      let payload: GeoprocessingRequest = {
+        geometryUri: geometryUri,
         cacheKey: taskDetail.id
       };
       try {
@@ -92,7 +94,7 @@ class TaskRunner extends EventTarget {
         const taskDetail = {
           ...task,
           startedAt: new Date(task.startedAt),
-          sketch
+          sketchProperties
         };
         this.updatePendingTask(taskDetail);
         this.dispatchEvent(

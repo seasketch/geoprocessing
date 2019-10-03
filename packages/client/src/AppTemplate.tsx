@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Sketch } from '@seasketch/serverless-geoprocessing';
-
-export interface SeaSketchReportingMessageEvent {
-  reportTab: string;
-  serviceData: {[key: string]: any}; 
-  sketch: Sketch;
-}
+import { Sketch, SketchProperties } from '@seasketch/serverless-geoprocessing';
+import { SeaSketchReportingMessageEvent } from './components/ReportSidebarContents';
 
 export interface ReportTabProps {
-  serviceData: {[key: string]: any};
-  sketch: Sketch
+  serviceResults: {[key: string]: any};
+  sketchProperties: SketchProperties,  
+  geometryUri: string;
 }
 
 export interface ReportTabState {
   ReportTab: React.ComponentType<ReportTabProps>;
-  serviceData: {[key: string]: any}; 
-  sketch: Sketch;
+  serviceResults: {[key: string]: any}; 
+  sketchProperties: SketchProperties;
+  geometryUri: string;
 }
 
 // Will be replaced by plugin with actual Report implementations
@@ -27,9 +24,10 @@ const App = () => {
   const onMessage = (event: MessageEvent) => {
     const message: SeaSketchReportingMessageEvent = JSON.parse(event.data);
     setState({
-      serviceData: message.serviceData,
+      serviceResults: message.serviceResults,
       ReportTab: REPORTS[message.reportTab],
-      sketch: message.sketch
+      sketchProperties: message.sketchProperties,
+      geometryUri: message.geometryUri
     });
   }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReportSidebar from './ReportSidebar';
 import { Sketch } from '@seasketch/serverless-geoprocessing';
+import { toDataURI } from '../index';
 
 export default {
   component: ReportSidebar,
@@ -10,7 +11,9 @@ export default {
 const sketch: Sketch = {
   "type": "Feature",
   "properties": {
-    "name": "Campus Point"
+    "name": "Campus Point",
+    "sketchClassId": "abc123",
+    "updatedAt": new Date().toISOString()
   },
   "bbox": [0,1,2,3],
   "geometry": {
@@ -45,7 +48,8 @@ const sketch: Sketch = {
 export const areaReport = () => (
   <ReportSidebar 
     style={{position: 'relative'}} 
-    sketch={sketch} 
+    sketchProperties={sketch.properties}
+    geometryUri={toDataURI(sketch)}
     geoprocessingProjectUri="https://peartedq8b.execute-api.us-west-2.amazonaws.com/production/" 
     clientTitle="Example" 
   />

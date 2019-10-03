@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Sketch } from "@seasketch/serverless-geoprocessing";
+import { Sketch, SketchProperties } from "@seasketch/serverless-geoprocessing";
 import {
   GeoprocessingProject,
   ReportClient
@@ -13,7 +13,8 @@ import { Cog } from "styled-icons/fa-solid/Cog";
 
 export interface Props {
   size?: ReportSidebarSize;
-  sketch: Sketch;
+  sketchProperties: SketchProperties;
+  geometryUri: string;
   geoprocessingProjectUri: string;
   clientTitle: string;
   clientOptions?: GeoprocessingClientOptions;
@@ -41,7 +42,7 @@ export enum ReportSidebarSize {
 }
 
 const Container = styled.div<{ size: ReportSidebarSize }>`
-  height: calc(100vh - 40px);
+  height: calc(100vh - 60px);
   ${props =>
     props.size === ReportSidebarSize.Normal
       ? css`
@@ -52,23 +53,24 @@ const Container = styled.div<{ size: ReportSidebarSize }>`
         `}
   border: 1px solid rgba(0,0,0,0.2);
   border-radius: 3px 0px 0px 0px;
-  box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4px;
   margin-left: auto;
   margin-right: auto;
   position: absolute;
-  right: 0;
+  right: -1px;
   display: flex;
   flex-direction: column;
-  bottom: 0;
+  bottom: -1px;
+  z-index: 10000;
+  transition: right 250ms;
 `;
 
 const ContentContainer = styled.div`
-  background-color: #efefef;
+  background-color: rgb(244,247,249);
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
-  /* box-shadow: 0px 0px 0px transparent, 0px 4px 4px 0px rgba(0, 0, 0, 0.06) inset, */
-    /* 0px 0px 0px transparent, 0px 0px 0px transparent; */
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.12);
   flex: 1;
   overflow-y: scroll;
 `;
@@ -79,9 +81,9 @@ const Header = styled.div`
   padding-left: 14px;
   background-color: #f5f5f5;
   z-index: 2;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
   flex: 0;
-  border-radius: 3px 0px 0px 0px;
+  border-radius: 3px 3px 0px 0px;
+  border-bottom: 1px solid rgba(0,0,0,0.16);
 `;
 
 const Actions = styled.div`
@@ -102,6 +104,8 @@ const ActionButton = styled.button`
   height: 25px;
   margin-left: 4px;
   font-weight: bold;
+  color: #555;
+  line-height: normal;
   &:focus {
     border: none;
     box-shadow: none;
@@ -109,7 +113,8 @@ const ActionButton = styled.button`
   }
 
   &:hover {
-    background-color: #ddd;
+    background-color: #efefef;
+    color: black;
   }
   &:active {
     background-color: #ccc;
@@ -118,7 +123,8 @@ const ActionButton = styled.button`
 
 const ReportSidebar = ({
   size,
-  sketch,
+  sketchProperties,
+  geometryUri,
   geoprocessingProjectUri,
   clientOptions,
   clientTitle,
@@ -131,6 +137,7 @@ const ReportSidebar = ({
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<string>();
+  const [ offset, setOffset] = useState(false);
   let client: ReportClient | undefined;
   if (project) {
     client = project.clients.find(c => c.title === clientTitle);
@@ -175,13 +182,13 @@ const ReportSidebar = ({
     };
   }, [geoprocessingProjectUri]);
   return (
-    <Container size={size} style={style}>
+    <Container size={size} style={{...(style || {}), ...( offset ? { right: 499 } : {})}}>
       <Header>
-        <h1 style={{fontWeight: 500, fontSize: 18}}>{sketch.properties && sketch.properties.name}</h1>
+        <h1 style={{fontWeight: 500, fontSize: 18}}>{sketchProperties.name || "Untitled Sketch"}</h1>
         <Actions>
-          <ActionButton onClick={onClose}><Close color="#333" /></ActionButton>
-        <ActionButton><Cog color="#333" /></ActionButton>
-        <ActionButton><MoveHorizontal color="#333" /></ActionButton>
+          <ActionButton onClick={onClose}><Close /></ActionButton>
+        <ActionButton><Cog /></ActionButton>
+        <ActionButton onClick={() => setOffset(!offset)}><MoveHorizontal /></ActionButton>
         </Actions>
       </Header>
       <ContentContainer>
@@ -189,7 +196,8 @@ const ReportSidebar = ({
         {error && <div>{error}</div>}
         {!loading && !error && client && project && tab && (
           <ReportSidebarContents
-            sketch={sketch}
+            sketchProperties={sketchProperties}
+            geometryUri={geometryUri}
             client={client}
             clientUri={project.clientUri}
             clientOptions={clientOptions}

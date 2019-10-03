@@ -16,9 +16,10 @@ const App = () => {
     const onMessage = (event) => {
         const message = JSON.parse(event.data);
         setState({
-            serviceData: message.serviceData,
+            serviceResults: message.serviceResults,
             ReportTab: REPORTS[message.reportTab],
-            sketch: message.sketch
+            sketchProperties: message.sketchProperties,
+            geometryUri: message.geometryUri
         });
     };
     react_1.useEffect(() => {

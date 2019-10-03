@@ -27,10 +27,10 @@ const Sandbox = styled_components_1.default.iframe `
       left: -20000px;
     `}
 `;
-const ReportSidebarContents = ({ sketch, client, clientUri, clientOptions, tabId }) => {
+const ReportSidebarContents = ({ sketchProperties, geometryUri, client, clientUri, clientOptions, tabId }) => {
     const iframeEl = react_1.useRef(null);
     const [iframeLoaded, setIframeLoaded] = react_1.useState(false);
-    const { results, failed, loading, tasks, eta } = useGeoprocessingResults_1.default(sketch, client, tabId, clientOptions);
+    const { results, failed, loading, tasks, eta } = useGeoprocessingResults_1.default(sketchProperties, geometryUri, client, tabId, clientOptions);
     const onMessage = (e) => {
         if (e.data === "INIT") {
             setIframeLoaded(true);
@@ -43,8 +43,10 @@ const ReportSidebarContents = ({ sketch, client, clientUri, clientOptions, tabId
                 type: exports.SeaSketchReportingMessageEventType,
                 reportTab: tabId,
                 serviceResults: results,
-                sketch
+                sketchProperties,
+                geometryUri
             };
+            console.log('postMessage', msg);
             iframeEl.current.contentWindow.postMessage(msg, "*");
         }
         return () => {

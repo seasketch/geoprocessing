@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = require("react");
 const serverless_geoprocessing_1 = require("@seasketch/serverless-geoprocessing");
 const taskRunner_1 = __importDefault(require("../taskRunner"));
-const useGeoprocessingResults = (sketch, client, tabId, clientOptions) => {
+const useGeoprocessingResults = (sketchProperties, geometryUri, client, tabId, clientOptions) => {
     const tab = client.tabs.find(t => t.id === tabId);
     if (!tab) {
         throw new Error(`Unknown tab "${tabId}". Valid options are ${client.tabs
@@ -52,12 +52,12 @@ const useGeoprocessingResults = (sketch, client, tabId, clientOptions) => {
         });
         runner.addEventListener("update", onUpdate);
         for (const service of tab.requiredServices) {
-            runner.request(sketch, service);
+            runner.request(sketchProperties, geometryUri, service);
         }
         return () => {
             runner.removeEventListener("update", onUpdate);
         };
-    }, [sketch, client, tabId, clientOptions]);
+    }, [sketchProperties, geometryUri, client, tabId, clientOptions]);
     return state;
 };
 exports.default = useGeoprocessingResults;

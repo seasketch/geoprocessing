@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect, CSSProperties } from "react";
 import useGeoprocessingResults from "../hooks/useGeoprocessingResults";
-import { Sketch, ReportClient } from "@seasketch/serverless-geoprocessing";
+import { Sketch, ReportClient, SketchProperties } from "@seasketch/serverless-geoprocessing";
 import { GeoprocessingClientOptions } from "../components/ReportSidebar";
 import styled, { css } from "styled-components";
-import { FoldingCube, Circle, WaveLoading, WanderingCubes } from "styled-spinkit";
+import { WanderingCubes } from "styled-spinkit";
 
 export interface Props {
-  sketch: Sketch;
+  sketchProperties: SketchProperties;
+  geometryUri: string;
   client: ReportClient;
   clientOptions?: GeoprocessingClientOptions;
   tabId: string;
@@ -19,7 +20,8 @@ export const SeaSketchReportingMessageEventType =
 export interface SeaSketchReportingMessageEvent {
   reportTab: string;
   serviceResults: { [key: string]: any };
-  sketch: Sketch;
+  sketchProperties: SketchProperties;
+  geometryUri: string;
   type: "SeaSketchReportingMessageEventType";
 }
 
@@ -38,7 +40,8 @@ const Sandbox = styled.iframe<{ hide: boolean }>`
 `;
 
 const ReportSidebarContents = ({
-  sketch,
+  sketchProperties,
+  geometryUri,
   client,
   clientUri,
   clientOptions,
@@ -47,7 +50,8 @@ const ReportSidebarContents = ({
   const iframeEl = useRef<HTMLIFrameElement>(null);
   const [ iframeLoaded, setIframeLoaded ] = useState(false);
   const { results, failed, loading, tasks, eta } = useGeoprocessingResults(
-    sketch,
+    sketchProperties,
+    geometryUri,
     client,
     tabId,
     clientOptions
@@ -66,8 +70,10 @@ const ReportSidebarContents = ({
         type: SeaSketchReportingMessageEventType,
         reportTab: tabId,
         serviceResults: results,
-        sketch
+        sketchProperties,
+        geometryUri
       };
+      console.log('postMessage', msg);
       iframeEl.current.contentWindow.postMessage(msg, "*");  
     }
     return () => {

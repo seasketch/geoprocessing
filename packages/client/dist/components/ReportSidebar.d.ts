@@ -1,8 +1,9 @@
 import React from "react";
-import { Sketch } from "@seasketch/serverless-geoprocessing";
+import { SketchProperties } from "@seasketch/serverless-geoprocessing";
 export interface Props {
     size?: ReportSidebarSize;
-    sketch: Sketch;
+    sketchProperties: SketchProperties;
+    geometryUri: string;
     geoprocessingProjectUri: string;
     clientTitle: string;
     clientOptions?: GeoprocessingClientOptions;
@@ -24,5 +25,5 @@ export declare enum ReportSidebarSize {
     Normal = 0,
     Large = 1
 }
-declare const ReportSidebar: ({ size, sketch, geoprocessingProjectUri, clientOptions, clientTitle, style, contextMenuItems, onClose }: Props) => JSX.Element;
+declare const ReportSidebar: ({ size, sketchProperties, geometryUri, geoprocessingProjectUri, clientOptions, clientTitle, style, contextMenuItems, onClose }: Props) => JSX.Element;
 export default ReportSidebar;

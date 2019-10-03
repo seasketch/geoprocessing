@@ -1,8 +1,9 @@
 /// <reference types="react" />
-import { Sketch, ReportClient } from "@seasketch/serverless-geoprocessing";
+import { ReportClient, SketchProperties } from "@seasketch/serverless-geoprocessing";
 import { GeoprocessingClientOptions } from "../components/ReportSidebar";
 export interface Props {
-    sketch: Sketch;
+    sketchProperties: SketchProperties;
+    geometryUri: string;
     client: ReportClient;
     clientOptions?: GeoprocessingClientOptions;
     tabId: string;
@@ -14,8 +15,9 @@ export interface SeaSketchReportingMessageEvent {
     serviceResults: {
         [key: string]: any;
     };
-    sketch: Sketch;
+    sketchProperties: SketchProperties;
+    geometryUri: string;
     type: "SeaSketchReportingMessageEventType";
 }
-declare const ReportSidebarContents: ({ sketch, client, clientUri, clientOptions, tabId }: Props) => JSX.Element;
+declare const ReportSidebarContents: ({ sketchProperties, geometryUri, client, clientUri, clientOptions, tabId }: Props) => JSX.Element;
 export default ReportSidebarContents;

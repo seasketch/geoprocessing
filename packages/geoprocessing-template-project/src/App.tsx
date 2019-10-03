@@ -1,7 +1,8 @@
 // Auto-generated file. DO NOT EDIT!
 import React, { useState, useEffect } from "react";
-import { Sketch } from "@seasketch/serverless-geoprocessing/src/geometry";
 import config from "./client.json";
+import { SketchProperties } from "@seasketch/serverless-geoprocessing";
+import { SeaSketchReportingMessageEvent, SeaSketchReportingMessageEventType } from "@seasketch/geoprocessing-client";
 
 interface ClientConfigDocument {
   [key: string]: ClientConfig;
@@ -20,24 +21,15 @@ interface ClientTabConfig {
 
 let clientConfig: ClientConfigDocument = config;
 
-const SeaSketchReportingMessageEventType = "SeaSketchReportingMessageEventType";
-
-export interface SeaSketchReportingMessageEvent {
-  reportTab: string;
-  serviceResults: { [key: string]: any };
-  sketch: Sketch;
-  type: "SeaSketchReportingMessageEventType";
-}
-
 export interface ReportTabProps {
   serviceResults: { [key: string]: any };
-  sketch: Sketch;
+  sketchProperties: SketchProperties;
 }
 
 export interface ReportTabState {
   ReportTab: React.ComponentType<ReportTabProps>;
   serviceResults: { [key: string]: any };
-  sketch: Sketch;
+  sketchProperties: SketchProperties;
 }
 
 const REPORTS: { [key: string]: React.ComponentType<ReportTabProps> } = {};
@@ -72,7 +64,7 @@ const App = () => {
           setState({
             serviceResults: message.serviceResults,
             ReportTab: REPORTS[message.reportTab],
-            sketch: message.sketch
+            sketchProperties: message.sketchProperties
           });
         }
       } else {

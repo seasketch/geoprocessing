@@ -29,7 +29,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.6.0",
     "@seasketch/geoprocessing-client": "^0.1.0",
-    "@seasketch/serverless-geoprocessing": "^0.1.12",
+    "@seasketch/serverless-geoprocessing": "^0.1.0",
     "@testing-library/jest-dom": "^4.1.0",
     "@testing-library/react": "^9.1.4",
     "@turf/area": "^6.0.1",

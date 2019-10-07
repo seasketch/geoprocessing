@@ -27,7 +27,7 @@
   "scripts": {
     "test": "jest -i",
     "build": "tsc",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "author": "Chad Burt",
   "license": "UNLICENSED"

@@ -46,4 +46,19 @@ const sketch = {
         ]
     }
 };
-exports.areaReport = () => (react_1.default.createElement(ReportSidebar_1.default, { style: { position: 'relative' }, sketchProperties: sketch.properties, geometryUri: index_1.toDataURI(sketch), geoprocessingProjectUri: "https://peartedq8b.execute-api.us-west-2.amazonaws.com/production/", clientTitle: "Example" }));
+exports.areaReport = () => (react_1.default.createElement(ReportSidebar_1.default, { style: { position: 'relative' }, sketchProperties: sketch.properties, geometryUri: index_1.toDataURI(sketch), geoprocessingProjectUri: "https://peartedq8b.execute-api.us-west-2.amazonaws.com/production/", clientTitle: "Example", contextMenuItems: [
+        {
+            label: "Action One",
+            onClick: () => {
+                console.log('clicked Action One');
+            },
+            preventHideOnClick: true
+        },
+        {
+            label: "Action Two",
+            onClick: () => {
+                console.log('clicked second action');
+            },
+            preventHideOnClick: true
+        }
+    ] }));

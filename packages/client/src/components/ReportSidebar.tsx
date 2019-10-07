@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import ReactDOM from 'react-dom';
 import { Sketch, SketchProperties } from "@seasketch/serverless-geoprocessing";
 import {
   GeoprocessingProject,
@@ -21,11 +22,17 @@ export interface Props {
   style?: React.CSSProperties;
   contextMenuItems?: Array<ReportContextMenuItem>;
   onClose?: () => void;
+  onContextMenuItemClick?: (item: ReportContextMenuItem) => void;
+  onMoveWindowClick?: () => void;
+  onWindowClick?: () => void;
+  offset?: boolean;
+  foreground?: boolean;
 }
 
 export interface ReportContextMenuItem {
   label: string;
   onClick: () => void;
+  preventHideOnClick: boolean;
 }
 
 export interface GeoprocessingClientOptions {
@@ -41,7 +48,7 @@ export enum ReportSidebarSize {
   Large
 }
 
-const Container = styled.div<{ size: ReportSidebarSize }>`
+const Container = styled.div<{ foreground?: boolean, size: ReportSidebarSize, offset?: boolean }>`
   height: calc(100vh - 60px);
   ${props =>
     props.size === ReportSidebarSize.Normal
@@ -51,17 +58,17 @@ const Container = styled.div<{ size: ReportSidebarSize }>`
       : css`
           width: 800px;
         `}
-  border: 1px solid rgba(0,0,0,0.2);
+  /* border: 1px solid rgba(0,0,0,0.2); */
   border-radius: 3px 0px 0px 0px;
-  box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4px;
+  ${ props => props.foreground ? css`box-shadow: 0px -1px 15px #1fb2fb, 0px 0px 20px rgba(0, 0, 0, 0.6);` : css`box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4px;`}
   margin-left: auto;
   margin-right: auto;
   position: absolute;
-  right: -1px;
+  ${ props => props.offset ? css`right: 499px;` : css`right: -1px`}
   display: flex;
   flex-direction: column;
   bottom: -1px;
-  z-index: 10000;
+  ${ props => props.foreground ? css`z-index: 100001;` : css`z-index: 10000;`}
   transition: right 250ms;
 `;
 
@@ -121,6 +128,40 @@ const ActionButton = styled.button`
   }
 `
 
+interface ActionMenuState {
+  x: number;
+  y: number;
+  hidden: boolean;
+}
+
+const DropdownMenu = styled.ul<ActionMenuState>`
+  width: 160px;
+  z-index: 100004;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+  padding: 4px 0px;
+  ${props => css`
+    left: ${props.x - 160 - 14}px;
+    top: ${props.y + 6}px;
+    display: ${ props.hidden ? "none" : "block"};
+  `}
+`
+
+const DropdownMenuItem = styled.li`
+  list-style: none;
+  cursor: pointer;
+  padding: 5px;
+  padding-left: 12px;
+  padding-right: 12px;
+  &:hover {
+    background-color: cornflowerblue;
+    color: white
+  }
+`;
+
 const ReportSidebar = ({
   size,
   sketchProperties,
@@ -130,18 +171,46 @@ const ReportSidebar = ({
   clientTitle,
   style,
   contextMenuItems,
-  onClose
+  onClose,
+  onContextMenuItemClick,
+  onMoveWindowClick,
+  offset,
+  onWindowClick,
+  foreground
 }: Props) => {
   size = size || ReportSidebarSize.Normal;
   const [project, setProject] = useState<GeoprocessingProject>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<string>();
-  const [ offset, setOffset] = useState(false);
+  const [ actionMenuState, setActionMenuState ] = useState<ActionMenuState>({
+    x: 0,
+    y: 0,
+    hidden: true
+  });
   let client: ReportClient | undefined;
   if (project) {
     client = project.clients.find(c => c.title === clientTitle);
   }
+
+  useEffect(() => {
+    document.addEventListener('click', onBodyClick);
+    return () => {
+      document.removeEventListener('click', onBodyClick);
+    }
+  });
+
+    // @ts-ignore
+    const onBodyClick = (e) => {
+      if (!actionMenuState.hidden) {
+        setActionMenuState({
+          ...actionMenuState,
+          hidden: true
+        })
+      }
+    }
+  
+
   useEffect(() => {
     let didCancel = false;
     setLoading(true);
@@ -181,16 +250,46 @@ const ReportSidebar = ({
       didCancel = true;
     };
   }, [geoprocessingProjectUri]);
+  const onActionsMenuClick = (e:React.MouseEvent) => {
+    setActionMenuState({
+      ...actionMenuState,
+      x: e.clientX,
+      y: e.clientY,
+      hidden: false
+    });
+    e.stopPropagation()
+    return;
+  }
+  const handleContextMenuItemClick = (item: ReportContextMenuItem) => {
+    item.onClick();
+    if (onContextMenuItemClick) {
+      onContextMenuItemClick(item);
+    }
+  }
   return (
-    <Container size={size} style={{...(style || {}), ...( offset ? { right: 499 } : {})}}>
+    <Container foreground={foreground} onClick={onWindowClick} offset={offset} style={style} size={size}>
       <Header>
         <h1 style={{fontWeight: 500, fontSize: 18}}>{sketchProperties.name || "Untitled Sketch"}</h1>
         <Actions>
-          <ActionButton onClick={onClose}><Close /></ActionButton>
-        <ActionButton><Cog /></ActionButton>
-        <ActionButton onClick={() => setOffset(!offset)}><MoveHorizontal /></ActionButton>
+          <ActionButton onClick={(e) => {
+            e.stopPropagation();
+            onClose && onClose();
+          }}><Close /></ActionButton>
+        <ActionButton onClick={onActionsMenuClick}><Cog /></ActionButton>
+        <ActionButton onClick={(e) => {
+          e.stopPropagation();
+          onMoveWindowClick && onMoveWindowClick();
+        }}><MoveHorizontal /></ActionButton>
         </Actions>
       </Header>
+      { ReactDOM.createPortal(<DropdownMenu {...actionMenuState}>
+        { (contextMenuItems || []).map((item) => <DropdownMenuItem key={item.label} onClick={(e) => {
+          e.stopPropagation();
+          handleContextMenuItemClick(item);
+        }}>
+          {item.label}
+        </DropdownMenuItem>)}
+      </DropdownMenu> , document.body)}
       <ContentContainer>
         {loading && <WanderingCubes />}
         {error && <div>{error}</div>}

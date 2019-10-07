@@ -11,6 +11,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(require("react"));
+const react_dom_1 = __importDefault(require("react-dom"));
 const styled_components_1 = __importStar(require("styled-components"));
 const ReportSidebarContents_1 = __importDefault(require("./ReportSidebarContents"));
 const styled_spinkit_1 = require("styled-spinkit");
@@ -31,17 +32,17 @@ const Container = styled_components_1.default.div `
     : styled_components_1.css `
           width: 800px;
         `}
-  border: 1px solid rgba(0,0,0,0.2);
+  /* border: 1px solid rgba(0,0,0,0.2); */
   border-radius: 3px 0px 0px 0px;
-  box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4px;
+  ${props => props.foreground ? styled_components_1.css `box-shadow: 0px -1px 15px #1fb2fb, 0px 0px 20px rgba(0, 0, 0, 0.6);` : styled_components_1.css `box-shadow: rgba(0, 0, 0, 0.6) 0px 0px 4px;`}
   margin-left: auto;
   margin-right: auto;
   position: absolute;
-  right: -1px;
+  ${props => props.offset ? styled_components_1.css `right: 499px;` : styled_components_1.css `right: -1px`}
   display: flex;
   flex-direction: column;
   bottom: -1px;
-  z-index: 10000;
+  ${props => props.foreground ? styled_components_1.css `z-index: 100001;` : styled_components_1.css `z-index: 10000;`}
   transition: right 250ms;
 `;
 const ContentContainer = styled_components_1.default.div `
@@ -96,17 +97,62 @@ const ActionButton = styled_components_1.default.button `
     background-color: #ccc;
   }
 `;
-const ReportSidebar = ({ size, sketchProperties, geometryUri, geoprocessingProjectUri, clientOptions, clientTitle, style, contextMenuItems, onClose }) => {
+const DropdownMenu = styled_components_1.default.ul `
+  width: 160px;
+  z-index: 100004;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+  padding: 4px 0px;
+  ${props => styled_components_1.css `
+    left: ${props.x - 160 - 14}px;
+    top: ${props.y + 6}px;
+    display: ${props.hidden ? "none" : "block"};
+  `}
+`;
+const DropdownMenuItem = styled_components_1.default.li `
+  list-style: none;
+  cursor: pointer;
+  padding: 5px;
+  padding-left: 12px;
+  padding-right: 12px;
+  &:hover {
+    background-color: cornflowerblue;
+    color: white
+  }
+`;
+const ReportSidebar = ({ size, sketchProperties, geometryUri, geoprocessingProjectUri, clientOptions, clientTitle, style, contextMenuItems, onClose, onContextMenuItemClick, onMoveWindowClick, offset, onWindowClick, foreground }) => {
     size = size || ReportSidebarSize.Normal;
     const [project, setProject] = react_1.useState();
     const [error, setError] = react_1.useState();
     const [loading, setLoading] = react_1.useState(true);
     const [tab, setTab] = react_1.useState();
-    const [offset, setOffset] = react_1.useState(false);
+    const [actionMenuState, setActionMenuState] = react_1.useState({
+        x: 0,
+        y: 0,
+        hidden: true
+    });
     let client;
     if (project) {
         client = project.clients.find(c => c.title === clientTitle);
     }
+    react_1.useEffect(() => {
+        document.addEventListener('click', onBodyClick);
+        return () => {
+            document.removeEventListener('click', onBodyClick);
+        };
+    });
+    // @ts-ignore
+    const onBodyClick = (e) => {
+        if (!actionMenuState.hidden) {
+            setActionMenuState({
+                ...actionMenuState,
+                hidden: true
+            });
+        }
+    };
     react_1.useEffect(() => {
         let didCancel = false;
         setLoading(true);
@@ -143,16 +189,42 @@ const ReportSidebar = ({ size, sketchProperties, geometryUri, geoprocessingProje
             didCancel = true;
         };
     }, [geoprocessingProjectUri]);
-    return (react_1.default.createElement(Container, { size: size, style: { ...(style || {}), ...(offset ? { right: 499 } : {}) } },
+    const onActionsMenuClick = (e) => {
+        setActionMenuState({
+            ...actionMenuState,
+            x: e.clientX,
+            y: e.clientY,
+            hidden: false
+        });
+        e.stopPropagation();
+        return;
+    };
+    const handleContextMenuItemClick = (item) => {
+        item.onClick();
+        if (onContextMenuItemClick) {
+            onContextMenuItemClick(item);
+        }
+    };
+    return (react_1.default.createElement(Container, { foreground: foreground, onClick: onWindowClick, offset: offset, style: style, size: size },
         react_1.default.createElement(Header, null,
             react_1.default.createElement("h1", { style: { fontWeight: 500, fontSize: 18 } }, sketchProperties.name || "Untitled Sketch"),
             react_1.default.createElement(Actions, null,
-                react_1.default.createElement(ActionButton, { onClick: onClose },
+                react_1.default.createElement(ActionButton, { onClick: (e) => {
+                        e.stopPropagation();
+                        onClose && onClose();
+                    } },
                     react_1.default.createElement(Close_1.Close, null)),
-                react_1.default.createElement(ActionButton, null,
+                react_1.default.createElement(ActionButton, { onClick: onActionsMenuClick },
                     react_1.default.createElement(Cog_1.Cog, null)),
-                react_1.default.createElement(ActionButton, { onClick: () => setOffset(!offset) },
+                react_1.default.createElement(ActionButton, { onClick: (e) => {
+                        e.stopPropagation();
+                        onMoveWindowClick && onMoveWindowClick();
+                    } },
                     react_1.default.createElement(MoveHorizontal_1.MoveHorizontal, null)))),
+        react_dom_1.default.createPortal(react_1.default.createElement(DropdownMenu, Object.assign({}, actionMenuState), (contextMenuItems || []).map((item) => react_1.default.createElement(DropdownMenuItem, { key: item.label, onClick: (e) => {
+                e.stopPropagation();
+                handleContextMenuItemClick(item);
+            } }, item.label))), document.body),
         react_1.default.createElement(ContentContainer, null,
             loading && react_1.default.createElement(styled_spinkit_1.WanderingCubes, null),
             error && react_1.default.createElement("div", null, error),

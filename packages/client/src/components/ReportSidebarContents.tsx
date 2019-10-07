@@ -73,7 +73,6 @@ const ReportSidebarContents = ({
         sketchProperties,
         geometryUri
       };
-      console.log('postMessage', msg);
       iframeEl.current.contentWindow.postMessage(msg, "*");  
     }
     return () => {

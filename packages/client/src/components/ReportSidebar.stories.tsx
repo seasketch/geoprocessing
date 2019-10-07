@@ -51,6 +51,22 @@ export const areaReport = () => (
     sketchProperties={sketch.properties}
     geometryUri={toDataURI(sketch)}
     geoprocessingProjectUri="https://peartedq8b.execute-api.us-west-2.amazonaws.com/production/" 
-    clientTitle="Example" 
+    clientTitle="Example"
+    contextMenuItems={[
+      {
+        label: "Action One",
+        onClick: () => {
+          console.log('clicked Action One')
+        },
+        preventHideOnClick: true
+      },
+      {
+        label: "Action Two",
+        onClick: () => {
+          console.log('clicked second action')
+        },
+        preventHideOnClick: true
+      }
+    ]}
   />
 );

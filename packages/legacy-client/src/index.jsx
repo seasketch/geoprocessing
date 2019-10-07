@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import ReportClient from "./ReportClient";
+import LegacyReportClient from "./LegacyReportClient";
 
 ReactDOM.render(
-  <ReportClient />,
+  <LegacyReportClient />,
   document.getElementById("nextReportsContainer")
 );

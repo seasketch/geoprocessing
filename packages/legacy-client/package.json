@@ -1,5 +1,5 @@
 {
-  "name": "@seasketch/legacy-client",
+  "name": "@seasketch/geoprocessing-legacy-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

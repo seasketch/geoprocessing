@@ -5,6 +5,7 @@
   "author": "Chad Burt <chad@underbluewaters.net>",
   "homepage": "https://seasketch.org",
   "license": "UNLICENSED",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/seasketch/geoprocessing.git"

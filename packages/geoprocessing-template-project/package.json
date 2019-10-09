@@ -18,7 +18,7 @@
     "build:client": "react-scripts build",
     "build:services": "tsc -p sls-tsconfig.json",
     "extract-client-settings": "bin/extract-client-settings",
-    "deploy": "npm run build:services && npm run build:client && AWS_PROFILE=serverless-admin sls deploy"
+    "deploy": "npm run build:services && npm run build:client && sls deploy"
   },
   "bugs": {
     "url": "https://github.com/seasketch/geoprocessing/issues"
@@ -45,7 +45,25 @@
   "devDependencies": {
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.4",
-    "@types/react": "^16.9.2"
+    "@types/react": "^16.9.2",
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.6.0",
+    "@storybook/preset-typescript": "^1.1.0",
+    "@storybook/react": "^5.2.3",
+    "@testing-library/jest-dom": "^4.1.0",
+    "@testing-library/react": "^9.1.4",
+    "aws-sdk": "^2.544.0",
+    "babel-jest": "^24.9.0",
+    "react-docgen-typescript-loader": "^3.3.0",
+    "react-dom": "^16.9.0",
+    "react-scripts": "^3.1.1",
+    "serverless": "^1.51.0",
+    "serverless-plugin-include-dependencies": "^3.2.1",
+    "serverless-s3-sync": "^1.8.0",
+    "ts-loader": "^6.2.0",
+    "typescript": "^3.6.2"  
   },
   "eslintConfig": {
     "extends": "react-app"

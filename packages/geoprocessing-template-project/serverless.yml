@@ -30,5 +30,6 @@ custom:
             requiredServices:
               - area
 package:
+  excludeDevDependencies: false
   include:
     - src/**/data/dist/*

@@ -64,7 +64,8 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "rollup": "rollup -c rollup.config.js"
+    "rollup": "rollup -c rollup.config.js",
+    "deploy": "npm run build && aws s3 sync build/ s3://next-reports-client"
   },
   "eslintConfig": {
     "extends": "react-app"

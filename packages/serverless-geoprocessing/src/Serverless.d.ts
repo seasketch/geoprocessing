@@ -50,6 +50,7 @@ declare namespace Serverless {
     exclude: string[];
     artifact?: string;
     individually?: boolean;
+    excludeDevDependencies?: boolean;
   }
 
   interface PluginManager {

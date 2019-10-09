@@ -14,5 +14,5 @@ export {
   ReportTab
 } from "./src/metadata";
 export { Sketch } from "./src/geometry";
-export { default as pluginInternals } from "./src/plugin/internals";
+export { default as pluginInternals } from "./src/pluginInternals";
 export { GeoprocessingTask, GeoprocessingTaskStatus } from "./src/tasks";

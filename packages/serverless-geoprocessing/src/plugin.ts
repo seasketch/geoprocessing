@@ -1,9 +1,9 @@
 /// <reference path='./Serverless.d.ts' />
 import path from "path";
-import fs from "fs";
-import { SeaSketchGeoprocessingSettings } from "../handlers";
+import fs from "fs-extra";
+import { SeaSketchGeoprocessingSettings } from "./handlers";
 import slugify from "slugify";
-import { GeoprocessingConfig } from "../metadata";
+import { GeoprocessingConfig } from "./metadata";
 
 const HANDLER_PATH = ".handlers";
 
@@ -68,6 +68,17 @@ const pathAndNameForHandler = (
   }
 };
 
+const copyDataDist = async (servicePath: string, outputPath: string) => {
+  const dataPath = path.join(servicePath, "data/dist");
+  if (fs.existsSync(dataPath)) {
+    const outputDataPath = path.join(outputPath, "data/");
+    if (!fs.existsSync(outputDataPath)) {
+      await fs.mkdir(outputDataPath);
+    }
+    await fs.copy(dataPath, path.join(outputDataPath, "dist"));
+  }
+};
+
 class SeaSketchSLSGeoprocessingPlugin {
   options: Serverless.Options;
   serverless: Serverless.Instance;
@@ -119,7 +130,7 @@ class SeaSketchSLSGeoprocessingPlugin {
     };
     const pkg = JSON.parse(fs.readFileSync("./package.json").toString());
     const pluginPkg = JSON.parse(
-      fs.readFileSync(`${__dirname}/../../../package.json`).toString()
+      fs.readFileSync(`${__dirname}/../../package.json`).toString()
     );
     this.serverless.service.provider.environment.GEOPROCESSING_CONFIG = JSON.stringify(
       {
@@ -189,7 +200,7 @@ class SeaSketchSLSGeoprocessingPlugin {
       this.serverless.service.custom = {};
     }
     this.serverless.service.custom.includeDependencies = {
-      always: ["src/services/**.js", "handlers/*.js"]
+      always: [".handlers/*.js", ".handlers/**/*.js"]
     };
     this.serverless.service.custom.s3Sync = [
       {
@@ -198,10 +209,20 @@ class SeaSketchSLSGeoprocessingPlugin {
         acl: "public-read"
       }
     ];
+    // exclude and include appropriate data directories
+    if (!this.serverless.service.package.exclude) {
+      this.serverless.service.package.exclude = [];
+    }
+    if (!this.serverless.service.package.include) {
+      this.serverless.service.package.include = [];
+    }
+    this.serverless.service.package.exclude.push("**");
+    this.serverless.service.package.include.push(".handlers/**/*");
+    this.serverless.service.package.excludeDevDependencies = false;
   }
 
   async addFunctionDefinitions() {
-    this.serverless.cli.log("Add function definitions.... handler");
+    this.serverless.cli.log("Add function definitions....");
     const custom = (this.serverless.service as any).custom || {};
     if ("geoprocessing" in custom) {
       const geoprocessingConfig = custom.geoprocessing;
@@ -212,15 +233,25 @@ class SeaSketchSLSGeoprocessingPlugin {
         }
         for (const serviceName in geoprocessingConfig.services) {
           const conf = geoprocessingConfig.services[serviceName];
-          const [handlerPath, funcName] = pathAndNameForHandler(
+          let [handlerPath, funcName] = pathAndNameForHandler(
             conf.handler,
             this.serverless.config.servicePath
           );
+          const serviceDir = conf.handler.split("services/")[1].split("/")[0];
+          handlerPath = [
+            ...handlerPath.split("/").slice(0, -1),
+            serviceDir,
+            ...handlerPath.split("/").slice(-1)
+          ].join("/");
           const handler = makeHandler(
             funcName,
             "./" +
               path.relative(
-                path.join(this.serverless.config.servicePath, handlerDir),
+                path.join(
+                  this.serverless.config.servicePath,
+                  handlerDir,
+                  serviceDir
+                ),
                 handlerPath
               ),
             {
@@ -232,9 +263,20 @@ class SeaSketchSLSGeoprocessingPlugin {
           );
           const newHandlerPath = path.join(
             handlerDir,
+            serviceDir,
             `${serviceName}-handler.js`
           );
           fs.writeFileSync(newHandlerPath, handler);
+          await copyDataDist(
+            conf.handler
+              .split("/")
+              .slice(0, -1)
+              .join("/"),
+            handlerPath
+              .split("/")
+              .slice(0, -1)
+              .join("/")
+          );
           this.serverless.service.functions[serviceName] = {
             ...conf,
             handler: newHandlerPath.replace(".js", ".handler"),

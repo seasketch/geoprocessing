@@ -3,7 +3,7 @@
     "description": "Zone area",
     "tabs": {
       "area": {
-        "label": "Area",
+        "title": "Area",
         "handler": "src/client/area/AreaTab",
         "requiredServices": [
           "area"

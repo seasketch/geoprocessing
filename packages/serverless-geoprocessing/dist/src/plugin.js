@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path='./Serverless.d.ts' />
 const path_1 = __importDefault(require("path"));
-const fs_1 = __importDefault(require("fs"));
+const fs_extra_1 = __importDefault(require("fs-extra"));
 const slugify_1 = __importDefault(require("slugify"));
 const HANDLER_PATH = ".handlers";
 const makeHandler = (name, path, settings) => {
@@ -57,6 +57,16 @@ const pathAndNameForHandler = (handlerPath, servicePath) => {
         return [path_1.default.join(servicePath, handler), null];
     }
 };
+const copyDataDist = async (servicePath, outputPath) => {
+    const dataPath = path_1.default.join(servicePath, "data/dist");
+    if (fs_extra_1.default.existsSync(dataPath)) {
+        const outputDataPath = path_1.default.join(outputPath, "data/");
+        if (!fs_extra_1.default.existsSync(outputDataPath)) {
+            await fs_extra_1.default.mkdir(outputDataPath);
+        }
+        await fs_extra_1.default.copy(dataPath, path_1.default.join(outputDataPath, "dist"));
+    }
+};
 class SeaSketchSLSGeoprocessingPlugin {
     constructor(serverless, options) {
         this.options = options;
@@ -96,8 +106,8 @@ class SeaSketchSLSGeoprocessingPlugin {
                 ]
             ]
         };
-        const pkg = JSON.parse(fs_1.default.readFileSync("./package.json").toString());
-        const pluginPkg = JSON.parse(fs_1.default.readFileSync(`${__dirname}/../../../package.json`).toString());
+        const pkg = JSON.parse(fs_extra_1.default.readFileSync("./package.json").toString());
+        const pluginPkg = JSON.parse(fs_extra_1.default.readFileSync(`${__dirname}/../../package.json`).toString());
         this.serverless.service.provider.environment.GEOPROCESSING_CONFIG = JSON.stringify({
             ...this.serverless.service.custom.geoprocessing,
             publishedDate: new Date().toISOString(),
@@ -190,8 +200,8 @@ class SeaSketchSLSGeoprocessingPlugin {
             const geoprocessingConfig = custom.geoprocessing;
             if ("services" in geoprocessingConfig) {
                 const handlerDir = HANDLER_PATH;
-                if (!fs_1.default.existsSync(handlerDir)) {
-                    fs_1.default.mkdirSync(handlerDir);
+                if (!fs_extra_1.default.existsSync(handlerDir)) {
+                    fs_extra_1.default.mkdirSync(handlerDir);
                 }
                 for (const serviceName in geoprocessingConfig.services) {
                     const conf = geoprocessingConfig.services[serviceName];
@@ -202,7 +212,6 @@ class SeaSketchSLSGeoprocessingPlugin {
                         serviceDir,
                         ...handlerPath.split("/").slice(-1)
                     ].join("/");
-                    console.log("handlerPath", handlerPath);
                     const handler = makeHandler(funcName, "./" +
                         path_1.default.relative(path_1.default.join(this.serverless.config.servicePath, handlerDir, serviceDir), handlerPath), {
                         executionMode: conf.executionMode || "sync",
@@ -211,7 +220,14 @@ class SeaSketchSLSGeoprocessingPlugin {
                         tasksTable: this.tasksTableName
                     });
                     const newHandlerPath = path_1.default.join(handlerDir, serviceDir, `${serviceName}-handler.js`);
-                    fs_1.default.writeFileSync(newHandlerPath, handler);
+                    fs_extra_1.default.writeFileSync(newHandlerPath, handler);
+                    await copyDataDist(conf.handler
+                        .split("/")
+                        .slice(0, -1)
+                        .join("/"), handlerPath
+                        .split("/")
+                        .slice(0, -1)
+                        .join("/"));
                     this.serverless.service.functions[serviceName] = {
                         ...conf,
                         handler: newHandlerPath.replace(".js", ".handler"),
@@ -226,7 +242,7 @@ class SeaSketchSLSGeoprocessingPlugin {
                     };
                 }
                 const metadataHandlerPath = ".handlers/metadata.js";
-                fs_1.default.writeFileSync(metadataHandlerPath, `
+                fs_extra_1.default.writeFileSync(metadataHandlerPath, `
           const { pluginInternals } = require("@seasketch/serverless-geoprocessing");
           module.exports = {
             handler: pluginInternals.metadataHandler

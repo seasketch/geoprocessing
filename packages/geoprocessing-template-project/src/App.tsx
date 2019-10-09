@@ -14,7 +14,7 @@ interface ClientConfig {
 }
 
 interface ClientTabConfig {
-  label: string;
+  title: string;
   handler: string;
   requiredServices: Array<string>;
 }

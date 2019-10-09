@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/geoprocessing-template-project",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Template project used to implement the SeaSketch geoprocessing and reporting framework",
   "author": "Chad Burt <chad@underbluewaters.net>",
   "homepage": "https://seasketch.org",
@@ -28,8 +28,8 @@
     "@babel/preset-env": "^7.6.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.6.0",
-    "@seasketch/geoprocessing-client": "^0.1.0",
-    "@seasketch/serverless-geoprocessing": "^0.1.0",
+    "@seasketch/geoprocessing-client": "^0.2.0",
+    "@seasketch/serverless-geoprocessing": "^0.2.0",
     "@testing-library/jest-dom": "^4.1.0",
     "@testing-library/react": "^9.1.4",
     "@turf/area": "^6.0.1",
@@ -43,9 +43,6 @@
     "typescript": "^3.6.2"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.4",
-    "@types/react": "^16.9.2",
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
     "@babel/preset-react": "^7.0.0",
@@ -54,6 +51,9 @@
     "@storybook/react": "^5.2.3",
     "@testing-library/jest-dom": "^4.1.0",
     "@testing-library/react": "^9.1.4",
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.4",
+    "@types/react": "^16.9.2",
     "aws-sdk": "^2.544.0",
     "babel-jest": "^24.9.0",
     "react-docgen-typescript-loader": "^3.3.0",
@@ -63,7 +63,7 @@
     "serverless-plugin-include-dependencies": "^3.2.1",
     "serverless-s3-sync": "^1.8.0",
     "ts-loader": "^6.2.0",
-    "typescript": "^3.6.2"  
+    "typescript": "^3.6.2"
   },
   "eslintConfig": {
     "extends": "react-app"

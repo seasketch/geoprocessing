@@ -16,7 +16,7 @@ const styled_components_1 = __importStar(require("styled-components"));
 const styled_spinkit_1 = require("styled-spinkit");
 exports.SeaSketchReportingMessageEventType = "SeaSketchReportingMessageEventType";
 const Sandbox = styled_components_1.default.iframe `
-  width: 100%;
+  flex: 1;
   overflow-y: scroll;
   margin: 0;
   padding: 0;

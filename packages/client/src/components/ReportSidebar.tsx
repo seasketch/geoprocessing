@@ -80,6 +80,8 @@ const ContentContainer = styled.div`
   box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.12);
   flex: 1;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Header = styled.div`

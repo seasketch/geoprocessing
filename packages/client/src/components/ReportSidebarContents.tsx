@@ -26,7 +26,7 @@ export interface SeaSketchReportingMessageEvent {
 }
 
 const Sandbox = styled.iframe<{ hide: boolean }>`
-  width: 100%;
+  flex: 1;
   overflow-y: scroll;
   margin: 0;
   padding: 0;

@@ -1,0 +1,19 @@
+{
+  "name": "example-reports",
+  "version": "1.0.0",
+  "description": "Example project for testing @seaketch/geoprocessing framework",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "geoprocessing test",
+    "create:function": "geoprocessing create:function",
+    "create:client": "geoprocessing create:client"
+  },
+  "keywords": [
+    "@seasketch/geoprocessing"
+  ],
+  "author": "Chad Burt",
+  "license": "MIT",
+  "dependencies": {
+    "@seasketch/geoprocessing": "^1.0.0"
+  }
+}

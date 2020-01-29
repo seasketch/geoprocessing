@@ -13,7 +13,7 @@ Workplan
     * verify lerna by running tests
       * x create some example sketches
       * x get a reasonable handler and test cases working
-    * make createExampleProject a built-in bin method
+    * x make createExampleProject a built-in bin method
     * cleanup bin/ folder
     * npx @seasketch/geoprocessing init
       * test
@@ -21,6 +21,8 @@ Workplan
       * create report
       * create tab
       * rename handlers -> functions across the board
+    * test cases for example-project creation
+    * data folder README.md
   * setup webpack/babel/rollup to build and deploy scripts using cdk
   * get storybook running with example sketches and components
   * get full client build working

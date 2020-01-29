@@ -14,82 +14,84 @@ inquirer.registerPrompt("autocomplete", autocomplete);
 const licenseDefaults = ["MIT", "UNLICENSED", "BSD-3-Clause", "APACHE-2.0"];
 const allLicenseOptions = [...licenses, "UNLICENSED"];
 
-if (require.main === module) {
-  (async () => {
-    const packageAnswers = await inquirer.prompt([
-      /* Pass your questions in here */
-      {
-        type: "input",
-        name: "name",
-        message: "Name for your project. e.g. bermuda-reports",
-        validate: value => {
-          if (/^[a-z\-]+$/.test(value)) {
-            return true;
-          } else {
-            return "Input must be lowercase and contain no spaces";
-          }
-        }
-      },
-      {
-        type: "input",
-        name: "description",
-        message: "Please provide a short description of this project"
-      },
-      {
-        type: "input",
-        name: "repositoryUrl",
-        message: "Source code repository location",
-        validate: value =>
-          value === "" ||
-          value === null ||
-          /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm.test(
-            value
-          )
-            ? true
-            : "Must be a valid url"
-      },
-      {
-        type: "input",
-        name: "author",
-        message: "Your name",
-        default: defaultName,
-        validate: value =>
-          /\w+/.test(value)
-            ? true
-            : "Please provide a name for use in your package.json file"
-      },
-      {
-        type: "input",
-        name: "email",
-        message: "Your email",
-        default: defaultEmail,
-        validate: value =>
-          /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/g.test(value)
-            ? true
-            : "Please provide a valid email for use in your package.json file"
-      },
-      {
-        type: "input",
-        name: "organization",
-        message: "Organization name (optional)"
-      },
-      {
-        type: "autocomplete",
-        name: "license",
-        message: "Choose a license.",
-        default: "MIT",
-        source: async (answersSoFar: any, value: string) => {
-          if (value) {
-            return fuzzy.filter(value, allLicenseOptions).map(v => v.original);
-          } else {
-            return licenseDefaults;
-          }
+async function init() {
+  const packageAnswers = await inquirer.prompt([
+    /* Pass your questions in here */
+    {
+      type: "input",
+      name: "name",
+      message: "Name for your project. e.g. bermuda-reports",
+      validate: value => {
+        if (/^[a-z\-]+$/.test(value)) {
+          return true;
+        } else {
+          return "Input must be lowercase and contain no spaces";
         }
       }
-    ]);
+    },
+    {
+      type: "input",
+      name: "description",
+      message: "Please provide a short description of this project"
+    },
+    {
+      type: "input",
+      name: "repositoryUrl",
+      message: "Source code repository location",
+      validate: value =>
+        value === "" ||
+        value === null ||
+        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm.test(
+          value
+        )
+          ? true
+          : "Must be a valid url"
+    },
+    {
+      type: "input",
+      name: "author",
+      message: "Your name",
+      default: defaultName,
+      validate: value =>
+        /\w+/.test(value)
+          ? true
+          : "Please provide a name for use in your package.json file"
+    },
+    {
+      type: "input",
+      name: "email",
+      message: "Your email",
+      default: defaultEmail,
+      validate: value =>
+        /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/g.test(value)
+          ? true
+          : "Please provide a valid email for use in your package.json file"
+    },
+    {
+      type: "input",
+      name: "organization",
+      message: "Organization name (optional)"
+    },
+    {
+      type: "autocomplete",
+      name: "license",
+      message: "Choose a license.",
+      default: "MIT",
+      source: async (answersSoFar: any, value: string) => {
+        if (value) {
+          return fuzzy.filter(value, allLicenseOptions).map(v => v.original);
+        } else {
+          return licenseDefaults;
+        }
+      }
+    }
+  ]);
 
-    await makeProject(packageAnswers);
-  })();
+  await makeProject(packageAnswers);
+}
+
+if (require.main === module) {
+  init();
 }
 
 interface Package {
@@ -200,10 +202,9 @@ async function makeProject(
     console.log(`\nNext Steps:
   * Look at README.md for some tips on working with this project
   * ${chalk.yellow(
-    `npm run create_gp`
-  )} to create your first geoprocessing script
-  * ${chalk.yellow(`npm run create_pre`)} to create a preprocessing script
-  * ${chalk.yellow(`npm run create_report`)} to add a new report client
+    `npm run create:function`
+  )} to create your first geoprocessing or preprocessing function
+  * ${chalk.yellow(`npm run create:client`)} to add a new report client
 `);
     console.log(`Tips:
   * Create examples in SeaSketch, then export them as GeoJSON and save them in ./examples/sketches for use in test cases and when designing reports
@@ -213,3 +214,4 @@ async function makeProject(
 }
 
 export default makeProject;
+export { init };

@@ -3,7 +3,7 @@ import { makeGeoprocessingHandler } from "./initGeoprocessingHandler";
 
 import fs from "fs-extra";
 
-const PATH = `packages`;
+const PATH = `packages/example-project`;
 
 (async () => {
   const inLernaProjectRoot = await fs.pathExists("./lerna.json");
@@ -26,8 +26,10 @@ const PATH = `packages`;
       organization: "SeaSketch",
       repositoryUrl: "https://github.com/seasketch/geoprocessing"
     },
-    true,
-    PATH
+    false,
+    PATH.split("/")
+      .slice(0, -1)
+      .join("/")
   );
   await makeGeoprocessingHandler(
     {

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
@@ -6,59 +5,59 @@ import chalk from "chalk";
 import { ExecutionMode } from "../src/types";
 import camelcase from "camelcase";
 
-if (require.main === module) {
-  (async () => {
-    const answers = await inquirer.prompt([
-      {
-        type: "input",
-        name: "title",
-        message: "Title for this function, in camelCase",
-        validate: value =>
-          /^\w+$/.test(value)
-            ? true
-            : "Please use only alphabetical characters",
-        transformer: value => camelcase(value)
-      },
-      {
-        type: "input",
-        name: "description",
-        message: "Describe what this function does"
-      },
-      {
-        type: "confirm",
-        name: "typescript",
-        message: "Use typescript? (Recommended)"
-      },
-      {
-        type: "confirm",
-        name: "docker",
-        default: false,
-        message: "Is this a Dockerfile-based analysis?"
-      },
-      {
-        type: "list",
-        name: "executionMode",
-        message: "Choose an execution mode",
-        default: 0,
-        when: answers => (answers.docker ? false : true),
-        choices: [
-          {
-            value: "sync",
-            name: "Sync - Best for quick analyses (< 2s)"
-          },
-          {
-            value: "async",
-            name: "Async - Better for long-running processes"
-          }
-        ]
-      }
-    ]);
-    if (answers.docker) {
-      answers.executionMode = "async";
+async function createFunction() {
+  const answers = await inquirer.prompt([
+    {
+      type: "input",
+      name: "title",
+      message: "Title for this function, in camelCase",
+      validate: value =>
+        /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
+      transformer: value => camelcase(value)
+    },
+    {
+      type: "input",
+      name: "description",
+      message: "Describe what this function does"
+    },
+    {
+      type: "confirm",
+      name: "typescript",
+      message: "Use typescript? (Recommended)"
+    },
+    {
+      type: "confirm",
+      name: "docker",
+      default: false,
+      message: "Is this a Dockerfile-based analysis?"
+    },
+    {
+      type: "list",
+      name: "executionMode",
+      message: "Choose an execution mode",
+      default: 0,
+      when: answers => (answers.docker ? false : true),
+      choices: [
+        {
+          value: "sync",
+          name: "Sync - Best for quick analyses (< 2s)"
+        },
+        {
+          value: "async",
+          name: "Async - Better for long-running processes"
+        }
+      ]
     }
-    answers.title = camelcase(answers.title);
-    makeGeoprocessingHandler(answers, true, "");
-  })();
+  ]);
+  if (answers.docker) {
+    answers.executionMode = "async";
+  }
+  answers.title = camelcase(answers.title);
+  makeGeoprocessingHandler(answers, true, "");
+}
+
+if (require.main === module) {
+  createFunction();
 }
 
 export async function makeGeoprocessingHandler(
@@ -77,11 +76,11 @@ export async function makeGeoprocessingHandler(
     : { start: () => false, stop: () => false, succeed: () => false };
   spinner.start(`creating handler from templates`);
   // copy geoprocessing function template
-  const path = basePath + "/src/handlers";
+  const path = basePath + "src/functions";
   // rename metadata in function definition
   const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../templates/geoprocessing`
-    : `${__dirname}/../templates/geoprocessing`;
+    ? `${__dirname}/../../templates/functions`
+    : `${__dirname}/../templates/functions`;
   const handlerCode = await fs.readFile(`${templatePath}/area.ts`);
   const testCode = await fs.readFile(`${templatePath}/area.test.ts`);
   await fs.writeFile(
@@ -99,7 +98,10 @@ export async function makeGeoprocessingHandler(
   );
   await fs.writeFile(
     `${path}/${options.title}.test.ts`,
-    testCode.toString().replace(/calculateArea/g, options.title)
+    testCode
+      .toString()
+      .replace(/calculateArea/g, options.title)
+      .replace("./area", `./${options.title}`)
   );
   // TODO: make typescript optional
   spinner.succeed(`created ${options.title} function in ${path}/`);
@@ -112,6 +114,8 @@ export async function makeGeoprocessingHandler(
   `);
   }
 }
+
+export { createFunction };
 
 interface GPOptions {
   title: string;

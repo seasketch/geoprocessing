@@ -1,9 +1,22 @@
-import { FeatureCollection, GeoJsonProperties } from "geojson";
+import { FeatureCollection, GeoJsonProperties, Feature } from "geojson";
 
 export type ExecutionMode = "async" | "sync";
 
+export interface SketchProperties {
+  /** Name specified by the author of the sketch */
+  name: string;
+  // ISO 8601 date/time string
+  updatedAt: string;
+  sketchClassId: string;
+  [name: string]: any;
+}
+
+export interface Sketch extends Feature {
+  properties: SketchProperties;
+}
+
 export interface SketchCollection extends FeatureCollection {
-  properties: GeoJsonProperties;
+  properties: SketchProperties;
 }
 
 export interface GeoprocessingHandlerOptions {
@@ -22,7 +35,7 @@ export interface GeoprocessingHandlerOptions {
   /** Specify the ids of any Sketch Class form fields that must be provided in
    * order to run the function
    */
-  usesProperties: string[];
+  requiresProperties: string[];
   /** Whether to rate limit beyond basic DDoS protection */
   rateLimit?: boolean;
   /** `daily` or `monthly` */

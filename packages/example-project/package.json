@@ -1,0 +1,28 @@
+{
+  "name": "example-project",
+  "version": "1.0.0",
+  "description": "Example project to test geoprocessing project init scripts",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "geoprocessing test",
+    "create:function": "geoprocessing create:function",
+    "create:client": "geoprocessing create:client"
+  },
+  "keywords": [
+    "@seasketch/geoprocessing"
+  ],
+  "author": "Chad Burt",
+  "license": "MIT",
+  "dependencies": {
+    "@seasketch/geoprocessing": "^1.0.0"
+  },
+  "repositoryUrl": "https://github.com/seasketch/geoprocessing",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seasketch/geoprocessing.git"
+  },
+  "homepage": "https://github.com/seasketch/geoprocessing#readme",
+  "bugs": {
+    "url": "https://github.com/seasketch/geoprocessing/issues"
+  }
+}

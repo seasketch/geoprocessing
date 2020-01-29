@@ -1,0 +1,10 @@
+{
+  "name": "root",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  },
+  "scripts": {
+    "create_example": "node packages/geoprocessing/dist/bin/createExampleProject.js"
+  }
+}

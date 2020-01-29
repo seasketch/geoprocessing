@@ -11,8 +11,6 @@
   "keywords": [
     "@seasketch/geoprocessing"
   ],
-  "author": "Chad Burt",
-  "license": "MIT",
   "dependencies": {
     "@seasketch/geoprocessing": "^1.0.0"
   }

@@ -11,18 +11,18 @@
   "keywords": [
     "@seasketch/geoprocessing"
   ],
-  "author": "Chad Burt",
-  "license": "MIT",
   "dependencies": {
     "@seasketch/geoprocessing": "^1.0.0"
   },
-  "repositoryUrl": "https://github.com/seasketch/geoprocessing",
+  "author": "Chad Burt",
+  "license": "BSD-3-Clause",
+  "repositoryUrl": "https://github.com/seasketch/example-project",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/seasketch/geoprocessing.git"
+    "url": "git+https://github.com/seasketch/example-project.git"
   },
-  "homepage": "https://github.com/seasketch/geoprocessing#readme",
+  "homepage": "https://github.com/seasketch/example-project#readme",
   "bugs": {
-    "url": "https://github.com/seasketch/geoprocessing/issues"
+    "url": "https://github.com/seasketch/example-project/issues"
   }
 }

@@ -85,7 +85,7 @@ async function makeGeoprocessingHandler(options, interactive = true, basePath = 
         .replace(/calculateArea/g, options.title)
         .replace(/CalculateArea/g, options.title.slice(0, 1).toUpperCase() + options.title.slice(1))
         .replace(/functionName/g, options.title)
-        .replace(`"sync"`, `"${options.executionMode}"`)
+        .replace(`"async"`, `"${options.executionMode}"`)
         .replace("Function description", options.description));
     await fs_extra_1.default.writeFile(`${path}/${options.title}.test.ts`, testCode
         .toString()

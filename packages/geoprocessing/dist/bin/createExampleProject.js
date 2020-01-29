@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const init_1 = __importDefault(require("./init"));
-const initGeoprocessingHandler_1 = require("./initGeoprocessingHandler");
+const createFunction_1 = require("./createFunction");
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const PATH = `packages/example-project`;
 (async () => {
@@ -20,20 +20,21 @@ const PATH = `packages/example-project`;
         name: "example-project",
         description: "Example project to test geoprocessing project init scripts",
         author: "Chad Burt",
-        email: "chad@underbluewaters.net",
-        license: "MIT",
+        email: "support@seasketch.org",
+        license: "BSD-3-Clause",
         organization: "SeaSketch",
-        repositoryUrl: "https://github.com/seasketch/geoprocessing"
+        repositoryUrl: "https://github.com/seasketch/example-project"
     }, false, PATH.split("/")
         .slice(0, -1)
         .join("/"));
-    await initGeoprocessingHandler_1.makeGeoprocessingHandler({
+    await createFunction_1.makeGeoprocessingHandler({
         title: "area",
         typescript: true,
-        description: "Calculates the area of the given sketch",
+        description: "Produces the area of the given sketch",
         docker: false,
         executionMode: "sync"
-    }, false, PATH);
+    }, false, PATH + "/");
     await fs_extra_1.default.copyFile(`${__dirname}/../../templates/exampleSketch.json`, PATH + "/examples/sketches/sketch.json");
+    await fs_extra_1.default.copyFile(`${__dirname}/../../templates/exampleProject.test.ts`, PATH + "/src/exampleProject.test.ts");
 })();
 //# sourceMappingURL=createExampleProject.js.map

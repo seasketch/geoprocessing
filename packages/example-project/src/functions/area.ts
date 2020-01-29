@@ -20,7 +20,7 @@ async function area(
 
 export default new GeoprocessingHandler(area, {
   title: "area",
-  description: "Calculates the area of the given sketch",
+  description: "Produces the area of the given sketch",
   timeout: 2, // seconds
   memory: 256, // megabytes
   executionMode: "sync",

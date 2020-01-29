@@ -1,5 +1,5 @@
 FROM osgeo/gdal:ubuntu-full-latest
-LABEL maintainer="Chad Burt <chad@underbluewaters.net>"
+LABEL maintainer="Chad Burt <support@seasketch.org>"
 ENV TZ=America/Los_Angeles
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update

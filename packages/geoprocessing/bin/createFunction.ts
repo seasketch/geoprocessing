@@ -93,7 +93,7 @@ export async function makeGeoprocessingHandler(
         options.title.slice(0, 1).toUpperCase() + options.title.slice(1)
       )
       .replace(/functionName/g, options.title)
-      .replace(`"sync"`, `"${options.executionMode}"`)
+      .replace(`"async"`, `"${options.executionMode}"`)
       .replace("Function description", options.description)
   );
   await fs.writeFile(

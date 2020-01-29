@@ -1,5 +1,5 @@
 import makeProject from "./init";
-import { makeGeoprocessingHandler } from "./initGeoprocessingHandler";
+import { makeGeoprocessingHandler } from "./createFunction";
 
 import fs from "fs-extra";
 
@@ -21,10 +21,10 @@ const PATH = `packages/example-project`;
       name: "example-project",
       description: "Example project to test geoprocessing project init scripts",
       author: "Chad Burt",
-      email: "chad@underbluewaters.net",
-      license: "MIT",
+      email: "support@seasketch.org",
+      license: "BSD-3-Clause",
       organization: "SeaSketch",
-      repositoryUrl: "https://github.com/seasketch/geoprocessing"
+      repositoryUrl: "https://github.com/seasketch/example-project"
     },
     false,
     PATH.split("/")
@@ -35,15 +35,19 @@ const PATH = `packages/example-project`;
     {
       title: "area",
       typescript: true,
-      description: "Calculates the area of the given sketch",
+      description: "Produces the area of the given sketch",
       docker: false,
       executionMode: "sync"
     },
     false,
-    PATH
+    PATH + "/"
   );
   await fs.copyFile(
     `${__dirname}/../../templates/exampleSketch.json`,
     PATH + "/examples/sketches/sketch.json"
+  );
+  await fs.copyFile(
+    `${__dirname}/../../templates/exampleProject.test.ts`,
+    PATH + "/src/exampleProject.test.ts"
   );
 })();

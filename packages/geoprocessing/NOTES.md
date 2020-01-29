@@ -24,6 +24,7 @@ Workplan
     * test cases for example-project creation
     * data folder README.md
   * setup webpack/babel/rollup to build and deploy scripts using cdk
+  * add support for preprocessing scripts
   * get storybook running with example sketches and components
   * get full client build working
   * monitor json includes for file size issues

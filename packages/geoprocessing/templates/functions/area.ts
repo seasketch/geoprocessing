@@ -23,7 +23,7 @@ export default new GeoprocessingHandler(calculateArea, {
   description: "Function description",
   timeout: 2, // seconds
   memory: 256, // megabytes
-  executionMode: "sync",
+  executionMode: "async",
   // Specify any Sketch Class form attributes that are required
   requiresProperties: []
 });

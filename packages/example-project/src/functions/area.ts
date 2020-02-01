@@ -10,9 +10,7 @@ export interface AreaResults {
   area: number;
 }
 
-async function area(
-  sketch: Sketch | SketchCollection
-): Promise<AreaResults> {
+async function area(sketch: Sketch | SketchCollection): Promise<AreaResults> {
   return {
     area: sketchArea(sketch)
   };

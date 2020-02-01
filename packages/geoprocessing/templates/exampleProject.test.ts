@@ -18,6 +18,7 @@ describe("Project metadata settings", () => {
     );
     expect(geoprocessingJson.author).toBe("Chad Burt <support@seasketch.org>");
     expect(geoprocessingJson.organization).toBe("SeaSketch");
+    expect(geoprocessingJson.region).toBe("us-east-1");
   });
 
   test("correct files copied over", () => {
@@ -43,9 +44,4 @@ describe("Project metadata settings", () => {
   });
 });
 
-// check that functions were created correctly
-//   * filenames are correct
-//   * module names are correct
-//   * metadata in module is correct
-// check that sketch was copied over
 // TODO: check that typescript choice was interpreted correctly

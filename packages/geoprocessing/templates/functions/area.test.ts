@@ -13,9 +13,9 @@ describe("Basic smoke tests", () => {
   test("tests run against all examples", async () => {
     const examples = await getExampleSketches();
     for (const example of examples) {
-      const result = calculateArea(example);
+      const result = await calculateArea(example);
       expect(result).toBeTruthy();
-      writeResultOutput(result, "calc", example.properties.name);
+      writeResultOutput(result, "calculateArea", example.properties.name);
     }
   });
 });

@@ -24,7 +24,8 @@ const PATH = `packages/example-project`;
       email: "support@seasketch.org",
       license: "BSD-3-Clause",
       organization: "SeaSketch",
-      repositoryUrl: "https://github.com/seasketch/example-project"
+      repositoryUrl: "https://github.com/seasketch/example-project",
+      region: "us-east-1"
     },
     false,
     PATH.split("/")

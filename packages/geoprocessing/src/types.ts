@@ -65,3 +65,93 @@ export interface GeoprocessingServiceMetadata
   endpoint: string;
   type: GeoprocessingServiceType;
 }
+
+export interface GeoprocessingProject {
+  uri: string;
+  apiVersion: string; // semver
+  geoprocessingServices: GeoprocessingService[];
+  preprocessingServices: PreprocessingService[];
+  clients: ReportClient[];
+  feebackClients: DigitizingFeedbackClient[];
+  // Labelling and attribution information may be displayed
+  // in the SeaSketch admin interface
+  title: string;
+  author: string;
+  organization?: string;
+  relatedUri?: string; // May link to github or an org uri
+  sourceUri?: string; // github repo or similar
+  published: string; //  ISO 8601 date
+}
+
+interface GeoprocessingService {
+  title: string;
+  endpoint: string;
+  type: GeoprocessingServiceType;
+  executionMode: ExecutionMode;
+  usesAttributes: string[];
+  medianDuration: number; //ms
+  medianCost: number; //usd
+  timeout: number; //ms
+  rateLimited: boolean;
+  rateLimitPeriod: RateLimitPeriod;
+  rateLimit: number;
+  rateLimitConsumed: number;
+  // if set, requests must include a token with an allowed issuer (iss)
+  restrictedAccess: boolean;
+  // e.g. [sensitive-project.seasketch.org]
+  issAllowList?: Array<string>;
+  // for low-latency clientside processing and offline use
+  // v2 or later
+  clientSideBundle?: ClientCode;
+}
+
+interface ClientCode {
+  uri: string; // public bundle location
+  offlineSupported: boolean;
+}
+
+interface PreprocessingService {
+  title: string;
+  endpoint: string;
+  usesAttributes: string[];
+  timeout: number; //ms
+  // if set, requests must include a token with an allowed issuer (iss)
+  restrictedAccess: boolean;
+  // e.g. [sensitive-project.seasketch.org]
+  issAllowList?: Array<string>;
+  // for low-latency clientside processing and offline use
+  // v2 or later
+  clientSideBundle?: ClientCode;
+}
+
+interface ReportClient {
+  title: string;
+  uri: string;
+  bundleSize: number; //bytes
+  apiVersion: string;
+  tabs: ReportTab[];
+}
+
+interface ReportTab {
+  title: string;
+}
+
+type ExecutionMode = "async" | "sync";
+
+interface DigitizingFeedbackClient {
+  title: string;
+  uri: string;
+  bundleSize: number; //bytes
+  apiVersion: string;
+  offlineSupport: boolean;
+}
+
+export interface GeoprocessingJsonConfig {
+  title: string;
+  author: string;
+  region: string;
+  organization?: string;
+  relatedUri?: string;
+  sourceUri?: string;
+  published: string;
+}

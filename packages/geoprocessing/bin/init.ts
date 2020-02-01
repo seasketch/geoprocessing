@@ -9,6 +9,11 @@ import autocomplete from "inquirer-autocomplete-prompt";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
+//@ts-ignore
+import awsRegions from "aws-regions";
+
+//@ts-ignore
+const regions = awsRegions.list({ public: true }).map(v => v.code);
 
 inquirer.registerPrompt("autocomplete", autocomplete);
 const licenseDefaults = ["MIT", "UNLICENSED", "BSD-3-Clause", "APACHE-2.0"];
@@ -84,6 +89,19 @@ async function init() {
           return licenseDefaults;
         }
       }
+    },
+    {
+      type: "autocomplete",
+      name: "region",
+      message: "What AWS region would you like to deploy functions in?",
+      default: "us-west-1",
+      source: async (answersSoFar: any, value: string) => {
+        if (value) {
+          return fuzzy.filter(value, regions).map(v => v);
+        } else {
+          return regions;
+        }
+      }
     }
   ]);
 
@@ -117,6 +135,7 @@ interface ProjectMetadataOptions {
   organization?: string;
   license: string;
   repositoryUrl: string;
+  region: string;
 }
 
 async function makeProject(
@@ -124,7 +143,7 @@ async function makeProject(
   interactive = true,
   basePath = ""
 ) {
-  const { organization, email, ...packageJSONOptions } = metadata;
+  const { organization, region, email, ...packageJSONOptions } = metadata;
   const spinner = interactive
     ? ora("Creating new project").start()
     : { start: () => false, stop: () => false, succeed: () => false };
@@ -169,7 +188,8 @@ async function makeProject(
     JSON.stringify(
       {
         author,
-        organization: organization || ""
+        organization: organization || "",
+        region
       },
       null,
       "  "

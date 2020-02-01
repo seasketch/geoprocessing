@@ -15,15 +15,18 @@ Workplan
       * x get a reasonable handler and test cases working
     * x make createExampleProject a built-in bin method
     * cleanup bin/ folder
-    * npx @seasketch/geoprocessing init
-      * test
-      * create function
-      * create report
-      * create tab
-      * rename handlers -> functions across the board
-    * test cases for example-project creation
-    * data folder README.md
+    * x npx @seasketch/geoprocessing init
+      * x test
+      * x create:function
+      * x create:client
+      * x rename handlers -> functions across the board
+    * x test cases for example-project creation
+    * x data folder README.md
   * setup webpack/babel/rollup to build and deploy scripts using cdk
+    * make basic metadata services
+    * rollup into appropriate js files
+    * deploy using cdk
+    * determine how to do the same with gp functions, probably using a plugin to wrap handlers
   * add support for preprocessing scripts
   * get storybook running with example sketches and components
   * get full client build working

@@ -18,7 +18,7 @@ describe("Project metadata settings", () => {
     );
     expect(geoprocessingJson.author).toBe("Chad Burt <support@seasketch.org>");
     expect(geoprocessingJson.organization).toBe("SeaSketch");
-    expect(geoprocessingJson.region).toBe("us-east-1");
+    expect(geoprocessingJson.region).toBe("us-west-1");
   });
 
   test("correct files copied over", () => {

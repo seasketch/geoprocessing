@@ -2,7 +2,7 @@ import Handler from "./area";
 import {
   getExampleSketches,
   writeResultOutput
-} from "@seasketch/geoprocessing";
+} from "@seasketch/geoprocessing/scripts/testing";
 
 const area = Handler.func;
 

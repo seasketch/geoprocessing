@@ -1,4 +1,9 @@
-import { FeatureCollection, GeoJsonProperties, Feature } from "geojson";
+import {
+  FeatureCollection,
+  GeoJsonProperties,
+  Feature,
+  Geometry
+} from "geojson";
 
 export type ExecutionMode = "async" | "sync";
 
@@ -13,6 +18,7 @@ export interface SketchProperties {
 
 export interface Sketch extends Feature {
   properties: SketchProperties;
+  geometry: Geometry;
 }
 
 export interface SketchCollection extends FeatureCollection {
@@ -57,19 +63,28 @@ export interface GeoprocessingServiceMetadata
   extends GeoprocessingHandlerOptions {
   rateLimit: boolean;
   restrictedAccess: boolean;
-  issAllowList: string[];
   /** Seconds */
   medianDuration: number;
   /** USD */
   medianCost: number;
   endpoint: string;
   type: GeoprocessingServiceType;
+  // for low-latency clientside processing and offline use
+  // v2 or later
+  clientSideBundle?: ClientCode;
+  // e.g. [sensitive-project.seasketch.org]
+  issAllowList: string[];
+  rateLimited: boolean;
+  rateLimitPeriod: RateLimitPeriod;
+  rateLimitConsumed: number;
+  // if set, requests must include a token with an allowed issuer (iss)
+  uri: string;
 }
 
 export interface GeoprocessingProject {
   uri: string;
   apiVersion: string; // semver
-  geoprocessingServices: GeoprocessingService[];
+  geoprocessingServices: GeoprocessingServiceMetadata[];
   preprocessingServices: PreprocessingService[];
   clients: ReportClient[];
   feebackClients: DigitizingFeedbackClient[];
@@ -81,28 +96,6 @@ export interface GeoprocessingProject {
   relatedUri?: string; // May link to github or an org uri
   sourceUri?: string; // github repo or similar
   published: string; //  ISO 8601 date
-}
-
-interface GeoprocessingService {
-  title: string;
-  endpoint: string;
-  type: GeoprocessingServiceType;
-  executionMode: ExecutionMode;
-  usesAttributes: string[];
-  medianDuration: number; //ms
-  medianCost: number; //usd
-  timeout: number; //ms
-  rateLimited: boolean;
-  rateLimitPeriod: RateLimitPeriod;
-  rateLimit: number;
-  rateLimitConsumed: number;
-  // if set, requests must include a token with an allowed issuer (iss)
-  restrictedAccess: boolean;
-  // e.g. [sensitive-project.seasketch.org]
-  issAllowList?: Array<string>;
-  // for low-latency clientside processing and offline use
-  // v2 or later
-  clientSideBundle?: ClientCode;
 }
 
 interface ClientCode {

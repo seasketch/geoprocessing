@@ -2,17 +2,22 @@ import {
   Sketch,
   SketchCollection,
   GeoprocessingHandler,
-  sketchArea
+  sketchArea,
+  isCollection
 } from "@seasketch/geoprocessing";
+import centroid from "@turf/centroid";
 
 export interface AreaResults {
   /** area of the sketch in square meters */
   area: number;
+  centroid?: any;
 }
 
 async function area(sketch: Sketch | SketchCollection): Promise<AreaResults> {
   return {
-    area: sketchArea(sketch)
+    area: sketchArea(sketch),
+    // @ts-ignore
+    centroid: isCollection(sketch) ? null : centroid(sketch.geometry)
   };
 }
 

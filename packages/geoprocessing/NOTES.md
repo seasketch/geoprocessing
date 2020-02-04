@@ -34,3 +34,13 @@ Workplan
   * monitor bundle size
   * setup eslint
  
+
+
+ NEW WAY OF COMPILING...
+
+
+   * Assemble project function metadata into a manifest
+   * Create metadata handler functions
+     * and eventually results fetchers, websocket integration, logs, etc
+   * Build handlers, wrapping them in outer functions
+   * Run cdk, creating resources based on manifest

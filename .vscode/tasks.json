@@ -14,6 +14,18 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "build scripts/",
+      "type": "shell",
+      "command": "./packages/geoprocessing/node_modules/.bin/tsc --build packages/geoprocessing/scripts/tsconfig.json --watch",
+      "problemMatcher": [
+        "$tsc-watch"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }

@@ -18,5 +18,7 @@
   },
   "files.exclude": {
     "**/dist/**": true,
+    "**/cdk.out": true,
+    "**/.build": true
   }
 }

@@ -17,7 +17,7 @@ async function area(sketch: Sketch | SketchCollection): Promise<AreaResults> {
   return {
     area: sketchArea(sketch),
     // @ts-ignore
-    centroid: isCollection(sketch) ? null : centroid(sketch.geometry)
+    centroid: isCollection(sketch) ? null : centroid(sketch)
   };
 }
 

@@ -6,6 +6,8 @@ import * as lambda from "@aws-cdk/aws-lambda";
 import fs from "fs";
 import path from "path";
 import { Manifest } from "../manifest";
+import dynamodb = require("@aws-cdk/aws-dynamodb");
+import slugify from "slugify";
 
 if (!process.env.PROJECT_PATH) {
   throw new Error("PROJECT_PATH env var not specified");
@@ -20,22 +22,16 @@ const manifest: Manifest = JSON.parse(
 export async function createStack() {
   const projectName = manifest.title;
   const region = manifest.region as string;
-  // const functionLocations = (manifest.functions.map((f) => f.handler as string);
   const stackName = `${projectName}-geoprocessing-stack`;
-  // console.log("build");
-  // try {
-  //   await buildLambdaHandlers("location", functionLocations, "./.build");
-  // } catch (e) {
-  //   console.error(e);
-  //   process.exit(-1);
-  // }
-  // console.log("done building");
 
   const app = new core.App();
   const stack = new GeoprocessingCdkStack(app, stackName, {
     env: { region },
     project: projectName
   });
+  core.Tag.add(stack, "Author", slugify(manifest.author.replace(/\<.*\>/, "")));
+  core.Tag.add(stack, "Cost Center", "seasketch-geoprocessing");
+  core.Tag.add(stack, "Geoprocessing Project", manifest.title);
 }
 
 interface GeoprocessingStackProps extends core.StackProps {
@@ -63,20 +59,27 @@ class GeoprocessingCdkStack extends core.Stack {
           id: "my-cors-rule-1",
           maxAge: 3600
         } as CorsRule
-      ]
+      ],
+      removalPolicy: core.RemovalPolicy.DESTROY
     });
 
     const publicBucketUrl = publicBucket.urlForObject();
 
-    // results cloudfront
-
     // dynamodb
+    const tasksTbl = new dynamodb.Table(this, `gp-${manifest.title}-tasks`, {
+      partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "service", type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      tableName: `gp-${manifest.title}-tasks`,
+      removalPolicy: core.RemovalPolicy.DESTROY
+    });
+
     // project metadata endpoints
     const api = new apigateway.RestApi(
       this,
       `${props.project}-geoprocessing-api`,
       {
-        restApiName: "Geoprocessing Service",
+        restApiName: `${props.project} geoprocessing service`,
         description: `Serves API requests for ${props.project}.`
       }
     );
@@ -90,6 +93,8 @@ class GeoprocessingCdkStack extends core.Stack {
       }
     });
 
+    tasksTbl.grantReadData(metadataHandler);
+
     const getMetadataIntegration = new apigateway.LambdaIntegration(
       metadataHandler,
       {
@@ -100,6 +105,34 @@ class GeoprocessingCdkStack extends core.Stack {
     api.root.addMethod("GET", getMetadataIntegration); // GET /
 
     // function endpoints
+    for (const func of manifest.functions) {
+      // @ts-ignore
+      const filename = path.basename(func.handler);
+
+      const handler = new lambda.Function(this, `${func.title}Handler`, {
+        runtime: lambda.Runtime.NODEJS_12_X,
+        code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
+        handler: `${filename.split(".")[0]}Handler.handler`,
+        functionName: `gp-${manifest.title}-${func.title}`,
+        memorySize: func.memory,
+        timeout: core.Duration.seconds(func.timeout || 3),
+        description: func.description,
+        environment: {
+          publicBucketUrl,
+          TASKS_TABLE: tasksTbl.tableName
+        }
+      });
+
+      tasksTbl.grantReadWriteData(handler);
+      publicBucket.grantReadWrite(handler);
+
+      const postIntegration = new apigateway.LambdaIntegration(handler, {
+        requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+      });
+
+      const resource = api.root.addResource(func.title);
+      resource.addMethod("POST", postIntegration);
+    }
 
     /** Client Assets */
     // client bundle buckets

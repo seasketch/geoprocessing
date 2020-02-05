@@ -5,19 +5,19 @@ import {
   sketchArea,
   isCollection
 } from "@seasketch/geoprocessing";
-import centroid from "@turf/centroid";
+import bbox from "@turf/bbox";
+import { BBox } from "geojson";
 
 export interface AreaResults {
   /** area of the sketch in square meters */
   area: number;
-  centroid?: any;
+  bbox: BBox;
 }
 
 async function area(sketch: Sketch | SketchCollection): Promise<AreaResults> {
   return {
     area: sketchArea(sketch),
-    // @ts-ignore
-    centroid: isCollection(sketch) ? null : centroid(sketch)
+    bbox: bbox(sketch)
   };
 }
 

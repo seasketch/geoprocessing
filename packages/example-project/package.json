@@ -8,7 +8,7 @@
     "create:function": "geoprocessing create:function",
     "create:client": "geoprocessing create:client",
     "bootstrap": "bootstrap",
-    "deploy": "deploy",
+    "deploy": "geoprocessing deploy",
     "build": "geoprocessing build"
   },
   "keywords": [
@@ -16,7 +16,8 @@
   ],
   "dependencies": {
     "@seasketch/geoprocessing": "^1.0.0",
-    "@turf/centroid": "^6.0.2"
+    "@turf/bbox": "^6.0.1",
+    "@types/geojson": "^7946.0.7"
   },
   "author": "Chad Burt",
   "license": "BSD-3-Clause",

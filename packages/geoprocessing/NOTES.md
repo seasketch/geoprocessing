@@ -44,3 +44,21 @@ Workplan
      * and eventually results fetchers, websocket integration, logs, etc
    * Build handlers, wrapping them in outer functions
    * Run cdk, creating resources based on manifest
+
+
+
+
+Next steps:
+
+  * x Create dynamodb table
+  * x link up dynamodb info to handlers
+  * x deploy api gateway endpoints for functions
+  * x deploy test events using examples [ can't :( ]
+  * x see if it works...
+  * take a step back and make sure example edits are copied back
+  * make sure example creation works still
+  * try publishing and creating a project using the npm module :()
+
+Then...
+  * Get the client working
+  * Get the legacy client working in SeaSketch

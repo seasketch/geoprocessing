@@ -1,4 +1,4 @@
-import fs from "fs";
+import * as fs from "fs";
 import GeoprocessingHandler from "./functions/area";
 
 describe("Project metadata settings", () => {

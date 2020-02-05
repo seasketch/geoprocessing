@@ -26,7 +26,7 @@ export class GeoprocessingHandler<T> {
   ) {
     this.func = func;
     this.options = options;
-    this.Tasks = new TaskModel("TODO: FILL ME IN", Db);
+    this.Tasks = new TaskModel(process.env.TASKS_TABLE!, Db);
   }
 
   async lambdaHandler(

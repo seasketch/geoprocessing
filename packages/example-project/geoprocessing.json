@@ -3,7 +3,6 @@
   "organization": "SeaSketch",
   "region": "us-west-1",
   "functions": [
-    "src/functions/area.ts",
-    "src/functions/newTest.ts"
+    "src/functions/area.ts"
   ]
 }

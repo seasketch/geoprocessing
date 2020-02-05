@@ -2,19 +2,24 @@ import {
   Sketch,
   SketchCollection,
   GeoprocessingHandler,
-  sketchArea
+  sketchArea,
+  isCollection
 } from "@seasketch/geoprocessing";
+import bbox from "@turf/bbox";
+import { BBox } from "geojson";
 
 export interface CalculateAreaResults {
   /** area of the sketch in square meters */
   area: number;
+  bbox: BBox;
 }
 
 async function calculateArea(
   sketch: Sketch | SketchCollection
 ): Promise<CalculateAreaResults> {
   return {
-    area: sketchArea(sketch)
+    area: sketchArea(sketch),
+    bbox: bbox(sketch)
   };
 }
 

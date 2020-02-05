@@ -7,7 +7,7 @@
     "test": "geoprocessing test",
     "create:function": "geoprocessing create:function",
     "create:client": "geoprocessing create:client",
-    "bootstrap": "bootstrap",
+    "bootstrap": "geoprocessing bootstrap",
     "deploy": "geoprocessing deploy",
     "build": "geoprocessing build"
   },

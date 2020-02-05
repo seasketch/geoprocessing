@@ -57,6 +57,7 @@ Next steps:
   * x see if it works...
   * take a step back and make sure example edits are copied back
   * make sure example creation works still
+  * maybe automate npm install?
   * try publishing and creating a project using the npm module :()
 
 Then...

@@ -2,11 +2,14 @@
   "name": "example-reports",
   "version": "1.0.0",
   "description": "Example project for testing @seaketch/geoprocessing framework",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "geoprocessing test",
     "create:function": "geoprocessing create:function",
-    "create:client": "geoprocessing create:client"
+    "create:client": "geoprocessing create:client",
+    "bootstrap": "geoprocessing bootstrap",
+    "deploy": "geoprocessing deploy",
+    "build": "geoprocessing build"
   },
   "keywords": [
     "@seasketch/geoprocessing"

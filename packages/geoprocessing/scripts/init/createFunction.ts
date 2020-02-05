@@ -79,7 +79,7 @@ export async function makeGeoprocessingHandler(
   const path = basePath + "src/functions";
   // rename metadata in function definition
   const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../templates/functions`
+    ? `${__dirname}/../../../templates/functions`
     : `${__dirname}/../templates/functions`;
   const handlerCode = await fs.readFile(`${templatePath}/area.ts`);
   const testCode = await fs.readFile(`${templatePath}/area.test.ts`);

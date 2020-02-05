@@ -64,5 +64,5 @@
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
     "resolveJsonModule": true
   },
-  "exclude": ["./templates", "node_modules", "dist", "scripts", "cdk.out"],
+  "exclude": ["./templates", "./templates/functions/area.test.ts", "node_modules", "dist", "scripts", "cdk.out"],
 }

@@ -76,7 +76,7 @@ async function makeGeoprocessingHandler(options, interactive = true, basePath = 
     const path = basePath + "src/functions";
     // rename metadata in function definition
     const templatePath = /dist/.test(__dirname)
-        ? `${__dirname}/../../templates/functions`
+        ? `${__dirname}/../../../templates/functions`
         : `${__dirname}/../templates/functions`;
     const handlerCode = await fs_extra_1.default.readFile(`${templatePath}/area.ts`);
     const testCode = await fs_extra_1.default.readFile(`${templatePath}/area.test.ts`);

@@ -154,7 +154,7 @@ async function makeProject(
   spinner.start("copying template");
 
   const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../templates/project`
+    ? `${__dirname}/../../../templates/project`
     : `${__dirname}/../templates/project`;
   await fs.copy(templatePath, path);
   spinner.succeed("copied template");

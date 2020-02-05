@@ -21,7 +21,7 @@ const PATH = `packages/example-project`;
         description: "Example project to test geoprocessing project init scripts",
         author: "Chad Burt",
         email: "support@seasketch.org",
-        license: "BSD-3-Clause",
+        license: "UNLICENSED",
         organization: "SeaSketch",
         repositoryUrl: "https://github.com/seasketch/example-project",
         region: "us-west-1"

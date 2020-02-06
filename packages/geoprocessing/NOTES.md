@@ -58,10 +58,20 @@ Next steps:
   * x take a step back and make sure example edits are copied back
   * x make sure example creation works still
   * x try publishing and creating a project using the npm module :()
-  * automate npm install?
+  * x automate npm install?
   * x get source on github
-  * incorporate markdown docs
+  * x incorporate markdown docs
 
 Then...
-  * Get the client working
-  * Get the legacy client working in SeaSketch
+  * Get client components, storybooks, and unit tests working (library-side)
+  * Get the client working (project-side)
+  * Get the legacy client working again in SeaSketch, possibly using new apis
+
+Big improvements
+  * Documentation
+  * Data Sources
+  * Preprocessing
+  * Incremental loading/rendering
+
+
+

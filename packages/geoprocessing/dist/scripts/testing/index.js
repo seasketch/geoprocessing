@@ -18,6 +18,9 @@ async function getExampleSketches() {
 }
 exports.getExampleSketches = getExampleSketches;
 async function writeResultOutput(results, functionName, sketchName) {
+    if (!fs_extra_1.default.existsSync("examples/output")) {
+        await fs_extra_1.default.mkdir("examples/output");
+    }
     const folder = "examples/output/" + sketchName;
     if (!fs_extra_1.default.existsSync(folder)) {
         await fs_extra_1.default.mkdir(folder);

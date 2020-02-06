@@ -15,7 +15,7 @@
     "@seasketch/geoprocessing"
   ],
   "dependencies": {
-    "@seasketch/geoprocessing": "^0.2.1",
+    "@seasketch/geoprocessing": "^0.2.2",
     "@turf/bbox": "^6.0.1",
     "@types/geojson": "^7946.0.7"
   }

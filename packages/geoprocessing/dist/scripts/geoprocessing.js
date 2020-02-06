@@ -20,7 +20,7 @@ else {
             init_1.init();
             break;
         case "create:function":
-            child_process_1.spawn("node", [`${__dirname}/../../scripts/init/createFunction.js`], {
+            child_process_1.spawn("node", [`${__dirname}/init/createFunction.js`], {
                 cwd: process.cwd(),
                 stdio: "inherit"
             });

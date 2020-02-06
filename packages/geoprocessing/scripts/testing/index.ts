@@ -23,6 +23,9 @@ export async function writeResultOutput(
   functionName: string,
   sketchName: string
 ) {
+  if (!fs.existsSync("examples/output")) {
+    await fs.mkdir("examples/output");
+  }
   const folder = "examples/output/" + sketchName;
   if (!fs.existsSync(folder)) {
     await fs.mkdir(folder);

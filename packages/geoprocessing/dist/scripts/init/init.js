@@ -16,6 +16,8 @@ const fs_extra_1 = __importDefault(require("fs-extra"));
 const chalk_1 = __importDefault(require("chalk"));
 //@ts-ignore
 const aws_regions_1 = __importDefault(require("aws-regions"));
+const util_1 = __importDefault(require("util"));
+const exec = util_1.default.promisify(require("child_process").exec);
 //@ts-ignore
 const regions = aws_regions_1.default.list({ public: true }).map(v => v.code);
 inquirer_1.default.registerPrompt("autocomplete", inquirer_autocomplete_prompt_1.default);
@@ -27,7 +29,7 @@ async function init() {
         {
             type: "input",
             name: "name",
-            message: "Name for your project. e.g. bermuda-reports",
+            message: "Choose a name for your project",
             validate: value => {
                 if (/^[a-z\-]+$/.test(value)) {
                     return true;
@@ -164,16 +166,26 @@ async function makeProject(metadata, interactive = true, basePath = "") {
     spinner.succeed("updated Dockerfile");
     await fs_extra_1.default.copyFile(`${__dirname}/../../../templates/exampleSketch.json`, path + "/examples/sketches/sketch.json");
     if (interactive) {
-        console.log(chalk_1.default.blue(`\nYour geoprocessing project has been initialized`));
-        console.log(chalk_1.default.blue(`Run ${chalk_1.default.yellow(`cd ${metadata.name}/ && npm install`)} next to finish the installation.`));
+        spinner.start("installing dependencies with npm");
+        const { stderr, stdout, error } = await exec("npm install", {
+            cwd: metadata.name
+        });
+        if (error) {
+            console.log(error);
+            process.exit();
+        }
+        spinner.succeed("installed dependencies!");
+    }
+    if (interactive) {
+        console.log(chalk_1.default.blue(`\nYour geoprocessing project has been initialized!`));
         console.log(`\nNext Steps:
   * Look at README.md for some tips on working with this project
-  * ${chalk_1.default.yellow(`npm run create:function`)} to create your first geoprocessing or preprocessing function
+  * ${chalk_1.default.yellow(`npm run create:function`)} to create your first geoprocessing function
   * ${chalk_1.default.yellow(`npm run create:client`)} to add a new report client
 `);
         console.log(`Tips:
-  * Create examples in SeaSketch, then export them as GeoJSON and save them in ./examples/sketches for use in test cases and when designing reports
-  * The ./data directory is where you can store scripts for generating data products you'll use in geoprocessing handlers. It's already setup with some useful Docker containers with data-prep software.
+  * Create examples in SeaSketch, then export them as GeoJSON to ./examples/sketches for use in test cases and when designing reports
+  * The data/ directory is where you can store scripts for generating data products you'll use in geoprocessing functions. It's already setup with some useful Docker containers.
 `);
     }
 }

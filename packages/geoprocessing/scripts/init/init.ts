@@ -11,6 +11,8 @@ import fs from "fs-extra";
 import chalk from "chalk";
 //@ts-ignore
 import awsRegions from "aws-regions";
+import util from "util";
+const exec = util.promisify(require("child_process").exec);
 
 //@ts-ignore
 const regions = awsRegions.list({ public: true }).map(v => v.code);
@@ -25,7 +27,7 @@ async function init() {
     {
       type: "input",
       name: "name",
-      message: "Name for your project. e.g. bermuda-reports",
+      message: "Choose a name for your project",
       validate: value => {
         if (/^[a-z\-]+$/.test(value)) {
           return true;
@@ -213,26 +215,30 @@ async function makeProject(
     path + "/examples/sketches/sketch.json"
   );
   if (interactive) {
+    spinner.start("installing dependencies with npm");
+    const { stderr, stdout, error } = await exec("npm install", {
+      cwd: metadata.name
+    });
+    if (error) {
+      console.log(error);
+      process.exit();
+    }
+    spinner.succeed("installed dependencies!");
+  }
+  if (interactive) {
     console.log(
-      chalk.blue(`\nYour geoprocessing project has been initialized`)
-    );
-    console.log(
-      chalk.blue(
-        `Run ${chalk.yellow(
-          `cd ${metadata.name}/ && npm install`
-        )} next to finish the installation.`
-      )
+      chalk.blue(`\nYour geoprocessing project has been initialized!`)
     );
     console.log(`\nNext Steps:
   * Look at README.md for some tips on working with this project
   * ${chalk.yellow(
     `npm run create:function`
-  )} to create your first geoprocessing or preprocessing function
+  )} to create your first geoprocessing function
   * ${chalk.yellow(`npm run create:client`)} to add a new report client
 `);
     console.log(`Tips:
-  * Create examples in SeaSketch, then export them as GeoJSON and save them in ./examples/sketches for use in test cases and when designing reports
-  * The ./data directory is where you can store scripts for generating data products you'll use in geoprocessing handlers. It's already setup with some useful Docker containers with data-prep software.
+  * Create examples in SeaSketch, then export them as GeoJSON to ./examples/sketches for use in test cases and when designing reports
+  * The data/ directory is where you can store scripts for generating data products you'll use in geoprocessing functions. It's already setup with some useful Docker containers.
 `);
   }
 }

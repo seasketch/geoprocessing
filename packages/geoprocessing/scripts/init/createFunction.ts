@@ -1,6 +1,7 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
+import path from "path";
 import chalk from "chalk";
 import { ExecutionMode } from "../../src/types";
 import camelcase from "camelcase";
@@ -76,15 +77,21 @@ export async function makeGeoprocessingHandler(
     : { start: () => false, stop: () => false, succeed: () => false };
   spinner.start(`creating handler from templates`);
   // copy geoprocessing function template
-  const path = basePath + "src/functions";
+  const fpath = basePath + "src/functions";
   // rename metadata in function definition
   const templatePath = /dist/.test(__dirname)
     ? `${__dirname}/../../../templates/functions`
-    : `${__dirname}/../templates/functions`;
+    : `${__dirname}/../../../templates/functions`;
   const handlerCode = await fs.readFile(`${templatePath}/area.ts`);
   const testCode = await fs.readFile(`${templatePath}/area.test.ts`);
+  if (!fs.existsSync(path.join(basePath, "src"))) {
+    fs.mkdirSync(path.join(basePath, "src"));
+  }
+  if (!fs.existsSync(path.join(basePath, "src", "functions"))) {
+    fs.mkdirSync(path.join(basePath, "src", "functions"));
+  }
   await fs.writeFile(
-    `${path}/${options.title}.ts`,
+    `${fpath}/${options.title}.ts`,
     handlerCode
       .toString()
       .replace(/calculateArea/g, options.title)
@@ -97,19 +104,19 @@ export async function makeGeoprocessingHandler(
       .replace("Function description", options.description)
   );
   await fs.writeFile(
-    `${path}/${options.title}.test.ts`,
+    `${fpath}/${options.title}.test.ts`,
     testCode
       .toString()
       .replace(/calculateArea/g, options.title)
       .replace("./area", `./${options.title}`)
   );
   // TODO: make typescript optional
-  spinner.succeed(`created ${options.title} function in ${path}/`);
+  spinner.succeed(`created ${options.title} function in ${fpath}/`);
   if (interactive) {
     console.log(chalk.blue(`\nGeoprocessing function initialized`));
     console.log(`\nNext Steps:
-    * Update your function definition in ${`${path}/${options.title}.ts`}
-    * Test cases go in ${`${path}/${options.title}.test.ts`}
+    * Update your function definition in ${`${fpath}/${options.title}.ts`}
+    * Test cases go in ${`${fpath}/${options.title}.test.ts`}
     * Populate examples/sketches
   `);
   }

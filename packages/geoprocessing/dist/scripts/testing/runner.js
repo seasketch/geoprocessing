@@ -28,7 +28,8 @@ function default_1() {
             "^.+\\.(js|jsx|ts|tsx)$": require.resolve("./babelTransform.js")
         },
         transformIgnorePatterns: [
-            "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
+            `/node_modules/(?!@seasketch\/geoprocessing)`,
+            // "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
             "^.+\\.module\\.(css|sass|scss)$"
         ]
     }));

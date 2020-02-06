@@ -44,10 +44,6 @@ const PATH = `packages/example-project`;
     PATH + "/"
   );
   await fs.copyFile(
-    `${__dirname}/../../../templates/exampleSketch.json`,
-    PATH + "/examples/sketches/sketch.json"
-  );
-  await fs.copyFile(
     `${__dirname}/../../../templates/exampleProject.test.ts`,
     PATH + "/src/exampleProject.test.ts"
   );

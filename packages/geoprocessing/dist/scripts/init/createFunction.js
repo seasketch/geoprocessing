@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const inquirer_1 = __importDefault(require("inquirer"));
 const ora_1 = __importDefault(require("ora"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
+const path_1 = __importDefault(require("path"));
 const chalk_1 = __importDefault(require("chalk"));
 const camelcase_1 = __importDefault(require("camelcase"));
 async function createFunction() {
@@ -73,31 +74,37 @@ async function makeGeoprocessingHandler(options, interactive = true, basePath = 
         : { start: () => false, stop: () => false, succeed: () => false };
     spinner.start(`creating handler from templates`);
     // copy geoprocessing function template
-    const path = basePath + "src/functions";
+    const fpath = basePath + "src/functions";
     // rename metadata in function definition
     const templatePath = /dist/.test(__dirname)
         ? `${__dirname}/../../../templates/functions`
-        : `${__dirname}/../templates/functions`;
+        : `${__dirname}/../../../templates/functions`;
     const handlerCode = await fs_extra_1.default.readFile(`${templatePath}/area.ts`);
     const testCode = await fs_extra_1.default.readFile(`${templatePath}/area.test.ts`);
-    await fs_extra_1.default.writeFile(`${path}/${options.title}.ts`, handlerCode
+    if (!fs_extra_1.default.existsSync(path_1.default.join(basePath, "src"))) {
+        fs_extra_1.default.mkdirSync(path_1.default.join(basePath, "src"));
+    }
+    if (!fs_extra_1.default.existsSync(path_1.default.join(basePath, "src", "functions"))) {
+        fs_extra_1.default.mkdirSync(path_1.default.join(basePath, "src", "functions"));
+    }
+    await fs_extra_1.default.writeFile(`${fpath}/${options.title}.ts`, handlerCode
         .toString()
         .replace(/calculateArea/g, options.title)
         .replace(/CalculateArea/g, options.title.slice(0, 1).toUpperCase() + options.title.slice(1))
         .replace(/functionName/g, options.title)
         .replace(`"async"`, `"${options.executionMode}"`)
         .replace("Function description", options.description));
-    await fs_extra_1.default.writeFile(`${path}/${options.title}.test.ts`, testCode
+    await fs_extra_1.default.writeFile(`${fpath}/${options.title}.test.ts`, testCode
         .toString()
         .replace(/calculateArea/g, options.title)
         .replace("./area", `./${options.title}`));
     // TODO: make typescript optional
-    spinner.succeed(`created ${options.title} function in ${path}/`);
+    spinner.succeed(`created ${options.title} function in ${fpath}/`);
     if (interactive) {
         console.log(chalk_1.default.blue(`\nGeoprocessing function initialized`));
         console.log(`\nNext Steps:
-    * Update your function definition in ${`${path}/${options.title}.ts`}
-    * Test cases go in ${`${path}/${options.title}.test.ts`}
+    * Update your function definition in ${`${fpath}/${options.title}.ts`}
+    * Test cases go in ${`${fpath}/${options.title}.test.ts`}
     * Populate examples/sketches
   `);
     }

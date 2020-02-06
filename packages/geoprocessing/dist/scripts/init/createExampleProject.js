@@ -35,7 +35,6 @@ const PATH = `packages/example-project`;
         docker: false,
         executionMode: "sync"
     }, false, PATH + "/");
-    await fs_extra_1.default.copyFile(`${__dirname}/../../../templates/exampleSketch.json`, PATH + "/examples/sketches/sketch.json");
     await fs_extra_1.default.copyFile(`${__dirname}/../../../templates/exampleProject.test.ts`, PATH + "/src/exampleProject.test.ts");
 })();
 //# sourceMappingURL=createExampleProject.js.map

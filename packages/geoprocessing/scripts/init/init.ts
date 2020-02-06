@@ -208,6 +208,10 @@ async function makeProject(
       .replace("America/Los_Angeles", tz)
   );
   spinner.succeed("updated Dockerfile");
+  await fs.copyFile(
+    `${__dirname}/../../../templates/exampleSketch.json`,
+    path + "/examples/sketches/sketch.json"
+  );
   if (interactive) {
     console.log(
       chalk.blue(`\nYour geoprocessing project has been initialized`)

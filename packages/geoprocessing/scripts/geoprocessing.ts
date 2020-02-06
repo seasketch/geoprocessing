@@ -15,7 +15,7 @@ if (process.argv.length < 3) {
       init();
       break;
     case "create:function":
-      spawn("node", [`${__dirname}/init/createFunction.js`], {
+      spawn("node", [`${__dirname}/../../scripts/init/createFunction.js`], {
         cwd: process.cwd(),
         stdio: "inherit"
       });

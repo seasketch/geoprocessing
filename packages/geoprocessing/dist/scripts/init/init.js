@@ -162,6 +162,7 @@ async function makeProject(metadata, interactive = true, basePath = "") {
         .replace("Chad Burt <chad@underbluewaters.net>", author)
         .replace("America/Los_Angeles", tz));
     spinner.succeed("updated Dockerfile");
+    await fs_extra_1.default.copyFile(`${__dirname}/../../../templates/exampleSketch.json`, path + "/examples/sketches/sketch.json");
     if (interactive) {
         console.log(chalk_1.default.blue(`\nYour geoprocessing project has been initialized`));
         console.log(chalk_1.default.blue(`Run ${chalk_1.default.yellow(`cd ${metadata.name}/ && npm install`)} next to finish the installation.`));

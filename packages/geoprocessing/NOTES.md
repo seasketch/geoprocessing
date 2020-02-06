@@ -55,10 +55,12 @@ Next steps:
   * x deploy api gateway endpoints for functions
   * x deploy test events using examples [ can't :( ]
   * x see if it works...
-  * take a step back and make sure example edits are copied back
-  * make sure example creation works still
-  * maybe automate npm install?
-  * try publishing and creating a project using the npm module :()
+  * x take a step back and make sure example edits are copied back
+  * x make sure example creation works still
+  * x try publishing and creating a project using the npm module :()
+  * automate npm install?
+  * x get source on github
+  * incorporate markdown docs
 
 Then...
   * Get the client working

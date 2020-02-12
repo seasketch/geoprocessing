@@ -16,7 +16,6 @@
   ],
   "dependencies": {
     "@seasketch/geoprocessing": "^0.2.4",
-    "@turf/bbox": "^6.0.1",
     "@types/geojson": "^7946.0.7"
   },
   "author": "Chad Burt",

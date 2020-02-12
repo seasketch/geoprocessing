@@ -62,16 +62,30 @@ Next steps:
   * x get source on github
   * x incorporate markdown docs
 
-Then...
-  * Get client components, storybooks, and unit tests working (library-side)
+Client
+  * Make example clients
+  * Get ResultCard stories working
+    * make useFunction work (in test mode)
+    * run storybook from `geoprocessing storybook`
+  * get examples running from examples/output
+  * Make report client init scripts
+  * Create unit tests for client hooks and such?
   * Get the client working (project-side)
   * Get the legacy client working again in SeaSketch, possibly using new apis
 
 Big improvements
   * Documentation
+  * Tabs
   * Data Sources
   * Preprocessing
-  * Incremental loading/rendering
+  * Make UI actually look nice
+  * Better integration with seasketch
+  * 
 
+"Linting"
+  * stats on bundle sizes
+  * stats on imported json or distributed geobuf files
+  * performance benchmarking of functions
+  * 
 
 

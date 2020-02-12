@@ -1,14 +1,28 @@
 // import { useState, useReducer, useEffect } from "react";
 // import { Sketch, SketchProperties } from "../types";
 // import TaskRunner, { TaskState } from "../taskRunner";
+import { GeoprocessingTask as Task } from "../tasks";
+import { useState, useContext } from "react";
+import SketchContext from "../SketchContext";
 
-// interface ResultsState {
-//   results: { [key: string]: any };
-//   failed: boolean;
-//   loading: boolean;
-//   tasks: Array<TaskState>;
-//   eta: number;
-// }
+export interface GeoprocessingTask<ResultType> extends Task {
+  data?: ResultType;
+}
+
+export const useFunction = <ResultType>(
+  functionId: string
+): {
+  task?: GeoprocessingTask<ResultType>;
+  loading: boolean;
+  error?: string;
+} => {
+  const context = useContext(SketchContext);
+  if (context) {
+  } else {
+  }
+  const [state, setState] = useState({ loading: true });
+  return state;
+};
 
 // const useFunction = (
 //   sketchProperties: SketchProperties,

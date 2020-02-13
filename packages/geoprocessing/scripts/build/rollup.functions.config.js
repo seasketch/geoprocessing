@@ -58,7 +58,7 @@ export default {
     //   `
     // }),
     resolve({
-      // include: "@seasketch/geoprocessing"
+      include: "@seasketch/geoprocessing"
     }),
     commonjs({
       include: "node_modules/**/*"

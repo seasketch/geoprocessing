@@ -16,7 +16,10 @@
   ],
   "dependencies": {
     "@seasketch/geoprocessing": "^0.2.4",
-    "@types/geojson": "^7946.0.7"
+    "@types/geojson": "^7946.0.7",
+    "@types/react": "^16.9.19",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   },
   "author": "Chad Burt",
   "license": "UNLICENSED",

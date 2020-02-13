@@ -10,11 +10,11 @@ const SketchAttributesCard = (props: SketchAttributesCardProps) => {
   const properties = useSketchProperties();
   if (properties) {
     // TODO: handle arbitrary sketch attributes. Need to handle difference 
-    // between property ID and label somehow
+    // between property ID and label somehow. filter out stuff like sketchClassId, id, etc
     return <Card title={props.title || "Attributes"}>
-      <p>
-        No attributes found
-      </p>
+      {
+  Object.keys(properties).map((key) => <div><span>{key}</span>=<span>{properties[key]}</span></div>)
+      }
     </Card>
   } else {
     return <Card title={props.title || "Attributes"}>

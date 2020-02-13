@@ -53,7 +53,7 @@ exports.default = {
         //   `
         // }),
         plugin_node_resolve_1.default({
-        // include: "@seasketch/geoprocessing"
+            include: "@seasketch/geoprocessing"
         }),
         plugin_commonjs_1.default({
             include: "node_modules/**/*"

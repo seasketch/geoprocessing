@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
 
-export interface GeoprocessingTask {
+export interface GeoprocessingTask<ResultType = any> {
   id: string;
   service: string;
   location: string;
@@ -12,7 +12,7 @@ export interface GeoprocessingTask {
   geometryUri: string;
   status: GeoprocessingTaskStatus;
   wss: string; // websocket for listening to status updates
-  data?: any; // result data can take any json-serializable form
+  data?: ResultType; // result data can take any json-serializable form
   error?: string;
   // ttl?: number;
 }

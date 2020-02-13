@@ -3,16 +3,18 @@ import {
   ResultsCard,
   SketchAttributesCard
 } from "@seasketch/geoprocessing/client";
-import { AreaResults as Results } from "../functions/area";
+// Import the results type definition from your functions to type-check your
+// component render functions
+import { AreaResults } from "../functions/area";
 
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
-const SimpleReportClient = () => {
+const AreaClient = () => {
   return (
     <>
       <SketchAttributesCard />
       <ResultsCard title="Zone Size" functionName="area">
-        {(data:Results) => (
+        {(data:AreaResults) => (
           <p>
             📐This feature is <b>{
               Number.format(Math.round(data.area * 1e-6))
@@ -24,4 +26,4 @@ const SimpleReportClient = () => {
   );
 };
 
-export default SimpleReportClient;
+export default AreaClient;

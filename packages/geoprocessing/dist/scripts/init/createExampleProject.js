@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const init_1 = __importDefault(require("./init"));
 const createFunction_1 = require("./createFunction");
+const createClient_1 = require("./createClient");
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const PATH = `packages/example-project`;
 (async () => {
@@ -36,5 +37,10 @@ const PATH = `packages/example-project`;
         executionMode: "sync"
     }, false, PATH + "/");
     await fs_extra_1.default.copyFile(`${__dirname}/../../../templates/exampleProject.test.ts`, PATH + "/src/exampleProject.test.ts");
+    await createClient_1.makeClient({
+        title: "AreaClient",
+        description: "My client description",
+        typescript: true
+    }, false, PATH + "/");
 })();
 //# sourceMappingURL=createExampleProject.js.map

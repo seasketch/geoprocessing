@@ -3,6 +3,7 @@ import ora from "ora";
 import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
+// @ts-ignore
 import pascalcase from "pascalcase";
 
 async function createClient() {
@@ -10,7 +11,7 @@ async function createClient() {
     {
       type: "input",
       name: "title",
-      message: "Name for this function, in PascalCase",
+      message: "Name for this client, in PascalCase",
       validate: value =>
         /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
       transformer: value => pascalcase(value)
@@ -49,8 +50,8 @@ export async function makeClient(
   const templatePath = /dist/.test(__dirname)
     ? `${__dirname}/../../../templates/clients`
     : `${__dirname}/../../../templates/clients`;
-  const clientCode = await fs.readFile(`${templatePath}/Client.ts`);
-  const testCode = await fs.readFile(`${templatePath}/Client.test.ts`);
+  const clientCode = await fs.readFile(`${templatePath}/Client.tsx`);
+  const testCode = await fs.readFile(`${templatePath}/Client.stories.tsx`);
   if (!fs.existsSync(path.join(basePath, "src"))) {
     fs.mkdirSync(path.join(basePath, "src"));
   }
@@ -72,7 +73,7 @@ export async function makeClient(
   );
   const functions = geoprocessingJson.functions;
   let functionName = "area";
-  if (functions.length) {
+  if (functions && functions.length) {
     functionName = path.basename(functions[0]).split(".")[0];
   }
   const resultsType = pascalcase(`${functionName} results`);
@@ -82,7 +83,7 @@ export async function makeClient(
       .toString()
       .replace(/Client/g, options.title)
       .replace(/AreaResults/g, resultsType)
-      .replace(`"area"`, functionName)
+      .replace(`"area"`, `"${functionName}"`)
   );
   await fs.writeFile(
     `${fpath}/${options.title}.stories.tsx`,

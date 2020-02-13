@@ -25,6 +25,12 @@ else {
                 stdio: "inherit"
             });
             break;
+        case "create:client":
+            child_process_1.spawn("node", [`${__dirname}/init/createClient.js`], {
+                cwd: process.cwd(),
+                stdio: "inherit"
+            });
+            break;
         case "build":
             child_process_1.spawn(`${__dirname}/../../scripts/build/build.sh`, {
                 cwd: process.cwd(),

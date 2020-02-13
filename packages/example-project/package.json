@@ -9,7 +9,8 @@
     "create:client": "geoprocessing create:client",
     "bootstrap": "geoprocessing bootstrap",
     "deploy": "geoprocessing deploy",
-    "build": "geoprocessing build"
+    "build": "geoprocessing build",
+    "storybook": "geoprocessing storybook"
   },
   "keywords": [
     "@seasketch/geoprocessing"

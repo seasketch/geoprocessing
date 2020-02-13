@@ -10,7 +10,7 @@ const projectStories = [];
 
 if (process.env.PROJECT_PATH) {
   projectStories.push(
-    path.join(process.env.PROJECT_PATH, "src/client") + "/**/*.stories.tsx"
+    path.join(process.env.PROJECT_PATH, "src/clients") + "/**/*.stories.tsx"
   );
 }
 

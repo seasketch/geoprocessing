@@ -32,13 +32,15 @@ export const useFunction = <ResultType>(
     setState({
       loading: true
     });
-    if (context.exampleOutputs && context.exampleOutputs.length) {
+    if (context.exampleOutputs) {
       // In test or storybook environment
       const data = context.exampleOutputs.find(
         output => output.functionName === functionTitle
       );
       if (!data) {
-        throw new Error(`Could not find example data for ${functionTitle}`);
+        throw new Error(
+          `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`
+        );
       }
       // create a fake GeoprocessingTask record and set state, returning value
       setState({

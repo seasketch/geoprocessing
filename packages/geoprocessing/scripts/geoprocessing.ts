@@ -38,6 +38,12 @@ if (process.argv.length < 3) {
         stdio: "inherit"
       });
       break;
+    case "storybook":
+      spawn(`${__dirname}/../../scripts/storybook.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit"
+      });
+      break;
     default:
       throw new Error(`Command ${command} not supported.`);
       break;

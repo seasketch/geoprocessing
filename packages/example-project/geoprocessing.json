@@ -4,5 +4,8 @@
   "region": "us-west-1",
   "functions": [
     "src/functions/area.ts"
+  ],
+  "clients": [
+    "src/clients/SimpleReportClient.tsx"
   ]
 }

@@ -68,9 +68,12 @@ Client
     * make useFunction work (in test mode)
     * run storybook from `geoprocessing storybook`
   * get examples running from examples/output
+    * create examples that include error, loading states
+  * create stories for ResultsCard
   * Make report client init scripts
   * Create unit tests for client hooks and such?
   * Get the client working (project-side)
+    * make sure it matches interchange format
   * Get the legacy client working again in SeaSketch, possibly using new apis
 
 Big improvements
@@ -79,7 +82,8 @@ Big improvements
   * Data Sources
   * Preprocessing
   * Make UI actually look nice
-  * Better integration with seasketch
+  * Better integration with seasketch admin interface
+  * Async executionModel
   * 
 
 "Linting"

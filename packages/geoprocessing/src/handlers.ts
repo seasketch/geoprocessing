@@ -16,7 +16,7 @@ export class GeoprocessingHandler<T> {
   func: (sketch: Sketch | SketchCollection) => Promise<T>;
   options: GeoprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
-  // aws will run ~4 retries and there appears to be no setting to avoid this
+  // aws runs several retries and there appears to be no setting to avoid this
   lastRequestId?: string;
   Tasks: TaskModel;
 

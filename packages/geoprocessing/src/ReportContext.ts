@@ -13,6 +13,8 @@ export interface ReportContextValue {
   sketchProperties: SketchProperties;
   // only in testing
   exampleOutputs?: TestExampleOutput[];
+  simulateLoading?: boolean;
+  simulateError?: string;
 }
 
 export interface TestExampleOutput {

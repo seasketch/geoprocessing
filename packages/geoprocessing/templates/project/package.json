@@ -9,14 +9,13 @@
     "create:client": "geoprocessing create:client",
     "bootstrap": "geoprocessing bootstrap",
     "deploy": "geoprocessing deploy",
-    "build": "geoprocessing build"
+    "build": "geoprocessing build",
+    "storybook": "geoprocessing storybook"
   },
   "keywords": [
     "@seasketch/geoprocessing"
   ],
   "dependencies": {
-    "@seasketch/geoprocessing": "^0.2.2",
-    "@turf/bbox": "^6.0.1",
-    "@types/geojson": "^7946.0.7"
+    "@seasketch/geoprocessing": "^0.2.4"
   }
 }

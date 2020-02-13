@@ -37,14 +37,14 @@ export const useFunction = <ResultType>(
       const data = context.exampleOutputs.find(
         output => output.functionName === functionTitle
       );
-      if (!data) {
+      if (!data && !context.simulateLoading && !context.simulateError) {
         throw new Error(
           `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`
         );
       }
       // create a fake GeoprocessingTask record and set state, returning value
       setState({
-        loading: false,
+        loading: context.simulateLoading ? context.simulateLoading : false,
         task: {
           id: "abc123",
           location: "https://localhost/abc123",
@@ -55,8 +55,10 @@ export const useFunction = <ResultType>(
           status: GeoprocessingTaskStatus.Completed,
           startedAt: new Date().toISOString(),
           duration: 0,
-          data: data.results as ResultType
-        }
+          data: (data || {}).results as ResultType,
+          error: context.simulateError ? context.simulateError : undefined
+        },
+        error: context.simulateError ? context.simulateError : undefined
       });
     } else {
       // TODO: local cache

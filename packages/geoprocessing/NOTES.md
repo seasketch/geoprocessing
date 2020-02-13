@@ -63,21 +63,30 @@ Next steps:
   * x incorporate markdown docs
 
 Client
-  * Make example clients
-  * Get ResultCard stories working
-    * make useFunction work (in test mode)
-    * run storybook from `geoprocessing storybook`
-  * get examples running from examples/output
-    * create examples that include error, loading states
-  * create stories for ResultsCard
-  * Make report client init scripts
-  * Create unit tests for client hooks and such?
+  * x Make example clients
+  * x Get ResultCard stories working
+    * x make useFunction work (in test mode)
+    * x run storybook from `geoprocessing storybook`
+  * x get examples running from examples/output
+    * x create examples that include error, loading states
+  * x create stories for ResultsCard
+  * --> Make report client init scripts
+    * Backport changes to example-project
+    * hook into createExampleProject
   * Get the client working (project-side)
     * make sure it matches interchange format
   * Get the legacy client working again in SeaSketch, possibly using new apis
+  * Create unit tests for client hooks and such?
 
 Big improvements
   * Documentation
+    * MDX storybook component docs
+    * Author documentation
+      * getting started
+      * api documentation
+      * integrating with seasketch
+    * Protocols and underlying systems
+      * reference type definitions
   * Tabs
   * Data Sources
   * Preprocessing

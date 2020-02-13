@@ -24,4 +24,24 @@ export const registerExampleStories = (
       <Component />
     </ReportContext.Provider>)
   }
+
+  stories.add("Loading state", () => <ReportContext.Provider value={{
+    geometryUri: `https://localhost/${uuid()}`,
+    sketchProperties: {name: "My Sketch", updatedAt: new Date().toISOString(), sketchClassId: "abc123"},
+    geoprocessingProject: {} as GeoprocessingProject,
+    exampleOutputs: [],
+    simulateLoading: true
+  }}>
+    <Component />
+  </ReportContext.Provider>)
+
+  stories.add("Error state", () => <ReportContext.Provider value={{
+    geometryUri: `https://localhost/${uuid()}`,
+    sketchProperties: {name: "My Sketch", updatedAt: new Date().toISOString(), sketchClassId: "abc123"},
+    geoprocessingProject: {} as GeoprocessingProject,
+    exampleOutputs: [],
+    simulateError: "Internal server error"
+  }}>
+    <Component />
+  </ReportContext.Provider>)
 };

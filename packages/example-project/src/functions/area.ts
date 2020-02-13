@@ -6,8 +6,7 @@ import {
   isCollection
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
-import { BBox } from "geojson";
-import { AllGeoJSON } from "@turf/helpers";
+import { AllGeoJSON, BBox } from "@turf/helpers";
 
 export interface AreaResults {
   /** area of the sketch in square meters */

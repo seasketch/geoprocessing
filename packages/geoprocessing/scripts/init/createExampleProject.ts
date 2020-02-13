@@ -1,6 +1,6 @@
 import makeProject from "./init";
 import { makeGeoprocessingHandler } from "./createFunction";
-
+import { makeClient } from "./createClient";
 import fs from "fs-extra";
 
 const PATH = `packages/example-project`;
@@ -46,5 +46,14 @@ const PATH = `packages/example-project`;
   await fs.copyFile(
     `${__dirname}/../../../templates/exampleProject.test.ts`,
     PATH + "/src/exampleProject.test.ts"
+  );
+  await makeClient(
+    {
+      title: "AreaClient",
+      description: "My client description",
+      typescript: true
+    },
+    false,
+    PATH + "/"
   );
 })();

@@ -20,6 +20,12 @@ if (process.argv.length < 3) {
         stdio: "inherit"
       });
       break;
+    case "create:client":
+      spawn("node", [`${__dirname}/init/createClient.js`], {
+        cwd: process.cwd(),
+        stdio: "inherit"
+      });
+      break;
     case "build":
       spawn(`${__dirname}/../../scripts/build/build.sh`, {
         cwd: process.cwd(),

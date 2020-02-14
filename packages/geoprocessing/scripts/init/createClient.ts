@@ -65,11 +65,11 @@ export async function makeClient(
   geoprocessingJson.clients.push({
     name: options.title,
     description: options.description,
-    source: `${fpath}/${options.title}.ts`
+    source: `${fpath}/${options.title}.tsx`
   });
   fs.writeFileSync(
     path.join(basePath, "geoprocessing.json"),
-    JSON.stringify(geoprocessingJson)
+    JSON.stringify(geoprocessingJson, null, "  ")
   );
   const functions = geoprocessingJson.functions;
   let functionName = "area";

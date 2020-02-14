@@ -12,7 +12,10 @@ export default {
   plugins: [
     json(),
     typescript({
-      include: ["*/**.ts", "../example-project/**/*.ts"]
+      include: [
+        "*/**.ts",
+        path.relative(__dirname + "../../../", `${PROJECT_PATH}`) + "/**/*.ts"
+      ]
     }),
     virtual({
       manifest: `

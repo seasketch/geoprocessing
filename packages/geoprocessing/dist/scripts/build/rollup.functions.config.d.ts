@@ -8,9 +8,7 @@ declare namespace _default {
         const plugins_1: never[];
         export { plugins_1 as plugins };
     }
-    export namespace treeshake {
-        export const moduleSideEffects: boolean;
-    }
+    export const treeshake: {};
     export function external(id: any): boolean;
 }
 export default _default;

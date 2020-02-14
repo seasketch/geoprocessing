@@ -1,4 +1,4 @@
-import "isomorphic-fetch";
+require("isomorphic-fetch");
 export const fetchGeoJSON = async (request) => {
     if (request.geometry) {
         return request.geometry;

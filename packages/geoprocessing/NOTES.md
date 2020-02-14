@@ -70,9 +70,9 @@ Client
   * x get examples running from examples/output
     * x create examples that include error, loading states
   * x create stories for ResultsCard
-  * --> Make report client init scripts
-    * Backport changes to example-project
-    * hook into createExampleProject
+  * x Make report client init scripts
+    * x Backport changes to example-project
+    * x hook into createExampleProject
   * Get the client working (project-side)
     * make sure it matches interchange format
   * Get the legacy client working again in SeaSketch, possibly using new apis

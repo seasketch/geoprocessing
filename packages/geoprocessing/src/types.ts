@@ -129,8 +129,6 @@ interface ReportTab {
   title: string;
 }
 
-type ExecutionMode = "async" | "sync";
-
 interface DigitizingFeedbackClient {
   title: string;
   uri: string;
@@ -154,4 +152,14 @@ export interface GeoprocessingRequest {
   geometryUri?: string; // must be https
   token?: string;
   cacheKey?: string;
+}
+
+export const SeaSketchReportingMessageEventType =
+  "SeaSketchReportingMessageEventType";
+
+export interface SeaSketchReportingMessageEvent {
+  client: string;
+  sketchProperties: SketchProperties;
+  geometryUri: string;
+  type: "SeaSketchReportingMessageEventType";
 }

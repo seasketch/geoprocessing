@@ -71,7 +71,11 @@ class GeoprocessingCdkStack extends core.Stack {
         // project metadata endpoints
         const api = new apigateway.RestApi(this, `${props.project}-geoprocessing-api`, {
             restApiName: `${props.project} geoprocessing service`,
-            description: `Serves API requests for ${props.project}.`
+            description: `Serves API requests for ${props.project}.`,
+            defaultCorsPreflightOptions: {
+                allowOrigins: apigateway.Cors.ALL_ORIGINS,
+                allowMethods: apigateway.Cors.ALL_METHODS
+            }
         });
         const metadataHandler = new lambda.Function(this, "MetadataHandler", {
             runtime: lambda.Runtime.NODEJS_12_X,

@@ -48,7 +48,10 @@ export default {
   plugins: [
     json(),
     typescript({
-      include: ["*/**.ts", "../example-project/**/*.ts"]
+      include: [
+        "*/**.ts",
+        path.relative(__dirname + "../../../", `${PROJECT_PATH}`) + "/**/*.ts"
+      ]
     }),
     // virtual({
     //   manifest: `
@@ -74,7 +77,7 @@ export default {
     plugins: []
   },
   treeshake: {
-    moduleSideEffects: false
+    // moduleSideEffects: ["isomorphic-fetch"]
   },
   external: id => {
     // Everything in PROJECT_PATH/node_modules should be external

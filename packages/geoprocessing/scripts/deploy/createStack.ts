@@ -80,7 +80,11 @@ class GeoprocessingCdkStack extends core.Stack {
       `${props.project}-geoprocessing-api`,
       {
         restApiName: `${props.project} geoprocessing service`,
-        description: `Serves API requests for ${props.project}.`
+        description: `Serves API requests for ${props.project}.`,
+        defaultCorsPreflightOptions: {
+          allowOrigins: apigateway.Cors.ALL_ORIGINS,
+          allowMethods: apigateway.Cors.ALL_METHODS
+        }
       }
     );
 

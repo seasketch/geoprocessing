@@ -110,6 +110,15 @@ export async function makeGeoprocessingHandler(
       .replace(/calculateArea/g, options.title)
       .replace("./area", `./${options.title}`)
   );
+  const geoprocessingJson = JSON.parse(
+    fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
+  );
+  geoprocessingJson.functions = geoprocessingJson.functions || [];
+  geoprocessingJson.functions.push(`src/functions/${options.title}.ts`);
+  fs.writeFileSync(
+    path.join(basePath, "geoprocessing.json"),
+    JSON.stringify(geoprocessingJson, null, "  ")
+  );
   // TODO: make typescript optional
   spinner.succeed(`created ${options.title} function in ${fpath}/`);
   if (interactive) {

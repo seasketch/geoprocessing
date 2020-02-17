@@ -42,5 +42,8 @@ const PATH = `packages/example-project`;
         description: "My client description",
         typescript: true
     }, false, PATH + "/");
+    const pkg = JSON.parse(fs_extra_1.default.readFileSync(PATH + "/package.json").toString());
+    pkg.private = true;
+    fs_extra_1.default.writeFileSync(PATH + "/package.json", JSON.stringify(pkg, null, "  "));
 })();
 //# sourceMappingURL=createExampleProject.js.map

@@ -1,6 +1,6 @@
 {
   "name": "example-project",
-  "version": "0.2.5",
+  "version": "1.0.0",
   "description": "Example project to test geoprocessing project init scripts",
   "main": "src/index.js",
   "scripts": {
@@ -30,5 +30,6 @@
   "homepage": "https://github.com/seasketch/example-project#readme",
   "bugs": {
     "url": "https://github.com/seasketch/example-project/issues"
-  }
+  },
+  "private": true
 }

@@ -56,4 +56,7 @@ const PATH = `packages/example-project`;
     false,
     PATH + "/"
   );
+  const pkg = JSON.parse(fs.readFileSync(PATH + "/package.json").toString());
+  pkg.private = true;
+  fs.writeFileSync(PATH + "/package.json", JSON.stringify(pkg, null, "  "));
 })();

@@ -88,5 +88,6 @@
     "val-loader": "^2.1.0",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
-  }
+  },
+  "gitHead": "c9e372ac9197eefe5b965bfa0c4633a6a1c5e671"
 }

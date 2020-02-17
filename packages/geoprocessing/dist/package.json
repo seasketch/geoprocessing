@@ -1,6 +1,6 @@
 {
     "name": "@seasketch/geoprocessing",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
@@ -88,5 +88,6 @@
         "val-loader": "^2.1.0",
         "webpack": "^4.41.6",
         "webpack-cli": "^3.3.11"
-    }
+    },
+    "gitHead": "c9e372ac9197eefe5b965bfa0c4633a6a1c5e671"
 }

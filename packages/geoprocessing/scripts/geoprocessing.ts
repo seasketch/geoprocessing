@@ -26,8 +26,14 @@ if (process.argv.length < 3) {
         stdio: "inherit"
       });
       break;
-    case "build":
+    case "build:lambda":
       spawn(`${__dirname}/../../scripts/build/build.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit"
+      });
+      break;
+    case "build:client":
+      spawn(`${__dirname}/../../scripts/build/build-client.sh`, {
         cwd: process.cwd(),
         stdio: "inherit"
       });

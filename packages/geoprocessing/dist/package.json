@@ -25,9 +25,11 @@
     "homepage": "https://github.com/seasketch/geoprocessing#readme",
     "dependencies": {
         "@aws-cdk/aws-apigateway": "^1.22.0",
+        "@aws-cdk/aws-cloudfront": "^1.24.0",
         "@aws-cdk/aws-dynamodb": "^1.22.0",
         "@aws-cdk/aws-lambda": "^1.22.0",
         "@aws-cdk/aws-s3": "^1.22.0",
+        "@aws-cdk/aws-s3-deployment": "^1.24.0",
         "@babel/core": "^7.8.4",
         "@babel/preset-env": "^7.8.3",
         "@babel/preset-typescript": "^7.8.3",

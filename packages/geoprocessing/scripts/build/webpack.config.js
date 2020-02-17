@@ -16,14 +16,16 @@ const geoprocessing = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
 );
 
+if (!geoprocessing.clients && !geoprocessing.clients.length) {
+  throw new Error("No clients found in geoprocessing.json");
+}
+
 const clientSources = geoprocessing.clients.map(c =>
   path.resolve(path.join(PROJECT_PATH, c.source))
 );
 
-console.log("clientSources", clientSources);
-
 module.exports = {
-  mode: "development",
+  // mode: "development",
   entry: "./src/components/App.tsx",
   output: {
     filename: "main.js",

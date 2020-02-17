@@ -9,13 +9,15 @@
     "create:client": "geoprocessing create:client",
     "bootstrap": "geoprocessing bootstrap",
     "deploy": "geoprocessing deploy",
-    "build": "geoprocessing build",
+    "build": "geoprocessing build:lambda && geoprocessing build:client",
+    "build:client": "geoprocessing build:client",
+    "build:lambda": "geoprocessing build:lambda",
     "storybook": "geoprocessing storybook"
   },
   "keywords": [
     "@seasketch/geoprocessing"
   ],
   "dependencies": {
-    "@seasketch/geoprocessing": "^0.2.4"
+    "@seasketch/geoprocessing": "^0.2.5"
   }
 }

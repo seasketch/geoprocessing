@@ -73,8 +73,12 @@ Client
   * x Make report client init scripts
     * x Backport changes to example-project
     * x hook into createExampleProject
-  * Get the client working (project-side)
-    * make sure it matches interchange format
+  * x Get the client working (project-side)
+    * x make sure it matches interchange format
+  * x Integrate client packaging with build process
+  * Deploy client with build
+    * Make sure cache headers are set properly and assets can be found from project manifest
+  * Make sure client init works, including in npm-based workflow
   * Get the legacy client working again in SeaSketch, possibly using new apis
   * Create unit tests for client hooks and such?
 

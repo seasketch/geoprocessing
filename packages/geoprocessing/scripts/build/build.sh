@@ -2,6 +2,7 @@
 # Setup env vars and build directories
 export PROJECT_PATH=$(pwd)
 rm -rf .build
+echo "Building lambda functions..."
 mkdir .build
 # Determine correct path. Need to be in @seasketch/geoprocessing root
 if test -f "../geoprocessing/scripts/build/build.sh"; then
@@ -23,7 +24,7 @@ cp -R node_modules/@turf $PROJECT_PATH/.build/node_modules/
 cp -R node_modules/uuid $PROJECT_PATH/.build/node_modules/
 export WORKING_DIR=$(pwd)
 cd $PROJECT_PATH/.build
-npm install isomorphic-fetch
+npm install --silent isomorphic-fetch
 cd $WORKING_DIR
 npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/
 rm -rf $PROJECT_PATH/.build/node_modules/@seasketch/geoprocessing

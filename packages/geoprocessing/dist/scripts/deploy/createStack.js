@@ -14,10 +14,12 @@ const core = __importStar(require("@aws-cdk/core"));
 const s3 = __importStar(require("@aws-cdk/aws-s3"));
 const apigateway = __importStar(require("@aws-cdk/aws-apigateway"));
 const lambda = __importStar(require("@aws-cdk/aws-lambda"));
+const cloudfront = __importStar(require("@aws-cdk/aws-cloudfront"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const dynamodb = require("@aws-cdk/aws-dynamodb");
 const slugify_1 = __importDefault(require("slugify"));
+const s3deploy = __importStar(require("@aws-cdk/aws-s3-deployment"));
 if (!process.env.PROJECT_PATH) {
     throw new Error("PROJECT_PATH env var not specified");
 }
@@ -40,6 +42,35 @@ exports.createStack = createStack;
 class GeoprocessingCdkStack extends core.Stack {
     constructor(scope, id, props) {
         super(scope, id, props);
+        /** Client Assets */
+        // client bundle buckets
+        const websiteBucket = new s3.Bucket(this, "WebsiteBucket", {
+            bucketName: `${props.project}-client-${this.region}`,
+            websiteIndexDocument: "index.html",
+            publicReadAccess: true
+        });
+        // client bundle cloudfront
+        const distribution = new cloudfront.CloudFrontWebDistribution(
+        // @ts-ignore
+        this, "ClientDistribution", {
+            originConfigs: [
+                {
+                    s3OriginSource: {
+                        s3BucketSource: websiteBucket
+                    },
+                    behaviors: [{ isDefaultBehavior: true }]
+                }
+            ]
+        });
+        // Will run cloudfront invalidation on changes
+        new s3deploy.BucketDeployment(
+        // @ts-ignore
+        this, "DeployWebsite", {
+            sources: [s3deploy.Source.asset(path_1.default.join(PROJECT_PATH, ".build-web"))],
+            destinationBucket: websiteBucket,
+            distribution: distribution,
+            distributionPaths: ["/*"]
+        });
         /** Lambda Service Assets */
         // Bucket for storing outputs of geoprocessing functions. These resources
         // will be accessible via a public url, though the location will be hidden
@@ -82,7 +113,8 @@ class GeoprocessingCdkStack extends core.Stack {
             code: lambda.Code.asset(path_1.default.join(PROJECT_PATH, ".build")),
             handler: "serviceHandlers.projectMetadata",
             environment: {
-                publicBucketUrl
+                publicBucketUrl,
+                clientUrl: distribution.domainName
             }
         });
         tasksTbl.grantReadData(metadataHandler);
@@ -115,9 +147,6 @@ class GeoprocessingCdkStack extends core.Stack {
             const resource = api.root.addResource(func.title);
             resource.addMethod("POST", postIntegration);
         }
-        /** Client Assets */
-        // client bundle buckets
-        // client bundle cloudfront
     }
 }
 createStack();

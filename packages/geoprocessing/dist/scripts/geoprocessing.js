@@ -31,8 +31,14 @@ else {
                 stdio: "inherit"
             });
             break;
-        case "build":
+        case "build:lambda":
             child_process_1.spawn(`${__dirname}/../../scripts/build/build.sh`, {
+                cwd: process.cwd(),
+                stdio: "inherit"
+            });
+            break;
+        case "build:client":
+            child_process_1.spawn(`${__dirname}/../../scripts/build/build-client.sh`, {
                 cwd: process.cwd(),
                 stdio: "inherit"
             });

@@ -3,7 +3,7 @@ module.exports = (options, loaderContext) => {
     code: `module.exports = {
       ${options.clients
         .map(client => {
-          return `"${client.name}": require("../../${client.source}").default`;
+          return `"${client.name}": require("${client.source}").default`;
         })
         .join(",\n")}
     }`

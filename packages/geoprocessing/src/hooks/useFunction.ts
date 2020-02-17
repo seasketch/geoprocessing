@@ -63,7 +63,6 @@ export const useFunction = <ResultType>(
     } else {
       // TODO: local cache
       // find the appropriate endpoint and request results
-      console.log("useFunction", functionTitle, context.geoprocessingProject);
       let url;
       if (/^https:/.test(functionTitle)) {
         url = functionTitle;
@@ -78,7 +77,6 @@ export const useFunction = <ResultType>(
         }
         url = service.endpoint;
       }
-      console.log("url", url);
       // fetch task/results
       // TODO: Check for requiredProperties
       const payload: any = {

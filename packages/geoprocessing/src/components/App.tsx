@@ -11,15 +11,17 @@ import ReactDOM from 'react-dom';
 // Will be replaced by plugin with actual Report implementations
 // const REPORTS = require("@seasketch/geoprocessing/reports");
 const REPORTS = require("./client-loader");
-const projectRoot = "https://o88m6jvnhi.execute-api.us-west-1.amazonaws.com/prod/";
+const service = new URLSearchParams(window.location.search).get('service');
+if (!service) {
+  throw new Error("App must be loaded with `service` query string parameter");
+}
 // @ts-ignore
 window.REPORTS = REPORTS;
 
 let geoprocessingProject:GeoprocessingProject;
 let geoprocessingProjectFetchError:string;
-fetch(projectRoot).then(async (r) => {
+fetch(service).then(async (r) => {
   geoprocessingProject = await r.json();
-  console.log(geoprocessingProject);
 }).catch((e) => {
   geoprocessingProjectFetchError = e.toString();
 });
@@ -38,7 +40,6 @@ const App = () => {
     try {
       const message: SeaSketchReportingMessageEvent = JSON.parse(event.data);
       if (message && message.type === SeaSketchReportingMessageEventType) {
-        console.log('message', message);
         setReportContext({
           sketchProperties: message.sketchProperties,
           geometryUri: message.geometryUri,
@@ -70,7 +71,6 @@ const App = () => {
     return <div>{geoprocessingProjectFetchError}</div>
   } else if (reportContext && geoprocessingProject) {
     const Report = REPORTS[reportContext.clientName];
-    console.log('REport', Report, reportContext);
     return <ReportContext.Provider value={{
       ...reportContext,
       geoprocessingProject

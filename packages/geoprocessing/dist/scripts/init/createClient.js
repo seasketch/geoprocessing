@@ -61,7 +61,7 @@ async function makeClient(options, interactive = true, basePath = "./") {
     geoprocessingJson.clients.push({
         name: options.title,
         description: options.description,
-        source: `${fpath}/${options.title}.tsx`
+        source: `src/clients/${options.title}.tsx`
     });
     fs_extra_1.default.writeFileSync(path_1.default.join(basePath, "geoprocessing.json"), JSON.stringify(geoprocessingJson, null, "  "));
     const functions = geoprocessingJson.functions;

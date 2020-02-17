@@ -65,7 +65,7 @@ export async function makeClient(
   geoprocessingJson.clients.push({
     name: options.title,
     description: options.description,
-    source: `${fpath}/${options.title}.tsx`
+    source: `src/clients/${options.title}.tsx`
   });
   fs.writeFileSync(
     path.join(basePath, "geoprocessing.json"),

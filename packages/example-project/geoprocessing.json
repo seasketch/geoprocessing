@@ -2,9 +2,6 @@
   "author": "Chad Burt <support@seasketch.org>",
   "organization": "SeaSketch",
   "region": "us-west-1",
-  "functions": [
-    "src/functions/area.ts"
-  ],
   "clients": [
     {
       "name": "AreaClient",

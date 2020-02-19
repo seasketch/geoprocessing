@@ -19,6 +19,6 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@seasketch/geoprocessing": "latest"
+    "@seasketch/geoprocessing": "0.2.9"
   }
 }

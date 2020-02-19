@@ -17,7 +17,8 @@
   "keywords": [
     "@seasketch/geoprocessing"
   ],
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@seasketch/geoprocessing": "^0.2.5"
   },
   "author": "Chad Burt",

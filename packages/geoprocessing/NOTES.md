@@ -98,7 +98,13 @@ Big improvements
   * Make UI actually look nice
   * Better integration with seasketch admin interface
   * Async executionModel
-  * 
+  * Rate limiting
+  * Authorization
+  * De-dupe requests that apply to multiple ResultsCards
+  * Make sure caching results works
+  * Container tasks
+  * re-use iframes
+  * Add tests that actually init project from npm and run all creation and deployment steps
 
 "Linting"
   * stats on bundle sizes

@@ -167,7 +167,7 @@ async function makeProject(metadata, interactive = true, basePath = "") {
     await fs_extra_1.default.copyFile(`${__dirname}/../../../templates/exampleSketch.json`, path + "/examples/sketches/sketch.json");
     if (interactive) {
         spinner.start("installing dependencies with npm");
-        const { stderr, stdout, error } = await exec("npm install", {
+        const { stderr, stdout, error } = await exec("npm install --save-dev @seasketch/geoprocessing@latest", {
             cwd: metadata.name
         });
         if (error) {

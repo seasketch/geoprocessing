@@ -216,9 +216,12 @@ async function makeProject(
   );
   if (interactive) {
     spinner.start("installing dependencies with npm");
-    const { stderr, stdout, error } = await exec("npm install", {
-      cwd: metadata.name
-    });
+    const { stderr, stdout, error } = await exec(
+      "npm install --save-dev @seasketch/geoprocessing@latest",
+      {
+        cwd: metadata.name
+      }
+    );
     if (error) {
       console.log(error);
       process.exit();

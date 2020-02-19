@@ -84,6 +84,7 @@ export async function makeClient(
       .replace(/Client/g, options.title)
       .replace(/AreaResults/g, resultsType)
       .replace(`"area"`, `"${functionName}"`)
+      .replace(`functions/area`, `functions/${functionName}`)
   );
   await fs.writeFile(
     `${fpath}/${options.title}.stories.tsx`,

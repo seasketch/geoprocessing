@@ -74,7 +74,8 @@ async function makeClient(options, interactive = true, basePath = "./") {
         .toString()
         .replace(/Client/g, options.title)
         .replace(/AreaResults/g, resultsType)
-        .replace(`"area"`, `"${functionName}"`));
+        .replace(`"area"`, `"${functionName}"`)
+        .replace(`functions/area`, `functions/${functionName}`));
     await fs_extra_1.default.writeFile(`${fpath}/${options.title}.stories.tsx`, testCode.toString().replace(/Client/g, options.title));
     // TODO: make typescript optional
     spinner.succeed(`created ${options.title} client in ${fpath}/`);

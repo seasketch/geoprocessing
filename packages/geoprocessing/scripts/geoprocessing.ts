@@ -56,6 +56,12 @@ if (process.argv.length < 3) {
         stdio: "inherit"
       });
       break;
+    case "url":
+      spawn(`${__dirname}/../../scripts/deploy/url.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit"
+      });
+      break;
     default:
       throw new Error(`Command ${command} not supported.`);
       break;

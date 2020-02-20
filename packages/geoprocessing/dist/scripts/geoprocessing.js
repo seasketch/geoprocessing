@@ -61,6 +61,12 @@ else {
                 stdio: "inherit"
             });
             break;
+        case "url":
+            child_process_1.spawn(`${__dirname}/../../scripts/deploy/url.sh`, {
+                cwd: process.cwd(),
+                stdio: "inherit"
+            });
+            break;
         default:
             throw new Error(`Command ${command} not supported.`);
             break;

@@ -9,17 +9,10 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const plugin_commonjs_1 = __importDefault(require("@rollup/plugin-commonjs"));
 const plugin_node_resolve_1 = __importDefault(require("@rollup/plugin-node-resolve"));
-// import { terser } from "rollup-plugin-terser";
 const plugin_virtual_1 = __importDefault(require("@rollup/plugin-virtual"));
 const PROJECT_PATH = process.env.PROJECT_PATH;
-// const manifest = JSON.parse(
-//   fs.readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json")).toString()
-// );
 const pkg = JSON.parse(fs_1.default.readFileSync(path_1.default.join(PROJECT_PATH, "package.json")).toString());
 const functions = JSON.parse(fs_1.default.readFileSync(path_1.default.join(PROJECT_PATH, "geoprocessing.json")).toString()).functions.map(f => path_1.default.join(PROJECT_PATH, f));
-// const functions = manifest.functions.map(f =>
-//   path.join(PROJECT_PATH, f.handler)
-// );
 // These wrappers are necessary because otherwise the GeoprocessingHandler
 // class methods can't properly reference `this`
 const handlers = [];
@@ -48,13 +41,6 @@ exports.default = {
                 path_1.default.relative(__dirname + "../../../", `${PROJECT_PATH}`) + "/**/*.ts"
             ]
         }),
-        // virtual({
-        //   manifest: `
-        //     export default ${fs
-        //       .readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json"))
-        //       .toString()}
-        //   `
-        // }),
         plugin_node_resolve_1.default({
             include: "@seasketch/geoprocessing"
         }),
@@ -82,6 +68,6 @@ exports.default = {
     }
 };
 const staticExternals = ["@turf/area", "uuid", "aws-sdk"];
-const projectNodeModules = Object.keys(JSON.parse(fs_1.default.readFileSync(path_1.default.join(PROJECT_PATH, "package.json")).toString()).dependencies);
+const projectNodeModules = Object.keys(JSON.parse(fs_1.default.readFileSync(path_1.default.join(PROJECT_PATH, "package.json")).toString()).dependencies || {});
 const externals = [...staticExternals, ...projectNodeModules].filter(n => n !== "@seasketch/geoprocessing");
 //# sourceMappingURL=rollup.functions.config.js.map

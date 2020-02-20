@@ -177,6 +177,10 @@ class GeoprocessingCdkStack extends core.Stack {
 
       const resource = api.root.addResource(func.title);
       resource.addMethod("POST", postIntegration);
+
+      new core.CfnOutput(this, "ProjectRoot", {
+        value: api.urlForPath("/")
+      });
     }
   }
 }

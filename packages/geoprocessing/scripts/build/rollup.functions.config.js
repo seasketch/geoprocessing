@@ -4,22 +4,15 @@ import fs from "fs";
 import path from "path";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
-// import { terser } from "rollup-plugin-terser";
 import virtual from "@rollup/plugin-virtual";
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
-// const manifest = JSON.parse(
-//   fs.readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json")).toString()
-// );
 const pkg = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
 );
 const functions = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
 ).functions.map(f => path.join(PROJECT_PATH, f));
-// const functions = manifest.functions.map(f =>
-//   path.join(PROJECT_PATH, f.handler)
-// );
 
 // These wrappers are necessary because otherwise the GeoprocessingHandler
 // class methods can't properly reference `this`
@@ -53,13 +46,6 @@ export default {
         path.relative(__dirname + "../../../", `${PROJECT_PATH}`) + "/**/*.ts"
       ]
     }),
-    // virtual({
-    //   manifest: `
-    //     export default ${fs
-    //       .readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json"))
-    //       .toString()}
-    //   `
-    // }),
     resolve({
       include: "@seasketch/geoprocessing"
     }),
@@ -91,7 +77,7 @@ const staticExternals = ["@turf/area", "uuid", "aws-sdk"];
 const projectNodeModules = Object.keys(
   JSON.parse(
     fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
-  ).dependencies
+  ).dependencies || {}
 );
 const externals = [...staticExternals, ...projectNodeModules].filter(
   n => n !== "@seasketch/geoprocessing"

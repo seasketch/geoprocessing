@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { Manifest } from "../manifest";
 import { GeoprocessingServiceMetadata } from "../../src/types";
 import mock from "mock-require";
 

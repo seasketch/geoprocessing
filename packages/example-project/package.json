@@ -12,7 +12,8 @@
     "build": "geoprocessing build:lambda && geoprocessing build:client",
     "build:client": "geoprocessing build:client",
     "build:lambda": "geoprocessing build:lambda",
-    "storybook": "geoprocessing storybook"
+    "storybook": "geoprocessing storybook",
+    "url": "geoprocessing url"
   },
   "keywords": [
     "@seasketch/geoprocessing"

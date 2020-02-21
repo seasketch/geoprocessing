@@ -26,7 +26,7 @@ const projectMetadata = {
     sourceUri: projectPkg.repository ? projectPkg.repository.url : null,
     published: new Date().toISOString(),
     preprocessingServices: [],
-    clients: [],
+    clients: config.clients,
     feebackClients: [],
     functions: []
 };

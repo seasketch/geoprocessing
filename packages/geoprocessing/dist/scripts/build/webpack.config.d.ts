@@ -4,6 +4,7 @@ declare const _exports: {
         filename: string;
         path: string;
     };
+    devtool: string;
     resolve: {
         extensions: string[];
         modules: string[];

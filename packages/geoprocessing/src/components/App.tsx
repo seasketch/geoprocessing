@@ -11,21 +11,14 @@ import ReactDOM from 'react-dom';
 // Will be replaced by plugin with actual Report implementations
 // const REPORTS = require("@seasketch/geoprocessing/reports");
 const REPORTS = require("./client-loader");
-const service = new URLSearchParams(window.location.search).get('service');
+const searchParams = new URLSearchParams(window.location.search);
+const service = searchParams.get('service');
+const frameId = searchParams.get('frameId');
 if (!service) {
   throw new Error("App must be loaded with `service` query string parameter");
 }
 // @ts-ignore
 window.REPORTS = REPORTS;
-
-let geoprocessingProject:GeoprocessingProject;
-let geoprocessingProjectFetchError:string;
-fetch(service).then(async (r) => {
-  geoprocessingProject = await r.json();
-}).catch((e) => {
-  geoprocessingProjectFetchError = e.toString();
-});
-
 
 interface ReportContextState {
   clientName: string;
@@ -35,10 +28,12 @@ interface ReportContextState {
 
 const App = () => {
   const [reportContext, setReportContext] = useState<ReportContextState|null>(null);
+  const [geoprocessingProject, setGeoprocessingProject] = useState<GeoprocessingProject|null>(null);
+  const [geoprocessingProjectFetchError, setGeoprocessingProjectFetchError] = useState<string|null>(null);
   const [initialized, setInitialized] = useState(false);
   const onMessage = (event: MessageEvent) => {
     try {
-      const message: SeaSketchReportingMessageEvent = JSON.parse(event.data);
+      const message: SeaSketchReportingMessageEvent = event.data;
       if (message && message.type === SeaSketchReportingMessageEventType) {
         setReportContext({
           sketchProperties: message.sketchProperties,
@@ -48,22 +43,29 @@ const App = () => {
       }
     } catch (e) {
       // Do nothing. Might not even be related to SeaSketch reporting
+      console.error(e);
     }
   };
 
   useEffect(() => {
     // default to self for debugging
     let target:Window = window;
-    if (window.opener instanceof Window) {
-      target = window.opener;
+    if (window.parent) {
+      target = window.parent;
     }
-    target.addEventListener("message", onMessage);
+    window.addEventListener("message", onMessage);
     if (!initialized) {
-      target.postMessage("INIT", "*");
+      fetch(service).then(async (r) => {
+        const project = await r.json();
+        setGeoprocessingProject(project);
+      }).catch((e) => {
+        setGeoprocessingProjectFetchError(e.toString());
+      });
+      target.postMessage({type: "SeaSketchReportingInitEvent", frameId}, "*");
       setInitialized(true);
     }
     return () => {
-      target.removeEventListener("message", onMessage);
+      window.removeEventListener("message", onMessage);
     };
   }, [initialized]);
 
@@ -78,7 +80,7 @@ const App = () => {
       <Report />  
     </ReportContext.Provider>
   } else {
-    return <div>initialized</div>;
+    return <div />;
   }
 };
 

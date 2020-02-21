@@ -31,6 +31,7 @@ module.exports = {
     filename: "main.js",
     path: path.resolve(__dirname, "../../.build-web/")
   },
+  devtool: "source-map",
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     modules: [
@@ -38,7 +39,13 @@ module.exports = {
       path.join(PROJECT_PATH, "node_modules")
     ]
   },
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: pkg.name,
+      hash: true,
+      template: path.resolve(__dirname, "index.html")
+    })
+  ],
   module: {
     rules: [
       {

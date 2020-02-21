@@ -78,12 +78,19 @@ Client
   * x Integrate client packaging with build process
   * x Deploy client with build
     * x Make sure cache headers are set properly and assets can be found from project manifest
-  * Make sure client init works, including in npm-based workflow
-    * doesn't build, likely due to App.tsx not being recognized by the ts loader
-  * Get the legacy client working again in SeaSketch, possibly using new apis
+  * x Make sure client init works, including in npm-based workflow
+    * x doesn't build, likely due to App.tsx not being recognized by the ts loader
+  * x Get the legacy client working again in SeaSketch, possibly using new apis
   * Create unit tests for client hooks and such?
 
 Big improvements
+  * Better loading indicators
+  * Make UI actually look nice
+  * De-dupe requests that apply to multiple ResultsCards
+  * Data Sources
+  * Preprocessing
+  * Async executionModel
+  * Make sure caching results works
   * Documentation
     * MDX storybook component docs
     * Author documentation
@@ -93,15 +100,8 @@ Big improvements
     * Protocols and underlying systems
       * reference type definitions
   * Tabs
-  * Data Sources
-  * Preprocessing
-  * Make UI actually look nice
-  * Better integration with seasketch admin interface
-  * Async executionModel
   * Rate limiting
   * Authorization
-  * De-dupe requests that apply to multiple ResultsCards
-  * Make sure caching results works
   * Container tasks
   * re-use iframes
   * Add tests that actually init project from npm and run all creation and deployment steps

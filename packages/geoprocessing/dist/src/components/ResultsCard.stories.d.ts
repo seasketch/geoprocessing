@@ -8,4 +8,5 @@ declare const _default: {
 export default _default;
 export declare const usage: () => JSX.Element;
 export declare const loadingState: () => JSX.Element;
+export declare const customSkeleton: () => JSX.Element;
 export declare const errorState: () => JSX.Element;

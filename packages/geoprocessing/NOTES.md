@@ -83,13 +83,13 @@ Client
   * x Get the legacy client working again in SeaSketch, possibly using new apis
 
 Big improvements
-  * De-dupe requests that apply to multiple ResultsCards
+  * x De-dupe requests that apply to multiple ResultsCards
   * Better loading indicators
   * Make UI actually look nice
-  * Make sure caching results works
+  * x Make sure caching results works... but how can it work when isolated in an iframe. Guess they have to be reused
   * Tests overall...
     * client
-      * useFunction
+      * x useFunction
       * useSketchProperties
       * ResultsCard
     * lambda
@@ -114,13 +114,11 @@ Big improvements
   * Rate limiting
   * Authorization
   * Container tasks
-  * re-use iframes? this seems like a nice-to-have that would only decrease latency by 100ms or less
-  * Add tests that actually init project from npm and run all creation and deployment steps
+  * re-use iframes? this seems like a nice-to-have that would only decrease latency by 100ms or less. BUT has local caching implications...
 
 "Linting"
   * stats on bundle sizes
   * stats on imported json or distributed geobuf files
   * performance benchmarking of functions
-  * 
 
 

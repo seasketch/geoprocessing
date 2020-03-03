@@ -1,6 +1,25 @@
 import { GeoprocessingTask, GeoprocessingTaskStatus } from "../tasks";
 import { useState, useContext, useEffect } from "react";
 import ReportContext from "../ReportContext";
+import LRUCache from "mnemonist/lru-cache";
+import { GeoprocessingRequest } from "../types";
+
+const resultsCache = new LRUCache<string, GeoprocessingTask>(
+  Uint32Array,
+  Array,
+  12
+);
+const makeLRUCacheKey = (func: string, cacheKey: string): string =>
+  `${func}-${cacheKey}`;
+
+interface PendingRequest {
+  functionName: string;
+  cacheKey: string;
+  promise: Promise<GeoprocessingTask>;
+  task?: GeoprocessingTask;
+}
+
+let pendingRequests: PendingRequest[] = [];
 
 interface FunctionState<ResultType> {
   /** Populated as soon as the function request returns */
@@ -45,7 +64,6 @@ export const useFunction = <ResultType>(
         });
         return;
       }
-      // TODO: local cache
       // find the appropriate endpoint and request results
       let url;
       if (/^https:/.test(functionTitle)) {
@@ -63,23 +81,68 @@ export const useFunction = <ResultType>(
       }
       // fetch task/results
       // TODO: Check for requiredProperties
-      const payload: any = {
+      const payload: GeoprocessingRequest = {
         geometryUri: context.geometryUri
       };
       if (context.sketchProperties.id && context.sketchProperties.updatedAt) {
         payload.cacheKey = `${context.sketchProperties.id}-${context.sketchProperties.updatedAt}`;
       }
-      (async () => {
-        try {
-          const response = await fetch(url, {
-            signal: abortController.signal,
-            method: "post",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
+
+      if (payload.cacheKey) {
+        // check results cache. may already be available
+        const task = resultsCache.get(
+          makeLRUCacheKey(functionTitle, payload.cacheKey)
+        ) as GeoprocessingTask<ResultType> | undefined;
+        if (task) {
+          setState({
+            loading: false,
+            task: task,
+            error: task.error
           });
-          const task: GeoprocessingTask = await response.json();
+          return;
+        }
+      }
+
+      let pendingRequest: Promise<GeoprocessingTask> | undefined;
+      if (payload.cacheKey) {
+        // check for in-flight requests
+        const pending = pendingRequests.find(
+          r =>
+            r.cacheKey === payload.cacheKey && r.functionName === functionTitle
+        );
+        if (pending) {
+          setState({
+            loading: true,
+            task: pending.task,
+            error: undefined
+          });
+          // attach handlers to promise
+          pendingRequest = pending.promise;
+        }
+      }
+
+      if (!pendingRequest) {
+        setState({
+          loading: true,
+          task: undefined,
+          error: undefined
+        });
+        pendingRequest = runTask(url, payload, abortController.signal);
+        if (payload.cacheKey) {
+          const pr = {
+            cacheKey: payload.cacheKey,
+            functionName: functionTitle,
+            promise: pendingRequest
+          };
+          pendingRequests.push(pr);
+          pendingRequest.finally(() => {
+            pendingRequests = pendingRequests.filter(p => p !== pr);
+          });
+        }
+      }
+
+      pendingRequest
+        .then(task => {
           if (
             !task.status ||
             ["pending", "completed", "failed"].indexOf(task.status) === -1
@@ -91,23 +154,73 @@ export const useFunction = <ResultType>(
             task: task,
             error: task.error
           });
+          if (
+            payload.cacheKey &&
+            task.status === GeoprocessingTaskStatus.Completed
+          ) {
+            resultsCache.set(
+              makeLRUCacheKey(functionTitle, payload.cacheKey),
+              task
+            );
+          }
           if (task.status === GeoprocessingTaskStatus.Pending) {
             // TODO: async executionMode
             throw new Error("Async executionMode not yet supported");
           }
-        } catch (e) {
+        })
+        .catch(e => {
           if (!abortController.signal.aborted) {
             setState({
               loading: false,
               error: e.toString()
             });
           }
-        }
-      })();
+        });
+
+      // setState({
+      //   loading: task.status === GeoprocessingTaskStatus.Pending,
+      //   task: task,
+      //   error: task.error
+      // });
+
+      // (async () => {
+      //   try {
+      //     const response = await fetch(url, {
+      //       signal: abortController.signal,
+      //       method: "post",
+      //       headers: {
+      //         "Content-Type": "application/json"
+      //       },
+      //       body: JSON.stringify(payload)
+      //     });
+      //     const task: GeoprocessingTask = await response.json();
+      //     if (
+      //       !task.status ||
+      //       ["pending", "completed", "failed"].indexOf(task.status) === -1
+      //     ) {
+      //       throw new Error("Could not parse response from lambda function");
+      //     }
+      //     setState({
+      //       loading: task.status === GeoprocessingTaskStatus.Pending,
+      //       task: task,
+      //       error: task.error
+      //     });
+      //     if (task.status === GeoprocessingTaskStatus.Pending) {
+      //       // TODO: async executionMode
+      //       throw new Error("Async executionMode not yet supported");
+      //     }
+      //   } catch (e) {
+      //     if (!abortController.signal.aborted) {
+      //       setState({
+      //         loading: false,
+      //         error: e.toString()
+      //       });
+      //     }
+      //   }
+      // })();
     } else {
       // In test or storybook environment, so this will just load example data
       // or simulate loading and error states.
-      console.warn("useFunction in test mode", context);
       const data = context.exampleOutputs.find(
         output => output.functionName === functionTitle
       );
@@ -145,4 +258,31 @@ export const useFunction = <ResultType>(
     };
   }, [context.geometryUri, context.sketchProperties, functionTitle]);
   return state;
+};
+
+const runTask = async (
+  url: string,
+  payload: GeoprocessingRequest,
+  signal: AbortSignal
+): Promise<GeoprocessingTask> => {
+  const response = await fetch(url, {
+    signal: signal,
+    method: "post",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+  const task: GeoprocessingTask = await response.json();
+  if (
+    !task.status ||
+    ["pending", "completed", "failed"].indexOf(task.status) === -1
+  ) {
+    throw new Error("Could not parse response from lambda function");
+  }
+  if (task.status === GeoprocessingTaskStatus.Pending) {
+    // TODO: async executionMode
+    throw new Error("Async executionMode not yet supported");
+  }
+  return task;
 };

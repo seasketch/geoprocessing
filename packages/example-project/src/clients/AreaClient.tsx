@@ -1,7 +1,8 @@
 import React from "react";
 import {
   ResultsCard,
-  SketchAttributesCard
+  SketchAttributesCard,
+  Skeleton
 } from "@seasketch/geoprocessing/client";
 // Import the results type definition from your functions to type-check your
 // component render functions
@@ -13,17 +14,27 @@ const AreaClient = () => {
   return (
     <>
       <SketchAttributesCard />
-      <ResultsCard title="Zone Size" functionName="area">
-        {(data:AreaResults) => (
+      <ResultsCard
+        title="Zone Size"
+        functionName="area"
+        skeleton={<LoadingSkeleton />}
+      >
+        {(data: AreaResults) => (
           <p>
-            📐This feature is <b>{
-              Number.format(Math.round(data.area * 1e-6))
-            }</b> square kilometers.
+            📐This feature is{" "}
+            <b>{Number.format(Math.round(data.area * 1e-6))}</b> square
+            kilometers.
           </p>
         )}
       </ResultsCard>
     </>
   );
 };
+
+const LoadingSkeleton = () => (
+  <p>
+    <Skeleton style={{}} />
+  </p>
+);
 
 export default AreaClient;

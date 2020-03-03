@@ -81,16 +81,27 @@ Client
   * x Make sure client init works, including in npm-based workflow
     * x doesn't build, likely due to App.tsx not being recognized by the ts loader
   * x Get the legacy client working again in SeaSketch, possibly using new apis
-  * Create unit tests for client hooks and such?
 
 Big improvements
+  * De-dupe requests that apply to multiple ResultsCards
   * Better loading indicators
   * Make UI actually look nice
-  * De-dupe requests that apply to multiple ResultsCards
-  * Data Sources
-  * Preprocessing
-  * Async executionModel
   * Make sure caching results works
+  * Tests overall...
+    * client
+      * useFunction
+      * useSketchProperties
+      * ResultsCard
+    * lambda
+      * handlers - test behavior in all exceptional conditions
+      * eventually test storage of files, access control, rate limiting features
+    * framework itself
+      * add tests to build from init without lerna?
+      * github actions
+  * SketchAttributesCard
+  * Data Sources
+  * Async executionModel
+  * Preprocessing
   * Documentation
     * MDX storybook component docs
     * Author documentation
@@ -103,7 +114,7 @@ Big improvements
   * Rate limiting
   * Authorization
   * Container tasks
-  * re-use iframes
+  * re-use iframes? this seems like a nice-to-have that would only decrease latency by 100ms or less
   * Add tests that actually init project from npm and run all creation and deployment steps
 
 "Linting"

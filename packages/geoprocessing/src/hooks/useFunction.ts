@@ -32,35 +32,19 @@ export const useFunction = <ResultType>(
     setState({
       loading: true
     });
-    if (context.exampleOutputs) {
-      // In test or storybook environment
-      const data = context.exampleOutputs.find(
-        output => output.functionName === functionTitle
-      );
-      if (!data && !context.simulateLoading && !context.simulateError) {
-        throw new Error(
-          `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`
-        );
+    if (!context.exampleOutputs) {
+      if (
+        !context.geoprocessingProject &&
+        context.geometryUri &&
+        !/https:/.test(functionTitle)
+      ) {
+        setState({
+          loading: false,
+          error:
+            "Client Error: ReportContext `geometryUri` is set but `geoprocessingProject` is not"
+        });
+        return;
       }
-      // create a fake GeoprocessingTask record and set state, returning value
-      setState({
-        loading: context.simulateLoading ? context.simulateLoading : false,
-        task: {
-          id: "abc123",
-          location: "https://localhost/abc123",
-          service: "https://localhost",
-          logUriTemplate: "https://localhost/logs/abc123",
-          geometryUri: "https://localhost/geometry/abc123",
-          wss: "wss://localhost/logs/abc123",
-          status: GeoprocessingTaskStatus.Completed,
-          startedAt: new Date().toISOString(),
-          duration: 0,
-          data: (data || {}).results as ResultType,
-          error: context.simulateError ? context.simulateError : undefined
-        },
-        error: context.simulateError ? context.simulateError : undefined
-      });
-    } else {
       // TODO: local cache
       // find the appropriate endpoint and request results
       let url;
@@ -96,6 +80,12 @@ export const useFunction = <ResultType>(
             body: JSON.stringify(payload)
           });
           const task: GeoprocessingTask = await response.json();
+          if (
+            !task.status ||
+            ["pending", "completed", "failed"].indexOf(task.status) === -1
+          ) {
+            throw new Error("Could not parse response from lambda function");
+          }
           setState({
             loading: task.status === GeoprocessingTaskStatus.Pending,
             task: task,
@@ -114,7 +104,42 @@ export const useFunction = <ResultType>(
           }
         }
       })();
+    } else {
+      // In test or storybook environment, so this will just load example data
+      // or simulate loading and error states.
+      console.warn("useFunction in test mode", context);
+      const data = context.exampleOutputs.find(
+        output => output.functionName === functionTitle
+      );
+      if (!data && !context.simulateLoading && !context.simulateError) {
+        throw new Error(
+          `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`
+        );
+      }
+      // create a fake GeoprocessingTask record and set state, returning value
+      setState({
+        loading: context.simulateLoading ? context.simulateLoading : false,
+        task: {
+          id: "abc123",
+          location: "https://localhost/abc123",
+          service: "https://localhost",
+          logUriTemplate: "https://localhost/logs/abc123",
+          geometryUri: "https://localhost/geometry/abc123",
+          wss: "wss://localhost/logs/abc123",
+          status: GeoprocessingTaskStatus.Completed,
+          startedAt: new Date().toISOString(),
+          duration: 0,
+          data: (data || {}).results as ResultType,
+          error: context.simulateError ? context.simulateError : undefined
+        },
+        error: context.simulateError ? context.simulateError : undefined
+      });
+      // end test mode handling
     }
+    // Upon teardown any outstanding requests should be aborted. This useEffect
+    // cleanup function will run whenever geometryUri, sketchProperties, or
+    // functionTitle context vars are changed, or if the component is being
+    // unmounted
     return () => {
       abortController.abort();
     };

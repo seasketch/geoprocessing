@@ -68,7 +68,6 @@
     "inquirer-autocomplete-prompt": "^1.0.1",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^25.1.0",
-    "jest-fetch-mock": "^3.0.1",
     "mock-require": "^3.0.3",
     "ora": "^4.0.3",
     "pascalcase": "^1.0.0",
@@ -90,5 +89,13 @@
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
   },
-  "gitHead": "c9e372ac9197eefe5b965bfa0c4633a6a1c5e671"
+  "gitHead": "c9e372ac9197eefe5b965bfa0c4633a6a1c5e671",
+  "devDependencies": {
+    "@babel/preset-react": "^7.8.3",
+    "@testing-library/jest-dom": "^5.1.1",
+    "@testing-library/react": "^9.4.1",
+    "@testing-library/react-hooks": "^3.2.1",
+    "jest-fetch-mock": "^3.0.1",
+    "react-test-renderer": "^16.13.0"
+  }
 }

@@ -4,3 +4,4 @@ cdk.out
 lerna-debug.log
 .build
 .build-web
+packages/geoprocessing/dist

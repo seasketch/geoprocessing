@@ -20,6 +20,7 @@ const path_1 = __importDefault(require("path"));
 const dynamodb = require("@aws-cdk/aws-dynamodb");
 const slugify_1 = __importDefault(require("slugify"));
 const s3deploy = __importStar(require("@aws-cdk/aws-s3-deployment"));
+const aws_s3_deployment_1 = require("@aws-cdk/aws-s3-deployment");
 if (!process.env.PROJECT_PATH) {
     throw new Error("PROJECT_PATH env var not specified");
 }
@@ -65,11 +66,16 @@ class GeoprocessingCdkStack extends core.Stack {
         // Will run cloudfront invalidation on changes
         new s3deploy.BucketDeployment(
         // @ts-ignore
-        this, "DeployWebsite", {
+        this, "DeployWebsiteIndex", {
             sources: [s3deploy.Source.asset(path_1.default.join(PROJECT_PATH, ".build-web"))],
             destinationBucket: websiteBucket,
             distribution: distribution,
-            distributionPaths: ["/*"]
+            distributionPaths: ["/*"],
+            cacheControl: [
+                aws_s3_deployment_1.CacheControl.setPublic(),
+                // @ts-ignore
+                aws_s3_deployment_1.CacheControl.maxAge(core.Duration.days(365))
+            ]
         });
         /** Lambda Service Assets */
         // Bucket for storing outputs of geoprocessing functions. These resources

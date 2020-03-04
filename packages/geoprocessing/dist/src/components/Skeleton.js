@@ -1,4 +1,6 @@
+// @ts-ignore
 import styled from "styled-components";
+// @ts-ignore
 export default styled.div `
   display: inline-block;
   height: auto;

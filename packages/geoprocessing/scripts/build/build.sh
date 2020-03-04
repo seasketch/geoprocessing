@@ -16,7 +16,7 @@ rm -rf .build
 mkdir .build
 
 # Create lambda handler functions
-rollup -c scripts/build/rollup.functions.config.js
+npx rollup -c scripts/build/rollup.functions.config.js
 # Copy files and all node_modules related to handlers
 cp -R .build/* $PROJECT_PATH/.build/
 mkdir $PROJECT_PATH/.build/node_modules
@@ -31,7 +31,7 @@ rm -rf $PROJECT_PATH/.build/node_modules/@seasketch/geoprocessing
 node dist/scripts/build/createManifest.js
 
 # Build high-level services for the geoprocessing apis
-rollup -c scripts/build/rollup.services.config.js
+npx rollup -c scripts/build/rollup.services.config.js
 cp .build/serviceHandlers.js $PROJECT_PATH/.build/
 
 # Cleanup 

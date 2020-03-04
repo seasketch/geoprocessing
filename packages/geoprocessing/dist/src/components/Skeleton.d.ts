@@ -1,2 +1,2 @@
-declare const _default: import("styled-components").StyledComponent<"div", any, {}, never>;
+declare const _default: any;
 export default _default;

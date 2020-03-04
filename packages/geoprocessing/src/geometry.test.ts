@@ -1,5 +1,6 @@
 import { fetchGeoJSON } from "../src/geometry";
 import { Sketch } from "./index";
+import { SketchProperties } from "./types";
 
 // @ts-ignore
 global.fetch = require("jest-fetch-mock");
@@ -11,9 +12,8 @@ const exampleSketch: Sketch = {
     id: "1234abcd",
     updatedAt: new Date().toISOString(),
     name: "Sketch A",
-    sketchClassId: "123abc",
-    foo: "bar"
-  },
+    sketchClassId: "123abc"
+  } as SketchProperties,
   geometry: {
     type: "Polygon",
     coordinates: [

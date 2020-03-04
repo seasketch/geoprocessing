@@ -1,6 +1,7 @@
 import React, { useState, ReactNode } from "react";
 import Card, { Props } from "./Card";
 import { useFunction } from "../hooks/useFunction";
+// @ts-ignore
 import styled from "styled-components";
 import Skeleton from "./Skeleton";
 
@@ -19,6 +20,7 @@ const DefaultSkeleton = () => (
   </p>
 );
 
+// @ts-ignore
 const ErrorIndicator = styled.div`
   display: inline-block;
   font-weight: bold;

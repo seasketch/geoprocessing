@@ -84,8 +84,8 @@ Client
 
 Big improvements
   * x De-dupe requests that apply to multiple ResultsCards
-  * Better loading indicators
-  * Make UI actually look nice
+  * x Better loading indicators
+  * x Make UI actually look nice
   * x Make sure caching results works... but how can it work when isolated in an iframe. Guess they have to be reused
   * Tests overall...
     * client

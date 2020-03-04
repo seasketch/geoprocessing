@@ -2,7 +2,7 @@ import React from "react";
 import ResultsCard from "./ResultsCard";
 import ReportDecorator from "./ReportDecorator";
 import ReportContext, { TestExampleOutput } from "../ReportContext";
-import { GeoprocessingProject } from "../types";
+import { GeoprocessingProject, SketchProperties } from "../types";
 import { v4 as uuid } from "uuid";
 import Skeleton from "./Skeleton";
 
@@ -20,7 +20,7 @@ export const usage = () => (
         name: "My Sketch",
         updatedAt: new Date().toISOString(),
         sketchClassId: "abc123"
-      },
+      } as SketchProperties,
       geoprocessingProject: {} as GeoprocessingProject,
       exampleOutputs: [
         {
@@ -54,7 +54,7 @@ export const loadingState = () => (
         name: "My Sketch",
         updatedAt: new Date().toISOString(),
         sketchClassId: "abc123"
-      },
+      } as SketchProperties,
       geoprocessingProject: {} as GeoprocessingProject,
       exampleOutputs: [
         {
@@ -89,7 +89,7 @@ export const customSkeleton = () => (
         name: "My Sketch",
         updatedAt: new Date().toISOString(),
         sketchClassId: "abc123"
-      },
+      } as SketchProperties,
       geoprocessingProject: {} as GeoprocessingProject,
       exampleOutputs: [
         {
@@ -137,7 +137,7 @@ export const errorState = () => (
         name: "My Sketch",
         updatedAt: new Date().toISOString(),
         sketchClassId: "abc123"
-      },
+      } as SketchProperties,
       geoprocessingProject: {} as GeoprocessingProject,
       exampleOutputs: [
         {

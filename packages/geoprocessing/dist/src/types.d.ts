@@ -1,11 +1,19 @@
 import { FeatureCollection, Feature, Geometry } from "geojson";
 export declare type ExecutionMode = "async" | "sync";
 export interface SketchProperties {
+    id: string;
     /** Name specified by the author of the sketch */
     name: string;
     updatedAt: string;
+    createdAt: string;
     sketchClassId: string;
-    [name: string]: any;
+    userAttributes: UserAttribute[];
+}
+export interface UserAttribute {
+    exportId: string;
+    label: string;
+    value: any;
+    fieldType: string;
 }
 export interface Sketch extends Feature {
     properties: SketchProperties;

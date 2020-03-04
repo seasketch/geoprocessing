@@ -1,1 +1,1 @@
-{"version":3,"file":"Skeleton.js","sourceRoot":"","sources":["../../../src/components/Skeleton.tsx"],"names":[],"mappings":"AACA,OAAO,MAAM,MAAM,mBAAmB,CAAC;AAEvC,eAAe,MAAM,CAAC,GAAG,CAAA;;;;;;;;;;;;;;;;;;;;;;CAsBxB,CAAC"}
+{"version":3,"file":"Skeleton.js","sourceRoot":"","sources":["../../../src/components/Skeleton.tsx"],"names":[],"mappings":"AACA,aAAa;AACb,OAAO,MAAM,MAAM,mBAAmB,CAAC;AAEvC,aAAa;AACb,eAAe,MAAM,CAAC,GAAG,CAAA;;;;;;;;;;;;;;;;;;;;;;CAsBxB,CAAC"}

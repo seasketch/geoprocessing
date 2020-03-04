@@ -263,7 +263,7 @@ export const useFunction = <ResultType>(
 const runTask = async (
   url: string,
   payload: GeoprocessingRequest,
-  signal: AbortSignal
+  signal: any
 ): Promise<GeoprocessingTask> => {
   const response = await fetch(url, {
     signal: signal,

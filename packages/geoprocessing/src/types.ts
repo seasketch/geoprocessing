@@ -8,12 +8,22 @@ import {
 export type ExecutionMode = "async" | "sync";
 
 export interface SketchProperties {
+  id: string;
   /** Name specified by the author of the sketch */
   name: string;
   // ISO 8601 date/time string
   updatedAt: string;
+  // ISO 8601 date/time string
+  createdAt: string;
   sketchClassId: string;
-  [name: string]: any;
+  userAttributes: UserAttribute[];
+}
+
+export interface UserAttribute {
+  exportId: string;
+  label: string;
+  value: any;
+  fieldType: string;
 }
 
 export interface Sketch extends Feature {

@@ -1,6 +1,7 @@
 import React from "react";
 import Card from "./Card";
 import { useFunction } from "../hooks/useFunction";
+// @ts-ignore
 import styled from "styled-components";
 import Skeleton from "./Skeleton";
 const DefaultSkeleton = () => (React.createElement("p", null,
@@ -8,6 +9,7 @@ const DefaultSkeleton = () => (React.createElement("p", null,
     React.createElement(Skeleton, null),
     React.createElement(Skeleton, null),
     React.createElement(Skeleton, { style: { width: "25%" } })));
+// @ts-ignore
 const ErrorIndicator = styled.div `
   display: inline-block;
   font-weight: bold;

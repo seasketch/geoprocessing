@@ -9,18 +9,18 @@ import "@testing-library/jest-dom/extend-expect";
 import { useFunction } from "./useFunction";
 import ReportContext, { ReportContextValue } from "../ReportContext";
 import { v4 as uuid } from "uuid";
-import { GeoprocessingProject } from "../types";
+import { GeoprocessingProject, SketchProperties } from "../types";
 import { GeoprocessingTaskStatus, GeoprocessingTask } from "../tasks";
 import { renderHook, act } from "@testing-library/react-hooks";
 
-const makeSketchProperties = (id?: string) => {
+const makeSketchProperties = (id?: string): SketchProperties => {
   id = id || uuid();
   return {
     id,
     name: "sketch name",
     updatedAt: new Date().toISOString(),
     sketchClassId: "abc123"
-  };
+  } as SketchProperties;
 };
 
 const ContextWrapper: React.FunctionComponent<{

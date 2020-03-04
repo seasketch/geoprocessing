@@ -8,8 +8,7 @@ const exampleSketch = {
         id: "1234abcd",
         updatedAt: new Date().toISOString(),
         name: "Sketch A",
-        sketchClassId: "123abc",
-        foo: "bar"
+        sketchClassId: "123abc"
     },
     geometry: {
         type: "Polygon",

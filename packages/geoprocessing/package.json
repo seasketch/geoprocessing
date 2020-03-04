@@ -18,7 +18,7 @@
     "url": "git+https://github.com/seasketch/geoprocessing.git"
   },
   "author": "Chad Burt",
-  "license": "UNLICENSED",
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/seasketch/geoprocessing/issues"
   },

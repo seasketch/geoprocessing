@@ -22,7 +22,7 @@
     "@seasketch/geoprocessing": "^0.3.0"
   },
   "author": "Chad Burt",
-  "license": "UNLICENSED",
+  "license": "BSD-3-Clause",
   "repositoryUrl": "https://github.com/seasketch/example-project",
   "repository": {
     "type": "git",

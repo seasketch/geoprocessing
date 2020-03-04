@@ -1,6 +1,6 @@
 {
     "name": "@seasketch/geoprocessing",
-    "version": "0.2.10",
+    "version": "0.3.0",
     "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
@@ -18,7 +18,7 @@
         "url": "git+https://github.com/seasketch/geoprocessing.git"
     },
     "author": "Chad Burt",
-    "license": "UNLICENSED",
+    "license": "BSD-3-Clause",
     "bugs": {
         "url": "https://github.com/seasketch/geoprocessing/issues"
     },

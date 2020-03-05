@@ -161,7 +161,12 @@ export const useFunction = <ResultType>(
               !task.status ||
               ["pending", "completed", "failed"].indexOf(task.status) === -1
             ) {
-              throw new Error("Could not parse response from lambda function");
+              setState({
+                loading: false,
+                task: task,
+                error: `Could not parse response from geoprocessing function.`
+              });
+              return;
             }
             setState({
               loading: task.status === GeoprocessingTaskStatus.Pending,
@@ -250,12 +255,6 @@ const runTask = async (
   if (signal.aborted) {
     throw new Error("Request aborted");
   } else {
-    if (
-      !task.status ||
-      ["pending", "completed", "failed"].indexOf(task.status) === -1
-    ) {
-      throw new Error("Could not parse response from lambda function");
-    }
     if (task.status === GeoprocessingTaskStatus.Pending) {
       // TODO: async executionMode
       throw new Error("Async executionMode not yet supported");

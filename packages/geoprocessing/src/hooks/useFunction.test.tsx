@@ -58,48 +58,46 @@ beforeEach(() => {
   fetchMock.resetHistory();
 });
 
-// can't seem to catch these throws because of Promise maze...
-
-// test("useFunction won't accept unrecognizable responses", async () => {
-//   jest.useFakeTimers();
-//   global.fetch.mockResponseOnce(JSON.stringify({ "huh?": "12345" }));
-//   const { result } = renderHook(() => useFunction("calcFoo"), {
-//     wrapper: ContextWrapper
-//   });
-//   expect(result.current.loading).toBe(true);
-//   try {
-//     await act(async () => {
-//       jest.runAllTimers();
-//       await sleep(10);
-//     });
-//   } catch (e) {}
-//   console.log("after act");
-//   expect(fetchMock.calls.length).toBe(1);
-//   expect(result.current.loading).toBe(false);
-//   // expect(result.current.error).toContain("response");
-// });
-
-// function sleep(ms: number) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
-// }
+test("useFunction won't accept unrecognizable responses", async () => {
+  jest.useFakeTimers();
+  fetchMock.postOnce(
+    "https://example.com/calcFoo",
+    JSON.stringify({ "huh?": "12345" }),
+    { overwriteRoutes: true }
+  );
+  const { result } = renderHook(() => useFunction("calcFoo"), {
+    wrapper: ContextWrapper
+  });
+  expect(result.current.loading).toBe(true);
+  await act(async () => {
+    jest.runAllTimers();
+  });
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(result.current.loading).toBe(false);
+  expect(result.current.error).toContain("response");
+});
 
 test("useFunction unsets loading prop and sets task upon completion of job (executionMode=sync)", async () => {
   jest.useFakeTimers();
   const id = uuid();
-  fetchMock.postOnce("https://example.com/calcFoo", {
-    startedAt: new Date().toISOString(),
-    duration: 10,
-    geometryUri: `https://example.com/calcFoo/${id}/geometry`,
-    location: `https://example.com/calcFoo/${id}`,
-    id,
-    logUriTemplate: `https://example.com/calcFoo/${id}/logs`,
-    service: "calcFoo",
-    wss: `wss://example.com/calcFoo/${id}`,
-    status: "completed",
-    data: {
-      foo: "plenty"
-    }
-  } as GeoprocessingTask);
+  fetchMock.postOnce(
+    "https://example.com/calcFoo",
+    JSON.stringify({
+      startedAt: new Date().toISOString(),
+      duration: 10,
+      geometryUri: `https://example.com/calcFoo/${id}/geometry`,
+      location: `https://example.com/calcFoo/${id}`,
+      id,
+      logUriTemplate: `https://example.com/calcFoo/${id}/logs`,
+      service: "calcFoo",
+      wss: `wss://example.com/calcFoo/${id}`,
+      status: "completed",
+      data: {
+        foo: "plenty"
+      }
+    } as GeoprocessingTask),
+    { overwriteRoutes: true }
+  );
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper
   });

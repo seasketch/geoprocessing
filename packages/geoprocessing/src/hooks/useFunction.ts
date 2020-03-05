@@ -86,9 +86,11 @@ export const useFunction = <ResultType>(
             s => s.title === functionTitle
           );
           if (!service) {
-            throw new Error(
-              `Could not find service for function titled ${functionTitle}`
-            );
+            setState({
+              loading: false,
+              error: `Could not find service for function titled ${functionTitle}`
+            });
+            return;
           }
           url = service.endpoint;
         }
@@ -184,7 +186,12 @@ export const useFunction = <ResultType>(
             }
             if (task.status === GeoprocessingTaskStatus.Pending) {
               // TODO: async executionMode
-              throw new Error("Async executionMode not yet supported");
+              setState({
+                loading: false,
+                task: task,
+                error: "Async executionMode not yet supported"
+              });
+              return;
             }
           })
           .catch(e => {
@@ -255,10 +262,6 @@ const runTask = async (
   if (signal.aborted) {
     throw new Error("Request aborted");
   } else {
-    if (task.status === GeoprocessingTaskStatus.Pending) {
-      // TODO: async executionMode
-      throw new Error("Async executionMode not yet supported");
-    }
     return task;
   }
 };

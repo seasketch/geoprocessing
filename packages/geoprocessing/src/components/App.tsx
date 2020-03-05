@@ -43,6 +43,17 @@ const App = () => {
     }
   };
 
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "x") {
+      if (window.parent) {
+        window.parent.postMessage(
+          { type: "SeaSketchReportingKeydownEvent", key: "x" },
+          "*"
+        );
+      }
+    }
+  };
+
   useEffect(() => {
     // default to self for debugging
     let target: Window = window;
@@ -50,12 +61,14 @@ const App = () => {
       target = window.parent;
     }
     window.addEventListener("message", onMessage);
+    window.addEventListener("keydown", onKeyDown);
     if (!initialized) {
       target.postMessage({ type: "SeaSketchReportingInitEvent", frameId }, "*");
       setInitialized(true);
     }
     return () => {
       window.removeEventListener("message", onMessage);
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, [initialized]);
 

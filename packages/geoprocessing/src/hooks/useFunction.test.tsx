@@ -12,6 +12,8 @@ import { v4 as uuid } from "uuid";
 import { GeoprocessingProject, SketchProperties } from "../types";
 import { GeoprocessingTaskStatus, GeoprocessingTask } from "../tasks";
 import { renderHook, act } from "@testing-library/react-hooks";
+// @ts-ignore
+import fetchMock from "fetch-mock-jest";
 
 const makeSketchProperties = (id?: string): SketchProperties => {
   id = id || uuid();
@@ -33,14 +35,7 @@ const ContextWrapper: React.FunctionComponent<{
       value={{
         geometryUri: `https://localhost/${sketchProperties.id}`,
         sketchProperties,
-        geoprocessingProject: {
-          geoprocessingServices: [
-            {
-              title: "calcFoo",
-              endpoint: "https://example.com/calcFoo"
-            }
-          ]
-        } as GeoprocessingProject,
+        projectUrl: "https://example.com/project",
         ...(props.value || {})
       }}
     >
@@ -49,8 +44,18 @@ const ContextWrapper: React.FunctionComponent<{
   );
 };
 
+fetchMock.get("https://example.com/project", {
+  geoprocessingServices: [
+    {
+      title: "calcFoo",
+      endpoint: "https://example.com/calcFoo"
+    }
+  ]
+});
+
+const consoleError = console.error;
 beforeEach(() => {
-  global.fetch.resetMocks();
+  fetchMock.resetHistory();
 });
 
 // can't seem to catch these throws because of Promise maze...
@@ -69,7 +74,7 @@ beforeEach(() => {
 //     });
 //   } catch (e) {}
 //   console.log("after act");
-//   expect(global.fetch.mock.calls.length).toBe(1);
+//   expect(fetchMock.calls.length).toBe(1);
 //   expect(result.current.loading).toBe(false);
 //   // expect(result.current.error).toContain("response");
 // });
@@ -81,22 +86,20 @@ beforeEach(() => {
 test("useFunction unsets loading prop and sets task upon completion of job (executionMode=sync)", async () => {
   jest.useFakeTimers();
   const id = uuid();
-  global.fetch.mockResponseOnce(
-    JSON.stringify({
-      startedAt: new Date().toISOString(),
-      duration: 10,
-      geometryUri: `https://example.com/calcFoo/${id}/geometry`,
-      location: `https://example.com/calcFoo/${id}`,
-      id,
-      logUriTemplate: `https://example.com/calcFoo/${id}/logs`,
-      service: "calcFoo",
-      wss: `wss://example.com/calcFoo/${id}`,
-      status: "completed",
-      data: {
-        foo: "plenty"
-      }
-    } as GeoprocessingTask)
-  );
+  fetchMock.postOnce("https://example.com/calcFoo", {
+    startedAt: new Date().toISOString(),
+    duration: 10,
+    geometryUri: `https://example.com/calcFoo/${id}/geometry`,
+    location: `https://example.com/calcFoo/${id}`,
+    id,
+    logUriTemplate: `https://example.com/calcFoo/${id}/logs`,
+    service: "calcFoo",
+    wss: `wss://example.com/calcFoo/${id}`,
+    status: "completed",
+    data: {
+      foo: "plenty"
+    }
+  } as GeoprocessingTask);
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper
   });
@@ -104,7 +107,7 @@ test("useFunction unsets loading prop and sets task upon completion of job (exec
   await act(async () => {
     jest.runAllTimers();
   });
-  expect(global.fetch.mock.calls.length).toBe(1);
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
   expect(result.current.loading).toBe(false);
   const task: GeoprocessingTask = result.current.task!;
   expect(task.data.foo).toBe("plenty");
@@ -115,8 +118,9 @@ test("useFunction unsets loading prop and sets task upon completion of job (exec
 test("useFunction handles errors thrown within geoprocessing function", async () => {
   jest.useFakeTimers();
   const id = uuid();
-  global.fetch.mockResponseOnce(
-    JSON.stringify({
+  fetchMock.postOnce(
+    "https://example.com/calcFoo",
+    {
       startedAt: new Date().toISOString(),
       duration: 10,
       geometryUri: `https://example.com/calcFoo/${id}/geometry`,
@@ -127,7 +131,8 @@ test("useFunction handles errors thrown within geoprocessing function", async ()
       wss: `wss://example.com/calcFoo/${id}`,
       status: "failed",
       error: "Task error"
-    } as GeoprocessingTask)
+    } as GeoprocessingTask,
+    { overwriteRoutes: true }
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper
@@ -136,7 +141,7 @@ test("useFunction handles errors thrown within geoprocessing function", async ()
   await act(async () => {
     jest.runAllTimers();
   });
-  expect(global.fetch.mock.calls.length).toBe(1);
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
   expect(result.current.loading).toBe(false);
   const task: GeoprocessingTask = result.current.task!;
   expect(task.error).toBe("Task error");
@@ -146,20 +151,6 @@ test("useFunction handles errors thrown within geoprocessing function", async ()
 test("throws error if ReportContext is not set", async () => {
   const { result } = renderHook(() => useFunction("calcFoo"));
   expect(result.error.message).toContain("ReportContext");
-});
-
-test("Returns error if ReportContext does not include required values", async () => {
-  const { result } = renderHook(() => useFunction("calcFoo"), {
-    wrapper: ({ children }) => (
-      <ContextWrapper
-        children={children}
-        value={
-          ({ geoprocessingProject: null } as unknown) as ReportContextValue
-        }
-      />
-    )
-  });
-  expect(result.current.error).toContain("Client Error");
 });
 
 const TestReport = () => {
@@ -190,14 +181,7 @@ const TestContainer: React.FunctionComponent = props => {
           // @ts-ignore
           props.sketchProperties || makeSketchProperties(sketchId.toString()),
         geometryUri: `https://example.com/geometry/${sketchId}`,
-        geoprocessingProject: {
-          geoprocessingServices: [
-            {
-              title: "calcFoo",
-              endpoint: "https://example.com/calcFoo"
-            }
-          ]
-        } as GeoprocessingProject
+        projectUrl: "https://example.com/project"
       }}
     >
       <button onClick={() => setSketchId(sketchId + 1)}>
@@ -208,10 +192,15 @@ const TestContainer: React.FunctionComponent = props => {
   );
 };
 
+function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 test("changing ReportContext.geometryUri fetches new results", async () => {
   jest.useFakeTimers();
   const id = uuid();
-  global.fetch.mockResponseOnce(
+  fetchMock.postOnce(
+    "https://example.com/calcFoo",
     JSON.stringify({
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -225,7 +214,8 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
       data: {
         foo: "plenty"
       }
-    } as GeoprocessingTask)
+    } as GeoprocessingTask),
+    { overwriteRoutes: true }
   );
   const { getByRole, getByText, getAllByText } = render(
     <TestContainer>
@@ -236,14 +226,16 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
   await domAct(async () => {
     jest.runAllTimers();
   });
-  expect(global.fetch.mock.calls.length).toBe(1);
+  // expect(fetchMock.calls("https://example.com/project").length).toBe(1);
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
   expect(getAllByText(/Task Complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "plenty");
-  expect(global.fetch.mock.calls.length).toBe(1);
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
 
   // now setup another mock because clicking the button will change the geometryUri
   const id2 = uuid();
-  global.fetch.mockResponseOnce(
+  fetchMock.postOnce(
+    "https://example.com/calcFoo",
     JSON.stringify({
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -257,14 +249,15 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
       data: {
         foo: "lots!"
       }
-    } as GeoprocessingTask)
+    } as GeoprocessingTask),
+    { overwriteRoutes: true }
   );
   await domAct(async () => {
     getByRole("button").click();
   });
   expect(getAllByText(/Task Complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "lots!");
-  expect(global.fetch.mock.calls.length).toBe(2);
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(2);
 });
 
 const MultiCardTestReport = () => {
@@ -308,7 +301,8 @@ const MultiCardTestReport = () => {
 test("useFunction called multiple times with the same arguments will only fetch once", async () => {
   jest.useFakeTimers();
   const id = uuid();
-  global.fetch.mockResponseOnce(
+  fetchMock.postOnce(
+    "https://example.com/calcFoo",
     JSON.stringify({
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -322,7 +316,8 @@ test("useFunction called multiple times with the same arguments will only fetch 
       data: {
         foo: "plenty"
       }
-    } as GeoprocessingTask)
+    } as GeoprocessingTask),
+    { overwriteRoutes: true }
   );
   const { getAllByRole, getByText, getAllByText } = render(
     <TestContainer>
@@ -335,20 +330,21 @@ test("useFunction called multiple times with the same arguments will only fetch 
   await domAct(async () => {
     jest.runAllTimers();
   });
-  expect(global.fetch.mock.calls.length).toBe(1);
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
   expect(getAllByText(/Task Complete/i).length).toBe(2);
   const completeEls = getAllByText(/Task Complete/i);
   for (const el of completeEls) {
     expect(el).toHaveAttribute("data-results", "plenty");
   }
-  expect(global.fetch.mock.calls.length).toBe(1);
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
 });
 
 test("useFunction uses a local cache for repeat requests", async () => {
   jest.useFakeTimers();
   const id = uuid();
   const sketchProperties = makeSketchProperties(id);
-  global.fetch.mockResponseOnce(
+  fetchMock.postOnce(
+    "https://example.com/calcFoo",
     JSON.stringify({
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -362,7 +358,8 @@ test("useFunction uses a local cache for repeat requests", async () => {
       data: {
         foo: "plenty"
       }
-    } as GeoprocessingTask)
+    } as GeoprocessingTask),
+    { overwriteRoutes: true }
   );
   const { getByRole, getByText, getAllByText } = render(
     // @ts-ignore
@@ -376,7 +373,7 @@ test("useFunction uses a local cache for repeat requests", async () => {
   });
   expect(getAllByText(/Task Complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "plenty");
-  expect(global.fetch.mock.calls.length).toBe(1);
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
 
   const queries = render(
     // @ts-ignore
@@ -384,5 +381,20 @@ test("useFunction uses a local cache for repeat requests", async () => {
       <TestReport />
     </TestContainer>
   );
-  expect(global.fetch.mock.calls.length).toBe(1);
+  await domAct(async () => {
+    jest.runAllTimers();
+  });
+  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+});
+
+test("Returns error if ReportContext does not include required values", () => {
+  const { result } = renderHook(() => useFunction("calcFoo"), {
+    wrapper: ({ children }) => (
+      <ContextWrapper
+        children={children}
+        value={({ projectUrl: null } as unknown) as ReportContextValue}
+      />
+    )
+  });
+  expect(result.current.error).toContain("Client Error");
 });

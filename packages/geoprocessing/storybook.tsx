@@ -19,7 +19,7 @@ export const registerExampleStories = (
         value={{
           geometryUri: `https://localhost/${uuid}`,
           sketchProperties: sketch.properties,
-          geoprocessingProject: {} as GeoprocessingProject,
+          projectUrl: "https://example.com/project",
           exampleOutputs: examples.outputs.filter(
             (o: TestExampleOutput) => o.sketchName === sketch.properties.name
           )
@@ -39,7 +39,7 @@ export const registerExampleStories = (
           updatedAt: new Date().toISOString(),
           sketchClassId: "abc123"
         } as SketchProperties,
-        geoprocessingProject: {} as GeoprocessingProject,
+        projectUrl: "https://example.com/project",
         exampleOutputs: [],
         simulateLoading: true
       }}
@@ -57,7 +57,7 @@ export const registerExampleStories = (
           updatedAt: new Date().toISOString(),
           sketchClassId: "abc123"
         } as SketchProperties,
-        geoprocessingProject: {} as GeoprocessingProject,
+        projectUrl: "https://example.com/project",
         exampleOutputs: [],
         simulateError: "Internal server error"
       }}

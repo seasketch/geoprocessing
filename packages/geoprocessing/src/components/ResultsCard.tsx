@@ -20,6 +20,7 @@ const DefaultSkeleton = () => (
   </p>
 );
 
+// styled-components are needed here to use the ::before pseudo selector
 // @ts-ignore
 const ErrorIndicator = styled.div`
   display: inline-block;

@@ -90,18 +90,21 @@ Big improvements
   * Tests overall...
     * client
       * x useFunction
-      * useSketchProperties
-      * ResultsCard
+      * x useSketchProperties
+      * x SketchAttributesCard?
+      * ResultsCard?
     * lambda
       * handlers - test behavior in all exceptional conditions
       * eventually test storage of files, access control, rate limiting features
     * framework itself
       * add tests to build from init without lerna?
       * github actions
+  * Update rendering order of ResultsCard, using useFunction to set "loading" while loading the geoprocessingProject. There's no need to wait for this before rendering!
   * SketchAttributesCard
   * Data Sources
-  * Async executionModel
+  * Redo ProtectedSeas
   * Preprocessing
+  * Async executionModel
   * Documentation
     * MDX storybook component docs
     * Author documentation

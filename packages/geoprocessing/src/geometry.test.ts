@@ -3,7 +3,7 @@ import { Sketch } from "./index";
 import { SketchProperties } from "./types";
 
 // @ts-ignore
-global.fetch = require("jest-fetch-mock");
+import fetchMock from "fetch-mock-jest";
 
 const exampleSketch: Sketch = {
   type: "Feature",
@@ -36,8 +36,10 @@ test("Basic extraction from request", async () => {
 });
 
 test("Fetch sketch from a server", async () => {
-  // @ts-ignore
-  global.fetch.mockResponseOnce(JSON.stringify(exampleSketch));
+  fetchMock.get(
+    "https://seasketch.org/p/1/sketch/1234abcd?token=paralabrax",
+    JSON.stringify(exampleSketch)
+  );
   const sketch = await fetchGeoJSON({
     geometryUri: "https://seasketch.org/p/1/sketch/1234abcd?token=paralabrax"
   });

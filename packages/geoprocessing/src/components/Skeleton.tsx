@@ -2,6 +2,7 @@ import React, { useState, ReactNode } from "react";
 // @ts-ignore
 import styled from "styled-components";
 
+// styled-components are needed here to use the ::before pseudo selector
 // @ts-ignore
 export default styled.div`
   display: inline-block;

@@ -7,7 +7,7 @@ import { SketchProperties, GeoprocessingProject } from "./types";
  */
 export interface ReportContextValue {
   /** Geoprocessing project metadata with details on functions, clients, uris */
-  geoprocessingProject: GeoprocessingProject;
+  projectUrl: string;
   /** uri where a geobuf representation of the sketch can be fetched */
   geometryUri: string;
   sketchProperties: SketchProperties;

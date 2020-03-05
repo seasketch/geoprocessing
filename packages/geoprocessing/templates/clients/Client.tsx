@@ -13,7 +13,7 @@ const Number = new Intl.NumberFormat("en", { style: "decimal" });
 const Client = () => {
   return (
     <>
-      <SketchAttributesCard />
+      <SketchAttributesCard autoHide={true} />
       <ResultsCard
         title="Zone Size"
         functionName="area"

@@ -6,19 +6,15 @@ import {
   GeoprocessingProject
 } from "../types";
 import ReportContext from "../ReportContext";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 
-// Will be replaced by plugin with actual Report implementations
-// const REPORTS = require("@seasketch/geoprocessing/reports");
 const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);
-const service = searchParams.get('service');
-const frameId = searchParams.get('frameId');
+const service = searchParams.get("service");
+const frameId = searchParams.get("frameId");
 if (!service) {
   throw new Error("App must be loaded with `service` query string parameter");
 }
-// @ts-ignore
-window.REPORTS = REPORTS;
 
 interface ReportContextState {
   clientName: string;
@@ -27,9 +23,9 @@ interface ReportContextState {
 }
 
 const App = () => {
-  const [reportContext, setReportContext] = useState<ReportContextState|null>(null);
-  const [geoprocessingProject, setGeoprocessingProject] = useState<GeoprocessingProject|null>(null);
-  const [geoprocessingProjectFetchError, setGeoprocessingProjectFetchError] = useState<string|null>(null);
+  const [reportContext, setReportContext] = useState<ReportContextState | null>(
+    null
+  );
   const [initialized, setInitialized] = useState(false);
   const onMessage = (event: MessageEvent) => {
     try {
@@ -49,19 +45,13 @@ const App = () => {
 
   useEffect(() => {
     // default to self for debugging
-    let target:Window = window;
+    let target: Window = window;
     if (window.parent) {
       target = window.parent;
     }
     window.addEventListener("message", onMessage);
     if (!initialized) {
-      fetch(service).then(async (r) => {
-        const project = await r.json();
-        setGeoprocessingProject(project);
-      }).catch((e) => {
-        setGeoprocessingProjectFetchError(e.toString());
-      });
-      target.postMessage({type: "SeaSketchReportingInitEvent", frameId}, "*");
+      target.postMessage({ type: "SeaSketchReportingInitEvent", frameId }, "*");
       setInitialized(true);
     }
     return () => {
@@ -69,16 +59,18 @@ const App = () => {
     };
   }, [initialized]);
 
-  if (geoprocessingProjectFetchError) {
-    return <div>{geoprocessingProjectFetchError}</div>
-  } else if (reportContext && geoprocessingProject) {
+  if (reportContext) {
     const Report = REPORTS[reportContext.clientName];
-    return <ReportContext.Provider value={{
-      ...reportContext,
-      geoprocessingProject
-    }}>
-      <Report />  
-    </ReportContext.Provider>
+    return (
+      <ReportContext.Provider
+        value={{
+          ...reportContext,
+          projectUrl: service
+        }}
+      >
+        <Report />
+      </ReportContext.Provider>
+    );
   } else {
     return <div />;
   }

@@ -21,7 +21,7 @@ export const usage = () => (
         updatedAt: new Date().toISOString(),
         sketchClassId: "abc123"
       } as SketchProperties,
-      geoprocessingProject: {} as GeoprocessingProject,
+      projectUrl: "https://example.com/project",
       exampleOutputs: [
         {
           functionName: "area",
@@ -55,7 +55,7 @@ export const loadingState = () => (
         updatedAt: new Date().toISOString(),
         sketchClassId: "abc123"
       } as SketchProperties,
-      geoprocessingProject: {} as GeoprocessingProject,
+      projectUrl: "https://example.com/project",
       exampleOutputs: [
         {
           functionName: "area",
@@ -90,7 +90,7 @@ export const customSkeleton = () => (
         updatedAt: new Date().toISOString(),
         sketchClassId: "abc123"
       } as SketchProperties,
-      geoprocessingProject: {} as GeoprocessingProject,
+      projectUrl: "https://example.com/project",
       exampleOutputs: [
         {
           functionName: "area",
@@ -138,7 +138,7 @@ export const errorState = () => (
         updatedAt: new Date().toISOString(),
         sketchClassId: "abc123"
       } as SketchProperties,
-      geoprocessingProject: {} as GeoprocessingProject,
+      projectUrl: "https://example.com/project",
       exampleOutputs: [
         {
           functionName: "area",

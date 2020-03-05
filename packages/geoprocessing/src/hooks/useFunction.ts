@@ -28,7 +28,7 @@ interface FunctionState<ResultType> {
   error?: string;
 }
 
-const geoprocessingProjects: { [url: string]: GeoprocessingProject } = {};
+let geoprocessingProjects: { [url: string]: GeoprocessingProject } = {};
 
 // Runs the given function for the open sketch. "open sketch" is that defined by
 // ReportContext. During testing, useFunction will look for example output
@@ -70,10 +70,12 @@ export const useFunction = <ResultType>(
             abortController.signal
           );
         } catch (e) {
-          if (!abortController.signal) {
-            throw new Error(
-              `Fetch of GeoprocessingProject metadata failed ${context.projectUrl}`
-            );
+          if (!abortController.signal.aborted) {
+            setState({
+              loading: false,
+              error: `Fetch of GeoprocessingProject metadata failed ${context.projectUrl}`
+            });
+            return;
           }
         }
         let url;
@@ -279,4 +281,8 @@ const getGeoprocessingProject = async (
       return geoprocessingProject;
     }
   }
+};
+
+useFunction.reset = () => {
+  geoprocessingProjects = {};
 };

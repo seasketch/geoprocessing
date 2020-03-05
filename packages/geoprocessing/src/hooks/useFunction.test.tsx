@@ -398,3 +398,27 @@ test("Returns error if ReportContext does not include required values", () => {
   });
   expect(result.current.error).toContain("Client Error");
 });
+
+test("Exposes error to client if project metadata can't be fetched", async () => {
+  jest.useFakeTimers();
+  fetchMock.get("https://example.com/project", 500, { overwriteRoutes: true });
+  useFunction.reset();
+  const { result } = renderHook(() => useFunction("calcFoo"), {
+    wrapper: ({ children }) => (
+      <ContextWrapper
+        children={children}
+        value={
+          ({
+            projectUrl: "https://example.com/project",
+            geometryUri: "https://example.com/geometry/123",
+            sketchProperties: {}
+          } as unknown) as ReportContextValue
+        }
+      />
+    )
+  });
+  await act(async () => {
+    jest.runAllTimers();
+  });
+  expect(result.current.error).toContain("metadata");
+});

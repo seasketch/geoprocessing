@@ -5,7 +5,7 @@ const isCollection = (
   return sketch.type === "FeatureCollection";
 };
 export { Sketch, SketchCollection, isCollection };
-export { GeoprocessingHandler } from "./handlers";
+export { GeoprocessingHandler } from "./GeoprocessingHandler";
 import sketchArea from "@turf/area";
 export { sketchArea };
 export { version } from "../package.json";

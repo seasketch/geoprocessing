@@ -92,15 +92,16 @@ Big improvements
       * x useFunction
       * x useSketchProperties
       * x SketchAttributesCard?
-      * ResultsCard?
+      * x ResultsCard? --- I don't really want to get into testing this because it would require duplicating a lot of the setup that's in useFunction to test what is a very very simple component
     * lambda
-      * handlers - test behavior in all exceptional conditions
+      * handlers - test behavior in all exceptional conditions -- worthwhile to set this up even though the testing needs are pretty simple right now.
       * eventually test storage of files, access control, rate limiting features
     * framework itself
       * add tests to build from init without lerna?
       * github actions
-  * Update rendering order of ResultsCard, using useFunction to set "loading" while loading the geoprocessingProject. There's no need to wait for this before rendering!
-  * SketchAttributesCard
+  * x Update rendering order of ResultsCard, using useFunction to set "loading" while loading the geoprocessingProject. There's no need to wait for this before rendering!
+  * Why aren't results being cached?!?!?!?!?!
+  * x SketchAttributesCard -- done for now, but needs improvement
   * Data Sources
   * Redo ProtectedSeas
   * Preprocessing

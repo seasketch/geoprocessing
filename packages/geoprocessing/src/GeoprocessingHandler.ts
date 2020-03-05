@@ -41,7 +41,9 @@ export class GeoprocessingHandler<T> {
     // Bail out if replaying previous task
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
       // don't replay
-      console.log("cancelling since event is being replayed");
+      if (process.env.NODE_ENV !== "test") {
+        console.log("cancelling since event is being replayed");
+      }
       return {
         statusCode: 200,
         body: ""
@@ -78,11 +80,7 @@ export class GeoprocessingHandler<T> {
           const results = await this.func(featureSet);
           return Tasks.complete(task, results);
         } catch (e) {
-          return Tasks.fail(
-            task,
-            "Geoprocessing function threw an exception",
-            e
-          );
+          return Tasks.fail(task, `Geoprocessing exception.\n${e.stack}`, e);
         }
       } catch (e) {
         return Tasks.fail(

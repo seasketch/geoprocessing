@@ -94,15 +94,29 @@ Big improvements
       * x SketchAttributesCard?
       * x ResultsCard? --- I don't really want to get into testing this because it would require duplicating a lot of the setup that's in useFunction to test what is a very very simple component
     * lambda
-      * handlers - test behavior in all exceptional conditions -- worthwhile to set this up even though the testing needs are pretty simple right now.
+      * x handlers - test behavior in all exceptional conditions -- worthwhile to set this up even though the testing needs are pretty simple right now.
       * eventually test storage of files, access control, rate limiting features
     * framework itself
       * add tests to build from init without lerna?
       * github actions
   * x Update rendering order of ResultsCard, using useFunction to set "loading" while loading the geoprocessingProject. There's no need to wait for this before rendering!
-  * Why aren't results being cached?!?!?!?!?!
+  * x Why aren't results being cached?!?!?!?!?!
   * x SketchAttributesCard -- done for now, but needs improvement
   * Data Sources
+    * review api signature
+    * how to handle points vs lines and polygons
+    * support both union and non-union type datasets
+    * fit into @seasketch/geoprocessing and decide on module boundaries
+    * can you even run old examples?
+    * review methodology of generation
+    * review embedded-id vs boundary analysis methods of union tree generation
+    * nested spatial indexes?
+      * or just handle in data product generation phase?
+    * unit tests
+      * tree generation
+      * union algorithm
+      * data fetching
+      * data caching
   * Redo ProtectedSeas
   * Preprocessing
   * Async executionModel

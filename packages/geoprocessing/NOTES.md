@@ -104,6 +104,7 @@ Big improvements
   * x SketchAttributesCard -- done for now, but needs improvement
   * Data Sources
     * review api signature
+    * review flatgeobuf
     * how to handle points vs lines and polygons
     * support both union and non-union type datasets
     * fit into @seasketch/geoprocessing and decide on module boundaries
@@ -117,7 +118,21 @@ Big improvements
       * union algorithm
       * data fetching
       * data caching
+      * hierarchical indexes
   * Redo ProtectedSeas
+    * redo data prep to use postgis
+      * totals calculation
+      * eez dataset generation
+      * 
+    * encode data into flatgeobuf
+  * Data prep
+    * add src and dist folders
+    * readme
+    * customize docker-compose with names to avoid collisions?
+    * change default command?
+    * how to start a workspace
+    * how to start the db
+    * 
   * Preprocessing
   * Async executionModel
   * Documentation

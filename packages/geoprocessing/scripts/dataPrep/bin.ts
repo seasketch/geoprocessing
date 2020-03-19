@@ -193,6 +193,11 @@ program
             details.location
           }`
         );
+        if (currentVersion === 0) {
+          console.log(
+            "Since this cloudfront distribution is new, it may take a few minutes before it can be accessed. Future updates to this data source should be immediate."
+          );
+        }
       } else {
         console.log(`To deploy this data source, omit --dry-run`);
       }

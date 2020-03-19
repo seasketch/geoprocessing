@@ -8,7 +8,5 @@
   "scripts": {
     "create_example": "node packages/geoprocessing/dist/scripts/init/createExampleProject.js"
   },
-  "dependencies": {
-    "@turf/length": "^6.0.2"
-  }
+  "dependencies": {}
 }

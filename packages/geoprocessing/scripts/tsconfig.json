@@ -10,5 +10,8 @@
   "compilerOptions": {
     "module": "commonjs"
   },
+  "typeRoots": [
+    "../node_modules/@types",
+  ],
   "exclude": ["templates/**/*", "node_modules", "dist"],
 }

@@ -62,8 +62,17 @@ if (process.argv.length < 3) {
         stdio: "inherit"
       });
       break;
+    case "bundle-features":
+      spawn(
+        "node",
+        [`${__dirname}/dataPrep/bin.js`, ...process.argv.slice(2)],
+        {
+          cwd: process.cwd(),
+          stdio: "inherit"
+        }
+      );
+      break;
     default:
       throw new Error(`Command ${command} not supported.`);
-      break;
   }
 }

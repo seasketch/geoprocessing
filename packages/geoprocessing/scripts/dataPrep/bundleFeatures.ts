@@ -1,0 +1,253 @@
+import {
+  createPool,
+  sql,
+  DatabasePoolConnectionType,
+  IdentifierSqlTokenType
+} from "slonik";
+// @ts-ignore
+import { raw } from "slonik-sql-tag-raw";
+import ora from "ora";
+import inspectTable from "./inspectTable";
+import cliProgress from "cli-progress";
+import Pbf from "pbf";
+import { FeatureCollection, BBox } from "geojson";
+import { lineString } from "@turf/helpers";
+import length from "@turf/length";
+import geobuf from "geobuf";
+import humanizeDuration from "humanize-duration";
+import prettyBytes from "pretty-bytes";
+import expandBBox from "./expand";
+
+// Warn users if index is over 500kb
+const INDEX_THRESHOLD_SIZE = 500000;
+
+interface BundleOptions {
+  /** Name for data source. Will be used to automatically create s3 bucket */
+  name: string;
+  /** Database table with source features */
+  tableName: string;
+  /** Bundles will be no greater than this size. Defaults to 5500 */
+  pointsLimit?: number;
+  /** Limit bundles to this size (in kilometers). Defaults to 55 kilometers. */
+  envelopeMaxDistance?: number;
+  /** PostgreSQL connection. Defaults to postgres:// */
+  connection?: string;
+  /** Limit to a bounding box. Useful for testing. (xmin, ymin, xmax, ymax) */
+  bbox?: [number, number, number, number];
+  /** Skip uploads. For debugging bytesLimit, envelopeMaxDistance */
+  dryRun?: boolean;
+}
+
+const DEFAULTS = {
+  pointsLimit: 5500,
+  envelopeMaxDistance: 55,
+  dryRun: false,
+  connection: "postgres://"
+};
+
+/**
+ * bundleFeatures bundles records from the target table into
+ */
+const bundleFeatures = async (
+  _options: BundleOptions,
+  callback?: (id: number, geobuf: Uint8Array, bbox: BBox) => Promise<any>
+): Promise<string> => {
+  const options = { ...DEFAULTS, ..._options };
+  const pool = createPool(options.connection, {});
+  const outstandingPromises: Promise<any>[] = [];
+  const statsTableName = `${options.tableName}_bundles`;
+  await pool.connect(async connection => {
+    const startTime = new Date().getTime();
+    const sourceTable = sql.identifier([options.tableName]);
+    // Check that source table meets all requirements
+    const spinner = ora(`Inspecting input table`).start();
+    const { columns, count } = await inspectTable(
+      connection,
+      options.tableName,
+      options.pointsLimit
+    );
+    spinner.succeed(`Input table meets requirements. ${count} features found.`);
+
+    // Create table to store output stats (bbox, bytes, feature count, etc)
+    spinner.start(`Creating output stats table ${statsTableName}`);
+    await connection.query(sql`
+      begin;
+      drop table if exists ${sql.identifier([statsTableName])};
+      create table ${sql.identifier([statsTableName])} ( 
+        id serial primary key, 
+        bbox Geometry not null, 
+        geom Geometry, 
+        size text not null, 
+        bytes int not null,
+        count int not null
+      );
+      commit;
+    `);
+    spinner.succeed(`Created output stats table ${statsTableName}`);
+
+    // Save identifiers for easier query writing
+    const i = {
+      geom: sql.identifier([columns.geometry]),
+      pk: sql.identifier([columns.pk]),
+      statsTable: sql.identifier([statsTableName])
+    };
+
+    // Fetch the bbox, id, and size (st_npoints) of all features to organizing
+    // features into bundles
+    const records = await connection.many<{
+      id: number;
+      npoints: number;
+      bbox: BBox;
+    }>(sql`
+      select 
+        ${i.pk} as id, 
+        st_npoints(${i.geom}) as npoints, 
+        ${st_asbbox(i.geom)} as bbox 
+      from ${sourceTable} 
+      order by ${i.geom}
+    `);
+    // Iterate through features, creating bundles that are under the size and
+    // envelope size limits
+    const progressBar = new cliProgress.SingleBar(
+      { etaBuffer: 10000, clearOnComplete: true },
+      cliProgress.Presets.shades_classic
+    );
+    let bundles = 0;
+    let totalSize = 0;
+    progressBar.start(count as number, 0);
+    let ids: number[] = [];
+    let sumNPoints = 0;
+    let extent: BBox | null = null;
+    let processedCount = 0;
+    for (const feature of records) {
+      sumNPoints += feature.npoints;
+      extent = expandBBox(extent, feature.bbox);
+      const diagonal = lineString([
+        [extent[0], extent[1]],
+        [extent[2], extent[3]]
+      ]);
+      const km = length(diagonal, { units: "kilometers" });
+      if (
+        km >= options.envelopeMaxDistance ||
+        sumNPoints >= options.pointsLimit
+      ) {
+        const { bundleId, geobuf } = await createGeobuf(
+          ids.length === 0 ? [feature.id] : ids,
+          connection,
+          sourceTable,
+          i.geom,
+          i.pk,
+          i.statsTable
+        );
+        bundles++;
+        totalSize += geobuf.byteLength;
+        if (callback) {
+          await callback(bundleId, geobuf, extent);
+        }
+        sumNPoints = ids.length === 0 ? 0 : feature.npoints;
+        ids = ids.length === 0 ? [] : [feature.id];
+        extent = ids.length === 0 ? null : feature.bbox;
+      } else {
+        // Haven't yet reached npoints or envelope size limits, so keep adding
+        // feature ids to the bundle
+        ids.push(feature.id);
+      }
+      progressBar.update(processedCount++);
+    }
+    progressBar.stop();
+    spinner.succeed(
+      `Created ${bundles} geobuf bundles in ${humanizeDuration(
+        new Date().getTime() - startTime
+      )}. Total size is ${prettyBytes(totalSize)}`
+    );
+  });
+  return statsTableName;
+};
+
+async function createGeobuf(
+  ids: number[],
+  connection: DatabasePoolConnectionType,
+  table: IdentifierSqlTokenType,
+  geom: IdentifierSqlTokenType,
+  pk: IdentifierSqlTokenType,
+  statsTable: IdentifierSqlTokenType
+) {
+  if (ids.length === 0) {
+    throw new Error("createGeobuf called without any ids");
+  }
+  // Get all features with matching ids as a single feature collection, as well
+  // as the combined bbox of those features
+  const { collection, extent } = await connection.one<{
+    collection: FeatureCollection;
+    extent: string;
+  }>(sql`
+    select json_build_object(
+      'type', 'FeatureCollection',
+      'features', json_agg(ST_AsGeoJSON(t.*, ${geom.names[0]}, 6)::json)
+    ) as collection, 
+    st_extent(t.${geom}) as extent
+    from (
+      select 
+        *, 
+        ${st_asbbox(geom)} as b_box 
+      from ${table} 
+      where ${pk} in (${sql.join(ids, sql`, `)})
+    ) as t
+  `);
+  if (collection.features.length === 0) {
+    throw new Error("Empty bundle with no features.");
+  }
+  collection.bbox = parseBBox(extent);
+  // Query added a bbox parameter to feature properties, promote it from
+  // feature.properties.b_box to feature.bbox
+  for (const feature of collection.features) {
+    feature.bbox = feature.properties!.b_box;
+    delete feature.properties!.b_box;
+  }
+  const buffer = geobuf.encode(collection, new Pbf());
+  const { id, bytes, count } = await connection.one<{
+    id: number;
+    bytes: number;
+    count: number;
+  }>(sql`
+    insert into ${statsTable} (
+      size, 
+      bytes,
+      bbox, 
+      count
+    ) values (
+      ${prettyBytes(buffer.byteLength)}, 
+      ${buffer.byteLength},
+      st_makeenvelope(${raw([...collection.bbox, "4326"].join(", "))}), 
+      ${ids.length}
+    )
+    returning 
+      id, 
+      bytes, 
+      count
+  `);
+  return {
+    bundleId: id,
+    geobuf: buffer,
+    bytes: bytes,
+    count: count
+  };
+}
+
+function st_asbbox(geom: IdentifierSqlTokenType) {
+  return sql`array[
+    st_xmin(${geom}),
+    st_ymin(${geom}),
+    st_xmax(${geom}),
+    st_ymax(${geom})
+  ]`;
+}
+
+function parseBBox(box: string): BBox {
+  return box
+    .match(/\((.+)\)/)![1]
+    .split(/\s|,/)
+    .map(parseFloat) as BBox;
+}
+
+export default bundleFeatures;

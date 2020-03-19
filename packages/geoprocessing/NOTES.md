@@ -103,16 +103,25 @@ Big improvements
   * x Why aren't results being cached?!?!?!?!?!
   * x SketchAttributesCard -- done for now, but needs improvement
   * Data Sources
-    * review api signature
-    * review flatgeobuf
+    * x review flatgeobuf
     * how to handle points vs lines and polygons
     * support both union and non-union type datasets
+    * 
     * fit into @seasketch/geoprocessing and decide on module boundaries
+      * move code from @seasketch/geoprocessing-data-sources
+        * make sure all dependencies are present
+      * integrate example sketch testing/benchmarking
+      * make geoprocessing bundle-features command and npm scripts
+      * how does the client fit in?
+      * unit tests?
+      * example-project tests?
+    * review api signature
+    * 
     * can you even run old examples?
-    * review methodology of generation
+    * x review methodology of generation
     * review embedded-id vs boundary analysis methods of union tree generation
-    * nested spatial indexes?
-      * or just handle in data product generation phase?
+    * x nested spatial indexes?
+      * x or just handle in data product generation phase?
     * unit tests
       * tree generation
       * union algorithm

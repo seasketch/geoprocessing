@@ -5,3 +5,4 @@ lerna-debug.log
 .build
 .build-web
 packages/geoprocessing/dist
+.workspace.env

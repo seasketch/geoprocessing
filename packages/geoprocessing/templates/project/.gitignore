@@ -3,3 +3,4 @@ node_modules
 cdk.out
 .build
 .build-web
+.workspace.env

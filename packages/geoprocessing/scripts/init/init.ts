@@ -1,7 +1,5 @@
 import inquirer from "inquirer";
 //@ts-ignore
-import { name as defaultName, email as defaultEmail } from "user-meta";
-//@ts-ignore
 import licenses from "spdx-license-ids";
 import fuzzy from "fuzzy";
 //@ts-ignore
@@ -22,6 +20,9 @@ const licenseDefaults = ["MIT", "UNLICENSED", "BSD-3-Clause", "APACHE-2.0"];
 const allLicenseOptions = [...licenses, "UNLICENSED"];
 
 async function init() {
+  const userMeta = require("user-meta");
+  const defaultName = userMeta.name;
+  const defaultEmail = userMeta.email;
   const packageAnswers = await inquirer.prompt([
     /* Pass your questions in here */
     {

@@ -55,7 +55,6 @@ export async function createBucket(name: string, publicAccess?: boolean) {
     throw new Error("Private DataSources not yet supported");
   }
   const bucket = bucketName(name);
-  console.log("creating", bucket);
   await s3
     .createBucket({
       Bucket: bucket,
@@ -65,7 +64,6 @@ export async function createBucket(name: string, publicAccess?: boolean) {
       }
     })
     .promise();
-  console.log("cors");
   await s3
     .putBucketCors({
       Bucket: bucket,
@@ -80,7 +78,6 @@ export async function createBucket(name: string, publicAccess?: boolean) {
       }
     })
     .promise();
-  console.log("public access");
   if (publicAccess) {
     await s3
       .putBucketPolicy({

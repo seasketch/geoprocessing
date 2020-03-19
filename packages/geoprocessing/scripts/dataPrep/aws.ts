@@ -65,6 +65,7 @@ export async function createBucket(name: string, publicAccess?: boolean) {
       }
     })
     .promise();
+  console.log("cors");
   await s3
     .putBucketCors({
       Bucket: bucket,
@@ -79,6 +80,7 @@ export async function createBucket(name: string, publicAccess?: boolean) {
       }
     })
     .promise();
+  console.log("public access");
   if (publicAccess) {
     await s3
       .putBucketPolicy({
@@ -103,7 +105,9 @@ export async function createBucket(name: string, publicAccess?: boolean) {
 
 function bucketName(dataSourceName: string): string {
   const pkgName = sync()!.packageJson.name;
-  return slugify(`${pkgName}-${dataSourceName}`.replace(/\W/g, ""));
+  return slugify(
+    `${pkgName}-${dataSourceName}`.replace(/\W/g, "-").replace(/^-/, "")
+  );
 }
 
 function objectUrl(name: string, objectName: string): string {

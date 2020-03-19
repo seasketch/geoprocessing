@@ -55,6 +55,7 @@ export async function createBucket(name: string, publicAccess?: boolean) {
     throw new Error("Private DataSources not yet supported");
   }
   const bucket = bucketName(name);
+  console.log("creating", bucket);
   await s3
     .createBucket({
       Bucket: bucket,
@@ -102,7 +103,7 @@ export async function createBucket(name: string, publicAccess?: boolean) {
 
 function bucketName(dataSourceName: string): string {
   const pkgName = sync()!.packageJson.name;
-  return slugify(`${pkgName}-${dataSourceName}`.replace("@", ""));
+  return slugify(`${pkgName}-${dataSourceName}`.replace(/\W/g, ""));
 }
 
 function objectUrl(name: string, objectName: string): string {

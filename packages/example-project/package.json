@@ -1,6 +1,6 @@
 {
   "name": "example-project",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "Example project to test geoprocessing project init scripts",
   "main": "src/index.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "@seasketch/geoprocessing"
   ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "^0.5.6"
+    "@seasketch/geoprocessing": "^0.5.7"
   },
   "author": "Chad Burt",
   "license": "BSD-3-Clause",

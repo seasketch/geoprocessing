@@ -108,10 +108,15 @@ Big improvements
     * support both union and non-union type datasets
     * 
     * fit into @seasketch/geoprocessing and decide on module boundaries
-      * move code from @seasketch/geoprocessing-data-sources
-        * make sure all dependencies are present
+      * x move code from @seasketch/geoprocessing-data-sources
+        * x make sure all dependencies are present
       * integrate example sketch testing/benchmarking
-      * make geoprocessing bundle-features command and npm scripts
+        * do summary when running bundle-features
+        * create benchmark-data-sources to test VectorDataSource functioning?
+        * Unit tests for simplistic VectorDataSource operation
+        * create VectorDataSource test page to visualize indexes, data fetching?
+        * Unit tests for real-time VectorDataSource operation
+      * x make geoprocessing bundle-features command and npm scripts
       * how does the client fit in?
       * unit tests?
       * example-project tests?
@@ -130,6 +135,7 @@ Big improvements
       * hierarchical indexes
   * Redo ProtectedSeas
     * redo data prep to use postgis
+      * x zones
       * totals calculation
       * eez dataset generation
       * 

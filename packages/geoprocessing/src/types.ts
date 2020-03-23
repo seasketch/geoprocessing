@@ -2,7 +2,8 @@ import {
   FeatureCollection,
   GeoJsonProperties,
   Feature,
-  Geometry
+  Geometry,
+  BBox
 } from "geojson";
 
 export type ExecutionMode = "async" | "sync";
@@ -29,10 +30,12 @@ export interface UserAttribute {
 export interface Sketch extends Feature {
   properties: SketchProperties;
   geometry: Geometry;
+  bbox: BBox;
 }
 
 export interface SketchCollection extends FeatureCollection {
   properties: SketchProperties;
+  bbox: BBox;
 }
 
 export interface GeoprocessingHandlerOptions {

@@ -9,3 +9,14 @@ export { GeoprocessingHandler } from "./GeoprocessingHandler";
 import sketchArea from "@turf/area";
 export { sketchArea };
 export { version } from "../package.json";
+
+export const getAttr = <T>(
+  sketch: Sketch,
+  exportid: string,
+  defaultValue?: T
+): T | undefined => {
+  let found = sketch.properties.userAttributes.find(
+    a => a.exportId === exportid
+  );
+  return found?.value || defaultValue;
+};

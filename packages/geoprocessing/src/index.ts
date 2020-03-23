@@ -10,7 +10,7 @@ import sketchArea from "@turf/area";
 export { sketchArea };
 export { version } from "../package.json";
 
-export const getAttr = <T>(
+export const getUserAttribute = <T>(
   sketch: Sketch,
   exportid: string,
   defaultValue?: T

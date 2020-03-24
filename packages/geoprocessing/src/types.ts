@@ -36,6 +36,7 @@ export interface Sketch extends Feature {
 export interface SketchCollection extends FeatureCollection {
   properties: SketchProperties;
   bbox: BBox;
+  features: Sketch[];
 }
 
 export interface GeoprocessingHandlerOptions {

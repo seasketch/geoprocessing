@@ -30,12 +30,14 @@ export interface UserAttribute {
 export interface Sketch extends Feature {
   properties: SketchProperties;
   geometry: Geometry;
-  bbox: BBox;
+  // TODO: add bbox to seasketch legacy endpoints
+  // bbox: BBox;
 }
 
 export interface SketchCollection extends FeatureCollection {
   properties: SketchProperties;
-  bbox: BBox;
+  // TODO: add bbox to seasketch legacy endpoints
+  // bbox: BBox;
   features: Sketch[];
 }
 

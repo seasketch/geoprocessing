@@ -1,8 +1,6 @@
 import { Sketch, SketchCollection } from "./types";
-import { isCollection } from "./index";
-import { Feature, BBox, GeoJsonProperties } from "geojson";
 import { GeoprocessingRequest } from "./types";
-require("isomorphic-fetch");
+import fetch from "node-fetch";
 
 export const fetchGeoJSON = async (
   request: GeoprocessingRequest

@@ -19,6 +19,7 @@ export const simple = () => (
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         sketchClassId: "efg345",
+        isCollection: false,
         userAttributes: [
           {
             exportId: "DESIGNATION",

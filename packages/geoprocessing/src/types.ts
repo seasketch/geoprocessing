@@ -1,10 +1,4 @@
-import {
-  FeatureCollection,
-  GeoJsonProperties,
-  Feature,
-  Geometry,
-  BBox
-} from "geojson";
+import { FeatureCollection, Feature, Geometry, BBox } from "geojson";
 
 export type ExecutionMode = "async" | "sync";
 
@@ -17,6 +11,7 @@ export interface SketchProperties {
   // ISO 8601 date/time string
   createdAt: string;
   sketchClassId: string;
+  isCollection: boolean;
   userAttributes: UserAttribute[];
 }
 
@@ -30,14 +25,12 @@ export interface UserAttribute {
 export interface Sketch extends Feature {
   properties: SketchProperties;
   geometry: Geometry;
-  // TODO: add bbox to seasketch legacy endpoints
-  // bbox: BBox;
+  bbox: BBox;
 }
 
 export interface SketchCollection extends FeatureCollection {
   properties: SketchProperties;
-  // TODO: add bbox to seasketch legacy endpoints
-  // bbox: BBox;
+  bbox: BBox;
   features: Sketch[];
 }
 

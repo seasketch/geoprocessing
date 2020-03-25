@@ -102,6 +102,7 @@ Big improvements
   * x Update rendering order of ResultsCard, using useFunction to set "loading" while loading the geoprocessingProject. There's no need to wait for this before rendering!
   * x Why aren't results being cached?!?!?!?!?!
   * x SketchAttributesCard -- done for now, but needs improvement
+  * *************** Somehow legacy seasketch geojson endpoint is returning multipolygons where they should be polygons with holes  ***********************
   * Data Sources
     * x review flatgeobuf
     * how to handle points vs lines and polygons

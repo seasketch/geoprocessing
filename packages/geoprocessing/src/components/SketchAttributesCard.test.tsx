@@ -15,6 +15,7 @@ test("SketchAttributesCard renders all userAttributes", () => {
           updatedAt: new Date().toISOString(),
           sketchClassId: "123abc",
           name: "My Sketch",
+          isCollection: false,
           userAttributes: [
             {
               exportId: "field1",
@@ -51,6 +52,7 @@ test("Can deal with null values", () => {
           updatedAt: new Date().toISOString(),
           sketchClassId: "123abc",
           name: "My Sketch",
+          isCollection: false,
           userAttributes: [
             {
               exportId: "field1",
@@ -87,7 +89,8 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
           updatedAt: new Date().toISOString(),
           sketchClassId: "123abc",
           name: "My Sketch",
-          userAttributes: []
+          userAttributes: [],
+          isCollection: false
         },
         projectUrl: "https://example.com/project"
       }}
@@ -106,7 +109,8 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
           updatedAt: new Date().toISOString(),
           sketchClassId: "123abc",
           name: "My Sketch",
-          userAttributes: []
+          userAttributes: [],
+          isCollection: false
         },
         projectUrl: "https://example.com/project"
       }}
@@ -125,6 +129,7 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
           updatedAt: new Date().toISOString(),
           sketchClassId: "123abc",
           name: "My Sketch",
+          isCollection: false,
           userAttributes: [
             {
               exportId: "field1",

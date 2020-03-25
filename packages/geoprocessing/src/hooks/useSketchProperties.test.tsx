@@ -18,6 +18,7 @@ const ContextWrapper: React.FunctionComponent<{
           updatedAt: new Date().toISOString(),
           sketchClassId: "123abc",
           name: "My Sketch",
+          isCollection: false,
           userAttributes: [
             {
               exportId: "field1",

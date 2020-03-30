@@ -9,6 +9,7 @@ export { GeoprocessingHandler } from "./GeoprocessingHandler";
 import sketchArea from "@turf/area";
 export { sketchArea };
 export { version } from "../package.json";
+export * as VectorDataSource from "./VectorDataSource";
 
 /**
  * UserAttributes are those filled in via the attributes form specified as

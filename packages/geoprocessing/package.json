@@ -115,12 +115,12 @@
     "styled-components": "^5.0.1",
     "styled-spinkit": "^1.0.0",
     "ts-loader": "^6.2.1",
-    "typescript": "^3.7.5",
+    "typescript": "^3.8.3",
     "user-meta": "^1.0.0",
     "uuid": "^3.4.0",
     "val-loader": "^2.1.0",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11"
   },
-  "gitHead": "7a03e9dca3ed226803ba647aa6dd775afbaa2949"
+  "gitHead": "3e2a3b607097452a54884d4ace065c64f8ee7947"
 }

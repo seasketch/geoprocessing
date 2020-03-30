@@ -127,7 +127,8 @@ export default class TasksModel {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true
+        "Access-Control-Allow-Credentials": true,
+        "x-gp-cache": "Cache miss"
       },
       body: JSON.stringify(task)
     };

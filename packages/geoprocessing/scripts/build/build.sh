@@ -22,7 +22,7 @@ cp -R .build/* $PROJECT_PATH/.build/
 mkdir $PROJECT_PATH/.build/node_modules
 export WORKING_DIR=$(pwd)
 cd $PROJECT_PATH/.build
-npm install --silent @turf/area uuid
+npm install --silent @turf/area uuid node-fetch
 cd $WORKING_DIR
 npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/
 rm -rf $PROJECT_PATH/.build/node_modules/@seasketch/geoprocessing
@@ -36,4 +36,3 @@ cp .build/serviceHandlers.js $PROJECT_PATH/.build/
 
 # Cleanup 
 rm -rf .build
-ui

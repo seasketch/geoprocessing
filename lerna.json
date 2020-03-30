@@ -1,6 +1,6 @@
 {
   "packages": [
-    "packages/geoprocessing"
+    "packages/*"
   ],
   "version": "0.6.3"
 }

@@ -50,7 +50,8 @@ export default {
       include: "@seasketch/geoprocessing"
     }),
     commonjs({
-      include: "node_modules/**/*"
+      include: "node_modules/**/*",
+      exclude: "node_modules/node-fetch"
     }),
     virtual({
       packageName: `export default "${pkg.name}";`
@@ -73,7 +74,17 @@ export default {
   }
 };
 
-const staticExternals = ["@turf/area", "uuid", "aws-sdk"];
+const staticExternals = [
+  "@turf/area",
+  "uuid",
+  "aws-sdk",
+  "node-fetch"
+  // // node-fetch stuff
+  // "https",
+  // "stream",
+  // "http",
+  // "zlib"
+];
 const projectNodeModules = Object.keys(
   JSON.parse(
     fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()

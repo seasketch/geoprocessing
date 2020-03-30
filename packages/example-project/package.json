@@ -18,8 +18,8 @@
   "keywords": [
     "@seasketch/geoprocessing"
   ],
-  "devDependencies": {
-    "@seasketch/geoprocessing": "^0.5.15"
+  "dependencies": {
+    "@seasketch/geoprocessing": "^0.6.0"
   },
   "author": "Chad Burt",
   "license": "BSD-3-Clause",

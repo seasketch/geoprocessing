@@ -6,7 +6,11 @@ import {
 } from "./types";
 import TaskModel, { GeoprocessingTask } from "./tasks";
 import { fetchGeoJSON } from "./geometry";
-import { Context, APIGatewayProxyResult, APIGatewayEvent } from "aws-lambda";
+import {
+  Context,
+  APIGatewayProxyResult,
+  APIGatewayProxyEvent
+} from "aws-lambda";
 import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
 
 const Lambda = new LambdaClient();
@@ -30,7 +34,7 @@ export class GeoprocessingHandler<T> {
   }
 
   async lambdaHandler(
-    event: APIGatewayEvent,
+    event: APIGatewayProxyEvent,
     context: Context
   ): Promise<APIGatewayProxyResult> {
     const { Tasks, options } = this;
@@ -59,7 +63,8 @@ export class GeoprocessingHandler<T> {
           statusCode: 200,
           headers: {
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": true
+            "Access-Control-Allow-Credentials": true,
+            "x-gp-cache": "Cache hit"
           },
           body: JSON.stringify(cachedResult)
         };
@@ -118,7 +123,7 @@ export class GeoprocessingHandler<T> {
     }
   }
 
-  parseRequest(event: APIGatewayEvent): GeoprocessingRequest {
+  parseRequest(event: APIGatewayProxyEvent): GeoprocessingRequest {
     let request: GeoprocessingRequest;
     if ("geometry" in event) {
       // likely coming from aws console

@@ -10,8 +10,8 @@ import {
   BBox
 } from "geojson";
 import RBush from "rbush";
-import bbox from "@turf/bbox";
 import "./fetchPolyfill";
+const bbox = require("@turf/bbox");
 
 // import { recombineTree } from "./recombine";
 

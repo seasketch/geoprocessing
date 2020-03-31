@@ -15,6 +15,8 @@ export interface AreaResults {
   bbox: BBox;
 }
 
+const stuff = new VectorDataSource("http://example.com");
+
 async function area(sketch: Sketch | SketchCollection): Promise<AreaResults> {
   return {
     area: sketchArea(sketch),

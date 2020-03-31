@@ -11,7 +11,7 @@ import {
 } from "geojson";
 import RBush from "rbush";
 import bbox from "@turf/bbox";
-import("./fetchPolyfill");
+import "./fetchPolyfill";
 
 // import { recombineTree } from "./recombine";
 

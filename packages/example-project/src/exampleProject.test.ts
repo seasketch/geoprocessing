@@ -8,7 +8,7 @@ describe("Project metadata settings", () => {
     expect(packageJson.description).toBe(
       "Example project to test geoprocessing project init scripts"
     );
-    expect(packageJson.license).toBe("UNLICENSED");
+    expect(packageJson.license).toBe("BSD-3-Clause");
     expect(packageJson.author).toBe("Chad Burt");
     expect(packageJson.repository.url).toBe(
       "git+https://github.com/seasketch/example-project.git"

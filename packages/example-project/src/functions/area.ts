@@ -3,7 +3,8 @@ import {
   SketchCollection,
   GeoprocessingHandler,
   sketchArea,
-  isCollection
+  isCollection,
+  VectorDataSource
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import { AllGeoJSON, BBox } from "@turf/helpers";

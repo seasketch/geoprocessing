@@ -1,9 +1,8 @@
+// @ts-ignore
+import fetchMock from "fetch-mock-jest";
 import { fetchGeoJSON } from "../src/geometry";
 import { Sketch } from "./index";
 import { SketchProperties } from "./types";
-
-// @ts-ignore
-import fetchMock from "fetch-mock-jest";
 
 const exampleSketch: Sketch = {
   type: "Feature",

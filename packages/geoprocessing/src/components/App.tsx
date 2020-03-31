@@ -10,6 +10,9 @@ import ReactDOM from "react-dom";
 
 const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);
+// TODO: Eliminate the use of service and frameId for initializing iframes
+// They interfere with the use of creative cache control headers for speeding
+// up loading like stale-while-revalidate
 const service = searchParams.get("service");
 const frameId = searchParams.get("frameId");
 if (!service) {

@@ -27,14 +27,17 @@ for (const func of functions) {
     handlerPath,
     `
     import Handler from "${func.replace(".ts", "")}";
-    import { Context, APIGatewayProxyResult, APIGatewayEvent } from "aws-lambda";
-    export const handler = async (event:APIGatewayEvent, context:Context): Promise<APIGatewayProxyResult> => {
+    import { Context, APIGatewayProxyResult, APIGatewayProxyEvent } from "aws-lambda";
+    export const handler = async (event:APIGatewayProxyEvent, context:Context): Promise<APIGatewayProxyResult> => {
       return await Handler.lambdaHandler(event, context);
     }
   `
   );
   handlers.push(handlerPath);
 }
+
+// TODO: Output some bundle size info and audit what is taking up the most
+// space. These bundles seem a little larger than they should be.
 
 export default {
   input: [...functions, ...handlers],
@@ -64,7 +67,9 @@ export default {
     plugins: []
   },
   treeshake: {
-    // moduleSideEffects: ["isomorphic-fetch"]
+    moduleSideEffects: path => {
+      return /fetchPolyfill/.test(path);
+    }
   },
   external: id => {
     // Everything in PROJECT_PATH/node_modules should be external
@@ -78,7 +83,8 @@ const staticExternals = [
   "@turf/area",
   "uuid",
   "aws-sdk",
-  "node-fetch"
+  "node-fetch",
+  "node-abort-controller"
   // // node-fetch stuff
   // "https",
   // "stream",

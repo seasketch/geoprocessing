@@ -11,7 +11,8 @@ import {
 } from "geojson";
 import RBush from "rbush";
 import bbox from "@turf/bbox";
-import "./fetchPolyfill";
+import("./fetchPolyfill");
+
 // import { recombineTree } from "./recombine";
 
 export interface VectorFeature extends Feature<Polygon | MultiPolygon> {
@@ -126,7 +127,8 @@ class VectorDataSource<T> {
   options: VectorDataSourceOptions;
   metadata?: DataSourceMetadata;
   private url: string;
-  private initPromise: Promise<void>;
+  private initPromise?: Promise<void>;
+  private initError?: Error;
   private bundleIndex?: Flatbush;
   private pendingRequests: Map<string, PendingRequest>;
   private cache: LRUCache<number, FeatureCollection>;
@@ -150,17 +152,31 @@ class VectorDataSource<T> {
     this.cache = new LRUCache(Uint32Array, Array, this.options.cacheSize);
     this.tree = new RBushIndex();
     const metadataUrl = this.url + "/metadata.json";
-    try {
-      this.initPromise = fetch(metadataUrl).then(r =>
-        r.json().then(async (metadata: DataSourceMetadata) => {
-          this.metadata = metadata;
-          await this.fetchBundleIndex();
-          return;
-        })
-      );
-    } catch (e) {
-      console.error(e);
-      throw new Error(`Problem fetching manifest from ${metadataUrl}`);
+    // TODO: control of this process should really be inverted by having the
+    // build step mock VectorDataSource. This is a stopgap measure since
+    // implementing that mock was hard to do
+    if (process.env.NODE_ENV === "CREATE_MANIFEST") {
+      // @ts-ignore
+      global.VectorDataSources.push([url, options]);
+    } else {
+      // try {
+      this.initPromise = fetch(metadataUrl)
+        .then(r =>
+          r.json().then(async (metadata: DataSourceMetadata) => {
+            this.metadata = metadata;
+            await this.fetchBundleIndex();
+            return;
+          })
+        )
+        .catch(e => {
+          // It's easier to deal with these errors at the point of use later,
+          // rather than as a side-effect of instantiation. Otherwise it's easy
+          // to run into unhandled promise exceptions or rejections
+          // The identifyBundles method will check for initError
+          this.initError = new Error(
+            `Problem fetching VectorDataSource manifest from ${metadataUrl}`
+          );
+        });
     }
   }
 
@@ -192,6 +208,12 @@ class VectorDataSource<T> {
 
   private async identifyBundles(bbox: BBox) {
     await this.initPromise;
+    // It's easier to deal with these errors at the point of use, rather than
+    // as a side-effect of instantiation. Otherwise it's easy to run into
+    // unhandled promise exceptions or rejections
+    if (this.initError) {
+      throw this.initError;
+    }
     // this will have to be more complex to accomadate nested indicies
     return this.bundleIndex!.search(bbox[0], bbox[1], bbox[2], bbox[3]);
   }

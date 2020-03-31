@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Setup env vars and build directories
 export PROJECT_PATH=$(pwd)
+set -e
 rm -rf .build
 echo "Building lambda functions..."
 mkdir .build
@@ -22,11 +23,13 @@ cp -R .build/* $PROJECT_PATH/.build/
 mkdir $PROJECT_PATH/.build/node_modules
 export WORKING_DIR=$(pwd)
 cd $PROJECT_PATH/.build
-npm install --silent @turf/area uuid node-fetch
+npm install --silent @turf/area uuid node-fetch node-abort-controller
 cd $WORKING_DIR
-npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/
+echo 'Copying node modules'
+npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/ -f @seasketch/geoprocessing
+echo 'Deleting extra node modules'
 rm -rf $PROJECT_PATH/.build/node_modules/@seasketch/geoprocessing
-
+echo 'Creating manifest'
 # Extract metadata from handlers and create a manifest file
 node dist/scripts/build/createManifest.js
 

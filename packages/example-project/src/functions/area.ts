@@ -14,9 +14,7 @@ export interface AreaResults {
   bbox: BBox;
 }
 
-async function area(
-  sketch: Sketch | SketchCollection
-): Promise<AreaResults> {
+async function area(sketch: Sketch | SketchCollection): Promise<AreaResults> {
   return {
     area: sketchArea(sketch),
     bbox: bbox(sketch as AllGeoJSON)

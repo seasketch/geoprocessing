@@ -19,6 +19,9 @@ const projectPkg = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
 );
 
+// VectorDataSource instances won't automatically fetch indexes in this env
+process.env.NODE_ENV = "CREATE_MANIFEST";
+
 const projectMetadata = {
   title: projectPkg.name,
   author: config.author,
@@ -38,9 +41,13 @@ if (config.functions.length < 1) {
   throw new Error("No functions specified in geoprocessing.json");
 }
 
-// console.log(config.functions);
 for (const func of config.functions as string[]) {
   const name = path.basename(func).replace(".ts", ".js");
+  // when process.env === "CREATE_MANIFEST", VectorDataSource instances will
+  // register themselves with global.VectorDataSources. Brittle... but works
+  // @ts-ignore
+  global.VectorDataSources = [];
+
   const opts = require(path.join(PROJECT_PATH, ".build", name)).options;
   projectMetadata.functions.push({
     handler: name,
@@ -52,7 +59,9 @@ for (const func of config.functions as string[]) {
     medianDuration: 0,
     medianCost: 0,
     type: "javascript",
-    issAllowList: ["*"]
+    issAllowList: ["*"],
+    // @ts-ignore
+    vectorDataSources: global.VectorDataSources.map(v => v[0])
   });
 }
 

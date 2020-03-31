@@ -1,6 +1,6 @@
 import { Sketch, SketchCollection } from "./types";
 import { GeoprocessingRequest } from "./types";
-import fetch from "node-fetch";
+import("./fetchPolyfill");
 
 export const fetchGeoJSON = async (
   request: GeoprocessingRequest

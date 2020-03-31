@@ -79,6 +79,21 @@ export class GeoprocessingHandler<T> {
       // TODO: container tasks
       return Tasks.fail(task, "Docker tasks not yet implemented");
     } else if (this.options.executionMode === "sync") {
+      process.removeAllListeners("uncaughtException");
+      process.removeAllListeners("unhandledRejection");
+      process.on("uncaughtException", error => {
+        console.error(error);
+        Tasks.fail(
+          task,
+          error?.message?.toString() ||
+            error?.toString() ||
+            "Uncaught exception"
+        );
+      });
+      process.on("unhandledRejection", error => {
+        console.error(error);
+        Tasks.fail(task, error?.toString() || "Unhandled promise rejection");
+      });
       try {
         const featureSet = await fetchGeoJSON(request);
         try {

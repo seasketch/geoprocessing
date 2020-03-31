@@ -94,6 +94,7 @@
     "jest": "^25.1.0",
     "mnemonist": "^0.32.0",
     "mock-require": "^3.0.3",
+    "node-abort-controller": "^1.0.4",
     "node-fetch": "^2.6.0",
     "ora": "^4.0.3",
     "pascalcase": "^1.0.0",

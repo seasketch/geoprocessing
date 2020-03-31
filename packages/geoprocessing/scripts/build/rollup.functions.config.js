@@ -79,6 +79,10 @@ export default {
   }
 };
 
+// TODO: Be more sophisticated about how these are installed in build.sh. Right
+// now @seasketch/geoprocessing could be testing on versions fixed in
+// package-lock.json while implementations will always get the latest version
+// at build time
 const staticExternals = [
   "@turf/area",
   "@turf/bbox",

@@ -1,4 +1,5 @@
 export PROJECT_PATH=$(pwd)
+set -e
 rm -rf .build-web
 # Determine correct path. Need to be in @seasketch/geoprocessing root
 if test -f "../geoprocessing/scripts/build/build-client.sh"; then

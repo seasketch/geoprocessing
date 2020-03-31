@@ -3,7 +3,6 @@
 export PROJECT_PATH=$(pwd)
 set -e
 rm -rf .build
-echo "Building lambda functions..."
 mkdir .build
 # Determine correct path. Need to be in @seasketch/geoprocessing root
 if test -f "../geoprocessing/scripts/build/build.sh"; then
@@ -29,17 +28,14 @@ npm install --silent @turf/area \
   aws-sdk \
   node-fetch \
   node-abort-controller \
-  mnemonist/lru-cache \
+  mnemonist \
   flatbush \
   rbush \
   pbf \
   geobuf
 cd $WORKING_DIR
-echo 'Copying node modules'
 npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/ -f @seasketch/geoprocessing
-echo 'Deleting extra node modules'
 rm -rf $PROJECT_PATH/.build/node_modules/@seasketch/geoprocessing
-echo 'Creating manifest'
 # Extract metadata from handlers and create a manifest file
 node dist/scripts/build/createManifest.js
 

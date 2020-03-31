@@ -11,7 +11,11 @@ import {
 } from "geojson";
 import RBush from "rbush";
 import "./fetchPolyfill";
-const bbox = require("@turf/bbox");
+import bbox from "@turf/bbox";
+
+// // Weird "default is not exported by..." errors in project implementations when
+// // this module imported using esmodules. This solves it so don't touch 👆
+// const bbox = require("@turf/bbox");
 
 // import { recombineTree } from "./recombine";
 

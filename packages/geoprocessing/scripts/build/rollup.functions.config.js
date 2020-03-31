@@ -81,10 +81,16 @@ export default {
 
 const staticExternals = [
   "@turf/area",
+  "@turf/bbox",
   "uuid",
   "aws-sdk",
   "node-fetch",
-  "node-abort-controller"
+  "node-abort-controller",
+  "mnemonist/lru-cache",
+  "flatbush",
+  "rbush",
+  "pbf",
+  "geobuf"
   // // node-fetch stuff
   // "https",
   // "stream",

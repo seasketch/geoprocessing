@@ -23,7 +23,17 @@ cp -R .build/* $PROJECT_PATH/.build/
 mkdir $PROJECT_PATH/.build/node_modules
 export WORKING_DIR=$(pwd)
 cd $PROJECT_PATH/.build
-npm install --silent @turf/area uuid node-fetch node-abort-controller
+npm install --silent @turf/area \
+  @turf/bbox \
+  uuid \
+  aws-sdk \
+  node-fetch \
+  node-abort-controller \
+  mnemonist/lru-cache \
+  flatbush \
+  rbush \
+  pbf \
+  geobuf
 cd $WORKING_DIR
 echo 'Copying node modules'
 npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/ -f @seasketch/geoprocessing

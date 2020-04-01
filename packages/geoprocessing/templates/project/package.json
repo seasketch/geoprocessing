@@ -20,6 +20,6 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@seasketch/geoprocessing": "0.2.10"
+    "@seasketch/geoprocessing": "^0.6.0"
   }
 }

@@ -34,8 +34,8 @@ npm install --silent @turf/area \
   pbf \
   geobuf
 cd $WORKING_DIR
-npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/ -f @seasketch/geoprocessing
-rm -rf $PROJECT_PATH/.build/node_modules/@seasketch/geoprocessing
+npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/
+# rm -rf $PROJECT_PATH/.build/node_modules/@seasketch/geoprocessing
 # Extract metadata from handlers and create a manifest file
 node dist/scripts/build/createManifest.js
 

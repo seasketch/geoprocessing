@@ -66,11 +66,7 @@ export default {
     sourcemap: true,
     plugins: []
   },
-  treeshake: {
-    moduleSideEffects: path => {
-      return /fetchPolyfill/.test(path);
-    }
-  },
+  treeshake: {},
   external: id => {
     // Everything in PROJECT_PATH/node_modules should be external
     // parts of @seasketch/geoprocessing that should be external

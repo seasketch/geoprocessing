@@ -25,7 +25,6 @@ cd $PROJECT_PATH/.build
 npm install --silent @turf/area \
   @turf/bbox \
   uuid \
-  aws-sdk \
   node-fetch \
   node-abort-controller \
   mnemonist \

@@ -13,7 +13,10 @@
     "run_tests": "dist/scripts/testing/runner.js",
     "geoprocessing": "dist/scripts/geoprocessing.js"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "./src/fetchPolyfill.js",
+    "./dist/src/fetchPolyfill.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/seasketch/geoprocessing.git"

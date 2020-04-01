@@ -11,6 +11,7 @@ import {
 } from "geojson";
 import RBush from "rbush";
 import bbox from "@turf/bbox";
+import isHostedOnAWS from "./isHostedOnAWS";
 import "./fetchPolyfill";
 
 // import { recombineTree } from "./recombine";
@@ -25,9 +26,6 @@ const getBBox = (feature: Feature) => {
 };
 
 // const debug = require("debug")("VectorDataSource");
-const isHostedOnAWS = !!(
-  process.env.LAMBDA_TASK_ROOT || process.env.AWS_EXECUTION_ENV
-);
 
 interface VectorDataSourceOptions {
   /**
@@ -424,8 +422,7 @@ class VectorDataSource<T> {
     let bundleIds = await this.identifyBundles(bbox);
     this.cancelLowPriorityRequests(bundleIds);
     if (isHostedOnAWS) {
-      console.log(`Fetching ${bundleIds.length} bundles from ${this.url}`);
-      console.time(`Waiting to fetch ${this.url}`);
+      console.time(`Fetch ${bundleIds.length} bundles from ${this.url}`);
     }
     await Promise.all(
       bundleIds
@@ -433,7 +430,7 @@ class VectorDataSource<T> {
         .map(id => this.fetchBundle(id, "high"))
     );
     if (isHostedOnAWS) {
-      console.timeEnd(`Waiting to fetch ${this.url}`);
+      console.timeEnd(`Fetch ${bundleIds.length} bundles from ${this.url}`);
     }
     // console.time("retrieval and processing");
     // debug(`Searching index`, bbox);

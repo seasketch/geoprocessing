@@ -1,5 +1,6 @@
 import { Sketch, SketchCollection } from "./types";
 import { GeoprocessingRequest } from "./types";
+import isHostedOnAWS from "./isHostedOnAWS";
 import "./fetchPolyfill";
 
 export const fetchGeoJSON = async (
@@ -23,6 +24,9 @@ export const fetchGeoJSON = async (
       }
     } else {
       // fetch geometry from endpoint
+      if (isHostedOnAWS) {
+        console.time(`Fetch sketch from ${request.geometryUri}`);
+      }
       const response = await fetch(
         request.geometryUri,
         // only send Authorization header if token is provided
@@ -34,7 +38,11 @@ export const fetchGeoJSON = async (
             }
           : {}
       );
-      return response.json();
+      const sketch = await response.json();
+      if (isHostedOnAWS) {
+        console.timeEnd(`Fetch sketch from ${request.geometryUri}`);
+      }
+      return sketch;
     }
   } else {
     throw new Error("No geometry or geometryUri present on request");

@@ -4,7 +4,11 @@ import {
   Sketch,
   GeoprocessingRequest
 } from "./types";
-import TaskModel, { GeoprocessingTask } from "./tasks";
+import TaskModel, {
+  commonHeaders,
+  GeoprocessingTask,
+  GeoprocessingTaskStatus
+} from "./tasks";
 import { fetchGeoJSON } from "./geometry";
 import {
   Context,
@@ -58,12 +62,14 @@ export class GeoprocessingHandler<T> {
     // check and respond with cache first if available
     if (request.cacheKey) {
       const cachedResult = await Tasks.get(serviceName, request.cacheKey);
-      if (cachedResult) {
+      if (
+        cachedResult &&
+        cachedResult.status !== GeoprocessingTaskStatus.Failed
+      ) {
         return {
           statusCode: 200,
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Credentials": true,
+            ...commonHeaders,
             "x-gp-cache": "Cache hit"
           },
           body: JSON.stringify(cachedResult)
@@ -81,18 +87,23 @@ export class GeoprocessingHandler<T> {
     } else if (this.options.executionMode === "sync") {
       process.removeAllListeners("uncaughtException");
       process.removeAllListeners("unhandledRejection");
-      process.on("uncaughtException", error => {
+      process.on("uncaughtException", async error => {
         console.error(error);
-        Tasks.fail(
+        await Tasks.fail(
           task,
           error?.message?.toString() ||
             error?.toString() ||
             "Uncaught exception"
         );
+        process.exit();
       });
-      process.on("unhandledRejection", error => {
+      process.on("unhandledRejection", async error => {
         console.error(error);
-        Tasks.fail(task, error?.toString() || "Unhandled promise rejection");
+        await Tasks.fail(
+          task,
+          error?.toString() || "Unhandled promise rejection"
+        );
+        process.exit();
       });
       try {
         const featureSet = await fetchGeoJSON(request);

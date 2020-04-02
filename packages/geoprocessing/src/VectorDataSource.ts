@@ -152,7 +152,6 @@ class VectorDataSource<T> {
     this.pendingRequests = new Map();
     this.cache = new LRUCache(Uint32Array, Array, this.options.cacheSize);
     this.tree = new RBushIndex();
-    const metadataUrl = this.url + "/metadata.json";
     // TODO: control of this process should really be inverted by having the
     // build step mock VectorDataSource. This is a stopgap measure since
     // implementing that mock was hard to do
@@ -160,8 +159,18 @@ class VectorDataSource<T> {
       // @ts-ignore
       global.VectorDataSources.push([url, options]);
     } else {
-      // try {
-      this.initPromise = fetch(metadataUrl)
+      this.fetchMetadata();
+    }
+  }
+
+  // TODO: test behavior in production
+  private async fetchMetadata() {
+    if (this.metadata && this.bundleIndex) {
+      return;
+    } else {
+      delete this.initError;
+      const metadataUrl = this.url + "/metadata.json";
+      fetch(metadataUrl)
         .then(r =>
           r.json().then(async (metadata: DataSourceMetadata) => {
             this.metadata = metadata;
@@ -208,7 +217,7 @@ class VectorDataSource<T> {
   }
 
   private async identifyBundles(bbox: BBox) {
-    await this.initPromise;
+    await this.fetchMetadata();
     // It's easier to deal with these errors at the point of use, rather than
     // as a side-effect of instantiation. Otherwise it's easy to run into
     // unhandled promise exceptions or rejections

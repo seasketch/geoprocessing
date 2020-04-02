@@ -21,6 +21,13 @@ interface PendingRequest {
 
 let pendingRequests: PendingRequest[] = [];
 
+interface PendingMetadataRequest {
+  url: string;
+  promise: Promise<GeoprocessingProject>;
+}
+
+let pendingMetadataRequests: PendingMetadataRequest[] = [];
+
 interface FunctionState<ResultType> {
   /** Populated as soon as the function request returns */
   task?: GeoprocessingTask<ResultType>;
@@ -266,23 +273,38 @@ const runTask = async (
   }
 };
 
+// TODO: De-dupe in case of multiple useFunctions
 const getGeoprocessingProject = async (
   url: string,
   signal: AbortSignal
 ): Promise<GeoprocessingProject> => {
   // TODO: eventually handle updated durations
+  const pending = pendingMetadataRequests.find(r => r.url === url);
+  console.log(pendingMetadataRequests);
+  if (pending) {
+    return pending.promise;
+  }
   if (url in geoprocessingProjects) {
     return geoprocessingProjects[url];
-  } else {
-    const r = await fetch(url, { signal });
-    const geoprocessingProject = await r.json();
+  }
+
+  const request = fetch(url, { signal }).then(async response => {
+    const geoprocessingProject = await response.json();
     if (signal.aborted) {
       throw new Error("Aborted");
     } else {
       geoprocessingProjects[url] = geoprocessingProject;
+      pendingMetadataRequests = pendingMetadataRequests.filter(
+        r => r.url !== url
+      );
       return geoprocessingProject;
     }
-  }
+  });
+  pendingMetadataRequests.push({
+    url,
+    promise: request
+  });
+  return request;
 };
 
 useFunction.reset = () => {

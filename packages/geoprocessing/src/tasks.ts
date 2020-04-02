@@ -2,6 +2,12 @@ import { v4 as uuid } from "uuid";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
 
+export const commonHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Credentials": true,
+  "Cache-Control": "max-age=0, stale-while-revalidate=3600"
+};
+
 export interface GeoprocessingTask<ResultType = any> {
   id: string;
   service: string;
@@ -126,8 +132,7 @@ export default class TasksModel {
     return {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        ...commonHeaders,
         "x-gp-cache": "Cache miss"
       },
       body: JSON.stringify(task)
@@ -167,8 +172,8 @@ export default class TasksModel {
     return {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true
+        ...commonHeaders,
+        "Cache-Control": "max-age=0"
       },
       body: JSON.stringify(task)
     };

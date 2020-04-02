@@ -3,6 +3,8 @@ import runTests from "./testing/runner";
 import { init } from "./init/init";
 import { spawn, exec } from "child_process";
 
+// TODO: Need a command for clearing results
+
 if (process.argv.length < 3) {
   throw new Error("Missing command");
 } else {

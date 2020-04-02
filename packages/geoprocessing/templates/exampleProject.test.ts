@@ -43,5 +43,3 @@ describe("Project metadata settings", () => {
     expect(GeoprocessingHandler.options.executionMode).toBe("sync");
   });
 });
-
-// TODO: check that typescript choice was interpreted correctly

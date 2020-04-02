@@ -65,7 +65,6 @@
 //       return existing;
 //     } else {
 //       const taskDetail = {
-//         // TODO: generate cachekeys properly
 //         id: uuid(),
 //         sketchProperties,
 //         service: service.id,

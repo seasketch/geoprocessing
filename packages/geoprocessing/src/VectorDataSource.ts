@@ -163,7 +163,6 @@ class VectorDataSource<T> {
     }
   }
 
-  // TODO: test behavior in production
   private async fetchMetadata() {
     if (this.metadata && this.bundleIndex) {
       return;

@@ -46,8 +46,6 @@ export const useFunction = <ResultType>(
   // from another project
   functionTitle: string
 ): FunctionState<ResultType> => {
-  // TODO: Multiple components may call useFunction, which should not result
-  // in multiple requests...
   const context = useContext(ReportContext);
   if (!context) {
     throw new Error("ReportContext not set.");
@@ -276,7 +274,6 @@ const runTask = async (
   }
 };
 
-// TODO: De-dupe in case of multiple useFunctions
 const getGeoprocessingProject = async (
   url: string,
   signal: AbortSignal

@@ -13,8 +13,6 @@ const SketchAttributesCard = (props: SketchAttributesCardProps) => {
     return null;
   }
   if (properties) {
-    // TODO: handle arbitrary sketch attributes. Need to handle difference
-    // between property ID and label somehow. filter out stuff like sketchClassId, id, etc
     return (
       <Card title={props.title || "Attributes"}>
         <table style={{ fontSize: 14, width: "100%" }}>

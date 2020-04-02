@@ -257,13 +257,16 @@ const runTask = async (
   payload: GeoprocessingRequest,
   signal: AbortSignal
 ): Promise<GeoprocessingTask> => {
-  const response = await fetch(url, {
+  const urlInst = new URL(url);
+  urlInst.searchParams.append("geometryUri", payload.geometryUri!);
+  urlInst.searchParams.append("cacheKey", payload.cacheKey || "");
+  const response = await fetch(urlInst.toString(), {
     signal: signal,
-    method: "post",
+    method: "get",
     headers: {
       "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
+    }
+    // body: JSON.stringify(payload)
   });
   const task: GeoprocessingTask = await response.json();
   if (signal.aborted) {

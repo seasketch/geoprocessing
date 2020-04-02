@@ -22,7 +22,7 @@ s3.copyObject(
     CopySource: `/${bucket}/index.html`,
     Key: "index.html",
     ACL: "public-read",
-    CacheControl: "max-age=1, stale-while-revalidate=3600",
+    CacheControl: "max-age=10, stale-while-revalidate=3600",
     ContentType: "text/html",
     MetadataDirective: "REPLACE"
   },

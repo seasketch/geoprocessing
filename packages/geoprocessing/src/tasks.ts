@@ -5,7 +5,9 @@ import { DynamoDB } from "aws-sdk";
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Credentials": true,
-  "Cache-Control": "max-age=0, stale-while-revalidate=3600"
+  // Serve stale while revalidating cache if < 24 hours old, don't revalidate
+  // if < 5 minutes old
+  "Cache-Control": "max-age=30, stale-while-revalidate=86400"
 };
 
 export interface GeoprocessingTask<ResultType = any> {

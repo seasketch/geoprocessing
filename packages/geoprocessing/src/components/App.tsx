@@ -14,7 +14,7 @@ const searchParams = new URLSearchParams(window.location.search);
 // They interfere with the use of creative cache control headers for speeding
 // up loading like stale-while-revalidate
 const service = searchParams.get("service");
-const frameId = searchParams.get("frameId");
+const frameId = searchParams.get("frameId") || window.name;
 if (!service) {
   throw new Error("App must be loaded with `service` query string parameter");
 }

@@ -177,12 +177,13 @@ class GeoprocessingCdkStack extends core.Stack {
       tasksTbl.grantReadWriteData(handler);
       publicBucket.grantReadWrite(handler);
 
-      const postIntegration = new apigateway.LambdaIntegration(handler, {
+      const handlerIntegration = new apigateway.LambdaIntegration(handler, {
         requestTemplates: { "application/json": '{ "statusCode": "200" }' }
       });
 
       const resource = api.root.addResource(func.title);
-      resource.addMethod("POST", postIntegration);
+      resource.addMethod("POST", handlerIntegration);
+      resource.addMethod("GET", handlerIntegration);
 
       new core.CfnOutput(this, "ProjectRoot", {
         value: api.urlForPath("/")

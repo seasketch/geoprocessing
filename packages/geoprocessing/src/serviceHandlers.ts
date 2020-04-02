@@ -17,7 +17,7 @@ export const projectMetadata = async (
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": true,
-      "Cache-Control": "max-age=60"
+      "Cache-Control": "max-age=30, stale-while-revalidate=86400"
     },
     body: JSON.stringify(
       {

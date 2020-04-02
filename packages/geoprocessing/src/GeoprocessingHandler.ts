@@ -154,6 +154,14 @@ export class GeoprocessingHandler<T> {
     if ("geometry" in event) {
       // likely coming from aws console
       request = event as GeoprocessingRequest;
+    } else if (
+      event.queryStringParameters &&
+      event.queryStringParameters["geometryUri"]
+    ) {
+      request = {
+        geometryUri: event.queryStringParameters["geometryUri"],
+        cacheKey: event.queryStringParameters["cacheKey"]
+      };
     } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);
     } else {

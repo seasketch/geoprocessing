@@ -218,7 +218,9 @@ async function makeProject(
   );
   await fs.writeFile(
     `${path}/data/.env`,
-    `COMPOSE_PROJECT_NAME=${metadata.name}`
+    `# setting a project name ensures docker won't confuse db and workspace 
+# containers across multiple geoprocessing projects on the same host
+COMPOSE_PROJECT_NAME=${metadata.name}`
   );
   spinner.succeed("updated Dockerfile");
 

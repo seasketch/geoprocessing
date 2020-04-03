@@ -124,7 +124,7 @@ class RBushIndex extends RBush<Feature> {
   }
 }
 
-class VectorDataSource<T> {
+export class VectorDataSource<T> {
   options: VectorDataSourceOptions;
   metadata?: DataSourceMetadata;
   private url: string;
@@ -590,5 +590,3 @@ class VectorDataSource<T> {
     return this.fetch(getBBox(feature));
   }
 }
-
-export default VectorDataSource;

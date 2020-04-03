@@ -54,7 +54,7 @@ export default {
     }),
     commonjs({
       include: "node_modules/**/*",
-      exclude: "node_modules/node-fetch"
+      exclude: ["node_modules/node-fetch", "@seasketch/geoprocessing"]
     }),
     virtual({
       packageName: `export default "${pkg.name}";`

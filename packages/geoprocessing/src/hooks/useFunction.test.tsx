@@ -60,10 +60,12 @@ beforeEach(() => {
 
 test("useFunction won't accept unrecognizable responses", async () => {
   jest.useFakeTimers();
-  fetchMock.postOnce(
-    "https://example.com/calcFoo",
-    JSON.stringify({ "huh?": "12345" }),
-    { overwriteRoutes: true }
+  fetchMock.getOnce(
+    "*",
+    {},
+    {
+      overwriteRoutes: true
+    }
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper
@@ -72,7 +74,7 @@ test("useFunction won't accept unrecognizable responses", async () => {
   await act(async () => {
     jest.runAllTimers();
   });
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(1);
   expect(result.current.loading).toBe(false);
   expect(result.current.error).toContain("response");
 });
@@ -80,8 +82,8 @@ test("useFunction won't accept unrecognizable responses", async () => {
 test("useFunction unsets loading prop and sets task upon completion of job (executionMode=sync)", async () => {
   jest.useFakeTimers();
   const id = uuid();
-  fetchMock.postOnce(
-    "https://example.com/calcFoo",
+  fetchMock.getOnce(
+    "*",
     JSON.stringify({
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -105,7 +107,7 @@ test("useFunction unsets loading prop and sets task upon completion of job (exec
   await act(async () => {
     jest.runAllTimers();
   });
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(1);
   expect(result.current.loading).toBe(false);
   const task: GeoprocessingTask = result.current.task!;
   expect(task.data.foo).toBe("plenty");
@@ -116,8 +118,8 @@ test("useFunction unsets loading prop and sets task upon completion of job (exec
 test("useFunction handles errors thrown within geoprocessing function", async () => {
   jest.useFakeTimers();
   const id = uuid();
-  fetchMock.postOnce(
-    "https://example.com/calcFoo",
+  fetchMock.getOnce(
+    "*",
     {
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -139,7 +141,7 @@ test("useFunction handles errors thrown within geoprocessing function", async ()
   await act(async () => {
     jest.runAllTimers();
   });
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(1);
   expect(result.current.loading).toBe(false);
   const task: GeoprocessingTask = result.current.task!;
   expect(task.error).toBe("Task error");
@@ -197,8 +199,8 @@ function sleep(ms: number) {
 test("changing ReportContext.geometryUri fetches new results", async () => {
   jest.useFakeTimers();
   const id = uuid();
-  fetchMock.postOnce(
-    "https://example.com/calcFoo",
+  fetchMock.getOnce(
+    "*",
     JSON.stringify({
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -225,15 +227,15 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
     jest.runAllTimers();
   });
   // expect(fetchMock.calls("https://example.com/project").length).toBe(1);
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(1);
   expect(getAllByText(/Task Complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "plenty");
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(1);
 
   // now setup another mock because clicking the button will change the geometryUri
   const id2 = uuid();
-  fetchMock.postOnce(
-    "https://example.com/calcFoo",
+  fetchMock.getOnce(
+    "*",
     JSON.stringify({
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -255,7 +257,7 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
   });
   expect(getAllByText(/Task Complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "lots!");
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(2);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(2);
 });
 
 const MultiCardTestReport = () => {
@@ -299,8 +301,8 @@ const MultiCardTestReport = () => {
 test("useFunction called multiple times with the same arguments will only fetch once", async () => {
   jest.useFakeTimers();
   const id = uuid();
-  fetchMock.postOnce(
-    "https://example.com/calcFoo",
+  fetchMock.getOnce(
+    "*",
     JSON.stringify({
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -328,21 +330,21 @@ test("useFunction called multiple times with the same arguments will only fetch 
   await domAct(async () => {
     jest.runAllTimers();
   });
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(1);
   expect(getAllByText(/Task Complete/i).length).toBe(2);
   const completeEls = getAllByText(/Task Complete/i);
   for (const el of completeEls) {
     expect(el).toHaveAttribute("data-results", "plenty");
   }
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(1);
 });
 
 test("useFunction uses a local cache for repeat requests", async () => {
   jest.useFakeTimers();
   const id = uuid();
   const sketchProperties = makeSketchProperties(id);
-  fetchMock.postOnce(
-    "https://example.com/calcFoo",
+  fetchMock.getOnce(
+    "*",
     JSON.stringify({
       startedAt: new Date().toISOString(),
       duration: 10,
@@ -371,7 +373,7 @@ test("useFunction uses a local cache for repeat requests", async () => {
   });
   expect(getAllByText(/Task Complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "plenty");
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(1);
 
   const queries = render(
     // @ts-ignore
@@ -382,7 +384,7 @@ test("useFunction uses a local cache for repeat requests", async () => {
   await domAct(async () => {
     jest.runAllTimers();
   });
-  expect(fetchMock.calls("https://example.com/calcFoo").length).toBe(1);
+  expect(fetchMock.calls(/calcFoo/).length).toBe(1);
 });
 
 test("Returns error if ReportContext does not include required values", () => {

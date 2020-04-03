@@ -280,7 +280,6 @@ const getGeoprocessingProject = async (
 ): Promise<GeoprocessingProject> => {
   // TODO: eventually handle updated durations
   const pending = pendingMetadataRequests.find(r => r.url === url);
-  console.log(pendingMetadataRequests);
   if (pending) {
     return pending.promise;
   }

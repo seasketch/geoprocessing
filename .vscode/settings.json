@@ -24,5 +24,6 @@
     "**/dist/**": true,
     "**/cdk.out": true,
     "**/.build": true
-  }
+  },
+  "git.ignoreLimitWarning": true
 }

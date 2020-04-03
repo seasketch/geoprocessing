@@ -1,13 +1,17 @@
 version: '3'
 services:
   db:
+    container_name: db-project-name
     image: kartoza/postgis:12.0
     # Port 54320 will be exposed on the host machine. For example, with
     # QGIS installed you can connect to the database on this port. Use
     # the username, password, and database name listed below.
+    # If working on more than one project at a time you may want to change the 
+    # exposed port number to avoid conflicts
     ports:
       - "54320:5432"
   workspace:
+    container_name: workspace-project-name
     build: .
     # These env vars make it easy to connect to the database service
     # Use `psql` without arguments to connect from within the workspace
@@ -16,12 +20,12 @@ services:
       PGUSER: "docker"
       PGPASSWORD: "docker"
       PGDATABASE: "gis"
-    # The contents of the data directory in the host will be mirrored
-    # within the workspace.
+    # The contents of the project directory in the host will be mirrored
+    # within the workspace. 
     volumes:
-      - ".:/data"
+      - "..:/project"
     # Switch to the data directory on startup
-    working_dir: /data
+    working_dir: /project/data
     depends_on:
       - "db"
     command: ["bash"]

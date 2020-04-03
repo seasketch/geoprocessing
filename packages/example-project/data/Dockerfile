@@ -11,4 +11,5 @@ RUN apt -y install postgresql-client-12 postgis
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
 RUN mkdir /data
-CMD sh ./prep-data.sh
+RUN echo 'alias bundle-features="/project/node_modules/.bin/geoprocessing bundle-features"' >> ~/.bashrc
+CMD bash

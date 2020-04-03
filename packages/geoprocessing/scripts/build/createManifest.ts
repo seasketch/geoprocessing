@@ -2,12 +2,35 @@ import fs from "fs";
 import path from "path";
 import { GeoprocessingServiceMetadata } from "../../src/types";
 import mock from "mock-require";
+import * as stuff from "../../src/index";
+import {
+  DEFAULTS as VectorDataSourceDefaults,
+  VectorDataSourceOptions
+} from "../../src/VectorDataSource";
 
 mock("aws-sdk", {
   DynamoDB: {
     DocumentClient: function() {}
   },
   Lambda: function() {}
+});
+
+let VectorDataSources: VectorDataSourceMock[] = [];
+
+class VectorDataSourceMock {
+  url: string;
+  options: VectorDataSourceOptions;
+
+  constructor(url: string, options: {}) {
+    this.url = url;
+    this.options = { ...VectorDataSourceDefaults, ...options };
+    VectorDataSources.push(this);
+  }
+}
+
+mock("@seasketch/geoprocessing", {
+  ...stuff,
+  VectorDataSource: VectorDataSourceMock
 });
 
 const PROJECT_PATH = process.env.PROJECT_PATH!;
@@ -18,9 +41,6 @@ const pkgGeo = JSON.parse(fs.readFileSync("./package.json").toString());
 const projectPkg = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
 );
-
-// VectorDataSource instances won't automatically fetch indexes in this env
-process.env.NODE_ENV = "CREATE_MANIFEST";
 
 const projectMetadata = {
   title: projectPkg.name,
@@ -43,12 +63,10 @@ if (config.functions.length < 1) {
 
 for (const func of config.functions as string[]) {
   const name = path.basename(func).replace(".ts", ".js");
-  // when process.env === "CREATE_MANIFEST", VectorDataSource instances will
-  // register themselves with global.VectorDataSources. Brittle... but works
-  // @ts-ignore
-  global.VectorDataSources = [];
+  VectorDataSources = [];
 
-  const opts = require(path.join(PROJECT_PATH, ".build", name)).options;
+  const handler = require(path.join(PROJECT_PATH, func));
+  const opts = handler.default.options;
   projectMetadata.functions.push({
     handler: name,
     ...opts,
@@ -61,9 +79,14 @@ for (const func of config.functions as string[]) {
     type: "javascript",
     issAllowList: ["*"],
     // @ts-ignore
-    vectorDataSources: global.VectorDataSources.map(v => v[0])
+    vectorDataSources: VectorDataSources.map(v => ({
+      url: v.url,
+      options: v.options
+    }))
   });
 }
+
+// TODO: Tell authors something useful about VectorDataSources at deploy time
 
 fs.writeFileSync(
   path.join(PROJECT_PATH, ".build", "manifest.json"),

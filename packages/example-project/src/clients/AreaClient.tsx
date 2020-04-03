@@ -21,9 +21,9 @@ const AreaClient = () => {
       >
         {(data: AreaResults) => (
           <p>
-            📐This feature is
-            <b> {Number.format(Math.round(data.area * 1e-6))} </b>
-            square kilometers.
+            📐This feature is{" "}
+            <b>{Number.format(Math.round(data.area * 1e-6))}</b> square
+            kilometers.
           </p>
         )}
       </ResultsCard>
@@ -33,7 +33,7 @@ const AreaClient = () => {
 
 const LoadingSkeleton = () => (
   <p>
-    <Skeleton style={{}} />
+    <Skeleton style={{}}>&nbsp;</Skeleton>
   </p>
 );
 

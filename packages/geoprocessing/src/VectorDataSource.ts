@@ -27,7 +27,7 @@ const getBBox = (feature: Feature) => {
 
 // const debug = require("debug")("VectorDataSource");
 
-interface VectorDataSourceOptions {
+export interface VectorDataSourceOptions {
   /**
    * Max number of feature bundles to keep in memory.
    * Calls to .fetch() will not return more than the contents these bundles, so
@@ -59,7 +59,7 @@ interface VectorDataSourceOptions {
   dissolvedFeatureCacheExcessLimit: number;
 }
 
-const DEFAULTS: VectorDataSourceOptions = {
+export const DEFAULTS: VectorDataSourceOptions = {
   cacheSize: 250,
   hintPrefetchLimit: 8,
   dissolvedFeatureCacheExcessLimit: 3
@@ -152,15 +152,7 @@ class VectorDataSource<T> {
     this.pendingRequests = new Map();
     this.cache = new LRUCache(Uint32Array, Array, this.options.cacheSize);
     this.tree = new RBushIndex();
-    // TODO: control of this process should really be inverted by having the
-    // build step mock VectorDataSource. This is a stopgap measure since
-    // implementing that mock was hard to do
-    if (process.env.NODE_ENV === "CREATE_MANIFEST") {
-      // @ts-ignore
-      global.VectorDataSources.push([url, options]);
-    } else {
-      this.fetchMetadata();
-    }
+    this.fetchMetadata();
   }
 
   private async fetchMetadata() {

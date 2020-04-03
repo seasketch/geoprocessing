@@ -210,11 +210,30 @@ async function makeProject(
       .replace("Chad Burt <chad@underbluewaters.net>", author)
       .replace("America/Los_Angeles", tz)
   );
+  const composePath = `${path}/data/docker-compose.yml`;
+  const composeContents = await fs.readFile(composePath);
+  await fs.writeFile(
+    composePath,
+    composeContents.toString().replace(/project-name/g, metadata.name)
+  );
+  await fs.writeFile(
+    `${path}/data/.env`,
+    `COMPOSE_PROJECT_NAME=${metadata.name}`
+  );
   spinner.succeed("updated Dockerfile");
+
+  const readmePath = `${path}/data/README.md`;
+  const readmeContents = await fs.readFile(readmePath);
+  await fs.writeFile(
+    readmePath,
+    readmeContents.toString().replace(/replace-me/g, metadata.name)
+  );
   await fs.copyFile(
     `${__dirname}/../../../templates/exampleSketch.json`,
     path + "/examples/sketches/sketch.json"
   );
+  await fs.mkdir(`${path}/data/src`);
+  await fs.mkdir(`${path}/data/dist`);
   if (interactive) {
     spinner.start("installing dependencies with npm");
     const { stderr, stdout, error } = await exec(

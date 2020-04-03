@@ -36,7 +36,7 @@ cd $WORKING_DIR
 npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/
 # rm -rf $PROJECT_PATH/.build/node_modules/@seasketch/geoprocessing
 # Extract metadata from handlers and create a manifest file
-node dist/scripts/build/createManifest.js
+ts-node --project scripts/tsconfig.json scripts/build/createManifest.ts
 
 # Build high-level services for the geoprocessing apis
 npx rollup -c scripts/build/rollup.services.config.js

@@ -2,8 +2,8 @@ import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { GeoprocessingProject, GeoprocessingServiceMetadata } from "./types";
 import { Manifest } from "../scripts/manifest";
 // @ts-ignore
-import manifestRaw from "manifest";
-
+import manifestRaw from "../.build/manifest.json";
+// @ts-ignore
 const manifest = manifestRaw as Manifest;
 
 export const projectMetadata = async (

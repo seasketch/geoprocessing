@@ -62,7 +62,9 @@ if (config.functions.length < 1) {
 }
 
 for (const func of config.functions as string[]) {
-  const name = path.basename(func).replace(".ts", ".js");
+  let name = path.basename(func);
+  const parts = name.split(".");
+  name = parts.slice(0, -1).join(".") + "Handler.js";
   VectorDataSources = [];
 
   const handler = require(path.join(PROJECT_PATH, func));
@@ -89,6 +91,6 @@ for (const func of config.functions as string[]) {
 // TODO: Tell authors something useful about VectorDataSources at deploy time
 
 fs.writeFileSync(
-  path.join(PROJECT_PATH, ".build", "manifest.json"),
+  path.join(".build", "manifest.json"),
   JSON.stringify(projectMetadata, null, "  ")
 );

@@ -161,7 +161,7 @@ export class VectorDataSource<T> {
     } else {
       delete this.initError;
       const metadataUrl = this.url + "/metadata.json";
-      fetch(metadataUrl)
+      return fetch(metadataUrl)
         .then(r =>
           r.json().then(async (metadata: DataSourceMetadata) => {
             this.metadata = metadata;
@@ -174,6 +174,7 @@ export class VectorDataSource<T> {
           // rather than as a side-effect of instantiation. Otherwise it's easy
           // to run into unhandled promise exceptions or rejections
           // The identifyBundles method will check for initError
+          console.error(e);
           this.initError = new Error(
             `Problem fetching VectorDataSource manifest from ${metadataUrl}`
           );

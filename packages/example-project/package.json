@@ -21,6 +21,7 @@
   "devDependencies": {
     "@seasketch/geoprocessing": "^0.6.18"
   },
+  "dependencies": {},
   "author": "Chad Burt",
   "license": "UNLICENSED",
   "repositoryUrl": "https://github.com/seasketch/example-project",

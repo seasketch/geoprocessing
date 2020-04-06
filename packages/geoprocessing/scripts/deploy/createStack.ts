@@ -159,11 +159,10 @@ class GeoprocessingCdkStack extends core.Stack {
     for (const func of manifest.functions) {
       // @ts-ignore
       const filename = path.basename(func.handler);
-
       const handler = new lambda.Function(this, `${func.title}Handler`, {
         runtime: lambda.Runtime.NODEJS_12_X,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
-        handler: `${filename.split(".")[0]}Handler.handler`,
+        handler: filename.replace(/\.js$/, "") + ".handler",
         functionName: `gp-${manifest.title}-${func.title}`,
         memorySize: func.memory,
         timeout: core.Duration.seconds(func.timeout || 3),

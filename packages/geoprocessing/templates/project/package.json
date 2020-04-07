@@ -1,0 +1,25 @@
+{
+  "name": "example-reports",
+  "version": "1.0.0",
+  "description": "Example project for testing @seaketch/geoprocessing framework",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "geoprocessing test",
+    "create:function": "geoprocessing create:function",
+    "create:client": "geoprocessing create:client",
+    "bootstrap": "geoprocessing bootstrap",
+    "deploy": "geoprocessing deploy",
+    "build": "geoprocessing build:lambda && geoprocessing build:client",
+    "build:client": "geoprocessing build:client",
+    "build:lambda": "geoprocessing build:lambda",
+    "storybook": "geoprocessing storybook",
+    "url": "geoprocessing url"
+  },
+  "keywords": [
+    "@seasketch/geoprocessing"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@seasketch/geoprocessing": "^0.7.0"
+  }
+}

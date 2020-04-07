@@ -1,0 +1,11 @@
+.DS_Store
+node_modules
+cdk.out
+lerna-debug.log
+.build
+.build-web
+packages/geoprocessing/dist
+.workspace.env
+package-lock.json
+packages/example-project/examples/output
+report.*

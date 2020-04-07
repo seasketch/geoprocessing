@@ -1,5 +1,7 @@
 const fs = require("fs");
 const path = require("path");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 const GP_ROOT = path.join(__dirname, "../../");
@@ -7,9 +9,6 @@ if (!PROJECT_PATH) {
   throw new Error("process.env.PROJECT_PATH not set");
 }
 
-const pkg = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
-);
 const geoprocessing = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
 );
@@ -35,11 +34,15 @@ for (const func of geoprocessing.functions) {
   fs.writeFileSync(
     handlerPath,
     `
+    import { VectorDataSource } from "@seasketch/geoprocessing";
     import Handler from "${path.join(PROJECT_PATH, func).replace(/\.ts$/, "")}";
     import { Context, APIGatewayProxyResult, APIGatewayProxyEvent } from "aws-lambda";
     export const handler = async (event:APIGatewayProxyEvent, context:Context): Promise<APIGatewayProxyResult> => {
       return await Handler.lambdaHandler(event, context);
     }
+    export const options = Handler.options;
+    export const sources = VectorDataSource.getRegisteredSources();
+    VectorDataSource.clearRegisteredSources();
   `
   );
   handlers.push(handlerPath);
@@ -51,6 +54,13 @@ if (!geoprocessing.functions && !geoprocessing.functions.length) {
 
 module.exports = {
   mode: "production",
+  stats: {
+    all: false,
+    assets: true,
+    warnings: true,
+    errors: true,
+    errorDetails: true
+  },
   entry: {
     ...handlers.reduce((prev, f) => {
       prev[path.basename(f)] = f;
@@ -78,6 +88,7 @@ module.exports = {
       path.join(PROJECT_PATH, "node_modules")
     ]
   },
+  plugins: process.env.ANALYZE_FUNCTIONS ? [new BundleAnalyzerPlugin()] : [],
   performance: {
     maxAssetSize: 500000,
     maxEntrypointSize: 500000,
@@ -112,7 +123,7 @@ module.exports = {
   }
 };
 
-const staticExternals = ["aws-sdk"];
+const staticExternals = ["aws-sdk", "./manifest.json"];
 const projectNodeModules = Object.keys(
   JSON.parse(
     fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()

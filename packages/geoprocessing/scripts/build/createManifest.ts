@@ -1,37 +1,6 @@
 import fs from "fs";
 import path from "path";
 import { GeoprocessingServiceMetadata } from "../../src/types";
-import mock from "mock-require";
-import * as stuff from "../../src/index";
-import {
-  DEFAULTS as VectorDataSourceDefaults,
-  VectorDataSourceOptions
-} from "../../src/VectorDataSource";
-
-mock("aws-sdk", {
-  DynamoDB: {
-    DocumentClient: function() {}
-  },
-  Lambda: function() {}
-});
-
-let VectorDataSources: VectorDataSourceMock[] = [];
-
-class VectorDataSourceMock {
-  url: string;
-  options: VectorDataSourceOptions;
-
-  constructor(url: string, options: {}) {
-    this.url = url;
-    this.options = { ...VectorDataSourceDefaults, ...options };
-    VectorDataSources.push(this);
-  }
-}
-
-mock("@seasketch/geoprocessing", {
-  ...stuff,
-  VectorDataSource: VectorDataSourceMock
-});
 
 const PROJECT_PATH = process.env.PROJECT_PATH!;
 const config = JSON.parse(
@@ -65,10 +34,10 @@ for (const func of config.functions as string[]) {
   let name = path.basename(func);
   const parts = name.split(".");
   name = parts.slice(0, -1).join(".") + "Handler.js";
-  VectorDataSources = [];
 
-  const handler = require(path.join(PROJECT_PATH, func));
-  const opts = handler.default.options;
+  const p = path.join("../../../", ".build/", name.replace(".js", ""));
+  const handler = require(p);
+  const opts = handler.options;
   projectMetadata.functions.push({
     handler: name,
     ...opts,
@@ -81,10 +50,7 @@ for (const func of config.functions as string[]) {
     type: "javascript",
     issAllowList: ["*"],
     // @ts-ignore
-    vectorDataSources: VectorDataSources.map(v => ({
-      url: v.url,
-      options: v.options
-    }))
+    vectorDataSources: handler.sources
   });
 }
 

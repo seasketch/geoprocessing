@@ -30,7 +30,7 @@ s3.copyObject(
     if (err) {
       throw err;
     } else {
-      console.log("updated cache-control header on " + path);
+      // console.log("updated cache-control header on " + path);
       process.exit();
     }
   }

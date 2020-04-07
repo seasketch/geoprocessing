@@ -25,6 +25,13 @@ const getBBox = (feature: Feature) => {
   return feature.bbox || bbox(feature);
 };
 
+interface VectorDataSourceDetails {
+  options: VectorDataSourceOptions;
+  url: string;
+}
+
+let sources: VectorDataSourceDetails[] = [];
+
 // const debug = require("debug")("VectorDataSource");
 
 export interface VectorDataSourceOptions {
@@ -152,7 +159,19 @@ export class VectorDataSource<T> {
     this.pendingRequests = new Map();
     this.cache = new LRUCache(Uint32Array, Array, this.options.cacheSize);
     this.tree = new RBushIndex();
+    sources.push({
+      url: this.url,
+      options: this.options
+    });
     this.fetchMetadata();
+  }
+
+  static clearRegisteredSources() {
+    sources = [];
+  }
+
+  static getRegisteredSources() {
+    return sources;
   }
 
   private async fetchMetadata() {

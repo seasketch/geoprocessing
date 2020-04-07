@@ -1,14 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) {
   throw new Error("process.env.PROJECT_PATH not set");
 }
-// const manifest = JSON.parse(
-//   fs.readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json")).toString()
-// );
+
 const pkg = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
 );
@@ -20,12 +20,19 @@ if (!geoprocessing.clients && !geoprocessing.clients.length) {
   throw new Error("No clients found in geoprocessing.json");
 }
 
-const clientSources = geoprocessing.clients.map(c =>
-  path.resolve(path.join(PROJECT_PATH, c.source))
-);
-
 module.exports = {
-  // mode: "development",
+  mode: "production",
+  stats: {
+    all: false,
+    assets: true,
+    warnings: true,
+    errors: true,
+    errorDetails: true
+  },
+  performance: {
+    maxAssetSize: 300_000,
+    maxEntrypointSize: 300_000
+  },
   entry: "./src/components/App.tsx",
   output: {
     filename: "main.js",
@@ -44,7 +51,8 @@ module.exports = {
       title: pkg.name,
       hash: true,
       template: path.resolve(__dirname, "index.html")
-    })
+    }),
+    ...(process.env.ANALYZE_CLIENTS ? [new BundleAnalyzerPlugin()] : [])
   ],
   module: {
     rules: [

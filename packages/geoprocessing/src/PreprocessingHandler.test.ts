@@ -11,7 +11,7 @@ const simpleHandler = new PreprocessingHandler(
     description: "description",
     memory: 256,
     timeout: 2,
-    requiresAttributes: [],
+    requiresProperties: [],
   }
 );
 
@@ -53,7 +53,7 @@ test("Returns validation errors", async () => {
       description: "description",
       memory: 256,
       timeout: 2,
-      requiresAttributes: [],
+      requiresProperties: [],
     }
   );
   const results = await handler.lambdaHandler(
@@ -79,7 +79,7 @@ test("500 errors are returned to clients", async () => {
       description: "description",
       memory: 256,
       timeout: 2,
-      requiresAttributes: [],
+      requiresProperties: [],
     }
   );
   const results = await handler.lambdaHandler(

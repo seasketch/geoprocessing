@@ -30,7 +30,7 @@ export async function createStack() {
   const app = new core.App();
   const stack = new GeoprocessingCdkStack(app, stackName, {
     env: { region },
-    project: projectName
+    project: projectName,
   });
   core.Tag.add(stack, "Author", slugify(manifest.author.replace(/\<.*\>/, "")));
   core.Tag.add(stack, "Cost Center", "seasketch-geoprocessing");
@@ -50,7 +50,7 @@ class GeoprocessingCdkStack extends core.Stack {
     const websiteBucket = new s3.Bucket(this, "WebsiteBucket", {
       bucketName: `${props.project}-client-${this.region}`,
       websiteIndexDocument: "index.html",
-      publicReadAccess: true
+      publicReadAccess: true,
     });
 
     // client bundle cloudfront
@@ -62,11 +62,11 @@ class GeoprocessingCdkStack extends core.Stack {
         originConfigs: [
           {
             s3OriginSource: {
-              s3BucketSource: websiteBucket
+              s3BucketSource: websiteBucket,
             },
-            behaviors: [{ isDefaultBehavior: true }]
-          }
-        ]
+            behaviors: [{ isDefaultBehavior: true }],
+          },
+        ],
       }
     );
 
@@ -83,8 +83,8 @@ class GeoprocessingCdkStack extends core.Stack {
         cacheControl: [
           CacheControl.setPublic(),
           // @ts-ignore
-          CacheControl.maxAge(core.Duration.days(365))
-        ]
+          CacheControl.maxAge(core.Duration.days(365)),
+        ],
       }
     );
 
@@ -103,10 +103,10 @@ class GeoprocessingCdkStack extends core.Stack {
           allowedMethods: ["HEAD", "GET"],
           allowedHeaders: ["*"],
           id: "my-cors-rule-1",
-          maxAge: 3600
-        } as CorsRule
+          maxAge: 3600,
+        } as CorsRule,
       ],
-      removalPolicy: core.RemovalPolicy.DESTROY
+      removalPolicy: core.RemovalPolicy.DESTROY,
     });
 
     const publicBucketUrl = publicBucket.urlForObject();
@@ -117,7 +117,7 @@ class GeoprocessingCdkStack extends core.Stack {
       sortKey: { name: "service", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       tableName: `gp-${manifest.title}-tasks`,
-      removalPolicy: core.RemovalPolicy.DESTROY
+      removalPolicy: core.RemovalPolicy.DESTROY,
     });
 
     // project metadata endpoints
@@ -129,8 +129,8 @@ class GeoprocessingCdkStack extends core.Stack {
         description: `Serves API requests for ${props.project}.`,
         defaultCorsPreflightOptions: {
           allowOrigins: apigateway.Cors.ALL_ORIGINS,
-          allowMethods: apigateway.Cors.ALL_METHODS
-        }
+          allowMethods: apigateway.Cors.ALL_METHODS,
+        },
       }
     );
 
@@ -140,8 +140,8 @@ class GeoprocessingCdkStack extends core.Stack {
       handler: "serviceHandlers.projectMetadata",
       environment: {
         publicBucketUrl,
-        clientUrl: distribution.domainName
-      }
+        clientUrl: distribution.domainName,
+      },
     });
 
     tasksTbl.grantReadData(metadataHandler);
@@ -149,7 +149,7 @@ class GeoprocessingCdkStack extends core.Stack {
     const getMetadataIntegration = new apigateway.LambdaIntegration(
       metadataHandler,
       {
-        requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+        requestTemplates: { "application/json": '{ "statusCode": "200" }' },
       }
     );
 
@@ -167,25 +167,32 @@ class GeoprocessingCdkStack extends core.Stack {
         memorySize: func.memory,
         timeout: core.Duration.seconds(func.timeout || 3),
         description: func.description,
-        environment: {
-          publicBucketUrl,
-          TASKS_TABLE: tasksTbl.tableName
-        }
+        environment:
+          func.purpose === "geoprocessing"
+            ? {
+                publicBucketUrl,
+                TASKS_TABLE: tasksTbl.tableName,
+              }
+            : {},
       });
 
-      tasksTbl.grantReadWriteData(handler);
-      publicBucket.grantReadWrite(handler);
+      if (func.purpose === "geoprocessing") {
+        tasksTbl.grantReadWriteData(handler);
+        publicBucket.grantReadWrite(handler);
+      }
 
       const handlerIntegration = new apigateway.LambdaIntegration(handler, {
-        requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+        requestTemplates: { "application/json": '{ "statusCode": "200" }' },
       });
 
       const resource = api.root.addResource(func.title);
       resource.addMethod("POST", handlerIntegration);
-      resource.addMethod("GET", handlerIntegration);
+      if (func.purpose === "geoprocessing") {
+        resource.addMethod("GET", handlerIntegration);
+      }
 
       new core.CfnOutput(this, "ProjectRoot", {
-        value: api.urlForPath("/")
+        value: api.urlForPath("/"),
       });
     }
   }

@@ -48,7 +48,7 @@ interface GeoprocessingProject {
   geoprocessingServices: GeoprocessingService[];
   preprocessingServices: PreProcessingService[];
   clients: ReportClient[];
-  feebackClients: DigitizingFeedbackClient[];
+  feedbackClients: DigitizingFeedbackClient[];
   // Labelling and attribution information may be displayed 
   // in the SeaSketch admin interface
   title: string;

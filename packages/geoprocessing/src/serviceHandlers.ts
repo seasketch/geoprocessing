@@ -17,21 +17,32 @@ export const projectMetadata = async (
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": true,
-      "Cache-Control": "max-age=30, stale-while-revalidate=86400"
+      "Cache-Control": "max-age=30, stale-while-revalidate=86400",
     },
     body: JSON.stringify(
       {
         ...projectInfo,
         clientSideBundle: `https://${process.env.clientUrl}?service=${uri}`,
         uri,
-        geoprocessingServices: functions.map(func => ({
-          endpoint: `https://${event.headers["Host"]}/prod/${func.title}`,
-          ...func,
-          handler: undefined
-        }))
+        geoprocessingServices: functions
+          .filter((f) => f.purpose === "geoprocessing")
+          .map((func) => ({
+            endpoint: `https://${event.headers["Host"]}/prod/${func.title}`,
+            ...func,
+            handler: undefined,
+            purpose: undefined,
+          })),
+        preprocessingServices: functions
+          .filter((f) => f.purpose === "preprocessing")
+          .map((func) => ({
+            title: func.title,
+            description: func.description,
+            endpoint: `https://${event.headers["Host"]}/prod/${func.title}`,
+            requiresProperties: func.requiresProperties,
+          })),
       } as GeoprocessingProject,
       null,
       "  "
-    )
+    ),
   };
 };

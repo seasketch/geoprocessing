@@ -79,7 +79,7 @@ export interface PreprocessingHandlerOptions {
   timeout: number;
   /** Megabytes, 128 - 3008 */
   memory: number;
-  requiresAttributes: string[];
+  requiresProperties: string[];
 }
 
 type RateLimitPeriod = "monthly" | "daily";
@@ -114,7 +114,7 @@ export interface GeoprocessingProject {
   geoprocessingServices: GeoprocessingServiceMetadata[];
   preprocessingServices: PreprocessingService[];
   clients: ReportClient[];
-  feebackClients: DigitizingFeedbackClient[];
+  feedbackClients: DigitizingFeedbackClient[];
   // Labelling and attribution information may be displayed
   // in the SeaSketch admin interface
   title: string;
@@ -190,10 +190,11 @@ export interface PreprocessingResponse<ResponseType = Feature> {
   error?: string;
 }
 
-interface PreprocessingService {
+export interface PreprocessingService {
   title: string;
+  description: string;
   endpoint: string;
-  requiresAttributes: string[];
+  requiresProperties: string[];
   // // if set, requests must include a token with an allowed issuer (iss)
   // restrictedAccess: boolean;
   // // e.g. [sensitive-project.seasketch.org]

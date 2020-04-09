@@ -2,18 +2,18 @@ import {
   GeoprocessingHandlerOptions,
   SketchCollection,
   Sketch,
-  GeoprocessingRequest
+  GeoprocessingRequest,
 } from "./types";
 import TaskModel, {
   commonHeaders,
   GeoprocessingTask,
-  GeoprocessingTaskStatus
+  GeoprocessingTaskStatus,
 } from "./tasks";
 import { fetchGeoJSON } from "./geometry";
 import {
   Context,
   APIGatewayProxyResult,
-  APIGatewayProxyEvent
+  APIGatewayProxyEvent,
 } from "aws-lambda";
 import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
 
@@ -44,7 +44,7 @@ export class GeoprocessingHandler<T> {
     const { Tasks, options } = this;
     const serviceName = options.title;
     const request = this.parseRequest(event);
-    // TODO: Rate limiting
+    // TODO: Rate limiting (probably in api gateway?)
     // TODO: Authorization
     // Bail out if replaying previous task
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
@@ -54,7 +54,7 @@ export class GeoprocessingHandler<T> {
       }
       return {
         statusCode: 200,
-        body: ""
+        body: "",
       };
     } else {
       this.lastRequestId = context.awsRequestId;
@@ -70,9 +70,9 @@ export class GeoprocessingHandler<T> {
           statusCode: 200,
           headers: {
             ...commonHeaders,
-            "x-gp-cache": "Cache hit"
+            "x-gp-cache": "Cache hit",
           },
-          body: JSON.stringify(cachedResult)
+          body: JSON.stringify(cachedResult),
         };
       }
     }
@@ -87,7 +87,7 @@ export class GeoprocessingHandler<T> {
     } else if (this.options.executionMode === "sync") {
       process.removeAllListeners("uncaughtException");
       process.removeAllListeners("unhandledRejection");
-      process.on("uncaughtException", async error => {
+      process.on("uncaughtException", async (error) => {
         console.error(error);
         await Tasks.fail(
           task,
@@ -97,7 +97,7 @@ export class GeoprocessingHandler<T> {
         );
         process.exit();
       });
-      process.on("unhandledRejection", async error => {
+      process.on("unhandledRejection", async (error) => {
         console.error(error);
         await Tasks.fail(
           task,
@@ -160,7 +160,7 @@ export class GeoprocessingHandler<T> {
     ) {
       request = {
         geometryUri: event.queryStringParameters["geometryUri"],
-        cacheKey: event.queryStringParameters["cacheKey"]
+        cacheKey: event.queryStringParameters["cacheKey"],
       };
     } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);

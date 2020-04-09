@@ -39,7 +39,6 @@
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
     "@babel/register": "^7.9.0",
-    "@shelf/jest-dynamodb": "^1.7.0",
     "@storybook/preset-typescript": "^3.0.0",
     "@storybook/react": "^5.3.18",
     "@testing-library/jest-dom": "^5.3.0",
@@ -115,6 +114,10 @@
     "webpack": "^4.42.1",
     "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.11"
+  },
+  "devDependencies": {
+    "@shelf/jest-dynamodb": "^1.7.0",
+    "jest-dynalite": "^1.1.9"
   },
   "gitHead": "36ee5ab517a1f40837f8b4d8c9e63495b5b1078c"
 }

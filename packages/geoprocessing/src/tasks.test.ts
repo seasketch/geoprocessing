@@ -4,7 +4,7 @@ import { DynamoDB } from "aws-sdk";
 const db = new DynamoDB.DocumentClient({
   endpoint: "localhost:8000",
   sslEnabled: false,
-  region: "local-env"
+  region: "local-env",
 });
 const Tasks = new TaskModel("tasks-core", db);
 const SERVICE_NAME = "jest-test-serviceName";
@@ -19,8 +19,8 @@ test("create new task", async () => {
       TableName: "tasks-core",
       Key: {
         id: task.id,
-        service: SERVICE_NAME
-      }
+        service: SERVICE_NAME,
+      },
     })
     .promise();
   expect(item && item.Item && item.Item.id).toBe(task.id);
@@ -49,8 +49,8 @@ test("create task with a cacheKey id", async () => {
       TableName: "tasks-core",
       Key: {
         id: task.id,
-        service: SERVICE_NAME
-      }
+        service: SERVICE_NAME,
+      },
     })
     .promise();
   expect(item && item.Item && item.Item.id).toBe("my-cache-key");
@@ -64,8 +64,8 @@ test("assign a correlation id", async () => {
       TableName: "tasks-core",
       Key: {
         id: task.id,
-        service: SERVICE_NAME
-      }
+        service: SERVICE_NAME,
+      },
     })
     .promise();
   expect(item && item.Item && item.Item.correlationIds.length).toBe(2);
@@ -82,8 +82,8 @@ test("complete an existing task", async () => {
       TableName: "tasks-core",
       Key: {
         id: task.id,
-        service: SERVICE_NAME
-      }
+        service: SERVICE_NAME,
+      },
     })
     .promise();
   expect(response.statusCode).toBe(200);
@@ -101,8 +101,8 @@ test("fail a task", async () => {
       TableName: "tasks-core",
       Key: {
         id: task.id,
-        service: SERVICE_NAME
-      }
+        service: SERVICE_NAME,
+      },
     })
     .promise();
   expect(response.statusCode).toBe(500);

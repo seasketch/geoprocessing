@@ -6,6 +6,7 @@ const isCollection = (
 };
 export { Sketch, SketchCollection, isCollection };
 export { GeoprocessingHandler } from "./GeoprocessingHandler";
+export { PreprocessingHandler, ValidationError } from "./PreprocessingHandler";
 import sketchArea from "@turf/area";
 export { sketchArea };
 export { version } from "../package.json";
@@ -32,7 +33,7 @@ export function getUserAttribute<T>(
   defaultValue?: T
 ) {
   let found = sketch.properties.userAttributes.find(
-    a => a.exportId === exportid
+    (a) => a.exportId === exportid
   );
   return found?.value || defaultValue;
 }

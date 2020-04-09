@@ -25,5 +25,6 @@
     "**/cdk.out": true,
     "**/.build": true
   },
-  "git.ignoreLimitWarning": true
+  "git.ignoreLimitWarning": true,
+  "jest.rootPath": "packages/geoprocessing"
 }

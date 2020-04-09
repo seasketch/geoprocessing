@@ -1,20 +1,24 @@
 import fs from "fs-extra";
 import { Sketch, SketchCollection } from "../../src/types";
+import { Feature, Geometry } from "geojson";
+import path from "path";
 
 /** Reads sketches from examples/sketches for testing. Run from project root */
 export async function getExampleSketches(): Promise<
   Array<Sketch | SketchCollection>
 > {
-  let filenames = await fs.readdir("examples/sketches");
   const sketches: Array<Sketch | SketchCollection> = [];
-  await Promise.all(
-    filenames
-      .filter(fname => /\.json/.test(fname))
-      .map(async f => {
-        const sketch = await fs.readJSON(`examples/sketches/${f}`);
-        sketches.push(sketch);
-      })
-  );
+  if (fs.existsSync("examples/sketches")) {
+    let filenames = await fs.readdir("examples/sketches");
+    await Promise.all(
+      filenames
+        .filter((fname) => /\.json/.test(fname))
+        .map(async (f) => {
+          const sketch = await fs.readJSON(`examples/sketches/${f}`);
+          sketches.push(sketch);
+        })
+    );
+  }
   return sketches;
 }
 
@@ -34,4 +38,24 @@ export async function writeResultOutput(
     folder + "/" + functionName + ".json",
     JSON.stringify(results, null, "  ")
   );
+}
+
+export async function getExampleFeatures(): Promise<
+  Feature<Geometry, { name: string }>[]
+> {
+  const features: Feature<Geometry, { name: string }>[] = [];
+  if (fs.existsSync("examples/features")) {
+    let filenames = await fs.readdir("examples/features");
+    await Promise.all(
+      filenames
+        .filter((fname) => /\.json/.test(fname))
+        .map(async (f) => {
+          const feature = await fs.readJSON(`examples/features/${f}`);
+          feature.properties = feature.properties || {};
+          feature.properties.name = path.basename(f);
+          features.push(feature);
+        })
+    );
+  }
+  return features;
 }

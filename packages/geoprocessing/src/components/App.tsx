@@ -3,16 +3,13 @@ import {
   SeaSketchReportingMessageEvent,
   SeaSketchReportingMessageEventType,
   SketchProperties,
-  GeoprocessingProject
+  GeoprocessingProject,
 } from "../types";
 import ReportContext from "../ReportContext";
 import ReactDOM from "react-dom";
 
 const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);
-// TODO: Eliminate the use of service and frameId for initializing iframes
-// They interfere with the use of creative cache control headers for speeding
-// up loading like stale-while-revalidate
 const service = searchParams.get("service");
 const frameId = searchParams.get("frameId") || window.name;
 if (!service) {
@@ -37,7 +34,7 @@ const App = () => {
         setReportContext({
           sketchProperties: message.sketchProperties,
           geometryUri: message.geometryUri,
-          clientName: message.client
+          clientName: message.client,
         });
       }
     } catch (e) {
@@ -81,7 +78,7 @@ const App = () => {
       <ReportContext.Provider
         value={{
           ...reportContext,
-          projectUrl: service
+          projectUrl: service,
         }}
       >
         <Report />

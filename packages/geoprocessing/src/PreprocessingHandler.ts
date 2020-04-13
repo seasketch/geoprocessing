@@ -3,7 +3,7 @@ import {
   APIGatewayProxyResult,
   APIGatewayProxyEvent,
 } from "aws-lambda";
-import { Feature, LineString, Polygon, MultiPolygon, Point } from "geojson";
+import { Feature } from "geojson";
 import {
   PreprocessingHandlerOptions,
   PreprocessingRequest,
@@ -11,6 +11,12 @@ import {
 } from "./types";
 
 export class ValidationError extends Error {}
+
+const commonHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Credentials": true,
+  "Access-Control-Allow-Headers": "*",
+};
 
 export class PreprocessingHandler {
   func: (feature: Feature) => Promise<Feature>;
@@ -38,6 +44,7 @@ export class PreprocessingHandler {
     } catch (e) {
       return {
         statusCode: 500,
+        headers: commonHeaders,
         body: JSON.stringify({
           error: e.message,
           status: "error",
@@ -61,6 +68,7 @@ export class PreprocessingHandler {
       const feature = await this.func(request.feature);
       return {
         statusCode: 200,
+        headers: commonHeaders,
         body: JSON.stringify({
           data: feature,
           status: "ok",
@@ -70,6 +78,7 @@ export class PreprocessingHandler {
       if (e instanceof ValidationError) {
         return {
           statusCode: 200,
+          headers: commonHeaders,
           body: JSON.stringify({
             error: e.message,
             status: "validationError",
@@ -78,6 +87,7 @@ export class PreprocessingHandler {
       } else {
         return {
           statusCode: 500,
+          headers: commonHeaders,
           body: JSON.stringify({
             error: e.message,
             status: "error",

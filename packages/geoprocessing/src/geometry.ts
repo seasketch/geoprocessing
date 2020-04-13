@@ -1,6 +1,6 @@
 import { Sketch, SketchCollection } from "./types";
 import { GeoprocessingRequest } from "./types";
-import isHostedOnAWS from "./isHostedOnAWS";
+import isHostedOnLambda from "./isHostedOnLambda";
 import "./fetchPolyfill";
 
 export const fetchGeoJSON = async (
@@ -24,7 +24,7 @@ export const fetchGeoJSON = async (
       }
     } else {
       // fetch geometry from endpoint
-      if (isHostedOnAWS) {
+      if (isHostedOnLambda) {
         console.time(`Fetch sketch from ${request.geometryUri}`);
       }
       const response = await fetch(
@@ -33,13 +33,13 @@ export const fetchGeoJSON = async (
         request.token
           ? {
               headers: {
-                Authorization: request.token
-              }
+                Authorization: request.token,
+              },
             }
           : {}
       );
       const sketch = await response.json();
-      if (isHostedOnAWS) {
+      if (isHostedOnLambda) {
         console.timeEnd(`Fetch sketch from ${request.geometryUri}`);
       }
       return sketch;

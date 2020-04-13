@@ -7,11 +7,11 @@ import {
   Feature,
   Polygon,
   MultiPolygon,
-  BBox
+  BBox,
 } from "geojson";
 import RBush from "rbush";
 import bbox from "@turf/bbox";
-import isHostedOnAWS from "./isHostedOnAWS";
+import isHostedOnLambda from "./isHostedOnLambda";
 import "./fetchPolyfill";
 
 // import { recombineTree } from "./recombine";
@@ -69,7 +69,7 @@ export interface VectorDataSourceOptions {
 export const DEFAULTS: VectorDataSourceOptions = {
   cacheSize: 250,
   hintPrefetchLimit: 8,
-  dissolvedFeatureCacheExcessLimit: 3
+  dissolvedFeatureCacheExcessLimit: 3,
 };
 
 interface DataSourceMetadata {
@@ -161,7 +161,7 @@ export class VectorDataSource<T> {
     this.tree = new RBushIndex();
     sources.push({
       url: this.url,
-      options: this.options
+      options: this.options,
     });
     this.fetchMetadata();
   }
@@ -181,14 +181,14 @@ export class VectorDataSource<T> {
       delete this.initError;
       const metadataUrl = this.url + "/metadata.json";
       return fetch(metadataUrl)
-        .then(r =>
+        .then((r) =>
           r.json().then(async (metadata: DataSourceMetadata) => {
             this.metadata = metadata;
             await this.fetchBundleIndex();
             return;
           })
         )
-        .catch(e => {
+        .catch((e) => {
           // It's easier to deal with these errors at the point of use later,
           // rather than as a side-effect of instantiation. Otherwise it's easy
           // to run into unhandled promise exceptions or rejections
@@ -260,9 +260,9 @@ export class VectorDataSource<T> {
       // debug(`Fetching bundle ${url}`);
       const abortController = new AbortController();
       const promise: Promise<any> = fetch(url, {
-        signal: abortController.signal
+        signal: abortController.signal,
       })
-        .then(r => {
+        .then((r) => {
           if (abortController.signal.aborted) {
             return Promise.reject(new DOMException("Aborted", "AbortError"));
           }
@@ -274,7 +274,7 @@ export class VectorDataSource<T> {
           }
           return r.arrayBuffer();
         })
-        .then(arrayBuffer => {
+        .then((arrayBuffer) => {
           if (abortController.signal.aborted) {
             return Promise.reject(new DOMException("Aborted", "AbortError"));
           }
@@ -313,7 +313,7 @@ export class VectorDataSource<T> {
           // Make sure this is always run
           this.pendingRequests.delete(key);
         })
-        .catch(err => {
+        .catch((err) => {
           this.pendingRequests.delete(key);
           if (err.name === "AbortError") {
             // do nothing. fetch aborted
@@ -324,7 +324,7 @@ export class VectorDataSource<T> {
       this.pendingRequests.set(key, {
         abortController,
         promise,
-        priority
+        priority,
       });
       return promise;
     }
@@ -381,9 +381,11 @@ export class VectorDataSource<T> {
     this.cancelLowPriorityRequests(bundleIds);
     if (bundleIds.length <= this.options.hintPrefetchLimit) {
       // debug(`hint() identified ${bundleIds.length} bundles`);
-      return Promise.all(bundleIds.map(id => this.fetchBundle(id))).then(() => {
-        return;
-      });
+      return Promise.all(bundleIds.map((id) => this.fetchBundle(id))).then(
+        () => {
+          return;
+        }
+      );
     } else {
       // debug(`hint() identified no bundles`);
       Promise.resolve();
@@ -424,13 +426,15 @@ export class VectorDataSource<T> {
     }
     this.cancelLowPriorityRequests(bundleIds);
     return Promise.all(
-      bundleIds.slice(0, this.options.cacheSize).map(id => this.fetchBundle(id))
+      bundleIds
+        .slice(0, this.options.cacheSize)
+        .map((id) => this.fetchBundle(id))
     ).then(() => {
       const features = this.tree.search({
         minX: bbox[0],
         minY: bbox[1],
         maxX: bbox[2],
-        maxY: bbox[3]
+        maxY: bbox[3],
       });
       // this.preprocess(features);
       return;
@@ -441,15 +445,15 @@ export class VectorDataSource<T> {
     // debug(`fetch call ${bbox[0]}, ${bbox[1]}, ${bbox[2]}, ${bbox[3]}`);
     let bundleIds = await this.identifyBundles(bbox);
     this.cancelLowPriorityRequests(bundleIds);
-    if (isHostedOnAWS) {
+    if (isHostedOnLambda) {
       console.time(`Fetch ${bundleIds.length} bundles from ${this.url}`);
     }
     await Promise.all(
       bundleIds
         .slice(0, this.options.cacheSize)
-        .map(id => this.fetchBundle(id, "high"))
+        .map((id) => this.fetchBundle(id, "high"))
     );
-    if (isHostedOnAWS) {
+    if (isHostedOnLambda) {
       console.timeEnd(`Fetch ${bundleIds.length} bundles from ${this.url}`);
     }
     // console.time("retrieval and processing");
@@ -458,7 +462,7 @@ export class VectorDataSource<T> {
       minX: bbox[0],
       minY: bbox[1],
       maxX: bbox[2],
-      maxY: bbox[3]
+      maxY: bbox[3],
     }) as unknown) as T[];
     // debug(`${[...this.pendingRequests.keys()].length} pending requests`);
     // let trees = undefined;
@@ -516,19 +520,19 @@ export class VectorDataSource<T> {
     let nodeId = 0;
     for (const _id in featuresById) {
       const features = featuresById[_id];
-      const nodes: Node[] = features.map(f => {
+      const nodes: Node[] = features.map((f) => {
         return {
           nodeId: nodeId++,
           leaf: f as VectorFeature,
           ancestors: (f.properties ? f.properties._ancestors || "" : "")
             .split(",")
             .map((a: string) => parseFloat(a))
-            .reverse()
+            .reverse(),
         };
       });
       trees.push({
         fid: parseInt(_id),
-        root: this.createAncestors(nodes).children![0]
+        root: this.createAncestors(nodes).children![0],
       });
     }
     // console.timeEnd("buildTrees");
@@ -557,7 +561,7 @@ export class VectorDataSource<T> {
       // for each group, push a new node onto the node's children
       for (const key in groups) {
         const cutline = groups[key][0].ancestors[0];
-        groups[key].forEach(n => (n.ancestors = n.ancestors.slice(1)));
+        groups[key].forEach((n) => (n.ancestors = n.ancestors.slice(1)));
         if (cutline) {
           (node.children as Node[]).push(
             populateChildren(
@@ -565,16 +569,16 @@ export class VectorDataSource<T> {
                 nodeId: nodeId++,
                 cutline,
                 ancestors: [...node.ancestors, cutline],
-                children: []
+                children: [],
               },
               groups[key]
             )
           );
         } else {
-          (node.children as Node[]) = groups[key].map(n => ({
+          (node.children as Node[]) = groups[key].map((n) => ({
             nodeId: nodeId++,
             leaf: n.leaf,
-            ancestors: node.ancestors
+            ancestors: node.ancestors,
           }));
         }
       }
@@ -585,7 +589,7 @@ export class VectorDataSource<T> {
       cutline: nodes[0].ancestors[0],
       children: [],
       ancestors: [],
-      nodeId: nodeId++
+      nodeId: nodeId++,
     };
 
     populateChildren(rootNode, nodes);

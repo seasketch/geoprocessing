@@ -1,4 +1,12 @@
-import { FeatureCollection, Feature, Geometry, BBox } from "geojson";
+import {
+  FeatureCollection,
+  Feature,
+  Geometry,
+  BBox,
+  LineString,
+  Polygon,
+  Point,
+} from "geojson";
 
 export type ExecutionMode = "async" | "sync";
 
@@ -64,6 +72,16 @@ export interface GeoprocessingHandlerOptions {
   issAllowList?: string[];
 }
 
+export interface PreprocessingHandlerOptions {
+  title: string;
+  description: string;
+  /** Seconds */
+  timeout: number;
+  /** Megabytes, 128 - 3008 */
+  memory: number;
+  requiresProperties: string[];
+}
+
 type RateLimitPeriod = "monthly" | "daily";
 type GeoprocessingServiceType = "javascript" | "container";
 
@@ -96,7 +114,7 @@ export interface GeoprocessingProject {
   geoprocessingServices: GeoprocessingServiceMetadata[];
   preprocessingServices: PreprocessingService[];
   clients: ReportClient[];
-  feebackClients: DigitizingFeedbackClient[];
+  feedbackClients: DigitizingFeedbackClient[];
   // Labelling and attribution information may be displayed
   // in the SeaSketch admin interface
   title: string;
@@ -110,20 +128,6 @@ export interface GeoprocessingProject {
 interface ClientCode {
   uri: string; // public bundle location
   offlineSupported: boolean;
-}
-
-interface PreprocessingService {
-  title: string;
-  endpoint: string;
-  usesAttributes: string[];
-  timeout: number; //ms
-  // if set, requests must include a token with an allowed issuer (iss)
-  restrictedAccess: boolean;
-  // e.g. [sensitive-project.seasketch.org]
-  issAllowList?: Array<string>;
-  // for low-latency clientside processing and offline use
-  // v2 or later
-  clientSideBundle?: ClientCode;
 }
 
 interface ReportClient {
@@ -171,4 +175,31 @@ export interface SeaSketchReportingMessageEvent {
   sketchProperties: SketchProperties;
   geometryUri: string;
   type: "SeaSketchReportingMessageEventType";
+}
+
+export interface PreprocessingRequest {
+  /** Geometry drawn by the user. Typically simple */
+  feature: Feature<Polygon | Point | LineString>;
+  /** Defaults to geojson  */
+  responseFormat?: "application/json"; // | "application/pbf+geobuf" | "application/pbf+mvt";
+}
+
+export interface PreprocessingResponse<ResponseType = Feature> {
+  status: "ok" | "error" | "validationError";
+  data?: ResponseType;
+  error?: string;
+}
+
+export interface PreprocessingService {
+  title: string;
+  description: string;
+  endpoint: string;
+  requiresProperties: string[];
+  // // if set, requests must include a token with an allowed issuer (iss)
+  // restrictedAccess: boolean;
+  // // e.g. [sensitive-project.seasketch.org]
+  // issAllowList?: Array<string>;
+  // // for low-latency clientside processing and offline use
+  // // v2 or later
+  // clientSideBundle?: ClientCode;
 }

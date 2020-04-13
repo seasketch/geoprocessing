@@ -1,9 +1,14 @@
 import {
   GeoprocessingProject,
-  GeoprocessingServiceMetadata
+  GeoprocessingServiceMetadata,
+  PreprocessingService,
 } from "../src/types";
 
+export interface FunctionMetadata extends GeoprocessingServiceMetadata {
+  purpose: "geoprocessing" | "preprocessing";
+}
+
 export interface Manifest extends GeoprocessingProject {
-  functions: GeoprocessingServiceMetadata[];
+  functions: FunctionMetadata[];
   region: string;
 }

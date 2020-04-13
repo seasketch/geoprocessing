@@ -27,32 +27,32 @@ module.exports = {
     assets: true,
     warnings: true,
     errors: true,
-    errorDetails: true
+    errorDetails: true,
   },
   performance: {
     maxAssetSize: 300_000,
-    maxEntrypointSize: 300_000
+    maxEntrypointSize: 300_000,
   },
   entry: "./src/components/App.tsx",
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "../../.build-web/")
+    path: path.resolve(__dirname, "../../.build-web/"),
   },
   devtool: "source-map",
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     modules: [
       path.resolve(__dirname, "../../node_modules"),
-      path.join(PROJECT_PATH, "node_modules")
-    ]
+      path.join(PROJECT_PATH, "node_modules"),
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       title: pkg.name,
       hash: true,
-      template: path.resolve(__dirname, "index.html")
+      template: path.resolve(__dirname, "index.html"),
     }),
-    ...(process.env.ANALYZE_CLIENTS ? [new BundleAnalyzerPlugin()] : [])
+    ...(process.env.ANALYZE_CLIENTS ? [new BundleAnalyzerPlugin()] : []),
   ],
   module: {
     rules: [
@@ -65,13 +65,13 @@ module.exports = {
             presets: [
               [
                 require.resolve("@babel/preset-env"),
-                { targets: { node: "current" } }
+                { targets: { node: "current" } },
               ],
               require.resolve("@babel/preset-typescript"),
-              require.resolve("@babel/preset-react")
-            ]
-          }
-        }
+              require.resolve("@babel/preset-react"),
+            ],
+          },
+        },
       },
       {
         test: /client-loader.js$/,
@@ -79,14 +79,14 @@ module.exports = {
           {
             loader: `val-loader`,
             options: {
-              clients: geoprocessing.clients.map(c => {
+              clients: geoprocessing.clients.map((c) => {
                 c.source = path.join(PROJECT_PATH, c.source);
                 return c;
-              })
-            }
-          }
-        ]
-      }
-    ]
-  }
+              }),
+            },
+          },
+        ],
+      },
+    ],
+  },
 };

@@ -25,5 +25,25 @@
     "**/cdk.out": true,
     "**/.build": true
   },
-  "git.ignoreLimitWarning": true
+  "git.ignoreLimitWarning": true,
+  "jest.rootPath": "packages/geoprocessing",
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#004b99",
+    "activityBar.activeBorder": "#ff007d",
+    "activityBar.background": "#004b99",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#ff007d",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "statusBar.background": "#003266",
+    "statusBar.border": "#003266",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#004b99",
+    "titleBar.activeBackground": "#003266",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.border": "#003266",
+    "titleBar.inactiveBackground": "#00326699",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#003266"
 }

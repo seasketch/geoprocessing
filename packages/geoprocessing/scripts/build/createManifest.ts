@@ -1,6 +1,9 @@
 import fs from "fs";
 import path from "path";
-import { GeoprocessingServiceMetadata } from "../../src/types";
+import {
+  GeoprocessingServiceMetadata,
+  PreprocessingService,
+} from "../../src/types";
 
 const PROJECT_PATH = process.env.PROJECT_PATH!;
 const config = JSON.parse(
@@ -20,10 +23,10 @@ const projectMetadata = {
   relatedUri: projectPkg.homepage,
   sourceUri: projectPkg.repository ? projectPkg.repository.url : null,
   published: new Date().toISOString(),
-  preprocessingServices: [],
   clients: config.clients,
-  feebackClients: [],
-  functions: [] as GeoprocessingServiceMetadata[]
+  feedbackClients: [],
+  functions: [] as GeoprocessingServiceMetadata[],
+  preprocessingFunctions: [] as PreprocessingService[],
 };
 
 if (config.functions.length < 1) {
@@ -38,20 +41,29 @@ for (const func of config.functions as string[]) {
   const p = path.join("../../../", ".build/", name.replace(".js", ""));
   const handler = require(p);
   const opts = handler.options;
-  projectMetadata.functions.push({
+  let metadata = {
     handler: name,
     ...opts,
-    rateLimited: false,
-    rateLimit: 0,
-    rateLimitPeriod: "daily",
-    rateLimitConsumed: 0,
-    medianDuration: 0,
-    medianCost: 0,
-    type: "javascript",
-    issAllowList: ["*"],
-    // @ts-ignore
-    vectorDataSources: handler.sources
-  });
+    vectorDataSources: handler.sources,
+    purpose:
+      handler.options.executionModel !== undefined
+        ? "geoprocessing"
+        : "preprocessing",
+  };
+  if (handler.options.executionModel !== undefined) {
+    metadata = {
+      ...metadata,
+      rateLimited: false,
+      rateLimit: 0,
+      rateLimitPeriod: "daily",
+      rateLimitConsumed: 0,
+      medianDuration: 0,
+      medianCost: 0,
+      type: "javascript",
+      issAllowList: ["*"],
+    };
+  }
+  projectMetadata.functions.push(metadata);
 }
 
 // TODO: Tell authors something useful about VectorDataSources at deploy time

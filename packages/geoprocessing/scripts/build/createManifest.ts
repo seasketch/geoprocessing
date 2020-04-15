@@ -46,11 +46,11 @@ for (const func of config.functions as string[]) {
     ...opts,
     vectorDataSources: handler.sources,
     purpose:
-      handler.options.executionModel !== undefined
+      handler.options.executionMode !== undefined
         ? "geoprocessing"
         : "preprocessing",
   };
-  if (handler.options.executionModel !== undefined) {
+  if (handler.options.executionMode !== undefined) {
     metadata = {
       ...metadata,
       rateLimited: false,

@@ -6,6 +6,7 @@ lerna-debug.log
 .build-web
 packages/geoprocessing/dist
 .workspace.env
-package-lock.json
+packages/example-project/package-lock.json
+packages/geoprocessing/package-lock.json
 packages/example-project/examples/output
 report.*

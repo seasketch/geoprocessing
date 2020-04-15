@@ -123,6 +123,7 @@ because of the varying environments under which the code may run. A good methodo
   * v0.7 testing on simple vector reports with legacy version of SeaSketch
     * Replace recent geoprocessing functions and use for new projects
     * Build out component library as needed
+    * Add [benchmarking and VectorDataSource stats](https://github.com/seasketch/geoprocessing/issues/10) tool
   * v0.9 Add support for [async execution model](https://github.com/seasketch/geoprocessing/issues/4) for longer running reports with progress bars
   * v0.9.1 Add [`requiresProperties` support](https://github.com/seasketch/geoprocessing/issues/2)
   * [Log access](https://github.com/seasketch/geoprocessing/issues/7)

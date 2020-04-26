@@ -2,7 +2,7 @@ import {
   createPool,
   sql,
   DatabasePoolConnectionType,
-  IdentifierSqlTokenType
+  IdentifierSqlTokenType,
 } from "slonik";
 // @ts-ignore
 import { raw } from "slonik-sql-tag-raw";
@@ -42,7 +42,7 @@ const DEFAULTS = {
   pointsLimit: 5500,
   envelopeMaxDistance: 55,
   dryRun: false,
-  connection: "postgres://"
+  connection: "postgres://",
 };
 
 /**
@@ -56,7 +56,7 @@ const bundleFeatures = async (
   const pool = createPool(options.connection, {});
   const outstandingPromises: Promise<any>[] = [];
   const statsTableName = `${options.tableName}_bundles`;
-  await pool.connect(async connection => {
+  await pool.connect(async (connection) => {
     const startTime = new Date().getTime();
     const sourceTable = sql.identifier([options.tableName]);
     // Check that source table meets all requirements
@@ -89,7 +89,7 @@ const bundleFeatures = async (
     const i = {
       geom: sql.identifier([columns.geometry]),
       pk: sql.identifier([columns.pk]),
-      statsTable: sql.identifier([statsTableName])
+      statsTable: sql.identifier([statsTableName]),
     };
 
     // Fetch the bbox, id, and size (st_npoints) of all features to organizing
@@ -124,7 +124,7 @@ const bundleFeatures = async (
       extent = expandBBox(extent, feature.bbox);
       const diagonal = lineString([
         [extent[0], extent[1]],
-        [extent[2], extent[3]]
+        [extent[2], extent[3]],
       ]);
       const km = length(diagonal, { units: "kilometers" });
       if (
@@ -183,12 +183,13 @@ async function createGeobuf(
   }>(sql`
     select json_build_object(
       'type', 'FeatureCollection',
-      'features', json_agg(ST_AsGeoJSON(t.*, ${geom.names[0]}, 6)::json)
+      'features', json_agg(ST_AsGeoJSON(t.*, 'ccw', 6)::json)
     ) as collection, 
     st_extent(t.${geom}) as extent
     from (
       select 
         *, 
+        ST_ForcePolygonCCW(${geom}) as ccw,
         ${st_asbbox(geom)} as b_box 
       from ${table} 
       where ${pk} in (${sql.join(ids, sql`, `)})
@@ -201,8 +202,20 @@ async function createGeobuf(
   // Query added a bbox parameter to feature properties, promote it from
   // feature.properties.b_box to feature.bbox
   for (const feature of collection.features) {
-    feature.bbox = feature.properties!.b_box;
+    feature.bbox = feature.properties!.b_box.map((f: number) =>
+      parseFloat(f.toFixed(6))
+    );
     delete feature.properties!.b_box;
+    // remove geometries from geojson properties
+    for (const key in feature.properties) {
+      if (
+        typeof feature.properties[key] === "object" &&
+        "type" in feature.properties[key] &&
+        "coordinates" in feature.properties[key]
+      ) {
+        delete feature.properties[key];
+      }
+    }
   }
   const buffer = geobuf.encode(collection, new Pbf());
   const { id, bytes, count } = await connection.one<{
@@ -230,7 +243,7 @@ async function createGeobuf(
     bundleId: id,
     geobuf: buffer,
     bytes: bytes,
-    count: count
+    count: count,
   };
 }
 

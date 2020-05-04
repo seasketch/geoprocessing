@@ -191,9 +191,9 @@ class GeoprocessingCdkStack extends core.Stack {
         resource.addMethod("GET", handlerIntegration);
       }
 
-      new core.CfnOutput(this, "ProjectRoot", {
-        value: api.urlForPath("/"),
-      });
+      // new core.CfnOutput(this, "ProjectRoot", {
+      //   value: api.urlForPath("/"),
+      // });
     }
   }
 }

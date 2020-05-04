@@ -42,6 +42,7 @@ export class GeoprocessingHandler<T> {
     context: Context
   ): Promise<APIGatewayProxyResult> {
     const { Tasks, options } = this;
+    // console.log("options", options);
     const serviceName = options.title;
     const request = this.parseRequest(event);
     // TODO: Rate limiting (probably in api gateway?)

@@ -25,7 +25,7 @@ cf.describeStacks(
       throw new Error(`No stack named ${packageName}-geoprocessing-stack`);
     }
     const Outputs = data.Stacks[0].Outputs;
-    const output = Outputs?.find(o => o.OutputKey === "ProjectRoot");
+    const output = Outputs?.find((o) => /apiEndpoint/.test(o.OutputKey || ""));
     if (!output) {
       throw new Error("Could not find output named ProjectRoot");
     }

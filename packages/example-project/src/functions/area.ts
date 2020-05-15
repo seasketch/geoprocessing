@@ -4,7 +4,7 @@ import {
   GeoprocessingHandler,
   VectorDataSource,
   sketchArea,
-  isCollection
+  isCollection,
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import { AllGeoJSON, BBox } from "@turf/helpers";
@@ -18,7 +18,7 @@ export interface AreaResults {
 async function area(sketch: Sketch | SketchCollection): Promise<AreaResults> {
   return {
     area: sketchArea(sketch),
-    bbox: bbox(sketch as AllGeoJSON)
+    bbox: bbox(sketch as AllGeoJSON),
   };
 }
 
@@ -29,5 +29,5 @@ export default new GeoprocessingHandler(area, {
   memory: 256, // megabytes
   executionMode: "sync",
   // Specify any Sketch Class form attributes that are required
-  requiresProperties: []
+  requiresProperties: [],
 });

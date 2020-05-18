@@ -25,9 +25,9 @@ Tasks.prototype.fail.mockImplementation(
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true
+        "Access-Control-Allow-Credentials": true,
       },
-      body: JSON.stringify(task)
+      body: JSON.stringify(task),
     };
   }
 );
@@ -44,9 +44,9 @@ Tasks.prototype.complete.mockImplementation(
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true
+        "Access-Control-Allow-Credentials": true,
       },
-      body: JSON.stringify(task)
+      body: JSON.stringify(task),
     };
   }
 );
@@ -58,12 +58,12 @@ const exampleSketch = {
     sketchClassId: uuid(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    name: "My Sketch"
+    name: "My Sketch",
   },
   geometry: {
     type: "Point",
-    coordinates: [1, 2]
-  }
+    coordinates: [1, 2],
+  },
 };
 
 // @ts-ignore
@@ -72,7 +72,7 @@ fetchMock.get("https://example.com/geom/123", JSON.stringify(exampleSketch));
 
 test("Handler can be constructed an run simple geoprocessing", async () => {
   const handler = new GeoprocessingHandler(
-    async sketch => {
+    async (sketch) => {
       return { foo: "bar", id: sketch.properties.id };
     },
     {
@@ -81,7 +81,7 @@ test("Handler can be constructed an run simple geoprocessing", async () => {
       executionMode: "sync",
       memory: 128,
       requiresProperties: [],
-      timeout: 100
+      timeout: 100,
     }
   );
   expect(handler.options.title).toBe("TestGP");
@@ -92,8 +92,8 @@ test("Handler can be constructed an run simple geoprocessing", async () => {
     ({
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
-        cacheKey: "abc123"
-      })
+        cacheKey: "abc123",
+      }),
     } as unknown) as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
@@ -103,14 +103,14 @@ test("Handler can be constructed an run simple geoprocessing", async () => {
   expect(task.status).toBe(GeoprocessingTaskStatus.Completed);
   expect(task.data.foo).toBe("bar");
   // make sure cors headers are set
-  expect(result.headers["Access-Control-Allow-Origin"]).toBe("*");
-  expect(result.headers["Access-Control-Allow-Credentials"]).toBe(true);
+  expect(result.headers!["Access-Control-Allow-Origin"]).toBe("*");
+  expect(result.headers!["Access-Control-Allow-Credentials"]).toBe(true);
   expect(task.data.id).toBe(exampleSketch.properties.id);
 });
 
 test("Repeated requests should be 'cancelled'", async () => {
   const handler = new GeoprocessingHandler(
-    async sketch => {
+    async (sketch) => {
       return { foo: "bar", id: sketch.properties.id };
     },
     {
@@ -119,7 +119,7 @@ test("Repeated requests should be 'cancelled'", async () => {
       executionMode: "sync",
       memory: 128,
       requiresProperties: [],
-      timeout: 100
+      timeout: 100,
     }
   );
   // @ts-ignore
@@ -128,8 +128,8 @@ test("Repeated requests should be 'cancelled'", async () => {
     ({
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
-        cacheKey: "abc123"
-      })
+        cacheKey: "abc123",
+      }),
     } as unknown) as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
@@ -138,8 +138,8 @@ test("Repeated requests should be 'cancelled'", async () => {
     ({
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
-        cacheKey: "abc123"
-      })
+        cacheKey: "abc123",
+      }),
     } as unknown) as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
@@ -151,7 +151,7 @@ test("Repeated requests should be 'cancelled'", async () => {
 
 test("Results are cached using request.cacheKey", async () => {
   const handler = new GeoprocessingHandler(
-    async sketch => {
+    async (sketch) => {
       return { foo: "bar", id: sketch.properties.id };
     },
     {
@@ -160,7 +160,7 @@ test("Results are cached using request.cacheKey", async () => {
       executionMode: "sync",
       memory: 128,
       requiresProperties: [],
-      timeout: 100
+      timeout: 100,
     }
   );
   // @ts-ignore
@@ -177,8 +177,8 @@ test("Results are cached using request.cacheKey", async () => {
     ({
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
-        cacheKey: "abc123"
-      })
+        cacheKey: "abc123",
+      }),
     } as unknown) as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
@@ -187,8 +187,8 @@ test("Results are cached using request.cacheKey", async () => {
     ({
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
-        cacheKey: "abc123"
-      })
+        cacheKey: "abc123",
+      }),
     } as unknown) as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "bar" }
@@ -205,7 +205,7 @@ test("Results are cached using request.cacheKey", async () => {
 test("Failed geometryUri fetches are communicated to requester", async () => {
   fetchMock.get("https://example.com/geom/abc123", 500);
   const handler = new GeoprocessingHandler(
-    async sketch => {
+    async (sketch) => {
       return { foo: "bar", id: sketch.properties.id };
     },
     {
@@ -214,7 +214,7 @@ test("Failed geometryUri fetches are communicated to requester", async () => {
       executionMode: "sync",
       memory: 128,
       requiresProperties: [],
-      timeout: 100
+      timeout: 100,
     }
   );
   expect(handler.options.title).toBe("TestGP");
@@ -225,8 +225,8 @@ test("Failed geometryUri fetches are communicated to requester", async () => {
     ({
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/abc123",
-        cacheKey: "abc123"
-      })
+        cacheKey: "abc123",
+      }),
     } as unknown) as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
@@ -235,13 +235,13 @@ test("Failed geometryUri fetches are communicated to requester", async () => {
   const task = JSON.parse(result.body) as GeoprocessingTask;
   expect(task.error).toContain("geometry");
   // make sure cors headers are set still for errors
-  expect(result.headers["Access-Control-Allow-Origin"]).toBe("*");
-  expect(result.headers["Access-Control-Allow-Credentials"]).toBe(true);
+  expect(result.headers!["Access-Control-Allow-Origin"]).toBe("*");
+  expect(result.headers!["Access-Control-Allow-Credentials"]).toBe(true);
 });
 
 test("Exceptions in geoprocessing function are passed to requester", async () => {
   const handler = new GeoprocessingHandler(
-    async sketch => {
+    async (sketch) => {
       // @ts-ignore
       return { foo: sketch.something.doesntexist() };
     },
@@ -251,7 +251,7 @@ test("Exceptions in geoprocessing function are passed to requester", async () =>
       executionMode: "sync",
       memory: 128,
       requiresProperties: [],
-      timeout: 100
+      timeout: 100,
     }
   );
   expect(handler.options.title).toBe("TestGP");
@@ -262,8 +262,8 @@ test("Exceptions in geoprocessing function are passed to requester", async () =>
     ({
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
-        cacheKey: "abc123"
-      })
+        cacheKey: "abc123",
+      }),
     } as unknown) as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
@@ -272,8 +272,8 @@ test("Exceptions in geoprocessing function are passed to requester", async () =>
   const task = JSON.parse(result.body) as GeoprocessingTask;
   expect(task.error).toContain("exception");
   // make sure cors headers are set still for errors
-  expect(result.headers["Access-Control-Allow-Origin"]).toBe("*");
-  expect(result.headers["Access-Control-Allow-Credentials"]).toBe(true);
+  expect(result.headers!["Access-Control-Allow-Origin"]).toBe("*");
+  expect(result.headers!["Access-Control-Allow-Credentials"]).toBe(true);
 });
 
 // TODO: requiresProperties verification

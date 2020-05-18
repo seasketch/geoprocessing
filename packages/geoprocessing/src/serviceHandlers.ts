@@ -27,8 +27,8 @@ export const projectMetadata = async (
         geoprocessingServices: functions
           .filter((f) => f.purpose === "geoprocessing")
           .map((func) => ({
-            endpoint: `https://${event.headers["Host"]}/prod/${func.title}`,
             ...func,
+            endpoint: `https://${event.headers["Host"]}/prod/${func.title}`,
             handler: undefined,
             purpose: undefined,
           })),

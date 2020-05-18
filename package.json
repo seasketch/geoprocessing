@@ -8,5 +8,7 @@
   "scripts": {
     "create_example": "node packages/geoprocessing/dist/scripts/init/createExampleProject.js"
   },
-  "dependencies": {}
+  "dependencies": {
+    "typescript": "^3.9.2"
+  }
 }

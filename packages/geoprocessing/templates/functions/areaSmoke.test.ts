@@ -1,7 +1,10 @@
+/**
+ * @group smoke
+ */
 import Handler from "./area";
 import {
   getExampleSketches,
-  writeResultOutput
+  writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
 
 const calculateArea = Handler.func;
@@ -17,13 +20,5 @@ describe("Basic smoke tests", () => {
       expect(result).toBeTruthy();
       writeResultOutput(result, "calculateArea", example.properties.name);
     }
-  });
-});
-
-describe("Unit tests", () => {
-  test("Area should be > 700 sq km", async () => {
-    const examples = await getExampleSketches();
-    const result = await calculateArea(examples[0]);
-    expect(result.area / 1000 ** 2).toBeGreaterThan(700);
   });
 });

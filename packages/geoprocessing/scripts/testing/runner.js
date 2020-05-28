@@ -1,7 +1,7 @@
 // copied and modified from create-react-app
 // https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/scripts/test.js
 
-export default function() {
+export default function () {
   // Do this as the first thing so that any code reading it knows the right env.
   process.env.BABEL_ENV = "test";
   process.env.NODE_ENV = "test";
@@ -10,7 +10,7 @@ export default function() {
   // Makes the script crash on unhandled rejections instead of silently
   // ignoring them. In the future, promise rejections that are not handled will
   // terminate the Node.js process with a non-zero exit code.
-  process.on("unhandledRejection", err => {
+  process.on("unhandledRejection", (err) => {
     throw err;
   });
 
@@ -27,16 +27,17 @@ export default function() {
       collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}", "!src/**/*.d.ts"],
       testMatch: [
         "<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
-        "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
+        "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}",
       ],
       transform: {
-        "^.+\\.(js|jsx|ts|tsx)$": require.resolve("./babelTransform.js")
+        "^.+\\.(js|jsx|ts|tsx)$": require.resolve("./babelTransform.js"),
       },
       transformIgnorePatterns: [
         `/node_modules/(?!@seasketch\/geoprocessing)`,
         // "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
-        "^.+\\.module\\.(css|sass|scss)$"
-      ]
+        "^.+\\.module\\.(css|sass|scss)$",
+      ],
+      runner: "groups",
     })
   );
 
@@ -46,21 +47,21 @@ export default function() {
   function resolveJestDefaultEnvironment(name) {
     const jestDir = path.dirname(
       resolve.sync("jest", {
-        basedir: __dirname
+        basedir: __dirname,
       })
     );
     const jestCLIDir = path.dirname(
       resolve.sync("jest-cli", {
-        basedir: jestDir
+        basedir: jestDir,
       })
     );
     const jestConfigDir = path.dirname(
       resolve.sync("jest-config", {
-        basedir: jestCLIDir
+        basedir: jestCLIDir,
       })
     );
     return resolve.sync(name, {
-      basedir: jestConfigDir
+      basedir: jestConfigDir,
     });
   }
   let cleanArgv = [];

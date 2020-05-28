@@ -32,5 +32,8 @@
   "bugs": {
     "url": "https://github.com/seasketch/example-project/issues"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@turf/bbox": "^6.0.1"
+  }
 }

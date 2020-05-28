@@ -103,11 +103,29 @@ You will need the url shown after deploying the project, or need to retrieve it 
 
 To contribute to @seasketch/geoprocessing please create a new branch for feature work and a pull request when ready to merge into master. Setting up your development environment as detailed below will make for a smoother process.
 
+## Installation
+
+This repository is setup as a "monorepo" managed by [Lerna](https://github.com/lerna/lerna), with two projects under `packages/`. These include the library itself and an example project that can be used to test functionality. To work on the library, checkout the repo and run lerna bootstrap.
+
+```sh
+mkdir @seasketch && cd @seasketch
+git clone https://github.com/seasketch/geoprocessing.git
+cd geoprocessing
+lerna bootstrap
+# bootstrap will install npm dependencies for both projects
+cd packages/geoprocessing
+npm test
+```
+
 ## Editor setup and style guidelines
 
 The framework is written in TypeScript so having a good editor setup is crucial to take advantage of autocompletion and leverage type documentation. [VS Code](https://code.visualstudio.com/) is highly recommended and this project features editor settings to automatically format code on save, hide generated files, and run build steps. Once the project is open, VS Code will open a popup where you can install extension recommendations.
 
 ![Install All extentions screenshot](https://user-images.githubusercontent.com/511063/79138662-be8a6380-7d69-11ea-96f4-20a759192434.png)
+
+#### Important
+
+As this is a typescript project, your changes may not be reflected until the project is compiled. This is most easily handled by VS Code. Press Command+Shift+B to open the build menu, and start **both** `build scripts/` and `tsc: watch packages/geoprocessing/tsconfig.json`.
 
 ## Storybook components
 
@@ -116,7 +134,16 @@ The framework has it's own storybook project that can be launched using `npm run
 ## Testing integration with project implementations
 
 Testing modifications to the framework, particularly build steps, can be tricky
-because of the varying environments under which the code may run. A good methodology is to first create unit tests and verify that they run, then modify `packages/example-project` and its unit tests and verify the tests run and `npm run build` steps work. It is not uncommon for these steps to pass and for bugs to still appear after publishing of the framework, so manual testing after publishing should be done as well
+because of the varying environments under which the code may run. A good methodology is to first create unit tests and verify that they run, then modify `packages/example-project` and its unit tests and verify the tests run and `npm run build` steps work. It is not uncommon for these steps to pass and for bugs to still appear after publishing of the framework, so manual testing after publishing should be done as well.
+
+To test with projects other than `example-project` on your local machine, npm link is a handy tool. From within `packages/geoprocessing` run the command `npm link`. This will make the library available to other packages locally (assuming the same version of node. watch out nvm users!). Then change to you project directory and run `npm link @seasketch/geoprocessing`. Any changes you make to the library will automatically be reflected in your geoprocessing implementation. Just watch out for a couple common problems:
+
+  1. Make sure VSCode is running the two build processes, and they complete without errors. Implementations import code from `dist/`, not the source typescript files.
+  2. Running npm install within your geoprocessing project can interact oddly with npm link. If you suspect problems run the linking process again.
+
+## Publishing
+
+To publish new versions of the framework run `lerna publish`. Please follow [semantic versioning conventions](https://semver.org/).
 
 ## Roadmap
 

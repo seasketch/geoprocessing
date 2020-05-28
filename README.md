@@ -18,7 +18,7 @@ Each project may contain multiple data preparation routines, functions, and  rep
 
 `npx @seasketch/geoprocessing init` will download the framework and prompt for project metadata before initializing a new codebase. 
 
-<!-- ![init process screenshot](https://user-images.githubusercontent.com/511063/79147415-bd146780-7d78-11ea-8d81-0e4151ab8a2f.png) -->
+![init process screenshot](https://user-images.githubusercontent.com/511063/79147415-bd146780-7d78-11ea-8d81-0e4151ab8a2f.png)
 
 ## Configuring your editor
 

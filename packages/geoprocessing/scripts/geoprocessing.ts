@@ -9,7 +9,6 @@ if (process.argv.length < 3) {
   throw new Error("Missing command");
 } else {
   const command = process.argv[2];
-  console.log("geoprocessing....");
   switch (command) {
     case "test":
       runTests();
@@ -75,8 +74,8 @@ if (process.argv.length < 3) {
         }
       );
     case "clear-results":
-      console.log("clearing results...");
-      spawn(`${__dirname}/../../scripts/clear-results.sh`, {
+      console.log("revert clear...");
+      spawn("node", [`${__dirname}/clear/clearResults.js`], {
         cwd: process.cwd(),
         stdio: "inherit",
       });

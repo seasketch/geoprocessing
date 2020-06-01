@@ -75,10 +75,15 @@ The solution for large datasets is to subdivide them into reasonably sized chunk
 When generating geoprocessing function templates using npm scripts, two test files will also be created (e.g. `functions/myFunctionSmoke.test.ts` and `functions/myFunctionUnit.test.ts` ). The smoke tests have 2 objectives: make sure your function exists and write out the results of the runs with the example sketches. The unit tests execute the functions and can be used to test correct output values. All unit tests can be run using `npm test`. This template by default will run your function against all sketches in `examples/sketches` and save the output to `examples/output`, which will be used when debugging the geoprocessing clients. 
 
 Be default, each smoke test will be added to the @smoke group, and unit tests will be added to the @unit group. (Groups are specified in the docstring at the top of the file). To pass flags from npm to jest during tests, separate the npm test command from the jest flags using '--'. For example, to run just the smoke or unit test groups, you can send the --group flag to jest:
-npm test -- --group=smoke 
+
+```bash
+npm test -- --group=smoke #run only the smoke tests in a project
+```
 
 You can also run a target test by using the -t option, for example, running just a test called 'areaTest':
-npm test -- -t=areaTest
+```bash
+npm test -- -t=areaTest #run target test 'areaTest'
+```
 
 #### More resources
 

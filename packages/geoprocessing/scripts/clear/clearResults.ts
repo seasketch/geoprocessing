@@ -7,27 +7,23 @@ import dynamodb = require("@aws-cdk/aws-dynamodb");
 import slugify from "slugify";
 import inquirer from "inquirer";
 import * as AWS from "aws-sdk";
-/*
-if (!process.env.PROJECT_PATH) {
-  throw new Error("PROJECT_PATH env var not specified");
-}*/
+import { ScanInput } from "aws-sdk/clients/dynamodb";
 
-//const PROJECT_PATH = process.env.PROJECT_PATH;
 interface ClearCacheOptions {
   tableName: string;
 }
-/*
-const manifest: Manifest = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json")).toString()
-);*/
+
+const packageJson = JSON.parse(
+  fs.readFileSync(path.join("./", "package.json")).toString()
+);
 
 export async function clearResults() {
-  console.log("clearing now!!!!");
   const answers = await inquirer.prompt([
     {
       type: "input",
       name: "tableName",
-      message: "Name of the report function cache to clear",
+      message:
+        "Name of the report function cache to clear. Enter 'all' to clear all cached reports",
       validate: (value) =>
         /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
     },
@@ -36,29 +32,29 @@ export async function clearResults() {
 }
 
 //@ts-ignore
-async function doScan(err, data, funcName, docClient) {
+async function doScan(err, data, serviceName, docClient, tableName) {
   if (err) {
-    console.error(
-      "Unable to scan the table. Error JSON:",
-      JSON.stringify(err, null, 2)
-    );
+    if (err.message === "Requested resource not found") {
+      console.error("Error: Could not find table named ", tableName);
+    } else {
+      console.error(
+        "Error: Unable to scan the table. Error JSON:",
+        JSON.stringify(err, null, 2)
+      );
+    }
   } else {
-    // print all the movies
-    console.log("Scan succeeded.");
-    //@ts-ignore
-    data.Items.forEach(function (value) {
-      console.log(value);
-    });
+    if (data === undefined || data.length === 0) {
+      console.log("no cached results for ", serviceName);
+      return;
+    }
     for (const d of data.Items) {
-      console.log("d: ", d.id);
       let deleteParams = {
-        TableName: "gp-fsm-next-reports-tasks",
+        TableName: tableName,
         Key: {
           id: d.id,
+          service: d.service,
         },
       };
-      console.log("Attempting a conditional delete of id ", d);
-      console.log("with delete params: ", deleteParams);
 
       //@ts-ignore
       docClient.delete(deleteParams, (err, data) => {
@@ -68,84 +64,73 @@ async function doScan(err, data, funcName, docClient) {
             JSON.stringify(err, null, 2)
           );
         } else {
-          console.log("DeleteItem succeeded:", JSON.stringify(data, null, 2));
+          console.log("Deleted results for ", serviceName);
         }
       });
 
       // continue scanning if we have more movies, because
       // scan can retrieve a maximum of 1MB of data
-      /*
+
       if (typeof data.LastEvaluatedKey != "undefined") {
+        let scanParams: ScanInput = { TableName: tableName };
+        if (serviceName !== "all") {
+          scanParams = {
+            TableName: tableName,
+            FilterExpression: "service = :val",
+
+            ExpressionAttributeValues: {
+              //@ts-ignore
+              ":val": serviceName,
+            },
+          };
+        }
         console.log("Scanning for more...");
         //@ts-ignore
-        deleteParams.ExclusiveStartKey = data.LastEvaluatedKey;
+        scanParams.ExclusiveStartKey = data.LastEvaluatedKey;
         //@ts-ignore
-        docClient.scan(deleteParams, (err, data) => {
-          doScan(err, data, funcName, docClient);
+        docClient.scan(scanParams, (err, data) => {
+          doScan(err, data, serviceName, docClient, tableName);
         });
       }
-      */
       //TODO: add this back in?
     }
   }
 }
 export async function clearCachedResults(options: ClearCacheOptions) {
-  console.log("options: ", options);
-  let tableName = options.tableName;
-
+  let serviceName = options.tableName;
+  let projectName = packageJson.name;
+  console.log("projectName: ", projectName);
   AWS.config.update({
     region: "us-west-2",
   });
 
   let docClient = new AWS.DynamoDB.DocumentClient();
 
-  let table = "gp-fsm-next-reports-tasks";
-  var params = {
-    TableName: table,
-    FilterExpression: "service = :val",
+  //let tableName = "gp-fsm-next-reports-tasks";
+  let tableName = `gp-${projectName}-tasks`;
+  console.log("table name: ", tableName);
+  let params: ScanInput = { TableName: tableName };
+  if (serviceName !== "all") {
+    params = {
+      TableName: tableName,
+      FilterExpression: "service = :val",
 
-    ExpressionAttributeValues: {
-      ":val": tableName,
-    },
-  };
+      ExpressionAttributeValues: {
+        //@ts-ignore
+        ":val": serviceName,
+      },
+    };
+  }
+
   docClient.scan(params, (err, data) => {
-    console.log("doing scan with tableName ", tableName);
-    doScan(err, data, tableName, docClient);
-  });
+    if (data === undefined || data?.Items?.length === 0) {
+      console.log("No cached service results found for", serviceName);
+    }
 
-  /*
-  //const projectName = manifest.title;
-  const region = "us-west-2";
-  //const stackName = `${projectName}-geoprocessing-stack`;
-
-  const app = new core.App();
-  const stack = new GeoprocessingCdkStack(app, {
-    env: { region },
-    tableName: tableName,
+    doScan(err, data, serviceName, docClient, tableName);
   });
-  //core.Tag.add(stack, "Author", slugify(manifest.author.replace(/\<.*\>/, "")));
-  core.Tag.add(stack, "Cost Center", "seasketch-geoprocessing");
-  //core.Tag.add(stack, "Geoprocessing Project", manifest.title);
-  stack;
-  */
 }
 interface GeoprocessingStackProps extends core.StackProps {
   tableName: string;
-}
-
-class GeoprocessingCdkStack extends core.Stack {
-  constructor(scope: core.App, props: GeoprocessingStackProps) {
-    super(scope, undefined, props);
-    let funcName = props.tableName;
-
-    // dynamodb
-    const tasksTbl = new dynamodb.Table(this, `gp-${funcName}-tasks`, {
-      partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
-      sortKey: { name: "service", type: dynamodb.AttributeType.STRING },
-      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      tableName: `gp-${funcName}-tasks`,
-      removalPolicy: core.RemovalPolicy.DESTROY,
-    });
-  }
 }
 clearResults();

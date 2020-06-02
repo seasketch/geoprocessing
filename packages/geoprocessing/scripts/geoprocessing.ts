@@ -74,7 +74,6 @@ if (process.argv.length < 3) {
         }
       );
     case "clear-results":
-      console.log("revert clear...");
       spawn("node", [`${__dirname}/clear/clearResults.js`], {
         cwd: process.cwd(),
         stdio: "inherit",

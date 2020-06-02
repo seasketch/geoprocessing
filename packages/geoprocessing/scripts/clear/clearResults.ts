@@ -30,12 +30,52 @@ export async function clearResults() {
   ]);
   await clearCachedResults(answers);
 }
+async function checkForProjectName(
+  err: AWS.AWSError,
+  data: AWS.DynamoDB.DocumentClient.ScanOutput,
+  serviceName: string,
+  docClient: AWS.DynamoDB.DocumentClient,
+  tableName: string
+) {
+  const answers = await inquirer.prompt([
+    {
+      type: "input",
+      name: "tableName",
+      message:
+        "Could not find dynamodb table named " +
+        tableName +
+        ". Enter the target project name:",
+    },
+  ]);
+  let projectName = buildProjectName(answers.tableName);
+  let scanParams: ScanInput = { TableName: projectName };
+  if (serviceName !== "all") {
+    scanParams = {
+      TableName: projectName,
+      FilterExpression: "service = :val",
+
+      ExpressionAttributeValues: {
+        //@ts-ignore
+        ":val": serviceName,
+      },
+    };
+  }
+  docClient.scan(scanParams, (err, data) => {
+    doScan(err, data, serviceName, docClient, projectName);
+  });
+}
 
 //@ts-ignore
-async function doScan(err, data, serviceName, docClient, tableName) {
+async function doScan(
+  err: AWS.AWSError,
+  data: AWS.DynamoDB.DocumentClient.ScanOutput,
+  serviceName: string,
+  docClient: AWS.DynamoDB.DocumentClient,
+  tableName: string
+) {
   if (err) {
     if (err.message === "Requested resource not found") {
-      console.error("Error: Could not find table named ", tableName);
+      checkForProjectName(err, data, serviceName, docClient, tableName);
     } else {
       console.error(
         "Error: Unable to scan the table. Error JSON:",
@@ -43,63 +83,65 @@ async function doScan(err, data, serviceName, docClient, tableName) {
       );
     }
   } else {
-    if (data === undefined || data.length === 0) {
-      console.log("no cached results for ", serviceName);
-      return;
-    }
-    for (const d of data.Items) {
-      let deleteParams = {
-        TableName: tableName,
-        Key: {
-          id: d.id,
-          service: d.service,
-        },
-      };
+    if (data?.Items !== undefined && data?.Items?.length > 0) {
+      for (const d of data?.Items) {
+        let deleteParams = {
+          TableName: tableName,
+          Key: {
+            id: d.id,
+            service: d.service,
+          },
+        };
 
-      //@ts-ignore
-      docClient.delete(deleteParams, (err, data) => {
-        if (err) {
-          console.error(
-            "Unable to delete item. Error JSON:",
-            JSON.stringify(err, null, 2)
-          );
-        } else {
-          console.log("Deleted results for ", serviceName);
-        }
-      });
-
-      // continue scanning if we have more movies, because
-      // scan can retrieve a maximum of 1MB of data
-
-      if (typeof data.LastEvaluatedKey != "undefined") {
-        let scanParams: ScanInput = { TableName: tableName };
-        if (serviceName !== "all") {
-          scanParams = {
-            TableName: tableName,
-            FilterExpression: "service = :val",
-
-            ExpressionAttributeValues: {
-              //@ts-ignore
-              ":val": serviceName,
-            },
-          };
-        }
-        console.log("Scanning for more...");
         //@ts-ignore
-        scanParams.ExclusiveStartKey = data.LastEvaluatedKey;
-        //@ts-ignore
-        docClient.scan(scanParams, (err, data) => {
-          doScan(err, data, serviceName, docClient, tableName);
+        docClient.delete(deleteParams, (err, data) => {
+          if (err) {
+            console.error(
+              "Unable to delete item. Error JSON:",
+              JSON.stringify(err, null, 2)
+            );
+          } else {
+            console.log("Deleted results for ", d.service);
+          }
         });
+
+        // continue scanning if we have more movies, because
+        // scan can retrieve a maximum of 1MB of data
+
+        if (typeof data.LastEvaluatedKey != "undefined") {
+          let scanParams: ScanInput = { TableName: tableName };
+          if (serviceName !== "all") {
+            scanParams = {
+              TableName: tableName,
+              FilterExpression: "service = :val",
+
+              ExpressionAttributeValues: {
+                //@ts-ignore
+                ":val": serviceName,
+              },
+            };
+          }
+
+          //@ts-ignore
+          scanParams.ExclusiveStartKey = data.LastEvaluatedKey;
+          //@ts-ignore
+          docClient.scan(scanParams, (err, data) => {
+            doScan(err, data, serviceName, docClient, tableName);
+          });
+        }
       }
-      //TODO: add this back in?
+    } else {
+      console.log("No cached results found for service:", serviceName);
     }
   }
+}
+function buildProjectName(projectName: string): string {
+  return `gp-${projectName}-tasks`;
 }
 export async function clearCachedResults(options: ClearCacheOptions) {
   let serviceName = options.tableName;
   let projectName = packageJson.name;
-  console.log("projectName: ", projectName);
+
   AWS.config.update({
     region: "us-west-2",
   });
@@ -107,8 +149,8 @@ export async function clearCachedResults(options: ClearCacheOptions) {
   let docClient = new AWS.DynamoDB.DocumentClient();
 
   //let tableName = "gp-fsm-next-reports-tasks";
-  let tableName = `gp-${projectName}-tasks`;
-  console.log("table name: ", tableName);
+  let tableName = buildProjectName(projectName);
+
   let params: ScanInput = { TableName: tableName };
   if (serviceName !== "all") {
     params = {
@@ -123,10 +165,6 @@ export async function clearCachedResults(options: ClearCacheOptions) {
   }
 
   docClient.scan(params, (err, data) => {
-    if (data === undefined || data?.Items?.length === 0) {
-      console.log("No cached service results found for", serviceName);
-    }
-
     doScan(err, data, serviceName, docClient, tableName);
   });
 }

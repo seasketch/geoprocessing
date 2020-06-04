@@ -53,6 +53,7 @@ class GeoprocessingCdkStack extends core.Stack {
       publicReadAccess: true,
     });
 
+    console.log("DID LINKING WORK????????????/");
     // client bundle cloudfront
     const distribution = new cloudfront.CloudFrontWebDistribution(
       // @ts-ignore
@@ -130,6 +131,10 @@ class GeoprocessingCdkStack extends core.Stack {
         defaultCorsPreflightOptions: {
           allowOrigins: apigateway.Cors.ALL_ORIGINS,
           allowMethods: apigateway.Cors.ALL_METHODS,
+        },
+        deployOptions: {
+          throttlingBurstLimit: 20,
+          throttlingRateLimit: 40,
         },
       }
     );

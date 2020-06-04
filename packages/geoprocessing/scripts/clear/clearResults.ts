@@ -23,7 +23,7 @@ export async function clearResults() {
       type: "input",
       name: "tableName",
       message:
-        "Name of the report function cache to clear. Enter 'all' to clear all cached reports",
+        "Name of the report function cache to clear. Enter 'all' to clear all cached reports:",
       validate: (value) =>
         /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
     },

@@ -53,7 +53,6 @@ class GeoprocessingCdkStack extends core.Stack {
       publicReadAccess: true,
     });
 
-    console.log("DID LINKING WORK????????????/");
     // client bundle cloudfront
     const distribution = new cloudfront.CloudFrontWebDistribution(
       // @ts-ignore

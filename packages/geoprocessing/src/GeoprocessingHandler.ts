@@ -129,10 +129,14 @@ export class GeoprocessingHandler<T> {
       // TODO: async executionMode
       //return Tasks.fail(task, "async executionMode not yet implemented");
       // launch async handler
-      console.log("async execution for ", request);
+      const asyncExecutionName = process.env.ASYNC_HANDLER_FUNCTION_NAME;
+      if (!asyncExecutionName) {
+        return Tasks.fail(task, `No async handler function name defined`);
+      }
+
       try {
         await Lambda.invokeAsync({
-          FunctionName: "areaAsync",
+          FunctionName: asyncExecutionName,
           InvokeArgs: JSON.stringify(task),
         }).promise();
         return {

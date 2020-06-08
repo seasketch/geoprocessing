@@ -173,6 +173,14 @@ class GeoprocessingCdkStack extends core.Stack {
 
       // @ts-ignore
       const filename = path.basename(func.handler);
+      const geoprocessingEnvOptions: any = {
+        publicBucketUrl,
+        TASKS_TABLE: tasksTbl.tableName,
+      };
+      if (func.executionMode === "async") {
+        geoprocessingEnvOptions.ASYNC_HANDLER_FUNCTION_NAME =
+          apigatewaysocket.ref;
+      }
       const handler = new lambda.Function(this, `${func.title}Handler`, {
         runtime: lambda.Runtime.NODEJS_12_X,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
@@ -182,12 +190,7 @@ class GeoprocessingCdkStack extends core.Stack {
         timeout: core.Duration.seconds(func.timeout || 3),
         description: func.description,
         environment:
-          func.purpose === "geoprocessing"
-            ? {
-                publicBucketUrl,
-                TASKS_TABLE: tasksTbl.tableName,
-              }
-            : {},
+          func.purpose === "geoprocessing" ? geoprocessingEnvOptions : {},
       });
 
       if (func.purpose === "geoprocessing") {

@@ -42,10 +42,10 @@ export class GeoprocessingHandler<T> {
     context: Context
   ): Promise<APIGatewayProxyResult> {
     const { Tasks, options } = this;
-    // console.log("options", options);
+    console.log("----->>>", options);
+
     const serviceName = options.title;
     const request = this.parseRequest(event);
-    // TODO: Rate limiting (probably in api gateway?)
     // TODO: Authorization
     // Bail out if replaying previous task
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
@@ -86,6 +86,8 @@ export class GeoprocessingHandler<T> {
       // TODO: container tasks
       return Tasks.fail(task, "Docker tasks not yet implemented");
     } else if (this.options.executionMode === "sync") {
+      console.log("its sync mode?????");
+
       process.removeAllListeners("uncaughtException");
       process.removeAllListeners("unhandledRejection");
       process.on("uncaughtException", async (error) => {
@@ -125,28 +127,25 @@ export class GeoprocessingHandler<T> {
       }
     } else {
       // TODO: async executionMode
-      return Tasks.fail(task, "async executionMode not yet implemented");
+      //return Tasks.fail(task, "async executionMode not yet implemented");
       // launch async handler
-      // if (!ASYNC_HANDLER_FUNCTION_NAME) {
-      //   return Tasks.fail(task, "ASYNC_HANDLER_FUNCTION_NAME env var not set");
-      // } else {
-      //   try {
-      //     await Lambda.invokeAsync({
-      //       FunctionName: ASYNC_HANDLER_FUNCTION_NAME,
-      //       InvokeArgs: JSON.stringify(task)
-      //     }).promise();
-      //     return {
-      //       statusCode: 200,
-      //       headers: {
-      //         "Access-Control-Allow-Origin": "*",
-      //         "Access-Control-Allow-Credentials": true
-      //       },
-      //       body: JSON.stringify(task)
-      //     };
-      //   } catch (e) {
-      //     return Tasks.fail(task, `Could not launch async handler function`);
-      //   }
-      // }
+      console.log("async execution for ", request);
+      try {
+        await Lambda.invokeAsync({
+          FunctionName: "areaAsync",
+          InvokeArgs: JSON.stringify(task),
+        }).promise();
+        return {
+          statusCode: 200,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true,
+          },
+          body: JSON.stringify(task),
+        };
+      } catch (e) {
+        return Tasks.fail(task, `Could not launch async handler function`);
+      }
     }
   }
 

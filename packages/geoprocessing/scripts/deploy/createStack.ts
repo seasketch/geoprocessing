@@ -1,6 +1,7 @@
 import * as core from "@aws-cdk/core";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as apigateway from "@aws-cdk/aws-apigateway";
+import * as iam from "@aws-cdk/aws-iam";
 import { BucketProps, CorsRule } from "@aws-cdk/aws-s3";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
@@ -121,6 +122,7 @@ class GeoprocessingCdkStack extends core.Stack {
     });
 
     // project metadata endpoints
+
     const api = new apigateway.RestApi(
       this,
       `${props.project}-geoprocessing-api`,
@@ -160,7 +162,15 @@ class GeoprocessingCdkStack extends core.Stack {
     api.root.addMethod("GET", getMetadataIntegration); // GET /
 
     // function endpoints
+    const region = manifest.region as string;
+    const apigatewaysocket = new apigateway.CfnApiV2(this, "apigatewaysocket", {
+      name: `${props.project} async geoprocessing service`,
+      protocolType: "WEBSOCKET",
+      routeSelectionExpression: "$request.body.message",
+    });
     for (const func of manifest.functions) {
+      console.log("function: ", func);
+
       // @ts-ignore
       const filename = path.basename(func.handler);
       const handler = new lambda.Function(this, `${func.title}Handler`, {
@@ -190,9 +200,118 @@ class GeoprocessingCdkStack extends core.Stack {
       });
 
       const resource = api.root.addResource(func.title);
-      resource.addMethod("POST", handlerIntegration);
-      if (func.purpose === "geoprocessing") {
-        resource.addMethod("GET", handlerIntegration);
+      if (func.executionMode === "async") {
+        // access role for the socket api to access the socket lambda
+        const policy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [handler.functionArn],
+          actions: ["lambda:InvokeFunction"],
+        });
+
+        const roleapigatewaysocketapi = new iam.Role(
+          this,
+          "roleapigatewaysocketapi",
+          {
+            assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+          }
+        );
+
+        roleapigatewaysocketapi.addToPolicy(policy);
+
+        const apigatewayroutesocketconnect = new apigateway.CfnRouteV2(
+          this,
+          "apigatewayroutesocketconnect",
+          {
+            apiId: apigatewaysocket.ref,
+            routeKey: "$connect",
+            authorizationType: "NONE",
+            operationName: "ConnectRoute",
+            target:
+              "integrations/" +
+              new apigateway.CfnIntegrationV2(
+                this,
+                "apigatewayintegrationsocketconnect",
+                {
+                  apiId: apigatewaysocket.ref,
+                  integrationType: "AWS_PROXY",
+                  integrationUri:
+                    "arn:aws:apigateway:" +
+                    region +
+                    ":lambda:path/2015-03-31/functions/" +
+                    handler.functionArn +
+                    "/invocations",
+                  credentialsArn: roleapigatewaysocketapi.roleArn,
+                }
+              ).ref,
+          }
+        );
+
+        // disconnect route
+        const apigatewayroutesocketdisconnect = new apigateway.CfnRouteV2(
+          this,
+          "apigatewayroutesocketdisconnect",
+          {
+            apiId: apigatewaysocket.ref,
+            routeKey: "$disconnect",
+            authorizationType: "NONE",
+            operationName: "DisconnectRoute",
+            target:
+              "integrations/" +
+              new apigateway.CfnIntegrationV2(
+                this,
+                "apigatewayintegrationsocketdisconnect",
+                {
+                  apiId: apigatewaysocket.ref,
+                  integrationType: "AWS_PROXY",
+                  integrationUri:
+                    "arn:aws:apigateway:" +
+                    region +
+                    ":lambda:path/2015-03-31/functions/" +
+                    handler.functionArn +
+                    "/invocations",
+                  credentialsArn: roleapigatewaysocketapi.roleArn,
+                }
+              ).ref,
+          }
+        );
+
+        // message route
+        const apigatewayroutesocketdefault = new apigateway.CfnRouteV2(
+          this,
+          "apigatewayroutesocketdefault",
+          {
+            apiId: apigatewaysocket.ref,
+            routeKey: func.title,
+            authorizationType: "NONE",
+            operationName: "SendRoute",
+            target:
+              "integrations/" +
+              new apigateway.CfnIntegrationV2(
+                this,
+                "apigatewayintegrationsocketdefault",
+                {
+                  apiId: apigatewaysocket.ref,
+                  integrationType: "AWS_PROXY",
+                  integrationUri:
+                    "arn:aws:apigateway:" +
+                    region +
+                    ":lambda:path/2015-03-31/functions/" +
+                    handler.functionArn +
+                    "/invocations",
+                  credentialsArn: roleapigatewaysocketapi.roleArn,
+                }
+              ).ref,
+          }
+        );
+        resource.addMethod("POST", handlerIntegration);
+        if (func.purpose === "geoprocessing") {
+          resource.addMethod("GET", handlerIntegration);
+        }
+      } else {
+        resource.addMethod("POST", handlerIntegration);
+        if (func.purpose === "geoprocessing") {
+          resource.addMethod("GET", handlerIntegration);
+        }
       }
 
       // new core.CfnOutput(this, "ProjectRoot", {

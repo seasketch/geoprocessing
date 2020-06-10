@@ -221,6 +221,7 @@ class GeoprocessingCdkStack extends core.Stack {
         });
 
         roleLambda.addToPolicy(lambdaPolicy);
+        policies = [lambdaPolicy];
       }
 
       const syncHandler = new lambda.Function(this, `${func.title}Handler`, {
@@ -266,6 +267,7 @@ class GeoprocessingCdkStack extends core.Stack {
       const resource = api.root.addResource(func.title);
       if (func.executionMode === "async") {
         // access role for the socket api to access the socket lambda
+        /*
         const policy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           //@ts-ignore
@@ -282,7 +284,7 @@ class GeoprocessingCdkStack extends core.Stack {
         );
 
         roleapigatewaysocketapi3.addToPolicy(policy);
-
+        */
         const apigatewayroutesocketconnect = new apigateway.CfnRouteV2(
           this,
           "apigatewayroutesocketconnect",
@@ -305,7 +307,6 @@ class GeoprocessingCdkStack extends core.Stack {
                     ":lambda:path/2015-03-31/functions/" +
                     syncHandler.functionArn +
                     "/invocations",
-                  credentialsArn: roleapigatewaysocketapi3.roleArn,
                 }
               ).ref,
           }
@@ -334,7 +335,6 @@ class GeoprocessingCdkStack extends core.Stack {
                     ":lambda:path/2015-03-31/functions/" +
                     syncHandler.functionArn +
                     "/invocations",
-                  credentialsArn: roleapigatewaysocketapi3.roleArn,
                 }
               ).ref,
           }
@@ -362,7 +362,6 @@ class GeoprocessingCdkStack extends core.Stack {
                     ":lambda:path/2015-03-31/functions/" +
                     syncHandler.functionArn +
                     "/invocations",
-                  credentialsArn: roleapigatewaysocketapi3.roleArn,
                 }
               ).ref,
           }
@@ -391,7 +390,6 @@ class GeoprocessingCdkStack extends core.Stack {
                     ":lambda:path/2015-03-31/functions/" +
                     syncHandler.functionArn +
                     "/invocations",
-                  credentialsArn: roleapigatewaysocketapi3.roleArn,
                 }
               ).ref,
           }

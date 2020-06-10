@@ -25,11 +25,7 @@ const handlers = [];
 for (const func of geoprocessing.functions) {
   const handlerPath = path.join(
     GP_ROOT,
-    `.build/${path
-      .basename(func)
-      .split(".")
-      .slice(0, -1)
-      .join(".")}Handler.ts`
+    `.build/${path.basename(func).split(".").slice(0, -1).join(".")}Handler.ts`
   );
   fs.writeFileSync(
     handlerPath,
@@ -59,17 +55,21 @@ module.exports = {
     assets: true,
     warnings: true,
     errors: true,
-    errorDetails: true
+    errorDetails: true,
   },
   entry: {
     ...handlers.reduce((prev, f) => {
       prev[path.basename(f)] = f;
       return prev;
     }, {}),
-    serviceHandlers: path.join(GP_ROOT, "src/serviceHandlers.ts")
+    serviceHandlers: path.join(GP_ROOT, "src/serviceHandlers.ts"),
+    asyncGeoprocessingHandler: path.join(
+      GP_ROOT,
+      "src/asyncGeoprocessingHandler.ts"
+    ),
   },
   output: {
-    filename: chunkData => {
+    filename: (chunkData) => {
       if (/.ts$/.test(chunkData.chunk.name)) {
         return chunkData.chunk.name.replace(/.ts$/, ".js");
       } else {
@@ -77,7 +77,7 @@ module.exports = {
       }
     },
     path: path.join(GP_ROOT, ".build"),
-    libraryTarget: "commonjs2"
+    libraryTarget: "commonjs2",
   },
   target: "node",
   devtool: "source-map",
@@ -85,16 +85,16 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js"],
     modules: [
       path.resolve(__dirname, "../../node_modules"),
-      path.join(PROJECT_PATH, "node_modules")
-    ]
+      path.join(PROJECT_PATH, "node_modules"),
+    ],
   },
   plugins: process.env.ANALYZE_FUNCTIONS ? [new BundleAnalyzerPlugin()] : [],
   performance: {
     maxAssetSize: 500000,
     maxEntrypointSize: 500000,
-    hints: "warning"
+    hints: "warning",
   },
-  externals: function(context, request, callback) {
+  externals: function (context, request, callback) {
     if (externals.indexOf(request) !== -1) {
       return callback(null, "commonjs " + request);
     } else {
@@ -112,15 +112,15 @@ module.exports = {
             presets: [
               [
                 require.resolve("@babel/preset-env"),
-                { targets: { node: "12" } }
+                { targets: { node: "12" } },
               ],
-              require.resolve("@babel/preset-typescript")
-            ]
-          }
-        }
-      }
-    ]
-  }
+              require.resolve("@babel/preset-typescript"),
+            ],
+          },
+        },
+      },
+    ],
+  },
 };
 
 const staticExternals = ["aws-sdk", "./manifest.json"];
@@ -130,5 +130,5 @@ const projectNodeModules = Object.keys(
   ).dependencies || {}
 );
 const externals = [...staticExternals, ...projectNodeModules].filter(
-  n => n !== "@seasketch/geoprocessing"
+  (n) => n !== "@seasketch/geoprocessing"
 );

@@ -158,16 +158,21 @@ class GeoprocessingCdkStack extends core.Stack {
         requestTemplates: { "application/json": '{ "statusCode": "200" }' },
       }
     );
-
     api.root.addMethod("GET", getMetadataIntegration); // GET /
 
     // function endpoints
     const region = manifest.region as string;
-    const apigatewaysocket = new apigateway.CfnApiV2(this, "apigatewaysocket", {
-      name: `${props.project} async geoprocessing service`,
-      protocolType: "WEBSOCKET",
-      routeSelectionExpression: "$request.body.message",
-    });
+
+    const apigatewaysocket3 = new apigateway.CfnApiV2(
+      this,
+      "apigatewaysocket3",
+      {
+        name: `${props.project} async geoprocessing service`,
+        protocolType: "WEBSOCKET",
+        routeSelectionExpression: "$request.body.message",
+      }
+    );
+
     for (const func of manifest.functions) {
       const stageName = "prod";
       // @ts-ignore
@@ -177,25 +182,48 @@ class GeoprocessingCdkStack extends core.Stack {
         TASKS_TABLE: tasksTbl.tableName,
       };
       if (func.executionMode === "async") {
-        geoprocessingEnvOptions.ASYNC_HANDLER_FUNCTION_NAME =
-          "wss://" +
-          apigatewaysocket.ref +
-          ".execute-api." +
-          region +
-          ".amazonaws.com/" +
-          stageName;
-
-        geoprocessingEnvOptions.ASYNC_CONNECTIONS_FUNCTION_NAME =
-          "https://" +
-          apigatewaysocket.ref +
-          ".execute-api." +
-          region +
-          ".amazonaws.com/" +
-          stageName +
-          "/@connections";
+        let funcName = `gp-${manifest.title}-${func.title}-async`;
+        /*
+        let arnPre = "arn:aws:lambda:";
+        let regionStr = region + ":";
+        let whatsThis = "196230260133";
+        //tried specifying full ARN, that didn't work
+        */
+        geoprocessingEnvOptions.ASYNC_HANDLER_FUNCTION_NAME = funcName;
       }
 
-      const handler = new lambda.Function(this, `${func.title}Handler`, {
+      let asyncHandler: lambda.Function;
+      let policies: iam.PolicyStatement[] = [];
+      if (func.executionMode === "async") {
+        asyncHandler = new lambda.Function(
+          this,
+          `${func.title}AsynchronousHandler`,
+          {
+            runtime: lambda.Runtime.NODEJS_12_X,
+            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
+            handler: "asyncGeoprocessingHandler.handler",
+            functionName: `gp-${manifest.title}-${func.title}-async`,
+            memorySize: func.memory,
+            timeout: core.Duration.seconds(func.timeout || 3),
+            description: func.description,
+            environment:
+              func.purpose === "geoprocessing" ? geoprocessingEnvOptions : {},
+          }
+        );
+        const lambdaPolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          //@ts-ignore
+          resources: [asyncHandler.functionArn],
+          actions: ["lambda:InvokeFunction"],
+        });
+        const roleLambda = new iam.Role(this, "roleLambda", {
+          assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
+        });
+
+        roleLambda.addToPolicy(lambdaPolicy);
+      }
+
+      const syncHandler = new lambda.Function(this, `${func.title}Handler`, {
         runtime: lambda.Runtime.NODEJS_12_X,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
         handler: filename.replace(/\.js$/, "") + ".handler",
@@ -203,43 +231,63 @@ class GeoprocessingCdkStack extends core.Stack {
         memorySize: func.memory,
         timeout: core.Duration.seconds(func.timeout || 3),
         description: func.description,
+        initialPolicy: policies,
         environment:
           func.purpose === "geoprocessing" ? geoprocessingEnvOptions : {},
       });
 
       if (func.purpose === "geoprocessing") {
-        tasksTbl.grantReadWriteData(handler);
-        publicBucket.grantReadWrite(handler);
+        tasksTbl.grantReadWriteData(syncHandler);
+        publicBucket.grantReadWrite(syncHandler);
+        if (func.executionMode === "async") {
+          //@ts-ignore
+          tasksTbl.grantReadWriteData(asyncHandler);
+          //@ts-ignore
+          publicBucket.grantReadWrite(asyncHandler);
+        }
       }
 
-      const handlerIntegration = new apigateway.LambdaIntegration(handler, {
-        requestTemplates: { "application/json": '{ "statusCode": "200" }' },
-      });
+      const syncHandlerIntegration = new apigateway.LambdaIntegration(
+        syncHandler,
+        {
+          requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+        }
+      );
+      if (func.executionMode === "async") {
+        const asyncHandlerIntegration = new apigateway.LambdaIntegration(
+          //@ts-ignore
+          asyncHandler,
+          {
+            requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+          }
+        );
+      }
 
       const resource = api.root.addResource(func.title);
       if (func.executionMode === "async") {
         // access role for the socket api to access the socket lambda
         const policy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
-          resources: [handler.functionArn],
+          //@ts-ignore
+          resources: [syncHandler.functionArn],
           actions: ["lambda:InvokeFunction"],
         });
 
-        const roleapigatewaysocketapi2 = new iam.Role(
+        const roleapigatewaysocketapi3 = new iam.Role(
           this,
-          "roleapigatewaysocketapi2",
+          "roleapigatewaysocketapi3",
           {
             assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
           }
         );
 
-        roleapigatewaysocketapi2.addToPolicy(policy);
+        roleapigatewaysocketapi3.addToPolicy(policy);
 
         const apigatewayroutesocketconnect = new apigateway.CfnRouteV2(
           this,
           "apigatewayroutesocketconnect",
           {
-            apiId: apigatewaysocket.ref,
+            apiId: apigatewaysocket3.ref,
             routeKey: "$connect",
             authorizationType: "NONE",
             operationName: "ConnectRoute",
@@ -249,15 +297,15 @@ class GeoprocessingCdkStack extends core.Stack {
                 this,
                 "apigatewayintegrationsocketconnect",
                 {
-                  apiId: apigatewaysocket.ref,
+                  apiId: apigatewaysocket3.ref,
                   integrationType: "AWS_PROXY",
                   integrationUri:
                     "arn:aws:apigateway:" +
                     region +
                     ":lambda:path/2015-03-31/functions/" +
-                    handler.functionArn +
+                    syncHandler.functionArn +
                     "/invocations",
-                  credentialsArn: roleapigatewaysocketapi2.roleArn,
+                  credentialsArn: roleapigatewaysocketapi3.roleArn,
                 }
               ).ref,
           }
@@ -268,7 +316,7 @@ class GeoprocessingCdkStack extends core.Stack {
           this,
           "apigatewayroutesocketdisconnect",
           {
-            apiId: apigatewaysocket.ref,
+            apiId: apigatewaysocket3.ref,
             routeKey: "$disconnect",
             authorizationType: "NONE",
             operationName: "DisconnectRoute",
@@ -278,15 +326,15 @@ class GeoprocessingCdkStack extends core.Stack {
                 this,
                 "apigatewayintegrationsocketdisconnect",
                 {
-                  apiId: apigatewaysocket.ref,
+                  apiId: apigatewaysocket3.ref,
                   integrationType: "AWS_PROXY",
                   integrationUri:
                     "arn:aws:apigateway:" +
                     region +
                     ":lambda:path/2015-03-31/functions/" +
-                    handler.functionArn +
+                    syncHandler.functionArn +
                     "/invocations",
-                  credentialsArn: roleapigatewaysocketapi2.roleArn,
+                  credentialsArn: roleapigatewaysocketapi3.roleArn,
                 }
               ).ref,
           }
@@ -296,7 +344,7 @@ class GeoprocessingCdkStack extends core.Stack {
           this,
           "apigatewayroutesocketdefault",
           {
-            apiId: apigatewaysocket.ref,
+            apiId: apigatewaysocket3.ref,
             routeKey: "$default",
             authorizationType: "NONE",
             operationName: "SendRoute",
@@ -306,15 +354,15 @@ class GeoprocessingCdkStack extends core.Stack {
                 this,
                 "apigatewayintegrationsocketdefault",
                 {
-                  apiId: apigatewaysocket.ref,
+                  apiId: apigatewaysocket3.ref,
                   integrationType: "AWS_PROXY",
                   integrationUri:
                     "arn:aws:apigateway:" +
                     region +
                     ":lambda:path/2015-03-31/functions/" +
-                    handler.functionArn +
+                    syncHandler.functionArn +
                     "/invocations",
-                  credentialsArn: roleapigatewaysocketapi2.roleArn,
+                  credentialsArn: roleapigatewaysocketapi3.roleArn,
                 }
               ).ref,
           }
@@ -325,7 +373,7 @@ class GeoprocessingCdkStack extends core.Stack {
           this,
           "apigatewayroutesocketsend",
           {
-            apiId: apigatewaysocket.ref,
+            apiId: apigatewaysocket3.ref,
             routeKey: func.title,
             authorizationType: "NONE",
             operationName: "GeoprocessingRoute",
@@ -335,15 +383,15 @@ class GeoprocessingCdkStack extends core.Stack {
                 this,
                 "apigatewayintegrationsocketsend",
                 {
-                  apiId: apigatewaysocket.ref,
+                  apiId: apigatewaysocket3.ref,
                   integrationType: "AWS_PROXY",
                   integrationUri:
                     "arn:aws:apigateway:" +
                     region +
                     ":lambda:path/2015-03-31/functions/" +
-                    handler.functionArn +
+                    syncHandler.functionArn +
                     "/invocations",
-                  credentialsArn: roleapigatewaysocketapi2.roleArn,
+                  credentialsArn: roleapigatewaysocketapi3.roleArn,
                 }
               ).ref,
           }
@@ -354,16 +402,16 @@ class GeoprocessingCdkStack extends core.Stack {
           this,
           "apigatewaydeploymentsocket2",
           {
-            apiId: apigatewaysocket.ref,
+            apiId: apigatewaysocket3.ref,
           }
         );
 
         // stage
-        const apigatewaystagesocket = new apigateway.CfnStageV2(
+        const apigatewaystagesocket2 = new apigateway.CfnStageV2(
           this,
           "apigatewaystagesocket2",
           {
-            apiId: apigatewaysocket.ref,
+            apiId: apigatewaysocket3.ref,
             deploymentId: apigatewaydeploymentsocket2.ref,
             stageName: stageName,
             defaultRouteSettings: {
@@ -383,14 +431,14 @@ class GeoprocessingCdkStack extends core.Stack {
         // Add the dependency
         apigatewaydeploymentsocket2.node.addDependency(routes);
 
-        resource.addMethod("POST", handlerIntegration);
+        resource.addMethod("POST", syncHandlerIntegration);
         if (func.purpose === "geoprocessing") {
-          resource.addMethod("GET", handlerIntegration);
+          resource.addMethod("GET", syncHandlerIntegration);
         }
       } else {
-        resource.addMethod("POST", handlerIntegration);
+        resource.addMethod("POST", syncHandlerIntegration);
         if (func.purpose === "geoprocessing") {
-          resource.addMethod("GET", handlerIntegration);
+          resource.addMethod("GET", syncHandlerIntegration);
         }
       }
 

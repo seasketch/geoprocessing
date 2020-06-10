@@ -126,20 +126,18 @@ export class GeoprocessingHandler<T> {
     } else {
       // launch async handler
       const asyncExecutionName = process.env.ASYNC_HANDLER_FUNCTION_NAME;
-      const asyncConnName = process.env.ASYNC_CONNECTIONS_FUNCTION_NAME;
-      if (!asyncExecutionName || !asyncConnName) {
+      if (!asyncExecutionName) {
         return Tasks.fail(task, `No async handler function name defined`);
       }
 
       try {
-        task.wss = asyncExecutionName;
-        /*
-        await Lambda.invokeAsync({
-          FunctionName: asyncConnName,
-          InvokeArgs: JSON.stringify(task),
+        await Lambda.invoke({
+          FunctionName: asyncExecutionName,
+          ClientContext: JSON.stringify(task),
+          InvocationType: "Event",
         }).promise();
-        */
-        Tasks.complete(task, { statusCode: 200, body: "Connected." });
+
+        //Tasks.complete(task, { statusCode: 200, body: "Connected." });
         return {
           statusCode: 200,
           headers: {

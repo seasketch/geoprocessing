@@ -2,6 +2,7 @@ import {
   Sketch,
   SketchCollection,
   GeoprocessingHandler,
+  AsyncGeoprocessingHandler,
   VectorDataSource,
   sketchArea,
   isCollection,
@@ -29,7 +30,7 @@ export default new GeoprocessingHandler(areaAsync, {
   title: "areaAsync",
   description: "Produces the area of the given sketch asynchronously",
   timeout: 2, // seconds
-  memory: 256, // megabytes
+  memory: 1024, // megabytes
   executionMode: "async",
   // Specify any Sketch Class form attributes that are required
   requiresProperties: [],

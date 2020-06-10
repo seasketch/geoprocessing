@@ -6,6 +6,7 @@ const isCollection = (
 };
 export { Sketch, SketchCollection, isCollection };
 export { GeoprocessingHandler } from "./GeoprocessingHandler";
+
 export { PreprocessingHandler, ValidationError } from "./PreprocessingHandler";
 import sketchArea from "@turf/area";
 export { sketchArea };

@@ -42,7 +42,6 @@ export class GeoprocessingHandler<T> {
     context: Context
   ): Promise<APIGatewayProxyResult> {
     const { Tasks, options } = this;
-    console.log("----->>>", options);
 
     const serviceName = options.title;
     const request = this.parseRequest(event);
@@ -77,6 +76,7 @@ export class GeoprocessingHandler<T> {
         };
       }
     }
+
     let task: GeoprocessingTask = await Tasks.create(
       serviceName,
       request.cacheKey,
@@ -86,8 +86,6 @@ export class GeoprocessingHandler<T> {
       // TODO: container tasks
       return Tasks.fail(task, "Docker tasks not yet implemented");
     } else if (this.options.executionMode === "sync") {
-      console.log("its sync mode?????");
-
       process.removeAllListeners("uncaughtException");
       process.removeAllListeners("unhandledRejection");
       process.on("uncaughtException", async (error) => {
@@ -126,19 +124,22 @@ export class GeoprocessingHandler<T> {
         );
       }
     } else {
-      // TODO: async executionMode
-      //return Tasks.fail(task, "async executionMode not yet implemented");
       // launch async handler
       const asyncExecutionName = process.env.ASYNC_HANDLER_FUNCTION_NAME;
-      if (!asyncExecutionName) {
+      const asyncConnName = process.env.ASYNC_CONNECTIONS_FUNCTION_NAME;
+      if (!asyncExecutionName || !asyncConnName) {
         return Tasks.fail(task, `No async handler function name defined`);
       }
 
       try {
+        task.wss = asyncExecutionName;
+        /*
         await Lambda.invokeAsync({
-          FunctionName: asyncExecutionName,
+          FunctionName: asyncConnName,
           InvokeArgs: JSON.stringify(task),
         }).promise();
+        */
+        Tasks.complete(task, { statusCode: 200, body: "Connected." });
         return {
           statusCode: 200,
           headers: {
@@ -148,7 +149,12 @@ export class GeoprocessingHandler<T> {
           body: JSON.stringify(task),
         };
       } catch (e) {
-        return Tasks.fail(task, `Could not launch async handler function`);
+        const failMessage =
+          `-->>> Could not launch async handler function: ` +
+          e +
+          " :: uri... " +
+          asyncExecutionName;
+        return Tasks.fail(task, failMessage);
       }
     }
   }

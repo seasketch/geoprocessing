@@ -22,58 +22,13 @@ const geoprocessingJson = JSON.parse(
 );
 
 export async function clearResults() {
-  const answers = await inquirer.prompt([
-    {
-      type: "input",
-      name: "tableName",
-      message:
-        "Name of the report function cache to clear. Enter 'all' to clear all cached reports:",
-      validate: (value) =>
-        /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
-    },
-  ]);
-  await clearCachedResults(answers);
-}
-async function checkForProjectName(
-  err: AWS.AWSError,
-  data: AWS.DynamoDB.DocumentClient.ScanOutput,
-  serviceName: string,
-  docClient: AWS.DynamoDB.DocumentClient,
-  tableName: string
-) {
-  const answers = await inquirer.prompt([
-    {
-      type: "input",
-      name: "tableName",
-      message:
-        "Could not find dynamodb table named " +
-        tableName +
-        ". Enter the target project name:",
-    },
-  ]);
-  let projectName = buildProjectName(answers.tableName);
-  let scanParams: ScanInput = { TableName: projectName };
-  if (serviceName !== "all") {
-    scanParams = {
-      TableName: projectName,
-      FilterExpression: "service = :val",
-
-      ExpressionAttributeValues: {
-        //@ts-ignore
-        ":val": serviceName,
-      },
-    };
-  }
-  docClient.scan(scanParams, (err, data) => {
-    doScan(err, data, serviceName, docClient, projectName);
-  });
+  await clearCachedResults();
 }
 
 //@ts-ignore
 async function doScan(
   err: AWS.AWSError,
   data: AWS.DynamoDB.DocumentClient.ScanOutput,
-  serviceName: string,
   docClient: AWS.DynamoDB.DocumentClient,
   tableName: string
 ) {
@@ -110,36 +65,24 @@ async function doScan(
 
         if (typeof data.LastEvaluatedKey != "undefined") {
           let scanParams: ScanInput = { TableName: tableName };
-          if (serviceName !== "all") {
-            scanParams = {
-              TableName: tableName,
-              FilterExpression: "service = :val",
-
-              ExpressionAttributeValues: {
-                //@ts-ignore
-                ":val": serviceName,
-              },
-            };
-          }
 
           //@ts-ignore
           scanParams.ExclusiveStartKey = data.LastEvaluatedKey;
           //@ts-ignore
           docClient.scan(scanParams, (err, data) => {
-            doScan(err, data, serviceName, docClient, tableName);
+            doScan(err, data, docClient, tableName);
           });
         }
       }
     } else {
-      console.log("No cached results found for service:", serviceName);
+      console.log("No cached results found for all services");
     }
   }
 }
 function buildProjectName(projectName: string): string {
   return `gp-${projectName}-tasks`;
 }
-export async function clearCachedResults(options: ClearCacheOptions) {
-  let serviceName = options.tableName;
+export async function clearCachedResults() {
   let projectName = packageJson.name;
 
   let regionName = geoprocessingJson.region;
@@ -153,20 +96,9 @@ export async function clearCachedResults(options: ClearCacheOptions) {
   let tableName = buildProjectName(projectName);
 
   let params: ScanInput = { TableName: tableName };
-  if (serviceName !== "all") {
-    params = {
-      TableName: tableName,
-      FilterExpression: "service = :val",
-
-      ExpressionAttributeValues: {
-        //@ts-ignore
-        ":val": serviceName,
-      },
-    };
-  }
 
   docClient.scan(params, (err, data) => {
-    doScan(err, data, serviceName, docClient, tableName);
+    doScan(err, data, docClient, tableName);
   });
 }
 interface GeoprocessingStackProps extends core.StackProps {

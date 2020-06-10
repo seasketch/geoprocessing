@@ -1,5 +1,5 @@
 {
-  "name": "example-project",
+  "name": "example-project-new",
   "version": "0.7.14",
   "description": "Example project to test geoprocessing project init scripts",
   "main": "src/index.js",

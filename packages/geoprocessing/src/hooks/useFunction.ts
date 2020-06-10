@@ -51,18 +51,18 @@ export const useFunction = <ResultType>(
     throw new Error("ReportContext not set.");
   }
   const [state, setState] = useState<FunctionState<ResultType>>({
-    loading: true
+    loading: true,
   });
   useEffect(() => {
     const abortController = new AbortController();
     setState({
-      loading: true
+      loading: true,
     });
     if (!context.exampleOutputs) {
       if (!context.projectUrl && context.geometryUri) {
         setState({
           loading: false,
-          error: "Client Error - ReportContext.projectUrl not specified"
+          error: "Client Error - ReportContext.projectUrl not specified",
         });
         return;
       }
@@ -78,7 +78,7 @@ export const useFunction = <ResultType>(
           if (!abortController.signal.aborted) {
             setState({
               loading: false,
-              error: `Fetch of GeoprocessingProject metadata failed ${context.projectUrl}`
+              error: `Fetch of GeoprocessingProject metadata failed ${context.projectUrl}`,
             });
             return;
           }
@@ -88,12 +88,12 @@ export const useFunction = <ResultType>(
           url = functionTitle;
         } else {
           const service = geoprocessingProject!.geoprocessingServices.find(
-            s => s.title === functionTitle
+            (s) => s.title === functionTitle
           );
           if (!service) {
             setState({
               loading: false,
-              error: `Could not find service for function titled ${functionTitle}`
+              error: `Could not find service for function titled ${functionTitle}`,
             });
             return;
           }
@@ -102,7 +102,7 @@ export const useFunction = <ResultType>(
         // fetch task/results
         // TODO: Check for requiredProperties
         const payload: GeoprocessingRequest = {
-          geometryUri: context.geometryUri
+          geometryUri: context.geometryUri,
         };
         if (context.sketchProperties.id && context.sketchProperties.updatedAt) {
           payload.cacheKey = `${context.sketchProperties.id}-${context.sketchProperties.updatedAt}`;
@@ -117,7 +117,7 @@ export const useFunction = <ResultType>(
             setState({
               loading: false,
               task: task,
-              error: task.error
+              error: task.error,
             });
             return;
           }
@@ -127,7 +127,7 @@ export const useFunction = <ResultType>(
         if (payload.cacheKey) {
           // check for in-flight requests
           const pending = pendingRequests.find(
-            r =>
+            (r) =>
               r.cacheKey === payload.cacheKey &&
               r.functionName === functionTitle
           );
@@ -135,7 +135,7 @@ export const useFunction = <ResultType>(
             setState({
               loading: true,
               task: pending.task,
-              error: undefined
+              error: undefined,
             });
             // attach handlers to promise
             pendingRequest = pending.promise;
@@ -146,24 +146,24 @@ export const useFunction = <ResultType>(
           setState({
             loading: true,
             task: undefined,
-            error: undefined
+            error: undefined,
           });
           pendingRequest = runTask(url, payload, abortController.signal);
           if (payload.cacheKey) {
             const pr = {
               cacheKey: payload.cacheKey,
               functionName: functionTitle,
-              promise: pendingRequest
+              promise: pendingRequest,
             };
             pendingRequests.push(pr);
             pendingRequest.finally(() => {
-              pendingRequests = pendingRequests.filter(p => p !== pr);
+              pendingRequests = pendingRequests.filter((p) => p !== pr);
             });
           }
         }
 
         pendingRequest
-          .then(task => {
+          .then((task) => {
             if (
               !task.status ||
               ["pending", "completed", "failed"].indexOf(task.status) === -1
@@ -171,14 +171,14 @@ export const useFunction = <ResultType>(
               setState({
                 loading: false,
                 task: task,
-                error: `Could not parse response from geoprocessing function.`
+                error: `Could not parse response from geoprocessing function.`,
               });
               return;
             }
             setState({
               loading: task.status === GeoprocessingTaskStatus.Pending,
               task: task,
-              error: task.error
+              error: task.error,
             });
             if (
               payload.cacheKey &&
@@ -192,18 +192,18 @@ export const useFunction = <ResultType>(
             if (task.status === GeoprocessingTaskStatus.Pending) {
               // TODO: async executionMode
               setState({
-                loading: false,
+                loading: task.status === GeoprocessingTaskStatus.Pending,
                 task: task,
-                error: "Async executionMode not yet supported"
+                error: task.error,
               });
               return;
             }
           })
-          .catch(e => {
+          .catch((e) => {
             if (!abortController.signal.aborted) {
               setState({
                 loading: false,
-                error: e.toString()
+                error: e.toString(),
               });
             }
           });
@@ -212,7 +212,7 @@ export const useFunction = <ResultType>(
       // In test or storybook environment, so this will just load example data
       // or simulate loading and error states.
       const data = context.exampleOutputs.find(
-        output => output.functionName === functionTitle
+        (output) => output.functionName === functionTitle
       );
       if (!data && !context.simulateLoading && !context.simulateError) {
         throw new Error(
@@ -233,9 +233,9 @@ export const useFunction = <ResultType>(
           startedAt: new Date().toISOString(),
           duration: 0,
           data: (data || {}).results as ResultType,
-          error: context.simulateError ? context.simulateError : undefined
+          error: context.simulateError ? context.simulateError : undefined,
         },
-        error: context.simulateError ? context.simulateError : undefined
+        error: context.simulateError ? context.simulateError : undefined,
       });
       // end test mode handling
     }
@@ -262,8 +262,8 @@ const runTask = async (
     signal: signal,
     method: "get",
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
     // body: JSON.stringify(payload)
   });
   const task: GeoprocessingTask = await response.json();
@@ -279,7 +279,7 @@ const getGeoprocessingProject = async (
   signal: AbortSignal
 ): Promise<GeoprocessingProject> => {
   // TODO: eventually handle updated durations
-  const pending = pendingMetadataRequests.find(r => r.url === url);
+  const pending = pendingMetadataRequests.find((r) => r.url === url);
   if (pending) {
     return pending.promise;
   }
@@ -287,21 +287,21 @@ const getGeoprocessingProject = async (
     return geoprocessingProjects[url];
   }
 
-  const request = fetch(url, { signal }).then(async response => {
+  const request = fetch(url, { signal }).then(async (response) => {
     const geoprocessingProject = await response.json();
     if (signal.aborted) {
       throw new Error("Aborted");
     } else {
       geoprocessingProjects[url] = geoprocessingProject;
       pendingMetadataRequests = pendingMetadataRequests.filter(
-        r => r.url !== url
+        (r) => r.url !== url
       );
       return geoprocessingProject;
     }
   });
   pendingMetadataRequests.push({
     url,
-    promise: request
+    promise: request,
   });
   return request;
 };

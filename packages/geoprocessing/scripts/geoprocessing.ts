@@ -77,6 +77,12 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
+    case "clear-all-results":
+      spawn("node", [`${__dirname}/clear/clearAllResults.js`], {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
     default:
       throw new Error(`Command ${command} not supported.`);
   }

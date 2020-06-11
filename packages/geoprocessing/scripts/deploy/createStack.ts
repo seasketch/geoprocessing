@@ -177,32 +177,33 @@ class GeoprocessingCdkStack extends core.Stack {
       const stageName = "prod";
       // @ts-ignore
       const filename = path.basename(func.handler);
-      const geoprocessingEnvOptions: any = {
+      let geoprocessingEnvOptions: any = {
         publicBucketUrl,
         TASKS_TABLE: tasksTbl.tableName,
       };
-      if (func.executionMode === "async") {
-        let funcName = `gp-${manifest.title}-${func.title}-async`;
-        /*
-        let arnPre = "arn:aws:lambda:";
-        let regionStr = region + ":";
-        let whatsThis = "196230260133";
-        //tried specifying full ARN, that didn't work
-        */
-        geoprocessingEnvOptions.ASYNC_HANDLER_FUNCTION_NAME = funcName;
-      }
 
       let asyncHandler: lambda.Function;
       let policies: iam.PolicyStatement[] = [];
+      //If its async, we need to make 2 lambda handlers, one that is the async with websockets
+      //and one that is sync with http rest
+      let funcName = `gp-${manifest.title}-${func.title}-async`;
+
+      geoprocessingEnvOptions.ASYNC_HANDLER_FUNCTION_NAME = funcName;
       if (func.executionMode === "async") {
+        // handler: "asyncGeoprocessingHandler.handler",
+
+        //for the asynchronous lambda, set this flag to true so it doesn't look for
+        //cached results and always runs it synchronously
+        geoprocessingEnvOptions.RUN_AS_SYNC = "true";
         asyncHandler = new lambda.Function(
           this,
           `${func.title}AsynchronousHandler`,
           {
             runtime: lambda.Runtime.NODEJS_12_X,
             code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
-            handler: "asyncGeoprocessingHandler.handler",
-            functionName: `gp-${manifest.title}-${func.title}-async`,
+
+            handler: filename.replace(/\.js$/, "") + ".handler",
+            functionName: funcName,
             memorySize: func.memory,
             timeout: core.Duration.seconds(func.timeout || 3),
             description: func.description,
@@ -223,7 +224,14 @@ class GeoprocessingCdkStack extends core.Stack {
         roleLambda.addToPolicy(lambdaPolicy);
         policies = [lambdaPolicy];
       }
-
+      geoprocessingEnvOptions = {
+        publicBucketUrl,
+        TASKS_TABLE: tasksTbl.tableName,
+        //for the 'normal' lambda deploy, don't force synchronous, let it be marked as
+        //async as needed
+        RUN_AS_SYNC: "false",
+        ASYNC_HANDLER_FUNCTION_NAME: funcName,
+      };
       const syncHandler = new lambda.Function(this, `${func.title}Handler`, {
         runtime: lambda.Runtime.NODEJS_12_X,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),

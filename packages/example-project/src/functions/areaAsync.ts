@@ -2,7 +2,6 @@ import {
   Sketch,
   SketchCollection,
   GeoprocessingHandler,
-  AsyncGeoprocessingHandler,
   VectorDataSource,
   sketchArea,
   isCollection,

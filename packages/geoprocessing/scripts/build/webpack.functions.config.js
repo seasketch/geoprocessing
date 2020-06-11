@@ -63,10 +63,11 @@ module.exports = {
       return prev;
     }, {}),
     serviceHandlers: path.join(GP_ROOT, "src/serviceHandlers.ts"),
+    /*
     asyncGeoprocessingHandler: path.join(
       GP_ROOT,
       "src/asyncGeoprocessingHandler.ts"
-    ),
+    ),*/
   },
   output: {
     filename: (chunkData) => {

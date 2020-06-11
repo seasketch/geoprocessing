@@ -44,6 +44,7 @@ export class GeoprocessingHandler<T> {
     const { Tasks, options } = this;
 
     const serviceName = options.title;
+
     const request = this.parseRequest(event);
     // TODO: Authorization
     // Bail out if replaying previous task
@@ -59,13 +60,21 @@ export class GeoprocessingHandler<T> {
     } else {
       this.lastRequestId = context.awsRequestId;
     }
+    console.log("run as sync??? ", process.env.RUN_AS_SYNC);
+    console.log("what is cache key::: ", request.cacheKey);
     // check and respond with cache first if available
-    if (request.cacheKey) {
+    if (!(process.env.RUN_AS_SYNC === "true") && request.cacheKey) {
       const cachedResult = await Tasks.get(serviceName, request.cacheKey);
       if (
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Failed
       ) {
+        console.log("execution mode: ", this.options.executionMode);
+        console.log(
+          "....found cached results:: ",
+          JSON.stringify(cachedResult)
+        );
+
         return {
           statusCode: 200,
           headers: {
@@ -85,7 +94,10 @@ export class GeoprocessingHandler<T> {
     if (false) {
       // TODO: container tasks
       return Tasks.fail(task, "Docker tasks not yet implemented");
-    } else if (this.options.executionMode === "sync") {
+    } else if (
+      process.env.RUN_AS_SYNC === "true" ||
+      this.options.executionMode === "sync"
+    ) {
       process.removeAllListeners("uncaughtException");
       process.removeAllListeners("unhandledRejection");
       process.on("uncaughtException", async (error) => {
@@ -110,6 +122,10 @@ export class GeoprocessingHandler<T> {
         const featureSet = await fetchGeoJSON(request);
         try {
           const results = await this.func(featureSet);
+          console.log(
+            "setting complete with results::: results--->>>> ",
+            results
+          );
           return Tasks.complete(task, results);
         } catch (e) {
           return Tasks.fail(task, `Geoprocessing exception.\n${e.stack}`, e);
@@ -131,10 +147,12 @@ export class GeoprocessingHandler<T> {
       }
 
       try {
+        //need payload...
         await Lambda.invoke({
           FunctionName: asyncExecutionName,
           ClientContext: JSON.stringify(task),
           InvocationType: "Event",
+          Payload: JSON.stringify(event),
         }).promise();
 
         //Tasks.complete(task, { statusCode: 200, body: "Connected." });

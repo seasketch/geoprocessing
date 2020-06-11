@@ -220,7 +220,6 @@ class GeoprocessingCdkStack extends core.Stack {
         const roleLambda = new iam.Role(this, "roleLambda", {
           assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
         });
-
         roleLambda.addToPolicy(lambdaPolicy);
         policies = [lambdaPolicy];
       }

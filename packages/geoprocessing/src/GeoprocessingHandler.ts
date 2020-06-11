@@ -117,10 +117,6 @@ export class GeoprocessingHandler<T> {
         const featureSet = await fetchGeoJSON(request);
         try {
           const results = await this.func(featureSet);
-          console.log(
-            "setting complete with results::: results--->>>> ",
-            results
-          );
           return Tasks.complete(task, results);
         } catch (e) {
           return Tasks.fail(task, `Geoprocessing exception.\n${e.stack}`, e);

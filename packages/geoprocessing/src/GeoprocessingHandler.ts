@@ -60,8 +60,7 @@ export class GeoprocessingHandler<T> {
     } else {
       this.lastRequestId = context.awsRequestId;
     }
-    console.log("run as sync??? ", process.env.RUN_AS_SYNC);
-    console.log("what is cache key::: ", request.cacheKey);
+
     // check and respond with cache first if available
     if (!(process.env.RUN_AS_SYNC === "true") && request.cacheKey) {
       const cachedResult = await Tasks.get(serviceName, request.cacheKey);
@@ -69,12 +68,6 @@ export class GeoprocessingHandler<T> {
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Failed
       ) {
-        console.log("execution mode: ", this.options.executionMode);
-        console.log(
-          "....found cached results:: ",
-          JSON.stringify(cachedResult)
-        );
-
         return {
           statusCode: 200,
           headers: {
@@ -98,6 +91,8 @@ export class GeoprocessingHandler<T> {
       process.env.RUN_AS_SYNC === "true" ||
       this.options.executionMode === "sync"
     ) {
+      //EITHER execution mode === sync -or-
+      //this is the async method being run on the async lambda
       process.removeAllListeners("uncaughtException");
       process.removeAllListeners("unhandledRejection");
       process.on("uncaughtException", async (error) => {
@@ -140,6 +135,8 @@ export class GeoprocessingHandler<T> {
         );
       }
     } else {
+      //execution mode === async, and this is synchronous call that launches
+      //the socket based asynchronous lambda.
       // launch async handler
       const asyncExecutionName = process.env.ASYNC_HANDLER_FUNCTION_NAME;
       if (!asyncExecutionName) {
@@ -147,7 +144,6 @@ export class GeoprocessingHandler<T> {
       }
 
       try {
-        //need payload...
         await Lambda.invoke({
           FunctionName: asyncExecutionName,
           ClientContext: JSON.stringify(task),

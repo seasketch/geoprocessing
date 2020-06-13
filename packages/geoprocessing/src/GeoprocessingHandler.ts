@@ -15,6 +15,7 @@ import {
   APIGatewayProxyResult,
   APIGatewayProxyEvent,
 } from "aws-lambda";
+
 import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
 
 const Lambda = new LambdaClient();

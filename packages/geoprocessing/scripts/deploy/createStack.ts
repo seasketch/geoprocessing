@@ -163,16 +163,25 @@ class GeoprocessingCdkStack extends core.Stack {
     // function endpoints
     const region = manifest.region as string;
 
-    const apigatewaysocket3 = new apigateway.CfnApiV2(
+    const apigatewaysocket = new apigateway.CfnApiV2(this, "apigatewaysocket", {
+      name: `${props.project} async geoprocessing service`,
+      protocolType: "WEBSOCKET",
+      routeSelectionExpression: "$request.body.message",
+    });
+
+    const socketsTbl = new dynamodb.Table(
       this,
-      "apigatewaysocket3",
+      `gp-${manifest.title}-socketids`,
       {
-        name: `${props.project} async geoprocessing service`,
-        protocolType: "WEBSOCKET",
-        routeSelectionExpression: "$request.body.message",
+        partitionKey: {
+          name: "connectionId",
+          type: dynamodb.AttributeType.STRING,
+        },
+        billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+        tableName: `gp-${manifest.title}-socketids`,
+        removalPolicy: core.RemovalPolicy.DESTROY,
       }
     );
-
     for (const func of manifest.functions) {
       const stageName = "prod";
       // @ts-ignore
@@ -189,9 +198,7 @@ class GeoprocessingCdkStack extends core.Stack {
       let funcName = `gp-${manifest.title}-${func.title}-async`;
 
       geoprocessingEnvOptions.ASYNC_HANDLER_FUNCTION_NAME = funcName;
-      if (func.executionMode === "async") {
-        // handler: "asyncGeoprocessingHandler.handler",
-
+      if (func.executionMode === "async" && func.purpose === "geoprocessing") {
         //for the asynchronous lambda, set this flag to true so it doesn't look for
         //cached results and always runs it synchronously
         geoprocessingEnvOptions.RUN_AS_SYNC = "true";
@@ -207,25 +214,28 @@ class GeoprocessingCdkStack extends core.Stack {
             memorySize: func.memory,
             timeout: core.Duration.seconds(func.timeout || 3),
             description: func.description,
-            environment:
-              func.purpose === "geoprocessing" ? geoprocessingEnvOptions : {},
+            environment: geoprocessingEnvOptions,
           }
         );
+        //policy to allow the sync function to call the async function
         const lambdaPolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           //@ts-ignore
           resources: [asyncHandler.functionArn],
           actions: ["lambda:InvokeFunction"],
         });
+
         const roleLambda = new iam.Role(this, "roleLambda", {
           assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
         });
         roleLambda.addToPolicy(lambdaPolicy);
         policies = [lambdaPolicy];
       }
+
       geoprocessingEnvOptions = {
         publicBucketUrl,
         TASKS_TABLE: tasksTbl.tableName,
+        SOCKETS_TABLE: socketsTbl.tableName,
         //for the 'normal' lambda deploy, don't force synchronous, let it be marked as
         //async as needed
         RUN_AS_SYNC: "false",
@@ -240,6 +250,7 @@ class GeoprocessingCdkStack extends core.Stack {
         timeout: core.Duration.seconds(func.timeout || 3),
         description: func.description,
         initialPolicy: policies,
+
         environment:
           func.purpose === "geoprocessing" ? geoprocessingEnvOptions : {},
       });
@@ -261,70 +272,148 @@ class GeoprocessingCdkStack extends core.Stack {
           requestTemplates: { "application/json": '{ "statusCode": "200" }' },
         }
       );
-      if (func.executionMode === "async") {
-        const asyncHandlerIntegration = new apigateway.LambdaIntegration(
-          //@ts-ignore
-          asyncHandler,
-          {
-            requestTemplates: { "application/json": '{ "statusCode": "200" }' },
-          }
-        );
-      }
 
       const resource = api.root.addResource(func.title);
       if (func.executionMode === "async") {
         // access role for the socket api to access the socket lambda
-        /*
-        const policy = new iam.PolicyStatement({
+        //give the socket apigateway access to the 3 lambda socket functions
+
+        const apigatewayPolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           //@ts-ignore
-          resources: [syncHandler.functionArn],
-          actions: ["lambda:InvokeFunction"],
+          principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
+          actions: ["lambda:InvokeFunction", "sts:AssumeRole"],
         });
 
-        const roleapigatewaysocketapi3 = new iam.Role(
+        //policy to allow the socket apigateway to call the socket lambdas
+
+        const asyncConnHandler = new lambda.Function(
           this,
-          "roleapigatewaysocketapi3",
+          `${func.title}AsyncConnectionHandler`,
           {
-            assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+            runtime: lambda.Runtime.NODEJS_12_X,
+            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
+            handler: "connect.handler",
+            functionName: funcName + "Connect",
+            memorySize: func.memory,
+            timeout: core.Duration.seconds(func.timeout || 3),
+            description: func.description + ", for connecting sockets",
+            environment: geoprocessingEnvOptions,
+          }
+        );
+        /*
+        const connPolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [asyncConnHandler.functionArn],
+          //@ts-ignore
+          actions: ["lambda:InvokeFunction"],
+          principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
+        });
+        */
+
+        //asyncConnHandler.addToRolePolicy(connPolicy);
+        //policy to allow the socket apigateway to call the socket lambdas
+
+        const asyncSendHandler = new lambda.Function(
+          this,
+          `${func.title}AsyncSendHandler`,
+          {
+            runtime: lambda.Runtime.NODEJS_12_X,
+            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
+            handler: "sendmessage.handler",
+            functionName: funcName + "Send",
+            memorySize: func.memory,
+            timeout: core.Duration.seconds(func.timeout || 3),
+            description: func.description + ", for sending messages on sockets",
+            environment: geoprocessingEnvOptions,
+          }
+        );
+        /*
+        const sendPolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [asyncSendHandler.functionArn],
+          //@ts-ignore
+          actions: ["lambda:InvokeFunction"],
+          principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
+        });*/
+
+        //asyncSendHandler.addToRolePolicy(sendPolicy);
+        //policy to allow the socket apigateway to call the socket lambdas
+        /*
+
+        */
+        const asyncDisconnectHandler = new lambda.Function(
+          this,
+          `${func.title}AsyncDisconnectHandler`,
+          {
+            runtime: lambda.Runtime.NODEJS_12_X,
+            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
+            handler: "disconnect.handler",
+            functionName: funcName + "Disconnect",
+            memorySize: func.memory,
+            timeout: core.Duration.seconds(func.timeout || 3),
+            description: func.description + ", for disconnecting sockets",
+            environment: geoprocessingEnvOptions,
           }
         );
 
-        roleapigatewaysocketapi3.addToPolicy(policy);
-        */
+        // access role for the socket api to access the socket lambda
+        const connPolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [asyncConnHandler.functionArn],
+          actions: ["lambda:InvokeFunction"],
+        });
+
+        const connRole = new iam.Role(this, "roleConn", {
+          assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+        });
+        connRole.addToPolicy(connPolicy);
+
         const apigatewayroutesocketconnect = new apigateway.CfnRouteV2(
           this,
           "apigatewayroutesocketconnect",
           {
-            apiId: apigatewaysocket3.ref,
+            apiId: apigatewaysocket.ref,
             routeKey: "$connect",
             authorizationType: "NONE",
             operationName: "ConnectRoute",
+
             target:
               "integrations/" +
               new apigateway.CfnIntegrationV2(
                 this,
                 "apigatewayintegrationsocketconnect",
                 {
-                  apiId: apigatewaysocket3.ref,
+                  apiId: apigatewaysocket.ref,
                   integrationType: "AWS_PROXY",
                   integrationUri:
                     "arn:aws:apigateway:" +
                     region +
                     ":lambda:path/2015-03-31/functions/" +
-                    syncHandler.functionArn +
+                    asyncConnHandler.functionArn +
                     "/invocations",
+                  credentialsArn: connRole.roleArn,
                 }
               ).ref,
           }
         );
 
+        const disPolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [asyncDisconnectHandler.functionArn],
+          actions: ["lambda:InvokeFunction"],
+        });
+
+        const disRole = new iam.Role(this, "roleDis", {
+          assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+        });
+        disRole.addToPolicy(disPolicy);
         // disconnect route
         const apigatewayroutesocketdisconnect = new apigateway.CfnRouteV2(
           this,
           "apigatewayroutesocketdisconnect",
           {
-            apiId: apigatewaysocket3.ref,
+            apiId: apigatewaysocket.ref,
             routeKey: "$disconnect",
             authorizationType: "NONE",
             operationName: "DisconnectRoute",
@@ -334,80 +423,131 @@ class GeoprocessingCdkStack extends core.Stack {
                 this,
                 "apigatewayintegrationsocketdisconnect",
                 {
-                  apiId: apigatewaysocket3.ref,
+                  apiId: apigatewaysocket.ref,
                   integrationType: "AWS_PROXY",
                   integrationUri:
                     "arn:aws:apigateway:" +
                     region +
                     ":lambda:path/2015-03-31/functions/" +
-                    syncHandler.functionArn +
+                    asyncDisconnectHandler.functionArn +
                     "/invocations",
+                  credentialsArn: disRole.roleArn,
                 }
               ).ref,
           }
         );
 
-        const apigatewayroutesocketdefault = new apigateway.CfnRouteV2(
+        const sendPolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [asyncSendHandler.functionArn],
+          actions: ["lambda:InvokeFunction"],
+        });
+
+        const sendRole = new iam.Role(this, "roleSend", {
+          assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+        });
+        sendRole.addToPolicy(sendPolicy);
+
+        // route for this function
+        const apigatewayroutesocketsend = new apigateway.CfnRouteV2(
           this,
-          "apigatewayroutesocketdefault",
+          "apigatewayroutesocketsend",
           {
-            apiId: apigatewaysocket3.ref,
-            routeKey: "$default",
+            apiId: apigatewaysocket.ref,
+            routeKey: "sendmessage",
             authorizationType: "NONE",
             operationName: "SendRoute",
             target:
               "integrations/" +
               new apigateway.CfnIntegrationV2(
                 this,
-                "apigatewayintegrationsocketdefault",
-                {
-                  apiId: apigatewaysocket3.ref,
-                  integrationType: "AWS_PROXY",
-                  integrationUri:
-                    "arn:aws:apigateway:" +
-                    region +
-                    ":lambda:path/2015-03-31/functions/" +
-                    syncHandler.functionArn +
-                    "/invocations",
-                }
-              ).ref,
-          }
-        );
-
-        // route for this function
-        const apigatewayroutesocketgeoprocessing = new apigateway.CfnRouteV2(
-          this,
-          "apigatewayroutesocketsend",
-          {
-            apiId: apigatewaysocket3.ref,
-            routeKey: func.title,
-            authorizationType: "NONE",
-            operationName: "GeoprocessingRoute",
-            target:
-              "integrations/" +
-              new apigateway.CfnIntegrationV2(
-                this,
                 "apigatewayintegrationsocketsend",
                 {
-                  apiId: apigatewaysocket3.ref,
+                  apiId: apigatewaysocket.ref,
                   integrationType: "AWS_PROXY",
+
                   integrationUri:
                     "arn:aws:apigateway:" +
                     region +
                     ":lambda:path/2015-03-31/functions/" +
-                    syncHandler.functionArn +
+                    asyncSendHandler.functionArn +
                     "/invocations",
+                  credentialsArn: sendRole.roleArn,
                 }
               ).ref,
           }
         );
+        /*
+        OnConnectPermission:
+        Type: AWS::Lambda::Permission
+        DependsOn:
+          - SimpleChatWebSocket
+        Properties:
+          Action: lambda:InvokeFunction
+          FunctionName: !Ref OnConnectFunction
+          Principal: apigateway.amazonaws.com
+        */
+        /*
+                const roleapigatewaysocketapi = new iam.Role(
+          this,
+          "roleapigatewaysocketapi",
+          {
+            assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+          }
+        );
+        */
 
+        /*
+        const connectPermission = new lambda.CfnPermission(
+          this,
+          "connPermission",
+          {
+            action: "lambda:InvokeFunction",
+            functionName: asyncConnHandler.functionArn,
+            principal: "apigateway.amazonaws.com",
+          }
+        );
+
+        //connectPermission.addDependsOn(apigatewaysocket);
+        //@ts-ignore
+        asyncConnHandler.addPermission("connect", connectPermission);
+
+        const disconnectPermission = new lambda.CfnPermission(
+          this,
+          "disconnectPermission",
+          {
+            action: "lambda:InvokeFunction",
+            functionName: asyncDisconnectHandler.functionArn,
+            principal: "apigateway",
+          }
+        );
+        //disconnectPermission.addDependsOn(apigatewaysocket3);
+
+        asyncDisconnectHandler.addPermission(
+          "disconnect",
+          //@ts-ignore
+          disconnectPermission
+        );
+
+        const sendPermission = new lambda.CfnPermission(
+          this,
+          "sendPermission",
+          {
+            action: "lambda:InvokeFunction",
+            functionName: asyncSendHandler.functionName,
+            principal: "apigateway.amazonaws.com",
+          }
+        );
+        //sendPermission.addDependsOn(apigatewaysocket);
+        //@ts-ignore
+        asyncSendHandler.addPermission("sendmessage", sendPermission);
+        */
         // deployment
         const apigatewaydeploymentsocket2 = new apigateway.CfnDeploymentV2(
           this,
           "apigatewaydeploymentsocket2",
           {
-            apiId: apigatewaysocket3.ref,
+            apiId: apigatewaysocket.ref,
           }
         );
 
@@ -416,9 +556,10 @@ class GeoprocessingCdkStack extends core.Stack {
           this,
           "apigatewaystagesocket2",
           {
-            apiId: apigatewaysocket3.ref,
+            apiId: apigatewaysocket.ref,
             deploymentId: apigatewaydeploymentsocket2.ref,
             stageName: stageName,
+
             defaultRouteSettings: {
               throttlingBurstLimit: 500,
               throttlingRateLimit: 1000,
@@ -430,11 +571,37 @@ class GeoprocessingCdkStack extends core.Stack {
         const routes = new core.ConcreteDependable();
         routes.add(apigatewayroutesocketconnect);
         routes.add(apigatewayroutesocketdisconnect);
-        //routes.add(apigatewayroutesocketdefault);
-        routes.add(apigatewayroutesocketgeoprocessing);
+        routes.add(apigatewayroutesocketsend);
 
         // Add the dependency
         apigatewaydeploymentsocket2.node.addDependency(routes);
+        /*
+        const asyncDisconnectPolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [asyncDisconnectHandler.functionArn],
+          //@ts-ignore
+          actions: ["sts:AssumeRole"],
+          //@ts-ignore
+          principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
+        });
+        asyncDisconnectHandler.addToRolePolicy(asyncDisconnectPolicy);
+
+        const asyncConnPolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [asyncConnHandler.functionArn],
+          actions: ["sts:AssumeRole"],
+          principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
+        });
+        asyncConnHandler.addToRolePolicy(asyncConnPolicy);
+
+        const asyncSendPolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [asyncSendHandler.functionArn],
+          actions: ["lambda:InvokeFunction", "sts:AssumeRole"],
+          principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
+        });
+        asyncSendHandler.addToRolePolicy(asyncSendPolicy);
+        */
 
         resource.addMethod("POST", syncHandlerIntegration);
         if (func.purpose === "geoprocessing") {

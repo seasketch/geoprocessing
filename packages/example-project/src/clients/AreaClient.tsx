@@ -29,7 +29,7 @@ const AreaClient = () => {
         )}
       </ResultsCard>
       <ResultsCard
-        title="Async Zone Size xx"
+        title="Async Zone Size ??"
         functionName="areaAsync"
         skeleton={<LoadingSkeleton />}
       >

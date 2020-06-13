@@ -63,6 +63,9 @@ module.exports = {
       return prev;
     }, {}),
     serviceHandlers: path.join(GP_ROOT, "src/serviceHandlers.ts"),
+    sendmessage: path.join(GP_ROOT, "src/sockets/sendmessage.ts"),
+    connect: path.join(GP_ROOT, "src/sockets/connect.ts"),
+    disconnect: path.join(GP_ROOT, "src/sockets/disconnect.ts"),
   },
   output: {
     filename: (chunkData) => {

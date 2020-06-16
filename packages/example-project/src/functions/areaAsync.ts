@@ -18,7 +18,7 @@ export interface AsyncAreaResults {
 async function areaAsync(
   sketch: Sketch | SketchCollection
 ): Promise<AsyncAreaResults> {
-  console.log("running area async...");
+  console.log("running area async now...");
   return {
     area: sketchArea(sketch),
     bbox: bbox(sketch as AllGeoJSON),

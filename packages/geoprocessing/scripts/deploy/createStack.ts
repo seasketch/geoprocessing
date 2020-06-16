@@ -163,11 +163,15 @@ class GeoprocessingCdkStack extends core.Stack {
     // function endpoints
     const region = manifest.region as string;
 
-    const apigatewaysocket = new apigateway.CfnApiV2(this, "apigatewaysocket", {
-      name: `${props.project} async geoprocessing service`,
-      protocolType: "WEBSOCKET",
-      routeSelectionExpression: "$request.body.message",
-    });
+    const apigatewaysocket = new apigateway.CfnApiV2(
+      this,
+      "apigatewaysocket3",
+      {
+        name: `${props.project} async geoprocessing service`,
+        protocolType: "WEBSOCKET",
+        routeSelectionExpression: "$request.body.message",
+      }
+    );
 
     const socketsTbl = new dynamodb.Table(
       this,
@@ -258,6 +262,7 @@ class GeoprocessingCdkStack extends core.Stack {
       if (func.purpose === "geoprocessing") {
         tasksTbl.grantReadWriteData(syncHandler);
         publicBucket.grantReadWrite(syncHandler);
+
         if (func.executionMode === "async") {
           //@ts-ignore
           tasksTbl.grantReadWriteData(asyncHandler);
@@ -292,9 +297,9 @@ class GeoprocessingCdkStack extends core.Stack {
           `${func.title}AsyncConnectionHandler`,
           {
             runtime: lambda.Runtime.NODEJS_12_X,
-            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
-            handler: "connect.handler",
-            functionName: funcName + "Connect",
+            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build/")),
+            handler: "connect.connectHandler",
+            functionName: funcName + "-Connect",
             memorySize: func.memory,
             timeout: core.Duration.seconds(func.timeout || 3),
             description: func.description + ", for connecting sockets",
@@ -307,9 +312,9 @@ class GeoprocessingCdkStack extends core.Stack {
           `${func.title}AsyncSendHandler`,
           {
             runtime: lambda.Runtime.NODEJS_12_X,
-            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
-            handler: "sendmessage.handler",
-            functionName: funcName + "Send",
+            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build/")),
+            handler: "sendmessage.sendHandler",
+            functionName: funcName + "-SendMessage",
             memorySize: func.memory,
             timeout: core.Duration.seconds(func.timeout || 3),
             description: func.description + ", for sending messages on sockets",
@@ -322,9 +327,9 @@ class GeoprocessingCdkStack extends core.Stack {
           `${func.title}AsyncDisconnectHandler`,
           {
             runtime: lambda.Runtime.NODEJS_12_X,
-            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
-            handler: "disconnect.handler",
-            functionName: funcName + "Disconnect",
+            code: lambda.Code.asset(path.join(PROJECT_PATH, ".build/")),
+            handler: "disconnect.disconnectHandler",
+            functionName: funcName + "-Disconnect",
             memorySize: func.memory,
             timeout: core.Duration.seconds(func.timeout || 3),
             description: func.description + ", for disconnecting sockets",
@@ -336,14 +341,26 @@ class GeoprocessingCdkStack extends core.Stack {
         const connPolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           resources: [asyncConnHandler.functionArn],
-          actions: ["lambda:InvokeFunction"],
+          actions: [
+            "lambda:InvokeFunction",
+            "dynamodb:BatchGetItem",
+            "dynamodb:GetItem",
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:BatchWriteItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+          ],
         });
 
         const connRole = new iam.Role(this, "roleConn", {
           assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
         });
         connRole.addToPolicy(connPolicy);
-
+        const connDRole = new iam.Role(this, "roleConnDynamo", {
+          assumedBy: new iam.ServicePrincipal("dynamodb.amazonaws.com"),
+        });
+        connDRole.addToPolicy(connPolicy);
         const apigatewayroutesocketconnect = new apigateway.CfnRouteV2(
           this,
           "apigatewayroutesocketconnect",
@@ -376,13 +393,27 @@ class GeoprocessingCdkStack extends core.Stack {
         const disPolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           resources: [asyncDisconnectHandler.functionArn],
-          actions: ["lambda:InvokeFunction"],
+          actions: [
+            "lambda:InvokeFunction",
+            "dynamodb:BatchGetItem",
+            "dynamodb:GetItem",
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:BatchWriteItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+          ],
         });
 
         const disRole = new iam.Role(this, "roleDis", {
           assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
         });
+        const disDRole = new iam.Role(this, "roleDisDynamo", {
+          assumedBy: new iam.ServicePrincipal("dynamodb.amazonaws.com"),
+        });
+        disDRole.addToPolicy(disPolicy);
         disRole.addToPolicy(disPolicy);
+
         // disconnect route
         const apigatewayroutesocketdisconnect = new apigateway.CfnRouteV2(
           this,
@@ -415,14 +446,26 @@ class GeoprocessingCdkStack extends core.Stack {
         const sendPolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           resources: [asyncSendHandler.functionArn],
-          actions: ["lambda:InvokeFunction"],
+          actions: [
+            "lambda:InvokeFunction",
+            "dynamodb:BatchGetItem",
+            "dynamodb:GetItem",
+            "dynamodb:Query",
+            "dynamodb:Scan",
+            "dynamodb:BatchWriteItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+          ],
         });
 
         const sendRole = new iam.Role(this, "roleSend", {
           assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
         });
         sendRole.addToPolicy(sendPolicy);
-
+        const sendDRole = new iam.Role(this, "roleSendDynamo", {
+          assumedBy: new iam.ServicePrincipal("dynamodb.amazonaws.com"),
+        });
+        sendDRole.addToPolicy(sendPolicy);
         // route for this function
         const apigatewayroutesocketsend = new apigateway.CfnRouteV2(
           this,
@@ -453,10 +496,14 @@ class GeoprocessingCdkStack extends core.Stack {
           }
         );
 
+        socketsTbl.grantReadWriteData(asyncConnHandler);
+        socketsTbl.grantReadWriteData(asyncDisconnectHandler);
+        socketsTbl.grantReadWriteData(asyncSendHandler);
+
         // deployment
         const apigatewaydeploymentsocket2 = new apigateway.CfnDeploymentV2(
           this,
-          "apigatewaydeploymentsocket2",
+          "apigatewaydeploymentsocket",
           {
             apiId: apigatewaysocket.ref,
           }

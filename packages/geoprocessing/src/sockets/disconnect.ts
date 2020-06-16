@@ -1,3 +1,4 @@
+//@ts-nocheck
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
@@ -7,22 +8,20 @@
 // $disconnect is a best-effort event.
 // API Gateway will try its best to deliver the $disconnect event to your integration, but it cannot guarantee delivery.
 
-import { DynamoDB } from "aws-sdk";
-import { APIGatewayProxyEvent } from "aws-lambda";
+import * as AWS from "aws-sdk";
 
-const ddb = new DynamoDB.DocumentClient({
-  apiVersion: "2012-08-10",
-  region: process.env.AWS_REGION,
-});
-exports.handler = async (event: APIGatewayProxyEvent) => {
-  const deleteParams = {
-    TableName: process.env.SOCKET_TABLE,
-    Key: {
-      connectionId: event.requestContext.connectionId,
-    },
-  };
+//import { DynamoDB } from "aws-sdk";
+//import { APIGatewayProxyEvent } from "aws-lambda";
 
+exports.disconnectHandler = async function (event, context) {
   try {
+    const ddb = new AWS.DynamoDB.DocumentClient();
+    const deleteParams = {
+      TableName: process.env.SOCKET_TABLE,
+      Key: {
+        connectionId: event.requestContext.connectionId,
+      },
+    };
     //@ts-ignore
     await ddb.delete(deleteParams).promise();
   } catch (err) {

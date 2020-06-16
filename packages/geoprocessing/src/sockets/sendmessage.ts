@@ -8,11 +8,10 @@ const AWS = require("aws-sdk");
 
 exports.sendHandler = async function (event, context) {
   let connectionData;
+
   if (process.env.SOCKETS_TABLE) {
-    /*
     try {
-    
-      ddb = new AWS.DynamoDB({
+      ddb = new AWS.DynamoDB.DocumentClient({
         apiVersion: "2012-08-10",
         region: process.env.AWS_REGION,
       });
@@ -25,7 +24,7 @@ exports.sendHandler = async function (event, context) {
     } catch (e) {
       return { statusCode: 500, body: "PROBLEM::::::" + e.stack };
     }
-    
+
     const apigwManagementApi = new AWS.ApiGatewayManagementApi({
       apiVersion: "2018-11-29",
 
@@ -65,7 +64,7 @@ exports.sendHandler = async function (event, context) {
         }
       }
     }
-    */
+
     return {
       statusCode: 200,
       body: "Data sent: " + JSON.parse(event.body).data,

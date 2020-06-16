@@ -9,24 +9,31 @@ const AWS = require("aws-sdk");
 
 // Create the DynamoDB service object
 //import { DynamoDB } from "aws-sdk";
-AWS.config.update({ region: process.env.AWS_REGION });
+//AWS.config.update({ region: process.env.AWS_REGION });
 
 exports.connectHandler = async function (event, context) {
   try {
-    const ddb = new AWS.DynamoDB({
+    //AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10', region: process.env.AWS_REGION });
+    const ddb = new AWS.DynamoDB.DocumentClient({
       apiVersion: "2012-08-10",
       region: process.env.AWS_REGION,
     });
-
+    /*
     const putParams = {
       TableName: process.env.SOCKETS_TABLE,
       Item: {
         connectionId: { S: event.requestContext.connectionId },
       },
     };
-
+    */
+    const putParams = {
+      TableName: process.env.SOCKETS_TABLE,
+      Item: {
+        connectionId: event.requestContext.connectionId,
+      },
+    };
     //@ts-ignore
-    await ddb.putItem(putParams).promise();
+    await ddb.put(putParams).promise();
   } catch (err) {
     return {
       statusCode: 500,

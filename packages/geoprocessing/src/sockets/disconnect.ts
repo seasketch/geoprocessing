@@ -8,19 +8,21 @@
 // $disconnect is a best-effort event.
 // API Gateway will try its best to deliver the $disconnect event to your integration, but it cannot guarantee delivery.
 
-import * as AWS from "aws-sdk";
-
+i; //mport * as AWS from "aws-sdk";
+const AWS = require("aws-sdk");
 //import { DynamoDB } from "aws-sdk";
 //import { APIGatewayProxyEvent } from "aws-lambda";
 
 exports.disconnectHandler = async function (event, context) {
   try {
-    const ddb = new AWS.DynamoDB.DocumentClient();
+    const ddb = new AWS.DynamoDB.DocumentClient({
+      apiVersion: "2012-08-10",
+      region: process.env.AWS_REGION,
+    });
+    let connectionId = event.requestContext.connectionId;
     const deleteParams = {
       TableName: process.env.SOCKET_TABLE,
-      Key: {
-        connectionId: event.requestContext.connectionId,
-      },
+      Key: { connectionId },
     };
     //@ts-ignore
     await ddb.delete(deleteParams).promise();

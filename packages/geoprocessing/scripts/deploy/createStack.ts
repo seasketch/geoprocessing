@@ -282,6 +282,13 @@ class GeoprocessingCdkStack extends core.Stack {
       if (func.executionMode === "async") {
         // access role for the socket api to access the socket lambda
         //give the socket apigateway access to the 3 lambda socket functions
+        let gatewayArn =
+          "arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*";
+        const sendExecutePolicy = new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          resources: [gatewayArn],
+          actions: ["execute-api:ManageConnections"],
+        });
 
         const apigatewayPolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
@@ -304,9 +311,17 @@ class GeoprocessingCdkStack extends core.Stack {
             timeout: core.Duration.seconds(func.timeout || 3),
             description: func.description + ", for connecting sockets",
             environment: geoprocessingEnvOptions,
+            initialPolicy: [sendExecutePolicy],
           }
         );
+        let apiGatewayArn = "*";
+        //'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SimpleChatWebSocket}/*'
 
+        //console.log("------->>>> socketArn::: ", apiGatewayArn);
+        //arn:aws:execute-api:us-west-1:196230260133:5hnbw6y4hd/*
+        //"arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*",
+
+        //,
         const asyncSendHandler = new lambda.Function(
           this,
           `${func.title}AsyncSendHandler`,
@@ -319,6 +334,7 @@ class GeoprocessingCdkStack extends core.Stack {
             timeout: core.Duration.seconds(func.timeout || 3),
             description: func.description + ", for sending messages on sockets",
             environment: geoprocessingEnvOptions,
+            initialPolicy: [sendExecutePolicy],
           }
         );
 
@@ -334,6 +350,7 @@ class GeoprocessingCdkStack extends core.Stack {
             timeout: core.Duration.seconds(func.timeout || 3),
             description: func.description + ", for disconnecting sockets",
             environment: geoprocessingEnvOptions,
+            initialPolicy: [sendExecutePolicy],
           }
         );
 
@@ -442,30 +459,35 @@ class GeoprocessingCdkStack extends core.Stack {
               ).ref,
           }
         );
-
+        //arn:aws:execute-api:us-west-1:196230260133:5hnbw6y4hd/*
+        const sendRole = new iam.Role(this, "roleSend", {
+          assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+        });
         const sendPolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           resources: [asyncSendHandler.functionArn],
           actions: [
             "lambda:InvokeFunction",
-            "dynamodb:BatchGetItem",
+            "execute-api:ManageConnections",
             "dynamodb:GetItem",
-            "dynamodb:Query",
-            "dynamodb:Scan",
-            "dynamodb:BatchWriteItem",
+            "dynamodb:DeleteItem",
             "dynamodb:PutItem",
+            "dynamodb:Scan",
+            "dynamodb:Query",
             "dynamodb:UpdateItem",
+            "dynamodb:BatchWriteItem",
+            "dynamodb:BatchGetItem",
+            "dynamodb:DescribeTable",
+            "dynamodb:ConditionCheckItem",
           ],
         });
 
-        const sendRole = new iam.Role(this, "roleSend", {
-          assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
-        });
         sendRole.addToPolicy(sendPolicy);
         const sendDRole = new iam.Role(this, "roleSendDynamo", {
           assumedBy: new iam.ServicePrincipal("dynamodb.amazonaws.com"),
         });
         sendDRole.addToPolicy(sendPolicy);
+
         // route for this function
         const apigatewayroutesocketsend = new apigateway.CfnRouteV2(
           this,
@@ -524,6 +546,17 @@ class GeoprocessingCdkStack extends core.Stack {
             },
           }
         );
+        console.log("apigateway ref: ", apigatewaydeploymentsocket2.ref);
+
+        /*
+        - Statement:
+        - Effect: Allow
+          Action:
+          - 'execute-api:ManageConnections'
+          Resource:
+          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SimpleChatWebSocket}/*'
+
+        */
 
         // all the routes are dependencies of the deployment
         const routes = new core.ConcreteDependable();

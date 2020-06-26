@@ -115,7 +115,8 @@
     "val-loader": "^2.1.1",
     "webpack": "^4.43.0",
     "webpack-bundle-analyzer": "^3.7.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "ws": "^7.3.0"
   },
   "devDependencies": {
     "@shelf/jest-dynamodb": "^1.7.0",
@@ -123,5 +124,9 @@
     "jest-runner": "^26.0.1",
     "jest-runner-groups": "^2.0.1"
   },
-  "gitHead": "36ee5ab517a1f40837f8b4d8c9e63495b5b1078c"
+  "gitHead": "36ee5ab517a1f40837f8b4d8c9e63495b5b1078c",
+  "optionalDependencies": {
+    "bufferutil": "^4.0.1",
+    "utf-8-validate": "^5.0.2"
+  }
 }

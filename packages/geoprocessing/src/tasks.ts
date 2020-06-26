@@ -138,7 +138,7 @@ export default class TasksModel {
     task.data = results;
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
-
+    console.info("updating db now...");
     await this.db
       .update({
         TableName: this.table,
@@ -160,7 +160,7 @@ export default class TasksModel {
         },
       })
       .promise();
-
+    console.log("done updating? returning...");
     return {
       statusCode: 200,
       headers: {

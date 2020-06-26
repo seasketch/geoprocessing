@@ -20,6 +20,7 @@ exports.connectHandler = async function (event, context) {
       },
     };
     */
+    console.info("requesting new info: ", event.requestContext.connectionId);
     const putParams = {
       TableName: process.env.SOCKETS_TABLE,
       Item: {

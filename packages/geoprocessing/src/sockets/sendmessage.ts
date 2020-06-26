@@ -6,6 +6,7 @@ exports.sendHandler = async function (event, context) {
   let AWS = require("aws-sdk");
   let connectionData;
 
+  console.info("GOT A SEND:::-->> ", event);
   if (process.env.SOCKETS_TABLE) {
     try {
       //@ts-ignore

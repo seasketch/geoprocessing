@@ -57,7 +57,7 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
     );
   } else {
     return (
-      <Card title={props.title + " : " + task?.wss}>
+      <Card title={props.title}>
         {loading || !task ? (
           props.skeleton || <DefaultSkeleton />
         ) : (

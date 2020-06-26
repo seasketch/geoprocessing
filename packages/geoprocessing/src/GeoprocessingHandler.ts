@@ -155,7 +155,7 @@ export class GeoprocessingHandler<T> {
               console.info("OPEN socket, sending complete message");
               let message = JSON.stringify({
                 message: "sendmessage",
-                data: "complete",
+                data: JSON.stringify(task),
               });
               //@ts-ignore
               socket.send(message);

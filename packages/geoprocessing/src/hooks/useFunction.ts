@@ -210,24 +210,27 @@ export const useFunction = <ResultType>(
                 };
 
                 socket.onmessage = function (event) {
-                  console.log("event: ", event);
-
-                  if (payload.cacheKey) {
+                  console.log("data::: ", event.data);
+                  let finishedTask = JSON.parse(event.data);
+                  //let cacheKey = finishedTask.cacheKey;
+                  let cacheKey = payload.cacheKey;
+                  if (cacheKey) {
                     try {
                       let task = resultsCache.get(
-                        makeLRUCacheKey(functionTitle, payload.cacheKey)
+                        makeLRUCacheKey(functionTitle, cacheKey)
                       ) as GeoprocessingTask<ResultType>;
 
                       setState({
-                        loading:
-                          task.status === GeoprocessingTaskStatus.Completed,
-                        task: task,
-                        error: task.error,
+                        loading: false,
+                        task: finishedTask,
+                        error: finishedTask.error,
                       });
                     } catch (e) {
                       setState({
-                        loading: task.status === GeoprocessingTaskStatus.Failed,
-                        task: task,
+                        loading:
+                          finishedTask.status ===
+                          GeoprocessingTaskStatus.Failed,
+                        task: finishedTask,
                         error:
                           "got the message, but something went wrong:" +
                           e +
@@ -238,7 +241,7 @@ export const useFunction = <ResultType>(
                     setState({
                       loading:
                         task.status === GeoprocessingTaskStatus.Completed,
-                      task: task,
+                      task: finishedTask,
                       error:
                         "got the message, but the cachekey was empty: " + event,
                     });

@@ -1,13 +1,14 @@
 import { v4 as uuid } from "uuid";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
+import { String } from "aws-sdk/clients/cloudtrail";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Credentials": true,
   // Serve stale while revalidating cache if < 24 hours old, don't revalidate
   // if < 5 minutes old
-  "Cache-Control": "max-age=30, stale-while-revalidate=86400"
+  "Cache-Control": "max-age=30, stale-while-revalidate=86400",
 };
 
 export interface GeoprocessingTask<ResultType = any> {
@@ -28,7 +29,8 @@ export interface GeoprocessingTask<ResultType = any> {
 export enum GeoprocessingTaskStatus {
   Pending = "pending",
   Completed = "completed",
-  Failed = "failed"
+  Failed = "failed",
+  AsyncPending = "asyncPending",
 }
 
 export default class TasksModel {
@@ -43,35 +45,43 @@ export default class TasksModel {
   init(
     service: string,
     id?: string,
+    wss?: string,
     startedAt?: string,
     duration?: number,
     status?: GeoprocessingTaskStatus,
     data?: any
   ) {
+    console.warn("WSS in init is ", wss);
     id = id || uuid();
     const location = `/${service}/tasks/${id}`;
     const task: GeoprocessingTask = {
       id,
       service,
+      wss: wss ? wss : `${location}/socket`,
       location,
       startedAt: startedAt || new Date().toISOString(),
       logUriTemplate: `${location}/logs{?limit,nextToken}`,
       geometryUri: `${location}/geometry`,
       status: status || GeoprocessingTaskStatus.Pending,
-      wss: `${location}/socket`
     };
+
     return task;
   }
 
-  async create(service: string, id?: string, correlationId?: string) {
-    const task = this.init(service, id);
+  async create(
+    service: string,
+    id?: string,
+    correlationId?: string,
+    wss?: string
+  ) {
+    const task = this.init(service, id, wss);
     await this.db
       .put({
         TableName: this.table,
         Item: {
           ...task,
-          correlationIds: correlationId ? [correlationId] : []
-        }
+          correlationIds: correlationId ? [correlationId] : [],
+        },
       })
       .promise();
     return task;
@@ -87,16 +97,36 @@ export default class TasksModel {
         TableName: this.table,
         Key: {
           id: taskId,
-          service
+          service,
         },
         UpdateExpression:
           "set #correlationIds = list_append(#correlationIds, :val)",
         ExpressionAttributeNames: {
-          "#correlationIds": "correlationIds"
+          "#correlationIds": "correlationIds",
         },
         ExpressionAttributeValues: {
-          ":val": [correlationId]
-        }
+          ":val": [correlationId],
+        },
+      })
+      .promise();
+  }
+
+  async assignWSS(task: GeoprocessingTask, newWss: string) {
+    await this.db
+
+      .update({
+        TableName: this.table,
+        Key: {
+          id: task.id,
+          service: task.service,
+        },
+        UpdateExpression: "set #newWss = :newWss ",
+        ExpressionAttributeNames: {
+          "#newWss": "newWss",
+        },
+        ExpressionAttributeValues: {
+          ":newWss": newWss,
+        },
       })
       .promise();
   }
@@ -114,20 +144,20 @@ export default class TasksModel {
         TableName: this.table,
         Key: {
           id: task.id,
-          service: task.service
+          service: task.service,
         },
         UpdateExpression:
           "set #data = :data, #status = :status, #duration = :duration",
         ExpressionAttributeNames: {
           "#data": "data",
           "#status": "status",
-          "#duration": "duration"
+          "#duration": "duration",
         },
         ExpressionAttributeValues: {
           ":data": results,
           ":status": task.status,
-          ":duration": task.duration
-        }
+          ":duration": task.duration,
+        },
       })
       .promise();
 
@@ -135,9 +165,9 @@ export default class TasksModel {
       statusCode: 200,
       headers: {
         ...commonHeaders,
-        "x-gp-cache": "Cache miss"
+        "x-gp-cache": "Cache miss",
       },
-      body: JSON.stringify(task)
+      body: JSON.stringify(task),
     };
   }
 
@@ -155,29 +185,29 @@ export default class TasksModel {
         TableName: this.table,
         Key: {
           id: task.id,
-          service: task.service
+          service: task.service,
         },
         UpdateExpression:
           "set #error = :error, #status = :status, #duration = :duration",
         ExpressionAttributeNames: {
           "#error": "error",
           "#status": "status",
-          "#duration": "duration"
+          "#duration": "duration",
         },
         ExpressionAttributeValues: {
           ":error": errorDescription,
           ":status": task.status,
-          ":duration": task.duration
-        }
+          ":duration": task.duration,
+        },
       })
       .promise();
     return {
       statusCode: 500,
       headers: {
         ...commonHeaders,
-        "Cache-Control": "max-age=0"
+        "Cache-Control": "max-age=0",
       },
-      body: JSON.stringify(task)
+      body: JSON.stringify(task),
     };
   }
 
@@ -191,8 +221,8 @@ export default class TasksModel {
           TableName: this.table,
           Key: {
             id: taskId,
-            service
-          }
+            service,
+          },
         })
         .promise();
       return response.Item as GeoprocessingTask;

@@ -16,7 +16,11 @@ import {
   APIGatewayProxyEvent,
 } from "aws-lambda";
 
-import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
+import {
+  DynamoDB,
+  Lambda as LambdaClient,
+  ApiGatewayManagementApi,
+} from "aws-sdk";
 
 const Lambda = new LambdaClient();
 const Db = new DynamoDB.DocumentClient();
@@ -80,10 +84,26 @@ export class GeoprocessingHandler<T> {
       }
     }
 
+    let wss =
+      "wss://" +
+      process.env.WSS_REF +
+      ".execute-api." +
+      process.env.WSS_REGION +
+      ".amazonaws.com/" +
+      process.env.WSS_STAGE;
+    console.info("request: ", request);
+    if (request.wss && request.wss.length > 0) {
+      console.info("request WSS: ", wss);
+      wss = request.wss;
+    } else {
+      console.info("no wss on request");
+    }
+
     let task: GeoprocessingTask = await Tasks.create(
       serviceName,
       request.cacheKey,
-      context.awsRequestId
+      context.awsRequestId,
+      wss
     );
     if (false) {
       // TODO: container tasks
@@ -139,16 +159,25 @@ export class GeoprocessingHandler<T> {
       if (!asyncExecutionName) {
         return Tasks.fail(task, `No async handler function name defined`);
       }
+      //wss://wslt4mp8i5.execute-api.us-west-1.amazonaws.com/prod
 
       try {
+        //let body = JSON.stringify({ wss: wss });
+        //event.body = body;
+        //TODO: add a query string parameter of {wss: wss}
+        let params = event.queryStringParameters;
+        if (params) {
+          params["wss"] = wss;
+        }
+        event.queryStringParameters = params;
+        let payload = JSON.stringify(event);
         await Lambda.invoke({
           FunctionName: asyncExecutionName,
           ClientContext: JSON.stringify(task),
           InvocationType: "Event",
-          Payload: JSON.stringify(event),
+          Payload: payload,
         }).promise();
 
-        //Tasks.complete(task, { statusCode: 200, body: "Connected." });
         return {
           statusCode: 200,
           headers: {
@@ -180,6 +209,7 @@ export class GeoprocessingHandler<T> {
       request = {
         geometryUri: event.queryStringParameters["geometryUri"],
         cacheKey: event.queryStringParameters["cacheKey"],
+        wss: event.queryStringParameters["wss"],
       };
     } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);

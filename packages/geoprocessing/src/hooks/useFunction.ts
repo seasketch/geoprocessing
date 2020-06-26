@@ -191,11 +191,61 @@ export const useFunction = <ResultType>(
             }
             if (task.status === GeoprocessingTaskStatus.Pending) {
               // TODO: async executionMode
+              /*
               setState({
                 loading: task.status === GeoprocessingTaskStatus.Pending,
                 task: task,
                 error: task.error,
               });
+              */
+              //let wss = task.webSocketUri;
+
+              setState({
+                loading: false,
+                task: task,
+                error: task.error,
+              });
+              /*
+              socket.onopen = function (e) {
+                setState({
+                  loading: task.status === GeoprocessingTaskStatus.AsyncPending,
+                  task: task,
+                  error: task.error,
+                });
+              };
+
+              socket.onmessage = function (event) {
+                setState({
+                  loading: task.status === GeoprocessingTaskStatus.Completed,
+                  task: task,
+                  error: task.error,
+                });
+              };
+
+              socket.onclose = function (event) {
+                if (event.wasClean) {
+                  setState({
+                    loading: task.status === GeoprocessingTaskStatus.Completed,
+                    task: task,
+                    error: task.error,
+                  });
+                } else {
+                  setState({
+                    loading: task.status === GeoprocessingTaskStatus.Failed,
+                    task: task,
+                    error: task.error,
+                  });
+                }
+              };
+
+              socket.onerror = function (error) {
+                setState({
+                  loading: task.status === GeoprocessingTaskStatus.Failed,
+                  task: task,
+                  error: task.error,
+                });
+              };
+              */
               return;
             }
           })

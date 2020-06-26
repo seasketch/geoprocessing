@@ -163,6 +163,7 @@ class GeoprocessingCdkStack extends core.Stack {
     // function endpoints
     const region = manifest.region as string;
 
+    const stageName = "prod";
     const apigatewaysocket = new apigateway.CfnApiV2(
       this,
       "apigatewaysocket3",
@@ -187,7 +188,6 @@ class GeoprocessingCdkStack extends core.Stack {
       }
     );
     for (const func of manifest.functions) {
-      const stageName = "prod";
       // @ts-ignore
       const filename = path.basename(func.handler);
       let geoprocessingEnvOptions: any = {
@@ -195,7 +195,7 @@ class GeoprocessingCdkStack extends core.Stack {
         TASKS_TABLE: tasksTbl.tableName,
       };
 
-      let asyncHandler: lambda.Function;
+      let asyncHandler: lambda.Function | undefined;
       let policies: iam.PolicyStatement[] = [];
       //If its async, we need to make 2 lambda handlers, one that is the async with websockets
       //and one that is sync with http rest
@@ -236,6 +236,16 @@ class GeoprocessingCdkStack extends core.Stack {
         policies = [lambdaPolicy];
       }
 
+      //wss://wslt4mp8i5.execute-api.us-west-1.amazonaws.com/prod
+      let socketRef = `{$apigatewaysocket.ref}`;
+      let wss =
+        "wss://" +
+        apigatewaysocket.ref +
+        ".execute-api." +
+        region +
+        ".amazonaws.com/" +
+        stageName;
+
       geoprocessingEnvOptions = {
         publicBucketUrl,
         TASKS_TABLE: tasksTbl.tableName,
@@ -244,6 +254,9 @@ class GeoprocessingCdkStack extends core.Stack {
         //async as needed
         RUN_AS_SYNC: "false",
         ASYNC_HANDLER_FUNCTION_NAME: funcName,
+        WSS_REF: apigatewaysocket.ref,
+        WSS_REGION: region,
+        WSS_STAGE: stageName,
       };
       const syncHandler = new lambda.Function(this, `${func.title}Handler`, {
         runtime: lambda.Runtime.NODEJS_12_X,
@@ -254,7 +267,6 @@ class GeoprocessingCdkStack extends core.Stack {
         timeout: core.Duration.seconds(func.timeout || 3),
         description: func.description,
         initialPolicy: policies,
-
         environment:
           func.purpose === "geoprocessing" ? geoprocessingEnvOptions : {},
       });
@@ -282,8 +294,29 @@ class GeoprocessingCdkStack extends core.Stack {
       if (func.executionMode === "async") {
         // access role for the socket api to access the socket lambda
         //give the socket apigateway access to the 3 lambda socket functions
+
+        //let gatewayArn =
+        //  "arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*";
+        //TODO: get right account id
+        //let accountId = "196230260133";
+        let accountId = `${this.account}`;
+        console.log("account id: ", accountId);
+
         let gatewayArn =
-          "arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*";
+          "arn:aws:execute-api" +
+          region +
+          ":" +
+          accountId +
+          ":" +
+          socketRef +
+          "/*";
+
+        gatewayArn = "arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*";
+        console.log("gateway arn: ", gatewayArn);
+        console.log(
+          "original one: ",
+          "arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*"
+        );
         const sendExecutePolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           resources: [gatewayArn],
@@ -546,8 +579,19 @@ class GeoprocessingCdkStack extends core.Stack {
             },
           }
         );
-        console.log("apigateway ref: ", apigatewaydeploymentsocket2.ref);
+        console.log("here...");
 
+        let refVal = apigatewaysocket.ref;
+        console.log("gatewaysocket ref--->>> ", refVal);
+
+        let socket2ref = apigatewaydeploymentsocket2.ref;
+
+        if (asyncHandler) {
+          asyncHandler?.addEnvironment("STAGEID2", socket2ref);
+          asyncHandler?.addEnvironment("SOCKETREF", refVal);
+        }
+
+        //console.log("the socket:", apigatewaystagesocket2);
         /*
         - Statement:
         - Effect: Allow

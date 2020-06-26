@@ -1,10 +1,7 @@
 //@ts-nocheck
 
-const AWS = require("aws-sdk");
-//import { DynamoDB } from "aws-sdk";
-//import { APIGatewayProxyEvent } from "aws-lambda";
-
 exports.disconnectHandler = async function (event, context) {
+  let AWS = require("aws-sdk");
   try {
     let connectionId = event.requestContext.connectionId;
     console.info("trying to remove: ", connectionId);

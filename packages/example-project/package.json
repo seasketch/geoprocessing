@@ -14,7 +14,8 @@
     "build:lambda": "geoprocessing build:lambda",
     "storybook": "geoprocessing storybook",
     "url": "geoprocessing url",
-    "clear-results": "geoprocessing clear-results"
+    "clear-results": "geoprocessing clear-results",
+    "clear-all-results": "geoprocessing clear-all-results"
   },
   "keywords": [
     "@seasketch/geoprocessing"

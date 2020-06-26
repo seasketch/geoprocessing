@@ -165,6 +165,7 @@ export interface GeoprocessingRequest {
   geometryUri?: string; // must be https
   token?: string;
   cacheKey?: string;
+  wss?: string;
 }
 
 export const SeaSketchReportingMessageEventType =

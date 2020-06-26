@@ -1,20 +1,19 @@
 //@ts-nocheck
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
-const AWS = require("aws-sdk");
-//import * as AWS from "aws-sdk";
-//import { DynamoDB, ApiGatewayManagementApi } from "aws-sdk";
-//import { APIGatewayProxyEvent } from "aws-lambda";
+// SPDX-License
 
 exports.sendHandler = async function (event, context) {
+  let AWS = require("aws-sdk");
   let connectionData;
 
   if (process.env.SOCKETS_TABLE) {
     try {
+      //@ts-ignore
       ddb = new AWS.DynamoDB.DocumentClient({
         apiVersion: "2012-08-10",
         region: process.env.AWS_REGION,
       });
+      //@ts-ignore
       connectionData = await ddb
         .scan({
           TableName: process.env.SOCKETS_TABLE,
@@ -33,7 +32,7 @@ exports.sendHandler = async function (event, context) {
     });
     if (event.body) {
       const postData = JSON.parse(event.body).data;
-
+      //@ts-ignore
       const postCalls = connectionData?.Items?.map(async ({ connectionId }) => {
         try {
           await apigwManagementApi
@@ -42,6 +41,7 @@ exports.sendHandler = async function (event, context) {
         } catch (e) {
           if (e.statusCode === 410) {
             console.log(`Found stale connection, deleting ${connectionId}`);
+            //@ts-ignore
             await ddb
               .delete({
                 //@ts-ignore

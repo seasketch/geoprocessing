@@ -2,14 +2,8 @@
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 //import * as AWS from "aws-sdk";
-
-const AWS = require("aws-sdk");
-// Set the region
-//AWS.config.update({region: 'REGION'});
-
-// Create the DynamoDB service object
-//import { DynamoDB } from "aws-sdk";
-//AWS.config.update({ region: process.env.AWS_REGION });
+//@ts-ignore
+let AWS = require("aws-sdk");
 
 exports.connectHandler = async function (event, context) {
   try {

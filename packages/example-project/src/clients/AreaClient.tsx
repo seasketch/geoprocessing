@@ -29,7 +29,7 @@ const AreaClient = () => {
         )}
       </ResultsCard>
       <ResultsCard
-        title="Async Zone Size xx"
+        title="Async Zone Size with task.wss news"
         functionName="areaAsync"
         skeleton={<LoadingSkeleton />}
       >
@@ -47,6 +47,7 @@ const AreaClient = () => {
 
 const LoadingSkeleton = () => (
   <p>
+    Loading...
     <Skeleton style={{}}>&nbsp;</Skeleton>
   </p>
 );

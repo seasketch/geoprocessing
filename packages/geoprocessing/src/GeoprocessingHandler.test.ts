@@ -3,6 +3,7 @@ import Tasks, { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { Context } from "aws-sdk/clients/costexplorer";
 import { v4 as uuid } from "uuid";
+import WS from "jest-websocket-mock";
 
 const init = Tasks.prototype.init;
 jest.mock("./tasks");
@@ -149,6 +150,50 @@ test("Repeated requests should be 'cancelled'", async () => {
   expect(result2.statusCode).toBe(200);
 });
 
+//these are dumb copies of the sync calls, just want to make
+//sure that the async ones follow the same behavior for caching and
+//cancelling repeats
+test("Repeated requests should be 'cancelled' for async tasks", async () => {
+  const handler = new GeoprocessingHandler(
+    async (sketch) => {
+      return { foo: "bar", id: sketch.properties.id };
+    },
+    {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "async",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    }
+  );
+  // @ts-ignore
+  Tasks.prototype.get.mockResolvedValueOnce(false);
+  const result = await handler.lambdaHandler(
+    ({
+      body: JSON.stringify({
+        geometryUri: "https://example.com/geom/123",
+        cacheKey: "abc123",
+      }),
+    } as unknown) as APIGatewayProxyEvent,
+    // @ts-ignore
+    { awsRequestId: "foo" }
+  );
+  const result2 = await handler.lambdaHandler(
+    ({
+      body: JSON.stringify({
+        geometryUri: "https://example.com/geom/123",
+        cacheKey: "abc123",
+      }),
+    } as unknown) as APIGatewayProxyEvent,
+    // @ts-ignore
+    { awsRequestId: "foo" }
+  );
+  expect(result.body.length).toBeGreaterThan(1);
+  expect(result2.body.length).toBe(0);
+  expect(result2.statusCode).toBe(200);
+});
+
 test("Results are cached using request.cacheKey", async () => {
   const handler = new GeoprocessingHandler(
     async (sketch) => {
@@ -195,6 +240,60 @@ test("Results are cached using request.cacheKey", async () => {
   );
   // @ts-ignore
   Tasks.prototype.get.mockReset();
+  expect(result.body.length).toBeGreaterThan(1);
+  expect(result2.body.length).toBeGreaterThan(1);
+  const task1 = JSON.parse(result.body) as GeoprocessingTask;
+  const task2 = JSON.parse(result2.body) as GeoprocessingTask;
+  expect(task1.startedAt).toBe(task2.startedAt);
+});
+
+test("Results are cached using request.cacheKey for asynchronous tasks", async () => {
+  const handler = new GeoprocessingHandler(
+    async (sketch) => {
+      return { foo: "bar", id: sketch.properties.id };
+    },
+    {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "async",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    }
+  );
+  // @ts-ignore
+  Tasks.prototype.get.mockImplementation(
+    async (service: string, cacheKey: string) => {
+      if (cacheKey === "abc123") {
+        return lastSavedTask;
+      } else {
+        return false;
+      }
+    }
+  );
+  const result = await handler.lambdaHandler(
+    ({
+      body: JSON.stringify({
+        geometryUri: "https://example.com/geom/123",
+        cacheKey: "abc123",
+      }),
+    } as unknown) as APIGatewayProxyEvent,
+    // @ts-ignore
+    { awsRequestId: "foo" }
+  );
+  const result2 = await handler.lambdaHandler(
+    ({
+      body: JSON.stringify({
+        geometryUri: "https://example.com/geom/123",
+        cacheKey: "abc123",
+      }),
+    } as unknown) as APIGatewayProxyEvent,
+    // @ts-ignore
+    { awsRequestId: "bar" }
+  );
+  // @ts-ignore
+  Tasks.prototype.get.mockReset();
+
   expect(result.body.length).toBeGreaterThan(1);
   expect(result2.body.length).toBeGreaterThan(1);
   const task1 = JSON.parse(result.body) as GeoprocessingTask;

@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import ReportContext from "../ReportContext";
 import LRUCache from "mnemonist/lru-cache";
 import { GeoprocessingRequest, GeoprocessingProject } from "../types";
+import { finished } from "stream";
 
 const resultsCache = new LRUCache<string, GeoprocessingTask>(
   Uint32Array,
@@ -210,16 +211,10 @@ export const useFunction = <ResultType>(
                 };
 
                 socket.onmessage = function (event) {
-                  console.log("data::: ", event.data);
-                  let finishedTask = JSON.parse(event.data);
-                  //let cacheKey = finishedTask.cacheKey;
+                  let finishedTask: GeoprocessingTask = JSON.parse(event.data);
                   let cacheKey = payload.cacheKey;
                   if (cacheKey) {
                     try {
-                      let task = resultsCache.get(
-                        makeLRUCacheKey(functionTitle, cacheKey)
-                      ) as GeoprocessingTask<ResultType>;
-
                       setState({
                         loading: false,
                         task: finishedTask,
@@ -247,7 +242,6 @@ export const useFunction = <ResultType>(
                     });
                   }
                 };
-
                 socket.onclose = function (event) {
                   if (event.wasClean) {
                     setState({
@@ -272,14 +266,6 @@ export const useFunction = <ResultType>(
                     error: task.error,
                   });
                 };
-              } else {
-                /*
-                setState({
-                  loading: false,
-                  task: task,
-                  error: `No websocket uri found for asynchronous mode.`,
-                });
-                */
               }
               return;
             }

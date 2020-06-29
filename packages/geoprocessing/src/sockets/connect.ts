@@ -12,15 +12,7 @@ exports.connectHandler = async function (event, context) {
       apiVersion: "2012-08-10",
       region: process.env.AWS_REGION,
     });
-    /*
-    const putParams = {
-      TableName: process.env.SOCKETS_TABLE,
-      Item: {
-        connectionId: { S: event.requestContext.connectionId },
-      },
-    };
-    */
-    console.info("requesting new info: ", event.requestContext.connectionId);
+
     const putParams = {
       TableName: process.env.SOCKETS_TABLE,
       Item: {

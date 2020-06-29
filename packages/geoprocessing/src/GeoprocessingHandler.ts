@@ -75,7 +75,6 @@ export class GeoprocessingHandler<T> {
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Failed
       ) {
-        console.warn("NOTE: found cached, returning them...");
         return {
           statusCode: 200,
           headers: {
@@ -94,9 +93,8 @@ export class GeoprocessingHandler<T> {
       process.env.WSS_REGION +
       ".amazonaws.com/" +
       process.env.WSS_STAGE;
-    console.info("request: ", request);
+
     if (request.wss && request.wss.length > 0) {
-      console.info("request WSS: ", wss);
       wss = request.wss;
     }
 
@@ -136,40 +134,26 @@ export class GeoprocessingHandler<T> {
         process.exit();
       });
       try {
-        console.log("trying to get geojson from request: ", request);
         const featureSet = await fetchGeoJSON(request);
         try {
           const results = await this.func(featureSet);
-          console.info("completing task, opening socket to: ", wss);
           task.data = results;
           task.status = GeoprocessingTaskStatus.Completed;
           task.duration =
             new Date().getTime() - new Date(task.startedAt).getTime();
 
           let promise = await Tasks.complete(task, results);
-          console.info("TASK is complete, trying to send socket info now...");
           if (this.options.executionMode !== "sync") {
-            console.info("trying to open wss now...");
-            try {
-              let socket = await this.sendSocketInfo(wss);
-              console.info("OPEN socket, sending complete message");
-              let message = JSON.stringify({
-                message: "sendmessage",
-                data: JSON.stringify(task),
-              });
-              //@ts-ignore
-              socket.send(message);
-            } catch (error) {
-              console.warn("error with websocket...");
-              console.warn(process.env);
-            }
-          } else {
-            console.warn("its going down the sync branch...");
-            console.warn(process.env);
+            let socket = await this.sendSocketInfo(wss);
+            let message = JSON.stringify({
+              message: "sendmessage",
+              data: JSON.stringify(task),
+            });
+            //@ts-ignore
+            socket.send(message);
           }
           return promise;
         } catch (e) {
-          console.warn("task failed: ", e);
           return Tasks.fail(task, `Geoprocessing exception.\n${e.stack}`, e);
         }
       } catch (e) {
@@ -182,9 +166,6 @@ export class GeoprocessingHandler<T> {
         );
       }
     } else {
-      console.log(
-        "---->>>>>>>> WARN: we're going down the async hole here...."
-      );
       //execution mode === async, and this is synchronous call that launches
       //the socket based asynchronous lambda.
       // launch async handler
@@ -192,12 +173,8 @@ export class GeoprocessingHandler<T> {
       if (!asyncExecutionName) {
         return Tasks.fail(task, `No async handler function name defined`);
       }
-      //wss://wslt4mp8i5.execute-api.us-west-1.amazonaws.com/prod
 
       try {
-        //let body = JSON.stringify({ wss: wss });
-        //event.body = body;
-        //TODO: add a query string parameter of {wss: wss}
         let params = event.queryStringParameters;
         if (params) {
           params["wss"] = wss;
@@ -232,16 +209,11 @@ export class GeoprocessingHandler<T> {
 
   sendSocketInfo(wss: string) {
     return new Promise(function (resolve, reject) {
-      console.log("inside promise, opening websocket...");
       let socket = new WebSocket(wss);
-
       socket.onopen = () => {
-        console.info("OPENED, resolving!!!");
         resolve(socket);
       };
-
       socket.onerror = (error: any) => {
-        console.log(`WebSocket error: ${error}`);
         reject(error);
       };
     });

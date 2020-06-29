@@ -3,7 +3,7 @@ import {
   render,
   fireEvent,
   waitForElement,
-  act as domAct
+  act as domAct,
 } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { useFunction } from "./useFunction";
@@ -12,6 +12,7 @@ import { v4 as uuid } from "uuid";
 import { GeoprocessingProject, SketchProperties } from "../types";
 import { GeoprocessingTaskStatus, GeoprocessingTask } from "../tasks";
 import { renderHook, act } from "@testing-library/react-hooks";
+
 // @ts-ignore
 import fetchMock from "fetch-mock-jest";
 
@@ -21,14 +22,14 @@ const makeSketchProperties = (id?: string): SketchProperties => {
     id,
     name: "sketch name",
     updatedAt: new Date().toISOString(),
-    sketchClassId: "abc123"
+    sketchClassId: "abc123",
   } as SketchProperties;
 };
 
 const ContextWrapper: React.FunctionComponent<{
   children?: any;
   value?: ReportContextValue;
-}> = props => {
+}> = (props) => {
   const sketchProperties = makeSketchProperties();
   return (
     <ReportContext.Provider
@@ -36,7 +37,7 @@ const ContextWrapper: React.FunctionComponent<{
         geometryUri: `https://localhost/${sketchProperties.id}`,
         sketchProperties,
         projectUrl: "https://example.com/project",
-        ...(props.value || {})
+        ...(props.value || {}),
       }}
     >
       {props.children}
@@ -48,9 +49,9 @@ fetchMock.get("https://example.com/project", {
   geoprocessingServices: [
     {
       title: "calcFoo",
-      endpoint: "https://example.com/calcFoo"
-    }
-  ]
+      endpoint: "https://example.com/calcFoo",
+    },
+  ],
 });
 
 const consoleError = console.error;
@@ -64,11 +65,11 @@ test("useFunction won't accept unrecognizable responses", async () => {
     "*",
     {},
     {
-      overwriteRoutes: true
+      overwriteRoutes: true,
     }
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
-    wrapper: ContextWrapper
+    wrapper: ContextWrapper,
   });
   expect(result.current.loading).toBe(true);
   await act(async () => {
@@ -95,13 +96,13 @@ test("useFunction unsets loading prop and sets task upon completion of job (exec
       wss: `wss://example.com/calcFoo/${id}`,
       status: "completed",
       data: {
-        foo: "plenty"
-      }
+        foo: "plenty",
+      },
     } as GeoprocessingTask),
     { overwriteRoutes: true }
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
-    wrapper: ContextWrapper
+    wrapper: ContextWrapper,
   });
   expect(result.current.loading).toBe(true);
   await act(async () => {
@@ -130,12 +131,12 @@ test("useFunction handles errors thrown within geoprocessing function", async ()
       service: "calcFoo",
       wss: `wss://example.com/calcFoo/${id}`,
       status: "failed",
-      error: "Task error"
+      error: "Task error",
     } as GeoprocessingTask,
     { overwriteRoutes: true }
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
-    wrapper: ContextWrapper
+    wrapper: ContextWrapper,
   });
   expect(result.current.loading).toBe(true);
   await act(async () => {
@@ -172,7 +173,7 @@ const TestReport = () => {
   );
 };
 
-const TestContainer: React.FunctionComponent = props => {
+const TestContainer: React.FunctionComponent = (props) => {
   const [sketchId, setSketchId] = useState(1);
   return (
     <ReportContext.Provider
@@ -181,7 +182,7 @@ const TestContainer: React.FunctionComponent = props => {
           // @ts-ignore
           props.sketchProperties || makeSketchProperties(sketchId.toString()),
         geometryUri: `https://example.com/geometry/${sketchId}`,
-        projectUrl: "https://example.com/project"
+        projectUrl: "https://example.com/project",
       }}
     >
       <button onClick={() => setSketchId(sketchId + 1)}>
@@ -193,7 +194,7 @@ const TestContainer: React.FunctionComponent = props => {
 };
 
 function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 test("changing ReportContext.geometryUri fetches new results", async () => {
@@ -212,8 +213,8 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
       wss: `wss://example.com/calcFoo/${id}`,
       status: "completed",
       data: {
-        foo: "plenty"
-      }
+        foo: "plenty",
+      },
     } as GeoprocessingTask),
     { overwriteRoutes: true }
   );
@@ -247,8 +248,8 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
       wss: `wss://example.com/calcFoo/${id2}`,
       status: "completed",
       data: {
-        foo: "lots!"
-      }
+        foo: "lots!",
+      },
     } as GeoprocessingTask),
     { overwriteRoutes: true }
   );
@@ -314,8 +315,8 @@ test("useFunction called multiple times with the same arguments will only fetch 
       wss: `wss://example.com/calcFoo/${id}`,
       status: "completed",
       data: {
-        foo: "plenty"
-      }
+        foo: "plenty",
+      },
     } as GeoprocessingTask),
     { overwriteRoutes: true }
   );
@@ -356,8 +357,8 @@ test("useFunction uses a local cache for repeat requests", async () => {
       wss: `wss://example.com/calcFoo/${id}`,
       status: "completed",
       data: {
-        foo: "plenty"
-      }
+        foo: "plenty",
+      },
     } as GeoprocessingTask),
     { overwriteRoutes: true }
   );
@@ -394,7 +395,7 @@ test("Returns error if ReportContext does not include required values", () => {
         children={children}
         value={({ projectUrl: null } as unknown) as ReportContextValue}
       />
-    )
+    ),
   });
   expect(result.current.error).toContain("Client Error");
 });
@@ -411,11 +412,11 @@ test("Exposes error to client if project metadata can't be fetched", async () =>
           ({
             projectUrl: "https://example.com/project",
             geometryUri: "https://example.com/geometry/123",
-            sketchProperties: {}
+            sketchProperties: {},
           } as unknown) as ReportContextValue
         }
       />
-    )
+    ),
   });
   await act(async () => {
     jest.runAllTimers();

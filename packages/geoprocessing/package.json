@@ -122,7 +122,9 @@
     "@shelf/jest-dynamodb": "^1.7.0",
     "jest-dynalite": "^1.1.9",
     "jest-runner": "^26.0.1",
-    "jest-runner-groups": "^2.0.1"
+    "jest-runner-groups": "^2.0.1",
+    "jest-websocket-mock": "^2.0.2",
+    "mock-socket": "^9.0.3"
   },
   "gitHead": "36ee5ab517a1f40837f8b4d8c9e63495b5b1078c",
   "optionalDependencies": {

@@ -6,6 +6,7 @@ const db = new DynamoDB.DocumentClient({
   sslEnabled: false,
   region: "local-env",
 });
+
 const Tasks = new TaskModel("tasks-core", db);
 const SERVICE_NAME = "jest-test-serviceName";
 
@@ -25,6 +26,30 @@ test("create new task", async () => {
     .promise();
   expect(item && item.Item && item.Item.id).toBe(task.id);
   expect(item && item.Item && item.Item.correlationIds.length).toBe(1);
+});
+
+test("create new async task", async () => {
+  const task = await Tasks.create(
+    SERVICE_NAME,
+    undefined,
+    "abc123",
+    "wssabc123"
+  );
+  expect(typeof task.id).toBe("string");
+  expect(task.status).toBe("pending");
+  // make sure it saves to the db
+  const item = await db
+    .get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    })
+    .promise();
+  expect(item && item.Item && item.Item.id).toBe(task.id);
+  expect(item && item.Item && item.Item.correlationIds.length).toBe(1);
+  expect(item && item.Item && item.Item.wss.length).toBeGreaterThan(0);
 });
 
 test("get() a created task", async () => {

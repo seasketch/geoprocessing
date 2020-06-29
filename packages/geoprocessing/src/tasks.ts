@@ -51,7 +51,6 @@ export default class TasksModel {
     status?: GeoprocessingTaskStatus,
     data?: any
   ) {
-    console.warn("WSS in init is ", wss);
     id = id || uuid();
     const location = `/${service}/tasks/${id}`;
     const task: GeoprocessingTask = {
@@ -111,26 +110,6 @@ export default class TasksModel {
       .promise();
   }
 
-  async assignWSS(task: GeoprocessingTask, newWss: string) {
-    await this.db
-
-      .update({
-        TableName: this.table,
-        Key: {
-          id: task.id,
-          service: task.service,
-        },
-        UpdateExpression: "set #newWss = :newWss ",
-        ExpressionAttributeNames: {
-          "#newWss": "newWss",
-        },
-        ExpressionAttributeValues: {
-          ":newWss": newWss,
-        },
-      })
-      .promise();
-  }
-
   async complete(
     task: GeoprocessingTask,
     results: any
@@ -138,7 +117,7 @@ export default class TasksModel {
     task.data = results;
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
-    console.info("updating db now...");
+
     await this.db
       .update({
         TableName: this.table,
@@ -160,7 +139,7 @@ export default class TasksModel {
         },
       })
       .promise();
-    console.log("done updating? returning...");
+
     return {
       statusCode: 200,
       headers: {

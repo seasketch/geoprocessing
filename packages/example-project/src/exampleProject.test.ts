@@ -4,7 +4,7 @@ import GeoprocessingHandler from "./functions/area";
 describe("Project metadata settings", () => {
   test("package.json", () => {
     const packageJson = JSON.parse(fs.readFileSync("package.json").toString());
-    expect(packageJson.name).toBe("example-project");
+    expect(packageJson.name).toBe("example-project-new");
     expect(packageJson.description).toBe(
       "Example project to test geoprocessing project init scripts"
     );

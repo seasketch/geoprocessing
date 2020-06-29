@@ -236,16 +236,6 @@ class GeoprocessingCdkStack extends core.Stack {
         policies = [lambdaPolicy];
       }
 
-      //wss://wslt4mp8i5.execute-api.us-west-1.amazonaws.com/prod
-      let socketRef = `{$apigatewaysocket.ref}`;
-      let wss =
-        "wss://" +
-        apigatewaysocket.ref +
-        ".execute-api." +
-        region +
-        ".amazonaws.com/" +
-        stageName;
-
       geoprocessingEnvOptions = {
         publicBucketUrl,
         TASKS_TABLE: tasksTbl.tableName,
@@ -274,7 +264,6 @@ class GeoprocessingCdkStack extends core.Stack {
       if (func.purpose === "geoprocessing") {
         tasksTbl.grantReadWriteData(syncHandler);
         publicBucket.grantReadWrite(syncHandler);
-
         if (func.executionMode === "async") {
           //@ts-ignore
           tasksTbl.grantReadWriteData(asyncHandler);
@@ -292,31 +281,9 @@ class GeoprocessingCdkStack extends core.Stack {
 
       const resource = api.root.addResource(func.title);
       if (func.executionMode === "async") {
-        // access role for the socket api to access the socket lambda
-        //give the socket apigateway access to the 3 lambda socket functions
-
-        //let gatewayArn =
-        //  "arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*";
-        //TODO: get right account id
-        //let accountId = "196230260133";
-        let accountId = `${this.account}`;
-        console.log("account id: ", accountId);
-
-        let gatewayArn =
-          "arn:aws:execute-api" +
-          region +
-          ":" +
-          accountId +
-          ":" +
-          socketRef +
-          "/*";
-
-        gatewayArn = "arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*";
-        console.log("gateway arn: ", gatewayArn);
-        console.log(
-          "original one: ",
-          "arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*"
-        );
+        //policy to allow the socket apigateway to call the socket lambdas
+        //without this the send messages fail
+        let gatewayArn = `arn:aws:execute-api:${this.region}:${this.account}:${apigatewaysocket.ref}/*`;
         const sendExecutePolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           resources: [gatewayArn],
@@ -329,8 +296,6 @@ class GeoprocessingCdkStack extends core.Stack {
           principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
           actions: ["lambda:InvokeFunction", "sts:AssumeRole"],
         });
-
-        //policy to allow the socket apigateway to call the socket lambdas
 
         const asyncConnHandler = new lambda.Function(
           this,
@@ -347,14 +312,7 @@ class GeoprocessingCdkStack extends core.Stack {
             initialPolicy: [sendExecutePolicy],
           }
         );
-        let apiGatewayArn = "*";
-        //'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SimpleChatWebSocket}/*'
 
-        //console.log("------->>>> socketArn::: ", apiGatewayArn);
-        //arn:aws:execute-api:us-west-1:196230260133:5hnbw6y4hd/*
-        //"arn:aws:execute-api:us-west-1:196230260133:wslt4mp8i5/*",
-
-        //,
         const asyncSendHandler = new lambda.Function(
           this,
           `${func.title}AsyncSendHandler`,
@@ -388,6 +346,7 @@ class GeoprocessingCdkStack extends core.Stack {
         );
 
         // access role for the socket api to access the socket lambda
+        //not sure I need all these...need to double check
         const connPolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,
           resources: [asyncConnHandler.functionArn],
@@ -492,7 +451,7 @@ class GeoprocessingCdkStack extends core.Stack {
               ).ref,
           }
         );
-        //arn:aws:execute-api:us-west-1:196230260133:5hnbw6y4hd/*
+
         const sendRole = new iam.Role(this, "roleSend", {
           assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
         });
@@ -579,28 +538,14 @@ class GeoprocessingCdkStack extends core.Stack {
             },
           }
         );
-        console.log("here...");
-
-        let refVal = apigatewaysocket.ref;
-        console.log("gatewaysocket ref--->>> ", refVal);
-
-        let socket2ref = apigatewaydeploymentsocket2.ref;
 
         if (asyncHandler) {
-          asyncHandler?.addEnvironment("STAGEID2", socket2ref);
-          asyncHandler?.addEnvironment("SOCKETREF", refVal);
+          asyncHandler?.addEnvironment(
+            "STAGEID2",
+            apigatewaydeploymentsocket2.ref
+          );
+          asyncHandler?.addEnvironment("SOCKETREF", apigatewaysocket.ref);
         }
-
-        //console.log("the socket:", apigatewaystagesocket2);
-        /*
-        - Statement:
-        - Effect: Allow
-          Action:
-          - 'execute-api:ManageConnections'
-          Resource:
-          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SimpleChatWebSocket}/*'
-
-        */
 
         // all the routes are dependencies of the deployment
         const routes = new core.ConcreteDependable();
@@ -621,10 +566,6 @@ class GeoprocessingCdkStack extends core.Stack {
           resource.addMethod("GET", syncHandlerIntegration);
         }
       }
-
-      // new core.CfnOutput(this, "ProjectRoot", {
-      //   value: api.urlForPath("/"),
-      // });
     }
   }
 }

@@ -29,14 +29,14 @@ const AreaClient = () => {
         )}
       </ResultsCard>
       <ResultsCard
-        title="Async Zone Size with task"
+        title="Async Zone Size with Async"
         functionName="areaAsync"
         skeleton={<LoadingSkeleton />}
       >
-        {(data: AsyncAreaResults) => (
+        {(dataAsync: AsyncAreaResults) => (
           <p>
             📐This feature is{" "}
-            <b>{Number.format(Math.round(data?.area * 1e-6))}</b> square
+            <b>{Number.format(Math.round(dataAsync?.area * 1e-6))}</b> square
             kilometers.
           </p>
         )}

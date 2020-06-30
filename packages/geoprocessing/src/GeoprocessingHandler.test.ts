@@ -71,6 +71,50 @@ const exampleSketch = {
 import fetchMock from "fetch-mock-jest";
 fetchMock.get("https://example.com/geom/123", JSON.stringify(exampleSketch));
 
+test("Handler can be constructed an run simple async geoprocessing", async () => {
+  /*
+  process.env.ASYNC_HANDLER_FUNCTION_NAME = "MockLambda";
+  const handler = new GeoprocessingHandler(
+    async (sketch) => {
+      return { foo: "bar", id: sketch.properties.id };
+    },
+    {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "async",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    }
+  );
+  expect(handler.options.title).toBe("TestGP");
+  // @ts-ignore
+  Tasks.prototype.get.mockResolvedValueOnce(false);
+
+  const result = await handler.lambdaHandler(
+    ({
+      body: JSON.stringify({
+        geometryUri: "https://example.com/geom/123",
+        cacheKey: "abc123",
+        wss: "wss://localhost:1234",
+      }),
+    } as unknown) as APIGatewayProxyEvent,
+    // @ts-ignore
+    { awsRequestId: "foo" }
+  );
+
+  //expect(result.statusCode).toBe(200);
+  const task = JSON.parse(result.body) as GeoprocessingTask;
+  console.log("task-->>>> ", task);
+  expect(task.status).toBe(GeoprocessingTaskStatus.Failed);
+  expect(task.data.foo).toBe("bar");
+  // make sure cors headers are set
+  expect(result.headers!["Access-Control-Allow-Origin"]).toBe("*");
+  expect(result.headers!["Access-Control-Allow-Credentials"]).toBe(true);
+  expect(task.data.id).toBe(exampleSketch.properties.id);
+  */
+});
+
 test("Handler can be constructed an run simple geoprocessing", async () => {
   const handler = new GeoprocessingHandler(
     async (sketch) => {

@@ -9,7 +9,10 @@ let AWS = require("aws-sdk");
 
 exports.connectHandler = async function (event, context) {
   try {
-    console.info("connection id:--->>>> ", event.requestContext.connectionId);
+    console.info(
+      "--->>>>>>>>>>>>>>>>>>> connection id:--->>>> ",
+      event.requestContext.connectionId
+    );
     const ddb = new AWS.DynamoDB.DocumentClient({
       apiVersion: "2012-08-10",
       region: process.env.AWS_REGION,

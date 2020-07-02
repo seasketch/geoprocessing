@@ -153,7 +153,7 @@ export class GeoprocessingHandler<T> {
             let socket = await this.sendSocketInfo(wss);
             let message = JSON.stringify({
               message: "sendmessage",
-              data: JSON.stringify(task),
+              data: task,
             });
             console.info("sending message: ", message);
             //@ts-ignore
@@ -221,6 +221,7 @@ export class GeoprocessingHandler<T> {
         resolve(socket);
       };
       socket.onerror = (error: any) => {
+        console.warn("!!!!!!! error with socket!!!!!!!! ", error);
         reject(error);
       };
     });

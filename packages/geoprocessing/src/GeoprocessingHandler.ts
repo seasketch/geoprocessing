@@ -15,7 +15,6 @@ import {
   APIGatewayProxyResult,
   APIGatewayProxyEvent,
 } from "aws-lambda";
-
 import {
   DynamoDB,
   Lambda as LambdaClient,
@@ -70,6 +69,7 @@ export class GeoprocessingHandler<T> {
 
     // check and respond with cache first if available
     if (!(process.env.RUN_AS_SYNC === "true") && request.cacheKey) {
+      console.info("getting cached");
       const cachedResult = await Tasks.get(serviceName, request.cacheKey);
       if (
         cachedResult &&
@@ -134,21 +134,28 @@ export class GeoprocessingHandler<T> {
         process.exit();
       });
       try {
+        process.env.INFO_MSG = "getting feature geojson...";
+        console.info("getting feature geojson....");
         const featureSet = await fetchGeoJSON(request);
         try {
+          console.info("getting results of function...");
           const results = await this.func(featureSet);
+          console.info("running function...");
           task.data = results;
           task.status = GeoprocessingTaskStatus.Completed;
           task.duration =
             new Date().getTime() - new Date(task.startedAt).getTime();
 
+          console.info("nowdone, marking complete ");
           let promise = await Tasks.complete(task, results);
           if (this.options.executionMode !== "sync") {
+            console.info("sending socket info...");
             let socket = await this.sendSocketInfo(wss);
             let message = JSON.stringify({
               message: "sendmessage",
               data: JSON.stringify(task),
             });
+            console.info("sending message: ", message);
             //@ts-ignore
             socket.send(message);
           }
@@ -238,6 +245,7 @@ export class GeoprocessingHandler<T> {
     } else {
       throw new Error("Could not interpret incoming request");
     }
+    process.env.INFO_MSG = process.env.INFO_MSG + " and request: " + request;
     return request;
   }
 }

@@ -1,12 +1,13 @@
 //@ts-nocheck
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License
-
+//import { DynamoDB, ApiGatewayManagementApi } from "aws-sdk";
+//import { AWS } from "aws-sdk";
 exports.sendHandler = async function (event, context) {
+  console.warn("trying to send a message...");
   let AWS = require("aws-sdk");
   let connectionData;
-
-  console.info("GOT A SEND:::-->> ", event);
+  console.info("trying to send now!!!! ", event.body);
   if (process.env.SOCKETS_TABLE) {
     try {
       //@ts-ignore
@@ -24,7 +25,7 @@ exports.sendHandler = async function (event, context) {
     } catch (e) {
       return { statusCode: 500, body: "PROBLEM::::::" + e.stack };
     }
-
+    console.info("opening gateway management");
     const apigwManagementApi = new AWS.ApiGatewayManagementApi({
       apiVersion: "2018-11-29",
 
@@ -32,7 +33,9 @@ exports.sendHandler = async function (event, context) {
         event.requestContext.domainName + "/" + event.requestContext.stage,
     });
     if (event.body) {
+      console.info("parsing body data...>>>> ", event.body);
       const postData = JSON.parse(event.body).data;
+      console.info("sending message now:::: ", postData);
       //@ts-ignore
       const postCalls = connectionData?.Items?.map(async ({ connectionId }) => {
         try {
@@ -71,6 +74,7 @@ exports.sendHandler = async function (event, context) {
       body: "Data sent: " + JSON.parse(event.body).data,
     };
   } else {
-    return { statusCode: 200, body: "No table name in env" };
+    console.info("no table name in env for send... ");
+    return { statusCode: 500, body: "No table name in env" };
   }
 };

@@ -1,7 +1,11 @@
 //@ts-nocheck
+//import { DynamoDB } from "aws-sdk";
 
+//import { AWS } from "aws-sdk";
 exports.disconnectHandler = async function (event, context) {
+  console.warn("trying to disconnect");
   let AWS = require("aws-sdk");
+
   try {
     let connectionId = event.requestContext.connectionId;
     console.info("trying to remove: ", connectionId);
@@ -16,6 +20,7 @@ exports.disconnectHandler = async function (event, context) {
       Key: { connectionId },
     };
     //@ts-ignore
+    console.info("deleting params...");
     await ddb.delete(deleteParams).promise();
   } catch (err) {
     console.warn("ERRROR: ", JSON.stringify(err));

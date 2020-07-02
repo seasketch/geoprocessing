@@ -203,6 +203,7 @@ export const useFunction = <ResultType>(
                 });
 
                 socket.onopen = function (e) {
+                  console.warn("opening socket....");
                   setState({
                     loading: task.status === GeoprocessingTaskStatus.Pending,
                     task: task,
@@ -211,6 +212,7 @@ export const useFunction = <ResultType>(
                 };
 
                 socket.onmessage = function (event) {
+                  console.warn("finishing? ", event);
                   let finishedTask: GeoprocessingTask = JSON.parse(event.data);
                   let cacheKey = payload.cacheKey;
                   if (cacheKey) {
@@ -233,6 +235,7 @@ export const useFunction = <ResultType>(
                       });
                     }
                   } else {
+                    console.warn("got message, but cache key was empty");
                     setState({
                       loading:
                         task.status === GeoprocessingTaskStatus.Completed,
@@ -260,6 +263,7 @@ export const useFunction = <ResultType>(
                 };
 
                 socket.onerror = function (error) {
+                  console.warn("error on socket: ", error);
                   setState({
                     loading: task.status === GeoprocessingTaskStatus.Failed,
                     task: task,

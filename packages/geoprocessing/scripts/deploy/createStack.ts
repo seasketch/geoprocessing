@@ -16,7 +16,6 @@ import { CacheControl } from "@aws-cdk/aws-s3-deployment";
 if (!process.env.PROJECT_PATH) {
   throw new Error("PROJECT_PATH env var not specified");
 }
-
 const PROJECT_PATH = process.env.PROJECT_PATH;
 
 const manifest: Manifest = JSON.parse(
@@ -202,6 +201,7 @@ class GeoprocessingCdkStack extends core.Stack {
       let funcName = `gp-${manifest.title}-${func.title}-async`;
 
       geoprocessingEnvOptions.ASYNC_HANDLER_FUNCTION_NAME = funcName;
+      console.log("ASYNC NAME: ", funcName);
       if (func.executionMode === "async" && func.purpose === "geoprocessing") {
         //for the asynchronous lambda, set this flag to true so it doesn't look for
         //cached results and always runs it synchronously

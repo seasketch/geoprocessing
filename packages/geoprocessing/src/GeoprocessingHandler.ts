@@ -149,12 +149,13 @@ export class GeoprocessingHandler<T> {
           console.info("nowdone, marking complete ");
           let promise = await Tasks.complete(task, results);
           if (this.options.executionMode !== "sync") {
-            console.info("sending socket info...");
+            console.info("--->>>>>>>>>>>>>> sending socket info...>>>>>>>>>> ");
             let socket = await this.sendSocketInfo(wss);
             let message = JSON.stringify({
               message: "sendmessage",
-              data: task,
+              data: JSON.stringify(task),
             });
+
             console.info("sending message: ", message);
             //@ts-ignore
             socket.send(message);

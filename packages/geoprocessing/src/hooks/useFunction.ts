@@ -84,7 +84,7 @@ export const useFunction = <ResultType>(
             return;
           }
         }
-        let url;
+        let url: string;
         if (/^https:/.test(functionTitle)) {
           url = functionTitle;
         } else {
@@ -195,7 +195,6 @@ export const useFunction = <ResultType>(
 
               if (task.wss && task.wss.length > 0) {
                 let socket = new WebSocket(task.wss);
-
                 setState({
                   loading: true,
                   task: task,
@@ -203,7 +202,6 @@ export const useFunction = <ResultType>(
                 });
 
                 socket.onopen = function (e) {
-                  console.warn("opening socket....");
                   setState({
                     loading: task.status === GeoprocessingTaskStatus.Pending,
                     task: task,
@@ -212,38 +210,20 @@ export const useFunction = <ResultType>(
                 };
 
                 socket.onmessage = function (event) {
-                  console.warn("finishing? ", event);
-                  let finishedTask: GeoprocessingTask = JSON.parse(event.data);
-                  let cacheKey = payload.cacheKey;
-                  if (cacheKey) {
-                    try {
-                      setState({
-                        loading: false,
-                        task: finishedTask,
-                        error: finishedTask.error,
-                      });
-                    } catch (e) {
-                      setState({
-                        loading:
-                          finishedTask.status ===
-                          GeoprocessingTaskStatus.Failed,
-                        task: finishedTask,
-                        error:
-                          "got the message, but something went wrong:" +
-                          e +
-                          event,
-                      });
-                    }
-                  } else {
-                    console.warn("got message, but cache key was empty");
+                  //assuming a finished message only for now
+                  let finishedRequest: Promise<GeoprocessingTask> = runTask(
+                    url,
+                    payload,
+                    abortController.signal
+                  );
+                  finishedRequest.then((finishedTask) => {
                     setState({
-                      loading:
-                        task.status === GeoprocessingTaskStatus.Completed,
+                      loading: false,
                       task: finishedTask,
-                      error:
-                        "got the message, but the cachekey was empty: " + event,
+                      error: finishedTask.error,
                     });
-                  }
+                    return;
+                  });
                 };
                 socket.onclose = function (event) {
                   if (event.wasClean) {
@@ -275,6 +255,7 @@ export const useFunction = <ResultType>(
             }
           })
           .catch((e) => {
+            console.warn("Error in connected::: ", e);
             if (!abortController.signal.aborted) {
               setState({
                 loading: false,

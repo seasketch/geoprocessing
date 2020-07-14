@@ -9,6 +9,7 @@ let AWS = require("aws-sdk");
 
 exports.connectHandler = async function (event, context) {
   try {
+    console.info("connecting from: ", event.requestContext);
     console.info(
       "--->>>>>>>>>>>>>>>>>>> connection id:--->>>> ",
       event.requestContext.connectionId

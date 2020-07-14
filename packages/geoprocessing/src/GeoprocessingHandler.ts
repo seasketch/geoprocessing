@@ -21,6 +21,15 @@ import {
   ApiGatewayManagementApi,
 } from "aws-sdk";
 
+import LRUCache from "mnemonist/lru-cache";
+const resultsCache = new LRUCache<string, GeoprocessingTask>(
+  Uint32Array,
+  Array,
+  12
+);
+const makeLRUCacheKey = (func: string, cacheKey: string): string =>
+  `${func}-${cacheKey}`;
+
 const WebSocket = require("ws");
 
 const Lambda = new LambdaClient();
@@ -134,8 +143,6 @@ export class GeoprocessingHandler<T> {
         process.exit();
       });
       try {
-        process.env.INFO_MSG = "getting feature geojson...";
-        console.info("getting feature geojson....");
         const featureSet = await fetchGeoJSON(request);
         try {
           console.info("getting results of function...");
@@ -148,18 +155,47 @@ export class GeoprocessingHandler<T> {
 
           console.info("nowdone, marking complete ");
           let promise = await Tasks.complete(task, results);
+
           if (this.options.executionMode !== "sync") {
-            console.info("--->>>>>>>>>>>>>> sending socket info...>>>>>>>>>> ");
-            let socket = await this.sendSocketInfo(wss);
+            let socket = await this.getSendSocket(wss);
+
             let message = JSON.stringify({
               message: "sendmessage",
-              data: JSON.stringify(task),
+              data: request.cacheKey,
             });
-
-            console.info("sending message: ", message);
             //@ts-ignore
             socket.send(message);
+            //@ts-ignore
+            socket.close();
+
+            //let message = '{message:"sendmessage", data:' + taskStr + "}";
+            //console.info("--->>>>> sending message--->>>>> : ", message);
+            /*
+            let socket = new WebSocket(wss);
+            await new Promise(function (resolve, reject) {
+              socket.onopen = () => {
+                //Note: cannot stringify the task, it blows up on the send
+                //in some cases
+                //and AWS api gateway websockets do not accept binary data yet
+                let msg = JSON.stringify({
+                  message: "sendmessage",
+                  data: request.cacheKey,
+                });
+                //@ts-ignore
+                socket.send(msg);
+                //@ts-ignore
+                socket.close();
+
+                resolve(socket);
+              };
+              socket.onerror = (error: any) => {
+                console.warn("error with socket: ", error);
+                reject(error);
+              };
+            });
+            */
           }
+
           return promise;
         } catch (e) {
           return Tasks.fail(task, `Geoprocessing exception.\n${e.stack}`, e);
@@ -215,10 +251,11 @@ export class GeoprocessingHandler<T> {
     }
   }
 
-  sendSocketInfo(wss: string) {
+  getSendSocket(wss: string) {
+    let socket = new WebSocket(wss);
     return new Promise(function (resolve, reject) {
-      let socket = new WebSocket(wss);
       socket.onopen = () => {
+        console.info("socket is open, resolving...", wss);
         resolve(socket);
       };
       socket.onerror = (error: any) => {

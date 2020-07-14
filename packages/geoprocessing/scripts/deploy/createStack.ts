@@ -201,7 +201,8 @@ class GeoprocessingCdkStack extends core.Stack {
       let funcName = `gp-${manifest.title}-${func.title}-async`;
 
       geoprocessingEnvOptions.ASYNC_HANDLER_FUNCTION_NAME = funcName;
-      console.log("ASYNC NAME: ", funcName);
+      console.log("working on ", filename);
+
       if (func.executionMode === "async" && func.purpose === "geoprocessing") {
         //for the asynchronous lambda, set this flag to true so it doesn't look for
         //cached results and always runs it synchronously

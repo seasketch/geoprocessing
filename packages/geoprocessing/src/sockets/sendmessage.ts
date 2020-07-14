@@ -6,8 +6,9 @@
 exports.sendHandler = async function (event, context) {
   console.warn("trying to send a message...");
   let AWS = require("aws-sdk");
+
   let connectionData;
-  console.info("trying to send now!!!! ", event.body);
+  console.info("trying to send now>>>> ", event.body);
   if (process.env.SOCKETS_TABLE) {
     try {
       //@ts-ignore
@@ -33,7 +34,7 @@ exports.sendHandler = async function (event, context) {
         event.requestContext.domainName + "/" + event.requestContext.stage,
     });
     if (event.body) {
-      console.info("parsing body data...>>>> ", event.body);
+      console.info("parsing body data...>>>> TESTME ", event.body);
       const postData = JSON.parse(event.body).data;
       console.info("sending message now:::: ", postData);
       //@ts-ignore

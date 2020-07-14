@@ -49,6 +49,7 @@
     "@turf/bbox": "^6.0.1",
     "@turf/length": "^6.0.2",
     "@turf/rewind": "^5.1.5",
+    "@turf/intersect": "^6.1.3",
     "@types/aws-lambda": "^8.10.51",
     "@types/bytes": "^3.1.0",
     "@types/cli-progress": "^3.7.0",
@@ -126,7 +127,7 @@
     "jest-websocket-mock": "^2.0.2",
     "mock-socket": "^9.0.3"
   },
-  "gitHead": "36ee5ab517a1f40837f8b4d8c9e63495b5b1078c",
+  "gitHead": "971818d0dde78cf50a5d33629b4cb7b7780ddae6",
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
     "utf-8-validate": "^5.0.2"

@@ -191,8 +191,6 @@ export const useFunction = <ResultType>(
               );
             }
             if (task.status === GeoprocessingTaskStatus.Pending) {
-              // TODO: async executionMode
-
               if (task.wss && task.wss.length > 0) {
                 let socket = new WebSocket(task.wss);
                 setState({
@@ -200,7 +198,6 @@ export const useFunction = <ResultType>(
                   task: task,
                   error: task.error,
                 });
-
                 socket.onopen = function (e) {
                   setState({
                     loading: task.status === GeoprocessingTaskStatus.Pending,
@@ -208,22 +205,31 @@ export const useFunction = <ResultType>(
                     error: task.error,
                   });
                 };
-
                 socket.onmessage = function (event) {
                   //assuming a finished message only for now
-                  let finishedRequest: Promise<GeoprocessingTask> = runTask(
-                    url,
-                    payload,
-                    abortController.signal
-                  );
-                  finishedRequest.then((finishedTask) => {
-                    setState({
-                      loading: false,
-                      task: finishedTask,
-                      error: finishedTask.error,
+                  //The websocket cannot send the entire return value, it blows up on
+                  //the socket.send for some Task results. As a resultt, just sending back
+                  //the request cacheKey
+                  if (event.data === payload.cacheKey) {
+                    let finishedRequest: Promise<GeoprocessingTask> = runTask(
+                      url,
+                      payload,
+                      abortController.signal
+                    );
+                    finishedRequest.then((finishedTask) => {
+                      setState({
+                        loading: false,
+                        task: finishedTask,
+                        error: finishedTask.error,
+                      });
+                      return;
                     });
-                    return;
-                  });
+                  } else {
+                    //guarding against this and logging it for now...
+                    console.warn(
+                      "Received an event for a non-matching cachekey"
+                    );
+                  }
                 };
                 socket.onclose = function (event) {
                   if (event.wasClean) {
@@ -241,13 +247,12 @@ export const useFunction = <ResultType>(
                     });
                   }
                 };
-
                 socket.onerror = function (error) {
                   console.warn("error on socket: ", error);
                   setState({
-                    loading: task.status === GeoprocessingTaskStatus.Failed,
+                    loading: false,
                     task: task,
-                    error: task.error,
+                    error: "Error receiving data: " + error,
                   });
                 };
               }
@@ -255,7 +260,7 @@ export const useFunction = <ResultType>(
             }
           })
           .catch((e) => {
-            console.warn("Error in connected::: ", e);
+            console.warn("Error when connecting ", e);
             if (!abortController.signal.aborted) {
               setState({
                 loading: false,

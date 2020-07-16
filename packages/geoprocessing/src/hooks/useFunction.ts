@@ -210,6 +210,8 @@ export const useFunction = <ResultType>(
                   //The websocket cannot send the entire return value, it blows up on
                   //the socket.send for some Task results. As a resultt, just sending back
                   //the request cacheKey
+                  //Note: check if keys match. can have events for other reports appear if several are open at once.
+                  //ignore those.
                   if (event.data === payload.cacheKey) {
                     let finishedRequest: Promise<GeoprocessingTask> = runTask(
                       url,
@@ -224,11 +226,6 @@ export const useFunction = <ResultType>(
                       });
                       return;
                     });
-                  } else {
-                    //guarding against this and logging it for now...
-                    console.warn(
-                      "Received an event for a non-matching cachekey"
-                    );
                   }
                 };
                 socket.onclose = function (event) {
@@ -295,6 +292,7 @@ export const useFunction = <ResultType>(
           duration: 0,
           data: (data || {}).results as ResultType,
           error: context.simulateError ? context.simulateError : undefined,
+          estimate: 0,
         },
         error: context.simulateError ? context.simulateError : undefined,
       });

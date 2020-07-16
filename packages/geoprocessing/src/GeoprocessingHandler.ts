@@ -69,8 +69,8 @@ export class GeoprocessingHandler<T> {
 
     // check and respond with cache first if available
     if (!(process.env.RUN_AS_SYNC === "true") && request.cacheKey) {
-      console.info("getting cached");
-      const cachedResult = await Tasks.get(serviceName, request.cacheKey);
+      let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+
       if (
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Failed

@@ -23,6 +23,7 @@ export interface GeoprocessingTask<ResultType = any> {
   wss: string; // websocket for listening to status updates
   data?: ResultType; // result data can take any json-serializable form
   error?: string;
+  estimate: number;
   // ttl?: number;
 }
 
@@ -62,6 +63,7 @@ export default class TasksModel {
       logUriTemplate: `${location}/logs{?limit,nextToken}`,
       geometryUri: `${location}/geometry`,
       status: status || GeoprocessingTaskStatus.Pending,
+      estimate: 0,
     };
 
     return task;
@@ -74,6 +76,8 @@ export default class TasksModel {
     wss?: string
   ) {
     const task = this.init(service, id, wss);
+    let estimate = await this.getEstimate(task);
+    task.estimate = estimate;
     await this.db
       .put({
         TableName: this.table,
@@ -208,5 +212,46 @@ export default class TasksModel {
     } catch (e) {
       return undefined;
     }
+  }
+
+  async getEstimate(task: GeoprocessingTask): Promise<number> {
+    let service = task.service;
+    console.info("trying to get time estimate for ", service);
+    let params = {
+      ExpressionAttributeValues: {
+        ":service": service,
+      },
+      FilterExpression: "service = :service",
+      TableName: this.table,
+    };
+
+    let timeEstimate = 0;
+    let numItems = 0;
+
+    await this.db
+      .scan(params, function (err, data) {
+        if (err) {
+          console.warn("Error getting estimate: ", err);
+        } else {
+          data?.Items?.forEach(function (element, index, array) {
+            try {
+              if (element.duration) {
+                numItems += 1;
+                timeEstimate = timeEstimate + element.duration;
+              }
+            } catch (err) {
+              console.warn("couldnt get element duration: ", err);
+            }
+          });
+        }
+      })
+      .promise();
+    if (numItems > 0) {
+      timeEstimate = timeEstimate / numItems;
+    } else {
+      timeEstimate = -1;
+    }
+
+    return timeEstimate;
   }
 }

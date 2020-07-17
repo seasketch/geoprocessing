@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useState, ReactNode } from "react";
 import Card, { Props } from "./Card";
 import { useFunction } from "../hooks/useFunction";
@@ -80,6 +81,7 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
     return (
       <Card title={props.title}>
         {loading || !task ? (
+          //@ts-ignore
           props.skeleton || <ProgressBar duration={taskEstimate} />
         ) : (
           <>{props.children(task.data as T)}</>

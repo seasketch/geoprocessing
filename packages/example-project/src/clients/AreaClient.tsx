@@ -8,6 +8,7 @@ import {
 // component render functions
 import { AreaResults } from "../functions/area";
 import { AsyncAreaResults } from "../functions/areaAsync";
+import TasksModel from "@seasketch/geoprocessing/src/tasks";
 
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
@@ -15,11 +16,7 @@ const AreaClient = () => {
   return (
     <>
       <SketchAttributesCard autoHide={true} />
-      <ResultsCard
-        title="Zone Size"
-        functionName="area"
-        skeleton={<LoadingSkeleton />}
-      >
+      <ResultsCard title="Zone Size" functionName="area">
         {(data: AreaResults) => (
           <p>
             📐This feature is{" "}
@@ -28,11 +25,7 @@ const AreaClient = () => {
           </p>
         )}
       </ResultsCard>
-      <ResultsCard
-        title="Async Zone Size with Async"
-        functionName="areaAsync"
-        skeleton={<LoadingSkeleton />}
-      >
+      <ResultsCard title="Async Zone Size with Async" functionName="areaAsync">
         {(dataAsync: AsyncAreaResults) => (
           <p>
             📐This feature is{" "}
@@ -44,12 +37,5 @@ const AreaClient = () => {
     </>
   );
 };
-
-const LoadingSkeleton = () => (
-  <p>
-    Loading...
-    <Skeleton style={{}}>&nbsp;</Skeleton>
-  </p>
-);
 
 export default AreaClient;

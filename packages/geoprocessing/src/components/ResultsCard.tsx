@@ -4,7 +4,7 @@ import { useFunction } from "../hooks/useFunction";
 // @ts-ignore
 import styled from "styled-components";
 import Skeleton from "./Skeleton";
-
+import LoadingSkeleton from "./LoadingSkeleton";
 export interface ResultsCardProps<T> extends Props {
   functionName: string;
   children: (results: T) => ReactNode;
@@ -59,7 +59,7 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
     return (
       <Card title={props.title}>
         {loading || !task ? (
-          props.skeleton || <DefaultSkeleton />
+          props.skeleton || <LoadingSkeleton task={task} />
         ) : (
           <>{props.children(task.data as T)}</>
         )}

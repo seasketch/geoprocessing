@@ -4,7 +4,9 @@ import { useFunction } from "../hooks/useFunction";
 // @ts-ignore
 import styled from "styled-components";
 import Skeleton from "./Skeleton";
-import LoadingSkeleton from "./LoadingSkeleton";
+
+import ProgressBar from "./ProgressBar";
+
 export interface ResultsCardProps<T> extends Props {
   functionName: string;
   children: (results: T) => ReactNode;
@@ -46,6 +48,10 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
     throw new Error("No function specified for ResultsCard");
   }
   const { task, loading, error } = useFunction(props.functionName);
+  let taskEstimate = 5;
+  if (task && task.estimate) {
+    taskEstimate = Math.round(task.estimate + 1000 / 1000);
+  }
   if (error) {
     return (
       <Card title={props.title}>
@@ -59,7 +65,7 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
     return (
       <Card title={props.title}>
         {loading || !task ? (
-          props.skeleton || <LoadingSkeleton task={task} />
+          props.skeleton || <ProgressBar duration={taskEstimate} />
         ) : (
           <>{props.children(task.data as T)}</>
         )}

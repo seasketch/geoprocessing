@@ -57,7 +57,7 @@ export class GeoprocessingHandler<T> {
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
       // don't replay
       if (process.env.NODE_ENV !== "test") {
-        console.log("cancelling since event is being replayed");
+        console.info("cancelling since event is being replayed");
       }
       return {
         statusCode: 200,

@@ -3,7 +3,6 @@ import Tasks, { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { Context } from "aws-sdk/clients/costexplorer";
 import { v4 as uuid } from "uuid";
-import WS from "jest-websocket-mock";
 
 const init = Tasks.prototype.init;
 jest.mock("./tasks");

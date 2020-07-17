@@ -2,10 +2,8 @@ import React, { useState, ReactNode } from "react";
 import Card, { Props } from "./Card";
 import { useFunction } from "../hooks/useFunction";
 // @ts-ignore
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Skeleton from "./Skeleton";
-
-import ProgressBar from "./ProgressBar";
 
 export interface ResultsCardProps<T> extends Props {
   functionName: string;
@@ -42,7 +40,24 @@ const ErrorIndicator = styled.div`
     content: "!";
   }
 `;
-
+//@ts-ignore
+const fill = keyframes`
+  0% {width: 0%}
+  100% {width: 100%} 
+`;
+//@ts-ignore
+const ProgressBar = styled.div`
+  background: #5ac8fa;
+  height: 20px;
+  animation: ${fill} linear 20;
+  animation-duration: ${(props: any) => props.duration + "s"};
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  &::before {
+    content: "hi";
+  }
+`;
 function ResultsCard<T>(props: ResultsCardProps<T>) {
   if (!props.functionName) {
     throw new Error("No function specified for ResultsCard");

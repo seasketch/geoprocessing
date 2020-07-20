@@ -6,8 +6,8 @@ import styled from "styled-components";
 // @ts-ignore
 export default styled.div`
   display: inline-block;
-  height: auto;
-  border-radius: 2px;
+  height: 16px;
+  border-radius: 3px;
   width: 100%;
   background: linear-gradient(-100deg, #f0f0f0 0%, #fafafa 50%, #f0f0f0 100%);
   background-size: 400% 400%;

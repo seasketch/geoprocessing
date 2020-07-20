@@ -5,6 +5,7 @@ import { useFunction } from "../hooks/useFunction";
 // @ts-ignore
 import styled, { keyframes } from "styled-components";
 import Skeleton from "./Skeleton";
+import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
 
 export interface ResultsCardProps<T> extends Props {
   functionName: string;
@@ -42,32 +43,33 @@ const ErrorIndicator = styled.div`
   }
 `;
 //@ts-ignore
-const fill = keyframes`
-  0% {width: 0%}
-  100% {width: 100%} 
-`;
-//@ts-ignore
-const ProgressBar = styled.div`
-  background: #5ac8fa;
+export const EstimateLabel = styled.div`
   height: 20px;
-  animation: ${fill} linear 20;
-  animation-duration: ${(props: any) => props.duration + "s"};
   margin-top: 5px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  &::before {
-    content: "hi";
-  }
+  padding-bottom: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+  display: none;
 `;
+
 function ResultsCard<T>(props: ResultsCardProps<T>) {
   if (!props.functionName) {
     throw new Error("No function specified for ResultsCard");
   }
   const { task, loading, error } = useFunction(props.functionName);
-  let taskEstimate = 5;
+  let taskEstimate = 3;
   if (task && task.estimate) {
-    taskEstimate = Math.round(task.estimate + 1000 / 1000);
+    taskEstimate = Math.round(task.estimate / 1000);
   }
+  console.log("task-> ", task);
+  let showLabel = false;
+  if (task && task.estimate) {
+    showLabel = true;
+  }
+
   if (error) {
     return (
       <Card title={props.title}>
@@ -80,9 +82,20 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
   } else {
     return (
       <Card title={props.title}>
-        {loading || !task ? (
-          //@ts-ignore
-          props.skeleton || <ProgressBar duration={taskEstimate} />
+        {loading ? (
+          task === undefined ? (
+            <Skeleton />
+          ) : (
+            <ProgressBarWrapper>
+              <ProgressBar duration={taskEstimate} />
+              <EstimateLabel
+                style={showLabel ? { display: "block" } : { display: "none" }}
+                duration={taskEstimate}
+              >
+                Estimated time to run analysis: {taskEstimate} seconds
+              </EstimateLabel>
+            </ProgressBarWrapper>
+          )
         ) : (
           <>{props.children(task.data as T)}</>
         )}

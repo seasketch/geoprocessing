@@ -40,7 +40,11 @@ export class GeoprocessingHandler<T> {
   ) {
     this.func = func;
     this.options = options;
-    this.Tasks = new TaskModel(process.env.TASKS_TABLE!, Db);
+    this.Tasks = new TaskModel(
+      process.env.TASKS_TABLE!,
+      process.env.ESTIMATES_TABLE!,
+      Db
+    );
   }
 
   async lambdaHandler(
@@ -137,11 +141,14 @@ export class GeoprocessingHandler<T> {
         const featureSet = await fetchGeoJSON(request);
         try {
           const results = await this.func(featureSet);
+
           task.data = results;
           task.status = GeoprocessingTaskStatus.Completed;
           task.duration =
             new Date().getTime() - new Date(task.startedAt).getTime();
 
+          //the duration has been updated, now update the estimates table
+          await Tasks.updateEstimate(task);
           let promise = await Tasks.complete(task, results);
 
           if (this.options.executionMode !== "sync") {

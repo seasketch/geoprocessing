@@ -36,10 +36,16 @@ export enum GeoprocessingTaskStatus {
 
 export default class TasksModel {
   table: string;
+  estimatesTable: string;
   db: DynamoDB.DocumentClient;
 
-  constructor(table: string, db: DynamoDB.DocumentClient) {
+  constructor(
+    table: string,
+    estimatesTable: string,
+    db: DynamoDB.DocumentClient
+  ) {
     this.table = table;
+    this.estimatesTable = estimatesTable;
     this.db = db;
   }
 
@@ -76,8 +82,13 @@ export default class TasksModel {
     wss?: string
   ) {
     const task = this.init(service, id, wss);
-    let estimate = await this.getEstimate(task);
-    task.estimate = estimate;
+    try {
+      let estimate = await this.getMeanEstimate(task);
+      task.estimate = estimate;
+    } catch (e) {
+      console.warn("could not get estimate for ", task);
+    }
+
     await this.db
       .put({
         TableName: this.table,
@@ -154,6 +165,83 @@ export default class TasksModel {
     };
   }
 
+  async updateEstimate(task: GeoprocessingTask) {
+    let duration: number = task.duration ? task.duration : 0;
+    let service: string = task.service;
+    let meanEstimate = 0;
+
+    try {
+      const response = await this.db
+        .get({
+          TableName: this.estimatesTable,
+          Key: {
+            service,
+          },
+        })
+        .promise();
+
+      let taskItem = response.Item;
+
+      //@ts-ignore
+      if (taskItem && taskItem?.allEstimates) {
+        //@ts-ignore
+        let allEstimates: number[] = taskItem?.allEstimates;
+        //cap it at five for estimate avg
+        if (allEstimates.length >= 5) {
+          allEstimates.pop();
+        }
+        allEstimates.push(duration);
+
+        let meanEstimate = Math.round(
+          allEstimates.reduce((a, b) => a + b, 0) / allEstimates.length
+        );
+
+        await this.db
+          .update({
+            TableName: this.estimatesTable,
+            Key: {
+              service: task.service,
+            },
+            UpdateExpression:
+              "set #allEstimates = :allEstimates,  #meanEstimate = :meanEstimate",
+            ExpressionAttributeNames: {
+              "#allEstimates": "allEstimates",
+              "#meanEstimate": "meanEstimate",
+            },
+            ExpressionAttributeValues: {
+              ":allEstimates": allEstimates,
+              ":meanEstimate": meanEstimate,
+            },
+          })
+          .promise();
+      } else {
+        meanEstimate = duration;
+        //no estimates yet
+        await this.db
+          .update({
+            TableName: this.estimatesTable,
+            Key: {
+              service: task.service,
+            },
+            UpdateExpression:
+              "set #allEstimates = :allEstimates, #meanEstimate = :meanEstimate",
+            ExpressionAttributeNames: {
+              "#allEstimates": "allEstimates",
+              "#meanEstimate": "meanEstimate",
+            },
+            ExpressionAttributeValues: {
+              ":allEstimates": [duration],
+              ":meanEstimate": meanEstimate,
+            },
+          })
+          .promise();
+      }
+      return meanEstimate;
+    } catch (e) {
+      console.warn("unable to append duration estimate: ", e);
+    }
+  }
+
   async fail(
     task: GeoprocessingTask,
     errorDescription: string,
@@ -214,44 +302,17 @@ export default class TasksModel {
     }
   }
 
-  async getEstimate(task: GeoprocessingTask): Promise<number> {
+  async getMeanEstimate(task: GeoprocessingTask): Promise<number> {
     let service = task.service;
-    console.info("trying to get time estimate for ", service);
-    let params = {
-      ExpressionAttributeValues: {
-        ":service": service,
-      },
-      FilterExpression: "service = :service",
-      TableName: this.table,
-    };
-
-    let timeEstimate = 0;
-    let numItems = 0;
-
-    await this.db
-      .scan(params, function (err, data) {
-        if (err) {
-          console.warn("Error getting estimate: ", err);
-        } else {
-          data?.Items?.forEach(function (element, index, array) {
-            try {
-              if (element.duration) {
-                numItems += 1;
-                timeEstimate = timeEstimate + element.duration;
-              }
-            } catch (err) {
-              console.warn("couldnt get element duration: ", err);
-            }
-          });
-        }
+    const response = await this.db
+      .get({
+        TableName: this.estimatesTable,
+        Key: {
+          service,
+        },
       })
       .promise();
-    if (numItems > 0) {
-      timeEstimate = timeEstimate / numItems;
-    } else {
-      timeEstimate = -1;
-    }
-
-    return timeEstimate;
+    let meanEstimate: number = response.Item?.meanEstimate;
+    return meanEstimate;
   }
 }

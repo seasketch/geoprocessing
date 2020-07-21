@@ -7,7 +7,7 @@ const db = new DynamoDB.DocumentClient({
   region: "local-env",
 });
 
-const Tasks = new TaskModel("tasks-core", db);
+const Tasks = new TaskModel("tasks-core", "tasks-estimates", db);
 const SERVICE_NAME = "jest-test-serviceName";
 
 test("create new task", async () => {

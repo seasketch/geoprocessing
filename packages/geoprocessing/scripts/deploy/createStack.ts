@@ -119,9 +119,22 @@ class GeoprocessingCdkStack extends core.Stack {
       tableName: `gp-${manifest.title}-tasks`,
       removalPolicy: core.RemovalPolicy.DESTROY,
     });
+    //estimates of run time with service name as key
+    const estimatesTbl = new dynamodb.Table(
+      this,
+      `gp-${manifest.title}-estimates`,
+      {
+        partitionKey: {
+          name: "service",
+          type: dynamodb.AttributeType.STRING,
+        },
+        billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+        tableName: `gp-${manifest.title}-estimates`,
+        removalPolicy: core.RemovalPolicy.DESTROY,
+      }
+    );
 
     // project metadata endpoints
-
     const api = new apigateway.RestApi(
       this,
       `${props.project}-geoprocessing-api`,
@@ -186,12 +199,14 @@ class GeoprocessingCdkStack extends core.Stack {
         removalPolicy: core.RemovalPolicy.DESTROY,
       }
     );
+
     for (const func of manifest.functions) {
       // @ts-ignore
       const filename = path.basename(func.handler);
       let geoprocessingEnvOptions: any = {
         publicBucketUrl,
         TASKS_TABLE: tasksTbl.tableName,
+        ESTIMATES_TABLE: estimatesTbl.tableName,
       };
 
       let asyncHandler: lambda.Function | undefined;
@@ -241,6 +256,7 @@ class GeoprocessingCdkStack extends core.Stack {
         publicBucketUrl,
         TASKS_TABLE: tasksTbl.tableName,
         SOCKETS_TABLE: socketsTbl.tableName,
+        ESTIMATES_TABLE: estimatesTbl.tableName,
         //for the 'normal' lambda deploy, don't force synchronous, let it be marked as
         //async as needed
         RUN_AS_SYNC: "false",
@@ -264,10 +280,14 @@ class GeoprocessingCdkStack extends core.Stack {
 
       if (func.purpose === "geoprocessing") {
         tasksTbl.grantReadWriteData(syncHandler);
+        estimatesTbl.grantReadWriteData(syncHandler);
+
         publicBucket.grantReadWrite(syncHandler);
         if (func.executionMode === "async") {
           //@ts-ignore
           tasksTbl.grantReadWriteData(asyncHandler);
+          //@ts-ignore
+          estimatesTbl.grantReadWriteData(asyncHandler);
           //@ts-ignore
           publicBucket.grantReadWrite(asyncHandler);
         }
@@ -514,6 +534,8 @@ class GeoprocessingCdkStack extends core.Stack {
         socketsTbl.grantReadWriteData(asyncConnHandler);
         socketsTbl.grantReadWriteData(asyncDisconnectHandler);
         socketsTbl.grantReadWriteData(asyncSendHandler);
+
+        estimatesTbl.grantReadWriteData(asyncSendHandler);
 
         // deployment
         const apigatewaydeploymentsocket2 = new apigateway.CfnDeploymentV2(

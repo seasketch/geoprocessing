@@ -23,7 +23,7 @@ export const ProgressBar = styled.div`
 export const ProgressBarWrapper = styled.div`
   height: 16px;
   margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   border-radius: 4px;
   border-color: lightgray;
   border-style: solid;

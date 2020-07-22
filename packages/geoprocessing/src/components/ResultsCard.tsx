@@ -64,7 +64,7 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
   if (task && task.estimate) {
     taskEstimate = Math.round(task.estimate / 1000);
   }
-  console.log("task-> ", task);
+
   let showLabel = false;
   if (task && task.estimate) {
     showLabel = true;
@@ -88,12 +88,6 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
           ) : (
             <ProgressBarWrapper>
               <ProgressBar duration={taskEstimate} />
-              <EstimateLabel
-                style={showLabel ? { display: "block" } : { display: "none" }}
-                duration={taskEstimate}
-              >
-                Estimated time to run analysis: {taskEstimate} seconds
-              </EstimateLabel>
             </ProgressBarWrapper>
           )
         ) : (

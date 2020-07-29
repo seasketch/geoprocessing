@@ -56,6 +56,9 @@ export const useFunction = <ResultType>(
   });
   useEffect(() => {
     const abortController = new AbortController();
+    const startTime = new Date().getTime();
+    //@ts-ignore
+
     setState({
       loading: true,
     });
@@ -149,6 +152,7 @@ export const useFunction = <ResultType>(
             task: undefined,
             error: undefined,
           });
+
           pendingRequest = runTask(url, payload, abortController.signal);
           if (payload.cacheKey) {
             const pr = {
@@ -199,6 +203,7 @@ export const useFunction = <ResultType>(
                   error: task.error,
                 });
                 socket.onopen = function (e) {
+                  console.info("--->>>> SOCKET OPEN -->>>");
                   setState({
                     loading: task.status === GeoprocessingTaskStatus.Pending,
                     task: task,
@@ -206,19 +211,32 @@ export const useFunction = <ResultType>(
                   });
                 };
                 socket.onmessage = function (event) {
+                  console.info("GOT MESSAGE--->>>>> ", event);
                   //assuming a finished message only for now
                   //The websocket cannot send the entire return value, it blows up on
                   //the socket.send for some Task results. As a resultt, just sending back
                   //the request cacheKey
                   //Note: check if keys match. can have events for other reports appear if several are open at once.
                   //ignore those.
-                  if (event.data === payload.cacheKey) {
+                  let incomingData = JSON.parse(event.data);
+                  console.info(
+                    "-->>>incoming data in use function:-> ",
+                    incomingData,
+                    " and title is ",
+                    functionTitle
+                  );
+
+                  if (
+                    incomingData.key === payload.cacheKey &&
+                    incomingData.serviceName === functionTitle
+                  ) {
                     let finishedRequest: Promise<GeoprocessingTask> = runTask(
                       url,
                       payload,
                       abortController.signal
                     );
                     finishedRequest.then((finishedTask) => {
+                      console.info("DONE WITH REQUEST: -> ", finishedTask);
                       setState({
                         loading: false,
                         task: finishedTask,
@@ -226,6 +244,8 @@ export const useFunction = <ResultType>(
                       });
                       return;
                     });
+                  } else {
+                    console.warn("wrong cache key for ", task);
                   }
                 };
                 socket.onclose = function (event) {

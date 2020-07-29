@@ -27,14 +27,16 @@ exports.sendHandler = async function (event, context) {
       return { statusCode: 500, body: "PROBLEM::::::" + e.stack };
     }
     console.info("opening gateway management");
+    let endpoint =
+      event.requestContext.domainName + "/" + event.requestContext.stage;
+    console.log("endpoint to connect:-> ", endpoint);
     const apigwManagementApi = new AWS.ApiGatewayManagementApi({
       apiVersion: "2018-11-29",
 
-      endpoint:
-        event.requestContext.domainName + "/" + event.requestContext.stage,
+      endpoint: endpoint,
     });
     if (event.body) {
-      console.info("parsing body data...>>>> TESTME ", event.body);
+      console.info("--->>> parsing body data...>>>>  ", event.body);
       const postData = JSON.parse(event.body).data;
       console.info("sending message now:::: ", postData);
       //@ts-ignore

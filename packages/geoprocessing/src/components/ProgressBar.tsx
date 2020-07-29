@@ -12,7 +12,8 @@ const fill = keyframes`
 export const ProgressBar = styled.div`
   background: #cbd7e1;
   height: 16px;
-  animation: ${fill} linear 20;
+  animation: ${fill} linear;
+  animation-iteration-count: infinite;
   animation-duration: ${(props: any) => props.duration + "s"};
   margin-top: 0px;
   margin-bottom: 0px;

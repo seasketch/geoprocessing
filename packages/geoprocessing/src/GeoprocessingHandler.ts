@@ -98,6 +98,8 @@ export class GeoprocessingHandler<T> {
       ".amazonaws.com/" +
       process.env.WSS_STAGE;
 
+    console.info("-->>>>>>>>>>>>>>>>>  WSS URL:-> ", wss);
+
     if (request.wss && request.wss.length > 0) {
       wss = request.wss;
     }
@@ -154,9 +156,16 @@ export class GeoprocessingHandler<T> {
           if (this.options.executionMode !== "sync") {
             let socket = await this.getSendSocket(wss);
 
+            console.info("--->>>> SENDING MESSAGE to service " + serviceName);
+            console.info("---> on socket ", socket);
+            let data = JSON.stringify({
+              key: request.cacheKey,
+              serviceName: serviceName,
+            });
+            console.info("DATA-->>> ", request.cacheKey);
             let message = JSON.stringify({
               message: "sendmessage",
-              data: request.cacheKey,
+              data: data,
             });
             //@ts-ignore
             socket.send(message);
@@ -186,6 +195,10 @@ export class GeoprocessingHandler<T> {
       }
 
       try {
+        let asyncStartTime = new Date().getTime();
+        //@ts-ignore
+        task.asyncStartTime = asyncStartTime;
+        console.warn("--->>> async task started at ", asyncStartTime);
         let params = event.queryStringParameters;
         if (params) {
           params["wss"] = wss;

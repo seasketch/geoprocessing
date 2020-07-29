@@ -26,7 +26,7 @@ export function createIndexes(
     compositeIndexMinChunks
   );
   const chunkSize = Math.floor(items.length / nCompositeIndexes);
-  const compositeIndexes = [];
+  const compositeIndexes: any[] = [];
   for (let i = 0; i < nCompositeIndexes; i++) {
     const isLast = i === nCompositeIndexes - 1;
 
@@ -44,11 +44,11 @@ export function createIndexes(
       length: bboxes.length,
       offset: chunkSize * i,
       index: index,
-      bbox: extent!
+      bbox: extent!,
     });
   }
   return {
     index,
-    compositeIndexes
+    compositeIndexes,
   };
 }

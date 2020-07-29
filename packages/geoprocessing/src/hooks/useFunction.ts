@@ -4,6 +4,7 @@ import ReportContext from "../ReportContext";
 import LRUCache from "mnemonist/lru-cache";
 import { GeoprocessingRequest, GeoprocessingProject } from "../types";
 import { finished } from "stream";
+import { abort } from "process";
 
 const resultsCache = new LRUCache<string, GeoprocessingTask>(
   Uint32Array,
@@ -126,7 +127,7 @@ export const useFunction = <ResultType>(
             return;
           }
         }
-
+        let socket: WebSocket;
         let pendingRequest: Promise<GeoprocessingTask> | undefined;
         if (payload.cacheKey) {
           // check for in-flight requests
@@ -154,6 +155,7 @@ export const useFunction = <ResultType>(
           });
 
           pendingRequest = runTask(url, payload, abortController.signal);
+
           if (payload.cacheKey) {
             const pr = {
               cacheKey: payload.cacheKey,
@@ -169,10 +171,25 @@ export const useFunction = <ResultType>(
 
         pendingRequest
           .then((task) => {
+            let currServiceName = task.service;
+            if (currServiceName) {
+              //need to set up the socket before the task is run
+              socket = getSendSocket(
+                task.wss,
+                setState,
+                payload.cacheKey,
+                url,
+                payload,
+                functionTitle,
+                abortController
+              );
+            }
+
             if (
               !task.status ||
               ["pending", "completed", "failed"].indexOf(task.status) === -1
             ) {
+              console.info("error parsing response: ", task.service);
               setState({
                 loading: false,
                 task: task,
@@ -189,6 +206,7 @@ export const useFunction = <ResultType>(
               payload.cacheKey &&
               task.status === GeoprocessingTaskStatus.Completed
             ) {
+              console.info("task is done!!: ", task.service);
               resultsCache.set(
                 makeLRUCacheKey(functionTitle, payload.cacheKey),
                 task
@@ -196,88 +214,12 @@ export const useFunction = <ResultType>(
             }
             if (task.status === GeoprocessingTaskStatus.Pending) {
               if (task.wss && task.wss.length > 0) {
-                let socket = new WebSocket(task.wss);
+                console.info("setting asynchrous to loading...");
                 setState({
                   loading: true,
                   task: task,
                   error: task.error,
                 });
-                socket.onopen = function (e) {
-                  console.info("--->>>> SOCKET OPEN -->>>");
-                  setState({
-                    loading: task.status === GeoprocessingTaskStatus.Pending,
-                    task: task,
-                    error: task.error,
-                  });
-                };
-                socket.onmessage = function (event) {
-                  console.info("GOT MESSAGE--->>>>> ", event);
-                  //assuming a finished message only for now
-                  //The websocket cannot send the entire return value, it blows up on
-                  //the socket.send for some Task results. As a resultt, just sending back
-                  //the request cacheKey
-                  //Note: check if keys match. can have events for other reports appear if several are open at once.
-                  //ignore those.
-                  let incomingData = JSON.parse(event.data);
-                  console.info(
-                    "-->>>incoming data in use function:-> ",
-                    incomingData,
-                    " and title is ",
-                    functionTitle
-                  );
-
-                  if (
-                    incomingData.key === payload.cacheKey &&
-                    incomingData.serviceName === functionTitle
-                  ) {
-                    let finishedRequest: Promise<GeoprocessingTask> = runTask(
-                      url,
-                      payload,
-                      abortController.signal
-                    );
-                    finishedRequest.then((finishedTask) => {
-                      console.info("finished ", incomingData.serviceName);
-                      setState({
-                        loading: false,
-                        task: finishedTask,
-                        error: finishedTask.error,
-                      });
-                      return;
-                    });
-                  } else {
-                    console.warn("wrong cache key for ", task);
-                    console.warn("payload cache key: ", payload.cacheKey);
-                    console.warn(
-                      "incoming serviceName: ",
-                      incomingData.serviceName
-                    );
-                    console.warn("function title is ", functionTitle);
-                  }
-                };
-                socket.onclose = function (event) {
-                  if (event.wasClean) {
-                    setState({
-                      loading:
-                        task.status === GeoprocessingTaskStatus.Completed,
-                      task: task,
-                      error: task.error,
-                    });
-                  } else {
-                    setState({
-                      loading: task.status === GeoprocessingTaskStatus.Failed,
-                      task: task,
-                      error: task.error,
-                    });
-                  }
-                };
-                socket.onerror = function (error) {
-                  console.warn("error on socket: ", error);
-                  setState({
-                    loading: false,
-                    task: task,
-                    error: "Error receiving data: " + error,
-                  });
-                };
               }
               return;
             }
@@ -333,6 +275,67 @@ export const useFunction = <ResultType>(
     };
   }, [context.geometryUri, context.sketchProperties, functionTitle]);
   return state;
+};
+
+const getSendSocket = (
+  wss: string,
+  setState,
+  cacheKey,
+  url,
+  payload,
+  currServiceName,
+  abortController
+): WebSocket => {
+  let socket = new WebSocket(wss);
+
+  socket.onopen = function (e) {
+    console.info("--->>>> SOCKET OPEN -->>> for ", currServiceName);
+  };
+  socket.onmessage = function (event) {
+    //assuming a finished message only for now
+    //The websocket cannot send the entire return value, it blows up on
+    //the socket.send for some Task results. As a resultt, just sending back
+    //the request cacheKey
+    //Note: check if keys match. can have events for other reports appear if several are open at once.
+    //ignore those.
+    let incomingData = JSON.parse(event.data);
+
+    if (
+      incomingData.key === cacheKey &&
+      incomingData.serviceName === currServiceName
+    ) {
+      let finishedRequest: Promise<GeoprocessingTask> = runTask(
+        url,
+        payload,
+        abortController.signal
+      );
+      finishedRequest.then((finishedTask) => {
+        console.info("finished ->", finishedTask);
+        setState({
+          loading: false,
+          task: finishedTask,
+          error: finishedTask.error,
+        });
+        //console.info("closing socket for ", task.service);
+        //socket.close();
+        return;
+      });
+    } else {
+      console.info(
+        "got message from ",
+        incomingData.serviceName,
+        " but this is ",
+        currServiceName
+      );
+    }
+  };
+  socket.onclose = function (event) {
+    console.info("closing socket...");
+  };
+  socket.onerror = function (error) {
+    console.warn("error on socket: ", error);
+  };
+  return socket;
 };
 
 const runTask = async (

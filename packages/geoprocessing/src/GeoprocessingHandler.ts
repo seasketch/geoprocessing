@@ -71,14 +71,36 @@ export class GeoprocessingHandler<T> {
       this.lastRequestId = context.awsRequestId;
     }
 
+    let wss_ref = process.env.WSS_REF || "";
+    let wss_region = process.env.WSS_REGION || "";
+    let wss_stage = process.env.WSS_STAGE || "";
+    let wss =
+      "wss://" +
+      encodeURIComponent(wss_ref) +
+      ".execute-api." +
+      encodeURIComponent(wss_region) +
+      ".amazonaws.com/" +
+      encodeURIComponent(wss_stage) +
+      "?serviceName=" +
+      serviceName;
+
+    console.info("-->>>>>>>>>>>>>>>>>  WSS URL:-> ", wss);
+
     // check and respond with cache first if available
     if (!(process.env.RUN_AS_SYNC === "true") && request.cacheKey) {
+      console.info(
+        "this should be run for asynchronous threads..:->",
+        process.env.RUN_AS_SYNC
+      );
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
 
       if (
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Failed
       ) {
+        console.info("sending socket message for cached results");
+
+        //await this.sendSocketMessage(wss, request.cacheKey, serviceName);
         return {
           statusCode: 200,
           headers: {
@@ -89,16 +111,6 @@ export class GeoprocessingHandler<T> {
         };
       }
     }
-
-    let wss =
-      "wss://" +
-      process.env.WSS_REF +
-      ".execute-api." +
-      process.env.WSS_REGION +
-      ".amazonaws.com/" +
-      process.env.WSS_STAGE;
-
-    console.info("-->>>>>>>>>>>>>>>>>  WSS URL:-> ", wss);
 
     if (request.wss && request.wss.length > 0) {
       wss = request.wss;
@@ -154,23 +166,7 @@ export class GeoprocessingHandler<T> {
           let promise = await Tasks.complete(task, results);
 
           if (this.options.executionMode !== "sync") {
-            let socket = await this.getSendSocket(wss);
-
-            console.info("--->>>> SENDING MESSAGE to service " + serviceName);
-            console.info("---> on socket ", socket);
-            let data = JSON.stringify({
-              key: request.cacheKey,
-              serviceName: task.service,
-            });
-            console.info("DATA-->>> ", data);
-            let message = JSON.stringify({
-              message: "sendmessage",
-              data: data,
-            });
-            //@ts-ignore
-            socket.send(message);
-            //@ts-ignore
-            //socket.close();
+            await this.sendSocketMessage(wss, request.cacheKey, serviceName);
           }
           return promise;
         } catch (e) {
@@ -226,6 +222,27 @@ export class GeoprocessingHandler<T> {
         return Tasks.fail(task, failMessage);
       }
     }
+  }
+  async sendSocketMessage(
+    wss: string,
+    key: string | undefined,
+    serviceName: string
+  ) {
+    let socket = await this.getSendSocket(wss);
+
+    let data = JSON.stringify({
+      key: key,
+      serviceName: serviceName,
+    });
+    console.info("DATA-->>> ", data);
+    let message = JSON.stringify({
+      message: "sendmessage",
+      data: data,
+    });
+    //@ts-ignore
+    socket.send(message);
+    //@ts-ignore
+    //socket.close();
   }
 
   getSendSocket(wss: string) {

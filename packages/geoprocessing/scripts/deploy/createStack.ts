@@ -299,7 +299,6 @@ class GeoprocessingCdkStack extends core.Stack {
         WSS_STAGE: stageName,
       };
       console.log("sync handler for ", funcName);
-      console.log("has geoprocessingEnvOptions: ", geoprocessingEnvOptions);
       const syncHandler = new lambda.Function(this, `${func.title}Handler`, {
         runtime: lambda.Runtime.NODEJS_12_X,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),

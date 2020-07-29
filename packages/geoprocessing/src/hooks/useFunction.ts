@@ -236,7 +236,7 @@ export const useFunction = <ResultType>(
                       abortController.signal
                     );
                     finishedRequest.then((finishedTask) => {
-                      console.info("DONE WITH REQUEST: -> ", finishedTask);
+                      console.info("finished ", incomingData.serviceName);
                       setState({
                         loading: false,
                         task: finishedTask,
@@ -246,6 +246,12 @@ export const useFunction = <ResultType>(
                     });
                   } else {
                     console.warn("wrong cache key for ", task);
+                    console.warn("payload cache key: ", payload.cacheKey);
+                    console.warn(
+                      "incoming serviceName: ",
+                      incomingData.serviceName
+                    );
+                    console.warn("function title is ", functionTitle);
                   }
                 };
                 socket.onclose = function (event) {

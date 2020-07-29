@@ -160,9 +160,9 @@ export class GeoprocessingHandler<T> {
             console.info("---> on socket ", socket);
             let data = JSON.stringify({
               key: request.cacheKey,
-              serviceName: serviceName,
+              serviceName: task.service,
             });
-            console.info("DATA-->>> ", request.cacheKey);
+            console.info("DATA-->>> ", data);
             let message = JSON.stringify({
               message: "sendmessage",
               data: data,
@@ -170,7 +170,7 @@ export class GeoprocessingHandler<T> {
             //@ts-ignore
             socket.send(message);
             //@ts-ignore
-            socket.close();
+            //socket.close();
           }
           return promise;
         } catch (e) {

@@ -61,7 +61,7 @@ export class GeoprocessingHandler<T> {
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
       // don't replay
       if (process.env.NODE_ENV !== "test") {
-        console.info("cancelling since event is being replayed");
+        console.warn("-------->>>>> cancelling since event is being replayed");
       }
       return {
         statusCode: 200,
@@ -84,20 +84,52 @@ export class GeoprocessingHandler<T> {
       "?serviceName=" +
       serviceName;
 
+    if (request.checkCacheOnly) {
+      if (request.cacheKey) {
+        let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+
+        if (
+          cachedResult &&
+          cachedResult.status === GeoprocessingTaskStatus.Completed
+        ) {
+          return {
+            statusCode: 200,
+            headers: {
+              ...commonHeaders,
+              "x-gp-cache": "Cache hit",
+            },
+            body: JSON.stringify(cachedResult),
+          };
+        } else {
+          return {
+            statusCode: 200,
+            headers: {
+              ...commonHeaders,
+              "x-gp-cache": "Cache hit",
+            },
+            body: JSON.stringify({ id: "NO_CACHE_HIT" }),
+          };
+        }
+      } else {
+        //this shouldnt happen, adding it in while testing...
+        return {
+          statusCode: 200,
+          headers: {
+            ...commonHeaders,
+            "x-gp-cache": "Cache hit",
+          },
+          body: JSON.stringify({ id: "NO_CACHE_HIT" }),
+        };
+      }
+    }
+
     // check and respond with cache first if available
     if (!(process.env.RUN_AS_SYNC === "true") && request.cacheKey) {
-      console.info(
-        "this should be run for asynchronous threads..:->",
-        process.env.RUN_AS_SYNC
-      );
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
-
       if (
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Failed
       ) {
-        console.info("sending socket message for cached results");
-
         //await this.sendSocketMessage(wss, request.cacheKey, serviceName);
         return {
           statusCode: 200,
@@ -245,7 +277,6 @@ export class GeoprocessingHandler<T> {
     });
     //@ts-ignore
     socket.send(message);
-    //let the client close the connection
   }
 
   async getSendSocket(
@@ -263,40 +294,6 @@ export class GeoprocessingHandler<T> {
         console.warn("Error connecting socket to " + wss + " error: " + error);
         reject(error);
       };
-      //this is for checking if the task has already finished, but the
-      //client socket has just opened up...
-      socket.onmessage = async function (event) {
-        let incomingData = JSON.parse(event.data);
-        let checkForCache = incomingData.checkForCache;
-        let inCacheKey = incomingData.key;
-        let inServiceName = incomingData.serviceName;
-        if (
-          checkForCache === "true" &&
-          inCacheKey === key &&
-          serviceName === inServiceName
-        ) {
-          let cachedResult = await Tasks.get(serviceName, inCacheKey);
-
-          if (
-            cachedResult &&
-            cachedResult.status !== GeoprocessingTaskStatus.Failed
-          ) {
-            console.info(
-              "-->>>>>>>>>>>>sending socket message for cached results for service: ",
-              inServiceName
-            );
-            let data = JSON.stringify({
-              key: key,
-              serviceName: serviceName,
-            });
-            let message = JSON.stringify({
-              message: "sendmessage",
-              data: data,
-            });
-            socket.send(message);
-          }
-        }
-      };
     });
   }
 
@@ -313,6 +310,7 @@ export class GeoprocessingHandler<T> {
         geometryUri: event.queryStringParameters["geometryUri"],
         cacheKey: event.queryStringParameters["cacheKey"],
         wss: event.queryStringParameters["wss"],
+        checkCacheOnly: event.queryStringParameters["checkCacheOnly"],
       };
     } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);

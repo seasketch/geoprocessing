@@ -254,7 +254,6 @@ class GeoprocessingCdkStack extends core.Stack {
         //for the asynchronous lambda, set this flag to true so it doesn't look for
         //cached results and always runs it synchronously
         geoprocessingEnvOptions.RUN_AS_SYNC = "true";
-
         asyncHandler = new lambda.Function(
           this,
           `${func.title}AsynchronousHandler`,
@@ -270,6 +269,7 @@ class GeoprocessingCdkStack extends core.Stack {
             environment: geoprocessingEnvOptions,
           }
         );
+
         //policy to allow the sync function to call the async function
         const lambdaPolicy = new iam.PolicyStatement({
           effect: iam.Effect.ALLOW,

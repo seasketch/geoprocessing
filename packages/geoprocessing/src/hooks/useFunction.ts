@@ -290,6 +290,18 @@ const getSendSocket = (
 
   socket.onopen = function (e) {
     console.info("--->>>> SOCKET OPEN -->>> for ", currServiceName);
+    console.info("checking for cached results in case server finished early");
+    let data = JSON.stringify({
+      key: cacheKey,
+      serviceName: currServiceName,
+      checkForCache: "true",
+    });
+    let message = JSON.stringify({
+      message: "sendmessage",
+      data: data,
+    });
+    console.log("sending message to server now...");
+    socket.send(message);
   };
   socket.onmessage = function (event) {
     //assuming a finished message only for now
@@ -299,33 +311,20 @@ const getSendSocket = (
     //Note: check if keys match. can have events for other reports appear if several are open at once.
     //ignore those.
     let incomingData = JSON.parse(event.data);
+    //testing to see if messages this client sends come back...they shouldn't
 
     if (
       incomingData.key === cacheKey &&
-      incomingData.serviceName === currServiceName
+      incomingData.serviceName === currServiceName &&
+      !incomingData.checkForCache
     ) {
-      let finishedRequest: Promise<GeoprocessingTask> = runTask(
+      finishTask(
         url,
         payload,
-        abortController.signal
-      );
-      finishedRequest.then((finishedTask) => {
-        console.info("finished ->", finishedTask);
-        setState({
-          loading: false,
-          task: finishedTask,
-          error: finishedTask.error,
-        });
-        //console.info("closing socket for ", task.service);
-        //socket.close();
-        return;
-      });
-    } else {
-      console.info(
-        "got message from ",
-        incomingData.serviceName,
-        " but this is ",
-        currServiceName
+        abortController,
+        setState,
+        currServiceName,
+        socket
       );
     }
   };
@@ -338,6 +337,31 @@ const getSendSocket = (
   return socket;
 };
 
+const finishTask = async (
+  url,
+  payload,
+  abortController,
+  setState,
+  currServiceName,
+  socket
+) => {
+  let finishedRequest: Promise<GeoprocessingTask> = runTask(
+    url,
+    payload,
+    abortController.signal
+  );
+  finishedRequest.then((finishedTask) => {
+    console.info("finished ->", finishedTask);
+    setState({
+      loading: false,
+      task: finishedTask,
+      error: finishedTask.error,
+    });
+    console.info("closing socket for ", currServiceName);
+    socket.close();
+    return;
+  });
+};
 const runTask = async (
   url: string,
   payload: GeoprocessingRequest,

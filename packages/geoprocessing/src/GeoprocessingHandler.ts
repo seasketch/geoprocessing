@@ -84,8 +84,6 @@ export class GeoprocessingHandler<T> {
       "?serviceName=" +
       serviceName;
 
-    console.info("-->>>>>>>>>>>>>>>>>  WSS URL:-> ", wss);
-
     // check and respond with cache first if available
     if (!(process.env.RUN_AS_SYNC === "true") && request.cacheKey) {
       console.info(
@@ -166,7 +164,12 @@ export class GeoprocessingHandler<T> {
           let promise = await Tasks.complete(task, results);
 
           if (this.options.executionMode !== "sync") {
-            await this.sendSocketMessage(wss, request.cacheKey, serviceName);
+            await this.sendSocketMessage(
+              wss,
+              request.cacheKey,
+              serviceName,
+              Tasks
+            );
           }
           return promise;
         } catch (e) {
@@ -194,7 +197,7 @@ export class GeoprocessingHandler<T> {
         let asyncStartTime = new Date().getTime();
         //@ts-ignore
         task.asyncStartTime = asyncStartTime;
-        console.warn("--->>> async task started at ", asyncStartTime);
+
         let params = event.queryStringParameters;
         if (params) {
           params["wss"] = wss;
@@ -226,26 +229,31 @@ export class GeoprocessingHandler<T> {
   async sendSocketMessage(
     wss: string,
     key: string | undefined,
-    serviceName: string
+    serviceName: string,
+    Tasks
   ) {
-    let socket = await this.getSendSocket(wss);
+    let socket = await this.getSendSocket(wss, key, serviceName, Tasks);
 
     let data = JSON.stringify({
       key: key,
       serviceName: serviceName,
     });
-    console.info("DATA-->>> ", data);
+
     let message = JSON.stringify({
       message: "sendmessage",
       data: data,
     });
     //@ts-ignore
     socket.send(message);
-    //@ts-ignore
-    //socket.close();
+    //let the client close the connection
   }
 
-  getSendSocket(wss: string) {
+  async getSendSocket(
+    wss: string,
+    key: string | undefined,
+    serviceName: string,
+    Tasks
+  ) {
     let socket = new WebSocket(wss);
     return new Promise(function (resolve, reject) {
       socket.onopen = () => {
@@ -254,6 +262,40 @@ export class GeoprocessingHandler<T> {
       socket.onerror = (error: any) => {
         console.warn("Error connecting socket to " + wss + " error: " + error);
         reject(error);
+      };
+      //this is for checking if the task has already finished, but the
+      //client socket has just opened up...
+      socket.onmessage = async function (event) {
+        let incomingData = JSON.parse(event.data);
+        let checkForCache = incomingData.checkForCache;
+        let inCacheKey = incomingData.key;
+        let inServiceName = incomingData.serviceName;
+        if (
+          checkForCache === "true" &&
+          inCacheKey === key &&
+          serviceName === inServiceName
+        ) {
+          let cachedResult = await Tasks.get(serviceName, inCacheKey);
+
+          if (
+            cachedResult &&
+            cachedResult.status !== GeoprocessingTaskStatus.Failed
+          ) {
+            console.info(
+              "-->>>>>>>>>>>>sending socket message for cached results for service: ",
+              inServiceName
+            );
+            let data = JSON.stringify({
+              key: key,
+              serviceName: serviceName,
+            });
+            let message = JSON.stringify({
+              message: "sendmessage",
+              data: data,
+            });
+            socket.send(message);
+          }
+        }
       };
     });
   }

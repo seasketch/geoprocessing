@@ -31,7 +31,6 @@ export enum GeoprocessingTaskStatus {
   Pending = "pending",
   Completed = "completed",
   Failed = "failed",
-  AsyncPending = "asyncPending",
 }
 
 export default class TasksModel {

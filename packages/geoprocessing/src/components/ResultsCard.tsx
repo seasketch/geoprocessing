@@ -59,7 +59,7 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
   if (!props.functionName) {
     throw new Error("No function specified for ResultsCard");
   }
-  const { task, loading, error } = useFunction(props.functionName);
+  let { task, loading, error } = useFunction(props.functionName);
   let taskEstimate = 3;
   if (task && task.estimate) {
     taskEstimate = Math.round(task.estimate / 1000);
@@ -69,7 +69,11 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
   if (task && task.estimate) {
     showLabel = true;
   }
-
+  if (!loading) {
+    if (!task.data) {
+      error = task?.error;
+    }
+  }
   if (error) {
     return (
       <Card title={props.title}>

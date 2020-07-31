@@ -87,10 +87,10 @@ export class GeoprocessingHandler<T> {
     if (request.checkCacheOnly) {
       if (request.cacheKey) {
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
-
         if (
           cachedResult &&
-          cachedResult.status === GeoprocessingTaskStatus.Completed
+          cachedResult.data &&
+          cachedResult.status !== GeoprocessingTaskStatus.Pending
         ) {
           return {
             statusCode: 200,
@@ -107,7 +107,11 @@ export class GeoprocessingHandler<T> {
               ...commonHeaders,
               "x-gp-cache": "Cache hit",
             },
-            body: JSON.stringify({ id: "NO_CACHE_HIT" }),
+            body: JSON.stringify({
+              id: "NO_CACHE_HIT",
+              key: request.cacheKey,
+              serviceName: serviceName,
+            }),
           };
         }
       } else {
@@ -118,7 +122,11 @@ export class GeoprocessingHandler<T> {
             ...commonHeaders,
             "x-gp-cache": "Cache hit",
           },
-          body: JSON.stringify({ id: "NO_CACHE_HIT" }),
+          body: JSON.stringify({
+            id: "NO_CACHE_HIT",
+            key: request.cacheKey,
+            serviceName: serviceName,
+          }),
         };
       }
     }
@@ -128,9 +136,8 @@ export class GeoprocessingHandler<T> {
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
       if (
         cachedResult &&
-        cachedResult.status !== GeoprocessingTaskStatus.Failed
+        cachedResult.status !== GeoprocessingTaskStatus.Pending
       ) {
-        //await this.sendSocketMessage(wss, request.cacheKey, serviceName);
         return {
           statusCode: 200,
           headers: {
@@ -196,16 +203,19 @@ export class GeoprocessingHandler<T> {
           let promise = await Tasks.complete(task, results);
 
           if (this.options.executionMode !== "sync") {
-            await this.sendSocketMessage(
-              wss,
-              request.cacheKey,
-              serviceName,
-              Tasks
-            );
+            await this.sendSocketMessage(wss, request.cacheKey, serviceName);
           }
           return promise;
         } catch (e) {
-          return Tasks.fail(task, `Geoprocessing exception.\n${e.stack}`, e);
+          let failureMessage = `Geoprocessing exception: \n${e.stack}`;
+          let failedTask = await Tasks.fail(task, failureMessage);
+          await this.sendSocketErrorMessage(
+            wss,
+            request.cacheKey,
+            serviceName,
+            failureMessage
+          );
+          return failedTask;
         }
       } catch (e) {
         return Tasks.fail(
@@ -258,13 +268,35 @@ export class GeoprocessingHandler<T> {
       }
     }
   }
-  async sendSocketMessage(
+
+  async sendSocketErrorMessage(
     wss: string,
     key: string | undefined,
     serviceName: string,
-    Tasks
+    failureMessage: string
   ) {
-    let socket = await this.getSendSocket(wss, key, serviceName, Tasks);
+    let socket = await this.getSendSocket(wss, key, serviceName);
+
+    let data = JSON.stringify({
+      key: key,
+      serviceName: serviceName,
+      failureMessage: failureMessage,
+    });
+
+    let message = JSON.stringify({
+      message: "sendmessage",
+      data: data,
+    });
+    //@ts-ignore
+    socket.send(message);
+  }
+
+  async sendSocketMessage(
+    wss: string,
+    key: string | undefined,
+    serviceName: string
+  ) {
+    let socket = await this.getSendSocket(wss, key, serviceName);
 
     let data = JSON.stringify({
       key: key,
@@ -282,8 +314,7 @@ export class GeoprocessingHandler<T> {
   async getSendSocket(
     wss: string,
     key: string | undefined,
-    serviceName: string,
-    Tasks
+    serviceName: string
   ) {
     let socket = new WebSocket(wss);
     return new Promise(function (resolve, reject) {

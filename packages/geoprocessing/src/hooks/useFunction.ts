@@ -120,6 +120,7 @@ export const useFunction = <ResultType>(
             makeLRUCacheKey(functionTitle, payload.cacheKey)
           ) as GeoprocessingTask<ResultType> | undefined;
           if (task) {
+            console.log("found the cache...");
             setState({
               loading: false,
               task: task,
@@ -158,6 +159,7 @@ export const useFunction = <ResultType>(
           pendingRequest = runTask(url, payload, abortController.signal, false);
 
           if (payload.cacheKey) {
+            console.log("found payload cached results ", payload);
             const pr = {
               cacheKey: payload.cacheKey,
               functionName: functionTitle,
@@ -178,7 +180,7 @@ export const useFunction = <ResultType>(
                 //need to set up the socket before the task is run
                 //dont set this up if its an sync or during testing
                 let socket = getSendSocket(
-                  task.wss,
+                  task,
                   setState,
                   payload.cacheKey,
                   url,
@@ -200,6 +202,7 @@ export const useFunction = <ResultType>(
               });
               return;
             }
+            console.info("pending...");
             setState({
               loading: task.status === GeoprocessingTaskStatus.Pending,
               task: task,
@@ -226,6 +229,7 @@ export const useFunction = <ResultType>(
             }
           })
           .catch((e) => {
+            console.warn("bombout-->>> ", e);
             if (!abortController.signal.aborted) {
               setState({
                 loading: false,
@@ -278,7 +282,7 @@ export const useFunction = <ResultType>(
 };
 
 const getSendSocket = (
-  wss: string,
+  task: GeoprocessingTask,
   setState,
   cacheKey,
   url,
@@ -286,18 +290,21 @@ const getSendSocket = (
   currServiceName,
   abortController
 ): WebSocket => {
-  let socket = new WebSocket(wss);
-  if (wss?.length > 0) {
-    socket.onopen = function (e) {
-      //check on open to see if the results are cached. make sure
-      //you call the uri with the checkCacheOnly value set to true
-      let finishedRequest: Promise<GeoprocessingTask> = runTask(
-        url,
-        payload,
-        abortController.signal,
-        true
-      );
-      finishedRequest.then((finishedTask) => {
+  let socket = new WebSocket(task.wss);
+  socket.onopen = function (e) {
+    console.info("open socket, checking for finished: ", currServiceName);
+    //check on open to see if the results are cached. make sure
+    //you call the uri with the checkCacheOnly value set to true
+    let finishedRequest: Promise<GeoprocessingTask> = runTask(
+      url,
+      payload,
+      abortController.signal,
+      true
+    );
+
+    finishedRequest.then((finishedTask) => {
+      console.info("on connect msg key: ", finishedTask.id);
+      if (finishedTask.service === currServiceName) {
         let ft = JSON.stringify(finishedTask);
         //in case the socket took too long to open, check and see
         //if the results are already done - just by looking in the cache.
@@ -310,47 +317,69 @@ const getSendSocket = (
           });
           //socket can close, dont need to keep it open since the
           //lambda is already finished
+          console.log("closing socket for ", currServiceName);
           socket.close();
           return;
         }
-      });
-    };
-
-    socket.onmessage = function (event) {
-      //assuming a finished message only for now
-      //The websocket cannot send the entire return value, it blows up on
-      //the socket.send for some Task results. As a resultt, just sending back
-      //the request cacheKey
-      //Note: check if keys match. can have events for other reports appear if several are open at once.
-      //ignore those.
-      let incomingData = JSON.parse(event.data);
-      //testing to see if messages this client sends come back...they shouldn't
-
-      if (
-        incomingData.key === cacheKey &&
-        incomingData.serviceName === currServiceName &&
-        !incomingData.checkForCache
-      ) {
-        finishTask(
-          url,
-          payload,
-          abortController,
-          setState,
-          currServiceName,
-          socket
-        );
       }
-    };
-    socket.onclose = function (event) {};
-    socket.onerror = function (error) {
-      if (socket.url?.length > 0) {
+    });
+  };
+
+  socket.onmessage = function (event) {
+    //assuming a finished message only for now
+    //The websocket cannot send the entire return value, it blows up on
+    //the socket.send for some Task results. As a resultt, just sending back
+    //the request cacheKey
+    //Note: check if keys match. can have events for other reports appear if several are open at once.
+    //ignore those.
+    let incomingData = JSON.parse(event.data);
+    //testing to see if messages this client sends come back...they shouldn't
+    console.info("incoming data::: ", incomingData);
+    if (
+      incomingData.key === cacheKey &&
+      incomingData.serviceName === currServiceName &&
+      !incomingData.checkForCache
+    ) {
+      if (incomingData.failureMessage?.length > 0) {
+        console.info("got failure message: ", incomingData.failureMessage);
+        task.error = incomingData.failureMessage;
+        task.status = GeoprocessingTaskStatus.Failed;
         setState({
           loading: false,
-          error: "Error loading results. Unexpected socket error.",
+          task: task,
+          error: task.error,
         });
+      } else {
+        if (incomingData.id !== "NO_CACHE_HIT") {
+          finishTask(
+            url,
+            payload,
+            abortController,
+            setState,
+            currServiceName,
+            socket
+          );
+        } else {
+          console.log(
+            "got a send message but its a no cache hit:",
+            incomingData
+          );
+        }
       }
-    };
-  }
+    }
+  };
+  socket.onclose = function (event) {
+    console.info("socket closed");
+  };
+  socket.onerror = function (error) {
+    if (socket.url?.length > 0) {
+      setState({
+        loading: false,
+        error: "Error loading results. Unexpected socket error.",
+      });
+    }
+  };
+
   return socket;
 };
 
@@ -369,15 +398,22 @@ const finishTask = async (
     true
   );
   finishedRequest.then((finishedTask) => {
-    setState({
-      loading: false,
-      task: finishedTask,
-      error: finishedTask.error,
-    });
-    socket.close();
+    console.info("finished task: ", finishedTask);
+    if (finishedTask.id === "NO_CACHE_HIT" || finishedTask.data === undefined) {
+      return;
+    } else if (finishedTask.data) {
+      setState({
+        loading: false,
+        task: finishedTask,
+        error: finishedTask.error,
+      });
+      socket.close();
+    }
+
     return;
   });
 };
+
 const runTask = async (
   url: string,
   payload: GeoprocessingRequest,

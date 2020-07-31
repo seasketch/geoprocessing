@@ -69,7 +69,7 @@ export default class TasksModel {
       logUriTemplate: `${location}/logs{?limit,nextToken}`,
       geometryUri: `${location}/geometry`,
       status: status || GeoprocessingTaskStatus.Pending,
-      estimate: 0,
+      estimate: 2,
     };
 
     return task;
@@ -86,7 +86,7 @@ export default class TasksModel {
       let estimate = await this.getMeanEstimate(task);
       task.estimate = estimate;
     } catch (e) {
-      console.warn("could not get estimate for ", task);
+      //can happen when testing, will default to 1 if can't get an estimate
     }
 
     await this.db

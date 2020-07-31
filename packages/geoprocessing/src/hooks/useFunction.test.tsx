@@ -93,7 +93,7 @@ test("useFunction unsets loading prop and sets task upon completion of job (exec
       id,
       logUriTemplate: `https://example.com/calcFoo/${id}/logs`,
       service: "calcFoo",
-      wss: `wss://example.com/calcFoo/${id}`,
+      wss: "",
       status: "completed",
       data: {
         foo: "plenty",
@@ -104,6 +104,7 @@ test("useFunction unsets loading prop and sets task upon completion of job (exec
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper,
   });
+
   expect(result.current.loading).toBe(true);
   await act(async () => {
     jest.runAllTimers();
@@ -129,7 +130,7 @@ test("useFunction handles errors thrown within geoprocessing function", async ()
       id,
       logUriTemplate: `https://example.com/calcFoo/${id}/logs`,
       service: "calcFoo",
-      wss: `wss://example.com/calcFoo/${id}`,
+      wss: "",
       status: "failed",
       error: "Task error",
     } as GeoprocessingTask,
@@ -210,7 +211,7 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
       id,
       logUriTemplate: `https://example.com/calcFoo/${id}/logs`,
       service: "calcFoo",
-      wss: `wss://example.com/calcFoo/${id}`,
+      wss: "",
       status: "completed",
       data: {
         foo: "plenty",
@@ -245,7 +246,7 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
       id,
       logUriTemplate: `https://example.com/calcFoo/${id2}/logs`,
       service: "calcFoo",
-      wss: `wss://example.com/calcFoo/${id2}`,
+      wss: "",
       status: "completed",
       data: {
         foo: "lots!",
@@ -312,7 +313,7 @@ test("useFunction called multiple times with the same arguments will only fetch 
       id,
       logUriTemplate: `https://example.com/calcFoo/${id}/logs`,
       service: "calcFoo",
-      wss: `wss://example.com/calcFoo/${id}`,
+      wss: "",
       status: "completed",
       data: {
         foo: "plenty",
@@ -354,7 +355,7 @@ test("useFunction uses a local cache for repeat requests", async () => {
       id,
       logUriTemplate: `https://example.com/calcFoo/${id}/logs`,
       service: "calcFoo",
-      wss: `wss://example.com/calcFoo/${id}`,
+      wss: "",
       status: "completed",
       data: {
         foo: "plenty",

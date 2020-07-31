@@ -5,6 +5,7 @@ import LRUCache from "mnemonist/lru-cache";
 import { GeoprocessingRequest, GeoprocessingProject } from "../types";
 import { finished } from "stream";
 import { abort } from "process";
+import { Socket } from "dgram";
 
 const resultsCache = new LRUCache<string, GeoprocessingTask>(
   Uint32Array,
@@ -127,7 +128,7 @@ export const useFunction = <ResultType>(
             return;
           }
         }
-        let socket: WebSocket;
+        //let socket: WebSocket;
         let pendingRequest: Promise<GeoprocessingTask> | undefined;
         if (payload.cacheKey) {
           // check for in-flight requests
@@ -173,23 +174,25 @@ export const useFunction = <ResultType>(
           .then((task) => {
             let currServiceName = task.service;
             if (currServiceName) {
-              //need to set up the socket before the task is run
-              socket = getSendSocket(
-                task.wss,
-                setState,
-                payload.cacheKey,
-                url,
-                payload,
-                functionTitle,
-                abortController
-              );
+              if (task.wss?.length > 0) {
+                //need to set up the socket before the task is run
+                //dont set this up if its an sync or during testing
+                let socket = getSendSocket(
+                  task.wss,
+                  setState,
+                  payload.cacheKey,
+                  url,
+                  payload,
+                  functionTitle,
+                  abortController
+                );
+              }
             }
 
             if (
               !task.status ||
               ["pending", "completed", "failed"].indexOf(task.status) === -1
             ) {
-              console.info("error parsing response: ", task.service);
               setState({
                 loading: false,
                 task: task,
@@ -212,7 +215,7 @@ export const useFunction = <ResultType>(
               );
             }
             if (task.status === GeoprocessingTaskStatus.Pending) {
-              if (task.wss && task.wss.length > 0) {
+              if (task.wss?.length > 0) {
                 setState({
                   loading: true,
                   task: task,
@@ -223,7 +226,6 @@ export const useFunction = <ResultType>(
             }
           })
           .catch((e) => {
-            console.warn("Error when connecting ", e);
             if (!abortController.signal.aborted) {
               setState({
                 loading: false,
@@ -252,7 +254,7 @@ export const useFunction = <ResultType>(
           service: "https://localhost",
           logUriTemplate: "https://localhost/logs/abc123",
           geometryUri: "https://localhost/geometry/abc123",
-          wss: "wss://localhost/logs/abc123",
+          wss: "",
           status: GeoprocessingTaskStatus.Completed,
           startedAt: new Date().toISOString(),
           duration: 0,
@@ -285,67 +287,70 @@ const getSendSocket = (
   abortController
 ): WebSocket => {
   let socket = new WebSocket(wss);
-
-  socket.onopen = function (e) {
-    //check on open to see if the results are cached. make sure
-    //you call the uri with the checkCacheOnly value set to true
-    let finishedRequest: Promise<GeoprocessingTask> = runTask(
-      url,
-      payload,
-      abortController.signal,
-      true
-    );
-    finishedRequest.then((finishedTask) => {
-      let ft = JSON.stringify(finishedTask);
-      //in case the socket took too long to open, check and see
-      //if the results are already done - just by looking in the cache.
-      //if they're not cached, you'll get a "NO_CACHE_HIT returned"
-      if (ft && finishedTask.id !== "NO_CACHE_HIT") {
-        setState({
-          loading: false,
-          task: finishedTask,
-          error: finishedTask.error,
-        });
-        //socket can close, dont need to keep it open since the
-        //lambda is already finished
-        socket.close();
-        return;
-      }
-    });
-  };
-
-  socket.onmessage = function (event) {
-    //assuming a finished message only for now
-    //The websocket cannot send the entire return value, it blows up on
-    //the socket.send for some Task results. As a resultt, just sending back
-    //the request cacheKey
-    //Note: check if keys match. can have events for other reports appear if several are open at once.
-    //ignore those.
-    let incomingData = JSON.parse(event.data);
-    //testing to see if messages this client sends come back...they shouldn't
-
-    if (
-      incomingData.key === cacheKey &&
-      incomingData.serviceName === currServiceName &&
-      !incomingData.checkForCache
-    ) {
-      finishTask(
+  if (wss?.length > 0) {
+    socket.onopen = function (e) {
+      //check on open to see if the results are cached. make sure
+      //you call the uri with the checkCacheOnly value set to true
+      let finishedRequest: Promise<GeoprocessingTask> = runTask(
         url,
         payload,
-        abortController,
-        setState,
-        currServiceName,
-        socket
+        abortController.signal,
+        true
       );
-    }
-  };
-  socket.onclose = function (event) {};
-  socket.onerror = function (error) {
-    setState({
-      loading: false,
-      error: "Error loading results. Unexpected socket error.",
-    });
-  };
+      finishedRequest.then((finishedTask) => {
+        let ft = JSON.stringify(finishedTask);
+        //in case the socket took too long to open, check and see
+        //if the results are already done - just by looking in the cache.
+        //if they're not cached, you'll get a "NO_CACHE_HIT returned"
+        if (ft && finishedTask.id !== "NO_CACHE_HIT") {
+          setState({
+            loading: false,
+            task: finishedTask,
+            error: finishedTask.error,
+          });
+          //socket can close, dont need to keep it open since the
+          //lambda is already finished
+          socket.close();
+          return;
+        }
+      });
+    };
+
+    socket.onmessage = function (event) {
+      //assuming a finished message only for now
+      //The websocket cannot send the entire return value, it blows up on
+      //the socket.send for some Task results. As a resultt, just sending back
+      //the request cacheKey
+      //Note: check if keys match. can have events for other reports appear if several are open at once.
+      //ignore those.
+      let incomingData = JSON.parse(event.data);
+      //testing to see if messages this client sends come back...they shouldn't
+
+      if (
+        incomingData.key === cacheKey &&
+        incomingData.serviceName === currServiceName &&
+        !incomingData.checkForCache
+      ) {
+        finishTask(
+          url,
+          payload,
+          abortController,
+          setState,
+          currServiceName,
+          socket
+        );
+      }
+    };
+    socket.onclose = function (event) {};
+    socket.onerror = function (error) {
+      if (socket.url?.length > 0) {
+        setState({
+          loading: false,
+          error: "Error loading results. Unexpected socket error.",
+        });
+      }
+    };
+  }
   return socket;
 };
 

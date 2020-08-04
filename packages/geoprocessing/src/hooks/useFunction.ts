@@ -56,6 +56,7 @@ export const useFunction = <ResultType>(
   const [state, setState] = useState<FunctionState<ResultType>>({
     loading: true,
   });
+  let socket: WebSocket;
   useEffect(() => {
     const abortController = new AbortController();
     const startTime = new Date().getTime();
@@ -156,7 +157,13 @@ export const useFunction = <ResultType>(
             error: undefined,
           });
 
-          pendingRequest = runTask(url, payload, abortController.signal, false);
+          pendingRequest = runTask(
+            url,
+            payload,
+            abortController.signal,
+            false,
+            false
+          );
 
           if (payload.cacheKey) {
             console.log("found payload cached results ", payload);
@@ -175,18 +182,32 @@ export const useFunction = <ResultType>(
         pendingRequest
           .then((task) => {
             let currServiceName = task.service;
+
             if (currServiceName) {
               if (task.wss?.length > 0) {
+                let sname = encodeURIComponent(currServiceName);
+                let ck = encodeURIComponent(payload.cacheKey || "");
+                let wssUrl =
+                  task.wss +
+                  "?" +
+                  "serviceName=" +
+                  sname +
+                  "&cacheKey=" +
+                  ck +
+                  "&fromClient=true";
                 //need to set up the socket before the task is run
                 //dont set this up if its an sync or during testing
-                let socket = getSendSocket(
+                console.info("wssUrl: ", wssUrl);
+                getSendSocket(
                   task,
+                  wssUrl,
                   setState,
                   payload.cacheKey,
                   url,
                   payload,
                   functionTitle,
-                  abortController
+                  abortController,
+                  socket
                 );
               }
             }
@@ -217,6 +238,7 @@ export const useFunction = <ResultType>(
                 task
               );
             }
+
             if (task.status === GeoprocessingTaskStatus.Pending) {
               if (task.wss?.length > 0) {
                 setState({
@@ -283,33 +305,45 @@ export const useFunction = <ResultType>(
 
 const getSendSocket = (
   task: GeoprocessingTask,
+  wss: string,
   setState,
   cacheKey,
   url,
   payload,
   currServiceName,
-  abortController
+  abortController,
+  socket
 ): WebSocket => {
-  let socket = new WebSocket(task.wss);
+  if (socket === undefined) {
+    socket = new WebSocket(wss);
+  }
+
+  console.info("opened socket to ", wss);
+  console.info("at ", new Date().toISOString());
   socket.onopen = function (e) {
-    console.info("open socket, checking for finished: ", currServiceName);
+    const task = resultsCache.get(
+      makeLRUCacheKey(currServiceName, cacheKey)
+    ) as GeoprocessingTask | undefined;
+    console.info("is it in the cache?? ", task);
+    console.info("open socket, checking for finished, event is: ", e);
     //check on open to see if the results are cached. make sure
     //you call the uri with the checkCacheOnly value set to true
     let finishedRequest: Promise<GeoprocessingTask> = runTask(
       url,
       payload,
       abortController.signal,
+      true,
       true
     );
 
     finishedRequest.then((finishedTask) => {
-      console.info("on connect msg key: ", finishedTask.id);
+      console.info("on connect msg key, finished task is ", finishedTask);
       if (finishedTask.service === currServiceName) {
         let ft = JSON.stringify(finishedTask);
         //in case the socket took too long to open, check and see
         //if the results are already done - just by looking in the cache.
         //if they're not cached, you'll get a "NO_CACHE_HIT returned"
-        if (ft && finishedTask.id !== "NO_CACHE_HIT") {
+        if (ft && finishedTask.id !== "NO_CACHE_HIT" && finishedTask.data) {
           setState({
             loading: false,
             task: finishedTask,
@@ -317,9 +351,14 @@ const getSendSocket = (
           });
           //socket can close, dont need to keep it open since the
           //lambda is already finished
-          console.log("closing socket for ", currServiceName);
-          socket.close();
+          //console.log("closing socket for ", currServiceName);
+          socket.close(1000, currServiceName);
           return;
+        } else {
+          console.warn(
+            "things its a finished task, but no cache for ",
+            finishedTask
+          );
         }
       }
     });
@@ -334,12 +373,18 @@ const getSendSocket = (
     //ignore those.
     let incomingData = JSON.parse(event.data);
     //testing to see if messages this client sends come back...they shouldn't
-    console.info("incoming data::: ", incomingData);
+    console.info("on message incoming data::: ", incomingData);
+
     if (
-      incomingData.key === cacheKey &&
-      incomingData.serviceName === currServiceName &&
-      !incomingData.checkForCache
+      incomingData.cacheKey === cacheKey &&
+      incomingData.serviceName === currServiceName
     ) {
+      payload.cacheKey = cacheKey;
+      console.info(
+        "got a finished message, has url of ",
+        url + " and a payload of ",
+        payload
+      );
       if (incomingData.failureMessage?.length > 0) {
         console.info("got failure message: ", incomingData.failureMessage);
         task.error = incomingData.failureMessage;
@@ -349,22 +394,18 @@ const getSendSocket = (
           task: task,
           error: task.error,
         });
+        socket.close();
       } else {
-        if (incomingData.id !== "NO_CACHE_HIT") {
-          finishTask(
-            url,
-            payload,
-            abortController,
-            setState,
-            currServiceName,
-            socket
-          );
-        } else {
-          console.log(
-            "got a send message but its a no cache hit:",
-            incomingData
-          );
-        }
+        console.info("-->>>>>>>>>>>>>>>> setting timeout before finishing");
+
+        finishTask(
+          url,
+          payload,
+          abortController,
+          setState,
+          currServiceName,
+          socket
+        );
       }
     }
   };
@@ -391,23 +432,44 @@ const finishTask = async (
   currServiceName,
   socket
 ) => {
+  console.info("trying to finish task for ", currServiceName);
+  console.info("the url is: -> ", url);
+  console.info("the payload is: -> ", payload);
+
+  console.info("running finished task at: ", new Date().toISOString());
   let finishedRequest: Promise<GeoprocessingTask> = runTask(
     url,
     payload,
     abortController.signal,
-    true
+    true,
+    false
   );
   finishedRequest.then((finishedTask) => {
-    console.info("finished task: ", finishedTask);
-    if (finishedTask.id === "NO_CACHE_HIT" || finishedTask.data === undefined) {
+    console.info(" now the task is finished: ", finishedTask);
+
+    if (finishedTask.service !== currServiceName) {
+      console.log(
+        " but got a finish for the wrong one; got",
+        finishedTask,
+        " expected ",
+        currServiceName
+      );
+    }
+    if (finishedTask.data === undefined) {
+      console.warn(
+        currServiceName,
+        ": got a finish with no data...",
+        finishedTask
+      );
       return;
     } else if (finishedTask.data) {
+      console.info("and its all done for ", currServiceName);
       setState({
         loading: false,
         task: finishedTask,
         error: finishedTask.error,
       });
-      socket.close();
+      socket.close(1000, currServiceName);
     }
 
     return;
@@ -418,13 +480,16 @@ const runTask = async (
   url: string,
   payload: GeoprocessingRequest,
   signal: AbortSignal,
-  checkCacheOnly: boolean
+  checkCacheOnly: boolean,
+  onConnect: boolean
 ): Promise<GeoprocessingTask> => {
   const urlInst = new URL(url);
   urlInst.searchParams.append("geometryUri", payload.geometryUri!);
   urlInst.searchParams.append("cacheKey", payload.cacheKey || "");
   if (checkCacheOnly) {
     urlInst.searchParams.append("checkCacheOnly", "true");
+
+    urlInst.searchParams.append("onConnect", "" + onConnect);
   }
   const response = await fetch(urlInst.toString(), {
     signal: signal,
@@ -445,7 +510,7 @@ const getGeoprocessingProject = async (
   url: string,
   signal: AbortSignal
 ): Promise<GeoprocessingProject> => {
-  // TODO: eventually handle updated durations
+  // TODO: eventually handle updated durationsf
   const pending = pendingMetadataRequests.find((r) => r.url === url);
   if (pending) {
     return pending.promise;

@@ -167,6 +167,7 @@ export interface GeoprocessingRequest {
   cacheKey?: string;
   wss?: string;
   checkCacheOnly?: string;
+  onSocketConnect?: string;
 }
 
 export const SeaSketchReportingMessageEventType =

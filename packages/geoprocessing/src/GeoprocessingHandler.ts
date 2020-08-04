@@ -80,17 +80,23 @@ export class GeoprocessingHandler<T> {
       ".execute-api." +
       encodeURIComponent(wss_region) +
       ".amazonaws.com/" +
-      encodeURIComponent(wss_stage) +
-      "?serviceName=" +
-      serviceName;
+      encodeURIComponent(wss_stage);
 
     if (request.checkCacheOnly) {
+      console.info("has the socket just connected? ", request.onSocketConnect);
+      console.info("check cache only for ", serviceName);
       if (request.cacheKey) {
+        console.info("---->>>> table: ", Tasks.table);
+        console.info("looking for cached result at ", new Date().toISOString());
+        console.info("gettting cached result");
+        console.info("request cachekey: ", request.cacheKey);
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+        console.info("cachedResult is: ", cachedResult);
+        console.info("cached result data: ", cachedResult?.data);
+
         if (
           cachedResult &&
-          cachedResult.data &&
-          cachedResult.status !== GeoprocessingTaskStatus.Pending
+          cachedResult?.status !== GeoprocessingTaskStatus.Pending
         ) {
           return {
             statusCode: 200,
@@ -101,6 +107,9 @@ export class GeoprocessingHandler<T> {
             body: JSON.stringify(cachedResult),
           };
         } else {
+          console.info(
+            "looking for cached result, but we didn't find anything"
+          );
           return {
             statusCode: 200,
             headers: {
@@ -115,6 +124,10 @@ export class GeoprocessingHandler<T> {
           };
         }
       } else {
+        console.warn(
+          "GOT A STRANGE PATH, request with no cache key? :::",
+          request
+        );
         //this shouldnt happen, adding it in while testing...
         return {
           statusCode: 200,
@@ -201,9 +214,26 @@ export class GeoprocessingHandler<T> {
           //the duration has been updated, now update the estimates table
           await Tasks.updateEstimate(task);
           let promise = await Tasks.complete(task, results);
-
+          console.info("in asynchonrous, task is complete:-> ", task);
           if (this.options.executionMode !== "sync") {
-            await this.sendSocketMessage(wss, request.cacheKey, serviceName);
+            console.info(
+              "so I'm sendin the message to task id: ",
+              task.id,
+              " at ",
+              new Date().toISOString()
+            );
+            let fetchedTask = await Tasks.get(task.service, task.id);
+            console.info(
+              " got fetched task before sending message: -> ",
+              fetchedTask
+            );
+            let sname = encodeURIComponent(task.service);
+            let ck = encodeURIComponent(task.id || "");
+            let wssUrl =
+              task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
+            console.info("sending a socket message to: ", wssUrl);
+
+            await this.sendSocketMessage(wssUrl, task.id, task.service);
           }
           return promise;
         } catch (e) {
@@ -275,10 +305,10 @@ export class GeoprocessingHandler<T> {
     serviceName: string,
     failureMessage: string
   ) {
-    let socket = await this.getSendSocket(wss, key, serviceName);
+    let socket = (await this.getSendSocket(wss, key, serviceName)) as WebSocket;
 
     let data = JSON.stringify({
-      key: key,
+      cacheKey: key,
       serviceName: serviceName,
       failureMessage: failureMessage,
     });
@@ -287,8 +317,9 @@ export class GeoprocessingHandler<T> {
       message: "sendmessage",
       data: data,
     });
-    //@ts-ignore
+
     socket.send(message);
+    socket.close(1000, serviceName);
   }
 
   async sendSocketMessage(
@@ -296,29 +327,33 @@ export class GeoprocessingHandler<T> {
     key: string | undefined,
     serviceName: string
   ) {
-    let socket = await this.getSendSocket(wss, key, serviceName);
+    let socket = (await this.getSendSocket(wss, key, serviceName)) as WebSocket;
 
+    console.info("is socket open? ", socket);
     let data = JSON.stringify({
-      key: key,
+      cacheKey: key,
       serviceName: serviceName,
+      fromClient: "false",
     });
 
     let message = JSON.stringify({
       message: "sendmessage",
       data: data,
     });
-    //@ts-ignore
+    console.info("sending socket message at ", new Date().toISOString());
     socket.send(message);
+    socket.close(1000, serviceName);
   }
 
   async getSendSocket(
     wss: string,
     key: string | undefined,
     serviceName: string
-  ) {
+  ): Promise<WebSocket> {
     let socket = new WebSocket(wss);
     return new Promise(function (resolve, reject) {
       socket.onopen = () => {
+        console.info("socket is open....");
         resolve(socket);
       };
       socket.onerror = (error: any) => {
@@ -342,6 +377,7 @@ export class GeoprocessingHandler<T> {
         cacheKey: event.queryStringParameters["cacheKey"],
         wss: event.queryStringParameters["wss"],
         checkCacheOnly: event.queryStringParameters["checkCacheOnly"],
+        onSocketConnect: event.queryStringParameters["onConnect"],
       };
     } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);

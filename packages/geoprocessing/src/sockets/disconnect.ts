@@ -1,15 +1,12 @@
 //@ts-nocheck
-//import { DynamoDB } from "aws-sdk";
 
-//import { AWS } from "aws-sdk";
 exports.disconnectHandler = async function (event, context) {
   console.warn("trying to disconnect");
   let AWS = require("aws-sdk");
 
   try {
     let connectionId = event.requestContext.connectionId;
-    console.info("trying to remove: ", connectionId);
-    console.log("from table: ", process.env.SOCKETS_TABLE);
+
     const ddb = new AWS.DynamoDB.DocumentClient({
       apiVersion: "2012-08-10",
       region: process.env.AWS_REGION,
@@ -17,17 +14,16 @@ exports.disconnectHandler = async function (event, context) {
 
     const deleteParams = {
       TableName: process.env.SOCKETS_TABLE,
-      Key: { connectionId },
+      Key: {
+        connectionId: connectionId,
+      },
     };
     //@ts-ignore
-    console.info("deleting params...");
+    console.info("deleting id for ", event);
     await ddb.delete(deleteParams).promise();
   } catch (err) {
-    console.warn("ERRROR: ", JSON.stringify(err));
-    return {
-      statusCode: 500,
-      body: "Failed to disconnect: " + JSON.stringify(err),
-    };
+    console.warn(": error trying to disconnect: ", JSON.stringify(err));
+    return { statusCode: 200, body: "Disconnected." };
   }
 
   return { statusCode: 200, body: "Disconnected." };

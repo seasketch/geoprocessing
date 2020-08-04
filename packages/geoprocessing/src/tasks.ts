@@ -286,6 +286,7 @@ export default class TasksModel {
     taskId: string
   ): Promise<GeoprocessingTask | undefined> {
     try {
+      console.info("table name: ", this.table);
       const response = await this.db
         .get({
           TableName: this.table,

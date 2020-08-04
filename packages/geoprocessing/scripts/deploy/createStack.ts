@@ -178,7 +178,7 @@ class GeoprocessingCdkStack extends core.Stack {
     const stageName = "prod";
     const apigatewaysocket = new apigateway.CfnApiV2(
       this,
-      "apigatewaysocketf",
+      "apigatewaysocketk",
       {
         name: ` async-gp-service-${props.project}`,
         protocolType: "WEBSOCKET",
@@ -188,17 +188,18 @@ class GeoprocessingCdkStack extends core.Stack {
 
     const socketsTbl = new dynamodb.Table(
       this,
-      `gp-${manifest.title}-socketids`,
+      `gp-${manifest.title}-websocketids3`,
       {
         partitionKey: {
           name: "connectionId",
           type: dynamodb.AttributeType.STRING,
         },
         billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-        tableName: `gp-${manifest.title}-socketids`,
+        tableName: `gp-${manifest.title}-websocketids3`,
         removalPolicy: core.RemovalPolicy.DESTROY,
       }
     );
+
     let gatewayArn = `arn:aws:execute-api:${this.region}:${this.account}:${apigatewaysocket.ref}/*`;
     const sendExecutePolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
@@ -502,7 +503,7 @@ class GeoprocessingCdkStack extends core.Stack {
         runtime: lambda.Runtime.NODEJS_12_X,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build/")),
         handler: "sendmessage.sendHandler",
-        functionName: projectName + "-SendMessage2",
+        functionName: projectName + "-SendMessage",
         memorySize: 1024,
         timeout: core.Duration.seconds(3),
         description: " for sending messages on sockets",

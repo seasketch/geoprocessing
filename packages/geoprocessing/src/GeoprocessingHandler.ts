@@ -83,16 +83,8 @@ export class GeoprocessingHandler<T> {
       encodeURIComponent(wss_stage);
 
     if (request.checkCacheOnly) {
-      console.info("has the socket just connected? ", request.onSocketConnect);
-      console.info("check cache only for ", serviceName);
       if (request.cacheKey) {
-        console.info("---->>>> table: ", Tasks.table);
-        console.info("looking for cached result at ", new Date().toISOString());
-        console.info("gettting cached result");
-        console.info("request cachekey: ", request.cacheKey);
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
-        console.info("cachedResult is: ", cachedResult);
-        console.info("cached result data: ", cachedResult?.data);
 
         if (
           cachedResult &&
@@ -107,9 +99,6 @@ export class GeoprocessingHandler<T> {
             body: JSON.stringify(cachedResult),
           };
         } else {
-          console.info(
-            "looking for cached result, but we didn't find anything"
-          );
           return {
             statusCode: 200,
             headers: {
@@ -123,24 +112,6 @@ export class GeoprocessingHandler<T> {
             }),
           };
         }
-      } else {
-        console.warn(
-          "GOT A STRANGE PATH, request with no cache key? :::",
-          request
-        );
-        //this shouldnt happen, adding it in while testing...
-        return {
-          statusCode: 200,
-          headers: {
-            ...commonHeaders,
-            "x-gp-cache": "Cache hit",
-          },
-          body: JSON.stringify({
-            id: "NO_CACHE_HIT",
-            key: request.cacheKey,
-            serviceName: serviceName,
-          }),
-        };
       }
     }
 
@@ -214,24 +185,14 @@ export class GeoprocessingHandler<T> {
           //the duration has been updated, now update the estimates table
           await Tasks.updateEstimate(task);
           let promise = await Tasks.complete(task, results);
-          console.info("in asynchonrous, task is complete:-> ", task);
+
           if (this.options.executionMode !== "sync") {
-            console.info(
-              "so I'm sendin the message to task id: ",
-              task.id,
-              " at ",
-              new Date().toISOString()
-            );
-            let fetchedTask = await Tasks.get(task.service, task.id);
-            console.info(
-              " got fetched task before sending message: -> ",
-              fetchedTask
-            );
+            //let fetchedTask = await Tasks.get(task.service, task.id);
+
             let sname = encodeURIComponent(task.service);
             let ck = encodeURIComponent(task.id || "");
             let wssUrl =
               task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
-            console.info("sending a socket message to: ", wssUrl);
 
             await this.sendSocketMessage(wssUrl, task.id, task.service);
           }
@@ -329,7 +290,6 @@ export class GeoprocessingHandler<T> {
   ) {
     let socket = (await this.getSendSocket(wss, key, serviceName)) as WebSocket;
 
-    console.info("is socket open? ", socket);
     let data = JSON.stringify({
       cacheKey: key,
       serviceName: serviceName,
@@ -340,7 +300,7 @@ export class GeoprocessingHandler<T> {
       message: "sendmessage",
       data: data,
     });
-    console.info("sending socket message at ", new Date().toISOString());
+
     socket.send(message);
     socket.close(1000, serviceName);
   }
@@ -353,7 +313,6 @@ export class GeoprocessingHandler<T> {
     let socket = new WebSocket(wss);
     return new Promise(function (resolve, reject) {
       socket.onopen = () => {
-        console.info("socket is open....");
         resolve(socket);
       };
       socket.onerror = (error: any) => {

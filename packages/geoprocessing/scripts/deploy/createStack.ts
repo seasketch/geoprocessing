@@ -178,7 +178,7 @@ class GeoprocessingCdkStack extends core.Stack {
     const stageName = "prod";
     const apigatewaysocket = new apigateway.CfnApiV2(
       this,
-      "apigatewaysocketk",
+      "apigatewaysocketl",
       {
         name: ` async-gp-service-${props.project}`,
         protocolType: "WEBSOCKET",

@@ -3,9 +3,6 @@ import { useState, useContext, useEffect } from "react";
 import ReportContext from "../ReportContext";
 import LRUCache from "mnemonist/lru-cache";
 import { GeoprocessingRequest, GeoprocessingProject } from "../types";
-import { finished } from "stream";
-import { abort } from "process";
-import { Socket } from "dgram";
 
 const resultsCache = new LRUCache<string, GeoprocessingTask>(
   Uint32Array,
@@ -121,7 +118,6 @@ export const useFunction = <ResultType>(
             makeLRUCacheKey(functionTitle, payload.cacheKey)
           ) as GeoprocessingTask<ResultType> | undefined;
           if (task) {
-            console.log("found the cache...");
             setState({
               loading: false,
               task: task,
@@ -166,7 +162,6 @@ export const useFunction = <ResultType>(
           );
 
           if (payload.cacheKey) {
-            console.log("found payload cached results ", payload);
             const pr = {
               cacheKey: payload.cacheKey,
               functionName: functionTitle,
@@ -197,7 +192,7 @@ export const useFunction = <ResultType>(
                   "&fromClient=true";
                 //need to set up the socket before the task is run
                 //dont set this up if its an sync or during testing
-                console.info("wssUrl: ", wssUrl);
+
                 getSendSocket(
                   task,
                   wssUrl,
@@ -223,7 +218,7 @@ export const useFunction = <ResultType>(
               });
               return;
             }
-            console.info("pending...");
+
             setState({
               loading: task.status === GeoprocessingTaskStatus.Pending,
               task: task,
@@ -251,7 +246,6 @@ export const useFunction = <ResultType>(
             }
           })
           .catch((e) => {
-            console.warn("bombout-->>> ", e);
             if (!abortController.signal.aborted) {
               setState({
                 loading: false,
@@ -318,14 +312,11 @@ const getSendSocket = (
     socket = new WebSocket(wss);
   }
 
-  console.info("opened socket to ", wss);
-  console.info("at ", new Date().toISOString());
   socket.onopen = function (e) {
     const task = resultsCache.get(
       makeLRUCacheKey(currServiceName, cacheKey)
     ) as GeoprocessingTask | undefined;
-    console.info("is it in the cache?? ", task);
-    console.info("open socket, checking for finished, event is: ", e);
+
     //check on open to see if the results are cached. make sure
     //you call the uri with the checkCacheOnly value set to true
     let finishedRequest: Promise<GeoprocessingTask> = runTask(
@@ -337,7 +328,6 @@ const getSendSocket = (
     );
 
     finishedRequest.then((finishedTask) => {
-      console.info("on connect msg key, finished task is ", finishedTask);
       if (finishedTask.service === currServiceName) {
         let ft = JSON.stringify(finishedTask);
         //in case the socket took too long to open, check and see
@@ -351,14 +341,9 @@ const getSendSocket = (
           });
           //socket can close, dont need to keep it open since the
           //lambda is already finished
-          //console.log("closing socket for ", currServiceName);
+
           socket.close(1000, currServiceName);
           return;
-        } else {
-          console.warn(
-            "things its a finished task, but no cache for ",
-            finishedTask
-          );
         }
       }
     });
@@ -373,20 +358,14 @@ const getSendSocket = (
     //ignore those.
     let incomingData = JSON.parse(event.data);
     //testing to see if messages this client sends come back...they shouldn't
-    console.info("on message incoming data::: ", incomingData);
 
     if (
       incomingData.cacheKey === cacheKey &&
       incomingData.serviceName === currServiceName
     ) {
       payload.cacheKey = cacheKey;
-      console.info(
-        "got a finished message, has url of ",
-        url + " and a payload of ",
-        payload
-      );
+
       if (incomingData.failureMessage?.length > 0) {
-        console.info("got failure message: ", incomingData.failureMessage);
         task.error = incomingData.failureMessage;
         task.status = GeoprocessingTaskStatus.Failed;
         setState({
@@ -396,8 +375,6 @@ const getSendSocket = (
         });
         socket.close();
       } else {
-        console.info("-->>>>>>>>>>>>>>>> setting timeout before finishing");
-
         finishTask(
           url,
           payload,
@@ -410,7 +387,7 @@ const getSendSocket = (
     }
   };
   socket.onclose = function (event) {
-    console.info("socket closed");
+    //no op
   };
   socket.onerror = function (error) {
     if (socket.url?.length > 0) {
@@ -432,11 +409,6 @@ const finishTask = async (
   currServiceName,
   socket
 ) => {
-  console.info("trying to finish task for ", currServiceName);
-  console.info("the url is: -> ", url);
-  console.info("the payload is: -> ", payload);
-
-  console.info("running finished task at: ", new Date().toISOString());
   let finishedRequest: Promise<GeoprocessingTask> = runTask(
     url,
     payload,
@@ -445,25 +417,9 @@ const finishTask = async (
     false
   );
   finishedRequest.then((finishedTask) => {
-    console.info(" now the task is finished: ", finishedTask);
-
-    if (finishedTask.service !== currServiceName) {
-      console.log(
-        " but got a finish for the wrong one; got",
-        finishedTask,
-        " expected ",
-        currServiceName
-      );
-    }
     if (finishedTask.data === undefined) {
-      console.warn(
-        currServiceName,
-        ": got a finish with no data...",
-        finishedTask
-      );
       return;
     } else if (finishedTask.data) {
-      console.info("and its all done for ", currServiceName);
       setState({
         loading: false,
         task: finishedTask,

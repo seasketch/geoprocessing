@@ -198,17 +198,25 @@ export class GeoprocessingHandler<T> {
           }
           return promise;
         } catch (e) {
+          let sname = encodeURIComponent(task.service);
+          let ck = encodeURIComponent(task.id || "");
+          let wssUrl =
+            task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
+          console.info("failure wss: ", wssUrl);
           let failureMessage = `Geoprocessing exception: \n${e.stack}`;
-          let failedTask = await Tasks.fail(task, failureMessage);
           await this.sendSocketErrorMessage(
-            wss,
+            wssUrl,
             request.cacheKey,
             serviceName,
             failureMessage
           );
+          let failedTask = await Tasks.fail(task, failureMessage);
+          console.warn("FAILED calculation--->>> ", failedTask);
+
           return failedTask;
         }
       } catch (e) {
+        console.info("double fail: ", e.toString);
         return Tasks.fail(
           task,
           request.geometryUri
@@ -316,7 +324,9 @@ export class GeoprocessingHandler<T> {
         resolve(socket);
       };
       socket.onerror = (error: any) => {
-        console.warn("Error connecting socket to " + wss + " error: " + error);
+        console.warn(
+          "Error connecting socket to " + wss + " error: " + error.toString()
+        );
         reject(error);
       };
     });

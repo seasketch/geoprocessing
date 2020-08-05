@@ -9,6 +9,7 @@ exports.sendHandler = async function (event, context) {
 
   let cacheKey: string;
   let serviceName: string;
+  let failureMessage: string;
   let responses;
   let postData;
   console.info("trying to send now>>>> ", event.body);
@@ -20,6 +21,7 @@ exports.sendHandler = async function (event, context) {
     console.info("parsed is:-> ", eventData);
     cacheKey = eventData["cacheKey"];
     serviceName = eventData["serviceName"];
+    failureMessage = eventData["failureMessage"];
     console.info("cachekey: ", cacheKey);
     console.info("servicename: ", serviceName);
     let connectionId = event.requestContext.connectionId;
@@ -58,6 +60,9 @@ exports.sendHandler = async function (event, context) {
       cacheKey: responseItem.cacheKey,
       serviceName: responseItem.serviceName,
     };
+    if (failureMessage) {
+      d.failureMessage = failureMessage;
+    }
     if (
       responseItem.cacheKey === cacheKey &&
       responseItem.serviceName == serviceName

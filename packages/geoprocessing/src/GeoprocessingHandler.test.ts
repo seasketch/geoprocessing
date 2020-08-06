@@ -314,6 +314,7 @@ test("Results are cached using request.cacheKey for asynchronous tasks", async (
       }
     }
   );
+
   const result = await handler.lambdaHandler(
     ({
       body: JSON.stringify({
@@ -412,7 +413,7 @@ test("Exceptions in geoprocessing function are passed to requester", async () =>
   );
   expect(result.statusCode).toBe(500);
   const task = JSON.parse(result.body) as GeoprocessingTask;
-  expect(task.error).toContain("exception");
+  expect(task.error).toContain("Failed");
   // make sure cors headers are set still for errors
   expect(result.headers!["Access-Control-Allow-Origin"]).toBe("*");
   expect(result.headers!["Access-Control-Allow-Credentials"]).toBe(true);

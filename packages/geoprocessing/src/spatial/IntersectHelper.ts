@@ -29,14 +29,6 @@ export function addProps(
   }
   return propsToInclude;
 }
-export const theFunc = <ResultType>(
-  // Can refer to the title of a geoprocessing function in the same project as
-  // this report client, or (todo) the url of a geoprocessing function endpoint
-  // from another project
-  functionTitle: string
-) => {
-  console.log("hi");
-};
 
 export const getSketchIntersectList = (
   sketch: Sketch,
@@ -272,10 +264,15 @@ export const intersect = (poly1, poly2) => {
     if (intersection.length === 1) {
       var start = intersection[0][0][0];
       var end = intersection[0][0][intersection[0][0].length - 1];
+      //make sure the polygon is valid -- it is closed and has more than 3 points
       //@ts-ignore
       if (start[0] === end[0] && start[1] === end[1]) {
-        //@ts-ignore
-        return helpers.polygon(intersection[0], options.properties);
+        try {
+          //@ts-ignore
+          return helpers.polygon(intersection[0], options.properties);
+        } catch (err) {
+          return null;
+        }
       }
       return null;
     }

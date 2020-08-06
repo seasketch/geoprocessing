@@ -4,6 +4,7 @@ import {
   GeoprocessingHandler,
   sketchArea,
 } from "@seasketch/geoprocessing";
+import { intersect } from "@seasketch/geoprocessing/client";
 import bbox from "@turf/bbox";
 import { AllGeoJSON, BBox } from "@turf/helpers";
 

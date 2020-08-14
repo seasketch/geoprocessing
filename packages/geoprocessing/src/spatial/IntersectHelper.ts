@@ -67,7 +67,7 @@ export const getSketchIntersectList = (
       }
 
       //let p2Poly = sketch.geometry as Polygon | MultiPolygon;
-      if (p1Poly != null && p2Poly != null) {
+      if (p1Poly && p2Poly && p1Poly.geometry && p2Poly.geometry) {
         try {
           let overlap = intersect(
             p1Poly.geometry as Polygon | MultiPolygon,
@@ -83,7 +83,10 @@ export const getSketchIntersectList = (
             overlappingList.push(feature);
           }
         } catch (err) {
-          console.log("blew up while intersecting, skipping this polygon");
+          console.log(
+            "blew up while intersecting, skipping this polygon: ",
+            err
+          );
         }
       }
     }
@@ -250,7 +253,6 @@ function doBooleanOverlap(
 
 export const intersect = (poly1, poly2) => {
   let options = {};
-
   var geom1 = invariant.getGeom(poly1);
   var geom2 = invariant.getGeom(poly2);
   if (geom1.type === "Polygon" && geom2.type === "Polygon") {
@@ -313,6 +315,7 @@ export const intersect = (poly1, poly2) => {
       return helpers.multiPolygon(resultCoords, options.properties);
     }
   } else if (geom2.type === "MultiPolygon") {
+    console.log("poly to multipoly");
     // geom1 is a polygon and geom2 a multiPolygon,
     // put the multiPolygon first and fallback to the previous case.
     //@ts-ignore

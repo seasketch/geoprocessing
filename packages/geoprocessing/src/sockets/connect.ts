@@ -9,42 +9,14 @@ let AWS = require("aws-sdk");
 
 exports.connectHandler = async function (event, context) {
   try {
-    console.info("event for connect handler--->>>> ", event);
-    console.info("and parameters: => ", event.queryStringParameters);
     const ddb = new AWS.DynamoDB.DocumentClient({
       apiVersion: "2012-08-10",
       region: process.env.AWS_REGION,
     });
 
-    /*
-    const ddb = new DynamoDB.DocumentClient({
-      apiVersion: "2012-08-10",
-      region: process.env.AWS_REGION,
-    });
-    */
     let serviceName = event.queryStringParameters["serviceName"];
     let cacheKey = event.queryStringParameters["cacheKey"];
-    let fromClient = event.queryStringParameters["fromClient"];
-    if (fromClient?.length > 0) {
-      console.info(
-        serviceName,
-        ": from client: ",
-        event.requestContext.connectionId,
-        " with cacheKey: ",
-        cacheKey
-      );
-    } else {
-      console.info(
-        serviceName,
-        ": from lambda: ",
-        event.requestContext.connectionId,
-        " with cacheKey: ",
-        cacheKey
-      );
-    }
 
-    console.log("servicename: ", serviceName);
-    console.info("cacheKey: ", cacheKey);
     const putParams = {
       TableName: process.env.SOCKETS_TABLE,
       Item: {

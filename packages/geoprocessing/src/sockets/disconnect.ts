@@ -19,7 +19,6 @@ exports.disconnectHandler = async function (event, context) {
       },
     };
     //@ts-ignore
-    console.info("deleting id for ", event);
     await ddb.delete(deleteParams).promise();
   } catch (err) {
     console.warn(": error trying to disconnect: ", JSON.stringify(err));

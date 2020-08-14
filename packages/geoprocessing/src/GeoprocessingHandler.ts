@@ -202,7 +202,7 @@ export class GeoprocessingHandler<T> {
           let ck = encodeURIComponent(task.id || "");
           let wssUrl =
             task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
-          console.info("failure wss: ", wssUrl);
+
           let failureMessage = `Geoprocessing exception: \n${e.stack}`;
           await this.sendSocketErrorMessage(
             wssUrl,
@@ -211,12 +211,9 @@ export class GeoprocessingHandler<T> {
             failureMessage
           );
           let failedTask = await Tasks.fail(task, failureMessage);
-          console.warn("FAILED calculation--->>> ", failedTask);
-
           return failedTask;
         }
       } catch (e) {
-        console.info("double fail: ", e.toString);
         return Tasks.fail(
           task,
           request.geometryUri

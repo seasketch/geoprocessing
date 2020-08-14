@@ -22,6 +22,8 @@
   ],
   "devDependencies": {
     "@seasketch/geoprocessing": "^0.7.29",
+    "geoblaze": "^0.2.6",
+    "geotiff": "^1.0.0-beta.13",
     "styled-components": "^5.1.1"
   },
   "author": "Chad Burt",

@@ -89,9 +89,7 @@ export async function makeGeoprocessingHandler(
   if (options.docker) {
     throw new Error("Docker container handlers are not yet supported");
   }
-  if (options.executionMode === "async") {
-    throw new Error("Async execution mode is not yet supported");
-  }
+
   const spinner = interactive
     ? ora("Creating new project").start()
     : { start: () => false, stop: () => false, succeed: () => false };

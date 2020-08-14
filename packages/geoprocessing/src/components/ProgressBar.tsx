@@ -8,7 +8,6 @@ const fill = keyframes`
   100% {width: 100%} 
 `;
 
-//@ts-ignore
 export const ProgressBar = styled.div`
   background: #cbd7e1;
   height: 16px;

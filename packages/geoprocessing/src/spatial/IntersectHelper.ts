@@ -161,7 +161,7 @@ export const getIntersectList = (
           } catch (err) {
             //occassional complaints about rings less than 4 points...
             //need to figure out what is causing this...
-            console.log("skipping invalid geometry for buffer/intersect");
+            //console.log("skipping invalid geometry for buffer/intersect");
           }
         }
       }

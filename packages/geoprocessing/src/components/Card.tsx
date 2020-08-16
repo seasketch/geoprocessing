@@ -26,7 +26,7 @@ const titleStyle = {
 
 const Card = ({ children, title, style }: Props) => {
   return (
-    <div style={{ ...boxStyle, ...(style || {}) }}>
+    <div style={{ position: "relative", ...boxStyle, ...(style || {}) }}>
       {title && title !== "" && <h2 style={titleStyle}>{title}</h2>}
       {children}
     </div>

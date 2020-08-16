@@ -60,7 +60,7 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
     throw new Error("No function specified for ResultsCard");
   }
   let { task, loading, error } = useFunction(props.functionName);
-  let taskEstimate = 3;
+  let taskEstimate = 5;
   if (task && task.estimate) {
     taskEstimate = Math.round(task.estimate / 1000);
   }
@@ -87,13 +87,12 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
     return (
       <Card title={props.title}>
         {loading ? (
-          task === undefined ? (
-            <Skeleton />
-          ) : (
+          <>
+            {props.skeleton || <DefaultSkeleton />}
             <ProgressBarWrapper>
               <ProgressBar duration={taskEstimate} />
             </ProgressBarWrapper>
-          )
+          </>
         ) : (
           <>{props.children(task.data as T)}</>
         )}

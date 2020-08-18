@@ -116,7 +116,11 @@ export class GeoprocessingHandler<T> {
     }
 
     // check and respond with cache first if available
-    if (!(process.env.RUN_AS_SYNC === "true") && request.cacheKey) {
+    if (
+      (process.env.RUN_AS_SYNC !== "true" ||
+        this.options.executionMode === "sync") &&
+      request.cacheKey
+    ) {
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
       if (
         cachedResult &&
@@ -164,6 +168,7 @@ export class GeoprocessingHandler<T> {
         );
         process.exit();
       });
+
       process.on("unhandledRejection", async (error) => {
         console.error(error);
         await Tasks.fail(
@@ -343,7 +348,6 @@ export class GeoprocessingHandler<T> {
         cacheKey: event.queryStringParameters["cacheKey"],
         wss: event.queryStringParameters["wss"],
         checkCacheOnly: event.queryStringParameters["checkCacheOnly"],
-        onSocketConnect: event.queryStringParameters["onConnect"],
       };
     } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);

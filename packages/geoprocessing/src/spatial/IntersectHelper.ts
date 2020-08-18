@@ -9,6 +9,9 @@ import {
   GeoJsonProperties,
   Geometry,
 } from "geojson";
+//import { multiPolygon, polygon, Properties } from "@turf/helpers";
+//import { getGeom } from "@turf/invariant";
+//import polygonClipping from "polygon-clipping";
 
 //@ts-ignore
 import booleanOverlap from "@turf/boolean-overlap";

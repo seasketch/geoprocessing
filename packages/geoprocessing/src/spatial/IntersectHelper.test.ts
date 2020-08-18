@@ -32,9 +32,9 @@ test("intersectPolyToPoly", async () => {
   const singlePolygon2 = poly2;
   //@ts-ignore
   let ints = intersect(singlePolygon1, singlePolygon2);
-  let coords = ints.geometry.coordinates;
+  let coords = ints?.geometry.coordinates;
 
-  expect(coords.length).toEqual(1);
+  expect(coords?.length).toEqual(1);
 });
 
 //testing multipolygon with polygon
@@ -43,9 +43,10 @@ test("intersectMultiPolyToPoly", async () => {
   const mp2 = polygonWithHole2;
   //@ts-ignore
   let ints = intersect(mp1, mp2);
-  let coords = ints.geometry.coordinates;
-
-  expect(coords[0].length).toEqual(20);
+  let coords = ints?.geometry.coordinates;
+  if (coords && coords[0]) {
+    expect(coords[0].length).toEqual(20);
+  }
 });
 
 //testing the branch of intersecting a polygon with a multipolygon
@@ -54,9 +55,10 @@ test("intersectPolyToMultiPoly", async () => {
   const mp1 = polygonWithHole2;
   //@ts-ignore
   let ints = intersect(mp1, mp2);
-  let coords = ints.geometry.coordinates;
-
-  expect(coords[0].length).toEqual(20);
+  let coords = ints?.geometry.coordinates;
+  if (coords && coords[0]) {
+    expect(coords[0].length).toEqual(20);
+  }
 });
 
 //testing intersection of 2 multipolygons
@@ -65,10 +67,11 @@ test("intersectMultiPolyToMultiPoly", async () => {
   const mp2 = multiPolygonWithHole2;
   //@ts-ignore
   let ints = intersect(mp1, mp2);
-  let coords = ints.geometry.coordinates;
-
-  expect(coords[0].length).toEqual(20);
-  expect(ints.geometry.type).toEqual("Polygon");
+  let coords = ints?.geometry.coordinates;
+  if (coords && coords[0]) {
+    expect(coords[0].length).toEqual(20);
+    expect(ints?.geometry.type).toEqual("Polygon");
+  }
 });
 
 //testing intersection of 2 sketches that don't overlap

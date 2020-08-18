@@ -9,6 +9,7 @@ const resultsCache = new LRUCache<string, GeoprocessingTask>(
   Array,
   12
 );
+
 const makeLRUCacheKey = (func: string, cacheKey: string): string =>
   `${func}-${cacheKey}`;
 
@@ -88,12 +89,14 @@ export const useFunction = <ResultType>(
           }
         }
         let url: string;
+        let executionMode: string;
         if (/^https:/.test(functionTitle)) {
           url = functionTitle;
         } else {
           const service = geoprocessingProject!.geoprocessingServices.find(
             (s) => s.title === functionTitle
           );
+
           if (!service) {
             setState({
               loading: false,
@@ -102,6 +105,7 @@ export const useFunction = <ResultType>(
             return;
           }
           url = service.endpoint;
+          executionMode = service?.executionMode;
         }
         // fetch task/results
         // TODO: Check for requiredProperties
@@ -114,9 +118,11 @@ export const useFunction = <ResultType>(
 
         if (payload.cacheKey) {
           // check results cache. may already be available
-          const task = resultsCache.get(
-            makeLRUCacheKey(functionTitle, payload.cacheKey)
-          ) as GeoprocessingTask<ResultType> | undefined;
+          let lruKey = makeLRUCacheKey(functionTitle, payload.cacheKey);
+
+          let task = resultsCache.get(lruKey) as
+            | GeoprocessingTask<ResultType>
+            | undefined;
           if (task) {
             setState({
               loading: false,
@@ -177,9 +183,8 @@ export const useFunction = <ResultType>(
         pendingRequest
           .then((task) => {
             let currServiceName = task.service;
-
             if (currServiceName) {
-              if (task.wss?.length > 0) {
+              if (task.wss?.length > 0 && executionMode === "async") {
                 let sname = encodeURIComponent(currServiceName);
                 let ck = encodeURIComponent(payload.cacheKey || "");
                 let wssUrl =
@@ -228,10 +233,9 @@ export const useFunction = <ResultType>(
               payload.cacheKey &&
               task.status === GeoprocessingTaskStatus.Completed
             ) {
-              resultsCache.set(
-                makeLRUCacheKey(functionTitle, payload.cacheKey),
-                task
-              );
+              let lruKey = makeLRUCacheKey(functionTitle, payload.cacheKey);
+
+              resultsCache.set(lruKey, task);
             }
 
             if (task.status === GeoprocessingTaskStatus.Pending) {

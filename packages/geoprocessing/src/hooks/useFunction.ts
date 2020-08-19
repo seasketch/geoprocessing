@@ -431,7 +431,6 @@ const finishTask = async (
       });
       socket.close(1000, currServiceName);
     }
-
     return;
   });
 };
@@ -451,6 +450,7 @@ const runTask = async (
 
     urlInst.searchParams.append("onConnect", "" + onConnect);
   }
+
   const response = await fetch(urlInst.toString(), {
     signal: signal,
     method: "get",
@@ -458,6 +458,7 @@ const runTask = async (
       "Content-Type": "application/json",
     },
   });
+
   const task: GeoprocessingTask = await response.json();
   if (signal.aborted) {
     throw new Error("Request aborted");

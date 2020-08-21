@@ -4,7 +4,8 @@
   "region": "us-west-1",
   "functions": [
     "src/functions/area.ts",
-    "src/functions/areaAsync.ts"
+    "src/functions/areaAsync.ts",
+    "src/functions/rasterSum.ts"
   ],
   "clients": [
     {

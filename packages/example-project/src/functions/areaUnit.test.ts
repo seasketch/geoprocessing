@@ -13,6 +13,6 @@ describe("Unit tests", () => {
   test("Area should be > 700 sq km", async () => {
     const examples = await getExampleSketches();
     const result = await area(examples[0]);
-    expect(result.area / 1000 ** 2).toBeGreaterThan(700);
+    expect(result.area / 1000 ** 2).toBeGreaterThan(10);
   });
 });

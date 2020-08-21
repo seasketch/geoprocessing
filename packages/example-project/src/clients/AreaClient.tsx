@@ -8,7 +8,7 @@ import {
 // component render functions
 import { AreaResults } from "../functions/area";
 import { AsyncAreaResults } from "../functions/areaAsync";
-import TasksModel from "@seasketch/geoprocessing/src/tasks";
+import { RasterSumResults } from "../functions/rasterSum";
 
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
@@ -31,6 +31,16 @@ const AreaClient = () => {
             📐This feature is{" "}
             <b>{Number.format(Math.round(dataAsync?.area * 1e-6))}</b> square
             kilometers.
+          </p>
+        )}
+      </ResultsCard>
+
+      <ResultsCard title="Raster Sum Overlaps" functionName="rasterSum">
+        {(rasterData: RasterSumResults) => (
+          <p>
+            📐This feature overlaps with{" "}
+            <b>{Number.format(Math.round(rasterData?.area))}</b> somethings from
+            the raster
           </p>
         )}
       </ResultsCard>

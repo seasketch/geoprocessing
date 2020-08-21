@@ -22,9 +22,15 @@
   ],
   "devDependencies": {
     "@seasketch/geoprocessing": "^0.8.0",
+    "autoprefixer": "^9.8.6",
+    "cssnano": "^4.1.10",
+    "encoding": "^0.1.13",
     "geoblaze": "^0.2.6",
+    "georaster": "^1.1.0",
     "geotiff": "^1.0.0-beta.13",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "sugarss": "^2.0.0",
+    "tiny-worker": "^2.3.0"
   },
   "author": "Chad Burt",
   "license": "UNLICENSED",

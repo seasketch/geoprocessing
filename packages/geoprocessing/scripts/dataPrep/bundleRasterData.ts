@@ -1,22 +1,19 @@
-import bundleFeatures from "./bundleFeatures";
 import ora from "ora";
-import program from "commander";
+import program, { version } from "commander";
 import { createPool } from "slonik";
-import printSizeHistogram from "./printSizeHistogram";
+
 import inquirer from "inquirer";
 import {
   getDataSourceVersion,
   createBucket,
   createCloudfrontDistribution,
-  putBundle,
-  putResources,
+  putRasterBundle,
+  putMetadataResources,
   invalidateCloudfrontDistribution,
   CloudfrontDistributionDetails,
   scheduleObjectsForDeletion,
 } from "./aws";
-import { BBox } from "@turf/helpers";
-import prettyBytes from "pretty-bytes";
-import { createIndexes } from "./indexes";
+
 import AWS from "aws-sdk";
 
 const DEFAULT_FLATBUSH_NODE_SIZE = 9;
@@ -24,46 +21,16 @@ const DEFAULT_COMPOSITE_INDEX_SIZE_TARGET = 80_000;
 const DEFAULT_MIN_COMPOSITE_INDEXES = 3;
 
 program
-  .command("bundle-features <datasource-name> <table>")
-  .option(
-    "--points-limit <number>",
-    "Maximum number of vertexes in a bundle. Use to target bundle byte sizes",
-    "6400"
-  )
-  .option(
-    "--envelope-max-distance <km>",
-    "Limit merged feature envelope. Uses st_maxdistance",
-    "55"
-  )
-  .option(
-    "--bbox <xmin,ymin,xmax,ymax>",
-    "Clip output to bounding box. Useful when tuning points-limit and envelope-max-distance to speed up operation"
-  )
-  .option(
-    "--connection <postgres://...>",
-    "Connection string for source postgres database.",
-    "postgres://"
-  )
-  .option(
-    "--index-size-target <bytes>",
-    "Spatial index will be split into several chunks to match the target size in bytes",
-    "80000"
-  )
-  .option(
-    "--flatbush-node-size <int>",
-    "Passed directly to flatbush. Lower numbers mean slower index creation but faster searches",
-    "9"
-  )
-  .option(
-    "--s3-bucket <bucket>",
-    "Will stream features to an s3 bucket while processing"
-  )
+  .command("bundle-rasters <datasource-name>")
+  .option("--rasterFile <filename>", "Name of the raster file to copy to s3")
   .option("--dry-run", "Skip creating resources on s3")
-  .action(async function (datasourceName, table, options) {
+  .action(async function (datasourceName, options) {
     let currentVersion = 0;
     let lastPublished: Date | undefined = undefined;
     let bucket: string | undefined;
+    let rasterFilename: string;
     try {
+      rasterFilename = options.rasterFile;
       const spinner = ora(``);
       let cloudfrontDistroPromise:
         | Promise<CloudfrontDistributionDetails>
@@ -89,7 +56,7 @@ program
             spinner.succeed("Public S3 bucket created at " + url);
             cloudfrontDistroPromise = createCloudfrontDistribution(
               datasourceName,
-              false
+              true
             );
           } else {
             console.log("Aborted. Try --dry-run if debugging package sizes");
@@ -99,69 +66,50 @@ program
           spinner.succeed(`Found existing hosting resources at ${bucket}`);
         }
       }
-      const indexItems: { bbox: BBox; id: number }[] = [];
+
       const putBundlePromises: Promise<any>[] = [];
-      const statsTableName = await bundleFeatures(
-        {
-          name: datasourceName,
-          tableName: table,
-          ...options,
-        },
-        async (id, geobuf, bbox) => {
-          indexItems.push({ bbox, id });
-          if (!options.dryRun) {
-            putBundlePromises.push(
-              putBundle(
-                // Use a zero-based index to make client implementations easier
-                id - 1,
-                datasourceName,
-                currentVersion + 1,
-                geobuf
-              )
-            );
-          }
+      /*
+      async (id) => {
+        let info = "putting " + id;
+        " dsname: " + datasourceName + " with file: " + rasterFilename;
+
+      
+        if (!options.dryRun) {
+          spinner.start("Trying to put: ", info);
+          putBundlePromises.push(
+            putRasterBundle(
+              // Use a zero-based index to make client implementations easier
+              id - 1,
+              datasourceName,
+              rasterFilename,
+              currentVersion + 1
+            )
+          );
         }
-      );
-      const pool = createPool(options.connection, {});
-      await pool.connect(async (connection) => {
-        await printSizeHistogram(statsTableName, connection);
-      });
+      };
+      */
       // Create, deploy, and show stats on indexes
       // Create main flatbush
       spinner.start("Creating spatial indexes");
-      const indexes = createIndexes(
-        indexItems.map((i) => i.bbox),
-        options.indexSizeTarget || DEFAULT_COMPOSITE_INDEX_SIZE_TARGET,
-        DEFAULT_MIN_COMPOSITE_INDEXES,
-        options.flatbushNodeSize || DEFAULT_FLATBUSH_NODE_SIZE
-      );
-      spinner.succeed(
-        `Created spatial index (${prettyBytes(indexes.index.data.byteLength)})`
-      );
-      spinner.succeed(
-        `Created ${
-          indexes.compositeIndexes.length
-        } composite indexes (${indexes.compositeIndexes
-          .map((i) => prettyBytes(i.index.data.byteLength))
-          .join(", ")})`
-      );
 
       // Output stats on bytes and # requests needed for each example sketch
       if (!options.dryRun) {
         // Wait for putBundle tasks to complete
         spinner.start("Waiting for all S3 uploads to finish");
-        await Promise.all(putBundlePromises);
+        //await Promise.all(putBundlePromises);
         spinner.succeed("Uploaded bundles to S3");
         // Save indexes
         // Save metadata document
-        spinner.start("Deploying metadata and indexes to S3");
-        await putResources(
+        spinner.start("Deploying metadata for raster to S3");
+        await putMetadataResources(datasourceName, currentVersion + 1);
+        spinner.succeed("Deployed metadata to S3");
+        spinner.succeed("Deploying raster to S3");
+        await putRasterBundle(
           datasourceName,
-          currentVersion + 1,
-          indexes.index,
-          indexes.compositeIndexes
+          rasterFilename,
+          currentVersion + 1
         );
-        spinner.succeed("Deployed metadata and indexes to S3");
+        spinner.succeed("Deployed raster to S3");
         // Schedule previous versions for deletion
         if (currentVersion > 0 && lastPublished) {
           spinner.start("Scheduling old versions for deletion");

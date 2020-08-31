@@ -5,6 +5,7 @@ import slugify from "slugify";
 import fetch from "node-fetch";
 import { CompositeIndexDetails } from "./indexes";
 import { LifecycleRules } from "aws-sdk/clients/s3";
+import fs from "fs";
 
 // TODO: Set tags for Cost Center, Author, and Geoprocessing Project using
 // geoprocessing.json if available
@@ -33,7 +34,7 @@ export async function getDataSourceVersion(
       return {
         currentVersion: metadata.version,
         lastPublished: new Date(metadata.published),
-        bucket: s3Domain(name)
+        bucket: s3Domain(name),
       };
     } else {
       return { currentVersion: 0 };
@@ -60,8 +61,8 @@ export async function createBucket(name: string, publicAccess?: boolean) {
       Bucket: bucket,
       ACL: "private",
       CreateBucketConfiguration: {
-        LocationConstraint: AWS.config.region
-      }
+        LocationConstraint: AWS.config.region,
+      },
     })
     .promise();
   await s3
@@ -72,10 +73,10 @@ export async function createBucket(name: string, publicAccess?: boolean) {
           {
             AllowedHeaders: ["*"],
             AllowedOrigins: ["*"],
-            AllowedMethods: ["GET", "HEAD"]
-          }
-        ]
-      }
+            AllowedMethods: ["GET", "HEAD"],
+          },
+        ],
+      },
     })
     .promise();
   if (publicAccess) {
@@ -90,10 +91,10 @@ export async function createBucket(name: string, publicAccess?: boolean) {
               Effect: "Allow",
               Principal: "*",
               Action: ["s3:GetObject"],
-              Resource: [`arn:aws:s3:::${bucket}/*`]
-            }
-          ]
-        })
+              Resource: [`arn:aws:s3:::${bucket}/*`],
+            },
+          ],
+        }),
       })
       .promise();
   }
@@ -122,9 +123,14 @@ function s3Domain(name: string): string {
  * @returns {Promise<string>} Distribution url
  */
 export async function createCloudfrontDistribution(
-  name: string
+  name: string,
+  isRaster: boolean
 ): Promise<CloudfrontDistributionDetails> {
   const id = bucketName(name);
+  let defaultRootObject = "metadata.json";
+  if (isRaster) {
+    defaultRootObject = `${name}.tif`;
+  }
   const response = await cloudfront
     .createDistributionWithTags({
       DistributionConfigWithTags: {
@@ -132,15 +138,15 @@ export async function createCloudfrontDistribution(
           Items: [
             {
               Key: "SeaSketchDataSource",
-              Value: id
-            }
-          ]
+              Value: id,
+            },
+          ],
         },
         DistributionConfig: {
           Comment: id,
           Enabled: true,
           CallerReference: id,
-          DefaultRootObject: "metadata.json",
+          DefaultRootObject: defaultRootObject,
           Origins: {
             Quantity: 1,
             Items: [
@@ -148,10 +154,10 @@ export async function createCloudfrontDistribution(
                 Id: "s3",
                 DomainName: s3Domain(name),
                 S3OriginConfig: {
-                  OriginAccessIdentity: ""
-                }
-              }
-            ]
+                  OriginAccessIdentity: "",
+                },
+              },
+            ],
           },
           DefaultCacheBehavior: {
             TargetOriginId: "s3",
@@ -161,31 +167,31 @@ export async function createCloudfrontDistribution(
             MinTTL: 31536000,
             TrustedSigners: {
               Enabled: false,
-              Quantity: 0
+              Quantity: 0,
             },
             ForwardedValues: {
               Cookies: {
-                Forward: "none"
+                Forward: "none",
               },
-              QueryString: false
+              QueryString: false,
             },
             DefaultTTL: 31536000,
             ViewerProtocolPolicy: "redirect-to-https",
             AllowedMethods: {
               Quantity: 2,
-              Items: ["GET", "HEAD"]
+              Items: ["GET", "HEAD"],
             },
-            Compress: true
-          }
-        }
-      }
+            Compress: true,
+          },
+        },
+      },
     })
     .promise();
   response.Distribution?.ARN;
   return {
     location: response.Distribution!.DomainName,
     arn: response.Distribution!.ARN,
-    id: response.Distribution!.Id
+    id: response.Distribution!.Id,
   };
 }
 
@@ -208,7 +214,29 @@ export function putBundle(
       Key: `${version}/${id}.pbf`,
       CacheControl: "max-age=31557600",
       ContentType: "application/protobuf; messageType=geobuf",
-      Body: Buffer.from(geobuf)
+      Body: Buffer.from(geobuf),
+    })
+    .promise();
+}
+/**
+ * Save a bundle to the DataSource's s3 bucket.
+ * @export
+ * @param {number} id
+ * @param {number} version
+ * @param {Uint8Array} geobuf
+ */
+export function putRasterBundle(
+  dataSourceName,
+  fileName: string,
+  version: number
+) {
+  return s3
+    .putObject({
+      Bucket: bucketName(dataSourceName),
+      Key: `${dataSourceName}.tif`,
+      CacheControl: "max-age=31557600",
+      ContentType: "image/tiff",
+      Body: fs.readFileSync(fileName),
     })
     .promise();
 }
@@ -236,7 +264,7 @@ export async function putResources(
       ContentType: "application/flatbush",
       Body: Buffer.from(index.data),
       Key: `${version}/index.bin`,
-      CacheControl: "max-age=31557600"
+      CacheControl: "max-age=31557600",
     })
     .promise();
   for (const compositeIndex of compositeIndexes) {
@@ -246,7 +274,7 @@ export async function putResources(
         ContentType: "application/flatbush",
         Body: Buffer.from(compositeIndex.index.data),
         Key: `${version}/index.${compositeIndexes.indexOf(compositeIndex)}.bin`,
-        CacheControl: "max-age=31557600"
+        CacheControl: "max-age=31557600",
       })
       .promise();
   }
@@ -268,9 +296,9 @@ export async function putResources(
             length: index.numItems,
             bytes: index.data.byteLength,
             location: `/${version}/index.bin`,
-            rootDir: `/${version}`
+            rootDir: `/${version}`,
           },
-          compositeIndexes: compositeIndexes.map(compositeIndex => ({
+          compositeIndexes: compositeIndexes.map((compositeIndex) => ({
             length: compositeIndexes.length,
             bytes: compositeIndex.index.data.byteLength,
             offset: compositeIndex.offset,
@@ -278,12 +306,45 @@ export async function putResources(
               compositeIndex
             )}.bin`,
             rootDir: `/${version}`,
-            bbox: compositeIndex.bbox
-          }))
+            bbox: compositeIndex.bbox,
+          })),
         },
         null,
         "  "
-      )
+      ),
+    })
+    .promise();
+}
+
+/**
+ * Save metadata.json for raster resources to s3. Includes metadata.json.
+ * files.
+ * @export
+ * @param {string} dataSourceName
+ * @param {number} version
+ */
+export async function putMetadataResources(
+  dataSourceName: string,
+  version: number
+) {
+  const pkg = sync()!.packageJson;
+  await s3
+    .putObject({
+      Bucket: bucketName(dataSourceName),
+      ContentType: "application/json",
+      Key: "metadata.json",
+      CacheControl: "max-age=0",
+      Body: JSON.stringify(
+        {
+          name: dataSourceName,
+          project: pkg.name,
+          homepage: pkg.homepage,
+          published: new Date().toISOString(),
+          version,
+        },
+        null,
+        "  "
+      ),
     })
     .promise();
 }
@@ -302,9 +363,9 @@ export async function invalidateCloudfrontDistribution(name: string) {
         CallerReference: new Date().toISOString(),
         Paths: {
           Quantity: 1,
-          Items: ["/metadata.json"]
-        }
-      }
+          Items: ["/metadata.json"],
+        },
+      },
     })
     .promise();
   return details;
@@ -322,13 +383,13 @@ export async function getCloudfrontDistributionDetails(
   const id = bucketName(name);
   const result = await cloudfront
     .listDistributions({
-      MaxItems: "10000"
+      MaxItems: "10000",
     })
     .promise();
   for (const distro of result.DistributionList?.Items || []) {
     const r = await cloudfront
       .listTagsForResource({
-        Resource: distro.ARN
+        Resource: distro.ARN,
       })
       .promise();
     for (const tag of r.Tags.Items || []) {
@@ -336,7 +397,7 @@ export async function getCloudfrontDistributionDetails(
         return {
           arn: distro.ARN,
           location: distro.DomainName,
-          id: distro.Id
+          id: distro.Id,
         };
       }
     }
@@ -374,12 +435,12 @@ export async function scheduleObjectsForDeletion(
   try {
     ({ Rules } = await s3
       .getBucketLifecycleConfiguration({
-        Bucket: bucketName(dataSourceName)
+        Bucket: bucketName(dataSourceName),
       })
       .promise());
     // Delete existing rules that are too old
     if (Rules) {
-      Rules = Rules?.filter(Rule => {
+      Rules = Rules?.filter((Rule) => {
         if (Rule.Expiration && Rule.Expiration.Date) {
           // Keep rules around 24 hours after their expiration date to make sure
           // they execute
@@ -401,20 +462,20 @@ export async function scheduleObjectsForDeletion(
   midnight.setUTCHours(48, 0, 0);
   Rules.push({
     Expiration: {
-      Date: midnight
+      Date: midnight,
     },
     Status: "Enabled",
     Filter: {
-      Prefix: `${version}/`
+      Prefix: `${version}/`,
     },
-    ID: `delete-${version}`
+    ID: `delete-${version}`,
   });
   await s3
     .putBucketLifecycleConfiguration({
       Bucket: bucketName(dataSourceName),
       LifecycleConfiguration: {
-        Rules: Rules
-      }
+        Rules: Rules,
+      },
     })
     .promise();
   return midnight;

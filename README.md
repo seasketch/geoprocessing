@@ -70,6 +70,10 @@ The solution for large datasets is to subdivide them into reasonably sized chunk
 
 ![subdivision process](https://user-images.githubusercontent.com/511063/79161015-a0375e80-7d8f-11ea-87a9-0658777f2f90.jpg)
 
+#### Deploying raster data for use in reports
+
+Most raster datasets will require separate processing and uploading to s3 for use within geoprocessing functions. Rasters should be converted to cloud optimized geotiffs (COGs) that can be retrieved in an efficient manner from cloud storage. Converting a geotif to a COG can be done by using gdal libraries. An example of this process can be [found here](https://github.com/mcclintock-lab/bermuda-next-reports/blob/master/data/prep_bathymetry_raster_data.sh). (NOTE: the raster functionality uses the geoblaze.js library, which does not currently support COGs, so the full raster will be downloaded for processing. Running the COG conversion is still useful, though, for when COGs are fully supported in the code). 
+
 ### Running unit tests
 
 When generating geoprocessing function templates using npm scripts, two test files will also be created (e.g. `functions/myFunctionSmoke.test.ts` and `functions/myFunctionUnit.test.ts` ). The smoke tests have 2 objectives: make sure your function exists and write out the results of the runs with the example sketches. The unit tests execute the functions and can be used to test correct output values. All unit tests can be run using `npm test`. This template by default will run your function against all sketches in `examples/sketches` and save the output to `examples/output`, which will be used when debugging the geoprocessing clients. 

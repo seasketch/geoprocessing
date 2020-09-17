@@ -57,6 +57,7 @@
     "@turf/invariant": "^6.1.2",
     "@turf/length": "^6.0.2",
     "@turf/rewind": "^5.1.5",
+    "@turf/union": "^6.0.3",
     "@types/aws-lambda": "^8.10.51",
     "@types/bytes": "^3.1.0",
     "@types/cli-progress": "^3.7.0",

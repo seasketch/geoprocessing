@@ -98,7 +98,7 @@ const inspectTable = async (
     );
   }
   const pkColumn = primaryKeyInfo["attname"];
-  const pkIndex = indexes.rows.find(i => i.column === pkColumn);
+  const pkIndex = indexes.rows.find((i) => i.column === pkColumn);
   if (!pkIndex) {
     throw new Error(`Could not find index for pk "${pkColumn}"`);
   }
@@ -120,7 +120,8 @@ const inspectTable = async (
       `SRID must be 4326. Set using SELECT UpdateGeometrySRID('${tableName}','${geometryColumn}',4326)`
     );
   }
-  if (gColData.type !== "POLYGON") {
+
+  if (gColData.type !== "POLYGON" && gColData.type !== "LINESTRING") {
     throw new Error(
       `Geometry type must be POLYGON. Found ${gColData.type}. Try ST_Dump or if already polygons, ALTER TABLE ${tableName} ALTER COLUMN ${geometryColumn} type geometry(Polygon, 4326);`
     );
@@ -148,9 +149,9 @@ const inspectTable = async (
   return {
     columns: {
       geometry: geometryColumn,
-      pk: pkColumn
+      pk: pkColumn,
     },
-    count
+    count,
   };
 };
 

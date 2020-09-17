@@ -9,9 +9,6 @@ import {
   GeoJsonProperties,
   Geometry,
 } from "geojson";
-//import { multiPolygon, polygon, Properties } from "@turf/helpers";
-//import { getGeom } from "@turf/invariant";
-//import polygonClipping from "polygon-clipping";
 
 //@ts-ignore
 import booleanOverlap from "@turf/boolean-overlap";
@@ -259,11 +256,18 @@ export const intersect = (poly1, poly2) => {
   var geom1 = invariant.getGeom(poly1);
   var geom2 = invariant.getGeom(poly2);
   if (geom1.type === "Polygon" && geom2.type === "Polygon") {
-    var intersection = martinez.intersection(
-      geom1.coordinates,
-      geom2.coordinates
-    );
-    if (intersection === null || intersection.length === 0) {
+    let intersection: martinez.Geometry | null = null;
+    try {
+      //@ts-ignore
+      intersection = martinez.intersection(
+        geom1.coordinates,
+        geom2.coordinates
+      );
+    } catch (err) {
+      //eat these for now
+    }
+
+    if (intersection === null || intersection?.length === 0) {
       return null;
     }
     if (intersection.length === 1) {

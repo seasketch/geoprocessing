@@ -31,7 +31,7 @@ export function addProps(
 }
 
 export const getSketchIntersectList = (
-  sketch: Sketch,
+  sketch: Feature,
   data: FeatureCollection | Feature[],
   propNamesToInclude: string[]
 ): FeatureCollection<Geometry, GeoJsonProperties> => {
@@ -106,7 +106,6 @@ export const getIntersectList = (
   propNamesToInclude: string[]
 ): FeatureCollection<Geometry, GeoJsonProperties> => {
   let f1: Feature[] = data1.features;
-
   let f2: Feature[] = data2.features;
 
   let overlappingList: Feature<Geometry, GeoJsonProperties>[] = [];

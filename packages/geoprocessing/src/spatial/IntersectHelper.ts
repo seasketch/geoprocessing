@@ -43,9 +43,9 @@ export const getSketchIntersectList = (
   }
 
   let overlappingList: Feature<Geometry, GeoJsonProperties>[] = [];
-  let poly1 = sketch.geometry;
+  let p1Poly = sketch.geometry;
 
-  let p1Poly = buffer(sketch as Feature, 0);
+  //let p1Poly = buffer(sketch as Feature, 0);
 
   //let p1Poly = sketch.geometry as Polygon | MultiPolygon;
   for (let j = 0; j < f2.length; j++) {
@@ -59,18 +59,13 @@ export const getSketchIntersectList = (
       } else {
         newProps = {};
       }
-      let p2Poly;
-      try {
-        p2Poly = buffer(poly2, 0);
-      } catch (err) {
-        continue;
-      }
+      let p2Poly = poly2;
 
       //let p2Poly = sketch.geometry as Polygon | MultiPolygon;
-      if (p1Poly && p2Poly && p1Poly.geometry && p2Poly.geometry) {
+      if (p1Poly && p2Poly && p2Poly.geometry) {
         try {
           let overlap = intersect(
-            p1Poly.geometry as Polygon | MultiPolygon,
+            p1Poly as Polygon | MultiPolygon,
             p2Poly.geometry as Polygon | MultiPolygon
           );
           let feature: Feature = {
@@ -78,15 +73,27 @@ export const getSketchIntersectList = (
             properties: newProps,
             geometry: overlap?.geometry as Polygon | MultiPolygon,
           };
-
           if (overlap != null) {
             overlappingList.push(feature);
           }
         } catch (err) {
-          console.log(
-            "blew up while intersecting, skipping this polygon: ",
-            err
-          );
+          try {
+            //if it blows up, try to buffer, but not before, its too slow
+            let p1Buff = buffer(sketch as Feature, 0);
+            let p2Buff = buffer(poly2, 0);
+            let overlap = intersect(p1Buff, p2Buff);
+            let feature: Feature = {
+              type: "Feature",
+              properties: newProps,
+              geometry: overlap?.geometry as Polygon | MultiPolygon,
+            };
+
+            if (overlap != null) {
+              overlappingList.push(feature);
+            }
+          } catch (err) {
+            continue;
+          }
         }
       }
     }
@@ -321,7 +328,6 @@ export const intersect = (poly1, poly2) => {
       return helpers.multiPolygon(resultCoords, options.properties);
     }
   } else if (geom2.type === "MultiPolygon") {
-    console.log("poly to multipoly");
     // geom1 is a polygon and geom2 a multiPolygon,
     // put the multiPolygon first and fallback to the previous case.
     //@ts-ignore

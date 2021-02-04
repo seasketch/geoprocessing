@@ -33,11 +33,9 @@ const StyledCheckbox = styled.div`
   background: ${(props) => "lightgray"}
   border-radius: 3px;
   transition: all 150ms;
-
   ${HiddenCheckbox}:focus + & {
     box-shadow: 0 0 0 0px;
   }
-
   ${Icon} {
     visibility: ${(props) => (props.checked ? "visible" : "hidden")}
   }
@@ -47,6 +45,7 @@ const StyledCheckbox = styled.div`
 const CheckboxRender = ({ className, checked, ...props }) => (
   <CheckboxContainer className={className}>
     <HiddenCheckbox checked={checked} {...props} />
+
     <StyledCheckbox checked={checked}>
       <Icon viewBox="0 0 24 24">
         <polyline points="20 6 9 17 4 12" />
@@ -68,6 +67,7 @@ export class Checkbox extends React.Component {
   }
 
   handleCheckboxChange(event: any) {
+    console.log("checked!!");
     this.setState({ checked: event.target.checked });
     if (this.state.onChangeCallback) {
       this.state.onChangeCallback(event.target.checked);

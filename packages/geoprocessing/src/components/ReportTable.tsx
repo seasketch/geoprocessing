@@ -48,15 +48,24 @@ class ReportTable extends React.Component<any, any> {
     this.state = {
       data: props.data,
       columns: props.columns,
+      pageSize: props.pageSize,
+      sortOptions: props.sortOptions,
+      filters: props.filters,
     };
   }
 
   render() {
-    return (
-      <Styles>
-        <BaseTable columns={this.state.columns} data={this.state.data} />
-      </Styles>
+    let base = (
+      <div>
+        <BaseTable
+          props={this.state}
+          columns={this.state.columns}
+          data={this.state.data}
+        />
+      </div>
     );
+
+    return <Styles>{base}</Styles>;
   }
 }
 

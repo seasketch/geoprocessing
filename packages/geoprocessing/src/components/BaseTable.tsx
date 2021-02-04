@@ -11,14 +11,7 @@ import {
   useExpanded,
   useRowSelect,
 } from "react-table";
-/*
-import {
-  ArrowToLeft,
-  LeftArrowAlt,
-  ArrowToRight,
-  RightArrowAlt,
-} from "@styled-icons/boxicons-solid";
-*/
+
 import {
   ChevronLeft,
   ChevronsLeft,
@@ -37,7 +30,7 @@ const Button = styled.button`
 `;
 
 // Be sure to pass our updateMyData and the skipReset option
-export function BaseTable({ columns, data }) {
+export function BaseTable({ props, columns, data }) {
   const defaultColumn = React.useMemo(
     () => ({
       // Let's set up our default Filter UI
@@ -79,9 +72,11 @@ export function BaseTable({ columns, data }) {
     {
       columns,
       data,
+      initialState: { pageSize: props.pageSize, sortBy: props.sortOptions },
       defaultColumn,
       //@ts-ignore
       disableMultiSort: true,
+      sorted: props.sortOptions,
     },
     useSortBy,
     useExpanded,
@@ -93,6 +88,7 @@ export function BaseTable({ columns, data }) {
       });
     }
   );
+
   // Render the UI for your table
   return (
     <>
@@ -221,41 +217,5 @@ export function BaseTable({ columns, data }) {
     </>
   );
 }
-export default BaseTable;
 
-/*
-  //to allow the user to select the number of entries per page
-        <select
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value));
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-  add this back in if you want to see current state
-      <pre>
-        <code>
-          {JSON.stringify(
-            {
-              pageIndex,
-              pageSize,
-              pageCount,
-              canNextPage,
-              canPreviousPage,
-              sortBy,
-              groupBy,
-              expanded: expanded,
-              filters,
-              selectedRowIds: selectedRowIds,
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre>
-*/
+export default BaseTable;

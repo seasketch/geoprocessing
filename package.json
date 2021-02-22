@@ -8,13 +8,14 @@
     "@turf/line-intersect": "^6.0.2",
     "@turf/points-within-polygon": "^5.1.5",
     "@types/node": "^13.11.1",
+    "jest": "^26.6.3",
     "lerna": "^3.20.2"
   },
   "scripts": {
     "create_example": "node packages/geoprocessing/dist/scripts/init/createExampleProject.js"
   },
   "dependencies": {
-    "@seasketch/geoprocessing": "^0.8.4",
+    "@seasketch/geoprocessing": "^0.9.0",
     "typescript": "^3.9.2"
   }
 }

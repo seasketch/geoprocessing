@@ -28,6 +28,7 @@
     "geoblaze": "^0.2.6",
     "georaster": "^1.1.0",
     "geotiff": "^1.0.0-beta.13",
+    "jest": "^26.4.2",
     "styled-components": "^5.1.1",
     "sugarss": "^2.0.0",
     "tiny-worker": "^2.3.0"

@@ -99,7 +99,7 @@
     "humanize-duration": "^3.22.0",
     "inquirer": "^7.1.0",
     "inquirer-autocomplete-prompt": "^1.0.2",
-    "jest-runner": "^26.0.1",
+    "jest-runner": "^26.4.2",
     "jest-runner-groups": "^2.0.1",
     "martinez-polygon-clipping": "^0.7.0",
     "mnemonist": "^0.36.1",

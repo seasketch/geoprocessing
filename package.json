@@ -14,7 +14,6 @@
     "create_example": "node packages/geoprocessing/dist/scripts/init/createExampleProject.js"
   },
   "dependencies": {
-    "@seasketch/geoprocessing": "^0.9.0",
     "typescript": "^3.9.2"
   }
 }

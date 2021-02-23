@@ -8,8 +8,9 @@
   "scripts": {
     "test": "jest",
     "storybook": "start-storybook",
-    "build": "tsc && cd scripts && tsc",
-    "prepublishOnly": "npm run build"
+    "prepare": "tsc && cd scripts && tsc",
+    "watch": "npx tsc --watch",
+    "watch:scripts": "npx tsc --build scripts/tsconfig.json --watch"
   },
   "bin": {
     "run_tests": "dist/scripts/testing/runner.js",

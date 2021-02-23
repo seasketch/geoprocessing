@@ -146,7 +146,7 @@ You can use whatever code editor you want, however [VS Code](https://code.visual
 
 #### Make code changes
 
-Any changes you make to the Typescript code in `src` won't be reflected in the Javascript code in `dist` until you compile it.  You can do this a few different ways.  Watch modes are useful for actively development, new changes will be compiled automatically as you go.
+Any changes you make to the Typescript code in `src` won't be reflected in the Javascript code in `dist` until you compile it.  You can do this a few different ways.  Watch modes are useful for active development, new changes will be compiled automatically as you go.
 
 VS Code - Press Command+Shift+B to open the build menu
 * `geoprocessing build` - build core library

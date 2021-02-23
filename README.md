@@ -120,27 +120,44 @@ To contribute to @seasketch/geoprocessing please create a new branch for feature
 
 ## Installation
 
-This repository is setup as a "monorepo" managed by [Lerna](https://github.com/lerna/lerna), with two projects under `packages/`. These include the library itself and an example project that can be used to test functionality. To work on the library, checkout the repo and run lerna bootstrap.
+This repository is setup as a "monorepo" managed by [Lerna](https://github.com/lerna/lerna), with two packages under `packages/`. These include the geoprocessing library itself and an example project that can be used to test functionality. To work on the library, checkout the repo and run lerna bootstrap.
 
 ```sh
 mkdir @seasketch && cd @seasketch
 git clone https://github.com/seasketch/geoprocessing.git
 cd geoprocessing
-lerna bootstrap
-# bootstrap will install npm dependencies for both projects
+npx lerna bootstrap
+# bootstrap will install npm dependencies for both 
+```
+
+You should now be able to run unit tests for both packages
+```sh
 cd packages/geoprocessing
+npm test
+cd ../example-project
 npm test
 ```
 
 ## Editor setup and style guidelines
 
-The framework is written in TypeScript so having a good editor setup is crucial to take advantage of autocompletion and leverage type documentation. [VS Code](https://code.visualstudio.com/) is highly recommended and this project features editor settings to automatically format code on save, hide generated files, and run build steps. Once the project is open, VS Code will open a popup where you can install extension recommendations.
+You can use whatever code editor you want, however [VS Code](https://code.visualstudio.com/) provides some nice nice features for Typescript development and this project is configured to take advantage of them including autocompletion, built-in type docs, automatic code formatting on save, hide generated files, run build steps, etc.  To use them simply open the root folder of this repo in VS Code.  You should be prompted to install recommended workspace extensions on first load, but if you don't you can open the Extensions bar and `filter` for recommended.
 
-![Install All extentions screenshot](https://user-images.githubusercontent.com/511063/79138662-be8a6380-7d69-11ea-96f4-20a759192434.png)
+![Install All extensions screenshot](https://user-images.githubusercontent.com/511063/79138662-be8a6380-7d69-11ea-96f4-20a759192434.png)
 
-#### Important
+#### Make code changes
 
-As this is a typescript project, your changes may not be reflected until the project is compiled. This is most easily handled by VS Code. Press Command+Shift+B to open the build menu, and start **both** `build scripts/` and `tsc: watch packages/geoprocessing/tsconfig.json`.
+Any changes you make to the Typescript code in `src` won't be reflected in the Javascript code in `dist` until you compile it.  You can do this a few different ways.  Watch modes are useful for active development, new changes will be compiled automatically as you go.
+
+VS Code - Press Command+Shift+B to open the build menu
+* `geoprocessing build` - build core library
+* `geoprocessing build scripts` - build scripts only
+* `geoprocessing watch` - build core library and watch for changes
+* `geoprocessing watch scripts` - build scripts only and watch for changes
+
+CLI - from packages/geoprocessing folder
+* `npm run prepare` - build core library and scripts.  Also runs automatically on initial install and publish
+* `npm run watch` - build core library and watch for changes
+* `npm run watch:scripts` - build scripts only and watch for changes
 
 ## Storybook components
 

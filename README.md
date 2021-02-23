@@ -132,6 +132,13 @@ cd packages/geoprocessing
 npm test
 ```
 
+Now compile the geoprocessing library and scripts into Javascript and test with the example-project
+```sh
+npm run build
+cd ../example-project
+npm test
+```
+
 ## Editor setup and style guidelines
 
 The framework is written in TypeScript so having a good editor setup is crucial to take advantage of autocompletion and leverage type documentation. [VS Code](https://code.visualstudio.com/) is highly recommended and this project features editor settings to automatically format code on save, hide generated files, and run build steps. Once the project is open, VS Code will open a popup where you can install extension recommendations.

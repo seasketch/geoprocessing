@@ -8,7 +8,8 @@
   "scripts": {
     "test": "jest",
     "storybook": "start-storybook",
-    "prepublishOnly": "tsc && cd scripts && tsc"
+    "build": "tsc && cd scripts && tsc",
+    "prepublishOnly": "npm run build"
   },
   "bin": {
     "run_tests": "dist/scripts/testing/runner.js",

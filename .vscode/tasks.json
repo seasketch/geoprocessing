@@ -4,6 +4,31 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "geoprocessing build",
+      "type": "typescript",
+      "tsconfig": "packages/geoprocessing/tsconfig.json",
+      "problemMatcher": [
+        "$tsc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "geoprocessing build scripts",
+      "type": "shell",
+      "command": "./packages/geoprocessing/node_modules/.bin/tsc --build packages/geoprocessing/scripts/tsconfig.json",
+      "problemMatcher": [
+        "$tsc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "geoprocessing watch",
       "type": "typescript",
       "tsconfig": "packages/geoprocessing/tsconfig.json",
       "option": "watch",
@@ -16,7 +41,7 @@
       }
     },
     {
-      "label": "build scripts/",
+      "label": "geoprocessing watch scripts",
       "type": "shell",
       "command": "./packages/geoprocessing/node_modules/.bin/tsc --build packages/geoprocessing/scripts/tsconfig.json --watch",
       "problemMatcher": [

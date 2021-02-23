@@ -155,7 +155,7 @@ VS Code - Press Command+Shift+B to open the build menu
 * `geoprocessing watch scripts` - build scripts only and watch for changes
 
 CLI - from packages/geoprocessing folder
-* `npm run prepare` - build core library and scripts
+* `npm run prepare` - build core library and scripts.  Also runs automatically on initial install and publish
 * `npm run watch` - build core library and watch for changes
 * `npm run watch:scripts` - build scripts only and watch for changes
 

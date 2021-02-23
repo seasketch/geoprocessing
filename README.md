@@ -127,15 +127,12 @@ mkdir @seasketch && cd @seasketch
 git clone https://github.com/seasketch/geoprocessing.git
 cd geoprocessing
 npx lerna bootstrap
-# bootstrap will install npm dependencies for both 
+# bootstrap will install npm dependencies for both and prepare initial build
 ```
 
 You should now be able to run unit tests for both packages
 ```sh
-cd packages/geoprocessing
-npm test
-cd ../example-project
-npm test
+npx lerna run test
 ```
 
 ## Editor setup and style guidelines

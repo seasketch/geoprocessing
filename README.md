@@ -126,7 +126,7 @@ This repository is setup as a "monorepo" managed by [Lerna](https://github.com/l
 mkdir @seasketch && cd @seasketch
 git clone https://github.com/seasketch/geoprocessing.git
 cd geoprocessing
-lerna bootstrap
+npx lerna bootstrap
 # bootstrap will install npm dependencies for both projects
 cd packages/geoprocessing
 npm test

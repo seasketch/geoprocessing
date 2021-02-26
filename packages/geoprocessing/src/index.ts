@@ -11,7 +11,7 @@ export { PreprocessingHandler, ValidationError } from "./PreprocessingHandler";
 import sketchArea from "@turf/area";
 export { sketchArea };
 export { version } from "../package.json";
-export { VectorDataSource } from "./VectorDataSource";
+export { VectorDataSource, VectorFeature } from "./VectorDataSource";
 
 //best place to put these?
 import {

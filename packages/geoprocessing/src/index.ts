@@ -12,6 +12,7 @@ import sketchArea from "@turf/area";
 export { sketchArea };
 export { version } from "../package.json";
 export { VectorDataSource, VectorFeature } from "./VectorDataSource";
+export * from "./helpers";
 
 //best place to put these?
 import {

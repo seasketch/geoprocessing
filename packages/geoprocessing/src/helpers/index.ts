@@ -1,0 +1,1 @@
+export { isPolygon } from "./isPolygon";

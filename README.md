@@ -89,6 +89,10 @@ You can also run a target test by using the -t option, for example, running just
 npm test -- -t=areaTest #run target test 'areaTest'
 ```
 
+### Debugging unit tests
+
+Each project you create includes a debug launcher which is useful for debugging your function.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of your tests or in one of your functions, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
+
 #### More resources
 
   * [Preprocessing functions (TODO:)]()
@@ -158,7 +162,7 @@ CLI - from packages/geoprocessing folder
 
 ## Debugging
 
-When writing tests for your functions, you can use the VSCode debugger to set breakpoints and step through them.  Just add a breakpoint or a `debugger` call in one of your unit tests, then click the `Debug` menu in the left toolbar and select "Debug Tests".
+The geoprocessing library and example-project both provide debug launchers for their test suite, just as the project template does.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of the core tests, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
 
 ## Storybook components
 

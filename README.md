@@ -89,6 +89,10 @@ You can also run a target test by using the -t option, for example, running just
 npm test -- -t=areaTest #run target test 'areaTest'
 ```
 
+### Debugging unit tests
+
+Each project you create includes a debug launcher which is useful for debugging your function.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of your tests or in one of your functions, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
+
 #### More resources
 
   * [Preprocessing functions (TODO:)]()
@@ -141,7 +145,7 @@ You can use whatever code editor you want, however [VS Code](https://code.visual
 
 ![Install All extensions screenshot](https://user-images.githubusercontent.com/511063/79138662-be8a6380-7d69-11ea-96f4-20a759192434.png)
 
-#### Make code changes
+## Make code changes
 
 Any changes you make to the Typescript code in `src` won't be reflected in the Javascript code in `dist` until you compile it.  You can do this a few different ways.  Watch modes are useful for active development, new changes will be compiled automatically as you go.
 
@@ -156,6 +160,10 @@ CLI - from packages/geoprocessing folder
 * `npm run watch` - build core library and watch for changes
 * `npm run watch:scripts` - build scripts only and watch for changes
 
+## Debugging
+
+The geoprocessing library and example-project both provide debug launchers for their test suite, just as the project template does.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of the core tests, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
+
 ## Storybook components
 
 The framework has it's own storybook project that can be launched using `npm run storybook`. These components and their stories can be found under `packages/geoprocessing/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.
@@ -168,7 +176,11 @@ because of the varying environments under which the code may run. A good methodo
 To test with projects other than `example-project` on your local machine, npm link is a handy tool. From within `packages/geoprocessing` run the command `npm link`. This will make the library available to other packages locally (assuming the same version of node. watch out nvm users!). Then change to you project directory and run `npm link @seasketch/geoprocessing`. Any changes you make to the library will automatically be reflected in your geoprocessing implementation. Just watch out for a couple common problems:
 
   1. Make sure VSCode is running the two build processes, and they complete without errors. Implementations import code from `dist/`, not the source typescript files.
-  2. Running npm install within your geoprocessing project can interact oddly with npm link. If you suspect problems run the linking process again.
+  2. Running npm install within your geoprocessing project can interact oddly with npm link and produce errors. If you suspect problems redo the linking process again after all your installs. You will need to run `npm unlink @seasketch/geoprocessing --no-save` in your project directory.  You can then try and relink.
+  
+  Further link troubleshooting steps:
+  * If still issue you can fully unlink and relink the geoprocessing project as a global npm package. `npm unlink @seasketch/geoprocessing` in the geoprocessing package.  If you run `npm list -g --depth 0` and still see the geoprocessing package globally then also run `npm unlink -g @seasketch/geoprocessing`.  Now follow the complete steps again to relink.
+  * If still issue, then consider also deleting your `node_modules` directory and `package-lock.json` file in your project directory to start fresh as they may have been put into an incosistent state by the linking.
 
 ## Publishing
 

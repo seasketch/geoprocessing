@@ -1,0 +1,34 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+        "name": "geoprocessing - debug tests",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/packages/geoprocessing",
+        "runtimeArgs": [
+          "--inspect-brk",
+          "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest"
+        ],
+        "console": "integratedTerminal",
+        "internalConsoleOptions": "neverOpen",
+        "port": 9229        
+    }, {
+      "name": "example-project - debug tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/example-project",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/example-project/node_modules/.bin/geoprocessing",
+        "test"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229        
+  }
+  ]
+}

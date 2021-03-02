@@ -22,6 +22,23 @@ export async function getExampleSketches(): Promise<
   return sketches;
 }
 
+/**
+ * Convenience function returns object with sketches keyed by name
+ */
+export async function getExampleSketchesByName(): Promise<{
+  [key: string]: Sketch | SketchCollection;
+}> {
+  const sketches = await getExampleSketches();
+  return sketches.reduce<{
+    [key: string]: Sketch | SketchCollection;
+  }>((sketchObject, s) => {
+    return {
+      ...sketchObject,
+      [s.properties.name]: s,
+    };
+  }, {});
+}
+
 export async function writeResultOutput(
   results: any,
   functionName: string,

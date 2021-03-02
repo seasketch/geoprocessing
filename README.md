@@ -156,6 +156,10 @@ CLI - from packages/geoprocessing folder
 * `npm run watch` - build core library and watch for changes
 * `npm run watch:scripts` - build scripts only and watch for changes
 
+## Debugging
+
+When writing tests for your functions, you can use the VSCode debugger to set breakpoints and step through them.  Just add a breakpoint or a `debugger` call in one of your unit tests, then click the `Debug` menu in the left toolbar and select "Debug Tests".
+
 ## Storybook components
 
 The framework has it's own storybook project that can be launched using `npm run storybook`. These components and their stories can be found under `packages/geoprocessing/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.

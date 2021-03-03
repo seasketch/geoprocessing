@@ -1,1 +1,3 @@
-export { isPolygon } from "./isPolygon";
+export * from "./isPolygon";
+export * from "./martinez";
+export * from "./fs";

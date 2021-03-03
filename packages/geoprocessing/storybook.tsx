@@ -22,7 +22,8 @@ export const registerExampleStories = (
           projectUrl: "https://example.com/project",
           exampleOutputs: examples.outputs.filter(
             (o: TestExampleOutput) => o.sketchName === sketch.properties.name
-          )
+          ),
+          visibleLayers: [],
         }}
       >
         <Component />
@@ -37,11 +38,12 @@ export const registerExampleStories = (
         sketchProperties: {
           name: "My Sketch",
           updatedAt: new Date().toISOString(),
-          sketchClassId: "abc123"
+          sketchClassId: "abc123",
         } as SketchProperties,
         projectUrl: "https://example.com/project",
         exampleOutputs: [],
-        simulateLoading: true
+        simulateLoading: true,
+        visibleLayers: [],
       }}
     >
       <Component />
@@ -55,11 +57,12 @@ export const registerExampleStories = (
         sketchProperties: {
           name: "My Sketch",
           updatedAt: new Date().toISOString(),
-          sketchClassId: "abc123"
+          sketchClassId: "abc123",
         } as SketchProperties,
         projectUrl: "https://example.com/project",
         exampleOutputs: [],
-        simulateError: "Internal server error"
+        simulateError: "Internal server error",
+        visibleLayers: [],
       }}
     >
       <Component />

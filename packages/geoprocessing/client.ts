@@ -8,3 +8,4 @@ export { default as Skeleton } from "./src/components/Skeleton";
 export { default as ReportTable } from "./src/components/ReportTable";
 export { Checkbox as Checkbox } from "./src/components/Checbox";
 export { intersect } from "./src/spatial/IntersectHelper";
+export { default as LayerToggle } from "./src/components/LayerToggle";

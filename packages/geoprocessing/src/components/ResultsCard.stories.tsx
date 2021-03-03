@@ -9,7 +9,7 @@ import Skeleton from "./Skeleton";
 export default {
   component: ResultsCard,
   title: "Components|ResultsCard",
-  decorators: [ReportDecorator]
+  decorators: [ReportDecorator],
 };
 
 export const usage = () => (
@@ -19,7 +19,7 @@ export const usage = () => (
       sketchProperties: {
         name: "My Sketch",
         updatedAt: new Date().toISOString(),
-        sketchClassId: "abc123"
+        sketchClassId: "abc123",
       } as SketchProperties,
       projectUrl: "https://example.com/project",
       exampleOutputs: [
@@ -27,10 +27,11 @@ export const usage = () => (
           functionName: "area",
           sketchName: "My Sketch",
           results: {
-            area: 704
-          }
-        }
-      ]
+            area: 704,
+          },
+        },
+      ],
+      visibleLayers: [],
     }}
   >
     <ResultsCard title="Card Title" functionName="area">
@@ -53,7 +54,7 @@ export const loadingState = () => (
       sketchProperties: {
         name: "My Sketch",
         updatedAt: new Date().toISOString(),
-        sketchClassId: "abc123"
+        sketchClassId: "abc123",
       } as SketchProperties,
       projectUrl: "https://example.com/project",
       exampleOutputs: [
@@ -61,11 +62,12 @@ export const loadingState = () => (
           functionName: "area",
           sketchName: "My Sketch",
           results: {
-            area: 704
-          }
-        }
+            area: 704,
+          },
+        },
       ],
-      simulateLoading: true
+      simulateLoading: true,
+      visibleLayers: [],
     }}
   >
     <ResultsCard title="Card Title" functionName="area">
@@ -88,7 +90,7 @@ export const customSkeleton = () => (
       sketchProperties: {
         name: "My Sketch",
         updatedAt: new Date().toISOString(),
-        sketchClassId: "abc123"
+        sketchClassId: "abc123",
       } as SketchProperties,
       projectUrl: "https://example.com/project",
       exampleOutputs: [
@@ -96,11 +98,13 @@ export const customSkeleton = () => (
           functionName: "area",
           sketchName: "My Sketch",
           results: {
-            area: 704
-          }
-        }
+            area: 704,
+          },
+        },
       ],
-      simulateLoading: true
+      simulateLoading: true,
+
+      visibleLayers: [],
     }}
   >
     <ResultsCard
@@ -136,7 +140,7 @@ export const errorState = () => (
       sketchProperties: {
         name: "My Sketch",
         updatedAt: new Date().toISOString(),
-        sketchClassId: "abc123"
+        sketchClassId: "abc123",
       } as SketchProperties,
       projectUrl: "https://example.com/project",
       exampleOutputs: [
@@ -144,11 +148,12 @@ export const errorState = () => (
           functionName: "area",
           sketchName: "My Sketch",
           results: {
-            area: 704
-          }
-        }
+            area: 704,
+          },
+        },
       ],
-      simulateError: "Internal server error"
+      simulateError: "Internal server error",
+      visibleLayers: [],
     }}
   >
     <ResultsCard title="Card Title" functionName="area">

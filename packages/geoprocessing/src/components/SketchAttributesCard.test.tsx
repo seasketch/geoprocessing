@@ -21,17 +21,18 @@ test("SketchAttributesCard renders all userAttributes", () => {
               exportId: "field1",
               label: "Field 1",
               fieldType: "TextField",
-              value: "hi there"
+              value: "hi there",
             },
             {
               exportId: "field2",
               label: "Number",
               fieldType: "NumberField",
-              value: 1
-            }
-          ]
+              value: 1,
+            },
+          ],
         },
-        projectUrl: "https://example.com/project"
+        projectUrl: "https://example.com/project",
+        visibleLayers: [],
       }}
     >
       <SketchAttributesCard />
@@ -58,17 +59,18 @@ test("Can deal with null values", () => {
               exportId: "field1",
               label: "Field 1",
               fieldType: "TextField",
-              value: "hi there"
+              value: "hi there",
             },
             {
               exportId: "field2",
               label: "Number",
               fieldType: "NumberField",
-              value: null
-            }
-          ]
+              value: null,
+            },
+          ],
         },
-        projectUrl: "https://example.com/project"
+        projectUrl: "https://example.com/project",
+        visibleLayers: [],
       }}
     >
       <SketchAttributesCard />
@@ -90,9 +92,10 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
           sketchClassId: "123abc",
           name: "My Sketch",
           userAttributes: [],
-          isCollection: false
+          isCollection: false,
         },
-        projectUrl: "https://example.com/project"
+        projectUrl: "https://example.com/project",
+        visibleLayers: [],
       }}
     >
       <SketchAttributesCard autoHide={true} />
@@ -110,9 +113,10 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
           sketchClassId: "123abc",
           name: "My Sketch",
           userAttributes: [],
-          isCollection: false
+          isCollection: false,
         },
-        projectUrl: "https://example.com/project"
+        projectUrl: "https://example.com/project",
+        visibleLayers: [],
       }}
     >
       <SketchAttributesCard autoHide={false} />
@@ -135,17 +139,18 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
               exportId: "field1",
               label: "Field 1",
               fieldType: "TextField",
-              value: "hi there"
+              value: "hi there",
             },
             {
               exportId: "field2",
               label: "Number",
               fieldType: "NumberField",
-              value: 1
-            }
-          ]
+              value: 1,
+            },
+          ],
         },
-        projectUrl: "https://example.com/project"
+        projectUrl: "https://example.com/project",
+        visibleLayers: [],
       }}
     >
       <SketchAttributesCard autoHide={true} />

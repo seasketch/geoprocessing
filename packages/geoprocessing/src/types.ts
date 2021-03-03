@@ -178,6 +178,22 @@ export interface SeaSketchReportingMessageEvent {
   sketchProperties: SketchProperties;
   geometryUri: string;
   type: "SeaSketchReportingMessageEventType";
+  /* List of ids for layers which are visible in the table of contents */
+  visibleLayers?: string[];
+}
+
+export const SeaSketchReportingVisibleLayersChangeEvent =
+  "SeaSketchReportingVisibleLayersChangeEvent";
+
+export interface SeaSketchReportingVisibleLayersChangeEvent {
+  visibleLayers: string[];
+  type: "SeaSketchReportingVisibleLayersChangeEvent";
+}
+
+export interface SeaSketchReportingToggleLayerVisibilityEvent {
+  layerId: string;
+  on: boolean;
+  type: "SeaSketchReportingToggleLayerVisibilityEvent";
 }
 
 export interface PreprocessingRequest {

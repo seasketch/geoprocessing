@@ -7,7 +7,7 @@ import { GeoprocessingProject } from "../types";
 export default {
   component: SketchAttributesCard,
   title: "Components|SketchAttributesCard",
-  decorators: [ReportDecorator]
+  decorators: [ReportDecorator],
 };
 
 export const simple = () => (
@@ -25,18 +25,20 @@ export const simple = () => (
             exportId: "DESIGNATION",
             fieldType: "ChoiceField",
             label: "Designation",
-            value: "Marine Reserve"
+            value: "Marine Reserve",
           },
           {
             exportId: "COMMENTS",
             fieldType: "TextArea",
             label: "Comments",
-            value: "This is my MPA and it is going to be the greatest. Amazing."
-          }
-        ]
+            value:
+              "This is my MPA and it is going to be the greatest. Amazing.",
+          },
+        ],
       },
       geometryUri: "",
-      projectUrl: "https://example.com/project"
+      projectUrl: "https://example.com/project",
+      visibleLayers: [],
     }}
   >
     <SketchAttributesCard title="Attributes" />

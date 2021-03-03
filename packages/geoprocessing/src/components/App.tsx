@@ -4,9 +4,12 @@ import {
   SeaSketchReportingMessageEventType,
   SketchProperties,
   GeoprocessingProject,
+  SeaSketchReportingVisibleLayersChangeEvent,
+  SeaSketchReportingToggleLayerVisibilityEvent,
 } from "../types";
 import ReportContext from "../ReportContext";
 import ReactDOM from "react-dom";
+import { report } from "process";
 
 const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);
@@ -20,6 +23,9 @@ interface ReportContextState {
   clientName: string;
   sketchProperties: SketchProperties;
   geometryUri: string;
+  /* List of ids for layers which are visible in the table of contents */
+  visibleLayers: string[];
+  toggleLayerVisibility: (layerId: string) => void;
 }
 
 const App = () => {
@@ -29,13 +35,59 @@ const App = () => {
   const [initialized, setInitialized] = useState(false);
   const onMessage = (event: MessageEvent) => {
     try {
-      const message: SeaSketchReportingMessageEvent = event.data;
-      if (message && message.type === SeaSketchReportingMessageEventType) {
+      if (
+        event.data &&
+        event.data.type === SeaSketchReportingMessageEventType
+      ) {
+        const message: SeaSketchReportingMessageEvent = event.data;
         setReportContext({
           sketchProperties: message.sketchProperties,
           geometryUri: message.geometryUri,
           clientName: message.client,
+          visibleLayers: message.visibleLayers || [],
+          toggleLayerVisibility: (layerId: string) => {
+            setReportContext((prev) => {
+              if (prev) {
+                const wasToggled = prev.visibleLayers.indexOf(layerId) !== -1;
+                let target: Window = window;
+                if (window.parent) {
+                  target = window.parent;
+                }
+                target.postMessage(
+                  {
+                    type: "SeaSketchReportingToggleLayerVisibilityEvent",
+                    layerId,
+                    on: !wasToggled,
+                  } as SeaSketchReportingToggleLayerVisibilityEvent,
+                  "*"
+                );
+                return {
+                  ...prev,
+                  visibleLayers: wasToggled
+                    ? prev.visibleLayers.filter((id) => id !== layerId)
+                    : [...prev.visibleLayers, layerId],
+                };
+              } else {
+                return null;
+              }
+            });
+          },
         });
+      } else if (
+        event.data &&
+        event.data.type === SeaSketchReportingVisibleLayersChangeEvent
+      ) {
+        const message: SeaSketchReportingVisibleLayersChangeEvent = event.data;
+        // Don't update context unless report is already initialized with SeaSketchReportingMessageEvent
+        if (reportContext) {
+          setReportContext((prev) => {
+            if (prev) {
+              return { ...prev, visibleLayers: message.visibleLayers };
+            } else {
+              return null;
+            }
+          });
+        }
       }
     } catch (e) {
       // Do nothing. Might not even be related to SeaSketch reporting

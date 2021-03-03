@@ -38,6 +38,7 @@ const ContextWrapper: React.FunctionComponent<{
         sketchProperties,
         projectUrl: "https://example.com/project",
         ...(props.value || {}),
+        visibleLayers: [],
       }}
     >
       {props.children}
@@ -184,6 +185,7 @@ const TestContainer: React.FunctionComponent = (props) => {
           props.sketchProperties || makeSketchProperties(sketchId.toString()),
         geometryUri: `https://example.com/geometry/${sketchId}`,
         projectUrl: "https://example.com/project",
+        visibleLayers: [],
       }}
     >
       <button onClick={() => setSketchId(sketchId + 1)}>

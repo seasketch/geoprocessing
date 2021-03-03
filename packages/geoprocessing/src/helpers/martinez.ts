@@ -3,9 +3,9 @@ import { getGeom } from "@turf/invariant";
 import { feature, multiPolygon, polygon } from "@turf/helpers";
 import * as martinez from "martinez-polygon-clipping";
 
-/* Helpers for martinez library */
+/* Wrappers for martinez library */
 
-export function polyDifference(
+export function difference(
   polygon1: Feature<Polygon | MultiPolygon>,
   polygon2: Feature<Polygon | MultiPolygon>
 ): Feature<Polygon | MultiPolygon> | null {
@@ -24,7 +24,7 @@ export function polyDifference(
   return multiPolygon(differenced, properties);
 }
 
-export function polyIntersect(
+export function intersect(
   polygon1: Feature<Polygon | MultiPolygon>,
   polygon2: Feature<Polygon | MultiPolygon>
 ): Feature<Polygon | MultiPolygon> | null {

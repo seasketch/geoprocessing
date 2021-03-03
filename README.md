@@ -124,19 +124,17 @@ To contribute to @seasketch/geoprocessing please create a new branch for feature
 
 ## Installation
 
-This repository is setup as a "monorepo" managed by [Lerna](https://github.com/lerna/lerna), with two packages under `packages/`. These include the geoprocessing library itself and an example project that can be used to test functionality. To work on the library, checkout the repo and run lerna bootstrap.
+This repository is setup as a "monorepo" managed by [Lerna](https://github.com/lerna/lerna), with two packages under `packages/`. These include the geoprocessing library itself and an example project that can be used to test functionality. To work on the library, checkout the repo and run the install script.  This will install lerna, bootstrap each package, and prepare an initial build of the geoprocessing library.
 
 ```sh
-mkdir @seasketch && cd @seasketch
 git clone https://github.com/seasketch/geoprocessing.git
 cd geoprocessing
-npx lerna bootstrap
-# bootstrap will install npm dependencies for both and prepare initial build
+npm install
 ```
 
-You should now be able to run unit tests for both packages
+You should now be able to run unit tests for all packages
 ```sh
-npx lerna run test
+npm run test
 ```
 
 ## Editor setup and style guidelines
@@ -170,8 +168,7 @@ The framework has it's own storybook project that can be launched using `npm run
 
 ## Testing integration with project implementations
 
-Testing modifications to the framework, particularly build steps, can be tricky
-because of the varying environments under which the code may run. A good methodology is to first create unit tests and verify that they run, then modify `packages/example-project` and its unit tests and verify the tests run and `npm run build` steps work. It is not uncommon for these steps to pass and for bugs to still appear after publishing of the framework, so manual testing after publishing should be done as well.
+Testing modifications to the framework, particularly build steps, can be tricky because of the varying environments under which the code may run. A good methodology is to first create unit tests and verify that they run, then modify `packages/example-project` and its unit tests and verify the tests run and `npm run build` steps work. It is not uncommon for these steps to pass and for bugs to still appear after publishing of the framework, so manual testing after publishing should be done as well.
 
 To test with projects other than `example-project` on your local machine, npm link is a handy tool. From within `packages/geoprocessing` run the command `npm link`. This will make the library available to other packages locally (assuming the same version of node. watch out nvm users!). Then change to you project directory and run `npm link @seasketch/geoprocessing`. Any changes you make to the library will automatically be reflected in your geoprocessing implementation. Just watch out for a couple common problems:
 
@@ -184,7 +181,20 @@ To test with projects other than `example-project` on your local machine, npm li
 
 ## Publishing
 
-To publish new versions of the framework run `lerna publish`. Please follow [semantic versioning conventions](https://semver.org/).
+To publish a new release of the framework, make sure you are in the `master` branch with no outstanding code changes. Then run the following:
+```sh
+npm run publish
+```
+
+Please follow [semantic versioning conventions](https://semver.org/).  This will generate new build artifacts in the `dist` folder first using the `prepare` script.
+
+### Alpha releases
+
+By default, a release will be tagged as `latest` so that users installing from npm will get it by default.  You can also publish an `alpha` release out-of-band to offer new features out for early testing/adoption.
+
+```sh
+npm run publish:alpha
+```
 
 ## Roadmap
 

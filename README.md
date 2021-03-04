@@ -177,6 +177,15 @@ CLI - from packages/geoprocessing folder
 
 The geoprocessing library and example-project both provide debug launchers for their test suite, just as the project template does.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of the core tests, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
 
+### Debugging Functions
+
+As you build report functions, using console logging or inspecting with a VSCode debugger may not be enough.  You may want to make sure the output is properly formatted JSON/GeoJSON, or looks appropriate on a map, or try using the file in another software library. Here's a simple workflow that can make this easier:
+* Write a unit test that calls your function
+* In your function, use the `toJsonFile` helper to write out any Javascript object to a nicely formatted file.
+* If you output a `.geojson` file you can open it in vscode, check for errors, and view it using the Map Preview extension.
+* Make any necessary changes to your code and run the test again to regenerate the files.
+* Clean up your temporary files when done
+
 ## Storybook components
 
 The framework has it's own storybook project that can be launched using `npm run storybook`. These components and their stories can be found under `packages/geoprocessing/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.

@@ -141,9 +141,22 @@ npx lerna run test
 
 ## Editor setup and style guidelines
 
-You can use whatever code editor you want, however [VS Code](https://code.visualstudio.com/) provides some nice nice features for Typescript development and this project is configured to take advantage of them including autocompletion, built-in type docs, automatic code formatting on save, hide generated files, run build steps, etc.  To use them simply open the root folder of this repo in VS Code.  You should be prompted to install recommended workspace extensions on first load, but if you don't you can open the Extensions bar and `filter` for recommended.
+You can use whatever code editor you want, however [VS Code](https://code.visualstudio.com/) provides some nice nice features for Typescript development and this project is configured to take advantage of them.  To start using them, simply open the root folder of this repo in VS Code.
+* autocompletion
+* built-in type docs
+* hide generated files
+* run build steps, etc
+* geojson file Intellisense and error detection - open a file and hover over features and red error squiggles to get information
+
+### Extensions
+
+A number of VSCode extensions are also recommended by the workspace for installation.  If you are not prompted to install, you will need to go to the Extensions screen and look for the `Workspace recommended`.  You can filter for this.
 
 ![Install All extensions screenshot](https://user-images.githubusercontent.com/511063/79138662-be8a6380-7d69-11ea-96f4-20a759192434.png)
+
+* TSLint - provides 
+* Prettier - automatic code formatting on save
+* Map preview - open a geojson file and click the globe icon to view the features on a map in another vscode tab
 
 ## Make code changes
 

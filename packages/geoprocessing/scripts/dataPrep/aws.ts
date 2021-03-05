@@ -219,17 +219,13 @@ export function putBundle(
     .promise();
 }
 /**
- * Save a bundle to the DataSource's s3 bucket.
+ * Save a raster bundle to the DataSource's s3 bucket.
  * @export
  * @param {number} id
  * @param {number} version
  * @param {Uint8Array} geobuf
  */
-export function putRasterBundle(
-  dataSourceName,
-  fileName: string,
-  version: number
-) {
+export function putRasterBundle(dataSourceName, fileName: string) {
   return s3
     .putObject({
       Bucket: bucketName(dataSourceName),

@@ -4,6 +4,15 @@ import styled from "styled-components";
 const SimpleButtonStyled = styled.button`
   background: transparent;
   border: none;
+  padding: 10px;
+  cursor: pointer;
+  outline: none;
+  color: #aaa;
+  font-size: 18px
+  font-weight: bold
+  &:hover {
+    color: #333;
+  }
 `;
 
 /**

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const SimpleButtonStyled = styled.button`
+export const SimpleButtonStyled = styled.button`
   background: transparent;
   border: none;
   padding: 10px;

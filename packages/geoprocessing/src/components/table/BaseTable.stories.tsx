@@ -1,11 +1,11 @@
 import React from "react";
-import ReportTable from "./ReportTable";
+import BaseTable from "./BaseTable";
 import ReportDecorator from "../ReportDecorator";
 import fixtures from "../../fixtures";
 
 export default {
-  component: ReportTable,
-  title: "Components|ReportTable",
+  component: BaseTable,
+  title: "Components|BaseTable",
   decorators: [ReportDecorator],
 };
 
@@ -16,24 +16,9 @@ const columns: any = [
 ];
 
 export const basic = () => (
-  <ReportTable
+  <BaseTable
     initialState={{
       pageSize: 10,
-      sortBy: [
-        { id: "percent", desc: true },
-        { id: "rank", desc: false },
-        { id: "zoneName", desc: false },
-      ],
-    }}
-    columns={columns}
-    data={fixtures.ranked}
-  />
-);
-
-export const paging = () => (
-  <ReportTable
-    initialState={{
-      pageSize: 2,
       sortBy: [
         { id: "percent", desc: true },
         { id: "rank", desc: false },

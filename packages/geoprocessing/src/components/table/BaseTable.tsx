@@ -10,6 +10,7 @@ import {
   useGroupBy,
   useExpanded,
   useRowSelect,
+  TableOptions,
 } from "react-table";
 
 import {
@@ -28,28 +29,26 @@ const Button = styled.button`
   background-color: none;
 `;
 
-// Be sure to pass our updateMyData and the skipReset option
-export function BaseTable({ props, columns, data }) {
+export function BaseTable(props: TableOptions) {
   const defaultColumn = React.useMemo(
     () => ({
-      // Let's set up our default Filter UI
-      Filter: undefined,
-      // And also our default editable cell
-      Cell: undefined,
+      Filter: undefined, // default filter UI
+      Cell: undefined, // default editable cell
     }),
     []
   );
 
-  // Use the state and functions returned from useTable to build your UI
+  const defaultState: TableState = {
+    disableMultiSort: true,
+    defaultColumn,
+  };
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
-
-    // The rest of these things are super handy, too ;)
+    page, // Instead of 'rows', page just has rows for the active page
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -69,17 +68,13 @@ export function BaseTable({ props, columns, data }) {
     },
   } = useTable(
     {
-      columns,
-      data,
-      initialState: { pageSize: props.pageSize, sortBy: props.sortOptions },
-      defaultColumn,
-      disableMultiSort: true,
-      sorted: props.sortOptions,
+      ...defaultState,
+      ...props,
     },
     useSortBy,
     useExpanded,
     usePagination,
-    // Here we will use a plugin to add our selection column
+    // Plugin to add our selection column
     (hooks) => {
       hooks.visibleColumns.push((columns) => {
         return [...columns];
@@ -87,7 +82,6 @@ export function BaseTable({ props, columns, data }) {
     }
   );
 
-  // Render the UI for your table
   return (
     <>
       <table {...getTableProps()}>
@@ -196,7 +190,7 @@ export function BaseTable({ props, columns, data }) {
             {pageIndex + 1} of {pageOptions.length}
           </strong>{" "}
         </span>
-        {/* <span>
+        <span>
           <div style={{ paddingLeft: "0px", display: "inline" }}>
             <span style={{ paddingLeft: "8px", paddingRight: "8px" }}></span>
             <span>Go to page: </span>
@@ -210,7 +204,7 @@ export function BaseTable({ props, columns, data }) {
             }}
             style={{ width: "50px" }}
           />
-        </span>{" "} */}
+        </span>{" "}
       </div>
     </>
   );

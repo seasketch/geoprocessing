@@ -2,6 +2,7 @@
 import React from "react";
 import styled from "styled-components";
 import BaseTable from "./BaseTable";
+import { TableOptions } from "react-table";
 
 const ReportTableStyled = styled.div`
   table {
@@ -36,37 +37,17 @@ const ReportTableStyled = styled.div`
     padding: 0.5rem;
   }
 `;
-export interface TableProps {}
 
-export interface TableState {
-  columns: Object[];
-  data: Object[];
-}
-class ReportTable extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      data: props.data,
-      columns: props.columns,
-      pageSize: props.pageSize,
-      sortOptions: props.sortOptions,
-      filters: props.filters,
-    };
-  }
-
-  render() {
-    let base = (
-      <div>
-        <BaseTable
-          props={this.state}
-          columns={this.state.columns}
-          data={this.state.data}
-        />
-      </div>
-    );
-
-    return <ReportTableStyled>{base}</ReportTableStyled>;
-  }
+/**
+ * Re-styled BaseTable with pagination
+ * @param props - supports all react-table TableOptions
+ */
+export function ReportTable(props: TableOptions) {
+  return (
+    <ReportTableStyled>
+      <BaseTable {...props} />
+    </ReportTableStyled>
+  );
 }
 
 export default ReportTable;

@@ -3,6 +3,7 @@ import useDropdown from "../hooks/useDropdown";
 import SimpleButton from "./buttons/SimpleButton";
 import SimpleButtonStyled from "./buttons/SimpleButton";
 import styled from "styled-components";
+import { parse } from "json2csv";
 
 interface DownloadOption {
   label: string;
@@ -13,14 +14,14 @@ interface DownloadOption {
 }
 
 interface DataFormatters {
-  [key: string]: (data: any) => string;
+  [key: string]: (data: unknown[]) => string;
 }
 
 export interface DownloadFileProps {
   /** Name minus extension */
   filename: string;
   /** Raw data to format and allow to download */
-  data: any;
+  data: unknown[];
 }
 
 const DownloadButtonStyled = styled(SimpleButtonStyled)`
@@ -30,7 +31,7 @@ const DownloadButtonStyled = styled(SimpleButtonStyled)`
 
 /** Default data formatters */
 const formatters: DataFormatters = {
-  csv: (data) => data.join("\n"),
+  csv: (data) => parse(data),
   json: (data) => JSON.stringify(data, null, 2),
 };
 

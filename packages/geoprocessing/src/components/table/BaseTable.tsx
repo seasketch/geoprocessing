@@ -18,7 +18,6 @@ import {
   ChevronRight,
   ChevronsRight,
 } from "@styled-icons/boxicons-solid";
-import matchSorter from "match-sorter";
 
 const Button = styled.button`
   display: inline;
@@ -74,7 +73,6 @@ export function BaseTable({ props, columns, data }) {
       data,
       initialState: { pageSize: props.pageSize, sortBy: props.sortOptions },
       defaultColumn,
-      //@ts-ignore
       disableMultiSort: true,
       sorted: props.sortOptions,
     },
@@ -198,7 +196,7 @@ export function BaseTable({ props, columns, data }) {
             {pageIndex + 1} of {pageOptions.length}
           </strong>{" "}
         </span>
-        <span>
+        {/* <span>
           <div style={{ paddingLeft: "0px", display: "inline" }}>
             <span style={{ paddingLeft: "8px", paddingRight: "8px" }}></span>
             <span>Go to page: </span>
@@ -212,7 +210,7 @@ export function BaseTable({ props, columns, data }) {
             }}
             style={{ width: "50px" }}
           />
-        </span>{" "}
+        </span>{" "} */}
       </div>
     </>
   );

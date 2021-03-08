@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import BaseTable from "./BaseTable";
 
-const Styles = styled.div`
+const ReportTableStyled = styled.div`
   table {
     width: 100%;
     border: 1px solid darken(@bg, 10%);
@@ -65,7 +65,7 @@ class ReportTable extends React.Component<any, any> {
       </div>
     );
 
-    return <Styles>{base}</Styles>;
+    return <ReportTableStyled>{base}</ReportTableStyled>;
   }
 }
 

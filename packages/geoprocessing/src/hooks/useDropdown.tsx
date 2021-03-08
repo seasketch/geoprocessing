@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import usePortal, { UsePortalOptions } from "./usePortal";
+import usePortal, { UsePortalOptions } from "react-useportal";
 
 const Dropdown = styled.div`
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);

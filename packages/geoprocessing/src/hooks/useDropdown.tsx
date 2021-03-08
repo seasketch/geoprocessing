@@ -21,26 +21,22 @@ const useDropdown = ({ width, height, onOpen, ...config }: DropdownOptions) => {
       onOpen(args) {
         const { portal, targetEl } = args;
         const clickedEl = targetEl.current;
-        console.log("clickedEl", clickedEl);
         const { top, bottom, left, right } = clickedEl.getBoundingClientRect();
         const h = height || 0;
         let l = left;
         let t = top + clickedEl.clientHeight;
+
+        // Smart positioning
         const outRight = window.innerWidth < left + clickedEl.offsetWidth;
         const outBottom =
           window.innerHeight < top + portal.current.clientHeight;
-        const outTop = false;
-        const outLeft = false;
         if (outRight) {
           l = window.innerWidth - (right - left + clickedEl.offsetWidth);
-        } else if (outLeft) {
-          /* very uncommon, implement later */
         }
         if (outBottom) {
           t = window.innerHeight - (bottom - top + h);
-        } else if (outTop) {
-          /* very uncommon, implement later */
         }
+
         portal.current.style.cssText = `
         width: ${width || clickedEl.offsetWidth}px;
         position: absolute;
@@ -51,7 +47,6 @@ const useDropdown = ({ width, height, onOpen, ...config }: DropdownOptions) => {
         if (onOpen) onOpen(args);
       },
       onScroll({ portal }) {
-        console.log("SCROLLING");
         // TODO: add logic so when scrolling, the portal doesn't get displaced
       },
       ...config,

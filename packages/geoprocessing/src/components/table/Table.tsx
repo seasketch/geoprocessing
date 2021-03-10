@@ -40,6 +40,32 @@ export const TableStyle = styled.div`
       font-weight: bold;
     }
 
+    .up-arrow {
+      position: relative;
+    }
+
+    .up-arrow::before {
+      content: "▲";
+      position: absolute;
+      left: 2px;
+      bottom: 3px;
+      font-size: 8px;
+      color: #aaa;
+    }
+
+    .down-arrow {
+      position: relative;
+    }
+
+    .down-arrow::before {
+      content: "▼";
+      position: absolute;
+      left: 2px;
+      bottom: 3px;
+      font-size: 8px;
+      color: #aaa;
+    }
+
     tr {
       font-size: 1em;
       text-align: left;
@@ -156,7 +182,15 @@ export function Table(props: TableOptions) {
                     ) : null}
                     <span {...column.getSortByToggleProps()}>
                       {column.render("Header")}
-                      {column.isSorted ? (column.isSortedDesc ? "▼" : "▲") : ""}
+                      {column.isSorted ? (
+                        column.isSortedDesc ? (
+                          <span className="up-arrow" />
+                        ) : (
+                          <span className="down-arrow" />
+                        )
+                      ) : (
+                        ""
+                      )}
                     </span>
                   </div>
                   {/* Render the columns filter UI */}

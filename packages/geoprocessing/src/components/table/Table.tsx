@@ -1,14 +1,21 @@
-//@ts-nocheck
-import React from "react";
+import React, { ReactElement, PropsWithChildren } from "react";
 import styled from "styled-components";
+
+/**
+ * Adapted from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react-table/react-table-tests.tsx
+ * For more inspiration see https://codesandbox.io/s/github/ggascoigne/react-table-example?file=/src/Table/Table.tsx:0-62
+ */
 
 import {
   useTable,
   usePagination,
   useSortBy,
   useExpanded,
-  TableOptions as ReactTableOptions,
+  TableOptions,
+  TableState,
 } from "react-table";
+// See react-table-config.d.ts where full types with plugins are merged together.
+// @types/react-table README has more info on this approach
 
 import {
   ChevronLeft,
@@ -82,9 +89,18 @@ export const TableStyle = styled.div`
 
 const defaultPropGetter = () => ({});
 
-type TableOptions = ReactTableOptions<{}>;
+export interface GpTableProps<T extends object> extends TableOptions<T> {
+  /** Optional styling method added to table element */
+  className?: string;
+  headerProps?: (header: any) => any;
+  columnProps?: (column: any) => any;
+  rowProps?: (row: any) => any;
+  cellProps?: (cell: any) => any;
+}
 
-export const Table = (props: TableOptions) => {
+export function Table<T extends object>(
+  props: PropsWithChildren<GpTableProps<T>>
+): ReactElement {
   const defaultColumn = React.useMemo(
     () => ({
       Filter: undefined, // default filter UI
@@ -94,7 +110,7 @@ export const Table = (props: TableOptions) => {
   );
 
   // Can be overridden
-  const defaultState: TableState = {
+  const defaultState: Partial<TableOptions<T>> = {
     disableMultiSort: true,
     defaultColumn,
     initialState: {
@@ -134,7 +150,7 @@ export const Table = (props: TableOptions) => {
       filters,
       selectedRowIds,
     },
-  } = useTable(
+  } = useTable<T>(
     {
       ...defaultState,
       ...otherProps,
@@ -281,6 +297,6 @@ export const Table = (props: TableOptions) => {
       </div>
     </TableStyle>
   );
-};
+}
 
 export default Table;

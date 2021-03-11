@@ -1,6 +1,12 @@
 let fixtures: any = {};
 
-fixtures.humanUseData = [
+export interface HumanUse {
+  name: string;
+  count: number;
+  perc: number;
+}
+
+const humanUse: HumanUse[] = [
   {
     name: "Motorboat, anchoring, swimming",
     count: 0,
@@ -43,7 +49,15 @@ fixtures.humanUseData = [
   },
 ];
 
-fixtures.ranked = [
+export interface Ranked {
+  value: number;
+  percent: number;
+  totalValue: number;
+  rank: string;
+  fullName: string;
+}
+
+const ranked: Ranked[] = [
   {
     value: 10,
     percent: 0.1,
@@ -74,4 +88,7 @@ fixtures.ranked = [
   },
 ];
 
-export default fixtures;
+export default {
+  ranked,
+  humanUse,
+};

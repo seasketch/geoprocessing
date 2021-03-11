@@ -1,0 +1,18 @@
+.dark {
+  background-color: #000;
+  color: #eee;
+}
+.med {
+  background-color: #ddd;
+}
+.light {
+  background-color: #efefef;
+}
+
+.centered th:not(:first-child) {
+  text-align: center;
+}
+
+.centered td:not(:first-child) {
+  text-align: center;
+}

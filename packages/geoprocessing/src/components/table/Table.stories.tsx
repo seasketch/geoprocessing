@@ -2,7 +2,7 @@ import React from "react";
 import Table, { TableStyle } from "./Table";
 import ReportCardDecorator from "../ReportCardDecorator";
 import fixtures from "../../fixtures";
-import styled from "styled-components";
+import "./Table.css";
 
 const Percent = new Intl.NumberFormat("en", {
   style: "percent",
@@ -34,16 +34,6 @@ export const simple = () => {
 
 /**** Centered */
 
-const CenterTable = styled(TableStyle)`
-  th:not(:first-child) {
-    text-align: center;
-  }
-
-  td:not(:first-child) {
-    text-align: center;
-  }
-`;
-
 export const centered = () => {
   const columns = React.useMemo(
     () => [
@@ -54,45 +44,24 @@ export const centered = () => {
     []
   );
   const data = React.useMemo(() => fixtures.ranked, []);
-  return (
-    <CenterTable>
-      <Table columns={columns} data={data} />
-    </CenterTable>
-  );
+  return <Table className="centered" columns={columns} data={data} />;
 };
 
 /**** Set width */
-
-const SetWidthTable = styled(TableStyle)`
-  th:nth-child(1) {
-    width: 80%;
-  }
-`;
-
 export const setWidth = () => {
   const columns = React.useMemo(
     () => [
-      { Header: "Name", accessor: "fullName" },
+      { Header: "Name", accessor: "fullName", style: { width: "70%" } },
       { Header: "Area", accessor: "value" },
       { Header: "Rank", accessor: "rank" },
     ],
     []
   );
   const data = React.useMemo(() => fixtures.ranked, []);
-  return (
-    <SetWidthTable>
-      <Table columns={columns} data={data} />
-    </SetWidthTable>
-  );
+  return <Table columns={columns} data={data} />;
 };
 
 /**** Formatted column ****/
-
-const ClassStyle = styled.div`
-  .red {
-    color: red;
-  }
-`;
 
 export const formattedColumn = () => {
   const columns = React.useMemo(
@@ -107,8 +76,7 @@ export const formattedColumn = () => {
       },
       {
         Header: "Percent of Activity",
-        accessor: (row) => Percent.format(row.perc), // Format value
-        className: "red", // Assign class name
+        accessor: (row) => Percent.format(row.perc), // resulting value used by sort function, Cell function can be better
       },
     ],
     []
@@ -117,11 +85,7 @@ export const formattedColumn = () => {
     fixtures.humanUseData,
   ]);
 
-  return (
-    <ClassStyle>
-      <Table columns={columns} data={data} />
-    </ClassStyle>
-  );
+  return <Table columns={columns} data={data} />;
 };
 
 /**** Paging */
@@ -129,8 +93,8 @@ export const formattedColumn = () => {
 export const paging = () => {
   const columns = React.useMemo(
     () => [
-      { Header: "Name", accessor: "fullName" },
-      { Header: "Area", accessor: "value" },
+      { Header: "Name", accessor: "fullName", style: { width: "60%" } },
+      { Header: "Area", accessor: "value", style: { width: "20%" } },
       { Header: "Rank", accessor: "rank" },
     ],
     []
@@ -145,6 +109,69 @@ export const paging = () => {
       data={data}
     />
   );
+};
+
+/**** Style override */
+// https://codesandbox.io/s/github/tannerlinsley/react-table/tree/master/examples/data-driven-classes-and-styles?file=/src/App.js:3903-3909
+
+export const configDrivenStyle = () => {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Name",
+        style: { backgroundColor: "#000", color: "#eee" },
+        columns: [
+          {
+            Header: "Place Name",
+            accessor: "name",
+            style: { backgroundColor: "#efefef" },
+          },
+        ],
+      },
+      {
+        Header: "Count",
+        accessor: "count",
+        style: { backgroundColor: "#ddd" },
+      },
+    ],
+    []
+  );
+  const data = React.useMemo(() => fixtures.humanUseData, [
+    fixtures.humanUseData,
+  ]);
+
+  return <Table columns={columns} data={data} />;
+};
+
+/**** Class-driven styling */
+
+export const classDrivenStyle = () => {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Name",
+        className: "dark",
+        columns: [
+          {
+            Header: "Place Name",
+            accessor: "name",
+            className: "light",
+          },
+        ],
+      },
+      {
+        Header: "Count",
+        accessor: "count",
+        className: "med",
+      },
+    ],
+    []
+  );
+  const data = React.useMemo(() => fixtures.humanUseData, [
+    fixtures.humanUseData,
+  ]);
+
+  return <Table columns={columns} data={data} />;
 };
 
 /**** Data-driven styling */
@@ -162,7 +189,6 @@ const dataDrivenColumns = [
 
 /**
  * Any prop can be overridden with these functions, for example onClick, onEnter
- * @returns
  */
 export const dataDrivenProps = () => {
   const columns = React.useMemo(() => dataDrivenColumns, [dataDrivenColumns]);
@@ -171,19 +197,19 @@ export const dataDrivenProps = () => {
   ]);
 
   // Make name header green
-  const headerFn = (col: any) =>
+  const headerFn = (col) =>
     col.id === "name" ? { style: { color: "green" } } : {};
 
   // Make count column italic
-  const colFn = (col: any) =>
+  const colFn = (col) =>
     col.id === "count" ? { style: { fontStyle: "italic" } } : {};
 
   // Apply bold to entire row where value > 1
-  const rowFn = (row: any) =>
+  const rowFn = (row) =>
     row.values.count > 1 ? { style: { fontWeight: "bold" } } : {};
 
   // Apply background color where count column and value > 1
-  const cellFn = (cell: any) =>
+  const cellFn = (cell) =>
     cell.column.id === "count" && cell.value > 1
       ? { style: { backgroundColor: "#aaa" } }
       : {};

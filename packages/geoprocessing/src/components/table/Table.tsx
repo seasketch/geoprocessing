@@ -7,7 +7,7 @@ import {
   usePagination,
   useSortBy,
   useExpanded,
-  TableOptions,
+  TableOptions as ReactTableOptions,
 } from "react-table";
 
 import {
@@ -33,11 +33,9 @@ export const TableStyle = styled.div`
     border-collapse: collapse;
 
     th {
-      text-shadow: 0px 1px 1px white;
       padding-top: 8px;
       padding: 5px;
-      color: #333;
-      font-weight: bold;
+      font-weight: bolder;
     }
 
     .up-arrow {
@@ -50,7 +48,7 @@ export const TableStyle = styled.div`
       left: 2px;
       bottom: 3px;
       font-size: 8px;
-      color: #aaa;
+      color: #bbb;
     }
 
     .down-arrow {
@@ -63,7 +61,7 @@ export const TableStyle = styled.div`
       left: 2px;
       bottom: 3px;
       font-size: 8px;
-      color: #aaa;
+      color: #bbb;
     }
 
     tr {
@@ -84,13 +82,9 @@ export const TableStyle = styled.div`
 
 const defaultPropGetter = () => ({});
 
-/**
- * Features
- * Paging and sorting.  Pass-in the appropriate column configuration or initial state to configure
- * Assign className prop to
- *
- */
-export function Table(props: TableOptions) {
+type TableOptions = ReactTableOptions<{}>;
+
+export const Table = (props: TableOptions) => {
   const defaultColumn = React.useMemo(
     () => ({
       Filter: undefined, // default filter UI
@@ -158,7 +152,7 @@ export function Table(props: TableOptions) {
 
   return (
     <TableStyle>
-      <table {...getTableProps()}>
+      <table className={props.className} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -287,6 +281,6 @@ export function Table(props: TableOptions) {
       </div>
     </TableStyle>
   );
-}
+};
 
 export default Table;

@@ -20,11 +20,7 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "files.exclude": {
-    "**/dist/**": true,
-    "**/cdk.out": true,
-    "**/.build": true
-  },
+  "files.exclude": {},
   "git.ignoreLimitWarning": true,
   "jest.rootPath": "packages/geoprocessing",
   "workbench.colorCustomizations": {

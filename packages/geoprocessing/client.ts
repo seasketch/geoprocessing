@@ -5,6 +5,7 @@ export { default as SketchAttributesCard } from "./src/components/SketchAttribut
 export { default as ReportDecorator } from "./src/components/ReportDecorator";
 export { default as Skeleton } from "./src/components/Skeleton";
 
+export { default as Table } from "./src/components/table/Table";
 export { default as ReportTable } from "./src/components/ReportTable";
 export { Checkbox as Checkbox } from "./src/components/Checbox";
 export { intersect } from "./src/spatial/IntersectHelper";

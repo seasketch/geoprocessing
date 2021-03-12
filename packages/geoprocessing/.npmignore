@@ -1,4 +1,5 @@
-cdk.out
-.build
-.DS_Store
-src
+
+/dist/src/**/*.test.ts
+/dist/src/**/*/test.js*
+/dist/*.ts
+/dist/*.js*

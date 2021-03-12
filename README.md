@@ -139,9 +139,22 @@ npm run test
 
 ## Editor setup and style guidelines
 
-You can use whatever code editor you want, however [VS Code](https://code.visualstudio.com/) provides some nice nice features for Typescript development and this project is configured to take advantage of them including autocompletion, built-in type docs, automatic code formatting on save, hide generated files, run build steps, etc.  To use them simply open the root folder of this repo in VS Code.  You should be prompted to install recommended workspace extensions on first load, but if you don't you can open the Extensions bar and `filter` for recommended.
+You can use whatever code editor you want, however [VS Code](https://code.visualstudio.com/) provides some nice nice features for Typescript development and this project is configured to take advantage of them.  To start using them, simply open the root folder of this repo in VS Code.
+* autocompletion
+* built-in type docs
+* hide generated files
+* run build steps, etc
+* geojson file Intellisense and error detection - open a file and hover over features and red error squiggles to get information
+
+### Extensions
+
+A number of VSCode extensions are also recommended by the workspace for installation.  If you are not prompted to install, you will need to go to the Extensions screen and look for the `Workspace recommended`.  You can filter for this.
 
 ![Install All extensions screenshot](https://user-images.githubusercontent.com/511063/79138662-be8a6380-7d69-11ea-96f4-20a759192434.png)
+
+* TSLint - provides 
+* Prettier - automatic code formatting on save
+* Map preview - open a geojson file and click the globe icon to view the features on a map in another vscode tab
 
 ## Make code changes
 
@@ -161,6 +174,15 @@ CLI - from packages/geoprocessing folder
 ## Debugging
 
 The geoprocessing library and example-project both provide debug launchers for their test suite, just as the project template does.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of the core tests, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
+
+### Debugging Functions
+
+As you build report functions, using console logging or inspecting with a VSCode debugger may not be enough.  You may want to make sure the output is properly formatted JSON/GeoJSON, or looks appropriate on a map, or try using the file in another software library. Here's a simple workflow that can make this easier:
+* Write a unit test that calls your function
+* In your function, use the `toJsonFile` helper to write out any Javascript object to a nicely formatted file.
+* If you output a `.geojson` file you can open it in vscode, check for errors, and view it using the Map Preview extension.
+* Make any necessary changes to your code and run the test again to regenerate the files.
+* Clean up your temporary files when done
 
 ## Storybook components
 

@@ -152,6 +152,8 @@ test("useFunction handles errors thrown within geoprocessing function", async ()
 
 test("throws error if ReportContext is not set", async () => {
   const { result } = renderHook(() => useFunction("calcFoo"));
+  expect(result && result.error).toBeTruthy();
+  if (!result || !result.error) return;
   expect(result.error.message).toContain("ReportContext");
 });
 

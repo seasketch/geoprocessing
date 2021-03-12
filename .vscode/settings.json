@@ -43,5 +43,14 @@
     "titleBar.inactiveBackground": "#00326699",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#003266"
+  "peacock.color": "#003266",
+  "files.associations": { "*.geojson": "json"},
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "*.geojson"
+      ],
+      "url": "http://json.schemastore.org/geojson"
+    }
+  ]
 }

@@ -9,8 +9,8 @@
     "clean": "git clean -fdx",
     "postinstall": "lerna bootstrap",
     "test": "lerna run test",
-    "publish": "CI=1 lerna bootstrap && lerna publish",
-    "publish:alpha": "CI=1 lerna bootstrap && lerna publish --canary --preid alpha --npm-tag=alpha",
+    "publish": "CI=1 lerna bootstrap --ci && lerna publish",
+    "publish:alpha": "CI=1 lerna bootstrap --ci && lerna publish --canary --preid alpha --npm-tag=alpha",
     "create_example": "node packages/geoprocessing/dist/scripts/init/createExampleProject.js"
   },
   "dependencies": {

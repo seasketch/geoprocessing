@@ -1,9 +1,9 @@
-import React, { ReactElement, PropsWithChildren } from "react";
-import styled from "styled-components";
-
+import React, { ReactElement } from "react";
 /**
  * Adapted from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react-table/react-table-tests.tsx
  * For more inspiration see https://codesandbox.io/s/github/ggascoigne/react-table-example?file=/src/Table/Table.tsx:0-62
+ * See react-table-config.d.ts where full types with plugins are merged together.
+ * @types/react-table README has more info on this approach
  */
 
 import {
@@ -12,11 +12,8 @@ import {
   useSortBy,
   useExpanded,
   TableOptions,
-  TableState,
 } from "react-table";
-// See react-table-config.d.ts where full types with plugins are merged together.
-// @types/react-table README has more info on this approach
-
+import styled from "styled-components";
 import {
   ChevronLeft,
   ChevronsLeft,
@@ -32,6 +29,8 @@ const Button = styled.button`
   padding: 0px;
   background-color: none;
 `;
+
+export { Column } from "react-table"; // Re-export for user convenience
 
 export const TableStyle = styled.div`
   table {
@@ -89,18 +88,7 @@ export const TableStyle = styled.div`
 
 const defaultPropGetter = () => ({});
 
-export interface GpTableProps<T extends object> extends TableOptions<T> {
-  /** Optional styling method added to table element */
-  className?: string;
-  headerProps?: (header: any) => any;
-  columnProps?: (column: any) => any;
-  rowProps?: (row: any) => any;
-  cellProps?: (cell: any) => any;
-}
-
-export function Table<T extends object>(
-  props: PropsWithChildren<GpTableProps<T>>
-): ReactElement {
+export function Table<D extends object>(props: TableOptions<D>): ReactElement {
   const defaultColumn = React.useMemo(
     () => ({
       Filter: undefined, // default filter UI
@@ -110,7 +98,7 @@ export function Table<T extends object>(
   );
 
   // Can be overridden
-  const defaultState: Partial<TableOptions<T>> = {
+  const defaultState: Partial<TableOptions<D>> = {
     disableMultiSort: true,
     defaultColumn,
     initialState: {
@@ -150,7 +138,7 @@ export function Table<T extends object>(
       filters,
       selectedRowIds,
     },
-  } = useTable<T>(
+  } = useTable<D>(
     {
       ...defaultState,
       ...otherProps,
@@ -215,7 +203,7 @@ export function Table<T extends object>(
             prepareRow(row);
             console.log("row", row);
             return (
-              <tr {...row.getRowProps(rowProps(row))}>
+              <tr {...row.getRowProps(rowProps(row) || {})}>
                 {row.cells.map((cell) => {
                   let cellVal = cell.value;
                   return (

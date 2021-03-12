@@ -55,18 +55,30 @@ declare module "react-table" {
   export interface TableOptions<
     D extends Record<string, unknown>
   > extends UseExpandedOptions<D>,
-      UseFiltersOptions<D>,
-      UseGlobalFiltersOptions<D>,
-      UseGroupByOptions<D>,
+      // UseFiltersOptions<D>,
+      // UseGlobalFiltersOptions<D>,
+      // UseGroupByOptions<D>,
       UsePaginationOptions<D>,
-      UseResizeColumnsOptions<D>,
-      UseRowSelectOptions<D>,
-      UseRowStateOptions<D>,
-      UseSortByOptions<D>,
-      // note that having Record here allows you to add anything to the options, this matches the spirit of the
-      // underlying js library, but might be cleaner if it's replaced by a more specific type that matches your
-      // feature set, this is a safe default.
-      Record<string, any> {}
+      // UseResizeColumnsOptions<D>,
+      // UseRowSelectOptions<D>,
+      // UseRowStateOptions<D>,
+      UseSortByOptions<D> {
+    // note that having Record here allows you to add anything to the options, this matches the spirit of the
+    // underlying js library, but might be cleaner if it's replaced by a more specific type that matches your
+    // feature set, this is a safe default.
+    // Record<string, any>
+    /** Optional method to pass style.  Added to table element */
+    className?: string;
+    data: D[];
+    /** Function called for each table header allowing style/className/role props to be overridden */
+    headerProps?: (header: HeaderGroup<D>) => TableCommonProps;
+    /** Function called for each table column allowing style/className/role props to be overridden */
+    columnProps?: (column: Column<D>) => TableCommonProps;
+    /** Function called for each table row allowing style/className/role props to be overridden */
+    rowProps?: (row: Row<D>) => TableCommonProps;
+    /** Function called for each table cell allowing style/className/role props to be overridden */
+    cellProps?: (cell: Cell<D>) => TableCommonProps;
+  }
 
   export interface Hooks<
     D extends Record<string, unknown> = Record<string, unknown>

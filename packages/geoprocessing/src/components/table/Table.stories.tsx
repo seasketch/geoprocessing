@@ -1,8 +1,7 @@
-import React from "react";
-import Table, { TableStyle } from "./Table";
+import React, { CSSProperties } from "react";
+import Table, { Column } from "./Table";
 import ReportCardDecorator from "../ReportCardDecorator";
 import fixtures, { HumanUse, Ranked } from "../../fixtures";
-import { Column, Row, Cell, HeaderGroup } from "react-table";
 import "./Table.css";
 
 export default {
@@ -35,7 +34,7 @@ export const simple = () => {
 /**** Centered */
 
 export const centered = () => {
-  const columns: Column<Ranked>[] = [
+  const columns: Column[] = [
     { Header: "Name", accessor: "fullName" },
     { Header: "Area", accessor: "value" },
     { Header: "Rank", accessor: "rank" },
@@ -152,39 +151,33 @@ export const classDrivenStyle = () => {
 
 /**** Data-driven styling */
 
-const dataDrivenColumns: Column[] = [
-  {
-    Header: "Name",
-    accessor: "name",
-  },
-  {
-    Header: "Count",
-    accessor: "count",
-  },
-];
-
 /**
  * Any prop can be overridden with these functions, for example onClick, onEnter
  */
 export const dataDrivenProps = () => {
-  const columns: Column[] = React.useMemo(() => dataDrivenColumns, [
-    dataDrivenColumns,
-  ]);
+  const columns: Column[] = [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+    {
+      Header: "Count",
+      accessor: "count",
+    },
+  ];
 
-  // Make name header green
-  const headerFn = (header: HeaderGroup) =>
+  const headerFn = (header) =>
     header.id === "name" ? { style: { color: "green" } } : {};
 
-  // Make count column italic
-  const colFn = (column: Column) =>
+  const colFn = (column) =>
     column.id === "count" ? { style: { fontStyle: "italic" } } : {};
 
-  // Apply bold to entire row where value > 1
-  const rowFn = (row: Row) =>
-    row.values.count > 1 ? { style: { fontWeight: "bold" } } : {};
+  const rowFn = (row) =>
+    row.values.count > 1
+      ? { style: { fontWeight: "bold" } as CSSProperties }
+      : {};
 
-  // Apply background color where count column and value > 1
-  const cellFn = (cell: Cell) =>
+  const cellFn = (cell) =>
     cell.column.id === "count" && cell.value > 1
       ? { style: { backgroundColor: "#aaa" } }
       : {};

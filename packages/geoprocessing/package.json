@@ -3,7 +3,7 @@
   "version": "0.9.0",
   "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
   "files": [
-    "/dist/**/*"
+    "dist"
   ],
   "exports": {
     ".": "./dist/src/index.js",

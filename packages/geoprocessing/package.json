@@ -2,7 +2,10 @@
   "name": "@seasketch/geoprocessing",
   "version": "0.9.0",
   "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
-  "main": "dist/src/index.js",
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./client": "./dist/src/client.js"
+  },
   "types": "dist/src/index.d.ts",
   "readme": "https://github.com/seasketch/geoprocessing#readme",
   "scripts": {

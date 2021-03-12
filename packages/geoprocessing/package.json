@@ -14,7 +14,7 @@
     "prepare": "tsc && npm run _copy-dts && cd scripts && tsc",
     "watch": "npx tsc --watch",
     "watch:scripts": "npx tsc --build scripts/tsconfig.json --watch",
-    "_copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist"
+    "_copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist/src"
   },
   "bin": {
     "run_tests": "dist/scripts/testing/runner.js",

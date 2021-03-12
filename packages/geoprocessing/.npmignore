@@ -1,5 +1,3 @@
 
-/dist/src/**/*.test.ts
-/dist/src/**/*/test.js*
+/dist/src/**/*.test
 /dist/*.ts
-/dist/*.js*

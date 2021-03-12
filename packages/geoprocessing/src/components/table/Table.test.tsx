@@ -1,9 +1,10 @@
 import React from "react";
 import { render, screen, within } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import Table, { Column } from "./Table";
 import fixtures from "../../fixtures";
 
-test.only("Table renders", () => {
+test("Table renders", () => {
   const columns: Column[] = [
     {
       Header: "Name",

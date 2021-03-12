@@ -1,4 +1,3 @@
-import React, { ReactElement } from "react";
 /**
  * Adapted from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react-table/react-table-tests.tsx
  * For more inspiration see https://codesandbox.io/s/github/ggascoigne/react-table-example?file=/src/Table/Table.tsx:0-62
@@ -6,6 +5,7 @@ import React, { ReactElement } from "react";
  * @types/react-table README has more info on this approach
  */
 
+import React, { ReactElement } from "react";
 import {
   useTable,
   usePagination,

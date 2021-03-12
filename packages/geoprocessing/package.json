@@ -8,9 +8,10 @@
   "scripts": {
     "test": "jest",
     "storybook": "start-storybook",
-    "prepare": "tsc && cd scripts && tsc",
+    "prepare": "tsc && npm run _copy-dts && cd scripts && tsc",
     "watch": "npx tsc --watch",
-    "watch:scripts": "npx tsc --build scripts/tsconfig.json --watch"
+    "watch:scripts": "npx tsc --build scripts/tsconfig.json --watch",
+    "_copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist"
   },
   "bin": {
     "run_tests": "dist/scripts/testing/runner.js",
@@ -140,6 +141,7 @@
   },
   "devDependencies": {
     "@shelf/jest-dynamodb": "^1.7.0",
+    "copyfiles": "^2.4.1",
     "jest": "^26.4.2",
     "jest-dynalite": "^1.1.9",
     "jest-websocket-mock": "^2.0.2",

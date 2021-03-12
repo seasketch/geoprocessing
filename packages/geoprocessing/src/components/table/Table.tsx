@@ -2,7 +2,7 @@ import React, { ReactElement } from "react";
 /**
  * Adapted from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react-table/react-table-tests.tsx
  * For more inspiration see https://codesandbox.io/s/github/ggascoigne/react-table-example?file=/src/Table/Table.tsx:0-62
- * See react-table-config.d.ts where full types with plugins are merged together.
+ * See react-table-config.d.ts for full merged types
  * @types/react-table README has more info on this approach
  */
 
@@ -14,20 +14,21 @@ import {
   TableOptions,
 } from "react-table";
 import styled from "styled-components";
-import {
-  ChevronLeft,
-  ChevronsLeft,
-  ChevronRight,
-  ChevronsRight,
-} from "@styled-icons/boxicons-solid";
+import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
 
 const Button = styled.button`
   display: inline;
-  color: blue;
+  color: #777;
   font-size: 1em;
   margin: 0px;
   padding: 0px;
-  background-color: none;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 0.2rem;
+
+  &:disabled {
+    color: #ccc;
+  }
 `;
 
 export { Column } from "react-table"; // Re-export for user convenience
@@ -82,7 +83,9 @@ export const TableStyle = styled.div`
   }
 
   .pagination {
+    font-family: sans-serif;
     padding: 0.5rem;
+    color: #999;
   }
 `;
 
@@ -252,35 +255,14 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
             : { display: "block" }
         }
       >
-        <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          <ChevronsLeft
-            size="24"
-            style={!canPreviousPage ? { color: "gray" } : { color: "blue" }}
-          />
-        </Button>{" "}
         <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          <ChevronLeft
-            size="24"
-            style={!canPreviousPage ? { color: "gray" } : { color: "blue" }}
-          />
+          <ChevronLeft size={24} />
         </Button>{" "}
         <Button onClick={() => nextPage()} disabled={!canNextPage}>
-          <ChevronRight
-            size="24"
-            style={!canNextPage ? { color: "gray" } : { color: "blue" }}
-          />
+          <ChevronRight size={24} />
         </Button>{" "}
-        <Button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          <ChevronsRight
-            size="24"
-            style={!canNextPage ? { color: "gray" } : { color: "blue" }}
-          />
-        </Button>{" "}
-        <span style={{ paddingLeft: "22px" }}>
-          Page{" "}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{" "}
+        <span style={{ paddingLeft: "5px" }}>
+          Page {pageIndex + 1} of {pageOptions.length}
         </span>
       </div>
     </TableStyle>

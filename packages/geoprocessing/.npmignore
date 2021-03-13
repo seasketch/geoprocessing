@@ -1,9 +1,3 @@
 cdk.out
 .build
 .DS_Store
-templates
-.storybook
-/src
-/dist/src/**/*.test.*
-/dist/templates
-/dist/.storybook

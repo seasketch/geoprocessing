@@ -3,9 +3,7 @@ cdk.out
 .DS_Store
 templates
 .storybook
-/*.*
 /src
 /dist/src/**/*.test.*
-/dist/*.*
 /dist/templates
 /dist/.storybook

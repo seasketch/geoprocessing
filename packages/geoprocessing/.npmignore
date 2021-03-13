@@ -1,3 +1,11 @@
-
+cdk.out
+.build
+.DS_Store
+templates
+.storybook
+/*.*
+/src
 /dist/src/**/*.test.*
-/dist/*.ts
+/dist/*.*
+/dist/templates
+/dist/.storybook

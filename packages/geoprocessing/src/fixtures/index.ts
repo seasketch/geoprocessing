@@ -1,3 +1,5 @@
+import { randomInt, randomFloat } from "../util/randomData";
+
 let fixtures: any = {};
 
 export interface HumanUse {
@@ -88,7 +90,26 @@ const ranked: Ranked[] = [
   },
 ];
 
+export interface Categorical {
+  id: string;
+  count: number;
+  low: number;
+  med: number;
+  high: number;
+  comment: String;
+}
+
+const randomCategorical: Categorical[] = [...Array(30)].map((r, index) => ({
+  id: `${index + 1}`,
+  count: randomInt(10000000),
+  low: randomFloat(0, 0.2),
+  med: randomFloat(0.3, 0.5),
+  high: randomFloat(0.7, 0.9),
+  comment: "This is a comment",
+}));
+
 export default {
   ranked,
   humanUse,
+  randomCategorical,
 };

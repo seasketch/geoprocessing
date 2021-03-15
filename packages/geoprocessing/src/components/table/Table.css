@@ -16,3 +16,7 @@
 .centered td:not(:first-child) {
   text-align: center;
 }
+
+.squeeze {
+  font-size: 11px;
+}

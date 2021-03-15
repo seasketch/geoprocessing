@@ -243,7 +243,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
     disableMultiSort: true,
     defaultColumn,
     initialState: {
-      pageSize: 50, // Adds paging at 50 records
+      pageSize: 20, // Adds paging at 50 records
     },
   };
 

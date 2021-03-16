@@ -7,6 +7,7 @@ export { default as ReportDecorator } from "./src/components/ReportDecorator";
 export { default as Skeleton } from "./src/components/Skeleton";
 
 export { default as Table } from "./src/components/table/Table";
+export { default as FilterSelectTable } from "./src/components/table/FilterSelectTable";
 export { default as ReportTable } from "./src/components/ReportTable";
-export { Checkbox as Checkbox } from "./src/components/Checbox";
+export { default as CheckboxGroup } from "./src/components/checkbox/CheckboxGroup";
 export { intersect } from "./src/spatial/IntersectHelper";

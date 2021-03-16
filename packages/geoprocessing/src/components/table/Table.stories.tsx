@@ -1,7 +1,13 @@
 import React, { CSSProperties } from "react";
-import Table, { Column } from "./Table";
+import Table, { Column, Row } from "./Table";
+import FilterSelectTable, { FilterSelect } from "./FilterSelectTable";
 import ReportCardDecorator from "../ReportCardDecorator";
-import fixtures, { HumanUse, Ranked, Categorical } from "../../fixtures";
+import fixtures, {
+  HumanUse,
+  Ranked,
+  Categorical,
+  getRandomCategorical,
+} from "../../fixtures";
 import "./Table.css";
 
 export default {
@@ -234,6 +240,40 @@ export const dataDrivenProps = () => {
       columnProps={colFn}
       rowProps={rowFn}
       cellProps={cellFn}
+    />
+  );
+};
+
+/**** Filtering */
+
+export const filterCheckboxes = () => {
+  const filterSelect: FilterSelect<Categorical> = {
+    type: "some",
+    filters: [
+      {
+        name: "Show only count < 500K",
+        defaultValue: false,
+        filterFn: (row) => row.count < 2_000_000,
+      },
+    ],
+  };
+
+  const columns = [
+    {
+      Header: "ID",
+      accessor: "id",
+    },
+    {
+      Header: "Count",
+      accessor: "count",
+    },
+  ];
+
+  return (
+    <FilterSelectTable
+      filterSelect={filterSelect}
+      columns={React.useMemo(() => columns, [])}
+      data={getRandomCategorical()}
     />
   );
 };

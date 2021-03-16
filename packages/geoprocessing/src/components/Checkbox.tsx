@@ -59,7 +59,7 @@ export interface CheckboxProps {
   checked: boolean;
   onChangeCallback: string;
 }
-export class Checkbox extends React.Component {
+export default class Checkbox extends React.Component {
   state: { checked: false };
   constructor(props: CheckboxProps) {
     super(props);

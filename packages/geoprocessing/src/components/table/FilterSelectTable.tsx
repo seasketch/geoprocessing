@@ -16,8 +16,8 @@ export interface FilterSelectOption<D extends object = {}> {
 
 /** Custom table data filters that are only active when selected by the user */
 export interface FilterSelect<D extends object = {}> {
-  /** Filter a row if every selected filter function returns true (logical AND), or at least some (logical OR) */
-  type: "every" | "some";
+  /** Filter a row if `every` selected filter function returns true (logical AND), or at least `some` (logical OR) */
+  type?: "every" | "some";
   /** filter functions called for every data row */
   filters: FilterSelectOption<D>[];
 }

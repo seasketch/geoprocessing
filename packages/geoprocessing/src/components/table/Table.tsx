@@ -121,7 +121,7 @@ const Button = styled.button`
   }
 `;
 
-export const TableStyle = styled.div`
+export const TableStyled = styled.div`
   table {
     font-family: sans-serif;
     width: 100%;
@@ -246,7 +246,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
   );
 
   return (
-    <TableStyle>
+    <TableStyled>
       <table className={props.className} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -352,7 +352,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
           Page {pageIndex + 1} of {pageOptions.length}
         </span>
       </div>
-    </TableStyle>
+    </TableStyled>
   );
 }
 

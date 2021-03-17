@@ -6,8 +6,18 @@ export { default as SketchAttributesCard } from "./src/components/SketchAttribut
 export { default as ReportDecorator } from "./src/components/ReportDecorator";
 export { default as Skeleton } from "./src/components/Skeleton";
 
-export { default as Table } from "./src/components/table/Table";
-export { default as FilterSelectTable } from "./src/components/table/FilterSelectTable";
+export {
+  default as Table,
+  TableOptions,
+  TableStyled,
+  Column,
+  Row,
+} from "./src/components/table/Table";
+export {
+  default as FilterSelectTable,
+  FilterSelectTableOptions,
+  FilterSelectTableStyled,
+} from "./src/components/table/FilterSelectTable";
 export { default as ReportTable } from "./src/components/ReportTable";
 export { default as CheckboxGroup } from "./src/components/checkbox/CheckboxGroup";
 export { intersect } from "./src/spatial/IntersectHelper";

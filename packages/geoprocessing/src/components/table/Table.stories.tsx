@@ -263,7 +263,7 @@ export const filterCheckboxes = () => {
     ],
   };
 
-  const columns = [
+  const columns: Column<Categorical>[] = [
     {
       Header: "ID",
       accessor: "id",

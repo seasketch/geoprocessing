@@ -33,9 +33,8 @@ export const FilterSelectTableStyled = styled.div`
 `;
 
 export interface FilterSelectTableOptions<D extends object = {}>
-  extends TableOptions {
+  extends TableOptions<D> {
   filterSelect: FilterSelect<D>;
-  data: D[];
 }
 
 /**

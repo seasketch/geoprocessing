@@ -1,7 +1,13 @@
 import React, { CSSProperties } from "react";
-import Table, { Column } from "./Table";
+import Table, { Column, Row } from "./Table";
+import FilterSelectTable, { FilterSelect } from "./FilterSelectTable";
 import ReportCardDecorator from "../ReportCardDecorator";
-import fixtures, { HumanUse, Ranked } from "../../fixtures";
+import fixtures, {
+  HumanUse,
+  Ranked,
+  Categorical,
+  getRandomCategorical,
+} from "../../fixtures";
 import "./Table.css";
 
 export default {
@@ -9,6 +15,12 @@ export default {
   title: "Components|Table",
   decorators: [ReportCardDecorator],
 };
+
+const Percent = new Intl.NumberFormat("en", {
+  style: "percent",
+});
+
+const Number = new Intl.NumberFormat("en");
 
 /**
  * Types don't have to be specified for table columns or data in simple use cases
@@ -29,6 +41,47 @@ export const simple = () => {
     },
   ];
   return <Table columns={columns} data={fixtures.humanUse} />;
+};
+
+export const squeeze = () => {
+  const Percent2 = new Intl.NumberFormat("en", {
+    style: "percent",
+    minimumFractionDigits: 2,
+  });
+  const columns: Column<Categorical>[] = [
+    {
+      Header: "ID",
+      accessor: "id",
+    },
+    {
+      Header: "Count",
+      Cell: (cell) => <div>Number.format(cell.value)</div>, // Not working?
+      accessor: "count",
+    },
+    {
+      Header: "High",
+      accessor: (row) => Percent2.format(row.high),
+    },
+    {
+      Header: "Med",
+      accessor: (row) => Percent2.format(row.med),
+    },
+    {
+      Header: "Low",
+      accessor: (row) => Percent2.format(row.low),
+    },
+    {
+      Header: "Comment",
+      accessor: "comment",
+    },
+  ];
+  return (
+    <Table
+      className="squeeze"
+      columns={columns}
+      data={fixtures.randomCategorical}
+    />
+  );
 };
 
 /**** Centered */
@@ -60,9 +113,6 @@ export const setWidth = () => {
  * Beware the formatted value is what's used by sort function, Cell function can be better
  */
 export const formattedPercColumn = () => {
-  const Percent = new Intl.NumberFormat("en", {
-    style: "percent",
-  });
   const columns: Column<HumanUse>[] = [
     {
       Header: "Name",
@@ -84,7 +134,7 @@ export const formattedPercColumn = () => {
 
 export const paging = () => {
   const columns: Column[] = [
-    { Header: "Name", accessor: "fullName", style: { width: "60%" } },
+    { Header: "Name", accessor: "fullName", style: { width: "60%" } }, // Fixed width prevents dynamic variation between pages
     { Header: "Area", accessor: "value", style: { width: "20%" } },
     { Header: "Rank", accessor: "rank" },
   ];
@@ -190,6 +240,45 @@ export const dataDrivenProps = () => {
       columnProps={colFn}
       rowProps={rowFn}
       cellProps={cellFn}
+    />
+  );
+};
+
+/**** Filtering */
+
+export const filterCheckboxes = () => {
+  const filterSelect: FilterSelect<Categorical> = {
+    type: "every",
+    filters: [
+      {
+        name: "Show only count < 500K",
+        defaultValue: false,
+        filterFn: (row) => row.count < 2_000_000,
+      },
+      {
+        name: "Show only odd IDs",
+        defaultValue: true,
+        filterFn: (row) => parseInt(row.id) % 2 !== 0,
+      },
+    ],
+  };
+
+  const columns = [
+    {
+      Header: "ID",
+      accessor: "id",
+    },
+    {
+      Header: "Count",
+      accessor: "count",
+    },
+  ];
+
+  return (
+    <FilterSelectTable
+      filterSelect={filterSelect}
+      columns={React.useMemo(() => columns, [])}
+      data={getRandomCategorical()}
     />
   );
 };

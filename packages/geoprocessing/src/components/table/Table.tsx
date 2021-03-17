@@ -1,54 +1,16 @@
-import {
-  UseColumnOrderInstanceProps,
-  UseColumnOrderState,
-  UseExpandedHooks,
-  UseExpandedInstanceProps,
-  UseExpandedOptions,
-  UseExpandedRowProps,
-  UseExpandedState,
-  UseFiltersColumnOptions,
-  UseFiltersColumnProps,
-  UseFiltersInstanceProps,
-  UseFiltersOptions,
-  UseFiltersState,
-  UseGlobalFiltersColumnOptions,
-  UseGlobalFiltersInstanceProps,
-  UseGlobalFiltersOptions,
-  UseGlobalFiltersState,
-  UseGroupByCellProps,
-  UseGroupByColumnOptions,
-  UseGroupByColumnProps,
-  UseGroupByHooks,
-  UseGroupByInstanceProps,
-  UseGroupByOptions,
-  UseGroupByRowProps,
-  UseGroupByState,
-  UsePaginationInstanceProps,
-  UsePaginationOptions,
-  UsePaginationState,
-  UseResizeColumnsColumnOptions,
-  UseResizeColumnsColumnProps,
-  UseResizeColumnsOptions,
-  UseResizeColumnsState,
-  UseRowSelectHooks,
-  UseRowSelectInstanceProps,
-  UseRowSelectOptions,
-  UseRowSelectRowProps,
-  UseRowSelectState,
-  UseRowStateCellProps,
-  UseRowStateInstanceProps,
-  UseRowStateOptions,
-  UseRowStateRowProps,
-  UseRowStateState,
-  UseSortByColumnOptions,
-  UseSortByColumnProps,
-  UseSortByHooks,
-  UseSortByInstanceProps,
-  UseSortByOptions,
-  UseSortByState,
-  TableCommonProps,
-  TableOptions,
-} from "react-table";
+import React, { ReactElement, useMemo } from "react";
+import { useTable, usePagination, useSortBy, Row, IdType } from "react-table";
+import styled from "styled-components";
+import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
+
+import { TableOptions } from "react-table";
+
+/**
+ * Adapted from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react-table/react-table-tests.tsx
+ * For more inspiration see https://codesandbox.io/s/github/ggascoigne/react-table-example?file=/src/Table/Table.tsx:0-62
+ * See react-table-config.d.ts for full merged types
+ * @types/react-table README has more info on this approach
+ */
 
 declare module "react-table" {
   /**
@@ -65,14 +27,14 @@ declare module "react-table" {
     D extends object = {}
   > extends UseExpandedOptions<D>,
       // UseFiltersOptions<D>,
-      // UseGlobalFiltersOptions<D>,
+      UseGlobalFiltersOptions<D>,
       // UseGroupByOptions<D>,
       UsePaginationOptions<D>,
       // UseResizeColumnsOptions<D>,
       // UseRowSelectOptions<D>,
       // UseRowStateOptions<D>,
       UseSortByOptions<D> {
-    // Use this if you want to allow any prop to passed to the Table component, but specific is good
+    // Uncomment this if you want to allow any prop to passed to the Table component, but specific is good
     // Record<string, any>
     /** Optional method to pass style.  Added to table element */
     className?: string;
@@ -142,17 +104,7 @@ declare module "react-table" {
       UseRowStateRowProps<D> {}
 }
 
-/**
- * Adapted from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react-table/react-table-tests.tsx
- * For more inspiration see https://codesandbox.io/s/github/ggascoigne/react-table-example?file=/src/Table/Table.tsx:0-62
- * See react-table-config.d.ts for full merged types
- * @types/react-table README has more info on this approach
- */
-
-import React, { ReactElement } from "react";
-import { useTable, usePagination, useSortBy, useExpanded } from "react-table";
-import styled from "styled-components";
-import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
+export { Column, Row, TableOptions } from "react-table"; // Re-export for user convenience
 
 const Button = styled.button`
   display: inline;
@@ -168,8 +120,6 @@ const Button = styled.button`
     color: #ccc;
   }
 `;
-
-export { Column } from "react-table"; // Re-export for user convenience
 
 export const TableStyle = styled.div`
   table {
@@ -229,23 +179,21 @@ export const TableStyle = styled.div`
 
 const defaultPropGetter = () => ({});
 
+/**
+ * Table component suited to geoprocessing client reports.
+ * Builds on the `react-table` useTable hook and re-exports its interface,
+ * so reference those API docs to suit your needs.
+ * @param props
+ * @returns
+ */
 export function Table<D extends object>(props: TableOptions<D>): ReactElement {
-  const defaultColumn = React.useMemo(
+  const defaultColumn = useMemo(
     () => ({
       Filter: undefined, // default filter UI
       Cell: undefined, // default editable cell
     }),
     []
   );
-
-  // Can be overridden
-  const defaultState: Partial<TableOptions<D>> = {
-    disableMultiSort: true,
-    defaultColumn,
-    initialState: {
-      pageSize: 50, // Adds paging at 50 records
-    },
-  };
 
   const {
     headerProps = defaultPropGetter,
@@ -254,6 +202,15 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
     cellProps = defaultPropGetter,
     ...otherProps
   } = props;
+
+  // Default table options and state, caller can override and extend this via props
+  const defaultState: Partial<TableOptions<D>> = {
+    disableMultiSort: true,
+    defaultColumn,
+    initialState: {
+      pageSize: 20, // No paging when lower than that
+    },
+  };
 
   const {
     getTableProps,
@@ -285,14 +242,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
       ...otherProps,
     },
     useSortBy,
-    useExpanded,
-    usePagination,
-    // Plugin to add our selection column
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => {
-        return [...columns];
-      });
-    }
+    usePagination
   );
 
   return (
@@ -333,7 +283,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
                     </span>
                   </div>
                   {/* Render the columns filter UI */}
-                  <div>{column.canFilter ? column.render("Filter") : null}</div>
+                  {/* <div>{column.canFilter ? column.render("Filter") : null}</div> */}
                 </th>
               ))}
             </tr>
@@ -342,7 +292,6 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
         <tbody {...getTableBodyProps()}>
           {page.map((row) => {
             prepareRow(row);
-            console.log("row", row);
             return (
               <tr {...row.getRowProps(rowProps(row) || {})}>
                 {row.cells.map((cell) => {

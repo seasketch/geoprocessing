@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Checkbox } from "./types";
 
 const Checkbox = styled.input`
-  margin: 0px 10px 0px !important;
+  margin: 0px 10px 0px;
   cursor: pointer;
 `;
 const CheckboxLabel = styled.label`
@@ -27,7 +27,7 @@ export default function CheckboxGroup({
   setCheckbox,
 }: CheckboxGroupProps) {
   return (
-    <>
+    <div className="checkbox-group">
       {checkboxes.map((checkbox, i) => (
         <CheckboxLabel key={i}>
           <Checkbox
@@ -44,6 +44,6 @@ export default function CheckboxGroup({
           {checkbox.name}
         </CheckboxLabel>
       ))}
-    </>
+    </div>
   );
 }

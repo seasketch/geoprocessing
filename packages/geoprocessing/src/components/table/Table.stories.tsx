@@ -248,12 +248,17 @@ export const dataDrivenProps = () => {
 
 export const filterCheckboxes = () => {
   const filterSelect: FilterSelect<Categorical> = {
-    type: "some",
+    type: "every",
     filters: [
       {
         name: "Show only count < 500K",
         defaultValue: false,
         filterFn: (row) => row.count < 2_000_000,
+      },
+      {
+        name: "Show only odd IDs",
+        defaultValue: true,
+        filterFn: (row) => parseInt(row.id) % 2 !== 0,
       },
     ],
   };

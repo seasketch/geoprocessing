@@ -3,13 +3,21 @@ import styled from "styled-components";
 import { Checkbox } from "./types";
 
 const Checkbox = styled.input`
-  margin: 0px 10px 0px;
+  margin: 3px 10px;
   cursor: pointer;
 `;
 const CheckboxLabel = styled.label`
   cursor: pointer;
   display: block;
   font-weight: normal;
+
+  & input {
+    vertical-align: middle;
+  }
+
+  & .checkbox-label-text {
+    vertical-align: middle;
+  }
 `;
 
 interface CheckboxGroupProps {
@@ -41,7 +49,7 @@ export default function CheckboxGroup({
               [checkboxes]
             )}
           />
-          {checkbox.name}
+          <span className="checkbox-label-text">{checkbox.name}</span>
         </CheckboxLabel>
       ))}
     </div>

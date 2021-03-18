@@ -64,7 +64,7 @@ export default function FilterSelectTable<D extends object>(
   }, [data, checkboxState.checkboxes]);
 
   return (
-    <FilterSelectTableStyled>
+    <FilterSelectTableStyled className="filter-select-table">
       <CheckboxGroup {...checkboxState} />
       <Table data={filteredData} {...otherProps} />
     </FilterSelectTableStyled>

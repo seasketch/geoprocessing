@@ -12,6 +12,10 @@ const fill = keyframes`
   }
 `;
 
+interface Props {
+  duration: number;
+}
+
 export const ProgressBar = styled.div`
   background: #ddd;
   height: 4px;
@@ -21,7 +25,7 @@ export const ProgressBar = styled.div`
   animation: ${fill} linear;
   animation-iteration-count: once;
   /* animation-timing-function: ease-in-out; */
-  animation-duration: ${(props: any) => props.duration + "s"};
+  animation-duration: ${(props: Props) => props.duration + "s"};
   position: relative;
 `;
 

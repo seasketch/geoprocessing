@@ -1,44 +1,14 @@
 import React from "react";
 import SketchAttributesCard from "./SketchAttributesCard";
-import ReportDecorator from "./ReportDecorator";
+import ReportCardDecorator from "./ReportCardDecorator";
 import ReportContext from "../ReportContext";
 import { GeoprocessingProject } from "../types";
+import { genSampleSketchContext } from "../fixtures/sketch";
 
 export default {
   component: SketchAttributesCard,
   title: "Components|SketchAttributesCard",
-  decorators: [ReportDecorator]
+  decorators: [ReportCardDecorator],
 };
 
-export const simple = () => (
-  <ReportContext.Provider
-    value={{
-      sketchProperties: {
-        name: "My Sketch",
-        id: "abc123",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        sketchClassId: "efg345",
-        isCollection: false,
-        userAttributes: [
-          {
-            exportId: "DESIGNATION",
-            fieldType: "ChoiceField",
-            label: "Designation",
-            value: "Marine Reserve"
-          },
-          {
-            exportId: "COMMENTS",
-            fieldType: "TextArea",
-            label: "Comments",
-            value: "This is my MPA and it is going to be the greatest. Amazing."
-          }
-        ]
-      },
-      geometryUri: "",
-      projectUrl: "https://example.com/project"
-    }}
-  >
-    <SketchAttributesCard title="Attributes" />
-  </ReportContext.Provider>
-);
+export const simple = () => <SketchAttributesCard title="Attributes" />;

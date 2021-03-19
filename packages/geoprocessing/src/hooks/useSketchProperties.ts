@@ -1,13 +1,9 @@
-import {
-  SketchProperties,
-  SketchExtendedProperties,
-  UserAttribute,
-} from "../types";
+import { SketchProperties, UserAttribute } from "../types";
 import { useContext } from "react";
 import ReportContext from "../ReportContext";
 
 function useSketchProperties(): [
-  SketchProperties & SketchExtendedProperties,
+  SketchProperties,
   (exportId: string, defaultValue?: any) => any
 ] {
   const context = useContext(ReportContext);
@@ -17,10 +13,7 @@ function useSketchProperties(): [
   context.sketchProperties.userAttributes =
     context.sketchProperties.userAttributes || ([] as UserAttribute[]);
   return [
-    {
-      ...context.sketchProperties,
-      type: context.sketchProperties.isCollection ? "collection" : "zone",
-    },
+    context.sketchProperties,
     (exportId: string, defaultValue?: any): any => {
       const userAttribute = context.sketchProperties.userAttributes.find(
         (attr) => attr.exportId === exportId

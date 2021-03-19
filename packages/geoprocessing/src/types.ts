@@ -23,13 +23,6 @@ export interface SketchProperties {
   userAttributes: UserAttribute[];
 }
 
-/**
- * Additional computed properties for convenience
- */
-export interface SketchExtendedProperties {
-  type: "zone" | "collection";
-}
-
 export interface UserAttribute {
   exportId: string;
   label: string;

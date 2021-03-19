@@ -34,6 +34,11 @@
     "url": "https://github.com/seasketch/geoprocessing/issues"
   },
   "homepage": "https://github.com/seasketch/geoprocessing#readme",
+  "keywords": [
+    "geoprocessing",
+    "geospatial",
+    "gis"
+  ],
   "dependencies": {
     "@aws-cdk/aws-apigateway": "^1.39.0",
     "@aws-cdk/aws-cloudfront": "^1.39.0",

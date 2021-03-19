@@ -2,6 +2,12 @@
 
 [SeaSketch](https://seasketch.org) is a marine spatial planning tool focused on collaborative design. An important component of the SeaSketch design process is the continuous evaluation of user-designed zones (sketches) against science based criteria. These may take the forms of reports on habitats represented in the area, economic impacts of fisheries closures, or distance to significant landmarks like ports. This geoprocessing framework enables developers to create these reports and integrate them with SeaSketch using open-source tools.
 
+## Quickstart
+
+* `npm install` - installs dependencies and runs postinstall scripts for all packages using `lerna bootstrap`
+* `npm test` - runs test suite for all packages
+* `npm run clean` - clean up build artifacts by recursively removing files and directories not under version control including git ignored files.
+
 ## System components
 
 Geoprocessing projects consist of [geoprocessing](./docs/geoprocessing.md) or [preprocessing](./docs/preprocessing.md) functions, client javascript components and data prep scripts. Functions are bundled into services that are deployed to [AWS Lambda](https://aws.amazon.com/lambda/). The advantage of running on lambda is that costs are based directly on use, and are typically very low compared to a server running 24/7. They also scale up to hundreds of simulateous users very quickly. Client code is stored on AWS S3 and distributed via CloudFront. SeaSketch runs these clients inside a sandboxed iframe to protect user data.

@@ -15,5 +15,13 @@
   },
   "dependencies": {
     "typescript": "^3.9.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seasketch/geoprocessing.git"
+  },
+  "homepage": "https://github.com/seasketch/geoprocessing/#readme",
+  "bugs": {
+    "url": "https://github.com/seasketch/geoprocessing/issues"
   }
 }

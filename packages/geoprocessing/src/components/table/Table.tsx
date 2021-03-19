@@ -126,8 +126,7 @@ export const TableStyled = styled.div`
     font-family: sans-serif;
     width: 100%;
     border-collapse: collapse;
-
-    th {
+    margin: 10px 0px 10px 0px th {
       padding-top: 8px;
       padding: 5px;
       font-weight: bolder;

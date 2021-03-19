@@ -1,9 +1,7 @@
-//@ts-nocheck
-import React, { useState, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import Card, { Props } from "./Card";
 import { useFunction } from "../hooks/useFunction";
-// @ts-ignore
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import Skeleton from "./Skeleton";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
 
@@ -70,7 +68,7 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
     showLabel = true;
   }
   if (!loading) {
-    if (!task.data) {
+    if (!task?.data) {
       error = task?.error;
     }
   }
@@ -94,7 +92,7 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
             </ProgressBarWrapper>
           </>
         ) : (
-          <>{props.children(task.data as T)}</>
+          <>{props.children(task?.data as T)}</>
         )}
       </Card>
     );

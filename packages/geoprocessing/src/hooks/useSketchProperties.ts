@@ -16,10 +16,10 @@ function useSketchProperties(): [
     context.sketchProperties,
     (exportId: string, defaultValue?: any): any => {
       const userAttribute = context.sketchProperties.userAttributes.find(
-        attr => attr.exportId === exportId
+        (attr) => attr.exportId === exportId
       );
       return userAttribute?.value || defaultValue;
-    }
+    },
   ];
 }
 

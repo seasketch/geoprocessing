@@ -19,7 +19,7 @@ const boxStyle = {
 const titleStyle = {
   fontSize: 14,
   color: "rgba(116, 116, 116, 1)",
-  marginBottom: "0.35em",
+  marginBottom: "1em",
   marginTop: 0,
   fontWeight: 400,
 };

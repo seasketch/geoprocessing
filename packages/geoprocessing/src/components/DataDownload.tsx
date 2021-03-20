@@ -5,23 +5,33 @@ import SimpleButtonStyled from "./buttons/SimpleButton";
 import styled from "styled-components";
 import { parse } from "json2csv";
 
-interface DownloadOption {
-  label: string;
-  extension: string;
-  contentType: string;
-  /** Object URL aka DOMString with data in final format */
-  url: string;
+// Strictly limit format and data types accepted
+const SUPPORTED_FORMATS = ["json", "csv"] as const;
+export type SUPPORTED_FORMAT = typeof SUPPORTED_FORMATS[number];
+export type StringOrNumber = string | number;
+
+export interface DataFormatters {
+  [key: string]: (data: StringOrNumber[][]) => string; // Future: figure out index signature to use more specific keyof SUPPORTED_FORMATS
 }
 
-interface DataFormatters {
-  [key: string]: (data: unknown[]) => string;
+export interface DownloadOption {
+  /** File extension for format, also used to uniquely identify each format */
+  extension: SUPPORTED_FORMAT;
+  /** Label to display for download option */
+  label: string;
+  /** MIME type of associated with data format */
+  contentType: string;
+  /** Object blob URL aka DOMString, stores transformed data in format */
+  url: string;
 }
 
 export interface DownloadFileProps {
   /** Name minus extension */
   filename: string;
   /** Raw data to format and allow to download */
-  data: unknown[];
+  data: StringOrNumber[][];
+  /** Formats to offer, defaults to csv only */
+  formats?: SUPPORTED_FORMAT[];
 }
 
 const DownloadButtonStyled = styled(SimpleButtonStyled)`
@@ -29,13 +39,12 @@ const DownloadButtonStyled = styled(SimpleButtonStyled)`
   padding: 5px;
 `;
 
-/** Default data formatters */
 const formatters: DataFormatters = {
   csv: (data) => parse(data),
   json: (data) => JSON.stringify(data, null, 2),
 };
 
-const defaultObjects: DownloadOption[] = [
+const formatConfigs: DownloadOption[] = [
   { label: "CSV", extension: "csv", contentType: "application/csv", url: "" },
   {
     label: "JSON",
@@ -47,15 +56,21 @@ const defaultObjects: DownloadOption[] = [
 
 /**
  * Dropdown menu for transforming data to CSV/JSON format and initiating a browser download
+ * Defaults to CSV download only
  */
-const DataDownload = ({ filename, data }: DownloadFileProps) => {
+const DataDownload = ({
+  filename,
+  data,
+  formats = ["csv"],
+}: DownloadFileProps) => {
   const { toggleDropdown, isOpen, Dropdown } = useDropdown({
     width: 100,
   });
-  // Default to emptry string
-  const [objectUrls, setObjectUrls] = useState<DownloadOption[]>(
-    defaultObjects
+
+  const defaultState: DownloadOption[] = formatConfigs.filter((c) =>
+    formats.includes(c.extension)
   );
+  const [objectUrls, setObjectUrls] = useState<DownloadOption[]>(defaultState);
 
   useEffect(() => {
     const dObjects = objectUrls.map((dOption) => {

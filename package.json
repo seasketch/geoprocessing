@@ -14,6 +14,7 @@
     "create_example": "node packages/geoprocessing/dist/scripts/init/createExampleProject.js"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "typescript": "^3.9.2"
   },
   "repository": {

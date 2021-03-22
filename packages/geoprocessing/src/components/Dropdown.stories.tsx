@@ -17,7 +17,13 @@ export const controlled = () => {
   return (
     <>
       <SimpleButton onClick={toggleDropdown}>⋮</SimpleButton>
-      {isOpen && <Dropdown>Add children</Dropdown>}
+      {isOpen && (
+        <Dropdown>
+          <a href="https://seasketch.org" target="_blank">
+            <SimpleButton>➥ Seasketch</SimpleButton>
+          </a>
+        </Dropdown>
+      )}
     </>
   );
 };

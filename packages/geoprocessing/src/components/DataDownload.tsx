@@ -11,7 +11,7 @@ export type SUPPORTED_FORMAT = typeof SUPPORTED_FORMATS[number];
 export type StringOrNumber = string | number;
 
 export interface DataFormatters {
-  [key: string]: (data: StringOrNumber[][]) => string; // Future: figure out index signature to use more specific keyof SUPPORTED_FORMATS
+  [key: string]: (data: StringOrNumber[][]) => string; // Future: figure out index signature to use more specific keyof SUPPORTED_FORMATS https://github.com/microsoft/TypeScript/issues/24220
 }
 
 export interface DownloadOption {

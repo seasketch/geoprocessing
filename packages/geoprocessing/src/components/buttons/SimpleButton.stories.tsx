@@ -11,9 +11,10 @@ export const simpleButton = () => {
   return (
     <>
       <SimpleButton>⋮</SimpleButton>
-      <SimpleButton>➕</SimpleButton>
+      <SimpleButton>➥</SimpleButton>
       <SimpleButton>⇩</SimpleButton>
       <SimpleButton>⬇</SimpleButton>
+      <SimpleButton>➥</SimpleButton>
     </>
   );
 };

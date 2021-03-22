@@ -3,11 +3,11 @@ import DataDownload from "./DataDownload";
 
 export default {
   component: DataDownload,
-  title: "Components",
+  title: "Components|DataDownload",
   decorators: [],
 };
 
-export const dataDownload = () => {
+export const simple = () => {
   return (
     <>
       <DataDownload

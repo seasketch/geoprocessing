@@ -1,11 +1,11 @@
 import React, { ReactNode } from "react";
-import Card, { Props } from "./Card";
+import Card, { CardProps } from "./Card";
 import { useFunction } from "../hooks/useFunction";
 import styled from "styled-components";
 import Skeleton from "./Skeleton";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
 
-export interface ResultsCardProps<T> extends Props {
+export interface ResultsCardProps<T> extends CardProps {
   functionName: string;
   children: (results: T) => ReactNode;
   skeleton?: ReactNode;
@@ -21,7 +21,6 @@ const DefaultSkeleton = () => (
 );
 
 // styled-components are needed here to use the ::before pseudo selector
-// @ts-ignore
 const ErrorIndicator = styled.div`
   display: inline-block;
   font-weight: bold;
@@ -40,7 +39,7 @@ const ErrorIndicator = styled.div`
     content: "!";
   }
 `;
-//@ts-ignore
+
 export const EstimateLabel = styled.div`
   height: 20px;
   margin-top: 5px;
@@ -53,11 +52,16 @@ export const EstimateLabel = styled.div`
   display: none;
 `;
 
-function ResultsCard<T>(props: ResultsCardProps<T>) {
-  if (!props.functionName) {
+function ResultsCard<T>({
+  functionName,
+  skeleton,
+  children,
+  ...otherProps
+}: ResultsCardProps<T>) {
+  if (!functionName) {
     throw new Error("No function specified for ResultsCard");
   }
-  let { task, loading, error } = useFunction(props.functionName);
+  let { task, loading, error } = useFunction(functionName);
   let taskEstimate = 5;
   if (task && task.estimate) {
     taskEstimate = Math.round(task.estimate / 1000);
@@ -72,9 +76,10 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
       error = task?.error;
     }
   }
+
   if (error) {
     return (
-      <Card title={props.title}>
+      <Card {...otherProps}>
         <p role="alert">
           <ErrorIndicator />
           {error}
@@ -83,16 +88,16 @@ function ResultsCard<T>(props: ResultsCardProps<T>) {
     );
   } else {
     return (
-      <Card title={props.title}>
+      <Card {...otherProps}>
         {loading ? (
           <>
-            {props.skeleton || <DefaultSkeleton />}
+            {skeleton || <DefaultSkeleton />}
             <ProgressBarWrapper>
               <ProgressBar duration={taskEstimate} />
             </ProgressBarWrapper>
           </>
         ) : (
-          <>{props.children(task?.data as T)}</>
+          <>{children(task?.data as T)}</>
         )}
       </Card>
     );

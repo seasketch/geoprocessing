@@ -22,6 +22,10 @@ const columns: Column<Ranked>[] = [
   { Header: "Rank", accessor: "rank" },
 ];
 
+interface ResultData {
+  ranked: Ranked[];
+}
+
 export const dataDownloadCard = () => {
   return (
     <ReportContext.Provider
@@ -38,14 +42,14 @@ export const dataDownloadCard = () => {
             functionName: "area",
             sketchName: "My Sketch",
             results: {
-              ranked: fixtures.ranked as Ranked[],
+              ranked: fixtures.ranked,
             },
           },
         ],
       }}
     >
       <ResultsCard functionName="area">
-        {(data: any) => {
+        {(data: ResultData) => {
           return (
             <>
               <Toolbar

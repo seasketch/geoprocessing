@@ -1,4 +1,4 @@
-import React, { ReactElement, useMemo } from "react";
+import React, { ReactElement, useMemo, ReactNode } from "react";
 import { useTable, usePagination, useSortBy, Row, IdType } from "react-table";
 import styled from "styled-components";
 import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
@@ -50,9 +50,11 @@ declare module "react-table" {
     /** Function called for each table cell allowing style/className/role props to be overridden */
     cellProps?: (cell: Cell<D>) => TableCommonProps;
     /** Toolbar title */
-    title?: string;
+    title?: string | ReactNode;
     /** Enable toolbar with download option */
     downloadEnabled?: boolean;
+    /** If the table data is more complex than an array of numbers/strings, which download component requires, you can provide alternative download data */
+    downloadData?: DownloadFileProps["data"];
     downloadFilename?: DownloadFileProps["filename"];
     downloadFormats?: DownloadFileProps["formats"];
   }
@@ -213,6 +215,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
     downloadEnabled,
     downloadFilename,
     downloadFormats,
+    downloadData,
     data,
     ...otherProps
   } = props;
@@ -268,13 +271,16 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
           useGutters={false}
           toolbarCls="gp-download-toolbar"
         >
-          <h2>{title}</h2>
+          {typeof title === "string" ? <h2>{title}</h2> : title}
           {downloadEnabled && (
             <div>
               <DataDownload
                 filename={downloadFilename}
                 formats={downloadFormats}
-                data={(data as unknown) as Record<string, string | number>[]}
+                data={
+                  downloadData ||
+                  ((data as unknown) as DownloadFileProps["data"])
+                }
               />
             </div>
           )}

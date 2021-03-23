@@ -16,11 +16,6 @@ const styles = {
     padding: 16,
     margin: "8px 0px",
   },
-  titleBar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "baseline",
-  },
   title: {
     fontSize: 14,
     color: "rgba(116, 116, 116, 1)",

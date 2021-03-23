@@ -30,6 +30,5 @@ export {
   FilterSelectTableOptions,
   FilterSelectTableStyled,
 } from "./src/components/table/FilterSelectTable";
-export { default as ReportTable } from "./src/components/table/ReportTable";
 
 export { default as CheckboxGroup } from "./src/components/checkbox/CheckboxGroup";

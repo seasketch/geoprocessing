@@ -11,7 +11,15 @@ export default {
 export const simple = () => {
   return (
     <>
-      <DataDownload filename="sample" data={fixtures.ranked as any} />
+      <DataDownload filename="sample" data={fixtures.ranked} />
+    </>
+  );
+};
+
+export const flattenNested = () => {
+  return (
+    <>
+      <DataDownload filename="sample" data={fixtures.nested} />
     </>
   );
 };

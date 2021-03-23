@@ -1,8 +1,8 @@
 import { randomInt, randomFloat } from "../util/randomData";
 
-let fixtures: Record<string, object> = {};
+let fixtures = {};
 
-export interface HumanUse extends Record<string, number | string> {
+export interface HumanUse {
   name: string;
   count: number;
   perc: number;
@@ -51,7 +51,7 @@ const humanUse: HumanUse[] = [
   },
 ];
 
-export interface Ranked extends Record<string, number | string> {
+export interface Ranked extends Record<string, string | number> {
   value: number;
   percent: number;
   totalValue: number;
@@ -90,7 +90,7 @@ const ranked: Ranked[] = [
   },
 ];
 
-export interface Categorical extends Record<string, number | string> {
+export interface Categorical {
   id: string;
   count: number;
   low: number;
@@ -110,8 +110,25 @@ export const getRandomCategorical = (): Categorical[] => {
   }));
 };
 
+export const nested: Record<string, any>[] = [
+  {
+    propA: "a",
+    propB: "b",
+    arrayC: ["one", "two", 3, 4, "five"],
+    level2: {
+      propC: 1,
+      propD: 2,
+      level3: {
+        propE: "e",
+        propF: "f",
+      },
+    },
+  },
+];
+
 export default {
   ranked,
   humanUse,
+  nested,
   randomCategorical: getRandomCategorical(),
 };

@@ -53,8 +53,6 @@ declare module "react-table" {
     title?: string | ReactNode;
     /** Enable toolbar with download option */
     downloadEnabled?: boolean;
-    /** If the table data is more complex than an array of numbers/strings, which download component requires, you can provide alternative download data */
-    downloadData?: DownloadFileProps["data"];
     downloadFilename?: DownloadFileProps["filename"];
     downloadFormats?: DownloadFileProps["formats"];
   }
@@ -215,7 +213,6 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
     downloadEnabled,
     downloadFilename,
     downloadFormats,
-    downloadData,
     data,
     ...otherProps
   } = props;
@@ -277,10 +274,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
               <DataDownload
                 filename={downloadFilename}
                 formats={downloadFormats}
-                data={
-                  downloadData ||
-                  ((data as unknown) as DownloadFileProps["data"])
-                }
+                data={data}
               />
             </div>
           )}

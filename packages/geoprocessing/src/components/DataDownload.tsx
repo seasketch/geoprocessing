@@ -3,7 +3,7 @@ import useDropdown from "../hooks/useDropdown";
 import SimpleButton from "./buttons/SimpleButton";
 import SimpleButtonStyled from "./buttons/SimpleButton";
 import styled from "styled-components";
-import { parse } from "json2csv";
+import { Parser, transforms } from "json2csv";
 
 // Strictly limit format and data types accepted
 const SUPPORTED_FORMATS = ["json", "csv"] as const;
@@ -28,8 +28,8 @@ export interface DownloadOption {
 export interface DownloadFileProps {
   /** Name minus extension */
   filename?: string;
-  /** Raw data to format and allow to download */
-  data: Record<string, StringOrNumber>[];
+  /** Raw data to format and allow to download, nested objects and arrays will get flattened */
+  data: object[];
   /** Formats to offer, defaults to csv only */
   formats?: SUPPORTED_FORMAT[];
 }
@@ -75,7 +75,10 @@ const DataDownload = ({
   useEffect(() => {
     const headers = Object.keys(data[0]);
     const formatters: DataFormatters = {
-      csv: () => parse(data),
+      csv: () =>
+        new Parser({
+          transforms: [transforms.flatten({ arrays: true })], // Flatten nested objects AND arrays
+        }).parse(data),
       json: () => JSON.stringify(data, null, 2),
     };
 

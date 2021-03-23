@@ -282,3 +282,40 @@ export const filterCheckboxes = () => {
     />
   );
 };
+
+export const tableWithTitle = () => {
+  const columns: Column[] = [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+    {
+      Header: "Count",
+      accessor: "count",
+    },
+  ];
+  return (
+    <Table title="Table Title" columns={columns} data={fixtures.humanUse} />
+  );
+};
+
+export const tableWithDownload = () => {
+  const columns: Column[] = [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+    {
+      Header: "Count",
+      accessor: "count",
+    },
+  ];
+  return (
+    <Table
+      title="Table Title"
+      downloadEnabled={true}
+      columns={columns}
+      data={fixtures.humanUse}
+    />
+  );
+};

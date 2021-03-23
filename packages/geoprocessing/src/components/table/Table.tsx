@@ -2,6 +2,8 @@ import React, { ReactElement, useMemo } from "react";
 import { useTable, usePagination, useSortBy, Row, IdType } from "react-table";
 import styled from "styled-components";
 import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
+import DataDownload from "../DataDownload";
+import Toolbar from "../Toolbar";
 
 import { TableOptions } from "react-table";
 
@@ -47,6 +49,10 @@ declare module "react-table" {
     rowProps?: (row: Row<D>) => TableCommonProps;
     /** Function called for each table cell allowing style/className/role props to be overridden */
     cellProps?: (cell: Cell<D>) => TableCommonProps;
+    /** Toolbar title */
+    title?: string;
+    /** Enable toolbar with download option */
+    downloadEnabled?: boolean;
   }
 
   export interface Hooks<D extends object = {}>
@@ -201,6 +207,9 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
     columnProps = defaultPropGetter,
     rowProps = defaultPropGetter,
     cellProps = defaultPropGetter,
+    title,
+    downloadEnabled,
+    data,
     ...otherProps
   } = props;
 
@@ -241,6 +250,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
     {
       ...defaultState,
       ...otherProps,
+      data,
     },
     useSortBy,
     usePagination
@@ -248,6 +258,23 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
 
   return (
     <TableStyled>
+      {(title || downloadEnabled) && (
+        <Toolbar
+          variant="dense"
+          useGutters={false}
+          toolbarCls="gp-download-toolbar"
+        >
+          <h2>{title}</h2>
+          {downloadEnabled && (
+            <div>
+              <DataDownload
+                filename="ranked"
+                data={(data as unknown) as Record<string, string | number>[]}
+              />
+            </div>
+          )}
+        </Toolbar>
+      )}
       <table className={props.className} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (

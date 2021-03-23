@@ -11,7 +11,7 @@ export type SUPPORTED_FORMAT = typeof SUPPORTED_FORMATS[number];
 export type StringOrNumber = string | number;
 
 export interface DataFormatters {
-  [key: string]: (data: StringOrNumber[][]) => string; // Future: figure out index signature to use more specific keyof SUPPORTED_FORMATS https://github.com/microsoft/TypeScript/issues/24220
+  [key: string]: () => string; // Future: figure out index signature to use more specific keyof SUPPORTED_FORMATS https://github.com/microsoft/TypeScript/issues/24220
 }
 
 export interface DownloadOption {
@@ -29,7 +29,7 @@ export interface DownloadFileProps {
   /** Name minus extension */
   filename: string;
   /** Raw data to format and allow to download */
-  data: StringOrNumber[][];
+  data: Record<string, StringOrNumber>[];
   /** Formats to offer, defaults to csv only */
   formats?: SUPPORTED_FORMAT[];
 }
@@ -38,11 +38,6 @@ const DownloadButtonStyled = styled(SimpleButtonStyled)`
   font-size: 12px;
   padding: 5px;
 `;
-
-const formatters: DataFormatters = {
-  csv: (data) => parse(data),
-  json: (data) => JSON.stringify(data, null, 2),
-};
 
 const formatConfigs: DownloadOption[] = [
   { label: "CSV", extension: "csv", contentType: "application/csv", url: "" },
@@ -73,13 +68,22 @@ const DataDownload = ({
   const [objectUrls, setObjectUrls] = useState<DownloadOption[]>(defaultState);
 
   useEffect(() => {
-    const dObjects = objectUrls.map((dOption) => {
-      const blob = new Blob([formatters[dOption.extension](data)], {
-        type: dOption.contentType,
-      });
-      if (dOption.url != "") window.URL.revokeObjectURL(dOption.url); // clean up last first
-      return { ...dOption, url: window.URL.createObjectURL(blob) };
-    }, {});
+    const headers = Object.keys(data[0]);
+    const formatters: DataFormatters = {
+      csv: () => parse(data),
+      json: () => JSON.stringify(data, null, 2),
+    };
+
+    const dObjects = objectUrls.map(
+      (dOption) => {
+        const blob = new Blob([formatters[dOption.extension]()], {
+          type: dOption.contentType,
+        });
+        if (dOption.url != "") window.URL.revokeObjectURL(dOption.url); // clean up last first
+        return { ...dOption, url: window.URL.createObjectURL(blob) };
+      },
+      [data]
+    );
 
     setObjectUrls(dObjects);
   }, [data]);

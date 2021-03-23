@@ -1,5 +1,6 @@
 import React from "react";
 import DataDownload from "./DataDownload";
+import fixtures from "../fixtures";
 
 export default {
   component: DataDownload,
@@ -10,14 +11,7 @@ export default {
 export const simple = () => {
   return (
     <>
-      <DataDownload
-        filename="sample"
-        data={[
-          ["header1", "header2"],
-          ["row1", 6],
-          ["row2", 18],
-        ]}
-      />
+      <DataDownload filename="sample" data={fixtures.ranked as any} />
     </>
   );
 };

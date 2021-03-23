@@ -1,19 +1,26 @@
 import React from "react";
 import ResultsCard from "./ResultsCard";
 import ReportDecorator from "./ReportDecorator";
-import ReportContext, { TestExampleOutput } from "../ReportContext";
+import ReportContext from "../ReportContext";
 import DataDownload from "./DataDownload";
-import SimpleButton from "./buttons/SimpleButton";
 import Toolbar from "./Toolbar";
-import { GeoprocessingProject, SketchProperties } from "../types";
+import Table, { Column } from "./table/Table";
+import { SketchProperties } from "../types";
 import { v4 as uuid } from "uuid";
+import fixtures, { Ranked } from "../fixtures";
 import "./Combos.stories.css";
 
 export default {
   component: DataDownload,
-  title: "Combinations|DataDownload",
+  title: "Combinations|DataDownloadCard",
   decorators: [ReportDecorator],
 };
+
+const columns: Column<Ranked>[] = [
+  { Header: "Name", accessor: "fullName" },
+  { Header: "Area", accessor: "value" },
+  { Header: "Rank", accessor: "rank" },
+];
 
 export const dataDownloadCard = () => {
   return (
@@ -31,11 +38,7 @@ export const dataDownloadCard = () => {
             functionName: "area",
             sketchName: "My Sketch",
             results: {
-              rows: [
-                ["col1", "col2"],
-                [1, 2],
-                [3, 4],
-              ],
+              ranked: fixtures.ranked as Ranked[],
             },
           },
         ],
@@ -52,10 +55,14 @@ export const dataDownloadCard = () => {
               >
                 <h2>Download Toolbar</h2>
                 <div>
-                  <DataDownload filename="sample" data={data.rows} />
+                  <DataDownload filename="ranked" data={data.ranked} />
                 </div>
               </Toolbar>
-              <p>The result has rows {JSON.stringify(data)}</p>
+              <Table
+                className="centered"
+                columns={columns}
+                data={fixtures.ranked}
+              />
             </>
           );
         }}

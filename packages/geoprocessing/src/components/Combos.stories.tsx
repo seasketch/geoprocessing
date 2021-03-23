@@ -22,7 +22,7 @@ const columns: Column<Ranked>[] = [
   { Header: "Rank", accessor: "rank" },
 ];
 
-interface ResultData {
+interface RankedResult {
   ranked: Ranked[];
 }
 
@@ -42,6 +42,7 @@ export const dataDownloadCard = () => {
             functionName: "area",
             sketchName: "My Sketch",
             results: {
+              // RankedResult
               ranked: fixtures.ranked,
             },
           },
@@ -49,7 +50,7 @@ export const dataDownloadCard = () => {
       }}
     >
       <ResultsCard functionName="area">
-        {(data: ResultData) => {
+        {(data: RankedResult) => {
           return (
             <>
               <Toolbar

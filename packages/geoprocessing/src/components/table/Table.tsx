@@ -2,7 +2,7 @@ import React, { ReactElement, useMemo } from "react";
 import { useTable, usePagination, useSortBy, Row, IdType } from "react-table";
 import styled from "styled-components";
 import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
-import DataDownload from "../DataDownload";
+import DataDownload, { DownloadFileProps } from "../DataDownload";
 import Toolbar from "../Toolbar";
 
 import { TableOptions } from "react-table";
@@ -53,6 +53,8 @@ declare module "react-table" {
     title?: string;
     /** Enable toolbar with download option */
     downloadEnabled?: boolean;
+    downloadFilename?: DownloadFileProps["filename"];
+    downloadFormats?: DownloadFileProps["formats"];
   }
 
   export interface Hooks<D extends object = {}>
@@ -209,6 +211,8 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
     cellProps = defaultPropGetter,
     title,
     downloadEnabled,
+    downloadFilename,
+    downloadFormats,
     data,
     ...otherProps
   } = props;
@@ -268,7 +272,8 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
           {downloadEnabled && (
             <div>
               <DataDownload
-                filename="ranked"
+                filename={downloadFilename}
+                formats={downloadFormats}
                 data={(data as unknown) as Record<string, string | number>[]}
               />
             </div>

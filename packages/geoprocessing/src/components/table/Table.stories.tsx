@@ -314,6 +314,7 @@ export const tableWithDownload = () => {
     <Table
       title="Table Title"
       downloadEnabled={true}
+      downloadFilename="humanUse"
       columns={columns}
       data={fixtures.humanUse}
     />

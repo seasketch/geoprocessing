@@ -27,7 +27,7 @@ export interface DownloadOption {
 
 export interface DownloadFileProps {
   /** Name minus extension */
-  filename: string;
+  filename?: string;
   /** Raw data to format and allow to download */
   data: Record<string, StringOrNumber>[];
   /** Formats to offer, defaults to csv only */
@@ -40,9 +40,14 @@ const DownloadButtonStyled = styled(SimpleButtonStyled)`
 `;
 
 const formatConfigs: DownloadOption[] = [
-  { label: "CSV", extension: "csv", contentType: "application/csv", url: "" },
   {
-    label: "JSON",
+    label: "Export CSV",
+    extension: "csv",
+    contentType: "application/csv",
+    url: "",
+  },
+  {
+    label: "Export JSON",
     extension: "json",
     contentType: "application/json",
     url: "",
@@ -54,12 +59,12 @@ const formatConfigs: DownloadOption[] = [
  * Defaults to CSV download only
  */
 const DataDownload = ({
-  filename,
+  filename = "export",
   data,
   formats = ["csv"],
 }: DownloadFileProps) => {
   const { toggleDropdown, isOpen, Dropdown } = useDropdown({
-    width: 100,
+    width: 120,
   });
 
   const defaultState: DownloadOption[] = formatConfigs.filter((c) =>

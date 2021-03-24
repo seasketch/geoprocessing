@@ -61,12 +61,13 @@ const formatConfigs: DownloadOption[] = [
 
 /**
  * Dropdown menu for transforming data to CSV/JSON format and initiating a browser download
- * Defaults to CSV download only, and filename with sketch name if available and current timestamp
+ * Defaults to CSV and JSON, and filename will include sketch name from ReportContext (if available)
+ * and current timestamp
  */
 const DataDownload = ({
   filename = "export",
   data,
-  formats = ["csv"],
+  formats = ["csv", "json"],
   addSketchName = true,
   addTimestamp = true,
 }: DownloadFileProps) => {

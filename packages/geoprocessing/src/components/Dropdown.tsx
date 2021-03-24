@@ -2,19 +2,24 @@ import React, { FC, useState, useRef } from "react";
 import styled from "styled-components";
 import { usePopper } from "react-popper";
 import { Placement } from "@popperjs/core";
-import useHandleClickOutside from "../hooks/useClickOutside";
+import useClickOutside from "../hooks/useClickOutside";
 
 interface DropdownContainerProps {
+  /* Whether dropdown contain is rendered (open) or not */
   open: boolean;
 }
 
 /**
- *
+ * Renders an element with a dropdown list
  */
-interface DropDownProps {
+interface DropownProps {
+  /* Child components to list in dropdown.  Each is wrapped in a DropdownItem */
   children: React.ReactNode;
+  /* The base element which opens a dropdown onClick, typically a button */
   titleElement?: React.ReactElement;
+  /* How to place the dropdown, defaults to 'auto'.  See types or https://popper.js.org/ for available placements */
   placement?: Placement;
+  /* Distance pixels to offset from titleElement */
   offset?: { horizontal: number; vertical: number };
 }
 
@@ -39,7 +44,7 @@ const DropdownItem = styled.div`
   }
 `;
 
-const DropDownTrigger = styled.button`
+const DropownTrigger = styled.button`
   border: none;
   background: none;
   font-family: sans-serif;
@@ -50,16 +55,17 @@ const Dropdown = ({
   placement = "auto",
   offset = { horizontal: 0, vertical: 0 },
   children,
-}: DropDownProps) => {
+}: DropownProps) => {
   const [open, setOpen] = useState(false);
 
   /** Used for updates */
   const referenceRef = useRef(null);
   const popperRef = useRef(null);
 
+  /* Listens for click outside the source element that opens the dropdown
+   * and toggles accordingly */
   const toggle = () => setOpen(!open);
-
-  const { ref: DropDownRef } = useHandleClickOutside(setOpen);
+  const { ref: DropownRef } = useClickOutside(setOpen);
 
   const { horizontal, vertical } = offset;
   const { styles, attributes } = usePopper(
@@ -86,14 +92,14 @@ const Dropdown = ({
 
   return (
     <>
-      <div ref={DropDownRef}>
-        <DropDownTrigger
+      <div ref={DropownRef}>
+        <DropownTrigger
           type="button"
           ref={referenceRef}
           onClick={handleDropdownClick}
         >
           {TitleElement}
-        </DropDownTrigger>
+        </DropownTrigger>
       </div>
       <div ref={popperRef} style={styles.popper} {...attributes.popper}>
         <DropdownContainer style={styles.offset} open={open}>

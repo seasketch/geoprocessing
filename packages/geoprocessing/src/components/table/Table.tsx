@@ -1,7 +1,9 @@
-import React, { ReactElement, useMemo } from "react";
+import React, { ReactElement, useMemo, ReactNode } from "react";
 import { useTable, usePagination, useSortBy, Row, IdType } from "react-table";
 import styled from "styled-components";
 import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
+import DataDownload, { DownloadFileProps } from "../DataDownload";
+import Toolbar from "../Toolbar";
 
 import { TableOptions } from "react-table";
 
@@ -47,6 +49,12 @@ declare module "react-table" {
     rowProps?: (row: Row<D>) => TableCommonProps;
     /** Function called for each table cell allowing style/className/role props to be overridden */
     cellProps?: (cell: Cell<D>) => TableCommonProps;
+    /** Toolbar title */
+    title?: string | ReactNode;
+    /** Enable toolbar with download option */
+    downloadEnabled?: boolean;
+    downloadFilename?: DownloadFileProps["filename"];
+    downloadFormats?: DownloadFileProps["formats"];
   }
 
   export interface Hooks<D extends object = {}>
@@ -201,6 +209,11 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
     columnProps = defaultPropGetter,
     rowProps = defaultPropGetter,
     cellProps = defaultPropGetter,
+    title,
+    downloadEnabled,
+    downloadFilename,
+    downloadFormats,
+    data,
     ...otherProps
   } = props;
 
@@ -241,6 +254,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
     {
       ...defaultState,
       ...otherProps,
+      data,
     },
     useSortBy,
     usePagination
@@ -248,6 +262,24 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
 
   return (
     <TableStyled>
+      {(title || downloadEnabled) && (
+        <Toolbar
+          variant="dense"
+          useGutters={false}
+          toolbarCls="gp-download-toolbar"
+        >
+          {typeof title === "string" ? <h2>{title}</h2> : title}
+          {downloadEnabled && (
+            <div>
+              <DataDownload
+                filename={downloadFilename}
+                formats={downloadFormats}
+                data={data}
+              />
+            </div>
+          )}
+        </Toolbar>
+      )}
       <table className={props.className} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (

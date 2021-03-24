@@ -1,0 +1,11 @@
+.gp-toolbar-example {
+  background-color: #eee;
+}
+
+.gp-toolbar-example h2 {
+  flex-grow: 1;
+}
+
+.gp-toolbar-no-gutter h2 {
+  flex-grow: 1
+}

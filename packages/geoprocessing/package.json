@@ -34,6 +34,11 @@
     "url": "https://github.com/seasketch/geoprocessing/issues"
   },
   "homepage": "https://github.com/seasketch/geoprocessing#readme",
+  "keywords": [
+    "geoprocessing",
+    "geospatial",
+    "gis"
+  ],
   "dependencies": {
     "@aws-cdk/aws-apigateway": "^1.39.0",
     "@aws-cdk/aws-cloudfront": "^1.39.0",
@@ -77,6 +82,7 @@
     "@types/humanize-duration": "^3.18.0",
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^25.2.3",
+    "@types/json2csv": "^5.0.1",
     "@types/mock-require": "^2.0.0",
     "@types/node": "^13.11.1",
     "@types/node-fetch": "^2.5.7",
@@ -111,6 +117,7 @@
     "inquirer-autocomplete-prompt": "^1.0.2",
     "jest-runner": "^26.4.2",
     "jest-runner-groups": "^2.0.1",
+    "json2csv": "^5.0.6",
     "martinez-polygon-clipping": "^0.7.0",
     "mnemonist": "^0.36.1",
     "mock-require": "^3.0.3",
@@ -124,6 +131,7 @@
     "react-dom": "^16.13.1",
     "react-table": "^7.6.3",
     "react-test-renderer": "^16.13.1",
+    "react-useportal": "^1.0.14",
     "read-pkg-up": "^7.0.1",
     "slonik": "^22.4.9",
     "slonik-sql-tag-raw": "^1.0.2",
@@ -144,6 +152,7 @@
   },
   "devDependencies": {
     "@shelf/jest-dynamodb": "^1.7.0",
+    "@types/styled-components": "^5.1.7",
     "jest": "^26.4.2",
     "jest-dynalite": "^1.1.9",
     "jest-websocket-mock": "^2.0.2",

@@ -23,10 +23,10 @@ const Percent = new Intl.NumberFormat("en", {
 const Number = new Intl.NumberFormat("en");
 
 /**
- * Types don't have to be specified for table columns or data in simple use cases
+ * Types don't have to be specified for table Columns or data in simple use cases
  * but it provides you with Intellisense and can help avoid unexpected behavior
- * Both columns and data can/should be wrapped in React.useMemo to avoid extra renders,
- * In a contained report this is less important
+ * If the columns or data change they can/should be wrapped in React.useMemo to avoid
+ * extra renders or infinite call stack errors,
  */
 
 export const simple = () => {
@@ -279,6 +279,44 @@ export const filterCheckboxes = () => {
       filterSelect={filterSelect}
       columns={React.useMemo(() => columns, [])}
       data={getRandomCategorical()}
+    />
+  );
+};
+
+export const tableWithTitle = () => {
+  const columns: Column[] = [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+    {
+      Header: "Count",
+      accessor: "count",
+    },
+  ];
+  return (
+    <Table title="Table Title" columns={columns} data={fixtures.humanUse} />
+  );
+};
+
+export const tableWithDownload = () => {
+  const columns: Column[] = [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+    {
+      Header: "Count",
+      accessor: "count",
+    },
+  ];
+  return (
+    <Table
+      title="Table Title"
+      downloadEnabled={true}
+      downloadFilename="humanUse"
+      columns={columns}
+      data={fixtures.humanUse}
     />
   );
 };

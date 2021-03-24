@@ -73,7 +73,6 @@ const DataDownload = ({
   const [objectUrls, setObjectUrls] = useState<DownloadOption[]>(defaultState);
 
   useEffect(() => {
-    const headers = Object.keys(data[0]);
     const formatters: DataFormatters = {
       csv: () =>
         new Parser({

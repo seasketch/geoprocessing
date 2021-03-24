@@ -8,7 +8,7 @@ import fixtures, {
   Categorical,
   getRandomCategorical,
 } from "../../fixtures";
-import "./Table.css";
+import "./Table.stories.css";
 
 export default {
   component: Table,

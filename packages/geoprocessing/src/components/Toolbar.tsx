@@ -24,7 +24,6 @@ const Toolbar = ({
     "gp-toolbar-regular": variant === "regular",
     "gp-toolbar-dense": variant === "dense",
   });
-  console.log("classes", classes);
   return (
     <div className={classes} {...otherProps}>
       {children}

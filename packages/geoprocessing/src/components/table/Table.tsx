@@ -130,11 +130,12 @@ const Button = styled.button`
 `;
 
 export const TableStyled = styled.div`
+  margin: 0px 0px 10px 0px;
+
   table {
     font-family: sans-serif;
     width: 100%;
     border-collapse: collapse;
-    margin: 10px 0px 10px 0px;
 
     th {
       padding-top: 8px;
@@ -183,6 +184,14 @@ export const TableStyled = styled.div`
     font-family: sans-serif;
     padding: 0.5rem;
     color: #999;
+  }
+
+  .gp-table-toolbar {
+    margin-top: 10px;
+  }
+
+  .gp-table-toolbar h2 {
+    flex-grow: 1;
   }
 `;
 
@@ -266,7 +275,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
         <Toolbar
           variant="dense"
           useGutters={false}
-          toolbarCls="gp-download-toolbar"
+          toolbarCls="gp-table-toolbar"
         >
           {typeof title === "string" ? <h2>{title}</h2> : title}
           {downloadEnabled && (

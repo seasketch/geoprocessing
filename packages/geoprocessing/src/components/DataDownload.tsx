@@ -4,6 +4,7 @@ import SimpleButton from "./buttons/SimpleButton";
 import SimpleButtonStyled from "./buttons/SimpleButton";
 import styled from "styled-components";
 import { Parser, transforms } from "json2csv";
+import useSketchProperties from "../hooks/useSketchProperties";
 
 // Strictly limit format and data types accepted
 const SUPPORTED_FORMATS = ["json", "csv"] as const;
@@ -32,6 +33,10 @@ export interface DownloadFileProps {
   data: object[];
   /** Formats to offer, defaults to csv only */
   formats?: SUPPORTED_FORMAT[];
+  /** Add sketch name to filename, default to true */
+  addSketchName?: boolean;
+  /** Add timestamp to filename, defaults to true */
+  addTimestamp?: boolean;
 }
 
 const DownloadButtonStyled = styled(SimpleButtonStyled)`
@@ -56,12 +61,14 @@ const formatConfigs: DownloadOption[] = [
 
 /**
  * Dropdown menu for transforming data to CSV/JSON format and initiating a browser download
- * Defaults to CSV download only
+ * Defaults to CSV download only, and filename with sketch name if available and current timestamp
  */
 const DataDownload = ({
   filename = "export",
   data,
   formats = ["csv"],
+  addSketchName = true,
+  addTimestamp = true,
 }: DownloadFileProps) => {
   const { toggleDropdown, isOpen, Dropdown } = useDropdown({
     width: 120,
@@ -71,6 +78,14 @@ const DataDownload = ({
     formats.includes(c.extension)
   );
   const [objectUrls, setObjectUrls] = useState<DownloadOption[]>(defaultState);
+
+  const [{ name }] = useSketchProperties();
+  const sketchSegment =
+    addSketchName && name ? `__${name.replace(/\s/g, "_")}` : "";
+  const timeSegment = addTimestamp
+    ? `__${new Date().toISOString().split(".")[0]}Z`
+    : "";
+  const fullFilename = `${filename}${sketchSegment}${timeSegment}`;
 
   useEffect(() => {
     const formatters: DataFormatters = {
@@ -98,7 +113,7 @@ const DataDownload = ({
   const links = objectUrls.map((dOption, index) => (
     <a
       key={index}
-      download={`${filename}.${dOption.extension}`}
+      download={`${fullFilename}.${dOption.extension}`}
       href={dOption.url}
     >
       <DownloadButtonStyled>➥ {dOption.label}</DownloadButtonStyled>

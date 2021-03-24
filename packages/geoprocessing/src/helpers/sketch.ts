@@ -1,11 +1,11 @@
-import { Feature, Polygon } from "geojson";
+import { Feature } from "geojson";
 import { Sketch, SketchCollection } from "../types";
 import bbox from "@turf/bbox";
 
 /**
  * Given sketch feature(s), filter out non-overlapping features from another set
  */
-function filterByBbox(
+export function filterByBbox(
   feature: Sketch | SketchCollection,
   vectorFeatures: Feature[]
 ): Feature[] {

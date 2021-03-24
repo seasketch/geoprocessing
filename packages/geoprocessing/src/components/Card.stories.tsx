@@ -14,15 +14,3 @@ export const simple = () => (
     <p>Body text goes here.</p>
   </Card>
 );
-
-export const toolbarCard = () => {
-  const buttons = [
-    <SimpleButton>⋮</SimpleButton>,
-    <SimpleButton>➥</SimpleButton>,
-  ];
-  return (
-    <Card title="Card Title">
-      <p>Body text goes here.</p>
-    </Card>
-  );
-};

@@ -3,4 +3,7 @@ module.exports = {
   roots: ["src/"],
   testEnvironment: "jsdom",
   testPathIgnorePatterns: ["/node_modules/", "/templates/"],
+  moduleNameMapper: {
+    "\\.css$": "identity-obj-proxy",
+  },
 };

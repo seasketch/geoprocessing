@@ -11,7 +11,11 @@ export default {
 export const simple = () => {
   return (
     <>
-      <DataDownload filename="sample" data={fixtures.ranked} />
+      <DataDownload
+        filename="sample"
+        data={fixtures.ranked}
+        formats={["csv", "json"]}
+      />
     </>
   );
 };

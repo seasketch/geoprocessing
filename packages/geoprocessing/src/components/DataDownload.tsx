@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useDropdown from "../hooks/useDropdown";
+import Dropdown from "./Dropdown";
 import SimpleButton from "./buttons/SimpleButton";
 import SimpleButtonStyled from "./buttons/SimpleButton";
 import styled from "styled-components";
@@ -61,25 +61,33 @@ const formatConfigs: DownloadOption[] = [
 
 /**
  * Dropdown menu for transforming data to CSV/JSON format and initiating a browser download
- * Defaults to CSV download only, and filename with sketch name if available and current timestamp
+ * Defaults to CSV and JSON, and filename will include sketch name from ReportContext (if available)
+ * and current timestamp
  */
 const DataDownload = ({
   filename = "export",
   data,
-  formats = ["csv"],
+  formats = ["csv", "json"],
   addSketchName = true,
   addTimestamp = true,
 }: DownloadFileProps) => {
-  const { toggleDropdown, isOpen, Dropdown } = useDropdown({
-    width: 120,
-  });
-
   const defaultState: DownloadOption[] = formatConfigs.filter((c) =>
     formats.includes(c.extension)
   );
   const [objectUrls, setObjectUrls] = useState<DownloadOption[]>(defaultState);
 
-  const [{ name }] = useSketchProperties();
+  const name = (() => {
+    try {
+      const [{ name }] = useSketchProperties();
+      return name;
+    } catch (error) {
+      console.info(
+        `ReportContext is not available. sketchName not added for "${filename}"`
+      );
+      return "";
+    }
+  })();
+
   const sketchSegment =
     addSketchName && name ? `__${name.replace(/\s/g, "_")}` : "";
   const timeSegment = addTimestamp
@@ -122,8 +130,12 @@ const DataDownload = ({
 
   return (
     <>
-      <SimpleButton onClick={toggleDropdown}>⋮</SimpleButton>
-      {isOpen && <Dropdown>{links}</Dropdown>}
+      <Dropdown
+        titleElement={<SimpleButton>⋮</SimpleButton>}
+        placement="bottom-start"
+      >
+        {links}
+      </Dropdown>
     </>
   );
 };

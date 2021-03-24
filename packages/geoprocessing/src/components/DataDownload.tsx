@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useDropdown from "../hooks/useDropdown";
+import Dropdown from "./Dropdown";
 import SimpleButton from "./buttons/SimpleButton";
 import SimpleButtonStyled from "./buttons/SimpleButton";
 import styled from "styled-components";
@@ -70,16 +70,23 @@ const DataDownload = ({
   addSketchName = true,
   addTimestamp = true,
 }: DownloadFileProps) => {
-  const { toggleDropdown, isOpen, Dropdown } = useDropdown({
-    width: 120,
-  });
-
   const defaultState: DownloadOption[] = formatConfigs.filter((c) =>
     formats.includes(c.extension)
   );
   const [objectUrls, setObjectUrls] = useState<DownloadOption[]>(defaultState);
 
-  const [{ name }] = useSketchProperties();
+  const name = (() => {
+    try {
+      const [{ name }] = useSketchProperties();
+      return name;
+    } catch (error) {
+      console.info(
+        `ReportContext is not available. sketchName not added for "${filename}"`
+      );
+      return "";
+    }
+  })();
+
   const sketchSegment =
     addSketchName && name ? `__${name.replace(/\s/g, "_")}` : "";
   const timeSegment = addTimestamp
@@ -122,8 +129,12 @@ const DataDownload = ({
 
   return (
     <>
-      <SimpleButton onClick={toggleDropdown}>⋮</SimpleButton>
-      {isOpen && <Dropdown>{links}</Dropdown>}
+      <Dropdown
+        titleElement={<SimpleButton>⋮</SimpleButton>}
+        placement="bottom-start"
+      >
+        {links}
+      </Dropdown>
     </>
   );
 };

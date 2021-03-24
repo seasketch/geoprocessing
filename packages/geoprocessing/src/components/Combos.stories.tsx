@@ -53,11 +53,7 @@ export const dataDownloadCard = () => {
         {(data: RankedResult) => {
           return (
             <>
-              <Toolbar
-                variant="dense"
-                useGutters={false}
-                toolbarCls="gp-download-toolbar"
-              >
+              <Toolbar variant="dense" useGutters={false}>
                 <h2>Download Toolbar</h2>
                 <div>
                   <DataDownload filename="ranked" data={data.ranked} />

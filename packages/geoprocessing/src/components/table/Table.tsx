@@ -130,7 +130,7 @@ const Button = styled.button`
 `;
 
 export const TableStyled = styled.div`
-  margin: 0px 0px 10px 0px;
+  margin: 10px 0px 10px 0px;
 
   table {
     font-family: sans-serif;
@@ -187,7 +187,7 @@ export const TableStyled = styled.div`
   }
 
   .gp-table-toolbar {
-    margin-top: 10px;
+    margin-top: -20px;
   }
 
   .gp-table-toolbar h2 {

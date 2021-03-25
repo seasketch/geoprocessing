@@ -2,7 +2,7 @@ import React, { ReactElement, useMemo, ReactNode } from "react";
 import { useTable, usePagination, useSortBy, Row, IdType } from "react-table";
 import styled from "styled-components";
 import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
-import DataDownload, { DownloadFileProps } from "../DataDownload";
+import DataDownload, { DataDownloadProps } from "../DataDownload";
 import Toolbar from "../Toolbar";
 
 import { TableOptions } from "react-table";
@@ -53,8 +53,8 @@ declare module "react-table" {
     title?: string | ReactNode;
     /** Enable toolbar with download option */
     downloadEnabled?: boolean;
-    downloadFilename?: DownloadFileProps["filename"];
-    downloadFormats?: DownloadFileProps["formats"];
+    downloadFilename?: DataDownloadProps["filename"];
+    downloadFormats?: DataDownloadProps["formats"];
   }
 
   export interface Hooks<D extends object = {}>

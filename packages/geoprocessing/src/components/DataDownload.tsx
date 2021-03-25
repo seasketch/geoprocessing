@@ -26,7 +26,7 @@ export interface DownloadOption {
   url: string;
 }
 
-export interface DownloadFileProps {
+export interface DataDownloadProps {
   /** Name minus extension */
   filename?: string;
   /** Raw data to format and allow to download, nested objects and arrays will get flattened */
@@ -69,7 +69,7 @@ const DataDownload = ({
   formats = ["csv", "json"],
   addSketchName = true,
   addTimestamp = true,
-}: DownloadFileProps) => {
+}: DataDownloadProps) => {
   const defaultState: DownloadOption[] = formatConfigs.filter((c) =>
     formats.includes(c.extension)
   );

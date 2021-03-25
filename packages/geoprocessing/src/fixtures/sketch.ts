@@ -1,3 +1,5 @@
+import fixtures from "../fixtures";
+
 export const genSampleSketchContext = () => ({
   sketchProperties: {
     name: "My Sketch",
@@ -23,4 +25,14 @@ export const genSampleSketchContext = () => ({
   },
   geometryUri: "",
   projectUrl: "https://example.com/project",
+  exampleOutputs: [
+    {
+      functionName: "ranked",
+      sketchName: "My Sketch",
+      results: {
+        // RankedResult
+        ranked: fixtures.ranked,
+      },
+    },
+  ],
 });

@@ -18,6 +18,7 @@ export { default as Card } from "./src/components/Card";
 export { default as ResultsCard } from "./src/components/ResultsCard";
 export { default as SketchAttributesCard } from "./src/components/SketchAttributesCard";
 export { default as Toolbar } from "./src/components/Toolbar";
+export { default as DataDownloadToolbar } from "./src/components/DataDownloadToolbar";
 export { default as Dropdown } from "./src/components/Dropdown";
 export { default as DataDownload } from "./src/components/DataDownload";
 

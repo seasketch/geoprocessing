@@ -59,6 +59,10 @@ export interface Ranked extends Record<string, string | number> {
   fullName: string;
 }
 
+export interface RankedResult {
+  ranked: Ranked[];
+}
+
 const ranked: Ranked[] = [
   {
     value: 10,

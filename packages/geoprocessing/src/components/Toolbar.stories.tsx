@@ -3,7 +3,10 @@ import Toolbar from "./Toolbar";
 import Card from "./Card";
 import SimpleButton from "./buttons/SimpleButton";
 import ReportDecorator from "./ReportDecorator";
+import DataDownloadToolbar from "./DataDownloadToolbar";
+import fixtures from "../fixtures";
 import "./Toolbar.stories.css";
+import "./DataDownloadToolbar.css";
 
 export default {
   component: Toolbar,
@@ -53,3 +56,15 @@ export const denseGutterToolbar = () => (
     </Toolbar>
   </Card>
 );
+
+export const dataDownloadToolbar = () => {
+  return (
+    <Card>
+      <DataDownloadToolbar
+        title="Data Download Toolbar"
+        filename="ranked"
+        data={fixtures.ranked}
+      />
+    </Card>
+  );
+};

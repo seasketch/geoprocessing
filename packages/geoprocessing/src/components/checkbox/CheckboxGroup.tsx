@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 import { Checkbox } from "./types";
 
-const Checkbox = styled.input`
+const CheckboxStyled = styled.input`
   margin: 3px 10px;
   cursor: pointer;
 `;
@@ -38,7 +38,7 @@ export default function CheckboxGroup({
     <div className="checkbox-group">
       {checkboxes.map((checkbox, i) => (
         <CheckboxLabel key={i}>
-          <Checkbox
+          <CheckboxStyled
             key={i}
             type="checkbox"
             checked={checkbox.checked}

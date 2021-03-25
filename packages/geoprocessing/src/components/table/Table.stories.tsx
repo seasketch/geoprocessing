@@ -8,13 +8,38 @@ import fixtures, {
   Categorical,
   getRandomCategorical,
 } from "../../fixtures";
-import "./Table.stories.css";
+import styled from "styled-components";
 
 export default {
   component: Table,
   title: "Components|Table",
   decorators: [ReportCardDecorator],
 };
+
+const TableStyled = styled.div`
+  .dark {
+    background-color: #000;
+    color: #eee;
+  }
+  .med {
+    background-color: #ddd;
+  }
+  .light {
+    background-color: #efefef;
+  }
+
+  .centered th:not(:first-child) {
+    text-align: center;
+  }
+
+  .centered td:not(:first-child) {
+    text-align: center;
+  }
+
+  .squeeze {
+    font-size: 11px;
+  }
+`;
 
 const Percent = new Intl.NumberFormat("en", {
   style: "percent",
@@ -76,11 +101,13 @@ export const squeeze = () => {
     },
   ];
   return (
-    <Table
-      className="squeeze"
-      columns={columns}
-      data={fixtures.randomCategorical}
-    />
+    <TableStyled>
+      <Table
+        className="squeeze"
+        columns={columns}
+        data={fixtures.randomCategorical}
+      />
+    </TableStyled>
   );
 };
 
@@ -93,7 +120,9 @@ export const centered = () => {
     { Header: "Rank", accessor: "rank" },
   ];
   return (
-    <Table className="centered" columns={columns} data={fixtures.ranked} />
+    <TableStyled>
+      <Table className="centered" columns={columns} data={fixtures.ranked} />
+    </TableStyled>
   );
 };
 
@@ -196,7 +225,11 @@ export const classDrivenStyle = () => {
     ],
     []
   );
-  return <Table columns={columns} data={fixtures.humanUse} />;
+  return (
+    <TableStyled>
+      <Table columns={columns} data={fixtures.humanUse} />
+    </TableStyled>
+  );
 };
 
 /**** Data-driven styling */

@@ -5,8 +5,6 @@ import SimpleButton from "./buttons/SimpleButton";
 import ReportDecorator from "./ReportDecorator";
 import DataDownloadToolbar from "./DataDownloadToolbar";
 import fixtures from "../fixtures";
-import "./Toolbar.stories.css";
-import "./DataDownloadToolbar.css";
 
 export default {
   component: Toolbar,
@@ -16,12 +14,8 @@ export default {
 
 export const headerToolbar = () => (
   <Card>
-    <Toolbar
-      variant="dense"
-      useGutters={false}
-      toolbarCls="gp-toolbar-no-gutter"
-    >
-      <h2>Toolbar Title</h2>
+    <Toolbar variant="dense" useGutters={false}>
+      <h2 style={{ flexGrow: 1 }}>Toolbar Title</h2>
       <div>
         <SimpleButton>⬇</SimpleButton>
         <SimpleButton>➥</SimpleButton>
@@ -33,8 +27,8 @@ export const headerToolbar = () => (
 
 export const regularGutterToolbar = () => (
   <Card>
-    <Toolbar toolbarCls="gp-toolbar-example" titleAlign="center">
-      <h2>Header Toolbar</h2>
+    <Toolbar titleAlign="center" style={{ backgroundColor: "#eee" }}>
+      <h2 style={{ flexGrow: 1 }}>Header Toolbar</h2>
       <div>
         <SimpleButton>⬇</SimpleButton>
         <SimpleButton>➥</SimpleButton>
@@ -49,10 +43,10 @@ export const denseGutterToolbar = () => (
     <p>Body</p>
     <Toolbar
       variant="dense"
-      toolbarCls="gp-toolbar-example"
       titleAlign="center"
+      style={{ backgroundColor: "#eee" }}
     >
-      <h2>Footer Toolbar</h2>
+      <h2 style={{ flexGrow: 1 }}>Footer Toolbar</h2>
       <div>
         <SimpleButton>⬇</SimpleButton>
         <SimpleButton>➥</SimpleButton>

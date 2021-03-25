@@ -1,7 +1,6 @@
 .gp-toolbar-root {
   display: flex;
   position: relative;
-  align-items: center;
 }
 
 .gp-toolbar h2 {
@@ -17,9 +16,9 @@
 }
 
 .gp-toolbar-regular {
-  min-height: 54px;
+  min-height: 42px;
 }
 
 .gp-toolbar-dense {
-  min-height: 40px;
+  min-height: 30px;
 }

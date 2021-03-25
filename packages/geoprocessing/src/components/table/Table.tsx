@@ -187,7 +187,7 @@ export const TableStyled = styled.div`
   }
 
   .gp-table-toolbar {
-    margin-top: -20px;
+    margin-top: -10px;
   }
 
   .gp-table-toolbar h2 {

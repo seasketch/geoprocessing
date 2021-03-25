@@ -8,6 +8,7 @@ export interface ToolbarProps {
   variant?: "regular" | "dense";
   useGutters?: boolean;
   toolbarCls?: string;
+  titleAlign?: "flex-start" | "flex-end" | "center" | "baseline" | "stretch";
 }
 
 const Toolbar = ({
@@ -15,6 +16,7 @@ const Toolbar = ({
   variant = "regular",
   useGutters = true,
   toolbarCls = "",
+  titleAlign = "baseline",
   ...otherProps
 }: ToolbarProps) => {
   const classes = classnames("gp-toolbar", toolbarCls, {
@@ -25,7 +27,7 @@ const Toolbar = ({
     "gp-toolbar-dense": variant === "dense",
   });
   return (
-    <div className={classes} {...otherProps}>
+    <div className={classes} {...otherProps} style={{ alignItems: titleAlign }}>
       {children}
     </div>
   );

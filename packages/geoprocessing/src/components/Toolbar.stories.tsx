@@ -33,7 +33,7 @@ export const headerToolbar = () => (
 
 export const regularGutterToolbar = () => (
   <Card>
-    <Toolbar toolbarCls="gp-toolbar-example">
+    <Toolbar toolbarCls="gp-toolbar-example" titleAlign="center">
       <h2>Header Toolbar</h2>
       <div>
         <SimpleButton>⬇</SimpleButton>
@@ -47,7 +47,11 @@ export const regularGutterToolbar = () => (
 export const denseGutterToolbar = () => (
   <Card title="Card Title">
     <p>Body</p>
-    <Toolbar variant="dense" toolbarCls="gp-toolbar-example">
+    <Toolbar
+      variant="dense"
+      toolbarCls="gp-toolbar-example"
+      titleAlign="center"
+    >
       <h2>Footer Toolbar</h2>
       <div>
         <SimpleButton>⬇</SimpleButton>

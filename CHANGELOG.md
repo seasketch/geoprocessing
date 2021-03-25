@@ -1,4 +1,18 @@
-v0.10.0 (2020-03-19)
+## v0.11.0 (2020-03-25)
+
+#### :rocket: New Feature
+
+* Add Toolbar component
+* Add DataDownload component with CSV/JSON support.  CSV has auto-flattening of arrays/objects using json2csv library.  Downloaded files default to including report name, sketch name (if context available) and current ISO timestamp.
+* Add DataDownloadToolbar convenience component
+* Add data download toolbar to Table component for convenience
+
+#### :bug: Bug Fix
+
+* Replace useDropdown with Dropdown component based on popper.js and usePopper hook
+* Fix bug with Jest not being able to interpret CSS module imports, they are now stubbed.
+
+## v0.10.0 (2020-03-19)
 
 #### :rocket: New Feature
 

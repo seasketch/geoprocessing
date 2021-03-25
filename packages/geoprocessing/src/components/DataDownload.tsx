@@ -41,7 +41,6 @@ export interface DownloadFileProps {
 
 const DownloadButtonStyled = styled(SimpleButtonStyled)`
   font-size: 12px;
-  padding: 5px;
 `;
 
 const formatConfigs: DownloadOption[] = [
@@ -96,6 +95,7 @@ const DataDownload = ({
   const fullFilename = `${filename}${sketchSegment}${timeSegment}`;
 
   useEffect(() => {
+    if (!data || data.length === 0) return;
     const formatters: DataFormatters = {
       csv: () =>
         new Parser({
@@ -122,7 +122,8 @@ const DataDownload = ({
     <a
       key={index}
       download={`${fullFilename}.${dOption.extension}`}
-      href={dOption.url}
+      href={data && data.length > 0 ? dOption.url : "javascript:;"}
+      aria-disabled={!data || data.length === 0}
     >
       <DownloadButtonStyled>➥ {dOption.label}</DownloadButtonStyled>
     </a>

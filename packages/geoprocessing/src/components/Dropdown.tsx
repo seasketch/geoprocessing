@@ -42,6 +42,15 @@ const DropdownItem = styled.div`
   &:active {
     color: #777;
   }
+  a[aria-disabled="true"] {
+    color: currentColor;
+    text-decoration: none;
+    cursor: not-allowed;
+
+    & button {
+      cursor: not-allowed;
+    }
+  }
 `;
 
 const DropownTrigger = styled.button`

@@ -320,3 +320,25 @@ export const tableWithDownload = () => {
     />
   );
 };
+
+export const tableWithNoData = () => {
+  const columns: Column[] = [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+    {
+      Header: "Count",
+      accessor: "count",
+    },
+  ];
+  return (
+    <Table
+      title="Table Title"
+      downloadEnabled={true}
+      downloadFilename="humanUse"
+      columns={columns}
+      data={[]}
+    />
+  );
+};

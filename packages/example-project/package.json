@@ -1,6 +1,6 @@
 {
   "name": "example-project-new",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Example project to test geoprocessing project init scripts",
   "main": "src/index.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "@seasketch/geoprocessing"
   ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "^0.11.0",
+    "@seasketch/geoprocessing": "^0.11.1",
     "autoprefixer": "^9.8.6",
     "cssnano": "^4.1.10",
     "encoding": "^0.1.13",

@@ -1,3 +1,10 @@
+## v0.11.1 (2020-03-25)
+
+#### :bug: Bug Fix
+
+* Migrate from CSS modules to styled-components.  The CSS files were not being copied into the build so it was an opportunity to just consolidate on using SC
+* Remove duplicate Checkbox identifier.  Was only caught downstream by Webpack
+
 ## v0.11.0 (2020-03-25)
 
 #### :rocket: New Feature

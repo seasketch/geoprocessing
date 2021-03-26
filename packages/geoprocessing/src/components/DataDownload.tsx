@@ -131,12 +131,7 @@ const DataDownload = ({
 
   return (
     <>
-      <Dropdown
-        titleElement={<SimpleButton>⋮</SimpleButton>}
-        placement="bottom-start"
-      >
-        {links}
-      </Dropdown>
+      <Dropdown titleElement={<SimpleButton>⋮</SimpleButton>}>{links}</Dropdown>
     </>
   );
 };

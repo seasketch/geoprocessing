@@ -24,7 +24,8 @@ interface DropownProps {
 }
 
 const DropdownContainer = styled.div<DropdownContainerProps>`
-  display: ${({ open }) => (open ? "flex" : "none")};
+  visibility: ${({ open }) => (open ? "visible" : "hidden")}
+  display: "flex";
   width: 100%;
   flex-direction: column;
   background-color: #fff;

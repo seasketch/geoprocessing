@@ -1,0 +1,20 @@
+{
+  "author": "Tim Welch <support@seasketch.org>",
+  "organization": "SeaSketch",
+  "region": "us-west-1",
+  "functions": [
+    "src/functions/area.ts",
+    "src/functions/rasterSum.ts"
+  ],
+  "clients": [
+    {
+      "name": "Area",
+      "description": "Calculates sketch area stats",
+      "source": "src/clients/AreaClient.tsx"
+    },{
+      "name": "RasterStats",
+      "description": "Calculates sketch raster stats",
+      "source": "src/clients/AreaClient.tsx"
+    }
+  ]
+}

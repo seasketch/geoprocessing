@@ -1,0 +1,40 @@
+{
+  "name": "@seasketch/gp-templates",
+  "version": "0.0.1",
+  "description": "Geoprocessing starter templates",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "geoprocessing test",
+    "storybook": "geoprocessing storybook"
+  },
+  "keywords": [
+    "@seasketch/geoprocessing"
+  ],
+  "devDependencies": {
+    "@seasketch/geoprocessing": "^0.11.1",
+    "geoblaze": "^0.2.6",
+    "georaster": "^1.1.0",
+    "geotiff": "^1.0.0-beta.13",
+    "jest": "^26.4.2",
+    "styled-components": "^5.1.1",
+    "tiny-worker": "^2.3.0"
+  },
+  "author": "Tim Welch",
+  "license": "BSD-3-Clause",
+  "repositoryUrl": "https://github.com/seasketch/geoprocessing",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seasketch/geoprocessing.git"
+  },
+  "homepage": "https://github.com/seasketch/geoprocessing#readme",
+  "bugs": {
+    "url": "https://github.com/seasketch/geoprocessing/issues"
+  },
+  "private": true,
+  "dependencies": {
+    "@turf/bbox": "^6.0.1",
+    "@types/node": "^14.0.14",
+    "inquirer": "^7.2.0",
+    "jest-runner-groups": "^2.0.1"
+  }
+}

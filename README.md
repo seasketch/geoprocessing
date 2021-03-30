@@ -20,9 +20,9 @@ All the infrastructure pictured above is created for each geoprocessing project 
 
 ## Creating a new project
 
-Each project may contain multiple data preparation routines, functions, and  report clients. For the most part it makes sense to create a new project for each SeaSketch project, however it may make sense at times to create projects that support a single cross-project function, such as the planned global-clipping service. 
+Each geoprocessing project may contain multiple data preparation routines, functions, and  report clients. For the most part it makes sense to create one new geoprocessing project for each SeaSketch project.
 
-`npx @seasketch/geoprocessing init` will download the framework and prompt for project metadata before initializing a new codebase. 
+`npx @seasketch/geoprocessing init` will download the framework, prompt you for project metadata, and then prompt you for which templates you would like to install.  Templates are sets of ready-to-use geoprocessing functions and clients using pre-compiled datasets.  You can extend them, install them at a later time, or quickly remove them if unused.  Finally, your new codebase will be initialized.
 
 ![init process screenshot](https://user-images.githubusercontent.com/511063/79147415-bd146780-7d78-11ea-8d81-0e4151ab8a2f.png)
 

@@ -1,4 +1,5 @@
 /**
+ * @jest-environment node
  * @group smoke
  */
 import Handler from "./rasterSum";

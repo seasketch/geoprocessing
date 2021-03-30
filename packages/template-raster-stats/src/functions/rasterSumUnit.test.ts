@@ -1,4 +1,5 @@
 /**
+ * @jest-environment node
  * @group unit
  */
 import Handler from "./rasterSum";

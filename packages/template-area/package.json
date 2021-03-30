@@ -1,0 +1,27 @@
+{
+  "name": "@seasketch/gp-area",
+  "version": "0.0.1",
+  "description": "Geoprocessing template for calculating area stats",
+  "author": "Tim Welch",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "test": "geoprocessing test",
+    "storybook": "geoprocessing storybook"
+  },
+  "keywords": [
+    "@seasketch/geoprocessing"
+  ],
+  "devDependencies": {
+    "@seasketch/geoprocessing": "^0.11.1",
+    "jest": "^26.4.2",
+    "jest-runner-groups": "^2.0.1"
+  },
+  "dependencies": {
+    "@types/geojson": "7946.0.7",
+    "@types/node": "^14.0.14",
+    "@turf/bbox": "^6.0.1",
+    "@turf/helpers": "^6.1.4"
+  }
+}

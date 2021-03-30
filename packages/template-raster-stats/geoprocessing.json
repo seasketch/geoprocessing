@@ -1,0 +1,12 @@
+{
+  "functions": [
+    "src/functions/rasterSum.ts"
+  ],
+  "clients": [
+    {
+      "name": "RasterStats",
+      "description": "Calculates sketch raster stats",
+      "source": "src/clients/AreaClient.tsx"
+    }
+  ]
+}

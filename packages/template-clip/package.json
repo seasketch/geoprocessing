@@ -1,0 +1,29 @@
+{
+  "name": "@seasketch/pp-clip",
+  "version": "0.0.1",
+  "description": "Geoprocessing template for clipping sketches to land and/or marine region boundary",
+  "author": "Tim Welch",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "test": "geoprocessing test",
+    "storybook": "geoprocessing storybook"
+  },
+  "keywords": [
+    "@seasketch/geoprocessing"
+  ],
+  "devDependencies": {
+    "@seasketch/geoprocessing": "^0.11.1"
+  },
+  "dependencies": {
+    "@turf/area": "^6.0.1",
+    "@turf/bbox": "^6.0.1",
+    "@turf/flatten": "^5.1.5",
+    "@turf/invariant": "^6.1.2",
+    "@types/geojson": "7946.0.7",
+    "@types/node": "^14.0.14",
+    "martinez-polygon-clipping": "^0.7.0",
+    "union-subdivided-polygons": "^0.9.1"
+  }
+}

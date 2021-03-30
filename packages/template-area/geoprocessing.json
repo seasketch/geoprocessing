@@ -1,0 +1,12 @@
+{
+  "functions": [
+    "src/functions/area.ts"
+  ],
+  "clients": [
+    {
+      "name": "Area",
+      "description": "Calculates sketch area stats",
+      "source": "src/clients/AreaClient.tsx"
+    }
+  ]
+}

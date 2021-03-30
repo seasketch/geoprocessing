@@ -8,7 +8,7 @@ import { RasterSumResults } from "../functions/rasterSum";
 
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
-const RasterStatsClient = () => {
+const RasterStats = () => {
   return (
     <>
       <SketchAttributesCard autoHide={true} />
@@ -25,4 +25,4 @@ const RasterStatsClient = () => {
   );
 };
 
-export default RasterStatsClient;
+export default RasterStats;

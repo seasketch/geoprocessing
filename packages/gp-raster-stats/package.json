@@ -11,10 +11,11 @@
     "storybook": "geoprocessing storybook"
   },
   "keywords": [
-    "@seasketch/geoprocessing"
+    "@seasketch/geoprocessing",
+    "template"
   ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "^0.11.1",
+    "@seasketch/geoprocessing": "0.11.1",
     "geoblaze": "^0.2.6",
     "georaster": "^1.1.0",
     "geotiff": "^1.0.0-beta.13",

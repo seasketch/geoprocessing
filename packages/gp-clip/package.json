@@ -1,5 +1,5 @@
 {
-  "name": "@seasketch/pp-clip",
+  "name": "@seasketch/gp-clip",
   "version": "0.0.1",
   "description": "Geoprocessing template for clipping sketches to land and/or marine region boundary",
   "author": "Tim Welch",
@@ -11,10 +11,11 @@
     "storybook": "geoprocessing storybook"
   },
   "keywords": [
-    "@seasketch/geoprocessing"
+    "@seasketch/geoprocessing",
+    "template"
   ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "^0.11.1"
+    "@seasketch/geoprocessing": "0.11.1"
   },
   "dependencies": {
     "@turf/area": "^6.0.1",

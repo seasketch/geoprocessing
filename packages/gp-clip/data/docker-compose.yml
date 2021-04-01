@@ -2,12 +2,12 @@ version: '3'
 services:
   db:
     extends:
-      file: ../../docker-data/docker-compose.yml
+      file: ../../gp-workspace/docker-compose.yml
       service: db
     container_name: gp-clip-db
   workspace:
     extends:
-      file: ../../docker-data/docker-compose.yml
+      file: ../../gp-workspace/docker-compose.yml
       service: workspace
     volumes:
       - "..:/project"

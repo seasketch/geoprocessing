@@ -9,12 +9,12 @@ if [ ! -d "src/land-polygons-complete-4326" ]; then
 fi
 
 # Import
-shp2pgsql -D -s 4326 src/land-polygons-complete-4326/land_polygons.shp land | psql
+shp2pgsql -D -s 4326 src/land-polygons-complete-4326/land_polygons.shp osm_land | psql
 
 # Create spatial index
 psql -t <<SQL
   CREATE INDEX ON land USING gist(geom);
 SQL
 
-# Subdivide into new table land_subdivided
-psql -f ./land-subdivide.sql
+# Subdivide into new table
+psql -f ./osm-land-subdivide.sql

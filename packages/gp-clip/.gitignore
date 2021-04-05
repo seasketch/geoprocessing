@@ -1,2 +1,6 @@
 .DS_Store
 node_modules
+data/src/**/*EEZ_land_union*
+data/src/**/*land_polygons*
+data/src/**/*land-polygons*
+data/src/**/*.zip

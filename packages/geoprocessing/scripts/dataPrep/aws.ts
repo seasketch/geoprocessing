@@ -102,10 +102,7 @@ export async function createBucket(name: string, publicAccess?: boolean) {
 }
 
 function bucketName(dataSourceName: string): string {
-  const pkgName = sync()!.packageJson.name;
-  return slugify(
-    `${pkgName}-${dataSourceName}`.replace(/\W/g, "-").replace(/^-/, "")
-  );
+  return slugify(`${dataSourceName}`.replace(/\W/g, "-").replace(/^-/, ""));
 }
 
 function objectUrl(name: string, objectName: string): string {

@@ -132,7 +132,6 @@ const bundleFeatures = async (
         sumNPoints >= options.pointsLimit ||
         records.indexOf(feature) === records.length - 1
       ) {
-        console.log(records.indexOf(feature) === records.length - 1);
         const { bundleId, geobuf } = await createGeobuf(
           ids.length === 0 ? [feature.id] : ids,
           connection,

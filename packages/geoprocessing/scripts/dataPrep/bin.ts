@@ -80,7 +80,7 @@ program
               type: "confirm",
               name: "proceed",
               default: false,
-              message: `Existing version not found in ${AWS.config.region}. Would you like to create a new S3 bucket and Cloudfront distro?`,
+              message: `Existing version not found in ${AWS.config.region}. Would you like to create a new S3 bucket (${datasourceName}) and Cloudfront distro?`,
             },
           ]);
           if (answers.proceed) {

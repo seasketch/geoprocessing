@@ -25,7 +25,49 @@ const SubdividedEezLandUnionSource = new VectorDataSource<EezLandUnion>(
 );
 
 /**
- * Takes a feature and returns the portion that is in the ocean and within an EEZ boundary
+ * Subtract land from feature, giving water portion (may be single or multi polygon)
+ */
+export async function clipToOcean(feature: Feature) {
+  if (!isPolygon(feature)) {
+    throw new ValidationError("Input must be a polygon");
+  }
+  const subdividedLand = await SubdividedOsmLandSource.fetch(bbox(feature));
+  if (subdividedLand.length === 0) {
+    return feature;
+  } else {
+    // Combine subdivided into a single MultiPolygon for ease of calculation
+    const unioned = union(
+      fc(subdividedLand),
+      "gid"
+    ) as FeatureCollection<Polygon>;
+    const combined = combine(unioned).features[0] as Feature<MultiPolygon>;
+    return difference(feature, combined);
+  }
+}
+
+/**
+ * Intersect remainder with eez_union_land, leaving portion within EEZ boundary
+ */
+export async function clipToEez(feature: Feature) {
+  if (!isPolygon(feature)) {
+    throw new ValidationError("Input must be a polygon");
+  }
+  const subdividedEez = await SubdividedEezLandUnionSource.fetch(bbox(feature));
+  if (subdividedEez.length === 0) {
+    return feature;
+  } else {
+    // Combine subdivided into a single MultiPolygon for ease of calculation
+    const unioned = union(
+      fc(subdividedEez),
+      "gid"
+    ) as FeatureCollection<Polygon>;
+    const combined = combine(unioned).features[0] as Feature<MultiPolygon>;
+    return intersect(feature, combined);
+  }
+}
+
+/**
+ * Takes a Polygon feature and returns the portion that is in the ocean and within an EEZ boundary
  * If results in multiple polygons then returns the largest
  */
 async function clipToOceanEez(feature: Feature): Promise<Feature> {
@@ -39,39 +81,8 @@ async function clipToOceanEez(feature: Feature): Promise<Feature> {
     );
   }
 
-  // Subtract land from feature, giving water portion (may be single or multi polygon)
-  const clippedToOcean = await (async () => {
-    const subdividedLand = await SubdividedOsmLandSource.fetch(bbox(feature));
-    if (subdividedLand.length === 0) {
-      return feature;
-    } else {
-      // Combine subdivided land into a single MultiPolygon for ease of calculation
-      const unioned = union(
-        fc(subdividedLand),
-        "gid"
-      ) as FeatureCollection<Polygon>;
-      const combined = combine(unioned).features[0] as Feature<MultiPolygon>;
-      return difference(feature, combined);
-    }
-  })();
-
-  // Intersect remainder with eez_union_land, leaving portion within EEZ boundary
-  const clippedToOceanEez = await (async () => {
-    const subdividedEez = await SubdividedEezLandUnionSource.fetch(
-      bbox(feature)
-    );
-    if (subdividedEez.length === 0) {
-      return feature;
-    } else {
-      // Combine subdivided land into a single MultiPolygon for ease of calculation
-      const unioned = union(
-        fc(subdividedEez),
-        "gid"
-      ) as FeatureCollection<Polygon>;
-      const combined = combine(unioned).features[0] as Feature<MultiPolygon>;
-      return intersect(clippedToOcean, combined);
-    }
-  })();
+  const clippedToOcean = await clipToOcean(feature);
+  const clippedToOceanEez = await clipToEez(clippedToOcean);
 
   if (!clippedToOceanEez || area(clippedToOceanEez) === 0) {
     throw new ValidationError("Sketch is outside of project boundaries");
@@ -95,7 +106,7 @@ async function clipToOceanEez(feature: Feature): Promise<Feature> {
 export default new PreprocessingHandler(clipToOceanEez, {
   title: "clipToOceanEez",
   description:
-    "Removes land and ocean outsize EEZ boundary from a sketch using OpenStreetMap land polygons and MarineRegions EEZ boundaries",
+    "Removes land and the ocean outsize EEZ boundary from a sketch using OpenStreetMap land polygons and MarineRegions EEZ boundaries",
   timeout: 40,
   requiresProperties: [],
 });

@@ -29,6 +29,18 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
-  }
+  }, {
+    "name": "gp-clip - debug tests",
+    "type": "node",
+    "request": "launch",
+    "cwd": "${workspaceFolder}/packages/gp-clip",
+    "runtimeArgs": [
+      "--inspect-brk",
+      "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest"
+    ],
+    "console": "integratedTerminal",
+    "internalConsoleOptions": "neverOpen",
+    "port": 9229        
+}
   ]
 }

@@ -14,13 +14,6 @@ export { version } from "../package.json";
 export { VectorDataSource, VectorFeature } from "./VectorDataSource";
 export * from "./helpers";
 
-//best place to put these?
-import {
-  getSketchIntersectList,
-  getIntersectList,
-} from "../src/spatial/IntersectHelper";
-export { getSketchIntersectList, getIntersectList };
-
 /**
  * UserAttributes are those filled in via the attributes form specified as
  * part of a SketchClass. This getter function is easier to use than searching

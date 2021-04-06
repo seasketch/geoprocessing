@@ -30,7 +30,7 @@ export class PreprocessingHandler {
     options: PreprocessingHandlerOptions
   ) {
     this.func = func;
-    this.options = options;
+    this.options = Object.assign({ memory: 1024 }, options);
   }
 
   async lambdaHandler(

@@ -39,7 +39,7 @@ export class GeoprocessingHandler<T> {
     options: GeoprocessingHandlerOptions
   ) {
     this.func = func;
-    this.options = options;
+    this.options = Object.assign({ memory: 1024 }, options);
     this.Tasks = new TaskModel(
       process.env.TASKS_TABLE!,
       process.env.ESTIMATES_TABLE!,

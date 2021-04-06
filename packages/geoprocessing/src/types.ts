@@ -77,8 +77,8 @@ export interface PreprocessingHandlerOptions {
   description: string;
   /** Seconds */
   timeout: number;
-  /** Megabytes, 128 - 3008 */
-  memory: number;
+  /** Megabytes, 128 - 3008, defaults to 1024 */
+  memory?: number;
   requiresProperties: string[];
 }
 

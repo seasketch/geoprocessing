@@ -458,12 +458,21 @@ export class VectorDataSource<T> {
     }
     // console.time("retrieval and processing");
     // debug(`Searching index`, bbox);
-    return (this.tree.search({
+
+    let features = (this.tree.search({
       minX: bbox[0],
       minY: bbox[1],
       maxX: bbox[2],
       maxY: bbox[3],
     }) as unknown) as T[];
+
+    // overlap test since bundles sometimes aren't entirely well packed
+    const a = bbox;
+    return features.filter((feature) => {
+      const b = bbox;
+      return a[2] >= b[0] && b[2] >= a[0] && a[3] >= b[1] && b[3] >= a[1];
+    });
+
     // debug(`${[...this.pendingRequests.keys()].length} pending requests`);
     // let trees = undefined;
     // const collection = {

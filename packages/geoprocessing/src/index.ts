@@ -18,9 +18,8 @@ export * from "./helpers";
 import {
   getSketchIntersectList,
   getIntersectList,
-  intersect,
 } from "../src/spatial/IntersectHelper";
-export { getSketchIntersectList, getIntersectList, intersect };
+export { getSketchIntersectList, getIntersectList };
 
 /**
  * UserAttributes are those filled in via the attributes form specified as

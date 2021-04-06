@@ -1,4 +1,4 @@
-import { Polygon, MultiPolygon, Feature } from "geojson";
+import { Polygon, MultiPolygon, Feature, Position } from "geojson";
 import { getGeom } from "@turf/invariant";
 import { feature, multiPolygon, polygon } from "@turf/helpers";
 import * as martinez from "martinez-polygon-clipping";
@@ -18,10 +18,9 @@ export function difference(
 
   var differenced = martinez.diff(geom1.coordinates, geom2.coordinates);
   if (differenced.length === 0) return null;
-  // @ts-ignore
-  if (differenced.length === 1) return polygon(differenced[0], properties);
-  // @ts-ignore
-  return multiPolygon(differenced, properties);
+  if (differenced.length === 1)
+    return polygon(differenced[0] as Position[][], properties);
+  return multiPolygon(differenced as Position[][][], properties);
 }
 
 export function intersect(
@@ -40,8 +39,7 @@ export function intersect(
     geom2.coordinates
   );
   if (!intersection || intersection.length === 0) return null;
-  // @ts-ignore
-  if (intersection.length === 1) return polygon(intersection[0], properties);
-  // @ts-ignore
-  return multiPolygon(intersection, properties);
+  if (intersection.length === 1)
+    return polygon(intersection[0] as Position[][], properties);
+  return multiPolygon(intersection as Position[][][], properties);
 }

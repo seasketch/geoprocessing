@@ -1,20 +1,7 @@
 {
   "type": "Feature",
   "properties": {
-    "id": "5f36bcaae4b52668b076b766",
-    "name": "north_zone.json",
-    "updatedAt": "2020-08-14T16:32:42.737Z",
-    "createdAt": "2020-08-14T16:32:42.737Z",
-    "sketchClassId": "5ea8a65f0c845c24cd4acd35",
-    "isCollection": false,
-    "userAttributes": [
-      {
-        "label": "Zone Type",
-        "fieldType": "ChoiceField",
-        "exportId": "zonetype",
-        "value": "Marine Protected Area"
-      }
-    ]
+    "name": "north_zone.json"
   },
   "geometry": {
     "type": "Polygon",
@@ -299,10 +286,6 @@
         [
           -59.941138,
           8.49159
-        ],
-        [
-          -59.940312,
-          8.491123
         ],
         [
           -59.939486,

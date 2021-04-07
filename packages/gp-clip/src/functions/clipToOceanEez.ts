@@ -27,10 +27,7 @@ const SubdividedEezLandUnionSource = new VectorDataSource<EezLandUnion>(
 /**
  * Subtract land from feature, giving water portion (may be single or multi polygon)
  */
-export async function clipToOcean(feature: Feature) {
-  if (!isPolygon(feature)) {
-    throw new ValidationError("Input must be a polygon");
-  }
+export async function clipToOcean(feature: Feature<Polygon | MultiPolygon>) {
   const subdividedLand = await SubdividedOsmLandSource.fetch(bbox(feature));
   if (subdividedLand.length === 0) {
     return feature;
@@ -48,10 +45,7 @@ export async function clipToOcean(feature: Feature) {
 /**
  * Intersect remainder with eez_union_land, leaving portion within EEZ boundary
  */
-export async function clipToEez(feature: Feature) {
-  if (!isPolygon(feature)) {
-    throw new ValidationError("Input must be a polygon");
-  }
+export async function clipToEez(feature: Feature<Polygon | MultiPolygon>) {
   const subdividedEez = await SubdividedEezLandUnionSource.fetch(bbox(feature));
   if (subdividedEez.length === 0) {
     return feature;

@@ -1,4 +1,4 @@
 export * from "./isPolygon";
 export * from "./fs";
-export * from "./intersect";
-export * from "./difference";
+export { default as intersect } from "./intersect";
+export { default as difference } from "./difference";

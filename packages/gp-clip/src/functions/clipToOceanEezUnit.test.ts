@@ -12,6 +12,11 @@ describe("Basic unit tests", () => {
       try {
         const result = await clipLand(example);
         expect(result).toBeTruthy();
+        expect(booleanValid(result));
+        expect(
+          result.geometry.type === "Polygon" ||
+            result.geometry.type === "MultiPolygon"
+        );
       } catch (e) {
         if (e instanceof ValidationError) {
           // ValidationErrors don't indicate failures, just comprehensive tests
@@ -28,6 +33,11 @@ describe("Basic unit tests", () => {
       try {
         const result = await clipOutsideEez(example);
         expect(result).toBeTruthy();
+        expect(booleanValid(result));
+        expect(
+          result.geometry.type === "Polygon" ||
+            result.geometry.type === "MultiPolygon"
+        );
       } catch (e) {
         if (e instanceof ValidationError) {
           // ValidationErrors don't indicate failures, just comprehensive tests

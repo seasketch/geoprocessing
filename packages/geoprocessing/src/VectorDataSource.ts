@@ -488,7 +488,7 @@ export class VectorDataSource<T extends Feature> {
   async fetchUnion(
     bbox: BBox,
     unionProperty?: string
-  ): Promise<FeatureCollection<T["geometry"]>> {
+  ): Promise<FeatureCollection<T["geometry"], T["properties"]>> {
     const features = await this.fetch(bbox);
     if (features.length !== 0) {
       return union(

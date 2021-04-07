@@ -5,6 +5,7 @@
 import polygonClipping from "polygon-clipping";
 import { polygon, multiPolygon } from "@turf/helpers";
 import { getGeom } from "@turf/invariant";
+import { Feature, MultiPolygon, Polygon } from "@turf/helpers";
 
 /**
  * Finds the difference between two {@link Polygon|polygons} by clipping the second polygon from the first.
@@ -40,7 +41,10 @@ import { getGeom } from "@turf/invariant";
  * //addToMap
  * var addToMap = [polygon1, polygon2, difference];
  */
-function difference(polygon1, polygon2) {
+function difference(
+  polygon1,
+  polygon2
+): Feature<Polygon | MultiPolygon, any> | null {
   var geom1 = getGeom(polygon1);
   var geom2 = getGeom(polygon2);
   var properties = polygon1.properties || {};

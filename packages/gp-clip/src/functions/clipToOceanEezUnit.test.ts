@@ -4,6 +4,7 @@ import {
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
 import { ValidationError } from "@seasketch/geoprocessing";
+import booleanValid from "@turf/boolean-valid";
 
 describe("Basic unit tests", () => {
   test("clipLand", async () => {

@@ -5,8 +5,8 @@ if [ ! -d "src/EEZ_land_union_v3_202003" ]; then
   unzip EEZ_land_union_v3_202003.zip
 fi
 
-# Import
-shp2pgsql -D -s 4326 src/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp eez_land_union | psql
+# Import, keeping column name casing intact, and setting the SRID field to 4326
+shp2pgsql -D -k -s 4326 src/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp eez_land_union | psql
 
 # Create spatial index
 psql -t <<SQL

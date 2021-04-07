@@ -17,7 +17,7 @@ import flatten from "@turf/flatten";
 const MAX_SIZE = 500000 * 1000 ** 2;
 
 type OsmLandFeature = Feature<Polygon, { gid: number }>;
-type EezLandUnion = Feature<Polygon, { gid: number }>;
+type EezLandUnion = Feature<Polygon, { gid: number; UNION: string }>;
 
 // Defined at module level for potential caching/reuse by serverless process
 const SubdividedOsmLandSource = new VectorDataSource<OsmLandFeature>(
@@ -26,15 +26,6 @@ const SubdividedOsmLandSource = new VectorDataSource<OsmLandFeature>(
 const SubdividedEezLandUnionSource = new VectorDataSource<EezLandUnion>(
   "https://d3muy0hbwp5qkl.cloudfront.net"
 );
-
-export async function clipOutsideEez(feature: Feature<Polygon | MultiPolygon>) {
-  const eezFeatures = await SubdividedEezLandUnionSource.fetchUnion(
-    bbox(feature),
-    "gid"
-  );
-  const combined = combine(eezFeatures).features[0] as Feature<MultiPolygon>;
-  return intersect(feature, combined);
-}
 
 export async function clipLand(feature: Feature<Polygon | MultiPolygon>) {
   const landFeatures = await SubdividedOsmLandSource.fetchUnion(
@@ -45,11 +36,34 @@ export async function clipLand(feature: Feature<Polygon | MultiPolygon>) {
   return difference(feature, combined);
 }
 
+export async function clipOutsideEez(
+  feature: Feature<Polygon | MultiPolygon>,
+  eezFilterByNames: string[] = []
+) {
+  let eezFeatures = await SubdividedEezLandUnionSource.fetchUnion(
+    bbox(feature),
+    "UNION"
+  );
+  // Optionally filter down to a single country/union EEZ boundary
+  if (eezFilterByNames.length > 0) {
+    eezFeatures = fc(
+      eezFeatures.features.filter((e) =>
+        eezFilterByNames.includes(e.properties.UNION)
+      )
+    );
+  }
+  const combined = combine(eezFeatures).features[0] as Feature<MultiPolygon>;
+  return intersect(feature, combined);
+}
+
 /**
  * Takes a Polygon feature and returns the portion that is in the ocean and within an EEZ boundary
  * If results in multiple polygons then returns the largest
  */
-async function clipToOceanEez(feature: Feature): Promise<Feature> {
+async function clipToOceanEez(
+  feature: Feature,
+  eezFilterByNames?: string[]
+): Promise<Feature> {
   if (!isPolygon(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
@@ -61,7 +75,7 @@ async function clipToOceanEez(feature: Feature): Promise<Feature> {
   }
 
   let clipped = await clipLand(feature);
-  clipped = await clipOutsideEez(clipped);
+  clipped = await clipOutsideEez(clipped, eezFilterByNames);
 
   if (!clipped || area(clipped) === 0) {
     throw new ValidationError("Sketch is outside of project boundaries");

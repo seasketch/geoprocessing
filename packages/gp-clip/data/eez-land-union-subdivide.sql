@@ -2,19 +2,23 @@ BEGIN;
 DROP TABLE IF EXISTS eez_land_union_subdivided;
 
 -- Create new table for subdivided polygons
+-- union field is kept to allow customization of use/behavior per union boundary
 CREATE TABLE eez_land_union_subdivided (
   gid serial PRIMARY KEY,
-  geom geometry(Polygon, 4326)
+  geom geometry(Polygon, 4326),
+  "UNION" text NOT NULL
 );
 
 -- expand multipolygons into polygons
-INSERT INTO eez_land_union_subdivided (geom)
+INSERT INTO eez_land_union_subdivided (geom, "UNION")
 SELECT
-  geom
+  geom,
+  "UNION"
 FROM (
   SELECT
     (st_dump(geom)).geom AS geom,
-    gid
+    gid,
+    "UNION"
   FROM
     eez_land_union
   -- Optional filter of land polys that intersect polygon area of interest
@@ -25,13 +29,14 @@ FROM (
 WITH complex_areas_to_subdivide AS (
     DELETE FROM eez_land_union_subdivided
     WHERE ST_NPoints(geom) > 256
-    returning gid, geom
+    returning gid, geom, "UNION"
 )
 
-INSERT INTO eez_land_union_subdivided (geom)
+INSERT INTO eez_land_union_subdivided (geom, "UNION")
     SELECT * from (
       SELECT
-          ST_Subdivide(geom, 256) AS geom
+          ST_Subdivide(geom, 256) AS geom,
+          "UNION"
       FROM complex_areas_to_subdivide
     ) as complex
     -- Optional filter of land polys that intersect polygon area of interest

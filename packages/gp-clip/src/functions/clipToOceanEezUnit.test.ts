@@ -1,4 +1,4 @@
-import Handler, { clipToOcean, clipToEez } from "./clipToOceanEez";
+import Handler, { clipLand, clipOutsideEez } from "./clipToOceanEez";
 import {
   getExampleFeatures,
   writeResultOutput,
@@ -6,13 +6,12 @@ import {
 import { ValidationError } from "@seasketch/geoprocessing";
 
 describe("Basic unit tests", () => {
-  test("clipToOcean", async () => {
+  test("clipLand", async () => {
     const examples = await getExampleFeatures();
     for (const example of examples) {
       try {
-        const result = await clipToOcean(example);
+        const result = await clipLand(example);
         expect(result).toBeTruthy();
-        writeResultOutput(result, "clipToOcean", example.properties.name);
       } catch (e) {
         if (e instanceof ValidationError) {
           // ValidationErrors don't indicate failures, just comprehensive tests
@@ -23,13 +22,12 @@ describe("Basic unit tests", () => {
     }
   });
 
-  test("clipToEez", async () => {
+  test("clipOutsideEez", async () => {
     const examples = await getExampleFeatures();
     for (const example of examples) {
       try {
-        const result = await clipToEez(example);
+        const result = await clipOutsideEez(example);
         expect(result).toBeTruthy();
-        writeResultOutput(result, "clipToEez", example.properties.name);
       } catch (e) {
         if (e instanceof ValidationError) {
           // ValidationErrors don't indicate failures, just comprehensive tests

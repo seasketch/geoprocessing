@@ -15,7 +15,9 @@
     "template"
   ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "0.11.1"
+    "@seasketch/geoprocessing": "0.11.1",
+    "@turf/boolean-valid": "6.3.0",
+    "@turf/boolean-disjoint": "6.3.0"
   },
   "dependencies": {
     "@babel/core": "^7.9.6",

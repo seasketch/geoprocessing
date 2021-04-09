@@ -14,6 +14,12 @@ if (process.argv.length < 3) {
     case "init":
       init();
       break;
+    case "add:template":
+      spawn("node", [`${__dirname}/init/addTemplate.js`], {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
     case "create:function":
       spawn("node", [`${__dirname}/init/createFunction.js`], {
         cwd: process.cwd(),

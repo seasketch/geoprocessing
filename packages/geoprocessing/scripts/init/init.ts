@@ -13,7 +13,7 @@ import util from "util";
 const exec = util.promisify(require("child_process").exec);
 
 //@ts-ignore
-const regions = awsRegions.list({ public: true }).map(v => v.code);
+const regions = awsRegions.list({ public: true }).map((v) => v.code);
 
 inquirer.registerPrompt("autocomplete", autocomplete);
 const licenseDefaults = ["MIT", "UNLICENSED", "BSD-3-Clause", "APACHE-2.0"];
@@ -29,56 +29,56 @@ async function init() {
       type: "input",
       name: "name",
       message: "Choose a name for your project",
-      validate: value => {
+      validate: (value) => {
         if (/^[a-z\-]+$/.test(value)) {
           return true;
         } else {
           return "Input must be lowercase and contain no spaces";
         }
-      }
+      },
     },
     {
       type: "input",
       name: "description",
-      message: "Please provide a short description of this project"
+      message: "Please provide a short description of this project",
     },
     {
       type: "input",
       name: "repositoryUrl",
       message: "Source code repository location",
-      validate: value =>
+      validate: (value) =>
         value === "" ||
         value === null ||
         /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm.test(
           value
         )
           ? true
-          : "Must be a valid url"
+          : "Must be a valid url",
     },
     {
       type: "input",
       name: "author",
       message: "Your name",
       default: defaultName,
-      validate: value =>
+      validate: (value) =>
         /\w+/.test(value)
           ? true
-          : "Please provide a name for use in your package.json file"
+          : "Please provide a name for use in your package.json file",
     },
     {
       type: "input",
       name: "email",
       message: "Your email",
       default: defaultEmail,
-      validate: value =>
+      validate: (value) =>
         /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/g.test(value)
           ? true
-          : "Please provide a valid email for use in your package.json file"
+          : "Please provide a valid email for use in your package.json file",
     },
     {
       type: "input",
       name: "organization",
-      message: "Organization name (optional)"
+      message: "Organization name (optional)",
     },
     {
       type: "autocomplete",
@@ -87,11 +87,11 @@ async function init() {
       default: "MIT",
       source: async (answersSoFar: any, value: string) => {
         if (value) {
-          return fuzzy.filter(value, allLicenseOptions).map(v => v.original);
+          return fuzzy.filter(value, allLicenseOptions).map((v) => v.original);
         } else {
           return licenseDefaults;
         }
-      }
+      },
     },
     {
       type: "autocomplete",
@@ -100,12 +100,12 @@ async function init() {
       default: "us-west-1",
       source: async (answersSoFar: any, value: string) => {
         if (value) {
-          return fuzzy.filter(value, regions).map(v => v);
+          return fuzzy.filter(value, regions).map((v) => v);
         } else {
           return regions;
         }
-      }
-    }
+      },
+    },
   ]);
 
   await makeProject(packageAnswers);
@@ -115,7 +115,7 @@ if (require.main === module) {
   init();
 }
 
-interface Package {
+export interface Package {
   name: string;
   description: string;
   author: string;
@@ -128,6 +128,8 @@ interface Package {
     type: "git";
     url: string;
   };
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
 }
 
 interface ProjectMetadataOptions {
@@ -160,7 +162,7 @@ async function makeProject(
     ? `${__dirname}/../../../templates/project`
     : `${__dirname}/../templates/project`;
   await fs.copy(templatePath, path);
-  spinner.succeed("copied template");
+  spinner.succeed("copied base files");
   spinner.start("updating package.json with provided details");
   const packageJSON: Package = {
     ...JSON.parse(fs.readFileSync(`${templatePath}/package.json`).toString()),
@@ -170,14 +172,14 @@ async function makeProject(
       ? {
           repository: {
             type: "git",
-            url: "git+" + metadata.repositoryUrl + ".git"
+            url: "git+" + metadata.repositoryUrl + ".git",
           },
           homepage: metadata.repositoryUrl + "#readme",
           bugs: {
-            url: metadata.repositoryUrl + "/issues"
-          }
+            url: metadata.repositoryUrl + "/issues",
+          },
         }
-      : {})
+      : {}),
   };
   await fs.writeFile(
     `${path}/package.json`,
@@ -192,7 +194,7 @@ async function makeProject(
       {
         author,
         organization: organization || "",
-        region
+        region,
       },
       null,
       "  "
@@ -241,7 +243,7 @@ COMPOSE_PROJECT_NAME=${metadata.name}`
     const { stderr, stdout, error } = await exec(
       "npm install --save-dev @seasketch/geoprocessing@latest",
       {
-        cwd: metadata.name
+        cwd: metadata.name,
       }
     );
     if (error) {

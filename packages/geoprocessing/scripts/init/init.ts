@@ -10,20 +10,35 @@ import chalk from "chalk";
 //@ts-ignore
 import awsRegions from "aws-regions";
 import util from "util";
+import {
+  ChooseTemplateOption,
+  templateQuestion,
+  copyTemplates,
+} from "./addTemplate";
 const exec = util.promisify(require("child_process").exec);
 
-//@ts-ignore
 const regions = awsRegions.list({ public: true }).map((v) => v.code);
 
 inquirer.registerPrompt("autocomplete", autocomplete);
 const licenseDefaults = ["MIT", "UNLICENSED", "BSD-3-Clause", "APACHE-2.0"];
 const allLicenseOptions = [...licenses, "UNLICENSED"];
 
+interface CreateProjectOptions extends ChooseTemplateOption {
+  name: string;
+  description: string;
+  author: string;
+  email?: string;
+  organization?: string;
+  license: string;
+  repositoryUrl: string;
+  region: string;
+}
+
 async function init() {
   const userMeta = require("user-meta");
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
-  const packageAnswers = await inquirer.prompt([
+  const packageAnswers = await inquirer.prompt<CreateProjectOptions>([
     /* Pass your questions in here */
     {
       type: "input",
@@ -106,6 +121,7 @@ async function init() {
         }
       },
     },
+    templateQuestion,
   ]);
 
   await makeProject(packageAnswers);
@@ -132,19 +148,8 @@ export interface Package {
   devDependencies?: Record<string, string>;
 }
 
-interface ProjectMetadataOptions {
-  name: string;
-  description: string;
-  author: string;
-  email?: string;
-  organization?: string;
-  license: string;
-  repositoryUrl: string;
-  region: string;
-}
-
 async function makeProject(
-  metadata: ProjectMetadataOptions,
+  metadata: CreateProjectOptions,
   interactive = true,
   basePath = ""
 ) {
@@ -238,10 +243,19 @@ COMPOSE_PROJECT_NAME=${metadata.name}`
   );
   await fs.mkdir(`${path}/data/src`);
   await fs.mkdir(`${path}/data/dist`);
+
+  if (metadata.templates) {
+    copyTemplates(metadata.templates, {
+      skipInstall: true,
+      projectPath: `./${metadata.name}`,
+    });
+  }
+
+  // Install dependencies
   if (interactive) {
     spinner.start("installing dependencies with npm");
     const { stderr, stdout, error } = await exec(
-      "npm install --save-dev @seasketch/geoprocessing@latest",
+      "npm install --save-dev file:/Users/twelch/src/geoprocessing/packages/geoprocessing/",
       {
         cwd: metadata.name,
       }

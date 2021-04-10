@@ -10,26 +10,31 @@ interface TemplateOptions {
   name: string;
 }
 
-async function addTemplate() {
-  // TODO: generate list by reading list of packages with keyword 'template'
-  const answers = await inquirer.prompt([
+export interface ChooseTemplateOption {
+  templates: string[];
+}
+
+export const templateQuestion = {
+  type: "checkbox",
+  name: "templates",
+  message: "What templates would you like to install?",
+  choices: [
     {
-      type: "list",
-      name: "name",
-      message: "Choose a template",
-      choices: [
-        {
-          value: "gp-clip",
-          name:
-            "Global clipping preprocessor - Erases portion of sketch overlapping with land or extending into ocean outsize EEZ boundary",
-        },
-      ],
+      value: "gp-clip",
+      name: "Global clipping preprocessor",
     },
+  ],
+};
+
+async function addTemplate(projectPath?: string) {
+  // TODO: generate list by reading list of packages with keyword 'template'
+  const answers = await inquirer.prompt<ChooseTemplateOption>([
+    templateQuestion,
   ]);
 
-  if (answers.name) {
+  if (answers.templates) {
     try {
-      await copyTemplate(answers.name);
+      await copyTemplates(answers.templates);
     } catch (error) {
       console.error(error);
       process.exit();
@@ -41,142 +46,164 @@ if (require.main === module) {
   addTemplate();
 }
 
-async function copyTemplate(
-  name: string,
-  interactive = true,
-  projectPath = ".",
-  skipInstall = false // skip if being called by another command that will run install later
+export async function copyTemplates(
+  names: string[],
+  options?: {
+    interactive?: boolean;
+    /** path to the user project */
+    projectPath?: string;
+    /** skip if being called by another command that will run install later */
+    skipInstall?: boolean;
+  }
 ) {
-  const templatePath = /dist/.test(__dirname)
-    ? path.join(__dirname, "..", "..", "..", "..", name)
-    : path.join(__dirname, "..", "..", name);
-
-  if (!fs.existsSync(templatePath)) {
-    console.error(`Could not find template ${name} ${templatePath}`);
-  }
-
-  // console.log("you are here:", process.cwd());
-  // console.log("base path:", projectPath);
-
+  const { interactive, projectPath, skipInstall } = {
+    ...{ interactive: true, projectPath: ".", skipInstall: false },
+    ...options,
+  };
   const spinner = interactive
-    ? ora("Adding template").start()
-    : { start: () => false, stop: () => false, succeed: () => false };
+    ? ora(`Adding templates`).start()
+    : {
+        start: () => false,
+        stop: () => false,
+        succeed: () => false,
+        fail: () => false,
+      };
 
-  // Copy package metadata
+  const templatesPath = /dist/.test(__dirname)
+    ? path.join(__dirname, "..", "..", "..", "..")
+    : path.join(__dirname, "..", "..");
 
-  spinner.start("adding template dependenceis");
-  const templatePackage: Package = JSON.parse(
-    fs.readFileSync(`${templatePath}/package.json`).toString()
-  );
-  const projectPackage: Package = JSON.parse(
-    fs.readFileSync(`${projectPath}/package.json`).toString()
-  );
-  const packageJSON: Package = {
-    ...projectPackage,
-    dependencies: {
-      ...(projectPackage?.dependencies || {}),
-      ...(templatePackage?.dependencies || {}),
-    },
-    devDependencies: {
-      ...(projectPackage?.devDependencies || {}),
-      ...(templatePackage?.devDependencies || {}),
-    },
-  };
+  // console.log("options: ", options);
+  // console.log("you are here:", process.cwd());
+  // console.log("project path:", projectPath);
+  // console.log("template path:", templatesPath);
 
-  await fs.writeFile(
-    path.join(projectPath, "package.json"),
-    JSON.stringify(packageJSON, null, "  ")
-  );
-  spinner.succeed("added template dependencies");
-
-  // Copy file assets, but only if there is something to copy. Creates directories first as needed
-
-  spinner.start("copying template files");
-  try {
-    if (!fs.existsSync(path.join(projectPath, "src"))) {
-      fs.mkdirSync(path.join(projectPath, "src"));
-    }
-
-    if (fs.existsSync(path.join(templatePath, "src", "functions"))) {
-      if (!fs.existsSync(path.join(projectPath, "src", "functions"))) {
-        fs.mkdirSync(path.join(projectPath, "src", "functions"));
-      }
-      await fs.copy(
-        path.join(templatePath, "src", "functions"),
-        path.join(projectPath, "src", "functions")
-      );
-    }
-
-    if (fs.existsSync(path.join(templatePath, "src", "clients"))) {
-      if (!fs.existsSync(path.join(projectPath, "src", "clients"))) {
-        fs.mkdirSync(path.join(projectPath, "src", "clients"));
-      }
-      await fs.copy(
-        path.join(templatePath, "src", "clients"),
-        path.join(projectPath, "src", "clients")
-      );
-    }
-
-    if (fs.existsSync(path.join(templatePath, "examples"))) {
-      if (!fs.existsSync(path.join(projectPath, "examples"))) {
-        fs.mkdirSync(path.join(projectPath, "examples"));
-      }
-      if (!fs.existsSync(path.join(projectPath, "examples", "sketches"))) {
-        fs.mkdirSync(path.join(projectPath, "examples", "sketches"));
-      }
-      if (!fs.existsSync(path.join(projectPath, "examples", "features"))) {
-        fs.mkdirSync(path.join(projectPath, "examples", "features"));
-      }
-
-      await fs.copy(
-        path.join(templatePath, "examples"),
-        path.join(projectPath, "examples")
-      );
-      await fs.copy(
-        path.join(templatePath, "examples", "sketches"),
-        path.join(projectPath, "examples", "sketches")
-      );
-      await fs.copy(
-        path.join(templatePath, "examples", "features"),
-        path.join(projectPath, "examples", "features")
-      );
-    }
-  } catch (err) {
-    console.error(err);
+  if (!fs.existsSync(path.join(projectPath, "package.json"))) {
+    spinner.fail(
+      "Could not find your project, are you in your project root directory?"
+    );
+    process.exit();
   }
-  spinner.succeed("copied template files");
 
-  // Merge geoprocessing metadata
+  for (const templateName of names) {
+    // Find template
+    const templatePath = path.join(templatesPath, templateName);
 
-  // TODO: Should not duplicate existing entries
-  spinner.start("adding geoprocessing metadata");
-  const tplGeoprocessing = JSON.parse(
-    fs.readFileSync(path.join(templatePath, "geoprocessing.json")).toString()
-  );
-  const dstGeoprocessing = JSON.parse(
-    fs.readFileSync(path.join(projectPath, "geoprocessing.json")).toString()
-  );
+    if (!fs.existsSync(templatePath)) {
+      spinner.fail(`Could not find template ${templateName} ${templatePath}`);
+    }
 
-  const geoprocessingJSON = {
-    ...dstGeoprocessing,
-    clients: [
-      ...(dstGeoprocessing?.clients || []),
-      ...(tplGeoprocessing?.clients || []),
-    ],
-    functions: [
-      ...(dstGeoprocessing?.functions || []),
-      ...(tplGeoprocessing?.functions || []),
-    ],
-  };
+    // Copy package metadata
+    spinner.start(`adding template ${templateName}`);
+    const templatePackage: Package = JSON.parse(
+      fs.readFileSync(`${templatePath}/package.json`).toString()
+    );
+    const projectPackage: Package = JSON.parse(
+      fs.readFileSync(`${projectPath}/package.json`).toString()
+    );
+    const packageJSON: Package = {
+      ...projectPackage,
+      dependencies: {
+        ...(projectPackage?.dependencies || {}),
+        ...(templatePackage?.dependencies || {}),
+      },
+      devDependencies: {
+        ...(projectPackage?.devDependencies || {}),
+        ...(templatePackage?.devDependencies || {}),
+      },
+    };
 
-  fs.writeFileSync(
-    path.join(projectPath, "geoprocessing.json"),
-    JSON.stringify(geoprocessingJSON, null, "  ")
-  );
-  spinner.succeed("added template metadata");
+    await fs.writeFile(
+      path.join(projectPath, "package.json"),
+      JSON.stringify(packageJSON, null, "  ")
+    );
+
+    // Copy file assets, but only if there is something to copy. Creates directories first as needed
+    try {
+      if (!fs.existsSync(path.join(projectPath, "src"))) {
+        fs.mkdirSync(path.join(projectPath, "src"));
+      }
+
+      if (fs.existsSync(path.join(templatePath, "src", "functions"))) {
+        if (!fs.existsSync(path.join(projectPath, "src", "functions"))) {
+          fs.mkdirSync(path.join(projectPath, "src", "functions"));
+        }
+        await fs.copy(
+          path.join(templatePath, "src", "functions"),
+          path.join(projectPath, "src", "functions")
+        );
+      }
+
+      if (fs.existsSync(path.join(templatePath, "src", "clients"))) {
+        if (!fs.existsSync(path.join(projectPath, "src", "clients"))) {
+          fs.mkdirSync(path.join(projectPath, "src", "clients"));
+        }
+        await fs.copy(
+          path.join(templatePath, "src", "clients"),
+          path.join(projectPath, "src", "clients")
+        );
+      }
+
+      if (fs.existsSync(path.join(templatePath, "examples"))) {
+        if (!fs.existsSync(path.join(projectPath, "examples"))) {
+          fs.mkdirSync(path.join(projectPath, "examples"));
+        }
+        if (!fs.existsSync(path.join(projectPath, "examples", "sketches"))) {
+          fs.mkdirSync(path.join(projectPath, "examples", "sketches"));
+        }
+        if (!fs.existsSync(path.join(projectPath, "examples", "features"))) {
+          fs.mkdirSync(path.join(projectPath, "examples", "features"));
+        }
+
+        await fs.copy(
+          path.join(templatePath, "examples"),
+          path.join(projectPath, "examples")
+        );
+        await fs.copy(
+          path.join(templatePath, "examples", "sketches"),
+          path.join(projectPath, "examples", "sketches")
+        );
+        await fs.copy(
+          path.join(templatePath, "examples", "features"),
+          path.join(projectPath, "examples", "features")
+        );
+      }
+    } catch (err) {
+      spinner.fail("Error");
+      console.error(err);
+      process.exit();
+    }
+
+    // Merge geoprocessing metadata
+    // TODO: Should not duplicate existing entries
+    const tplGeoprocessing = JSON.parse(
+      fs.readFileSync(path.join(templatePath, "geoprocessing.json")).toString()
+    );
+    const dstGeoprocessing = JSON.parse(
+      fs.readFileSync(path.join(projectPath, "geoprocessing.json")).toString()
+    );
+
+    const geoprocessingJSON = {
+      ...dstGeoprocessing,
+      clients: [
+        ...(dstGeoprocessing?.clients || []),
+        ...(tplGeoprocessing?.clients || []),
+      ],
+      functions: [
+        ...(dstGeoprocessing?.functions || []),
+        ...(tplGeoprocessing?.functions || []),
+      ],
+    };
+
+    fs.writeFileSync(
+      path.join(projectPath, "geoprocessing.json"),
+      JSON.stringify(geoprocessingJSON, null, "  ")
+    );
+
+    spinner.succeed(`added template ${templateName}`);
+  }
 
   // Install new dependencies
-
   if (interactive && !skipInstall) {
     spinner.start("installing new dependencies with npm");
     const { stderr, stdout, error } = await exec("npm install", {

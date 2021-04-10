@@ -64,7 +64,7 @@ describe("Basic unit tests", () => {
       );
       writeResultOutput(
         result,
-        "clipOutsizeBarbadosEez",
+        "clipOutsideBarbadosEez",
         example.properties.name
       );
     } catch (e) {
@@ -92,7 +92,7 @@ describe("Basic unit tests", () => {
       );
       writeResultOutput(
         result,
-        "clipOutsizeMultipleEez",
+        "clipOutsideMultipleEez",
         example.properties.name
       );
     } catch (e) {

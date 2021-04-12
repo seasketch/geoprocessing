@@ -39,6 +39,11 @@ async function bundleTemplates() {
       path.join(distTemplatePath, "package.json")
     );
 
+    await fs.copy(
+      path.join(templatePath, "geoprocessing.json"),
+      path.join(distTemplatePath, "geoprocessing.json")
+    );
+
     if (!fs.existsSync(path.join(distTemplatePath, "src"))) {
       fs.mkdirSync(path.join(distTemplatePath, "src"));
     }

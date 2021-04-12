@@ -1,6 +1,4 @@
-import ora from "ora";
 import program from "commander";
-import inquirer from "inquirer";
 import { init } from "./init";
 
 program

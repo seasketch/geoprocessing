@@ -14,7 +14,7 @@ import {
   ChooseTemplateOption,
   templateQuestion,
   copyTemplates,
-} from "./addTemplate";
+} from "../template/addTemplate";
 const exec = util.promisify(require("child_process").exec);
 
 const regions = awsRegions.list({ public: true }).map((v) => v.code);

@@ -69,9 +69,13 @@ export async function copyTemplates(
         fail: () => false,
       };
 
-  const templatesPath = /dist/.test(__dirname)
-    ? path.join(__dirname, "..", "..", "..", "..")
-    : path.join(__dirname, "..", "..");
+  const templatesPath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "templates",
+    "gp-templates"
+  );
 
   console.log("options: ", options);
   console.log("dirname", __dirname);

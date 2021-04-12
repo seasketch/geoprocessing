@@ -23,7 +23,7 @@ inquirer.registerPrompt("autocomplete", autocomplete);
 const licenseDefaults = ["MIT", "UNLICENSED", "BSD-3-Clause", "APACHE-2.0"];
 const allLicenseOptions = [...licenses, "UNLICENSED"];
 
-interface CreateProjectOptions extends ChooseTemplateOption {
+interface CreateProjectMetadata extends ChooseTemplateOption {
   name: string;
   description: string;
   author: string;
@@ -32,13 +32,14 @@ interface CreateProjectOptions extends ChooseTemplateOption {
   license: string;
   repositoryUrl: string;
   region: string;
+  gpVersion?: string;
 }
 
-async function init() {
+async function init(gpVersion?: string) {
   const userMeta = require("user-meta");
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
-  const packageAnswers = await inquirer.prompt<CreateProjectOptions>([
+  const packageAnswers = await inquirer.prompt<CreateProjectMetadata>([
     /* Pass your questions in here */
     {
       type: "input",
@@ -124,6 +125,8 @@ async function init() {
     templateQuestion,
   ]);
 
+  packageAnswers.gpVersion = gpVersion;
+
   await makeProject(packageAnswers);
 }
 
@@ -149,11 +152,17 @@ export interface Package {
 }
 
 async function makeProject(
-  metadata: CreateProjectOptions,
+  metadata: CreateProjectMetadata,
   interactive = true,
   basePath = ""
 ) {
-  const { organization, region, email, ...packageJSONOptions } = metadata;
+  const {
+    organization,
+    region,
+    email,
+    gpVersion,
+    ...packageJSONOptions
+  } = metadata;
   const spinner = interactive
     ? ora("Creating new project").start()
     : { start: () => false, stop: () => false, succeed: () => false };
@@ -163,9 +172,17 @@ async function makeProject(
   spinner.succeed(`created ${path}/`);
   spinner.start("copying template");
 
-  const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../../templates/project`
-    : `${__dirname}/../templates/project`;
+  const gpPath = /dist/.test(__dirname)
+    ? `${__dirname}/../../..`
+    : `${__dirname}/..`;
+  const templatePath = `${gpPath}/templates/project`;
+
+  // Get version of geoprocessing currently running
+  const curGpVersion: Package = JSON.parse(
+    fs.readFileSync(`${gpPath}/package.json`).toString()
+  ).version;
+  console.log("curGpVersion", curGpVersion);
+
   await fs.copy(templatePath, path);
   spinner.succeed("copied base files");
   spinner.start("updating package.json with provided details");
@@ -206,30 +223,6 @@ async function makeProject(
     )
   );
   spinner.succeed("created geoprocessing.json");
-  spinner.start("updating Dockerfile");
-  const dockerfilePath = `${path}/data/Dockerfile`;
-  const dockerfileContents = await fs.readFile(dockerfilePath);
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  await fs.writeFile(
-    dockerfilePath,
-    dockerfileContents
-      .toString()
-      .replace("Chad Burt <chad@underbluewaters.net>", author)
-      .replace("America/Los_Angeles", tz)
-  );
-  const composePath = `${path}/data/docker-compose.yml`;
-  const composeContents = await fs.readFile(composePath);
-  await fs.writeFile(
-    composePath,
-    composeContents.toString().replace(/project-name/g, metadata.name)
-  );
-  await fs.writeFile(
-    `${path}/data/.env`,
-    `# setting a project name ensures docker won't confuse db and workspace 
-# containers across multiple geoprocessing projects on the same host
-COMPOSE_PROJECT_NAME=${metadata.name}`
-  );
-  spinner.succeed("updated Dockerfile");
 
   const readmePath = `${path}/data/README.md`;
   const readmeContents = await fs.readFile(readmePath);
@@ -251,11 +244,14 @@ COMPOSE_PROJECT_NAME=${metadata.name}`
     });
   }
 
-  // Install dependencies
+  // Install dependencies including adding GP.
   if (interactive) {
-    spinner.start("installing dependencies with npm");
+    spinner.start("installing dependencies with npm" + ": " + metadata.name);
+    const gpPkgString = gpVersion
+      ? gpVersion
+      : `@seasketch/geoprocessing@${curGpVersion}`;
     const { stderr, stdout, error } = await exec(
-      "npm install --save-dev file:/Users/twelch/src/geoprocessing/packages/geoprocessing/",
+      `npm install --save-dev ${gpPkgString}`,
       {
         cwd: metadata.name,
       }

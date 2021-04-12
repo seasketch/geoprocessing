@@ -1,0 +1,24 @@
+import ora from "ora";
+import program from "commander";
+import inquirer from "inquirer";
+import { init } from "./init";
+
+program
+  .command("init")
+  .option(
+    "--gpVersion <string>",
+    "Git supported version string to install.  Can be local file url",
+    undefined
+  )
+  .action(async function (options) {
+    try {
+      console.log("gpVersion option:", options.gpVersion);
+      await init(options.gpVersion);
+    } catch (e) {
+      console.log("\n");
+      console.error(e);
+      process.exit(1);
+    }
+  });
+
+program.parse(process.argv);

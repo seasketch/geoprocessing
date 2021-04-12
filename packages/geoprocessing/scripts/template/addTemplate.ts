@@ -74,6 +74,7 @@ export async function copyTemplates(
     : path.join(__dirname, "..", "..");
 
   console.log("options: ", options);
+  console.log("dirname", __dirname);
   console.log("you are here:", process.cwd());
   console.log("project path:", projectPath);
   console.log("template path:", templatesPath);

@@ -206,6 +206,11 @@ export async function copyTemplates(
       JSON.stringify(geoprocessingJSON, null, "  ")
     );
 
+    await fs.copy(
+      path.join(templatePath, "data"),
+      path.join(projectPath, "data")
+    );
+
     spinner.succeed(`added template ${templateName}`);
   }
 

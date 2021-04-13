@@ -160,7 +160,8 @@
     "jest": "^26.4.2",
     "jest-dynalite": "^1.1.9",
     "jest-websocket-mock": "^2.0.2",
-    "mock-socket": "^9.0.3"
+    "mock-socket": "^9.0.3",
+    "ts-node": "^9.1.1"
   },
   "gitHead": "971818d0dde78cf50a5d33629b4cb7b7780ddae6",
   "optionalDependencies": {

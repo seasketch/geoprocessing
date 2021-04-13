@@ -77,11 +77,11 @@ export async function copyTemplates(
     "gp-templates"
   );
 
-  console.log("options: ", options);
-  console.log("dirname", __dirname);
-  console.log("you are here:", process.cwd());
-  console.log("project path:", projectPath);
-  console.log("template path:", templatesPath);
+  // console.log("options: ", options);
+  // console.log("dirname", __dirname);
+  // console.log("you are here:", process.cwd());
+  // console.log("project path:", projectPath);
+  // console.log("template path:", templatesPath);
 
   if (!fs.existsSync(path.join(projectPath, "package.json"))) {
     spinner.fail(

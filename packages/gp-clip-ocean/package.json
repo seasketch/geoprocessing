@@ -1,7 +1,7 @@
 {
-  "name": "@seasketch/gp-clip",
+  "name": "@seasketch/gp-clip-ocean",
   "version": "0.11.1",
-  "description": "base set of clipping preprocessors to choose from",
+  "description": "preprocessor to clip feature within an ocean EEZ boundary",
   "author": "Tim Welch",
   "license": "BSD-3-Clause",
   "private": true,
@@ -27,7 +27,6 @@
     "@babel/register": "^7.9.0",
     "@turf/area": "^6.0.1",
     "@turf/bbox": "^6.0.1",
-    "@turf/bbox-clip": "^6.3.0",
     "@turf/combine": "^6.0.1",
     "@turf/flatten": "^5.1.5",
     "@turf/invariant": "^6.1.2",

@@ -1,8 +1,6 @@
 {
   "type": "Feature",
-  "properties": {
-    "name": "inner_channel_islands.json"
-  },
+  "properties": {},
   "geometry": {
     "type": "Polygon",
     "coordinates": [

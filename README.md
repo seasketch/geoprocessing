@@ -20,11 +20,21 @@ All the infrastructure pictured above is created for each geoprocessing project 
 
 ## Creating a new project
 
-Each geoprocessing project may contain multiple data preparation routines, functions, and  report clients. For the most part it makes sense to create one new geoprocessing project for each SeaSketch project.
+Use the init command to create a new project
+```sh
+npx @seasketch/geoprocessing init
+```
 
-`npx @seasketch/geoprocessing init` will download the framework, prompt you for project metadata, and then prompt you for which templates you would like to install.  Templates are sets of ready-to-use geoprocessing functions and clients using pre-compiled datasets.  You can extend them, install them at a later time, or quickly remove them if unused.  Finally, your new codebase will be initialized.
+This will download the framework, prompt you for project metadata, and then prompt you for which templates you would like to install.  Templates are sets of ready-to-use geoprocessing functions and clients using pre-compiled datasets.  You can extend them, install them at a later time, or quickly remove them if unused.  Finally, your new codebase will be initialized.
 
-![init process screenshot](https://user-images.githubusercontent.com/511063/79147415-bd146780-7d78-11ea-8d81-0e4151ab8a2f.png)
+Each geoprocessing project you create may contain multiple data preparation routines, functions, and  report clients. For the most part it makes sense to create one new geoprocessing project for each SeaSketch project.
+
+## Templates
+
+Available templates include:
+* [`gp-clip`](packages/gp-clip/README.md)
+* [`gp-area`](packages/gp-area/README.md)
+* [`gp-raster-stats`](packages/gp-raster-stats/README.md)
 
 ## Configuring your editor
 

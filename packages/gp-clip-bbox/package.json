@@ -1,0 +1,33 @@
+{
+  "name": "@seasketch/gp-clip-bbox",
+  "version": "0.11.1",
+  "description": "preprocessor to clip feature within defined project bounding box",
+  "author": "Tim Welch",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "test": "geoprocessing test",
+    "storybook": "geoprocessing storybook"
+  },
+  "keywords": [
+    "@seasketch/geoprocessing",
+    "template"
+  ],
+  "devDependencies": {
+    "@seasketch/geoprocessing": "0.11.1",
+    "@turf/boolean-disjoint": "6.3.0",
+    "@turf/boolean-valid": "6.3.0"
+  },
+  "dependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/preset-typescript": "^7.9.0",
+    "@babel/register": "^7.9.0",
+    "@turf/bbox-clip": "^6.3.0",
+    "@types/geojson": "7946.0.7",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.14"
+  }
+}

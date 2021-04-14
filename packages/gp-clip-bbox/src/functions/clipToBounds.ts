@@ -9,9 +9,6 @@ import { Feature, BBox, Polygon } from "geojson";
 // Covers California Channel Islands, change as needed to meet your needs using bboxfinder.com
 const bounds: BBox = [-120.652, 33.733, -119.279, 34.225];
 
-/**
- * Clips a feature to a defined project bounding box.  Useful for simple projects that don't need to clip features to more complex boundaries
- */
 async function clipToBounds(feature: Feature): Promise<Feature> {
   if (!isPolygon(feature)) {
     throw new ValidationError("Input must be a polygon");

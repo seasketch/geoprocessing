@@ -14,22 +14,55 @@ export interface ChooseTemplateOption {
   templates: string[];
 }
 
+const templatesPath = path.join(
+  __dirname,
+  "..",
+  "..",
+  "templates",
+  "gp-templates"
+);
+
 export const templateQuestion = {
   type: "checkbox",
   name: "templates",
   message: "What templates would you like to install?",
-  choices: [
-    {
-      value: "gp-clip",
-      name: "Global clipping preprocessor",
-    },
-  ],
+  choices: [],
 };
 
 async function addTemplate(projectPath?: string) {
-  // TODO: generate list by reading list of packages with keyword 'template'
+  // Extract list of template names and descriptions from bundles
+  const templateNames = await fs.readdir(templatesPath);
+  const templateDescriptions = templateNames.map((name) => {
+    try {
+      const templatePackageMetaPath = path.join(
+        templatesPath,
+        name,
+        "package.json"
+      );
+      return JSON.parse(fs.readFileSync(templatePackageMetaPath).toString())
+        .description;
+    } catch (error) {
+      console.error(
+        `Missing package.json or its description for template ${name}`
+      );
+      console.error(error);
+      process.exit();
+    }
+  });
+
+  const templateQuestionWithChoices = {
+    ...templateQuestion,
+    choices: [
+      ...templateQuestion.choices,
+      ...templateNames.map((name, index) => ({
+        value: name,
+        name: `${name} - ${templateDescriptions[index]}`,
+      })),
+    ],
+  };
+
   const answers = await inquirer.prompt<ChooseTemplateOption>([
-    templateQuestion,
+    templateQuestionWithChoices,
   ]);
 
   if (answers.templates) {
@@ -68,14 +101,6 @@ export async function copyTemplates(
         succeed: () => false,
         fail: () => false,
       };
-
-  const templatesPath = path.join(
-    __dirname,
-    "..",
-    "..",
-    "templates",
-    "gp-templates"
-  );
 
   // console.log("options: ", options);
   // console.log("dirname", __dirname);

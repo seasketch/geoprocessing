@@ -1,7 +1,7 @@
 {
   "name": "@seasketch/gp-area",
-  "version": "0.0.1",
-  "description": "Geoprocessing template for calculating area stats",
+  "version": "0.11.1",
+  "description": "calculate area stats for feature",
   "author": "Tim Welch",
   "license": "BSD-3-Clause",
   "private": true,

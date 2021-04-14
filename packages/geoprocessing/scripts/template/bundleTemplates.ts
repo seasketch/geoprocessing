@@ -20,8 +20,29 @@ async function bundleTemplates() {
     fs.mkdirSync(path.join(distPath, "templates"));
   }
 
-  const names = ["gp-clip"];
-  for (const templateName of names) {
+  // Find packages with keyword 'template'
+  const templateNames = (await fs.readdir(templatesPath))
+    .filter((name) => fs.statSync(path.join(templatesPath, name)).isDirectory())
+    .filter((dirName) => {
+      try {
+        const templatePackageMetaPath = path.join(
+          templatesPath,
+          dirName,
+          "package.json"
+        );
+        return JSON.parse(
+          fs.readFileSync(templatePackageMetaPath).toString()
+        )?.keywords?.includes("template");
+      } catch (error) {
+        console.error(
+          `Missing package.json or its description for template ${dirName}`
+        );
+        console.error(error);
+        process.exit();
+      }
+    });
+
+  for (const templateName of templateNames) {
     const templatePath = path.join(templatesPath, templateName);
     const distTemplatePath = path.join(distTemplatesPath, templateName);
 
@@ -72,34 +93,45 @@ async function bundleTemplates() {
       if (!fs.existsSync(path.join(distTemplatePath, "examples"))) {
         fs.mkdirSync(path.join(distTemplatePath, "examples"));
       }
-      if (!fs.existsSync(path.join(distTemplatePath, "examples", "sketches"))) {
-        fs.mkdirSync(path.join(distTemplatePath, "examples", "sketches"));
-      }
-      if (!fs.existsSync(path.join(distTemplatePath, "examples", "features"))) {
-        fs.mkdirSync(path.join(distTemplatePath, "examples", "features"));
+
+      if (fs.existsSync(path.join(templatePath, "examples", "features"))) {
+        if (
+          !fs.existsSync(path.join(distTemplatePath, "examples", "features"))
+        ) {
+          fs.mkdirSync(path.join(distTemplatePath, "examples", "features"));
+        }
+        await fs.copy(
+          path.join(templatePath, "examples", "features"),
+          path.join(distTemplatePath, "examples", "features")
+        );
       }
 
-      await fs.copy(
-        path.join(templatePath, "examples", "sketches"),
-        path.join(distTemplatePath, "examples", "sketches")
-      );
-      await fs.copy(
-        path.join(templatePath, "examples", "features"),
-        path.join(distTemplatePath, "examples", "features")
-      );
+      if (fs.existsSync(path.join(templatePath, "examples", "sketches"))) {
+        if (
+          !fs.existsSync(path.join(distTemplatePath, "examples", "sketches"))
+        ) {
+          fs.mkdirSync(path.join(distTemplatePath, "examples", "sketches"));
+        }
+        await fs.copy(
+          path.join(templatePath, "examples", "sketches"),
+          path.join(distTemplatePath, "examples", "sketches")
+        );
+      }
 
       // data, copy everything except .env, docker-compose.yml
-      await fs.copy(
-        path.join(templatePath, "data"),
-        path.join(distTemplatePath, "data"),
-        {
-          filter: (srcPath) => {
-            if (path.basename(srcPath) == ".env") return false;
-            if (path.basename(srcPath) == "docker-compose.yml") return false;
-            return true;
-          },
-        }
-      );
+      if (fs.existsSync(path.join(templatePath, "data"))) {
+        await fs.copy(
+          path.join(templatePath, "data"),
+          path.join(distTemplatePath, "data"),
+          {
+            filter: (srcPath) => {
+              if (path.basename(srcPath) == ".env") return false;
+              if (path.basename(srcPath) == "docker-compose.yml") return false;
+              return true;
+            },
+          }
+        );
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@seasketch/gp-clip",
-  "version": "0.0.1",
-  "description": "Geoprocessing template for clipping sketches to land and/or marine region boundary",
+  "version": "0.11.1",
+  "description": "preprocessor, clips sketches to sea within shoreline and eez boundaries",
   "author": "Tim Welch",
   "license": "BSD-3-Clause",
   "private": true,

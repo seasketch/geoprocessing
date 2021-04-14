@@ -1,5 +1,11 @@
 #!/bin/bash
 
+psql -t <<SQL
+  DROP TABLE eez_land_union;
+  DROP TABLE eez_land_union_final;
+  DROP TABLE eez_land_union_final_bundles;
+SQL
+
 # Download from https://marineregions.org/download_file.php?name=EEZ_land_union_v3_202003.zip and move into this folder
 if [ ! -d "src/EEZ_land_union_v3_202003" ]; then
   unzip EEZ_land_union_v3_202003.zip
@@ -14,4 +20,4 @@ psql -t <<SQL
 SQL
 
 # Subdivide into new table land_subdivided
-psql -f eez-land-union-subdivide.sql
+psql -f eez-land-union.sql

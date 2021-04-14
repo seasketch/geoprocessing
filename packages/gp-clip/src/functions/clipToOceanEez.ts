@@ -8,7 +8,6 @@ import {
 } from "@seasketch/geoprocessing";
 import area from "@turf/area";
 import { Feature, Polygon, MultiPolygon, FeatureCollection } from "geojson";
-import { union } from "union-subdivided-polygons";
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
 import combine from "@turf/combine";
@@ -40,19 +39,15 @@ export async function clipOutsideEez(
   feature: Feature<Polygon | MultiPolygon>,
   eezFilterByNames: string[] = []
 ) {
-  let eezFeatures = await SubdividedEezLandUnionSource.fetchUnion(
-    bbox(feature),
-    "UNION"
-  );
+  let eezFeatures = await SubdividedEezLandUnionSource.fetch(bbox(feature));
   // Optionally filter down to a single country/union EEZ boundary
   if (eezFilterByNames.length > 0) {
-    eezFeatures = fc(
-      eezFeatures.features.filter((e) =>
-        eezFilterByNames.includes(e.properties.UNION)
-      )
+    eezFeatures = eezFeatures.filter((e) =>
+      eezFilterByNames.includes(e.properties.UNION)
     );
   }
-  const combined = combine(eezFeatures).features[0] as Feature<MultiPolygon>;
+  const combined = combine(fc(eezFeatures))
+    .features[0] as Feature<MultiPolygon>;
   return intersect(feature, combined);
 }
 

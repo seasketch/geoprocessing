@@ -20,7 +20,7 @@ type EezLandUnion = Feature<Polygon, { gid: number; UNION: string }>;
 
 // Defined at module level for potential caching/reuse by serverless process
 const SubdividedOsmLandSource = new VectorDataSource<OsmLandFeature>(
-  "https://d3dkn3cj5tf08d.cloudfront.net/"
+  "https://d3p1dsef9f0gjr.cloudfront.net/"
 );
 const SubdividedEezLandUnionSource = new VectorDataSource<EezLandUnion>(
   "https://d3muy0hbwp5qkl.cloudfront.net"

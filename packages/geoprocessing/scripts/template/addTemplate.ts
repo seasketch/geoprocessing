@@ -217,6 +217,24 @@ export async function copyTemplates(
           path.join(projectPath, "data")
         );
       }
+
+      // Merge .gitignore, startingw with line 4
+      if (fs.existsSync(path.join(templatePath, ".gitignore"))) {
+        // Convert to array of lines
+        const tplIgnoreArray = fs
+          .readFileSync(path.join(templatePath, ".gitignore"))
+          .toString()
+          .split("\n");
+        if (tplIgnoreArray.length > 3) {
+          // Merge back into string with newlines and append to end of project file
+          const tplIgnoreLines = tplIgnoreArray
+            .slice(3)
+            .reduce<string>((acc, line) => {
+              return acc.concat(line + "\n");
+            }, "\n");
+          fs.appendFile(path.join(projectPath, ".gitignore"), tplIgnoreLines);
+        }
+      }
     } catch (err) {
       spinner.fail("Error");
       console.error(err);

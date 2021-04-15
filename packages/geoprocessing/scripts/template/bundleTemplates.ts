@@ -137,6 +137,13 @@ async function bundleTemplates() {
           }
         );
       }
+
+      if (fs.existsSync(path.join(templatePath, ".gitignore"))) {
+        await fs.copy(
+          path.join(templatePath, ".gitignore"),
+          path.join(distTemplatePath, ".gitignore")
+        );
+      }
     }
   }
 }

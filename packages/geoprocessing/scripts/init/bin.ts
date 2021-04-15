@@ -10,7 +10,6 @@ program
   )
   .action(async function (options) {
     try {
-      console.log("gpVersion option:", options.gpVersion);
       await init(options.gpVersion);
     } catch (e) {
       console.log("\n");

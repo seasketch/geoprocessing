@@ -33,6 +33,16 @@ export const templateQuestion = {
 async function addTemplate(projectPath?: string) {
   // Extract list of template names and descriptions from bundles
   const templateNames = await fs.readdir(templatesPath);
+
+  if (templateNames.length === 0) {
+    console.error("No templates found, exiting");
+    console.log("__dirname", __dirname);
+    console.log("cwd", process.cwd());
+    console.log("project path:", projectPath);
+    console.log("template path:", templatesPath);
+    process.exit();
+  }
+
   const templateDescriptions = templateNames.map((name) => {
     try {
       const templatePackageMetaPath = path.join(
@@ -102,12 +112,6 @@ export async function copyTemplates(
         succeed: () => false,
         fail: () => false,
       };
-
-  // console.log("options: ", options);
-  // console.log("dirname", __dirname);
-  // console.log("you are here:", process.cwd());
-  // console.log("project path:", projectPath);
-  // console.log("template path:", templatesPath);
 
   if (!fs.existsSync(path.join(projectPath, "package.json"))) {
     spinner.fail(

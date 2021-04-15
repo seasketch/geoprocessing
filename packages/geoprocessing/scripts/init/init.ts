@@ -181,7 +181,6 @@ async function makeProject(
   const curGpVersion: Package = JSON.parse(
     fs.readFileSync(`${gpPath}/package.json`).toString()
   ).version;
-  console.log("curGpVersion", curGpVersion);
 
   await fs.copy(templatePath, path);
   spinner.succeed("copied base files");

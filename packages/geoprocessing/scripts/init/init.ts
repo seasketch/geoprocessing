@@ -12,7 +12,7 @@ import awsRegions from "aws-regions";
 import util from "util";
 import {
   ChooseTemplateOption,
-  templateQuestion,
+  getTemplateQuestion,
   copyTemplates,
 } from "../template/addTemplate";
 const exec = util.promisify(require("child_process").exec);
@@ -39,6 +39,7 @@ async function init(gpVersion?: string) {
   const userMeta = require("user-meta");
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
+  const templateQuestion = await getTemplateQuestion();
   const packageAnswers = await inquirer.prompt<CreateProjectMetadata>([
     /* Pass your questions in here */
     {

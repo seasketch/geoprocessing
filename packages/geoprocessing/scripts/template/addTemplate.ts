@@ -14,15 +14,7 @@ export interface ChooseTemplateOption {
   templates: string[];
 }
 
-export const templateQuestion = {
-  type: "checkbox",
-  name: "templates",
-  message:
-    "What templates would you like to install? (you can always add them later)",
-  choices: [],
-};
-
-async function addTemplate(projectPath?: string) {
+export async function getTemplateQuestion() {
   const templatesPath = path.join(
     __dirname,
     "..",
@@ -31,11 +23,6 @@ async function addTemplate(projectPath?: string) {
     "gp-templates"
   );
 
-  console.log("__dirname", __dirname);
-  console.log("cwd", process.cwd());
-  console.log("project path:", projectPath);
-  console.log("template path:", templatesPath);
-
   // Extract list of template names and descriptions from bundles
   const templateNames = await fs.readdir(templatesPath);
 
@@ -43,7 +30,6 @@ async function addTemplate(projectPath?: string) {
     console.error("No templates found, exiting");
     console.log("__dirname", __dirname);
     console.log("cwd", process.cwd());
-    console.log("project path:", projectPath);
     console.log("template path:", templatesPath);
     process.exit();
   }
@@ -66,7 +52,15 @@ async function addTemplate(projectPath?: string) {
     }
   });
 
-  const templateQuestionWithChoices = {
+  const templateQuestion = {
+    type: "checkbox",
+    name: "templates",
+    message:
+      "What templates would you like to install? (you can always add them later)",
+    choices: [],
+  };
+
+  return {
     ...templateQuestion,
     choices: [
       ...templateQuestion.choices,
@@ -76,9 +70,12 @@ async function addTemplate(projectPath?: string) {
       })),
     ],
   };
+}
 
+async function addTemplate(projectPath?: string) {
+  const templateQuestion = await getTemplateQuestion();
   const answers = await inquirer.prompt<ChooseTemplateOption>([
-    templateQuestionWithChoices,
+    templateQuestion,
   ]);
 
   if (answers.templates) {

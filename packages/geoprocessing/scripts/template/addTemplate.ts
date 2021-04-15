@@ -14,15 +14,12 @@ export interface ChooseTemplateOption {
   templates: string[];
 }
 
-export async function getTemplateQuestion() {
-  const templatesPath = path.join(
-    __dirname,
-    "..",
-    "..",
-    "templates",
-    "gp-templates"
-  );
+function getTemplatesPath() {
+  return path.join(__dirname, "..", "..", "templates", "gp-templates");
+}
 
+export async function getTemplateQuestion() {
+  const templatesPath = getTemplatesPath();
   // Extract list of template names and descriptions from bundles
   const templateNames = await fs.readdir(templatesPath);
 
@@ -122,6 +119,7 @@ export async function copyTemplates(
     process.exit();
   }
 
+  const templatesPath = getTemplatesPath();
   for (const templateName of names) {
     // Find template
     const templatePath = path.join(templatesPath, templateName);
@@ -157,6 +155,7 @@ export async function copyTemplates(
     );
 
     // Copy file assets, but only if there is something to copy. Creates directories first as needed
+    // Note that fs.copy will copy everything inside of the src directory, not the entire directory itself
     try {
       if (!fs.existsSync(path.join(projectPath, "src"))) {
         fs.mkdirSync(path.join(projectPath, "src"));
@@ -182,28 +181,40 @@ export async function copyTemplates(
         );
       }
 
+      // Copy examples without test outputs, let the user generate them
       if (fs.existsSync(path.join(templatePath, "examples"))) {
         if (!fs.existsSync(path.join(projectPath, "examples"))) {
           fs.mkdirSync(path.join(projectPath, "examples"));
         }
-        if (!fs.existsSync(path.join(projectPath, "examples", "sketches"))) {
-          fs.mkdirSync(path.join(projectPath, "examples", "sketches"));
-        }
-        if (!fs.existsSync(path.join(projectPath, "examples", "features"))) {
-          fs.mkdirSync(path.join(projectPath, "examples", "features"));
+
+        if (fs.existsSync(path.join(templatePath, "examples", "sketches"))) {
+          if (!fs.existsSync(path.join(projectPath, "examples", "sketches"))) {
+            fs.mkdirSync(path.join(projectPath, "examples", "sketches"));
+          }
+          await fs.copy(
+            path.join(templatePath, "examples", "sketches"),
+            path.join(projectPath, "examples", "sketches")
+          );
         }
 
+        if (fs.existsSync(path.join(templatePath, "examples", "features"))) {
+          if (!fs.existsSync(path.join(projectPath, "examples", "features"))) {
+            fs.mkdirSync(path.join(projectPath, "examples", "features"));
+          }
+          await fs.copy(
+            path.join(templatePath, "examples", "features"),
+            path.join(projectPath, "examples", "features")
+          );
+        }
+      }
+
+      if (fs.existsSync(path.join(templatePath, "data"))) {
+        if (!fs.existsSync(path.join(projectPath, "data"))) {
+          fs.mkdirSync(path.join(projectPath, "data"));
+        }
         await fs.copy(
-          path.join(templatePath, "examples"),
-          path.join(projectPath, "examples")
-        );
-        await fs.copy(
-          path.join(templatePath, "examples", "sketches"),
-          path.join(projectPath, "examples", "sketches")
-        );
-        await fs.copy(
-          path.join(templatePath, "examples", "features"),
-          path.join(projectPath, "examples", "features")
+          path.join(templatePath, "data"),
+          path.join(projectPath, "data")
         );
       }
     } catch (err) {
@@ -236,11 +247,6 @@ export async function copyTemplates(
     fs.writeFileSync(
       path.join(projectPath, "geoprocessing.json"),
       JSON.stringify(geoprocessingJSON, null, "  ")
-    );
-
-    await fs.copy(
-      path.join(templatePath, "data"),
-      path.join(projectPath, "data")
     );
 
     spinner.succeed(`added template ${templateName}`);

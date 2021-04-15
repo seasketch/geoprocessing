@@ -246,7 +246,7 @@ async function makeProject(
 
   // Install dependencies including adding GP.
   if (interactive) {
-    spinner.start("installing dependencies with npm" + ": " + metadata.name);
+    spinner.start("installing dependencies with npm");
     const gpPkgString = gpVersion
       ? gpVersion
       : `@seasketch/geoprocessing@${curGpVersion}`;

@@ -14,14 +14,6 @@ export interface ChooseTemplateOption {
   templates: string[];
 }
 
-const templatesPath = path.join(
-  __dirname,
-  "..",
-  "..",
-  "templates",
-  "gp-templates"
-);
-
 export const templateQuestion = {
   type: "checkbox",
   name: "templates",
@@ -31,6 +23,19 @@ export const templateQuestion = {
 };
 
 async function addTemplate(projectPath?: string) {
+  const templatesPath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "templates",
+    "gp-templates"
+  );
+
+  console.log("__dirname", __dirname);
+  console.log("cwd", process.cwd());
+  console.log("project path:", projectPath);
+  console.log("template path:", templatesPath);
+
   // Extract list of template names and descriptions from bundles
   const templateNames = await fs.readdir(templatesPath);
 

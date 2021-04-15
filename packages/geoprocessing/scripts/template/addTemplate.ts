@@ -25,7 +25,8 @@ const templatesPath = path.join(
 export const templateQuestion = {
   type: "checkbox",
   name: "templates",
-  message: "What templates would you like to install?",
+  message:
+    "What templates would you like to install? (you can always add them later)",
   choices: [],
 };
 

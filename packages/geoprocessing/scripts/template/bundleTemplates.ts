@@ -16,6 +16,11 @@ const distTemplatesPath = path.join(distPath, "templates", "gp-templates");
 // console.log("distTemplatesPath", distTemplatesPath);
 
 async function bundleTemplates() {
+  // Delete old template bundles if they exist
+  if (fs.existsSync(path.join(distTemplatesPath))) {
+    fs.rmdirSync(distTemplatesPath, { recursive: true });
+  }
+
   if (!fs.existsSync(path.join(distPath, "templates"))) {
     fs.mkdirSync(path.join(distPath, "templates"));
   }

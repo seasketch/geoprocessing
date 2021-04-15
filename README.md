@@ -1,12 +1,8 @@
 # @seasketch/geoprocessing
 
-[SeaSketch](https://seasketch.org) is a marine spatial planning tool focused on collaborative design. An important component of the SeaSketch design process is the continuous evaluation of user-designed zones (sketches) against science based criteria. These may take the forms of reports on habitats represented in the area, economic impacts of fisheries closures, or distance to significant landmarks like ports. This geoprocessing framework enables developers to create these reports and integrate them with SeaSketch using open-source tools.
+A framework to create, combine, and publish geoprocessing `functions`, `datasources` and `client` reports for use in spatial planning tools.
 
-## Quickstart
-
-* `npm install` - installs dependencies and runs postinstall scripts for all packages using `lerna bootstrap`
-* `npm test` - runs test suite for all packages
-* `npm run clean` - clean up build artifacts by recursively removing files and directories not under version control including git ignored files.
+Geoprocessing projects are designed to integrate with the [Seasketch](https://seasketch.org/) marine spatial planning platform, supporting continuous evaluation of user-designed planning areas (sketches) against science-based criteria.
 
 ## System components
 
@@ -31,17 +27,34 @@ Each geoprocessing project you create may contain multiple data preparation rout
 
 ## Templates
 
+Templates are bite-sized bundles that can be installed into your project to get you going quickly.  Dependening on their purpose they may include data prep scripts, geoprocessing functions, and report clients.
+
+After creating your project you can add templates at any time by running:
+```sh
+geoprocessing add:template
+```
+
+This will copy template files directly into your project.  If there happens to be a naming collision, for example if you attempt to install a template twice, then you will get an error and the installation will stop.
+
 Available templates include:
-* [`gp-clip`](packages/gp-clip/README.md)
 * [`gp-area`](packages/gp-area/README.md)
+* [`gp-clip-bbox`](packages/gp-clip-bbox/README.md)
+* [`gp-clip-ocean`](packages/gp-clip-ocean/README.md)
 * [`gp-raster-stats`](packages/gp-raster-stats/README.md)
+
+## Upgrading
+
+When you create a geoprocessing project, it will be pinned to a specific version of the geoprocessing library in package.json.  You can update to the latest by running:
+
+```sh
+npm update @seasketch/geoprocessing@latest
+```
+
+You should then run `npm test` and `npm build` to see if anything is broken.  As long as this project is below version 1.0 then there could be breaking changes at any time but it should be limited to minor release increments (0.x) and not point releases (0.x.y).  Consults the [CHANGELOG](CHANGELOG.md) for tips on where to look, and what new features you can now take advantage of.
 
 ## Configuring your editor
 
-
-TODO: add .vscode dir to init script
-
-The first version of @seasketch/geoprocessing support *only* Typescript and having an appropriately setup editor is crutial to taking advantage of this system. It is highly recommended you use [VSCode](https://code.visualstudio.com/). Projects are automatically initialized with settings in `.vscode`, and when prompted you should choose to *Install All* extensions for the best development experience.
+The first version of @seasketch/geoprocessing support *only* Typescript and having an appropriately setup editor is crucial to taking advantage of this system. It is highly recommended you use [VSCode](https://code.visualstudio.com/). Projects are automatically initialized with settings in `.vscode`, and when prompted you should choose to *Install All* extensions for the best development experience.
 
 ## Populating the project with example inputs
 
@@ -80,9 +93,9 @@ For small datasets there's no need to complicate deployment. GeoJSON encodings o
 import ports from "../../data/dist/ports.json"; // 12kB
 ```
 
-When building lambda functions the system will warn when the bundle size reaches 500kB and that threshold can be reached very quickly. Exceeding these guidelines means increasingly slower cold-starts. Cold starts occur when the AWS Lambda system starts a new Lambda instance rather than reusing one already in memory and ready to go. With even a 30mb file this can take longer than 10 seconds.
+When building lambda functions, the system will warn when the bundle size exceeds 500kB and that threshold can be reached very quickly. Exceeding these guidelines may mean increasingly slower cold-starts.  The limit may be closer to multiple megabytes now. Cold starts occur when the AWS Lambda system starts a new Lambda instance rather than reusing one already in memory and ready to go. With even a 30mb file this can take longer than 10 seconds.
 
-The solution for large datasets is to subdivide them into reasonably sized chunks stored in network storage (s3), create an spatial index of bundle locations, and then have Lambda functions load just the subset of the data they need for analysis in a particular region. The `geoprocessing bundle-features` command can be used to create such features. An example of this process can be [found here](https://github.com/mcclintock-lab/protected-seas/blob/master/data/prep-data.sh). Geoprocessing function handlers can then use these data services by creating a new `VectorDataSource`, as [shown here](https://github.com/mcclintock-lab/protected-seas/blob/master/src/functions/levelOfProtection.ts#L84). Instances of `VectorDataSource` can efficienctly fetch files for a bounding box and even cache them for use in requests for nearby regions.
+The solution for large datasets is to subdivide them into reasonably sized chunks stored in network storage (s3), create an spatial index of bundle locations, and then have Lambda functions load just the subset of the data they need for analysis in a particular region. Geoprocessing function handlers can then use these data services by creating a new `VectorDataSource`.  Instances of `VectorDataSource` can efficienctly fetch files for a bounding box and even cache them for use in requests for nearby regions.
 
 ![subdivision process](https://user-images.githubusercontent.com/511063/79161015-a0375e80-7d8f-11ea-87a9-0658777f2f90.jpg)
 
@@ -134,9 +147,15 @@ You will need the url shown after deploying the project, or need to retrieve it 
 
 ![sketch class admin screenshot](https://user-images.githubusercontent.com/511063/79162748-a7ac3700-7d92-11ea-9f30-2272fea15299.png)
 
-# Contributing to the library
+# Contributing
 
 To contribute to @seasketch/geoprocessing please create a new branch for feature work and a pull request when ready to merge into master. Setting up your development environment as detailed below will make for a smoother process.
+
+## Quickstart
+
+* `npm install` - installs dependencies and runs postinstall scripts for all packages using `lerna bootstrap`
+* `npm test` - runs test suite for all packages
+* `npm run clean` - clean up build artifacts by recursively removing files and directories not under version control including git ignored files.
 
 ## Installation
 

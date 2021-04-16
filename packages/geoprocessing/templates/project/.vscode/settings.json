@@ -20,11 +20,6 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "files.exclude": {
-    "**/dist/**": true,
-    "**/cdk.out": true,
-    "**/.build": true
-  },
   "files.associations": { "*.geojson": "json"},
   "json.schemas": [
     {

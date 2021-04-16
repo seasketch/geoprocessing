@@ -138,10 +138,11 @@ async function bundleTemplates() {
         );
       }
 
+      // Rename file so npm pack doesn't exclude it.
       if (fs.existsSync(path.join(templatePath, ".gitignore"))) {
         await fs.copy(
           path.join(templatePath, ".gitignore"),
-          path.join(distTemplatePath, ".gitignore")
+          path.join(distTemplatePath, "_gitignore")
         );
       }
     }

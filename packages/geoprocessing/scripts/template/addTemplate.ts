@@ -77,7 +77,11 @@ async function addTemplate(projectPath?: string) {
 
   if (answers.templates) {
     try {
-      await copyTemplates(answers.templates);
+      if (answers.templates.length > 0) {
+        await copyTemplates(answers.templates);
+      } else {
+        return;
+      }
     } catch (error) {
       console.error(error);
       process.exit();
@@ -111,6 +115,11 @@ export async function copyTemplates(
         succeed: () => false,
         fail: () => false,
       };
+
+  if (!names || names.length === 0) {
+    spinner.succeed("No templates selected, skipping");
+    return;
+  }
 
   if (!fs.existsSync(path.join(projectPath, "package.json"))) {
     spinner.fail(
@@ -218,11 +227,11 @@ export async function copyTemplates(
         );
       }
 
-      // Merge .gitignore, startingw with line 4
-      if (fs.existsSync(path.join(templatePath, ".gitignore"))) {
+      // Merge .gitignore, starting with line 4
+      if (fs.existsSync(path.join(templatePath, "_gitignore"))) {
         // Convert to array of lines
         const tplIgnoreArray = fs
-          .readFileSync(path.join(templatePath, ".gitignore"))
+          .readFileSync(path.join(templatePath, "_gitignore"))
           .toString()
           .split("\n");
         if (tplIgnoreArray.length > 3) {
@@ -230,7 +239,7 @@ export async function copyTemplates(
           const tplIgnoreLines = tplIgnoreArray
             .slice(3)
             .reduce<string>((acc, line) => {
-              return acc.concat(line + "\n");
+              return line.length > 0 ? acc.concat(line + "\n") : "";
             }, "\n");
           fs.appendFile(path.join(projectPath, ".gitignore"), tplIgnoreLines);
         }

@@ -7,6 +7,7 @@ import autocomplete from "inquirer-autocomplete-prompt";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
+import { join } from "path";
 //@ts-ignore
 import awsRegions from "aws-regions";
 import util from "util";
@@ -166,7 +167,12 @@ async function makeProject(
   } = metadata;
   const spinner = interactive
     ? ora("Creating new project").start()
-    : { start: () => false, stop: () => false, succeed: () => false };
+    : {
+        start: () => false,
+        stop: () => false,
+        succeed: () => false,
+        fail: () => false,
+      };
   const path = `${basePath ? basePath + "/" : ""}${metadata.name}`;
   spinner.start(`creating ${path}`);
   await fs.mkdir(path);
@@ -184,6 +190,7 @@ async function makeProject(
   ).version;
 
   await fs.copy(templatePath, path);
+
   spinner.succeed("copied base files");
   spinner.start("updating package.json with provided details");
   const packageJSON: Package = {
@@ -224,6 +231,15 @@ async function makeProject(
   );
   spinner.succeed("created geoprocessing.json");
 
+  spinner.start("add .gitignore");
+  try {
+    await fs.move(join(path, "_gitignore"), join(path, ".gitignore")); // Move _gitignore to .gitignore
+    spinner.succeed("added .gitignore");
+  } catch (error) {
+    spinner.fail(".gitignore add failed");
+    console.error(error);
+  }
+
   const readmePath = `${path}/data/README.md`;
   const readmeContents = await fs.readFile(readmePath);
   await fs.writeFile(
@@ -237,7 +253,7 @@ async function makeProject(
   await fs.mkdir(`${path}/data/src`);
   await fs.mkdir(`${path}/data/dist`);
 
-  if (metadata.templates) {
+  if (metadata.templates.length > 0) {
     copyTemplates(metadata.templates, {
       skipInstall: true,
       projectPath: `./${metadata.name}`,

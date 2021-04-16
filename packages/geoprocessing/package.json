@@ -12,8 +12,8 @@
   "scripts": {
     "test": "jest",
     "storybook": "start-storybook",
-    "prepare": "tsc && npm run _bundle-templates && cd scripts && tsc",
-    "_bundle-templates": "npx ts-node scripts/template/bundleTemplates",
+    "prepare": "tsc && npm run _prepare && cd scripts && tsc",
+    "_prepare": "npx ts-node scripts/npm/prepare",
     "watch": "npx tsc --watch",
     "watch:scripts": "npx tsc --build scripts/tsconfig.json --watch"
   },

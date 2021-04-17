@@ -20,7 +20,7 @@ describe("Basic smoke tests", () => {
       const result = await rasterSum(example);
       expect(result).toBeTruthy();
       writeResultOutput(result, "rasterSum", example.properties.name);
-      expect(result.area[0]).toBeGreaterThanOrEqual(0);
+      expect(result.sum).toBeGreaterThanOrEqual(0);
     }
   });
 });

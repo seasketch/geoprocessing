@@ -14,9 +14,7 @@ describe("Unit tests", () => {
   test("rasterSumTest", async () => {
     const examples = await getExampleSketches();
     for (let example of examples) {
-      console.log(example.properties.name);
       const result = await rasterSum(example);
-      console.log("result: ", result);
     }
   }, 60000);
 });

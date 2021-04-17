@@ -24,9 +24,9 @@ describe("Basic smoke tests", () => {
           result.geometry.type === "Polygon" ||
             result.geometry.type === "MultiPolygon"
         );
-        writeResultOutput(result, "clipToOceanEez", example.properties.name);
+        writeResultOutput(result, "clipToOceanEez", example?.properties?.name);
       } catch (e) {
-        console.log("error", example.properties.name, e);
+        console.log("error", example?.properties?.name, e);
         if (e instanceof ValidationError) {
           // ValidationErrors don't indicate failures, just comprehensive tests
         } else {

@@ -13,29 +13,35 @@ const rasterUrl =
 
 export interface RasterSumResults {
   /** area of the sketch in square meters */
-  area: number;
+  sum: number;
 }
 
 async function rasterSum(
   sketch: Sketch | SketchCollection
 ): Promise<RasterSumResults> {
-  let rasterSum: number = -3.0;
-  let raster: any;
+  const raster = await loadRaster(rasterUrl);
+  let rasterSum = 0;
   if (isCollection(sketch)) {
-    //await Promise.all((sumTotal += ));
+    const sums = await Promise.all(
+      sketch.features.map(async (f) => {
+        const sum = (await geoblaze.sum(raster, f))[0];
+        return sum;
+      })
+    );
+    return {
+      sum: sums.reduce((totalSum, sketchSum) => {
+        return totalSum + sketchSum;
+      }, 0),
+    };
   } else {
-    rasterSum = await sumRaster(sketch);
+    return {
+      sum: (await geoblaze.sum(raster, sketch))[0],
+    };
   }
-  return {
-    area: rasterSum,
-  };
 }
 
-async function sumRaster(sketch: Sketch): Promise<number> {
-  let georaster = await geoblaze.load(rasterUrl);
-  const sum = await geoblaze.sum(georaster, sketch.geometry);
-  // const sum = await getRasterSumInSketch(exampleRaster, sketch);
-  return sum;
+function loadRaster(url: string): Promise<object> {
+  return geoblaze.load(rasterUrl);
 }
 
 export default new GeoprocessingHandler(rasterSum, {

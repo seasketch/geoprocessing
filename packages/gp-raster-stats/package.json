@@ -14,12 +14,13 @@
     "@seasketch/geoprocessing",
     "template"
   ],
-  "devDependencies": {
-    "@seasketch/geoprocessing": "0.11.1",
+  "dependencies": {
     "geoblaze": "^0.2.6",
     "georaster": "^1.1.0",
     "geotiff": "^1.0.0-beta.13",
     "tiny-worker": "^2.3.0"
   },
-  "dependencies": {}
+  "devDependencies": {
+    "@seasketch/geoprocessing": "0.11.1"
+  }
 }

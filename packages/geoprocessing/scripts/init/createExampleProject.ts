@@ -25,12 +25,11 @@ const PATH = `packages/example-project`;
       license: "UNLICENSED",
       organization: "SeaSketch",
       repositoryUrl: "https://github.com/seasketch/example-project",
-      region: "us-west-1"
+      region: "us-west-1",
+      templates: [],
     },
     false,
-    PATH.split("/")
-      .slice(0, -1)
-      .join("/")
+    PATH.split("/").slice(0, -1).join("/")
   );
   await makeGeoprocessingHandler(
     {
@@ -38,7 +37,7 @@ const PATH = `packages/example-project`;
       typescript: true,
       description: "Produces the area of the given sketch",
       docker: false,
-      executionMode: "sync"
+      executionMode: "sync",
     },
     false,
     PATH + "/"
@@ -51,7 +50,7 @@ const PATH = `packages/example-project`;
     {
       title: "AreaClient",
       description: "My client description",
-      typescript: true
+      typescript: true,
     },
     false,
     PATH + "/"

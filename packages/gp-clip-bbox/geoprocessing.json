@@ -1,0 +1,9 @@
+{
+  "author": "Tim Welch <support@seasketch.org>",
+  "organization": "SeaSketch",
+  "region": "us-west-2",
+  "functions": [
+    "src/functions/clipToBounds.ts"
+  ],
+  "clients": []
+}

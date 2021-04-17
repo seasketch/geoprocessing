@@ -12,7 +12,8 @@
   "scripts": {
     "test": "jest",
     "storybook": "start-storybook",
-    "prepare": "tsc && cd scripts && tsc",
+    "prepare": "tsc && npm run _prepare && cd scripts && tsc",
+    "_prepare": "npx ts-node scripts/npm/prepare",
     "watch": "npx tsc --watch",
     "watch:scripts": "npx tsc --build scripts/tsconfig.json --watch"
   },
@@ -52,6 +53,7 @@
     "@babel/preset-typescript": "^7.9.0",
     "@babel/register": "^7.9.0",
     "@popperjs/core": "^2.9.1",
+    "@shelf/jest-dynamodb": "^1.7.0",
     "@storybook/preset-typescript": "^3.0.0",
     "@storybook/react": "^5.3.18",
     "@styled-icons/boxicons-solid": "^10.6.0",
@@ -117,8 +119,11 @@
     "humanize-duration": "^3.22.0",
     "inquirer": "^7.1.0",
     "inquirer-autocomplete-prompt": "^1.0.2",
+    "jest": "^26.4.2",
+    "jest-dynalite": "^1.1.9",
     "jest-runner": "^26.4.2",
     "jest-runner-groups": "^2.0.1",
+    "jest-websocket-mock": "^2.0.2",
     "json2csv": "^5.0.6",
     "martinez-polygon-clipping": "^0.7.0",
     "mnemonist": "^0.36.1",
@@ -127,6 +132,7 @@
     "ora": "^4.0.4",
     "pascalcase": "^1.0.0",
     "pbf": "^3.2.1",
+    "polygon-clipping": "^0.15.2",
     "pretty-bytes": "^5.3.0",
     "rbush": "^3.0.1",
     "react": "^16.13.1",
@@ -153,12 +159,9 @@
     "ws": "^7.3.0"
   },
   "devDependencies": {
-    "@shelf/jest-dynamodb": "^1.7.0",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^26.4.2",
-    "jest-dynalite": "^1.1.9",
-    "jest-websocket-mock": "^2.0.2",
-    "mock-socket": "^9.0.3"
+    "mock-socket": "^9.0.3",
+    "ts-node": "^9.1.1"
   },
   "gitHead": "971818d0dde78cf50a5d33629b4cb7b7780ddae6",
   "optionalDependencies": {

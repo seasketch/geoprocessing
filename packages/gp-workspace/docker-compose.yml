@@ -1,0 +1,17 @@
+version: '3'
+services:
+  db:
+    image: seasketch/geoprocessing-db
+    ports:
+      - "54320:5432"
+  workspace:
+    image: seasketch/geoprocessing-workspace
+    environment:
+      PGHOST: "db"
+      PGUSER: "docker"
+      PGPASSWORD: "docker"
+      PGDATABASE: "gis"
+    volumes:
+      - $HOME/.aws/credentials:/root/.aws/credentials:ro
+    working_dir: /project/data
+    command: ["bash"]

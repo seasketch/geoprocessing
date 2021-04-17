@@ -7,78 +7,96 @@ import autocomplete from "inquirer-autocomplete-prompt";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
+import { join } from "path";
 //@ts-ignore
 import awsRegions from "aws-regions";
 import util from "util";
+import {
+  ChooseTemplateOption,
+  getTemplateQuestion,
+  copyTemplates,
+} from "../template/addTemplate";
 const exec = util.promisify(require("child_process").exec);
 
-//@ts-ignore
-const regions = awsRegions.list({ public: true }).map(v => v.code);
+const regions = awsRegions.list({ public: true }).map((v) => v.code);
 
 inquirer.registerPrompt("autocomplete", autocomplete);
 const licenseDefaults = ["MIT", "UNLICENSED", "BSD-3-Clause", "APACHE-2.0"];
 const allLicenseOptions = [...licenses, "UNLICENSED"];
 
-async function init() {
+interface CreateProjectMetadata extends ChooseTemplateOption {
+  name: string;
+  description: string;
+  author: string;
+  email?: string;
+  organization?: string;
+  license: string;
+  repositoryUrl: string;
+  region: string;
+  gpVersion?: string;
+}
+
+async function init(gpVersion?: string) {
   const userMeta = require("user-meta");
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
-  const packageAnswers = await inquirer.prompt([
+  const templateQuestion = await getTemplateQuestion();
+  const packageAnswers = await inquirer.prompt<CreateProjectMetadata>([
     /* Pass your questions in here */
     {
       type: "input",
       name: "name",
       message: "Choose a name for your project",
-      validate: value => {
+      validate: (value) => {
         if (/^[a-z\-]+$/.test(value)) {
           return true;
         } else {
           return "Input must be lowercase and contain no spaces";
         }
-      }
+      },
     },
     {
       type: "input",
       name: "description",
-      message: "Please provide a short description of this project"
+      message: "Please provide a short description of this project",
     },
     {
       type: "input",
       name: "repositoryUrl",
       message: "Source code repository location",
-      validate: value =>
+      validate: (value) =>
         value === "" ||
         value === null ||
         /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm.test(
           value
         )
           ? true
-          : "Must be a valid url"
+          : "Must be a valid url",
     },
     {
       type: "input",
       name: "author",
       message: "Your name",
       default: defaultName,
-      validate: value =>
+      validate: (value) =>
         /\w+/.test(value)
           ? true
-          : "Please provide a name for use in your package.json file"
+          : "Please provide a name for use in your package.json file",
     },
     {
       type: "input",
       name: "email",
       message: "Your email",
       default: defaultEmail,
-      validate: value =>
+      validate: (value) =>
         /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/g.test(value)
           ? true
-          : "Please provide a valid email for use in your package.json file"
+          : "Please provide a valid email for use in your package.json file",
     },
     {
       type: "input",
       name: "organization",
-      message: "Organization name (optional)"
+      message: "Organization name (optional)",
     },
     {
       type: "autocomplete",
@@ -87,11 +105,11 @@ async function init() {
       default: "MIT",
       source: async (answersSoFar: any, value: string) => {
         if (value) {
-          return fuzzy.filter(value, allLicenseOptions).map(v => v.original);
+          return fuzzy.filter(value, allLicenseOptions).map((v) => v.original);
         } else {
           return licenseDefaults;
         }
-      }
+      },
     },
     {
       type: "autocomplete",
@@ -100,13 +118,16 @@ async function init() {
       default: "us-west-1",
       source: async (answersSoFar: any, value: string) => {
         if (value) {
-          return fuzzy.filter(value, regions).map(v => v);
+          return fuzzy.filter(value, regions).map((v) => v);
         } else {
           return regions;
         }
-      }
-    }
+      },
+    },
+    templateQuestion,
   ]);
+
+  packageAnswers.gpVersion = gpVersion;
 
   await makeProject(packageAnswers);
 }
@@ -115,7 +136,7 @@ if (require.main === module) {
   init();
 }
 
-interface Package {
+export interface Package {
   name: string;
   description: string;
   author: string;
@@ -128,39 +149,49 @@ interface Package {
     type: "git";
     url: string;
   };
-}
-
-interface ProjectMetadataOptions {
-  name: string;
-  description: string;
-  author: string;
-  email?: string;
-  organization?: string;
-  license: string;
-  repositoryUrl: string;
-  region: string;
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
 }
 
 async function makeProject(
-  metadata: ProjectMetadataOptions,
+  metadata: CreateProjectMetadata,
   interactive = true,
   basePath = ""
 ) {
-  const { organization, region, email, ...packageJSONOptions } = metadata;
+  const {
+    organization,
+    region,
+    email,
+    gpVersion,
+    ...packageJSONOptions
+  } = metadata;
   const spinner = interactive
     ? ora("Creating new project").start()
-    : { start: () => false, stop: () => false, succeed: () => false };
+    : {
+        start: () => false,
+        stop: () => false,
+        succeed: () => false,
+        fail: () => false,
+      };
   const path = `${basePath ? basePath + "/" : ""}${metadata.name}`;
   spinner.start(`creating ${path}`);
   await fs.mkdir(path);
   spinner.succeed(`created ${path}/`);
   spinner.start("copying template");
 
-  const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../../templates/project`
-    : `${__dirname}/../templates/project`;
+  const gpPath = /dist/.test(__dirname)
+    ? `${__dirname}/../../..`
+    : `${__dirname}/..`;
+  const templatePath = `${gpPath}/templates/project`;
+
+  // Get version of geoprocessing currently running
+  const curGpVersion: Package = JSON.parse(
+    fs.readFileSync(`${gpPath}/package.json`).toString()
+  ).version;
+
   await fs.copy(templatePath, path);
-  spinner.succeed("copied template");
+
+  spinner.succeed("copied base files");
   spinner.start("updating package.json with provided details");
   const packageJSON: Package = {
     ...JSON.parse(fs.readFileSync(`${templatePath}/package.json`).toString()),
@@ -170,14 +201,14 @@ async function makeProject(
       ? {
           repository: {
             type: "git",
-            url: "git+" + metadata.repositoryUrl + ".git"
+            url: "git+" + metadata.repositoryUrl + ".git",
           },
           homepage: metadata.repositoryUrl + "#readme",
           bugs: {
-            url: metadata.repositoryUrl + "/issues"
-          }
+            url: metadata.repositoryUrl + "/issues",
+          },
         }
-      : {})
+      : {}),
   };
   await fs.writeFile(
     `${path}/package.json`,
@@ -192,37 +223,22 @@ async function makeProject(
       {
         author,
         organization: organization || "",
-        region
+        region,
       },
       null,
       "  "
     )
   );
   spinner.succeed("created geoprocessing.json");
-  spinner.start("updating Dockerfile");
-  const dockerfilePath = `${path}/data/Dockerfile`;
-  const dockerfileContents = await fs.readFile(dockerfilePath);
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  await fs.writeFile(
-    dockerfilePath,
-    dockerfileContents
-      .toString()
-      .replace("Chad Burt <chad@underbluewaters.net>", author)
-      .replace("America/Los_Angeles", tz)
-  );
-  const composePath = `${path}/data/docker-compose.yml`;
-  const composeContents = await fs.readFile(composePath);
-  await fs.writeFile(
-    composePath,
-    composeContents.toString().replace(/project-name/g, metadata.name)
-  );
-  await fs.writeFile(
-    `${path}/data/.env`,
-    `# setting a project name ensures docker won't confuse db and workspace 
-# containers across multiple geoprocessing projects on the same host
-COMPOSE_PROJECT_NAME=${metadata.name}`
-  );
-  spinner.succeed("updated Dockerfile");
+
+  spinner.start("add .gitignore");
+  try {
+    await fs.move(join(path, "_gitignore"), join(path, ".gitignore")); // Move _gitignore to .gitignore
+    spinner.succeed("added .gitignore");
+  } catch (error) {
+    spinner.fail(".gitignore add failed");
+    console.error(error);
+  }
 
   const readmePath = `${path}/data/README.md`;
   const readmeContents = await fs.readFile(readmePath);
@@ -236,12 +252,24 @@ COMPOSE_PROJECT_NAME=${metadata.name}`
   );
   await fs.mkdir(`${path}/data/src`);
   await fs.mkdir(`${path}/data/dist`);
+
+  if (metadata.templates.length > 0) {
+    copyTemplates(metadata.templates, {
+      skipInstall: true,
+      projectPath: `./${metadata.name}`,
+    });
+  }
+
+  // Install dependencies including adding GP.
   if (interactive) {
     spinner.start("installing dependencies with npm");
+    const gpPkgString = gpVersion
+      ? gpVersion
+      : `@seasketch/geoprocessing@${curGpVersion}`;
     const { stderr, stdout, error } = await exec(
-      "npm install --save-dev @seasketch/geoprocessing@latest",
+      `npm install --save-dev ${gpPkgString}`,
       {
-        cwd: metadata.name
+        cwd: metadata.name,
       }
     );
     if (error) {

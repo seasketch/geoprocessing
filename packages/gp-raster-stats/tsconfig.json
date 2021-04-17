@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.template.json",
+  "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@seasketch/geoprocessing/node_modules/@types",
+    ],
+  },
+}

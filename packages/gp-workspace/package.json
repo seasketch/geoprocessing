@@ -1,0 +1,6 @@
+{
+  "name": "@seasketch/gp-workspace",
+  "version": "0.11.1",
+  "private": true,
+  "description": "geoprocessing docker workspace foundation"
+}

@@ -11,8 +11,10 @@ import {
 } from "geojson";
 import RBush from "rbush";
 import bbox from "@turf/bbox";
+import { featureCollection as fc } from "@turf/helpers";
 import isHostedOnLambda from "./isHostedOnLambda";
 import "./fetchPolyfill";
+import { union } from "union-subdivided-polygons";
 
 // import { recombineTree } from "./recombine";
 
@@ -131,7 +133,7 @@ class RBushIndex extends RBush<Feature> {
   }
 }
 
-export class VectorDataSource<T> {
+export class VectorDataSource<T extends Feature> {
   options: VectorDataSourceOptions;
   metadata?: DataSourceMetadata;
   private url: string;
@@ -441,8 +443,12 @@ export class VectorDataSource<T> {
     });
   }
 
-  async fetch(bbox: BBox, unionSubdividedFeatures = true): Promise<T[]> {
-    // debug(`fetch call ${bbox[0]}, ${bbox[1]}, ${bbox[2]}, ${bbox[3]}`);
+  /**
+   * Fetches bundles of features within bbox
+   * @param bbox
+   * @returns
+   */
+  async fetch(bbox: BBox): Promise<T[]> {
     let bundleIds = await this.identifyBundles(bbox);
     this.cancelLowPriorityRequests(bundleIds);
     if (isHostedOnLambda) {
@@ -458,46 +464,40 @@ export class VectorDataSource<T> {
     }
     // console.time("retrieval and processing");
     // debug(`Searching index`, bbox);
-    return (this.tree.search({
+
+    let features = (this.tree.search({
       minX: bbox[0],
       minY: bbox[1],
       maxX: bbox[2],
       maxY: bbox[3],
     }) as unknown) as T[];
-    // debug(`${[...this.pendingRequests.keys()].length} pending requests`);
-    // let trees = undefined;
-    // const collection = {
-    //   type: "FeatureCollection",
-    //   features
-    // } as FeatureCollection;
-    // if (unionSubdividedFeatures) {
-    //   const subdividedFeatures = [];
-    //   const smallFeatures = [];
-    //   for (const feature of features) {
-    //     if (feature.properties && feature.properties._ancestors) {
-    //       subdividedFeatures.push(feature);
-    //     } else {
-    //       smallFeatures.push(feature);
-    //     }
-    //   }
-    //   trees = this.buildTrees(subdividedFeatures);
-    //   console.timeEnd("fetch");
-    //   // trees.map(tree => recombineTree(tree));
-    //   console.time("recombine");
-    //   collection.features = [
-    //     ...smallFeatures,
-    //     ...trees.map(tree => recombineTree(tree, this.needsRewinding))
-    //   ];
-    //   console.timeEnd("recombine");
-    // }
-    // console.log(JSON.stringify(collection));
-    // console.timeEnd("retrieval and processing");
-    // fs.writeFileSync(
-    //   "/Users/cburt/Downloads/output2.json",
-    //   JSON.stringify({ collection, trees })
-    // );
-    // fs.writeFileSync("./output/output.geojson", JSON.stringify(collection));
-    // return features;
+
+    // remove extra with overlap test since bundles sometimes aren't entirely well packed
+    const a = bbox;
+    return features.filter((feature) => {
+      const b = bbox;
+      return a[2] >= b[0] && b[2] >= a[0] && a[3] >= b[1] && b[3] >= a[1];
+    });
+  }
+
+  /**
+   * Fetches bundles of subdivided Polygon or MultiPolygon features within bbox and merges
+   * them back into their original features.  Merge performance is faster if passed an
+   * additional unionProperty, a property that exists in each subdivided feature.
+   */
+  async fetchUnion(
+    bbox: BBox,
+    unionProperty?: string
+  ): Promise<FeatureCollection<T["geometry"], T["properties"]>> {
+    const features = await this.fetch(bbox);
+    if (features.length !== 0) {
+      return union(
+        fc((features as unknown) as Feature<Polygon | MultiPolygon>[]),
+        unionProperty || undefined
+      );
+    } else {
+      return fc([]);
+    }
   }
 
   private buildTrees(features: Feature[]): FeatureTree[] {

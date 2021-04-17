@@ -1,0 +1,24 @@
+{
+  "name": "@seasketch/gp-area",
+  "version": "0.11.1",
+  "description": "calculate area stats for feature",
+  "author": "Tim Welch",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "test": "geoprocessing test",
+    "storybook": "geoprocessing storybook"
+  },
+  "keywords": [
+    "@seasketch/geoprocessing",
+    "template"
+  ],
+  "devDependencies": {
+    "@seasketch/geoprocessing": "0.11.1"
+  },
+  "dependencies": {
+    "@turf/bbox": "^6.0.1",
+    "@turf/helpers": "^6.1.4"
+  }
+}

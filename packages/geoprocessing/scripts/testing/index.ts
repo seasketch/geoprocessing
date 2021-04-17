@@ -1,7 +1,14 @@
 import fs from "fs-extra";
 import { Sketch, SketchCollection } from "../../src/types";
-import { Feature, Geometry } from "geojson";
+import { Feature } from "geojson";
 import path from "path";
+
+interface SketchMap {
+  [name: string]: Sketch | SketchCollection;
+}
+interface FeatureMap {
+  [name: string]: Feature;
+}
 
 /** Reads sketches from examples/sketches for testing. Run from project root */
 export async function getExampleSketches(): Promise<
@@ -25,13 +32,9 @@ export async function getExampleSketches(): Promise<
 /**
  * Convenience function returns object with sketches keyed by name
  */
-export async function getExampleSketchesByName(): Promise<{
-  [key: string]: Sketch | SketchCollection;
-}> {
+export async function getExampleSketchesByName(): Promise<SketchMap> {
   const sketches = await getExampleSketches();
-  return sketches.reduce<{
-    [key: string]: Sketch | SketchCollection;
-  }>((sketchObject, s) => {
+  return sketches.reduce<SketchMap>((sketchObject, s) => {
     return {
       ...sketchObject,
       [s.properties.name]: s,
@@ -57,10 +60,8 @@ export async function writeResultOutput(
   );
 }
 
-export async function getExampleFeatures(): Promise<
-  Feature<Geometry, { name: string }>[]
-> {
-  const features: Feature<Geometry, { name: string }>[] = [];
+export async function getExampleFeatures() {
+  let features: Feature[] = [];
   if (fs.existsSync("examples/features")) {
     let filenames = await fs.readdir("examples/features");
     await Promise.all(
@@ -75,4 +76,19 @@ export async function getExampleFeatures(): Promise<
     );
   }
   return features;
+}
+
+/**
+ * Convenience function returns object with features keyed by name.  Features without a name will not be included
+ */
+export async function getExampleFeaturesByName(): Promise<FeatureMap> {
+  const features = await getExampleFeatures();
+  return features.reduce<FeatureMap>((featureMap, f) => {
+    return f.properties?.name
+      ? {
+          ...featureMap,
+          [f.properties.name]: f,
+        }
+      : featureMap;
+  }, {});
 }

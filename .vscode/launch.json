@@ -4,6 +4,7 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+
     {
         "name": "geoprocessing - debug tests",
         "type": "node",
@@ -30,17 +31,57 @@
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
   }, {
-    "name": "gp-clip - debug tests",
+    "name": "gp-clip-ocean - debug tests",
     "type": "node",
     "request": "launch",
-    "cwd": "${workspaceFolder}/packages/gp-clip",
+    "cwd": "${workspaceFolder}/packages/gp-clip-ocean",
     "runtimeArgs": [
       "--inspect-brk",
-      "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest"
+      "${workspaceRoot}/packages/gp-clip-ocean/node_modules/.bin/geoprocessing",
+        "test"
     ],
     "console": "integratedTerminal",
     "internalConsoleOptions": "neverOpen",
     "port": 9229        
+}, {
+  "name": "gp-raster-stats - debug tests",
+  "type": "node",
+  "request": "launch",
+  "cwd": "${workspaceFolder}/packages/gp-raster-stats",
+  "runtimeArgs": [
+    "--inspect-brk",
+    "${workspaceRoot}/packages/gp-raster-stats/node_modules/.bin/geoprocessing",
+      "test"
+  ],
+  "console": "integratedTerminal",
+  "internalConsoleOptions": "neverOpen",
+  "port": 9229        
+}, {
+  "name": "gp-area - debug tests",
+  "type": "node",
+  "request": "launch",
+  "cwd": "${workspaceFolder}/packages/gp-area",
+  "runtimeArgs": [
+    "--inspect-brk",
+    "${workspaceRoot}/packages/gp-area/node_modules/.bin/geoprocessing",
+      "test"
+  ],
+  "console": "integratedTerminal",
+  "internalConsoleOptions": "neverOpen",
+  "port": 9229        
+}, {
+  "name": "gp-clip - debug tests",
+  "type": "node",
+  "request": "launch",
+  "cwd": "${workspaceFolder}/packages/gp-clip",
+  "runtimeArgs": [
+    "--inspect-brk",
+    "${workspaceRoot}/packages/gp-clip/node_modules/.bin/geoprocessing",
+      "test"
+  ],
+  "console": "integratedTerminal",
+  "internalConsoleOptions": "neverOpen",
+  "port": 9229        
 }
   ]
 }

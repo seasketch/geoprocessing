@@ -6,7 +6,7 @@
     {
       "name": "RasterStats",
       "description": "Calculates sketch raster stats",
-      "source": "src/clients/AreaClient.tsx"
+      "source": "src/clients/RasterStats.tsx"
     }
   ]
 }

@@ -6,7 +6,7 @@
     {
       "name": "Area",
       "description": "Calculates sketch area stats",
-      "source": "src/clients/AreaClient.tsx"
+      "source": "src/clients/Area.tsx"
     }
   ]
 }

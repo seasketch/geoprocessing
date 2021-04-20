@@ -22,6 +22,9 @@ export { default as DataDownloadToolbar } from "./src/components/DataDownloadToo
 export { default as Dropdown } from "./src/components/Dropdown";
 export { default as DataDownload } from "./src/components/DataDownload";
 
+// Fixes interface export issue with webpack - https://github.com/webpack/webpack/issues/7378#issuecomment-683894656
+export type { FilterSelectTableOptions } from "./src/components/table/FilterSelectTable";
+
 export {
   default as Table,
   TableOptions,
@@ -31,7 +34,6 @@ export {
 } from "./src/components/table/Table";
 export {
   default as FilterSelectTable,
-  FilterSelectTableOptions,
   FilterSelectTableStyled,
 } from "./src/components/table/FilterSelectTable";
 

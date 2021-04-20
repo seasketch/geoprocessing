@@ -8,7 +8,7 @@ const NAME = "dataset-name";
 const PKGNAME = "seasketchgeoprocessing-data-sources";
 const REGION = "us-west-2";
 AWS.config.update({
-  region: REGION
+  region: REGION,
 });
 
 describe("getDataSourceVersion", () => {
@@ -25,13 +25,13 @@ describe("getDataSourceVersion", () => {
     fetchMock.getOnce(
       `https://${PKGNAME}-${NAME}.s3-${REGION}.amazonaws.com/metadata.json`,
       {
-        version: 12
+        version: 14,
       },
       {
-        overwriteRoutes: true
+        overwriteRoutes: true,
       }
     );
     const version = await getDataSourceVersion(NAME);
-    expect(version).toBe(12);
+    expect(version).toBe(14);
   });
 });

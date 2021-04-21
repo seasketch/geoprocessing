@@ -19,7 +19,7 @@ const PATH = `packages/example-project`;
   await makeProject(
     {
       name: "example-project",
-      description: "Example project to test geoprocessing project init scripts",
+      description: "Example project to test geoprocessing project scripts",
       author: "Chad Burt",
       email: "support@seasketch.org",
       license: "UNLICENSED",

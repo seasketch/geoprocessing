@@ -55,7 +55,12 @@ const PATH = `packages/example-project`;
     false,
     PATH + "/"
   );
+
   const pkg = JSON.parse(fs.readFileSync(PATH + "/package.json").toString());
   pkg.private = true;
+  const curGpVersion = JSON.parse(
+    fs.readFileSync(`${__dirname}/../../../package.json`).toString()
+  ).version;
+  pkg.devDependencies["@seasketch/geoprocessing"] = curGpVersion;
   fs.writeFileSync(PATH + "/package.json", JSON.stringify(pkg, null, "  "));
 })();

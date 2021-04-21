@@ -6,7 +6,7 @@ describe("Project metadata settings", () => {
     const packageJson = JSON.parse(fs.readFileSync("package.json").toString());
     expect(packageJson.name).toBe("example-project");
     expect(packageJson.description).toBe(
-      "Example project to test geoprocessing project init scripts"
+      "Example project to test geoprocessing project scripts"
     );
     expect(packageJson.license).toBe("UNLICENSED");
     expect(packageJson.author).toBe("Chad Burt");
@@ -25,7 +25,6 @@ describe("Project metadata settings", () => {
     expect(fs.existsSync("tsconfig.json")).toBeTruthy();
     expect(fs.existsSync(".nvmrc")).toBeTruthy();
     expect(fs.existsSync(".gitignore")).toBeTruthy();
-    expect(fs.existsSync("data/Dockerfile")).toBeTruthy();
     expect(fs.existsSync("data/docker-compose.yml")).toBeTruthy();
     expect(fs.existsSync("examples/sketches/sketch.json")).toBeTruthy();
   });

@@ -1,5 +1,11 @@
 # @seasketch/geoprocessing
 
-The geoprocessing framework allows you to create and publish individual geoprocessing `functions` and accompanying `client` UIs using Amazon S3 and Lambda.  It is designed to integrate with the [Seasketch](https://seasketch.org/) platform supporting continuous evaluation of user-designed planning areas (sketches) against science-based criteria.
+A framework to create, combine, and publish geoprocessing `functions`, `datasources` and `client` reports for use in spatial planning tools.
 
-[Docs](https://github.com/seasketch/geoprocessing#readme)
+Geoprocessing projects are designed to integrate with the [Seasketch](https://seasketch.org/) marine spatial planning platform, supporting continuous evaluation of user-designed planning areas (sketches) against science-based criteria.
+
+[Geoprocessing Docs](https://github.com/seasketch/geoprocessing#readme)
+
+## Versions
+
+This project follows Semantic Versioning. The `latest` version is the most stable. `alpha` versions are canary releases of the dev branch.  They are often undocumented in what new features they contain, and have unresolved bugs or unfinished features.

@@ -8,19 +8,19 @@ export default async (
   statsTable: string,
   connection: DatabasePoolConnectionType
 ) => {
-  statsTable = raw(statsTable);
+  const statsRawTable = raw(statsTable);
   const histogram = await connection.many(sql`
       with byte_stats as (
         select min(bytes) as min,
               max(bytes) as max
-          from ${statsTable}
+          from ${statsRawTable}
       ),
       histogram as (
         select 
           width_bucket(bytes, min, max, 9) as bucket,
           max(bytes) as max_bytes,
           count(*) as freq
-        from ${statsTable}, byte_stats
+        from ${statsRawTable}, byte_stats
         group by bucket
         order by bucket
       )
@@ -35,13 +35,13 @@ export default async (
     `);
   const summary = new Table({
     head: ["bundle size", "frequency"],
-    chars: noTableBorders
+    chars: noTableBorders,
   });
   for (const row of histogram) {
     summary.push([
       bytes(row.max_bytes as number, { decimalPlaces: 0 }),
       row.freq,
-      row.bar
+      row.bar,
     ]);
   }
   return console.log(summary.toString());
@@ -62,5 +62,5 @@ const noTableBorders = {
   "mid-mid": "",
   right: "",
   "right-mid": "",
-  middle: ""
+  middle: "",
 };

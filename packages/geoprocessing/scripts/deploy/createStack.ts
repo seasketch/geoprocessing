@@ -17,6 +17,7 @@ if (!process.env.PROJECT_PATH) {
   throw new Error("PROJECT_PATH env var not specified");
 }
 const PROJECT_PATH = process.env.PROJECT_PATH;
+const NODE_RUNTIME = lambda.Runtime.NODEJS_14_X;
 
 const manifest: Manifest = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json")).toString()
@@ -153,7 +154,7 @@ class GeoprocessingCdkStack extends core.Stack {
     );
 
     const metadataHandler = new lambda.Function(this, "MetadataHandler", {
-      runtime: lambda.Runtime.NODEJS_12_X,
+      runtime: NODE_RUNTIME,
       code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
       handler: "serviceHandlers.projectMetadata",
       environment: {
@@ -251,7 +252,7 @@ class GeoprocessingCdkStack extends core.Stack {
           this,
           `${func.title}AsynchronousHandler`,
           {
-            runtime: lambda.Runtime.NODEJS_12_X,
+            runtime: NODE_RUNTIME,
             code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
 
             handler: filename.replace(/\.js$/, "") + ".handler",
@@ -293,7 +294,7 @@ class GeoprocessingCdkStack extends core.Stack {
       };
 
       const syncHandler = new lambda.Function(this, `${func.title}Handler`, {
-        runtime: lambda.Runtime.NODEJS_12_X,
+        runtime: NODE_RUNTIME,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build")),
         handler: filename.replace(/\.js$/, "") + ".handler",
         functionName: `gp-${manifest.title}-${func.title}`,
@@ -362,7 +363,7 @@ class GeoprocessingCdkStack extends core.Stack {
       this,
       `${projectName}AsyncConnectionHandler`,
       {
-        runtime: lambda.Runtime.NODEJS_12_X,
+        runtime: NODE_RUNTIME,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build/")),
         handler: "connect.connectHandler",
         functionName: projectName + "-Connect",
@@ -378,7 +379,7 @@ class GeoprocessingCdkStack extends core.Stack {
       this,
       `${projectName}AsyncDisconnectHandler`,
       {
-        runtime: lambda.Runtime.NODEJS_12_X,
+        runtime: NODE_RUNTIME,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build/")),
         handler: "disconnect.disconnectHandler",
         functionName: projectName + "-Disconnect",
@@ -500,7 +501,7 @@ class GeoprocessingCdkStack extends core.Stack {
       this,
       `${projectName}AsyncSendHandler2`,
       {
-        runtime: lambda.Runtime.NODEJS_12_X,
+        runtime: NODE_RUNTIME,
         code: lambda.Code.asset(path.join(PROJECT_PATH, ".build/")),
         handler: "sendmessage.sendHandler",
         functionName: projectName + "-SendMessage",

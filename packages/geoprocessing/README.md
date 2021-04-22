@@ -8,4 +8,4 @@ Geoprocessing projects are designed to integrate with the [Seasketch](https://se
 
 ## Versions
 
-This project follows Semantic Versioning. The `latest` version is the most stable. `alpha` versions are canary releases of the dev branch.  They are often undocumented in what new features they contain, and have unresolved bugs or unfinished features.
+This project follows Semantic Versioning. The `latest` version is the most stable. `alpha` versions are early canary releases for testing.  They are likely to have bugs and unfinished features.

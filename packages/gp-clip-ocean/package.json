@@ -28,7 +28,6 @@
     "@turf/combine": "^6.0.1",
     "@turf/flatten": "^5.1.5",
     "@turf/invariant": "^6.1.2",
-    "martinez-polygon-clipping": "^0.7.0",
     "union-subdivided-polygons": "^0.9.1"
   }
 }

@@ -5,7 +5,7 @@ export { default as ReportDecorator } from "./src/components/ReportDecorator";
 export { default as ReportCardDecorator } from "./src/components/ReportCardDecorator";
 
 /* Helpers */
-export { intersect } from "./src/helpers/IntersectHelper";
+export { intersect } from "./src/helpers";
 
 /* Hooks */
 export { default as useSketchProperties } from "./src/hooks/useSketchProperties";

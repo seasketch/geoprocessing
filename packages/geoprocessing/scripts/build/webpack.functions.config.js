@@ -83,6 +83,7 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     modules: [
+      "node_modules", // search per default but add a couple more paths below
       path.resolve(__dirname, "../../node_modules"),
       path.join(PROJECT_PATH, "node_modules"),
     ],

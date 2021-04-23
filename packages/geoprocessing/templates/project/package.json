@@ -8,6 +8,7 @@
     "add:template": "geoprocessing add:template",
     "create:function": "geoprocessing create:function",
     "create:client": "geoprocessing create:client",
+    "start:client": "geoprocessing start:client",
     "bootstrap": "geoprocessing bootstrap",
     "deploy": "geoprocessing deploy",
     "build": "geoprocessing build:lambda && geoprocessing build:client",

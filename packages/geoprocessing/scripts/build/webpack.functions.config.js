@@ -94,15 +94,13 @@ module.exports = {
     maxEntrypointSize: 500000,
     hints: "warning",
   },
-  externals: [
-    function ({ context, request }, callback) {
-      if (externals.indexOf(request) !== -1) {
-        return callback(null, "commonjs " + request);
-      } else {
-        return callback();
-      }
-    },
-  ],
+  externals: function (context, request, callback) {
+    if (externals.indexOf(request) !== -1) {
+      return callback(null, "commonjs " + request);
+    } else {
+      return callback();
+    }
+  },
   module: {
     rules: [
       {

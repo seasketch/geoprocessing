@@ -11,5 +11,5 @@ else
   # production reporting tool
   cd node_modules/@seasketch/geoprocessing
 fi
-npx webpack serve --config scripts/build/webpack.config.js --mode="development"
+npx webpack-dev-server --config scripts/build/webpack.config.js --mode="development"
 echo ""

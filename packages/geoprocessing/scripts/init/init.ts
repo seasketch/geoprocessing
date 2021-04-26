@@ -267,7 +267,7 @@ async function makeProject(
       ? gpVersion
       : `@seasketch/geoprocessing@${curGpVersion}`;
     const { stderr, stdout, error } = await exec(
-      `npm install --save-dev ${gpPkgString}`,
+      `npm install --save-dev --save-exact ${gpPkgString}`,
       {
         cwd: metadata.name,
       }

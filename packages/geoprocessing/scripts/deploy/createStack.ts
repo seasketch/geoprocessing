@@ -17,7 +17,7 @@ if (!process.env.PROJECT_PATH) {
   throw new Error("PROJECT_PATH env var not specified");
 }
 const PROJECT_PATH = process.env.PROJECT_PATH;
-const NODE_RUNTIME = lambda.Runtime.NODEJS_14_X;
+const NODE_RUNTIME = lambda.Runtime.NODEJS_12_X;
 
 const manifest: Manifest = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json")).toString()

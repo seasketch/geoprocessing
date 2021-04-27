@@ -5,7 +5,7 @@ import {
   IdentifierSqlTokenType,
 } from "slonik";
 // @ts-ignore
-import { raw } from "slonik-sql-tag-raw";
+import { raw, PrimitiveValueExpressionType } from "slonik-sql-tag-raw";
 import ora from "ora";
 import inspectTable from "./inspectTable";
 import cliProgress from "cli-progress";
@@ -179,7 +179,7 @@ async function createGeobuf(
   // Get all features with matching ids as a single feature collection, as well
   // as the combined bbox of those features
   const { collection, extent } = await connection.one<{
-    collection: FeatureCollection;
+    collection: PrimitiveValueExpressionType;
     extent: string;
   }>(sql`
     select json_build_object(

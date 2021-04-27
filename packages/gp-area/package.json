@@ -22,7 +22,7 @@
     "@seasketch/geoprocessing": "0.11.1"
   },
   "dependencies": {
-    "@turf/bbox": "^6.0.1",
-    "@turf/helpers": "^6.1.4"
+    "@turf/bbox": "^6.3.0",
+    "@turf/helpers": "^6.3.0"
   }
 }

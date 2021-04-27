@@ -1,6 +1,6 @@
 import AWS from "aws-sdk";
 import { Flatbush } from "flatbush";
-import { sync } from "read-pkg-up";
+import { readPackageUpSync as sync } from "read-pkg-up";
 import slugify from "slugify";
 import fetch from "node-fetch";
 import { CompositeIndexDetails } from "./indexes";

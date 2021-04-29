@@ -51,7 +51,7 @@ async function init(gpVersion?: string) {
         if (/^[a-z\-]+$/.test(value)) {
           return true;
         } else {
-          return "Input must be lowercase and contain no spaces";
+          return "Input must be lowercase letters or hyphens and contain no spaces";
         }
       },
     },

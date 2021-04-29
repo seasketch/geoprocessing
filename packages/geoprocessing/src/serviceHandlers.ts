@@ -22,7 +22,11 @@ export const projectMetadata = async (
     body: JSON.stringify(
       {
         ...projectInfo,
-        clientSideBundle: `https://${process.env.clientUrl}?service=${uri}`,
+        ...(process.env.clientUrl
+          ? {
+              clientSideBundle: `https://${process.env.clientUrl}?service=${uri}`,
+            }
+          : {}),
         uri,
         geoprocessingServices: functions
           .filter((f) => f.purpose === "geoprocessing")

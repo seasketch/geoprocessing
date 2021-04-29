@@ -136,7 +136,7 @@ const inspectTable = async (
   const maxPoints = await connection.oneFirst(
     sql`select max(st_npoints(${raw(geometryColumn)})) from ${raw(tableName)}`
   );
-  if (maxPoints > pointsLimit) {
+  if (maxPoints && maxPoints > pointsLimit) {
     throw new Error(
       `Features in table exceed bytes-limit (${maxPoints} > ${pointsLimit}). Subdivide large features first.`
     );

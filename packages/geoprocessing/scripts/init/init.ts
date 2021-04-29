@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 //@ts-ignore
 import licenses from "spdx-license-ids";
-import fuzzy from "fuzzy";
+import fuzzy from "fuzzy-tools";
 //@ts-ignore
 import autocomplete from "inquirer-autocomplete-prompt";
 import ora from "ora";

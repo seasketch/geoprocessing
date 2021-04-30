@@ -270,16 +270,19 @@ export class GeoprocessingHandler<T> {
     }
   }
 
+  /**
+   * Send task error message
+   */
   async sendSocketErrorMessage(
     wss: string,
-    key: string | undefined,
+    cacheKey: string | undefined,
     serviceName: string,
     failureMessage: string
   ) {
-    let socket = (await this.getSendSocket(wss, key, serviceName)) as WebSocket;
+    let socket = await this.getSendSocket(wss);
 
     let data = JSON.stringify({
-      cacheKey: key,
+      cacheKey,
       serviceName: serviceName,
       failureMessage: failureMessage,
     });
@@ -293,15 +296,18 @@ export class GeoprocessingHandler<T> {
     socket.close(1000, serviceName);
   }
 
+  /**
+   * Send completed task message
+   */
   async sendSocketMessage(
     wss: string,
-    key: string | undefined,
+    cacheKey: string | undefined,
     serviceName: string
   ) {
-    let socket = (await this.getSendSocket(wss, key, serviceName)) as WebSocket;
+    let socket = await this.getSendSocket(wss);
 
     let data = JSON.stringify({
-      cacheKey: key,
+      cacheKey,
       serviceName: serviceName,
       fromClient: "false",
     });
@@ -315,12 +321,11 @@ export class GeoprocessingHandler<T> {
     socket.close(1000, serviceName);
   }
 
-  async getSendSocket(
-    wss: string,
-    key: string | undefined,
-    serviceName: string
-  ): Promise<WebSocket> {
-    let socket = new WebSocket(wss);
+  /**
+   * Returns a new socket connection to send a message
+   */
+  async getSendSocket(wss: string): Promise<WebSocket> {
+    const socket = new WebSocket(wss) as WebSocket;
     return new Promise(function (resolve, reject) {
       socket.onopen = () => {
         resolve(socket);
@@ -334,6 +339,9 @@ export class GeoprocessingHandler<T> {
     });
   }
 
+  /**
+   * Parse gp request parameters
+   */
   parseRequest(event: APIGatewayProxyEvent): GeoprocessingRequest {
     let request: GeoprocessingRequest;
     if ("geometry" in event) {

@@ -28,7 +28,7 @@ describe("Basic unit tests", () => {
         }
       }
     }
-  });
+  }, 10000);
 
   test("clipOutsideEez", async () => {
     const examples = (await getExampleFeatures()) as Feature<Polygon>[];
@@ -49,7 +49,7 @@ describe("Basic unit tests", () => {
         }
       }
     }
-  });
+  }, 10000);
 
   test("clipOutsideBarbadosEez", async () => {
     const examples = await getExampleFeaturesByName();
@@ -74,7 +74,7 @@ describe("Basic unit tests", () => {
         throw e;
       }
     }
-  });
+  }, 10000);
 
   test("clipOutsideMultipleEez", async () => {
     const examples = await getExampleFeaturesByName();
@@ -102,5 +102,5 @@ describe("Basic unit tests", () => {
         throw e;
       }
     }
-  });
+  }, 10000);
 });

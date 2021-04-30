@@ -4,8 +4,7 @@ import {
   DatabasePoolConnectionType,
   IdentifierSqlTokenType,
 } from "slonik";
-// @ts-ignore
-import { raw, PrimitiveValueExpressionType } from "slonik-sql-tag-raw";
+import { raw } from "slonik-sql-tag-raw";
 import ora from "ora";
 import inspectTable from "./inspectTable";
 import cliProgress from "cli-progress";
@@ -179,7 +178,7 @@ async function createGeobuf(
   // Get all features with matching ids as a single feature collection, as well
   // as the combined bbox of those features
   const { collection, extent } = await connection.one<{
-    collection: PrimitiveValueExpressionType;
+    collection: any;
     extent: string;
   }>(sql`
     select json_build_object(
@@ -196,13 +195,14 @@ async function createGeobuf(
       where ${pk} in (${sql.join(ids, sql`, `)})
     ) as t
   `);
-  if (collection.features.length === 0) {
+  const fc = collection as FeatureCollection;
+  if (fc.features.length === 0) {
     throw new Error("Empty bundle with no features.");
   }
-  collection.bbox = parseBBox(extent);
+  fc.bbox = parseBBox(extent);
   // Query added a bbox parameter to feature properties, promote it from
   // feature.properties.b_box to feature.bbox
-  for (const feature of collection.features) {
+  for (const feature of fc.features) {
     feature.bbox = feature.properties!.b_box.map((f: number) =>
       parseFloat(f.toFixed(6))
     );
@@ -218,7 +218,7 @@ async function createGeobuf(
       }
     }
   }
-  const buffer = geobuf.encode(collection, new Pbf());
+  const buffer = geobuf.encode(fc, new Pbf());
   const { id, bytes, count } = await connection.one<{
     id: number;
     bytes: number;
@@ -232,7 +232,7 @@ async function createGeobuf(
     ) values (
       ${prettyBytes(buffer.byteLength)}, 
       ${buffer.byteLength},
-      st_makeenvelope(${raw([...collection.bbox, "4326"].join(", "))}), 
+      st_makeenvelope(${raw([...fc.bbox, "4326"].join(", "))}), 
       ${ids.length}
     )
     returning 

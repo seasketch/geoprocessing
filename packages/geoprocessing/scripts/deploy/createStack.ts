@@ -2,7 +2,7 @@ import * as core from "@aws-cdk/core";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as apigateway from "@aws-cdk/aws-apigateway";
 import * as iam from "@aws-cdk/aws-iam";
-import { BucketProps, CorsRule } from "@aws-cdk/aws-s3";
+import { CorsRule } from "@aws-cdk/aws-s3";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import fs from "fs";
@@ -20,6 +20,9 @@ if (!process.env.PROJECT_PATH) {
 const PROJECT_PATH = process.env.PROJECT_PATH;
 const NODE_RUNTIME = lambda.Runtime.NODEJS_14_X;
 const STAGE_NAME = "prod";
+const SYNC_LAMBDA_TIMEOUT = 10; // seconds
+const ASYNC_LAMBDA_START_TIMEOUT = 5;
+const ASYNC_LAMBDA_RUN_TIMEOUT = 60;
 
 const manifest: Manifest = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json")).toString()
@@ -27,11 +30,12 @@ const manifest: Manifest = JSON.parse(
 
 /**
  * Inspects project metadata and creates/updates CloudFormation stack with all necessary resources
- *
- * Design - single app with a single CF stack for ease of management
+ * Design is a single CloudFormation app with a single stack for ease of management
  * Supports functions being sync or async in executionMode and preprocessor or geoprocessor
  * Async preprocessors are not supported
- * Each functions gets a lambda for sync mode, or a set of lambdas for async mode
+ * Each project gets one API gateway, s3 bucket, and db table for tasks and estimates
+ * Each async project also gets a sockets db table and web socket machinery
+ * Each function gets a lambda for sync mode, or a set of lambdas for async mode
  */
 export async function createStack() {
   const projectName = slugify(
@@ -144,9 +148,8 @@ class GeoprocessingCdkStack extends core.Stack {
 
   createSharedResources() {
     /**
-     * Bucket for storing additional larger outputs of project geoprocessing functions other than JSON
-     * such as an image, files, etc. These resources will be accessible via a public url,
-     * though the location will be hidden and cannot be listed by clients.
+     * Bucket resources will be accessible via a public url
+     * Location should not be published and cannot be listed by clients.
      */
     this.publicBucket = new s3.Bucket(this, `PublicResults`, {
       bucketName: `${this.props.project}-public-${this.region}`,
@@ -553,13 +556,13 @@ class GeoprocessingCdkStack extends core.Stack {
       handler: filename.replace(/\.js$/, "") + ".handler",
       functionName: `gp-${manifest.title}-${func.title}`,
       memorySize: func.memory,
-      timeout: core.Duration.seconds(func.timeout || 3),
+      timeout: core.Duration.seconds(func.timeout || SYNC_LAMBDA_TIMEOUT),
       description: func.description,
       initialPolicy: policies,
       environment: {
         publicBucketUrl: this.publicBucketUrl,
-        TASKS_TABLE: this.tasksTbl?.tableName,
-        ESTIMATES_TABLE: this.estimatesTbl?.tableName,
+        TASKS_TABLE: this.tasksTbl.tableName,
+        ESTIMATES_TABLE: this.estimatesTbl.tableName,
       },
     });
 
@@ -637,7 +640,7 @@ class GeoprocessingCdkStack extends core.Stack {
         handler: filename.replace(/\.js$/, "") + ".handler",
         functionName: `gp-${manifest.title}-${func.title}`,
         memorySize: func.memory,
-        timeout: core.Duration.seconds(func.timeout || 3),
+        timeout: core.Duration.seconds(ASYNC_LAMBDA_START_TIMEOUT),
         description: func.description,
         initialPolicy: policies,
         environment: {
@@ -678,7 +681,9 @@ class GeoprocessingCdkStack extends core.Stack {
         handler: filename.replace(/\.js$/, "") + ".handler",
         functionName: funcName,
         memorySize: func.memory,
-        timeout: core.Duration.seconds(func.timeout || 3),
+        timeout: core.Duration.seconds(
+          func.timeout || ASYNC_LAMBDA_RUN_TIMEOUT
+        ),
         description: func.description,
         environment: {
           ...baseAsyncEnvOptions,

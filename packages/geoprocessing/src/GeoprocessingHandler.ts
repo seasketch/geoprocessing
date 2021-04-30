@@ -21,6 +21,15 @@ const Lambda = new LambdaClient();
 const Db = new DynamoDB.DocumentClient();
 const WebSocket = require("ws");
 
+const NODE_ENV = process.env.NODE_ENV;
+const TASKS_TABLE = process.env.TASKS_TABLE;
+const ESTIMATES_TABLE = process.env.ESTIMATES_TABLE;
+const ASYNC_REQUEST_TYPE = process.env.ASYNC_REQUEST_TYPE;
+const ASYNC_HANDLER_FUNCTION_NAME = process.env.ASYNC_HANDLER_FUNCTION_NAME;
+const WSS_REF = process.env.WSS_REF || "";
+const WSS_REGION = process.env.WSS_REGION || "";
+const WSS_STAGE = process.env.WSS_STAGE || "";
+
 /**
  * This one class supports 2 different execution modes for running a geoprocessing function - sync and async
  * These modes create 3 different request scenarios.  A lambda is created for each scenario, and they all run
@@ -43,11 +52,7 @@ export class GeoprocessingHandler<T> {
   ) {
     this.func = func;
     this.options = Object.assign({ memory: 1024 }, options);
-    this.Tasks = new TaskModel(
-      process.env.TASKS_TABLE!,
-      process.env.ESTIMATES_TABLE!,
-      Db
-    );
+    this.Tasks = new TaskModel(TASKS_TABLE!, ESTIMATES_TABLE!, Db);
   }
 
   async lambdaHandler(
@@ -62,7 +67,7 @@ export class GeoprocessingHandler<T> {
     // Bail out if replaying previous task
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
       // don't replay
-      if (process.env.NODE_ENV !== "test") {
+      if (NODE_ENV !== "test") {
         console.warn("-------->>>>> cancelling since event is being replayed");
       }
       return {
@@ -110,8 +115,7 @@ export class GeoprocessingHandler<T> {
     // respond with cached result first if available
     if (
       request.cacheKey &&
-      (this.options.executionMode === "sync" ||
-        process.env.ASYNC_REQUEST_TYPE === "run")
+      (this.options.executionMode === "sync" || ASYNC_REQUEST_TYPE === "run")
     ) {
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
       if (
@@ -129,16 +133,13 @@ export class GeoprocessingHandler<T> {
       }
     }
 
-    const wss_ref = process.env.WSS_REF || "";
-    const wss_region = process.env.WSS_REGION || "";
-    const wss_stage = process.env.WSS_STAGE || "";
     let wss =
       "wss://" +
-      encodeURIComponent(wss_ref) +
+      encodeURIComponent(WSS_REF) +
       ".execute-api." +
-      encodeURIComponent(wss_region) +
+      encodeURIComponent(WSS_REGION) +
       ".amazonaws.com/" +
-      encodeURIComponent(wss_stage);
+      encodeURIComponent(WSS_STAGE);
     if (request.wss && request.wss.length > 0) {
       wss = request.wss;
     }
@@ -152,8 +153,7 @@ export class GeoprocessingHandler<T> {
 
     if (
       this.options.executionMode === "sync" ||
-      (this.options.executionMode === "async" &&
-        process.env.ASYNC_REQUEST_TYPE === "run")
+      (this.options.executionMode === "async" && ASYNC_REQUEST_TYPE === "run")
     ) {
       // Execute the gp function immediately and if sync executionMode then resolve a promise with complete task result
       // if async then send socket message with task id for client to get result
@@ -231,7 +231,7 @@ export class GeoprocessingHandler<T> {
     } else {
       // Otherwise must be initial request in async executionMode
       // Invoke a second lambda to run the gp function and return incomplete task meta
-      const asyncExecutionName = process.env.ASYNC_HANDLER_FUNCTION_NAME;
+      const asyncExecutionName = ASYNC_HANDLER_FUNCTION_NAME;
       if (!asyncExecutionName) {
         return Tasks.fail(task, `No async handler function name defined`);
       }
@@ -354,7 +354,6 @@ export class GeoprocessingHandler<T> {
     } else {
       throw new Error("Could not interpret incoming request");
     }
-    process.env.INFO_MSG = process.env.INFO_MSG + " and request: " + request;
     return request;
   }
 }

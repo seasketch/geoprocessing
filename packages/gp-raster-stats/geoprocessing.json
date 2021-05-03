@@ -1,4 +1,6 @@
 {
+  "author": "Test <test@test.com>",
+  "organization": "Test Org",
   "functions": [
     "src/functions/rasterSum.ts"
   ],

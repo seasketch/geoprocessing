@@ -20,10 +20,10 @@ const PATH = `packages/example-project`;
     {
       name: "example-project",
       description: "Example project to test geoprocessing project scripts",
-      author: "Chad Burt",
-      email: "support@seasketch.org",
+      author: "Test",
+      email: "test@test.com",
       license: "UNLICENSED",
-      organization: "SeaSketch",
+      organization: "Test Org",
       repositoryUrl: "https://github.com/seasketch/example-project",
       region: "us-west-1",
       templates: [],

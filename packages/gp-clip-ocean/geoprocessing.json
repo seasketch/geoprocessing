@@ -1,6 +1,6 @@
 {
-  "author": "Tim Welch <support@seasketch.org>",
-  "organization": "SeaSketch",
+  "author": "Test <test@test.com>",
+  "organization": "Test Org",
   "region": "us-west-1",
   "functions": [
     "src/functions/clipToOceanEez.ts"

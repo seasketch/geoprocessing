@@ -1,9 +1,6 @@
 import fs from "fs";
 import path from "path";
-import {
-  GeoprocessingServiceMetadata,
-  PreprocessingService,
-} from "../../src/types";
+import { Manifest } from "../manifest";
 
 const PROJECT_PATH = process.env.PROJECT_PATH!;
 const config = JSON.parse(
@@ -14,7 +11,7 @@ const projectPkg = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
 );
 
-const projectMetadata = {
+const projectMetadata: Manifest = {
   title: projectPkg.name,
   author: config.author,
   region: config.region,
@@ -25,8 +22,10 @@ const projectMetadata = {
   published: new Date().toISOString(),
   clients: config.clients,
   feedbackClients: [],
-  functions: [] as GeoprocessingServiceMetadata[],
-  preprocessingFunctions: [] as PreprocessingService[],
+  functions: [],
+  preprocessingServices: [],
+  geoprocessingServices: [],
+  uri: "",
 };
 
 if (config.functions.length < 1) {

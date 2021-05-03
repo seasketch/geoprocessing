@@ -11,4 +11,5 @@ export interface FunctionMetadata extends GeoprocessingServiceMetadata {
 export interface Manifest extends GeoprocessingProject {
   functions: FunctionMetadata[];
   region: string;
+  version: string;
 }

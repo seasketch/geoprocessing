@@ -19,6 +19,7 @@ export async function createStack() {
   const projectName = slugify(
     manifest.title.replace(/@/g, "").replace("/", "-")
   ); // assumed to be lowercase string from init but not guaranteed
+  const projectAuthor = slugify(manifest.author.replace(/\<.*\>/, ""));
   const stackName = `${projectName}-geoprocessing-stack`;
 
   const app = new core.App();
@@ -28,12 +29,8 @@ export async function createStack() {
     manifest,
     projectPath: PROJECT_PATH,
   });
-  core.Tag.add(stack, "Author", slugify(manifest.author.replace(/\<.*\>/, "")));
-  core.Tag.add(stack, "Cost Center", "seasketch-geoprocessing");
-  core.Tag.add(
-    stack,
-    "Geoprocessing Project",
-    manifest.author.replace(/\<.*\>/, "")
-  );
+  core.Tags.of(stack).add("Author", projectAuthor);
+  core.Tags.of(stack).add("Cost Center", "seasketch-geoprocessing");
+  core.Tags.of(stack).add("Geoprocessing Project", projectName);
 }
 createStack();

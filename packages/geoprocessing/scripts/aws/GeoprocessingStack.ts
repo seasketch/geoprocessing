@@ -71,8 +71,8 @@ export default class GeoprocessingStack extends core.Stack {
     this.createSharedResources();
     if (hasAsync) this.createSharedAsyncFunctionResources();
 
-    syncFunctions.forEach(this.createSyncFunctionResources);
-    asyncFunctions.forEach(this.createAsyncFunctionResources);
+    syncFunctions.forEach(this.createSyncFunctionResources, this);
+    asyncFunctions.forEach(this.createAsyncFunctionResources, this);
   }
 
   createClientResources() {

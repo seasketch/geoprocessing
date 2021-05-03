@@ -9,15 +9,15 @@ describe("Project metadata settings", () => {
       "Example project to test geoprocessing project scripts"
     );
     expect(packageJson.license).toBe("UNLICENSED");
-    expect(packageJson.author).toBe("Chad Burt");
+    expect(packageJson.author).toBe("Test");
     expect(packageJson.repository.url).toBe(
       "git+https://github.com/seasketch/example-project.git"
     );
     const geoprocessingJson = JSON.parse(
       fs.readFileSync("geoprocessing.json").toString()
     );
-    expect(geoprocessingJson.author).toBe("Chad Burt <support@seasketch.org>");
-    expect(geoprocessingJson.organization).toBe("SeaSketch");
+    expect(geoprocessingJson.author).toBe("Test <test@test.com>");
+    expect(geoprocessingJson.organization).toBe("Test Org");
     expect(geoprocessingJson.region).toBe("us-west-1");
   });
 

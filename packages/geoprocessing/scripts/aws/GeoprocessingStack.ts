@@ -190,7 +190,9 @@ export default class GeoprocessingStack extends core.Stack {
       code: lambda.Code.fromAsset(path.join(this.props.projectPath, ".build")),
       handler: "serviceHandlers.projectMetadata",
       environment: {
-        ...(this.publicBucketUrl ? { clientUrl: this.publicBucketUrl } : {}),
+        ...(this.clientCloudfront
+          ? { clientUrl: this.clientCloudfront.distributionDomainName }
+          : {}),
       },
     });
     // TODO: this grant doesn't appear to be used, remove

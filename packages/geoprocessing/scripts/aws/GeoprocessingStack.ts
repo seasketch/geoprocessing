@@ -25,9 +25,9 @@ interface GeoprocessingStackProps extends core.StackProps {
 
 /**
  * Design is a single CloudFormation app with a single stack for ease of management
- * Supports functions being sync or async in executionMode and preprocessor or geoprocessor
- * Async preprocessors are not supported
- * Each project gets one API gateway, s3 bucket, and db table for tasks and estimates
+ * Supports functions being sync or async in executionMode and preprocessor or geoprocessor in purpose
+ * Async + preprocessor combination is not supported
+ * Each project gets one API gateway, s3 bucket, and db table for tracking tasks and function run timeestimates
  * Each async project also gets a sockets db table and web socket machinery
  * Each function gets a lambda for sync mode, or a set of lambdas for async mode
  */

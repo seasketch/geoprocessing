@@ -1,6 +1,6 @@
 import AWS from "aws-sdk";
 import { Flatbush } from "flatbush";
-import { readPackageUpSync as sync } from "read-pkg-up";
+import { sync } from "read-pkg-up";
 import slugify from "slugify";
 import fetch from "node-fetch";
 import { CompositeIndexDetails } from "./indexes";
@@ -28,7 +28,8 @@ export async function getDataSourceVersion(
     );
   }
   try {
-    const res = await fetch(objectUrl(name, "metadata.json"));
+    const url = objectUrl(name, "metadata.json");
+    const res = await fetch(url);
     if (res.ok) {
       const metadata = await res.json();
       return {

@@ -2,15 +2,11 @@ import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
 import path from "path";
-import { Package } from "../init/init";
+import { Package } from "../types";
 import util from "util";
 const exec = util.promisify(require("child_process").exec);
 
-interface TemplateOptions {
-  name: string;
-}
-
-export interface ChooseTemplateOption {
+export interface TemplateMetadata {
   templates: string[];
 }
 
@@ -71,9 +67,7 @@ export async function getTemplateQuestion() {
 
 async function addTemplate(projectPath?: string) {
   const templateQuestion = await getTemplateQuestion();
-  const answers = await inquirer.prompt<ChooseTemplateOption>([
-    templateQuestion,
-  ]);
+  const answers = await inquirer.prompt<TemplateMetadata>([templateQuestion]);
 
   if (answers.templates) {
     try {

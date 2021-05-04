@@ -1,4 +1,4 @@
-import makeProject from "./init";
+import { createProject } from "./createProject";
 import { makeGeoprocessingHandler } from "./createFunction";
 import { makeClient } from "./createClient";
 import fs from "fs-extra";
@@ -16,7 +16,7 @@ const PATH = `packages/example-project`;
   if (pathExists) {
     await fs.remove(PATH);
   }
-  await makeProject(
+  await createProject(
     {
       name: "example-project",
       description: "Example project to test geoprocessing project scripts",

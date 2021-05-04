@@ -400,7 +400,9 @@ export default class GeoprocessingStack extends core.Stack {
       `${projectName}AsyncSendHandler2`,
       {
         runtime: NODE_RUNTIME,
-        code: lambda.Code.asset(path.join(this.props.projectPath, ".build/")),
+        code: lambda.Code.fromAsset(
+          path.join(this.props.projectPath, ".build/")
+        ),
         handler: "sendmessage.sendHandler",
         functionName: projectName + "-SendMessage",
         memorySize: 1024,

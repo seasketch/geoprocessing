@@ -10,7 +10,8 @@
   },
   "readme": "https://github.com/seasketch/geoprocessing#readme",
   "scripts": {
-    "test": "jest && jest --projects scripts",
+    "test": "jest && npm run test:scripts",
+    "test:scripts": "jest --projects scripts",
     "storybook": "start-storybook",
     "prepare": "tsc && npm run _prepare && cd scripts && tsc",
     "_prepare": "npx ts-node scripts/npm/prepare",

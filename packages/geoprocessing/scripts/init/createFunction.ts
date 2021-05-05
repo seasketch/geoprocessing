@@ -6,6 +6,13 @@ import chalk from "chalk";
 import { ExecutionMode } from "../../src/types";
 import camelcase from "camelcase";
 
+function getFunctionTemplatePath() {
+  const gpPath = /dist/.test(__dirname)
+    ? `${__dirname}/../../..`
+    : `${__dirname}/../..`;
+  return `${gpPath}/templates/functions`;
+}
+
 async function createFunction() {
   const answers = await inquirer.prompt([
     {
@@ -97,9 +104,7 @@ export async function makeGeoprocessingHandler(
   // copy geoprocessing function template
   const fpath = basePath + "src/functions";
   // rename metadata in function definition
-  const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../../templates/functions`
-    : `${__dirname}/../../../templates/functions`;
+  const templatePath = getFunctionTemplatePath();
   const handlerCode = await fs.readFile(`${templatePath}/area.ts`);
   const testSmokeCode = await fs.readFile(`${templatePath}/areaSmoke.test.ts`);
   const testUnitCode = await fs.readFile(`${templatePath}/areaUnit.test.ts`);
@@ -169,9 +174,7 @@ export async function makePreprocessingHandler(
   // copy preprocessing function template
   const fpath = basePath + "src/functions";
   // rename metadata in function definition
-  const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../../templates/functions`
-    : `${__dirname}/../../../templates/functions`;
+  const templatePath = getFunctionTemplatePath();
   const handlerCode = await fs.readFile(`${templatePath}/clipToBounds.ts`);
   const testCode = await fs.readFile(`${templatePath}/clipToBounds.test.ts`);
   if (!fs.existsSync(path.join(basePath, "src"))) {

@@ -6,26 +6,33 @@ import chalk from "chalk";
 // @ts-ignore
 import pascalcase from "pascalcase";
 
+function getTemplateClientPath() {
+  const gpPath = /dist/.test(__dirname)
+    ? `${__dirname}/../../..`
+    : `${__dirname}/../..`;
+  return `${gpPath}/templates/clients`;
+}
+
 async function createClient() {
   const answers = await inquirer.prompt([
     {
       type: "input",
       name: "title",
       message: "Name for this client, in PascalCase",
-      validate: value =>
+      validate: (value) =>
         /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
-      transformer: value => pascalcase(value)
+      transformer: (value) => pascalcase(value),
     },
     {
       type: "input",
       name: "description",
-      message: "Describe what this client is for"
+      message: "Describe what this client is for",
     },
     {
       type: "confirm",
       name: "typescript",
-      message: "Use typescript? (Recommended)"
-    }
+      message: "Use typescript? (Recommended)",
+    },
   ]);
   answers.title = pascalcase(answers.title);
   await makeClient(answers, true, "");
@@ -47,9 +54,7 @@ export async function makeClient(
   // copy client template
   const fpath = basePath + "src/clients";
   // rename metadata in function definition
-  const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../../templates/clients`
-    : `${__dirname}/../../../templates/clients`;
+  const templatePath = getTemplateClientPath();
   const clientCode = await fs.readFile(`${templatePath}/Client.tsx`);
   const testCode = await fs.readFile(`${templatePath}/Client.stories.tsx`);
   if (!fs.existsSync(path.join(basePath, "src"))) {
@@ -65,7 +70,7 @@ export async function makeClient(
   geoprocessingJson.clients.push({
     name: options.title,
     description: options.description,
-    source: `src/clients/${options.title}.tsx`
+    source: `src/clients/${options.title}.tsx`,
   });
   fs.writeFileSync(
     path.join(basePath, "geoprocessing.json"),

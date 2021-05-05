@@ -1,3 +1,5 @@
+import path from "path";
+import { Manifest, FunctionMetadata } from "../manifest";
 import * as core from "@aws-cdk/core";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as apigateway from "@aws-cdk/aws-apigateway";
@@ -5,8 +7,6 @@ import * as iam from "@aws-cdk/aws-iam";
 import { CorsRule } from "@aws-cdk/aws-s3";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
-import path from "path";
-import { Manifest, FunctionMetadata } from "../manifest";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as s3deploy from "@aws-cdk/aws-s3-deployment";
 import { CacheControl } from "@aws-cdk/aws-s3-deployment";

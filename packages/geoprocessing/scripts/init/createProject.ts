@@ -37,28 +37,30 @@ export async function createProject(
         succeed: () => false,
         fail: () => false,
       };
-  const path = `${basePath ? basePath + "/" : ""}${metadata.name}`;
-  spinner.start(`creating ${path}`);
-  await fs.mkdir(path);
-  spinner.succeed(`created ${path}/`);
+  const projectPath = `${basePath ? basePath + "/" : ""}${metadata.name}`;
+  spinner.start(`creating ${projectPath}`);
+  await fs.ensureDir(projectPath);
+  spinner.succeed(`created ${projectPath}/`);
   spinner.start("copying template");
 
   const gpPath = /dist/.test(__dirname)
     ? `${__dirname}/../../..`
-    : `${__dirname}/..`;
-  const templatePath = `${gpPath}/templates/project`;
+    : `${__dirname}/../..`;
+  const projectTemplatePath = `${gpPath}/templates/project`;
 
   // Get version of geoprocessing currently running
   const curGpVersion: Package = JSON.parse(
     fs.readFileSync(`${gpPath}/package.json`).toString()
   ).version;
 
-  await fs.copy(templatePath, path);
+  await fs.copy(projectTemplatePath, projectPath);
 
   spinner.succeed("copied base files");
   spinner.start("updating package.json with provided details");
   const packageJSON: Package = {
-    ...JSON.parse(fs.readFileSync(`${templatePath}/package.json`).toString()),
+    ...JSON.parse(
+      fs.readFileSync(`${projectTemplatePath}/package.json`).toString()
+    ),
     ...packageJSONOptions,
     // TODO: other repo types
     ...(/github/.test(metadata.repositoryUrl)
@@ -75,14 +77,14 @@ export async function createProject(
       : {}),
   };
   await fs.writeFile(
-    `${path}/package.json`,
+    `${projectPath}/package.json`,
     JSON.stringify(packageJSON, null, "  ")
   );
   spinner.succeed("updated package.json");
   spinner.start("creating geoprocessing.json");
   const author = email ? `${metadata.author} <${email}>` : metadata.author;
   await fs.writeFile(
-    `${path}/geoprocessing.json`,
+    `${projectPath}/geoprocessing.json`,
     JSON.stringify(
       {
         author,
@@ -97,25 +99,28 @@ export async function createProject(
 
   spinner.start("add .gitignore");
   try {
-    await fs.move(join(path, "_gitignore"), join(path, ".gitignore")); // Move _gitignore to .gitignore
+    await fs.move(
+      join(projectPath, "_gitignore"),
+      join(projectPath, ".gitignore")
+    ); // Move _gitignore to .gitignore
     spinner.succeed("added .gitignore");
   } catch (error) {
     spinner.fail(".gitignore add failed");
     console.error(error);
   }
 
-  const readmePath = `${path}/data/README.md`;
+  const readmePath = `${projectPath}/data/README.md`;
   const readmeContents = await fs.readFile(readmePath);
   await fs.writeFile(
     readmePath,
     readmeContents.toString().replace(/replace-me/g, metadata.name)
   );
   await fs.copyFile(
-    `${__dirname}/../../../templates/exampleSketch.json`,
-    path + "/examples/sketches/sketch.json"
+    `${gpPath}/templates/exampleSketch.json`,
+    projectPath + "/examples/sketches/sketch.json"
   );
-  await fs.mkdir(`${path}/data/src`);
-  await fs.mkdir(`${path}/data/dist`);
+  await fs.ensureDir(`${projectPath}/data/src`);
+  await fs.ensureDir(`${projectPath}/data/dist`);
 
   if (metadata.templates.length > 0) {
     copyTemplates(metadata.templates, {

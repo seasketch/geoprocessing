@@ -32,18 +32,18 @@ function getHandlerModule(srcFuncPath: string) {
   return require(p);
 }
 
-const PreprocessingHandlers: PreprocessingBundle[] = config.preprocessingFunctions.map(
+const preprocessingBundles: PreprocessingBundle[] = config.preprocessingFunctions.map(
   getHandlerModule
 );
-const GeoprocessingHandlers: GeoprocessingBundle[] = config.geoprocessingFunctions.map(
+const geoprocessingBundles: GeoprocessingBundle[] = config.geoprocessingFunctions.map(
   getHandlerModule
 );
 
 const manifest = generateManifest(
   config,
   pkgGeo,
-  PreprocessingHandlers,
-  GeoprocessingHandlers,
+  preprocessingBundles,
+  geoprocessingBundles,
   pkgGeo.version
 );
 fs.writeFileSync(

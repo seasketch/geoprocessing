@@ -6,7 +6,7 @@ import * as core from "@aws-cdk/core";
 import path from "path";
 import { SynthUtils } from "@aws-cdk/assert";
 import GeoprocessingStack from "./GeoprocessingStack";
-import createTestProject from "./createTestProject";
+import createTestProject from "../util/createTestProject";
 import fs from "fs-extra";
 
 const projectName = "all";

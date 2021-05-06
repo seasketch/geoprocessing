@@ -62,12 +62,17 @@ export default class GeoprocessingStack extends core.Stack {
     this.props = props;
 
     const hasClients = this.props.manifest.clients.length > 0;
-    // preprocessors and sync geoprocessors
-    const syncFunctions = this.props.manifest.geoprocessingFunctions.filter(
-      (func) =>
-        func.executionMode === "sync" || func.purpose === "preprocessing"
-    );
-    // async geoprocessors only, async preprocessors not supported
+    // sync - preprocessors and sync geoprocessors
+    const syncFunctions: (
+      | PreprocessingFunctionMetadata
+      | GeoprocessingFunctionMetadata
+    )[] = [
+      ...this.props.manifest.preprocessingFunctions,
+      ...this.props.manifest.geoprocessingFunctions.filter(
+        (func) => func.executionMode === "sync"
+      ),
+    ];
+    // async - geoprocessors only, async preprocessors not supported
     const asyncFunctions = this.props.manifest.geoprocessingFunctions.filter(
       (func) =>
         func.executionMode === "async" && func.purpose !== "preprocessing"
@@ -246,6 +251,8 @@ export default class GeoprocessingStack extends core.Stack {
 
     //policy to allow the socket apigateway to call the socket lambdas
     //without this the send messages fail
+
+    //TODO: remove, this is never used?
     const apigatewayPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
@@ -519,7 +526,7 @@ export default class GeoprocessingStack extends core.Stack {
 
   createSyncFunctionResources(
     func: PreprocessingFunctionMetadata | GeoprocessingFunctionMetadata,
-    i: number
+    index: number
   ) {
     // @ts-ignore
     const filename = path.basename(func.handler);
@@ -543,7 +550,7 @@ export default class GeoprocessingStack extends core.Stack {
       runtime: NODE_RUNTIME,
       code: lambda.Code.fromAsset(path.join(this.props.projectPath, ".build")),
       handler: filename.replace(/\.js$/, "") + ".handler",
-      functionName: `gp-${this.props.manifest.title}-${func.title}`,
+      functionName: funcName,
       memorySize: func.memory,
       timeout: core.Duration.seconds(func.timeout || SYNC_LAMBDA_TIMEOUT),
       description: func.description,
@@ -580,11 +587,14 @@ export default class GeoprocessingStack extends core.Stack {
     }
   }
 
-  createAsyncFunctionResources(func: GeoprocessingFunctionMetadata, i: number) {
+  createAsyncFunctionResources(
+    func: GeoprocessingFunctionMetadata,
+    index: number
+  ) {
     // @ts-ignore
     const filename = path.basename(func.handler);
     let policies: iam.PolicyStatement[] = [];
-    let funcName = `gp-${this.props.manifest.title}-${func.title}-async`;
+    let functionName = `gp-${this.props.manifest.title}-${func.title}-async`;
 
     if (!this.publicBucket || !this.publicBucketUrl)
       throw new Error(
@@ -613,7 +623,7 @@ export default class GeoprocessingStack extends core.Stack {
       TASKS_TABLE: this.tasksTbl?.tableName,
       ESTIMATES_TABLE: this.estimatesTbl?.tableName,
       SOCKETS_TABLE: this.socketsTbl?.tableName,
-      ASYNC_HANDLER_FUNCTION_NAME: funcName,
+      ASYNC_HANDLER_FUNCTION_NAME: functionName,
       WSS_REF: this.apigatewaysocket.ref,
       WSS_REGION: this.region,
       WSS_STAGE: STAGE_NAME,
@@ -629,7 +639,7 @@ export default class GeoprocessingStack extends core.Stack {
           path.join(this.props.projectPath, ".build")
         ),
         handler: filename.replace(/\.js$/, "") + ".handler",
-        functionName: `gp-${this.props.manifest.title}-${func.title}`,
+        functionName,
         memorySize: func.memory,
         timeout: core.Duration.seconds(ASYNC_LAMBDA_START_TIMEOUT),
         description: func.description,
@@ -653,6 +663,7 @@ export default class GeoprocessingStack extends core.Stack {
     );
 
     const resource = this.api.root.addResource(func.title);
+    //TODO: remove, this is never used?
     const apigatewayPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
@@ -672,7 +683,7 @@ export default class GeoprocessingStack extends core.Stack {
         ),
 
         handler: filename.replace(/\.js$/, "") + ".handler",
-        functionName: funcName,
+        functionName,
         memorySize: func.memory,
         timeout: core.Duration.seconds(
           func.timeout || ASYNC_LAMBDA_RUN_TIMEOUT
@@ -692,7 +703,7 @@ export default class GeoprocessingStack extends core.Stack {
       actions: ["lambda:InvokeFunction"],
     });
 
-    const roleLambda = new iam.Role(this, "roleLambda" + i, {
+    const roleLambda = new iam.Role(this, "roleLambda" + index, {
       assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
     });
     roleLambda.addToPolicy(asyncLambdaPolicy);

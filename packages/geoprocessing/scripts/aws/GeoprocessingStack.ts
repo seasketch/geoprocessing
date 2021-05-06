@@ -1,5 +1,9 @@
 import path from "path";
-import { Manifest, FunctionMetadata } from "../manifest";
+import {
+  Manifest,
+  PreprocessingFunctionMetadata,
+  GeoprocessingFunctionMetadata,
+} from "../manifest";
 import * as core from "@aws-cdk/core";
 import * as s3 from "@aws-cdk/aws-s3";
 import * as apigateway from "@aws-cdk/aws-apigateway";
@@ -58,19 +62,21 @@ export default class GeoprocessingStack extends core.Stack {
     this.props = props;
 
     const hasClients = this.props.manifest.clients.length > 0;
-    const asyncFunctions = this.props.manifest.functions.filter(
+    // preprocessors and sync geoprocessors
+    const syncFunctions = this.props.manifest.geoprocessingFunctions.filter(
       (func) =>
-        func.executionMode === "async" && func.purpose !== "preprocessing" // note async preprocessor not supported
+        func.executionMode === "sync" || func.purpose === "preprocessing"
     );
-    const syncFunctions = this.props.manifest.functions.filter(
-      (func) => func.executionMode === "sync"
+    // async geoprocessors only, async preprocessors not supported
+    const asyncFunctions = this.props.manifest.geoprocessingFunctions.filter(
+      (func) =>
+        func.executionMode === "async" && func.purpose !== "preprocessing"
     );
     const hasAsync = asyncFunctions.length > 0;
 
     if (hasClients) this.createClientResources();
     this.createSharedResources();
     if (hasAsync) this.createSharedAsyncFunctionResources();
-
     syncFunctions.forEach(this.createSyncFunctionResources, this);
     asyncFunctions.forEach(this.createAsyncFunctionResources, this);
   }
@@ -511,7 +517,10 @@ export default class GeoprocessingStack extends core.Stack {
     apigatewaydeploymentsocket2.node.addDependency(routes);
   }
 
-  createSyncFunctionResources(func: FunctionMetadata, i: number) {
+  createSyncFunctionResources(
+    func: PreprocessingFunctionMetadata | GeoprocessingFunctionMetadata,
+    i: number
+  ) {
     // @ts-ignore
     const filename = path.basename(func.handler);
     let policies: iam.PolicyStatement[] = [];
@@ -519,7 +528,7 @@ export default class GeoprocessingStack extends core.Stack {
 
     if (!this.publicBucket || !this.publicBucketUrl)
       throw new Error(
-        "createAsyncFunctionResources - Public bucket not defined"
+        "createSyncFunctionResources - Public bucket not defined"
       );
     if (!this.tasksTbl)
       throw new Error("createSyncFunctionResources - Tasks table not defined");
@@ -571,7 +580,7 @@ export default class GeoprocessingStack extends core.Stack {
     }
   }
 
-  createAsyncFunctionResources(func: FunctionMetadata, i: number) {
+  createAsyncFunctionResources(func: GeoprocessingFunctionMetadata, i: number) {
     // @ts-ignore
     const filename = path.basename(func.handler);
     let policies: iam.PolicyStatement[] = [];

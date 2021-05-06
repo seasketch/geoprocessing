@@ -5,6 +5,7 @@ import path from "path";
 import chalk from "chalk";
 import { ExecutionMode } from "../../src/types";
 import camelcase from "camelcase";
+import { GeoprocessingJsonConfig } from "../../src/types";
 
 function getFunctionTemplatePath() {
   const gpPath = /dist/.test(__dirname)
@@ -143,9 +144,12 @@ export async function makeGeoprocessingHandler(
   );
   const geoprocessingJson = JSON.parse(
     fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
+  ) as GeoprocessingJsonConfig;
+  geoprocessingJson.geoprocessingFunctions =
+    geoprocessingJson.geoprocessingFunctions || [];
+  geoprocessingJson.geoprocessingFunctions.push(
+    `src/functions/${options.title}.ts`
   );
-  geoprocessingJson.functions = geoprocessingJson.functions || [];
-  geoprocessingJson.functions.push(`src/functions/${options.title}.ts`);
   fs.writeFileSync(
     path.join(basePath, "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")
@@ -196,9 +200,12 @@ export async function makePreprocessingHandler(
   );
   const geoprocessingJson = JSON.parse(
     fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
+  ) as GeoprocessingJsonConfig;
+  geoprocessingJson.preprocessingFunctions =
+    geoprocessingJson.preprocessingFunctions || [];
+  geoprocessingJson.preprocessingFunctions.push(
+    `src/functions/${options.title}.ts`
   );
-  geoprocessingJson.functions = geoprocessingJson.functions || [];
-  geoprocessingJson.functions.push(`src/functions/${options.title}.ts`);
   fs.writeFileSync(
     path.join(basePath, "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")

@@ -50,7 +50,7 @@ export interface GeoprocessingHandlerOptions {
   /** Seconds */
   timeout: number;
   /** Megabytes, 128 - 3008 */
-  memory: number;
+  memory?: number;
   /** Choose `sync` for functions that are expected to return quickly (< 2s)
    * and `async` for longer running functions, especially contain/docker jobs.
    */
@@ -60,7 +60,8 @@ export interface GeoprocessingHandlerOptions {
    */
   requiresProperties: string[];
   /** Whether to rate limit beyond basic DDoS protection */
-  rateLimit?: boolean;
+  rateLimited?: boolean;
+  rateLimit?: number;
   /** `daily` or `monthly` */
   rateLimitPeriod?: RateLimitPeriod;
   /** Whether function should respect group access-control headers */
@@ -88,7 +89,28 @@ type GeoprocessingServiceType = "javascript" | "container";
 /** Expected public service metadata for each function */
 export interface GeoprocessingServiceMetadata
   extends GeoprocessingHandlerOptions {
-  rateLimit: boolean;
+  restrictedAccess?: boolean; // NOT IMPLEMENTED?
+  /** Seconds */
+  medianDuration: number;
+  /** USD */
+  medianCost: number;
+  endpoint: string;
+  type: GeoprocessingServiceType;
+  // for low-latency clientside processing and offline use
+  // v2 or later
+  clientSideBundle?: ClientCode;
+  // e.g. [sensitive-project.seasketch.org]
+  issAllowList: string[];
+  rateLimited: boolean;
+  rateLimit: number;
+  rateLimitPeriod: RateLimitPeriod;
+  rateLimitConsumed: number;
+  // if set, requests must include a token with an allowed issuer (iss)
+  uri?: string; // NOT IMPLEMENTED?
+}
+
+export interface PreprocessingServiceMetadata
+  extends PreprocessingHandlerOptions {
   restrictedAccess: boolean;
   /** Seconds */
   medianDuration: number;
@@ -102,6 +124,7 @@ export interface GeoprocessingServiceMetadata
   // e.g. [sensitive-project.seasketch.org]
   issAllowList: string[];
   rateLimited: boolean;
+  rateLimit: number;
   rateLimitPeriod: RateLimitPeriod;
   rateLimitConsumed: number;
   // if set, requests must include a token with an allowed issuer (iss)
@@ -150,14 +173,19 @@ interface DigitizingFeedbackClient {
   offlineSupport: boolean;
 }
 
+interface ClientJsonConfig {
+  name: string;
+  description: string;
+  source: string;
+}
+
 export interface GeoprocessingJsonConfig {
-  title: string;
   author: string;
-  region: string;
   organization?: string;
-  relatedUri?: string;
-  sourceUri?: string;
-  published: string;
+  region: string;
+  geoprocessingFunctions: string[];
+  preprocessingFunctions: string[];
+  clients: ClientJsonConfig[];
 }
 
 export interface GeoprocessingRequest {

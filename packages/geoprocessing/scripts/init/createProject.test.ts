@@ -13,8 +13,8 @@ const projectName = "test-project";
 const rootPath = `${__dirname}/__test__`;
 const projectPath = path.join(rootPath, projectName);
 
-afterAll(() => {
-  fs.remove(rootPath); // Cleanup
+afterAll(async () => {
+  await fs.remove(rootPath); // Cleanup
 });
 
 test.only("create-complete-project", async () => {
@@ -82,11 +82,14 @@ test.only("create-complete-project", async () => {
   expect(gpConfig.author).toBe("Test <test@test.com>");
   expect(gpConfig.organization).toBe("Test Org");
   expect(gpConfig.region).toBe("us-west-1");
-  expect(gpConfig.functions.length).toBe(2);
-  expect(gpConfig.functions.includes("src/functions/clipToBounds.ts")).toBe(
-    true
-  );
-  expect(gpConfig.functions.includes("src/functions/area.ts")).toBe(true);
+  expect(gpConfig.preprocessingFunctions.length).toBe(1);
+  expect(
+    gpConfig.preprocessingFunctions.includes("src/functions/clipToBounds.ts")
+  ).toBe(true);
+  expect(gpConfig.geoprocessingFunctions.length).toBe(1);
+  expect(
+    gpConfig.geoprocessingFunctions.includes("src/functions/area.ts")
+  ).toBe(true);
   expect(gpConfig.clients.length).toBe(1);
   expect(gpConfig.clients[0].name).toBe("AreaClient");
 });

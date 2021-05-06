@@ -1,73 +1,52 @@
 import fs from "fs";
 import path from "path";
-import { Manifest } from "../manifest";
+import { generateManifest } from "./generateManifest";
+import { GeoprocessingJsonConfig } from "../../src/types";
+import { Package, LambdaHandler } from "../types";
 
-const PROJECT_PATH = process.env.PROJECT_PATH!;
-const config = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
+// Inspect project file contents and generate manifest file
+if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
+
+const projectPath = process.env.PROJECT_PATH;
+const buildPath = "../../../";
+
+const config: GeoprocessingJsonConfig = JSON.parse(
+  fs.readFileSync(path.join(projectPath, "geoprocessing.json")).toString()
 );
-const pkgGeo = JSON.parse(fs.readFileSync("./package.json").toString());
-const projectPkg = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
+
+const pkgGeo: Package = JSON.parse(
+  fs.readFileSync("./package.json").toString()
 );
 
-const projectMetadata: Manifest = {
-  title: projectPkg.name,
-  author: config.author,
-  region: config.region,
-  apiVersion: pkgGeo.version,
-  version: projectPkg.version,
-  relatedUri: projectPkg.homepage,
-  sourceUri: projectPkg.repository ? projectPkg.repository.url : null,
-  published: new Date().toISOString(),
-  clients: config.clients,
-  feedbackClients: [],
-  functions: [],
-  preprocessingServices: [],
-  geoprocessingServices: [],
-  uri: "",
-};
+const projectPkg: Package = JSON.parse(
+  fs.readFileSync(path.join(projectPath, "package.json")).toString()
+);
 
-if (config.functions.length < 1) {
-  throw new Error("No functions specified in geoprocessing.json");
-}
-
-for (const func of config.functions as string[]) {
+function getHandlerModule(func: string) {
   let name = path.basename(func);
   const parts = name.split(".");
-  name = parts.slice(0, -1).join(".") + "Handler.js";
+  name = parts.slice(0, -1).join(".") + `Handler.js`;
 
-  const p = path.join("../../../", ".build/", name.replace(".js", ""));
-  const handler = require(p);
-  const opts = handler.options;
-  let metadata = {
-    handler: name,
-    ...opts,
-    vectorDataSources: handler.sources,
-    purpose:
-      handler.options.executionMode !== undefined
-        ? "geoprocessing"
-        : "preprocessing",
-  };
-  if (handler.options.executionMode !== undefined) {
-    metadata = {
-      ...metadata,
-      rateLimited: false,
-      rateLimit: 0,
-      rateLimitPeriod: "daily",
-      rateLimitConsumed: 0,
-      medianDuration: 0,
-      medianCost: 0,
-      type: "javascript",
-      issAllowList: ["*"],
-    };
-  }
-  projectMetadata.functions.push(metadata);
+  // Need path to build dir
+  const p = path.join(buildPath, name.replace(`.js`, ""));
+  return require(p);
 }
 
-// TODO: Tell authors something useful about VectorDataSources at deploy time
+const PreprocessingHandlers = config.preprocessingFunctions.map(
+  getHandlerModule
+);
+const GeoprocessingHandlers = config.geoprocessingFunctions.map(
+  getHandlerModule
+);
 
+const manifest = generateManifest(
+  config,
+  pkgGeo,
+  PreprocessingHandlers,
+  GeoprocessingHandlers,
+  pkgGeo.version
+);
 fs.writeFileSync(
   path.join(".build", "manifest.json"),
-  JSON.stringify(projectMetadata, null, "  ")
+  JSON.stringify(manifest, null, "  ")
 );

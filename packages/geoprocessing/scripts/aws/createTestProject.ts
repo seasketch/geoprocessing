@@ -8,11 +8,7 @@ import { PreprocessingHandler, GeoprocessingHandler } from "../../src";
 import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src/VectorDataSource";
 import { point } from "@turf/helpers";
 import { Feature } from "geojson";
-import {
-  Package,
-  PreprocessingHandlerModule,
-  GeoprocessingHandlerModule,
-} from "../types";
+import { Package, PreprocessingBundle, GeoprocessingBundle } from "../types";
 import { Manifest } from "../manifest";
 
 export type TestComponentTypes =
@@ -52,8 +48,8 @@ export default async function createTestProject(
     geoprocessingFunctions: [],
     clients: [],
   };
-  let PreprocessingHandlers: PreprocessingHandlerModule[] = [];
-  let GeoprocessingHandlers: GeoprocessingHandlerModule[] = [];
+  let preprocessingBundles: PreprocessingBundle[] = [];
+  let geoprocessingBundles: GeoprocessingBundle[] = [];
 
   interface TestResult {
     result: number;
@@ -87,8 +83,9 @@ export default async function createTestProject(
       memory: 256, // test non-default value
     });
 
-    PreprocessingHandlers = PreprocessingHandlers.concat({
+    preprocessingBundles = preprocessingBundles.concat({
       handler: pHandler.lambdaHandler,
+      handlerFilename: "testPreprocessor.ts",
       options: pHandler.options,
       sources: testSources,
     });
@@ -111,8 +108,9 @@ export default async function createTestProject(
       requiresProperties: [],
     });
 
-    GeoprocessingHandlers = GeoprocessingHandlers.concat({
+    geoprocessingBundles = geoprocessingBundles.concat({
       handler: sgHandler.lambdaHandler,
+      handlerFilename: "testSyncGeprocessor.ts",
       options: sgHandler.options,
       sources: testSources,
     });
@@ -135,8 +133,9 @@ export default async function createTestProject(
       requiresProperties: [],
     });
 
-    GeoprocessingHandlers = GeoprocessingHandlers.concat({
+    geoprocessingBundles = geoprocessingBundles.concat({
       handler: agHandler.lambdaHandler,
+      handlerFilename: "testAsyncGeoprocessor.ts",
       options: agHandler.options,
       sources: testSources,
     });
@@ -159,8 +158,8 @@ export default async function createTestProject(
   return generateManifest(
     gpConfig,
     pkgGeo,
-    PreprocessingHandlers,
-    GeoprocessingHandlers,
+    preprocessingBundles,
+    geoprocessingBundles,
     pkgGeo.version
   );
 }

@@ -1,19 +1,15 @@
 import { Manifest } from "../manifest";
-import {
-  Package,
-  PreprocessingHandlerModule,
-  GeoprocessingHandlerModule,
-} from "../types";
+import { Package, PreprocessingBundle, GeoprocessingBundle } from "../types";
 import { GeoprocessingJsonConfig } from "../../src/types";
 
 /**
- * Inspects project at projectPath and returns a Manifest
+ * Compiles project assets into a single Manifest
  */
 export function generateManifest(
   config: GeoprocessingJsonConfig,
   projectPkg: Package,
-  preprocessingHandlers: PreprocessingHandlerModule[],
-  geoprocessingHandlers: GeoprocessingHandlerModule[],
+  preprocessingBundles: PreprocessingBundle[],
+  geoprocessingBundles: GeoprocessingBundle[],
   version: string
 ): Manifest {
   const manifest: Manifest = {
@@ -40,10 +36,11 @@ export function generateManifest(
     uri: "",
   };
 
-  manifest.preprocessingFunctions = preprocessingHandlers.map((handler) => ({
+  manifest.preprocessingFunctions = preprocessingBundles.map((bundle) => ({
     purpose: "preprocessing",
-    ...handler.options,
-    vectorDataSources: handler.sources,
+    ...bundle.options,
+    handlerFilename: bundle.handlerFilename,
+    vectorDataSources: bundle.sources,
     rateLimited: false,
     rateLimit: 0,
     rateLimitPeriod: "daily" as const,
@@ -54,10 +51,11 @@ export function generateManifest(
     issAllowList: ["*"],
   }));
 
-  manifest.geoprocessingFunctions = geoprocessingHandlers.map((handler) => ({
+  manifest.geoprocessingFunctions = geoprocessingBundles.map((bundle) => ({
     purpose: "geoprocessing",
-    ...handler.options,
-    vectorDataSources: handler.sources,
+    ...bundle.options,
+    handlerFilename: bundle.handlerFilename,
+    vectorDataSources: bundle.sources,
     rateLimited: false,
     rateLimit: 0,
     rateLimitPeriod: "daily" as const,

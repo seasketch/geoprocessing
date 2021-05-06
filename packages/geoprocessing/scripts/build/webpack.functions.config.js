@@ -22,20 +22,25 @@ if (!fs.existsSync(dir)) {
 // These wrappers are necessary because otherwise the GeoprocessingHandler
 // class methods can't properly reference `this`
 const handlers = [];
-for (const func of geoprocessing.functions) {
+for (const funcPath of geoprocessing.functions) {
+  const handlerFilename = path.basename(funcPath);
   const handlerPath = path.join(
     GP_ROOT,
-    `.build/${path.basename(func).split(".").slice(0, -1).join(".")}Handler.ts`
+    `.build/${handlerFilename.split(".").slice(0, -1).join(".")}Handler.ts`
   );
   fs.writeFileSync(
     handlerPath,
     `
     import { VectorDataSource } from "@seasketch/geoprocessing";
-    import Handler from "${path.join(PROJECT_PATH, func).replace(/\.ts$/, "")}";
+    import Handler from "${path
+      .join(PROJECT_PATH, funcPath)
+      .replace(/\.ts$/, "")}";
     import { Context, APIGatewayProxyResult, APIGatewayProxyEvent } from "aws-lambda";
     export const handler = async (event:APIGatewayProxyEvent, context:Context): Promise<APIGatewayProxyResult> => {
       return await Handler.lambdaHandler(event, context);
     }
+    // Exports for manifest
+    export const handlerFilename = ${handlerFilename};
     export const options = Handler.options;
     export const sources = VectorDataSource.getRegisteredSources();
     VectorDataSource.clearRegisteredSources();

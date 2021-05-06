@@ -2,7 +2,8 @@ import fs from "fs";
 import path from "path";
 import { generateManifest } from "./generateManifest";
 import { GeoprocessingJsonConfig } from "../../src/types";
-import { Package, LambdaHandler } from "../types";
+import { Package, PreprocessingBundle, GeoprocessingBundle } from "../types";
+import { getHandlerFilenameFromSrcPath } from "../util/handler";
 
 // Inspect project file contents and generate manifest file
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
@@ -22,20 +23,19 @@ const projectPkg: Package = JSON.parse(
   fs.readFileSync(path.join(projectPath, "package.json")).toString()
 );
 
-function getHandlerModule(func: string) {
-  let name = path.basename(func);
-  const parts = name.split(".");
-  name = parts.slice(0, -1).join(".") + `Handler.js`;
-
-  // Need path to build dir
+/**
+ * Given full path to source geoprocessing function, requires and returns its pre-generated handler module
+ */
+function getHandlerModule(srcFuncPath: string) {
+  const name = getHandlerFilenameFromSrcPath(srcFuncPath);
   const p = path.join(buildPath, name.replace(`.js`, ""));
   return require(p);
 }
 
-const PreprocessingHandlers = config.preprocessingFunctions.map(
+const PreprocessingHandlers: PreprocessingBundle[] = config.preprocessingFunctions.map(
   getHandlerModule
 );
-const GeoprocessingHandlers = config.geoprocessingFunctions.map(
+const GeoprocessingHandlers: GeoprocessingBundle[] = config.geoprocessingFunctions.map(
   getHandlerModule
 );
 

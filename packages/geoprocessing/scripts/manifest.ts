@@ -2,26 +2,33 @@ import {
   GeoprocessingProject,
   GeoprocessingServiceMetadata,
   PreprocessingServiceMetadata,
-  PreprocessingService,
 } from "../src/types";
 import { VectorDataSourceDetails } from "../src/VectorDataSource";
 
+/**
+ * Select metadata of GeoprocessingBundle for manifest
+ */
 export interface GeoprocessingFunctionMetadata
   extends Omit<
     GeoprocessingServiceMetadata,
     "restrictedAccess" | "uri" | "endpoint"
   > {
+  handlerFilename: string;
   purpose: "geoprocessing" | "preprocessing";
   vectorDataSources: VectorDataSourceDetails[];
   uri?: string; // Add back to override as optional.  Type smell
   endpoint?: string; // Add back to override as optional.  Type smell
 }
 
+/**
+ * Select metadata of PreprocessingBundle for manifest
+ */
 export interface PreprocessingFunctionMetadata
   extends Omit<
     PreprocessingServiceMetadata,
     "restrictedAccess" | "uri" | "endpoint"
   > {
+  handlerFilename: string;
   purpose: "geoprocessing" | "preprocessing";
   uri?: string; // Add back to override as optional.  Type smell
   endpoint?: string; // Add back to override as optional.  Type smell

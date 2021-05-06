@@ -528,8 +528,7 @@ export default class GeoprocessingStack extends core.Stack {
     func: PreprocessingFunctionMetadata | GeoprocessingFunctionMetadata,
     index: number
   ) {
-    // @ts-ignore
-    const filename = path.basename(func.handler);
+    const filename = path.basename(func.handlerFilename);
     let policies: iam.PolicyStatement[] = [];
     let funcName = `gp-${this.props.manifest.title}-${func.title}-sync`;
 
@@ -591,8 +590,7 @@ export default class GeoprocessingStack extends core.Stack {
     func: GeoprocessingFunctionMetadata,
     index: number
   ) {
-    // @ts-ignore
-    const filename = path.basename(func.handler);
+    const filename = path.basename(func.handlerFilename);
     let policies: iam.PolicyStatement[] = [];
     let functionName = `gp-${this.props.manifest.title}-${func.title}-async`;
 

@@ -79,56 +79,17 @@ export default class GeoprocessingStack extends core.Stack {
     );
     const hasAsync = asyncFunctions.length > 0;
 
-    if (hasClients) this.createClientResources();
     this.createSharedResources();
+    if (hasClients) this.createClientResources();
     if (hasAsync) this.createSharedAsyncFunctionResources();
     syncFunctions.forEach(this.createSyncFunctionResources, this);
     asyncFunctions.forEach(this.createAsyncFunctionResources, this);
   }
 
-  createClientResources() {
-    // client bundle bucket
-    const websiteBucket = new s3.Bucket(this, "WebsiteBucket", {
-      bucketName: `${this.props.projectName}-client-${this.region}`,
-      websiteIndexDocument: "index.html",
-      publicReadAccess: true,
-    });
-
-    // client bundle cloudfront
-    this.clientCloudfront = new cloudfront.CloudFrontWebDistribution(
-      this,
-      "ClientDistribution",
-      {
-        originConfigs: [
-          {
-            s3OriginSource: {
-              s3BucketSource: websiteBucket,
-            },
-            behaviors: [{ isDefaultBehavior: true }],
-          },
-        ],
-      }
-    );
-
-    // Will run cloudfront invalidation on changes
-    new s3deploy.BucketDeployment(this, "DeployWebsiteIndex", {
-      sources: [
-        s3deploy.Source.asset(path.join(this.props.projectPath, ".build-web")),
-      ],
-      destinationBucket: websiteBucket,
-      distribution: this.clientCloudfront,
-      distributionPaths: ["/*"],
-      cacheControl: [
-        CacheControl.setPublic(),
-        CacheControl.maxAge(core.Duration.days(365)),
-      ],
-    });
-  }
-
   createSharedResources() {
     /**
-     * Bucket resources will be accessible via a public url
-     * Location should not be published and cannot be listed by clients.
+     * Publicly accessible bucket for results that aren't simple JSON serializable
+     * Location is not published or able to be listed.
      */
     this.publicBucket = new s3.Bucket(this, `PublicResults`, {
       bucketName: `${this.props.projectName}-public-${this.region}`,
@@ -182,7 +143,7 @@ export default class GeoprocessingStack extends core.Stack {
       this,
       `${this.props.projectName}-geoprocessing-api`,
       {
-        restApiName: `${this.props.projectName} geoprocessing service`,
+        restApiName: `${this.props.projectName}-geoprocessing-service`,
         description: `Serves API requests for ${this.props.projectName}.`,
         defaultCorsPreflightOptions: {
           allowOrigins: apigateway.Cors.ALL_ORIGINS,
@@ -217,6 +178,45 @@ export default class GeoprocessingStack extends core.Stack {
       }
     );
     this.api.root.addMethod("GET", getMetadataIntegration);
+  }
+
+  createClientResources() {
+    // client bundle bucket
+    const websiteBucket = new s3.Bucket(this, "ClientBucket", {
+      bucketName: `${this.props.projectName}-client-${this.region}`,
+      websiteIndexDocument: "index.html",
+      publicReadAccess: true,
+    });
+
+    /** Single cloudfront for stack */
+    this.clientCloudfront = new cloudfront.CloudFrontWebDistribution(
+      this,
+      "ClientDistribution",
+      {
+        originConfigs: [
+          {
+            s3OriginSource: {
+              s3BucketSource: websiteBucket,
+            },
+            behaviors: [{ isDefaultBehavior: true }],
+          },
+        ],
+      }
+    );
+
+    // Will run cloudfront invalidation on changes
+    new s3deploy.BucketDeployment(this, "DeployWebsiteIndex", {
+      sources: [
+        s3deploy.Source.asset(path.join(this.props.projectPath, ".build-web")),
+      ],
+      destinationBucket: websiteBucket,
+      distribution: this.clientCloudfront,
+      distributionPaths: ["/*"],
+      cacheControl: [
+        CacheControl.setPublic(),
+        CacheControl.maxAge(core.Duration.days(365)),
+      ],
+    });
   }
 
   createSharedAsyncFunctionResources() {

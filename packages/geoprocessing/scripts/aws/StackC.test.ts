@@ -1,6 +1,6 @@
 import * as core from "@aws-cdk/core";
 import path from "path";
-import { SynthUtils } from "@aws-cdk/assert";
+import { SynthUtils, stringLike } from "@aws-cdk/assert";
 import "@aws-cdk/assert/jest";
 import GeoprocessingStack from "./GeoprocessingStack";
 import createTestProject from "../testing/createTestProject";
@@ -27,10 +27,24 @@ describe("GeoprocessingStack - client only", () => {
 
     const assembly = SynthUtils.synthesize(stack);
     expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
+
+    // Check overall
+    expect(stack).toCountResources("AWS::CloudFront::Distribution", 1);
     expect(stack).toCountResources("AWS::S3::Bucket", 2);
-    expect(stack).toCountResources("AWS::ApiGateway::Method", 2);
+    expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1);
+    expect(stack).toCountResources("AWS::DynamoDB::Table", 2);
+
+    // Check shared resources
     expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
-      BucketName: `${projectName}-client-us-west-1`,
+      BucketName: `${projectName}-public-${manifest.region}`,
+    });
+    expect(stack).toHaveResourceLike("AWS::ApiGateway::RestApi", {
+      Name: `${projectName}-geoprocessing-service`,
+    });
+
+    // Check client
+    expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
+      BucketName: `${projectName}-client-${manifest.region}`,
     });
   });
 });

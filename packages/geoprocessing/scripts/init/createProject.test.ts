@@ -17,7 +17,7 @@ afterAll(async () => {
   await fs.remove(rootPath); // Cleanup
 });
 
-test.only("create-complete-project", async () => {
+it("should create project", async () => {
   await createProject(
     {
       name: projectName,

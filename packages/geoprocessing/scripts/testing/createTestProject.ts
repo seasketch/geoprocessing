@@ -18,7 +18,8 @@ export type TestComponentTypes =
   | "client";
 
 /**
- * Creates project core assets programmatically, with component requested, and returns the resulting manifest
+ * Creates project core assets in-memory, with the components requested, and returns the resulting manifest
+ * Useful for stubbing projects for testing purposes
  */
 export default async function createTestProject(
   projectName: string,

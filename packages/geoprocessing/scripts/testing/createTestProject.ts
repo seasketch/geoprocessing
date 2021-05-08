@@ -111,7 +111,7 @@ export default async function createTestProject(
 
     geoprocessingBundles = geoprocessingBundles.concat({
       handler: sgHandler.lambdaHandler,
-      handlerFilename: "testSyncGeprocessor.ts",
+      handlerFilename: "testSyncGeoprocessor.ts",
       options: sgHandler.options,
       sources: testSources,
     });

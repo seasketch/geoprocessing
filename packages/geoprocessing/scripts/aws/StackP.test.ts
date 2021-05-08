@@ -11,15 +11,15 @@ import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 
 const rootPath = `${__dirname}/__test__`;
 
-describe("GeoprocessingStack - client only", () => {
+describe("GeoprocessingStack - preprocessor only", () => {
   afterAll(() => cleanupBuildDirs(rootPath));
 
   it.only("should create a valid stack", async () => {
-    const projectName = "client-only";
+    const projectName = "preprocessor-only";
     const projectPath = path.join(rootPath, projectName);
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProject(projectName, ["client"]);
+    const manifest = await createTestProject(projectName, ["preprocessor"]);
     const app = new core.App();
     const stack = new GeoprocessingStack(app, projectName, {
       env: { region: manifest.region },
@@ -32,12 +32,12 @@ describe("GeoprocessingStack - client only", () => {
     expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
 
     // Check counts
-    expect(stack).toCountResources("AWS::CloudFront::Distribution", 1); // shared
-    expect(stack).toCountResources("AWS::S3::Bucket", 2);
+    expect(stack).toCountResources("AWS::CloudFront::Distribution", 0);
+    expect(stack).toCountResources("AWS::S3::Bucket", 1);
     expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1);
     expect(stack).toCountResources("AWS::ApiGateway::Stage", 1);
     expect(stack).toCountResources("AWS::DynamoDB::Table", 2);
-    expect(stack).toCountResources("AWS::Lambda::Function", 2); //metadataHandler, bucket sync
+    expect(stack).toCountResources("AWS::Lambda::Function", 2);
 
     expect(stack).toHaveResourceLike("AWS::ApiGateway::Stage", {
       StageName: STAGE_NAME,
@@ -61,9 +61,14 @@ describe("GeoprocessingStack - client only", () => {
       TableName: `gp-${projectName}-estimates`,
     });
 
-    // Check client
-    expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
-      BucketName: `gp-${projectName}-client`,
+    // Check preprocessor
+    expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
+      Handler: `${manifest.preprocessingFunctions[0].handlerFilename.replace(
+        /\.js$/,
+        ""
+      )}.handler`,
+      Runtime: NODE_RUNTIME.name,
     });
   });
 });

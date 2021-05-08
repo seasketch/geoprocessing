@@ -1,8 +1,8 @@
 import path from "path";
 import {
   Manifest,
-  PreprocessingFunctionMetadata,
   GeoprocessingFunctionMetadata,
+  SyncFunctionMetadata,
 } from "../manifest";
 import * as core from "@aws-cdk/core";
 import * as s3 from "@aws-cdk/aws-s3";
@@ -15,11 +15,13 @@ import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as s3deploy from "@aws-cdk/aws-s3-deployment";
 import { CacheControl } from "@aws-cdk/aws-s3-deployment";
 
-const NODE_RUNTIME = lambda.Runtime.NODEJS_14_X;
-const STAGE_NAME = "prod";
+export const NODE_RUNTIME = lambda.Runtime.NODEJS_14_X;
+export const STAGE_NAME = "prod";
 const SYNC_LAMBDA_TIMEOUT = 10; // seconds
 const ASYNC_LAMBDA_START_TIMEOUT = 5;
 const ASYNC_LAMBDA_RUN_TIMEOUT = 60;
+const SOCKET_HANDLER_TIMEOUT = core.Duration.seconds(3);
+const SOCKET_HANDLER_MEMORY = 1024;
 
 interface GeoprocessingStackProps extends core.StackProps {
   projectName: string;
@@ -47,8 +49,8 @@ export default class GeoprocessingStack extends core.Stack {
   tasksTbl: dynamodb.Table | undefined;
   /** Table for storing project function run times for estimating future runs */
   estimatesTbl: dynamodb.Table | undefined;
-  /** Table storing socket status */
-  socketsTbl: dynamodb.Table | undefined;
+  /** Table storing task result subscriptions */
+  subscriptionsTbl: dynamodb.Table | undefined;
   /** Public S3 bucket for storing additional geoprocessing output other than JSON results */
   publicBucket: s3.Bucket | undefined;
   /** URL to public bucket */
@@ -63,10 +65,7 @@ export default class GeoprocessingStack extends core.Stack {
 
     const hasClients = this.props.manifest.clients.length > 0;
     // sync - preprocessors and sync geoprocessors
-    const syncFunctions: (
-      | PreprocessingFunctionMetadata
-      | GeoprocessingFunctionMetadata
-    )[] = [
+    const syncFunctions: SyncFunctionMetadata[] = [
       ...this.props.manifest.preprocessingFunctions,
       ...this.props.manifest.geoprocessingFunctions.filter(
         (func) => func.executionMode === "sync"
@@ -91,8 +90,8 @@ export default class GeoprocessingStack extends core.Stack {
      * Publicly accessible bucket for results that aren't simple JSON serializable
      * Location is not published or able to be listed.
      */
-    this.publicBucket = new s3.Bucket(this, `PublicResults`, {
-      bucketName: `${this.props.projectName}-public-${this.region}`,
+    this.publicBucket = new s3.Bucket(this, `GpPublicBucket`, {
+      bucketName: `gp-${this.props.projectName}-public`,
       versioned: false,
       publicReadAccess: true,
       cors: [
@@ -108,58 +107,47 @@ export default class GeoprocessingStack extends core.Stack {
     });
     this.publicBucketUrl = this.publicBucket.urlForObject();
 
-    this.tasksTbl = new dynamodb.Table(
-      this,
-      `gp-${this.props.manifest.title}-tasks`,
-      {
-        partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
-        sortKey: { name: "service", type: dynamodb.AttributeType.STRING },
-        billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-        tableName: `gp-${this.props.manifest.title}-tasks`,
-        removalPolicy: core.RemovalPolicy.DESTROY,
-      }
-    );
+    this.tasksTbl = new dynamodb.Table(this, `GpTasksTable`, {
+      partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "service", type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      tableName: `gp-${this.props.projectName}-tasks`,
+      removalPolicy: core.RemovalPolicy.DESTROY,
+    });
     if (!this.tasksTbl) throw new Error("Error creating tasks table");
 
-    this.estimatesTbl = new dynamodb.Table(
-      this,
-      `gp-${this.props.manifest.title}-estimates`,
-      {
-        partitionKey: {
-          name: "service",
-          type: dynamodb.AttributeType.STRING,
-        },
-        billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-        tableName: `gp-${this.props.manifest.title}-estimates`,
-        removalPolicy: core.RemovalPolicy.DESTROY,
-      }
-    );
+    this.estimatesTbl = new dynamodb.Table(this, `GpEstimatesTable`, {
+      partitionKey: {
+        name: "service",
+        type: dynamodb.AttributeType.STRING,
+      },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      tableName: `gp-${this.props.projectName}-estimates`,
+      removalPolicy: core.RemovalPolicy.DESTROY,
+    });
     if (!this.estimatesTbl) throw new Error("Error creating estimates table");
 
     /**
      * REST API for all gp project endpoints
      */
-    this.api = new apigateway.RestApi(
-      this,
-      `${this.props.projectName}-geoprocessing-api`,
-      {
-        restApiName: `${this.props.projectName}-geoprocessing-service`,
-        description: `Serves API requests for ${this.props.projectName}.`,
-        defaultCorsPreflightOptions: {
-          allowOrigins: apigateway.Cors.ALL_ORIGINS,
-          allowMethods: apigateway.Cors.ALL_METHODS,
-        },
-        deployOptions: {
-          throttlingBurstLimit: 20,
-          throttlingRateLimit: 40,
-        },
-      }
-    );
+    this.api = new apigateway.RestApi(this, `GpRestApi`, {
+      restApiName: `gp-${this.props.projectName}`,
+      description: `Serves API requests for ${this.props.projectName}.`,
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigateway.Cors.ALL_ORIGINS,
+        allowMethods: apigateway.Cors.ALL_METHODS,
+      },
+      deployOptions: {
+        throttlingBurstLimit: 20,
+        throttlingRateLimit: 40,
+      },
+    });
 
     // Create lambda to return project metadata
-    const metadataHandler = new lambda.Function(this, "MetadataHandler", {
+    const metadataHandler = new lambda.Function(this, "GpMetadataHandler", {
       runtime: NODE_RUNTIME,
       code: lambda.Code.fromAsset(path.join(this.props.projectPath, ".build")),
+      functionName: `gp-${this.props.projectName}-metadata`,
       handler: "serviceHandlers.projectMetadata",
       environment: {
         ...(this.clientCloudfront
@@ -181,9 +169,9 @@ export default class GeoprocessingStack extends core.Stack {
   }
 
   createClientResources() {
-    // client bundle bucket
+    /** Client bundle bucket */
     const websiteBucket = new s3.Bucket(this, "ClientBucket", {
-      bucketName: `${this.props.projectName}-client-${this.region}`,
+      bucketName: `gp-${this.props.projectName}-client`,
       websiteIndexDocument: "index.html",
       publicReadAccess: true,
     });
@@ -193,6 +181,7 @@ export default class GeoprocessingStack extends core.Stack {
       this,
       "ClientDistribution",
       {
+        comment: `gp-${this.props.projectName}`,
         originConfigs: [
           {
             s3OriginSource: {
@@ -204,8 +193,10 @@ export default class GeoprocessingStack extends core.Stack {
       }
     );
 
-    // Will run cloudfront invalidation on changes
-    new s3deploy.BucketDeployment(this, "DeployWebsiteIndex", {
+    /** Sync local client bundle directory to bucket. Deploys a Lambda to do this.
+     * Runs cloudfront invalidation on changes
+     */
+    new s3deploy.BucketDeployment(this, "ClientBucketDeploy", {
       sources: [
         s3deploy.Source.asset(path.join(this.props.projectPath, ".build-web")),
       ],
@@ -221,9 +212,10 @@ export default class GeoprocessingStack extends core.Stack {
 
   createSharedAsyncFunctionResources() {
     // Socket interface for running async functions
-    this.apigatewaysocket = new apigateway.CfnApiV2(this, "apigatewaysocket", {
-      name: ` async-gp-service-${this.props.projectName}`,
+    this.apigatewaysocket = new apigateway.CfnApiV2(this, `SocketApi`, {
+      name: `gp-${this.props.projectName}-socket`,
       protocolType: "WEBSOCKET",
+      description: `Serves web socket requests for ${this.props.projectName}.`,
       routeSelectionExpression: "$request.body.message",
     });
 
@@ -234,24 +226,19 @@ export default class GeoprocessingStack extends core.Stack {
       actions: ["execute-api:ManageConnections"],
     });
 
-    // Table for tracking socket status
-    this.socketsTbl = new dynamodb.Table(
-      this,
-      `gp-${this.props.manifest.title}-websocketids`,
-      {
-        partitionKey: {
-          name: "connectionId",
-          type: dynamodb.AttributeType.STRING,
-        },
-        billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-        tableName: `gp-${this.props.manifest.title}-websocketids`,
-        removalPolicy: core.RemovalPolicy.DESTROY,
-      }
-    );
+    /** Track subscriptions - tasks and possibly more */
+    this.subscriptionsTbl = new dynamodb.Table(this, "GpSubscriptionsTable", {
+      partitionKey: {
+        name: "connectionId",
+        type: dynamodb.AttributeType.STRING,
+      },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      tableName: `gp-${this.props.projectName}-subscriptions`,
+      removalPolicy: core.RemovalPolicy.DESTROY,
+    });
 
     //policy to allow the socket apigateway to call the socket lambdas
     //without this the send messages fail
-
     //TODO: remove, this is never used?
     const apigatewayPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
@@ -259,42 +246,35 @@ export default class GeoprocessingStack extends core.Stack {
       actions: ["lambda:InvokeFunction", "sts:AssumeRole"],
     });
 
-    let projectName = `${this.props.manifest.title}`;
-    const asyncConnHandler = new lambda.Function(
-      this,
-      `${projectName}AsyncConnectionHandler`,
-      {
-        runtime: NODE_RUNTIME,
-        code: lambda.Code.fromAsset(
-          path.join(this.props.projectPath, ".build/")
-        ),
-        handler: "connect.connectHandler",
-        functionName: projectName + "-Connect",
-        memorySize: 1024,
-        timeout: core.Duration.seconds(3),
-        description: " for connecting sockets",
-        environment: {
-          SOCKETS_TABLE: this.socketsTbl.tableName,
-        },
-        initialPolicy: [sendExecutePolicy],
-      }
-    );
+    const subscribeHandler = new lambda.Function(this, "GpSubscribeHandler", {
+      runtime: NODE_RUNTIME,
+      code: lambda.Code.fromAsset(path.join(this.props.projectPath, ".build/")),
+      handler: "connect.connectHandler",
+      functionName: `gp-${this.props.projectName}-subscribe`,
+      memorySize: SOCKET_HANDLER_MEMORY,
+      timeout: SOCKET_HANDLER_TIMEOUT,
+      description: "Subscribe to messages",
+      environment: {
+        SOCKETS_TABLE: this.subscriptionsTbl.tableName,
+      },
+      initialPolicy: [sendExecutePolicy],
+    });
 
-    const asyncDisconnectHandler = new lambda.Function(
+    const unsubscribeHandler = new lambda.Function(
       this,
-      `${projectName}AsyncDisconnectHandler`,
+      "GpUnsubscribeHandler",
       {
         runtime: NODE_RUNTIME,
         code: lambda.Code.fromAsset(
           path.join(this.props.projectPath, ".build/")
         ),
         handler: "disconnect.disconnectHandler",
-        functionName: projectName + "-Disconnect",
-        memorySize: 1024,
-        timeout: core.Duration.seconds(3),
-        description: " for disconnecting sockets",
+        functionName: this.props.projectName + "-unsubscribe",
+        memorySize: SOCKET_HANDLER_MEMORY,
+        timeout: SOCKET_HANDLER_TIMEOUT,
+        description: "Unsubscribe from messages",
         environment: {
-          SOCKETS_TABLE: this.socketsTbl.tableName,
+          SOCKETS_TABLE: this.subscriptionsTbl.tableName,
         },
         initialPolicy: [sendExecutePolicy],
       }
@@ -304,9 +284,9 @@ export default class GeoprocessingStack extends core.Stack {
      * access role for the socket api to access the socket lambda
      * TODO: not sure need all these...need to double check
      */
-    const connPolicy = new iam.PolicyStatement({
+    const socketApiSubscribePolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
-      resources: [asyncConnHandler.functionArn],
+      resources: [subscribeHandler.functionArn],
       actions: [
         "lambda:InvokeFunction",
         "dynamodb:BatchGetItem",
@@ -319,28 +299,33 @@ export default class GeoprocessingStack extends core.Stack {
       ],
     });
 
-    const connRole = new iam.Role(this, "roleConn", {
-      assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
-    });
-    connRole.addToPolicy(connPolicy);
-    const connDRole = new iam.Role(this, "roleConnDynamo", {
+    const socketApiSubscribeRole = new iam.Role(
+      this,
+      "GpSocketApiSubscribeRole",
+      {
+        assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+      }
+    );
+    socketApiSubscribeRole.addToPolicy(socketApiSubscribePolicy);
+    const dynamoSubscribeRole = new iam.Role(this, "GpDynamoSubscribeRole", {
       assumedBy: new iam.ServicePrincipal("dynamodb.amazonaws.com"),
     });
-    connDRole.addToPolicy(connPolicy);
-    const apigatewayroutesocketconnect = new apigateway.CfnRouteV2(
+    dynamoSubscribeRole.addToPolicy(socketApiSubscribePolicy);
+
+    const socketApiSubscribeRoute = new apigateway.CfnRouteV2(
       this,
-      "apigatewayroutesocketconnect",
+      "GpSocketApiSubscribeRoute",
       {
         apiId: this.apigatewaysocket.ref,
         routeKey: "$connect",
         authorizationType: "NONE",
-        operationName: "ConnectRoute",
+        operationName: "SubscribeRoute",
 
         target:
           "integrations/" +
           new apigateway.CfnIntegrationV2(
             this,
-            "apigatewayintegrationsocketconnect",
+            "GpSocketApiSubscribeHandlerIntegration",
             {
               apiId: this.apigatewaysocket.ref,
               integrationType: "AWS_PROXY",
@@ -348,17 +333,17 @@ export default class GeoprocessingStack extends core.Stack {
                 "arn:aws:apigateway:" +
                 this.region +
                 ":lambda:path/2015-03-31/functions/" +
-                asyncConnHandler.functionArn +
+                subscribeHandler.functionArn +
                 "/invocations",
-              credentialsArn: connRole.roleArn,
+              credentialsArn: socketApiSubscribeRole.roleArn,
             }
           ).ref,
       }
     );
 
-    const disPolicy = new iam.PolicyStatement({
+    const socketApiDisconnectPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
-      resources: [asyncDisconnectHandler.functionArn],
+      resources: [unsubscribeHandler.functionArn],
       actions: [
         "lambda:InvokeFunction",
         "dynamodb:BatchGetItem",
@@ -371,29 +356,36 @@ export default class GeoprocessingStack extends core.Stack {
       ],
     });
 
-    const disRole = new iam.Role(this, "roleDis", {
-      assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
-    });
-    const disDRole = new iam.Role(this, "roleDisDynamo", {
-      assumedBy: new iam.ServicePrincipal("dynamodb.amazonaws.com"),
-    });
-    disDRole.addToPolicy(disPolicy);
-    disRole.addToPolicy(disPolicy);
-
-    // disconnect route
-    const apigatewayroutesocketdisconnect = new apigateway.CfnRouteV2(
+    const socketApiUnsubscribeRole = new iam.Role(
       this,
-      "apigatewayroutesocketdisconnect",
+      "GpSocketApiUnsubscribeRole",
+      {
+        assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
+      }
+    );
+    const dynamoUnsubscribeRole = new iam.Role(
+      this,
+      "GpDynamoUnsubscribeRole",
+      {
+        assumedBy: new iam.ServicePrincipal("dynamodb.amazonaws.com"),
+      }
+    );
+    dynamoUnsubscribeRole.addToPolicy(socketApiDisconnectPolicy);
+    socketApiUnsubscribeRole.addToPolicy(socketApiDisconnectPolicy);
+
+    const socketApiUnsubscribeRoute = new apigateway.CfnRouteV2(
+      this,
+      "GpSocketApiUnsubscribeRoute",
       {
         apiId: this.apigatewaysocket.ref,
         routeKey: "$disconnect",
         authorizationType: "NONE",
-        operationName: "DisconnectRoute",
+        operationName: "UnsubscribeRoute",
         target:
           "integrations/" +
           new apigateway.CfnIntegrationV2(
             this,
-            "apigatewayintegrationsocketdisconnect",
+            "GpSocketApiUnsubscribeHandlerIntegration",
             {
               apiId: this.apigatewaysocket.ref,
               integrationType: "AWS_PROXY",
@@ -401,38 +393,34 @@ export default class GeoprocessingStack extends core.Stack {
                 "arn:aws:apigateway:" +
                 this.region +
                 ":lambda:path/2015-03-31/functions/" +
-                asyncDisconnectHandler.functionArn +
+                unsubscribeHandler.functionArn +
                 "/invocations",
-              credentialsArn: disRole.roleArn,
+              credentialsArn: socketApiUnsubscribeRole.roleArn,
             }
           ).ref,
       }
     );
-    const asyncSendHandler = new lambda.Function(
-      this,
-      `${projectName}AsyncSendHandler2`,
-      {
-        runtime: NODE_RUNTIME,
-        code: lambda.Code.fromAsset(
-          path.join(this.props.projectPath, ".build/")
-        ),
-        handler: "sendmessage.sendHandler",
-        functionName: projectName + "-SendMessage",
-        memorySize: 1024,
-        timeout: core.Duration.seconds(3),
-        description: " for sending messages on sockets",
-        environment: {
-          SOCKETS_TABLE: this.socketsTbl.tableName,
-        },
-        initialPolicy: [sendExecutePolicy],
-      }
-    );
-    const sendRole = new iam.Role(this, "roleSend", {
+
+    /** Send message to subscribed clients */
+    const sendHandler = new lambda.Function(this, "GpSendHandler", {
+      runtime: NODE_RUNTIME,
+      code: lambda.Code.fromAsset(path.join(this.props.projectPath, ".build/")),
+      handler: "sendmessage.sendHandler",
+      functionName: this.props.projectName + "-send",
+      memorySize: SOCKET_HANDLER_MEMORY,
+      timeout: SOCKET_HANDLER_TIMEOUT,
+      description: " for sending messages on sockets",
+      environment: {
+        SOCKETS_TABLE: this.subscriptionsTbl.tableName,
+      },
+      initialPolicy: [sendExecutePolicy],
+    });
+    const socketApiSendRole = new iam.Role(this, "GpSocketApiSendRole", {
       assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
     });
-    const sendPolicy = new iam.PolicyStatement({
+    const socketApiSendPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
-      resources: [asyncSendHandler.functionArn],
+      resources: [sendHandler.functionArn],
       actions: [
         "lambda:InvokeFunction",
         "execute-api:ManageConnections",
@@ -449,15 +437,15 @@ export default class GeoprocessingStack extends core.Stack {
       ],
     });
 
-    sendRole.addToPolicy(sendPolicy);
-    const sendDRole = new iam.Role(this, "roleSendDynamo", {
+    socketApiSendRole.addToPolicy(socketApiSendPolicy);
+    const dynamoSendRole = new iam.Role(this, "GpDynamoSendRole", {
       assumedBy: new iam.ServicePrincipal("dynamodb.amazonaws.com"),
     });
-    sendDRole.addToPolicy(sendPolicy);
+    dynamoSendRole.addToPolicy(socketApiSendPolicy);
 
-    const apigatewayroutesocketsend = new apigateway.CfnRouteV2(
+    const socketApiSendRoute = new apigateway.CfnRouteV2(
       this,
-      "apigatewayroutesocketsend",
+      "GpSocketApiSendRoute",
       {
         apiId: this.apigatewaysocket.ref,
         routeKey: "sendmessage",
@@ -467,7 +455,7 @@ export default class GeoprocessingStack extends core.Stack {
           "integrations/" +
           new apigateway.CfnIntegrationV2(
             this,
-            "apigatewayintegrationsocketsend",
+            "GpSocketApiSendHandlerIntegration",
             {
               apiId: this.apigatewaysocket.ref,
               integrationType: "AWS_PROXY",
@@ -476,61 +464,54 @@ export default class GeoprocessingStack extends core.Stack {
                 "arn:aws:apigateway:" +
                 this.region +
                 ":lambda:path/2015-03-31/functions/" +
-                asyncSendHandler.functionArn +
+                sendHandler.functionArn +
                 "/invocations",
-              credentialsArn: sendRole.roleArn,
+              credentialsArn: socketApiSendRole.roleArn,
             }
           ).ref,
       }
     );
 
-    this.socketsTbl.grantReadWriteData(asyncConnHandler);
-    this.socketsTbl.grantReadWriteData(asyncDisconnectHandler);
-    this.socketsTbl.grantReadWriteData(asyncSendHandler);
-    this.estimatesTbl?.grantReadWriteData(asyncSendHandler);
+    this.subscriptionsTbl.grantReadWriteData(subscribeHandler);
+    this.subscriptionsTbl.grantReadWriteData(unsubscribeHandler);
+    this.subscriptionsTbl.grantReadWriteData(sendHandler);
+    this.estimatesTbl?.grantReadWriteData(sendHandler);
 
     // deployment
-    const apigatewaydeploymentsocket2 = new apigateway.CfnDeploymentV2(
+    const socketApiDeployment = new apigateway.CfnDeploymentV2(
       this,
-      "apigatewaydeploymentsocket",
+      "GpSocketApiDeployment",
       {
         apiId: this.apigatewaysocket.ref,
       }
     );
 
     // stage
-    const apigatewaystagesocket2 = new apigateway.CfnStageV2(
-      this,
-      "apigatewaystagesocket2",
-      {
-        apiId: this.apigatewaysocket.ref,
-        deploymentId: apigatewaydeploymentsocket2.ref,
-        stageName: STAGE_NAME,
+    const socketApiStage = new apigateway.CfnStageV2(this, "GpSocketApiStage", {
+      apiId: this.apigatewaysocket.ref,
+      deploymentId: socketApiDeployment.ref,
+      stageName: STAGE_NAME,
 
-        defaultRouteSettings: {
-          throttlingBurstLimit: 500,
-          throttlingRateLimit: 1000,
-        },
-      }
-    );
+      defaultRouteSettings: {
+        throttlingBurstLimit: 500,
+        throttlingRateLimit: 1000,
+      },
+    });
 
     // all the routes are dependencies of the deployment
     const routes = new core.ConcreteDependable();
-    routes.add(apigatewayroutesocketconnect);
-    routes.add(apigatewayroutesocketdisconnect);
-    routes.add(apigatewayroutesocketsend);
+    routes.add(socketApiSubscribeRoute);
+    routes.add(socketApiUnsubscribeRoute);
+    routes.add(socketApiSendRoute);
 
     // Add the dependency
-    apigatewaydeploymentsocket2.node.addDependency(routes);
+    socketApiDeployment.node.addDependency(routes);
   }
 
-  createSyncFunctionResources(
-    func: PreprocessingFunctionMetadata | GeoprocessingFunctionMetadata,
-    index: number
-  ) {
+  createSyncFunctionResources(func: SyncFunctionMetadata, index: number) {
     const filename = path.basename(func.handlerFilename);
     let policies: iam.PolicyStatement[] = [];
-    let funcName = `gp-${this.props.manifest.title}-${func.title}-sync`;
+    let functionName = `gp-${this.props.projectName}-sync-${func.title}`;
 
     if (!this.publicBucket || !this.publicBucketUrl)
       throw new Error(
@@ -545,21 +526,27 @@ export default class GeoprocessingStack extends core.Stack {
     if (!this.api)
       throw new Error("createSyncFunctionResources - API not defined");
 
-    const syncHandler = new lambda.Function(this, `${func.title}Handler`, {
-      runtime: NODE_RUNTIME,
-      code: lambda.Code.fromAsset(path.join(this.props.projectPath, ".build")),
-      handler: filename.replace(/\.js$/, "") + ".handler",
-      functionName: funcName,
-      memorySize: func.memory,
-      timeout: core.Duration.seconds(func.timeout || SYNC_LAMBDA_TIMEOUT),
-      description: func.description,
-      initialPolicy: policies,
-      environment: {
-        publicBucketUrl: this.publicBucketUrl,
-        TASKS_TABLE: this.tasksTbl.tableName,
-        ESTIMATES_TABLE: this.estimatesTbl.tableName,
-      },
-    });
+    const syncHandler = new lambda.Function(
+      this,
+      `GpSyncHandler-${func.title}`,
+      {
+        runtime: NODE_RUNTIME,
+        code: lambda.Code.fromAsset(
+          path.join(this.props.projectPath, ".build")
+        ),
+        handler: filename.replace(/\.js$/, "") + ".handler",
+        functionName,
+        memorySize: func.memory,
+        timeout: core.Duration.seconds(func.timeout || SYNC_LAMBDA_TIMEOUT),
+        description: func.description,
+        initialPolicy: policies,
+        environment: {
+          publicBucketUrl: this.publicBucketUrl,
+          TASKS_TABLE: this.tasksTbl.tableName,
+          ESTIMATES_TABLE: this.estimatesTbl.tableName,
+        },
+      }
+    );
 
     if (func.purpose === "geoprocessing") {
       this.tasksTbl.grantReadWriteData(syncHandler);
@@ -575,6 +562,8 @@ export default class GeoprocessingStack extends core.Stack {
       }
     );
     const resource = this.api.root.addResource(func.title);
+
+    // TODO: remove due to unused? does it do anything?
     const apigatewayPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
@@ -592,7 +581,8 @@ export default class GeoprocessingStack extends core.Stack {
   ) {
     const filename = path.basename(func.handlerFilename);
     let policies: iam.PolicyStatement[] = [];
-    let functionName = `gp-${this.props.manifest.title}-${func.title}-async`;
+    const startFunctionName = `gp-${this.props.projectName}-async-${func.title}-start`;
+    const runFunctionName = `gp-${this.props.projectName}-async-${func.title}-run`;
 
     if (!this.publicBucket || !this.publicBucketUrl)
       throw new Error(
@@ -604,9 +594,9 @@ export default class GeoprocessingStack extends core.Stack {
       throw new Error(
         "createAsyncFunctionResources - Estimates table not defined"
       );
-    if (!this.socketsTbl)
+    if (!this.subscriptionsTbl)
       throw new Error(
-        "createAsyncFunctionResources - Sockets table not defined"
+        "createAsyncFunctionResources - Subscriptions table not defined"
       );
     if (!this.api)
       throw new Error("createAsyncFunctionResources - API not defined");
@@ -620,8 +610,7 @@ export default class GeoprocessingStack extends core.Stack {
     const baseAsyncEnvOptions = {
       TASKS_TABLE: this.tasksTbl?.tableName,
       ESTIMATES_TABLE: this.estimatesTbl?.tableName,
-      SOCKETS_TABLE: this.socketsTbl?.tableName,
-      ASYNC_HANDLER_FUNCTION_NAME: functionName,
+      SOCKETS_TABLE: this.subscriptionsTbl?.tableName,
       WSS_REF: this.apigatewaysocket.ref,
       WSS_REGION: this.region,
       WSS_STAGE: STAGE_NAME,
@@ -630,14 +619,14 @@ export default class GeoprocessingStack extends core.Stack {
     // First Lambda is for starting GP function with http rest interface
     const asyncStartHandler = new lambda.Function(
       this,
-      `${func.title}Handler`,
+      `GpAsyncHandler-${func.title}-start`,
       {
         runtime: NODE_RUNTIME,
         code: lambda.Code.fromAsset(
           path.join(this.props.projectPath, ".build")
         ),
         handler: filename.replace(/\.js$/, "") + ".handler",
-        functionName,
+        functionName: startFunctionName,
         memorySize: func.memory,
         timeout: core.Duration.seconds(ASYNC_LAMBDA_START_TIMEOUT),
         description: func.description,
@@ -645,6 +634,7 @@ export default class GeoprocessingStack extends core.Stack {
         environment: {
           ...baseAsyncEnvOptions,
           ASYNC_REQUEST_TYPE: "start",
+          RUN_HANDLER_FUNCTION_NAME: runFunctionName,
         },
       }
     );
@@ -673,7 +663,7 @@ export default class GeoprocessingStack extends core.Stack {
     // Second Lambda is for running GP function and communicating results with web socket interface
     const asyncRunHandler = new lambda.Function(
       this,
-      `${func.title}AsyncRunHandler`,
+      `GpAsyncHandler-${func.title}-run`,
       {
         runtime: NODE_RUNTIME,
         code: lambda.Code.fromAsset(
@@ -681,7 +671,7 @@ export default class GeoprocessingStack extends core.Stack {
         ),
 
         handler: filename.replace(/\.js$/, "") + ".handler",
-        functionName,
+        functionName: runFunctionName,
         memorySize: func.memory,
         timeout: core.Duration.seconds(
           func.timeout || ASYNC_LAMBDA_RUN_TIMEOUT
@@ -701,10 +691,10 @@ export default class GeoprocessingStack extends core.Stack {
       actions: ["lambda:InvokeFunction"],
     });
 
-    const roleLambda = new iam.Role(this, "roleLambda" + index, {
+    const asyncLambdaRole = new iam.Role(this, "GpAsyncLambdaRole" + index, {
       assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
     });
-    roleLambda.addToPolicy(asyncLambdaPolicy);
+    asyncLambdaRole.addToPolicy(asyncLambdaPolicy);
     policies = [asyncLambdaPolicy];
 
     this.tasksTbl.grantReadWriteData(asyncRunHandler);

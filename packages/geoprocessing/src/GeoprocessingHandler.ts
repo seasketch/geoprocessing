@@ -25,7 +25,7 @@ const NODE_ENV = process.env.NODE_ENV;
 const TASKS_TABLE = process.env.TASKS_TABLE;
 const ESTIMATES_TABLE = process.env.ESTIMATES_TABLE;
 const ASYNC_REQUEST_TYPE = process.env.ASYNC_REQUEST_TYPE;
-const ASYNC_HANDLER_FUNCTION_NAME = process.env.ASYNC_HANDLER_FUNCTION_NAME;
+const RUN_HANDLER_FUNCTION_NAME = process.env.RUN_HANDLER_FUNCTION_NAME;
 const WSS_REF = process.env.WSS_REF || "";
 const WSS_REGION = process.env.WSS_REGION || "";
 const WSS_STAGE = process.env.WSS_STAGE || "";
@@ -231,8 +231,7 @@ export class GeoprocessingHandler<T> {
     } else {
       // Otherwise must be initial request in async executionMode
       // Invoke a second lambda to run the gp function and return incomplete task meta
-      const asyncExecutionName = ASYNC_HANDLER_FUNCTION_NAME;
-      if (!asyncExecutionName) {
+      if (!RUN_HANDLER_FUNCTION_NAME) {
         return Tasks.fail(task, `No async handler function name defined`);
       }
 
@@ -248,7 +247,7 @@ export class GeoprocessingHandler<T> {
         event.queryStringParameters = params;
         let payload = JSON.stringify(event);
         await Lambda.invoke({
-          FunctionName: asyncExecutionName,
+          FunctionName: RUN_HANDLER_FUNCTION_NAME,
           ClientContext: JSON.stringify(task),
           InvocationType: "Event",
           Payload: payload,
@@ -264,7 +263,8 @@ export class GeoprocessingHandler<T> {
         };
       } catch (e) {
         const failMessage =
-          `Could not launch async handler function: ` + asyncExecutionName;
+          `Could not launch async handler function: ` +
+          RUN_HANDLER_FUNCTION_NAME;
         return Tasks.fail(task, failMessage);
       }
     }

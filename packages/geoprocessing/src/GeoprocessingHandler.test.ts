@@ -72,7 +72,7 @@ fetchMock.get("https://example.com/geom/123", JSON.stringify(exampleSketch));
 
 test("Handler can be constructed an run simple async geoprocessing", async () => {
   /*
-  process.env.ASYNC_HANDLER_FUNCTION_NAME = "MockLambda";
+  process.env.RUN_HANDLER_FUNCTION_NAME = "MockLambda";
   const handler = new GeoprocessingHandler(
     async (sketch) => {
       return { foo: "bar", id: sketch.properties.id };

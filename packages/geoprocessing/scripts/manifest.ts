@@ -34,6 +34,10 @@ export interface PreprocessingFunctionMetadata
   endpoint?: string; // Add back to override as optional.  Type smell
 }
 
+export type SyncFunctionMetadata =
+  | PreprocessingFunctionMetadata
+  | GeoprocessingFunctionMetadata;
+
 export interface Manifest extends GeoprocessingProject {
   preprocessingFunctions: PreprocessingFunctionMetadata[];
   geoprocessingFunctions: GeoprocessingFunctionMetadata[];

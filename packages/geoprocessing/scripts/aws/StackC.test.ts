@@ -20,6 +20,11 @@ describe("GeoprocessingStack - client only", () => {
     await setupBuildDirs(projectPath);
 
     const manifest = await createTestProject(projectName, ["client"]);
+
+    expect(manifest.clients.length).toBe(1);
+    expect(manifest.preprocessingFunctions.length).toBe(0);
+    expect(manifest.geoprocessingFunctions.length).toBe(0);
+
     const app = new core.App();
     const stack = new GeoprocessingStack(app, projectName, {
       env: { region: manifest.region },
@@ -28,7 +33,6 @@ describe("GeoprocessingStack - client only", () => {
       projectPath,
     });
 
-    const assembly = SynthUtils.synthesize(stack);
     expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
 
     // Check counts
@@ -61,7 +65,7 @@ describe("GeoprocessingStack - client only", () => {
       TableName: `gp-${projectName}-estimates`,
     });
 
-    // Check client
+    // Check client resources
     expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
       BucketName: `gp-${projectName}-client`,
     });

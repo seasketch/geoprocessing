@@ -4,6 +4,7 @@ import {
   PreprocessingServiceMetadata,
 } from "../src/types";
 import { VectorDataSourceDetails } from "../src/VectorDataSource";
+import { getHandlerFilenameFromSrcPath } from "./util/handler";
 
 /**
  * Select metadata of GeoprocessingBundle for manifest
@@ -34,7 +35,7 @@ export interface PreprocessingFunctionMetadata
   endpoint?: string; // Add back to override as optional.  Type smell
 }
 
-export type SyncFunctionMetadata =
+export type ProcessingFunctionMetadata =
   | PreprocessingFunctionMetadata
   | GeoprocessingFunctionMetadata;
 
@@ -43,4 +44,8 @@ export interface Manifest extends GeoprocessingProject {
   geoprocessingFunctions: GeoprocessingFunctionMetadata[];
   region: string;
   version: string;
+}
+
+export function getHandlerFilename(funcMeta: ProcessingFunctionMetadata) {
+  return `${funcMeta.handlerFilename.replace(/\.js$/, "")}.handler`;
 }

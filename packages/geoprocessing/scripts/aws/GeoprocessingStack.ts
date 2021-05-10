@@ -2,7 +2,7 @@ import path from "path";
 import {
   Manifest,
   GeoprocessingFunctionMetadata,
-  SyncFunctionMetadata,
+  ProcessingFunctionMetadata,
 } from "../manifest";
 import * as core from "@aws-cdk/core";
 import * as s3 from "@aws-cdk/aws-s3";
@@ -65,7 +65,7 @@ export default class GeoprocessingStack extends core.Stack {
 
     const hasClients = this.props.manifest.clients.length > 0;
     // sync - preprocessors and sync geoprocessors
-    const syncFunctions: SyncFunctionMetadata[] = [
+    const syncFunctions: ProcessingFunctionMetadata[] = [
       ...this.props.manifest.preprocessingFunctions,
       ...this.props.manifest.geoprocessingFunctions.filter(
         (func) => func.executionMode === "sync"
@@ -269,7 +269,7 @@ export default class GeoprocessingStack extends core.Stack {
           path.join(this.props.projectPath, ".build/")
         ),
         handler: "disconnect.disconnectHandler",
-        functionName: this.props.projectName + "-unsubscribe",
+        functionName: `gp-${this.props.projectName}-unsubscribe`,
         memorySize: SOCKET_HANDLER_MEMORY,
         timeout: SOCKET_HANDLER_TIMEOUT,
         description: "Unsubscribe from messages",
@@ -406,7 +406,7 @@ export default class GeoprocessingStack extends core.Stack {
       runtime: NODE_RUNTIME,
       code: lambda.Code.fromAsset(path.join(this.props.projectPath, ".build/")),
       handler: "sendmessage.sendHandler",
-      functionName: this.props.projectName + "-send",
+      functionName: `gp-${this.props.projectName}-send`,
       memorySize: SOCKET_HANDLER_MEMORY,
       timeout: SOCKET_HANDLER_TIMEOUT,
       description: " for sending messages on sockets",
@@ -508,7 +508,7 @@ export default class GeoprocessingStack extends core.Stack {
     socketApiDeployment.node.addDependency(routes);
   }
 
-  createSyncFunctionResources(func: SyncFunctionMetadata, index: number) {
+  createSyncFunctionResources(func: ProcessingFunctionMetadata, index: number) {
     const filename = path.basename(func.handlerFilename);
     let policies: iam.PolicyStatement[] = [];
     let functionName = `gp-${this.props.projectName}-sync-${func.title}`;

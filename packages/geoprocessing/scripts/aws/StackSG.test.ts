@@ -12,19 +12,19 @@ import { getHandlerFilename } from "../manifest";
 
 const rootPath = `${__dirname}/__test__`;
 
-describe("GeoprocessingStack - preprocessor only", () => {
+describe("GeoprocessingStack - sync geoprocessor only", () => {
   afterAll(() => cleanupBuildDirs(rootPath));
 
   it.only("should create a valid stack", async () => {
-    const projectName = "preprocessor-only";
+    const projectName = "sync-geoprocessor-only";
     const projectPath = path.join(rootPath, projectName);
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProject(projectName, ["preprocessor"]);
+    const manifest = await createTestProject(projectName, ["syncGeoprocessor"]);
 
     expect(manifest.clients.length).toBe(0);
-    expect(manifest.preprocessingFunctions.length).toBe(1);
-    expect(manifest.geoprocessingFunctions.length).toBe(0);
+    expect(manifest.preprocessingFunctions.length).toBe(0);
+    expect(manifest.geoprocessingFunctions.length).toBe(1);
 
     const app = new core.App();
     const stack = new GeoprocessingStack(app, projectName, {
@@ -66,10 +66,10 @@ describe("GeoprocessingStack - preprocessor only", () => {
       TableName: `gp-${projectName}-estimates`,
     });
 
-    // Check preprocessor resources
+    // Check geoprocessor
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-      FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
-      Handler: getHandlerFilename(manifest.preprocessingFunctions[0]),
+      FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[0].title}`,
+      Handler: getHandlerFilename(manifest.geoprocessingFunctions[0]),
       Runtime: NODE_RUNTIME.name,
     });
   });

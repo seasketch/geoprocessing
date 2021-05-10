@@ -33,8 +33,6 @@ describe("GeoprocessingStack - client only", () => {
       projectPath,
     });
 
-    expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
-
     // Check counts
     expect(stack).toCountResources("AWS::CloudFront::Distribution", 1); // shared
     expect(stack).toCountResources("AWS::S3::Bucket", 2);

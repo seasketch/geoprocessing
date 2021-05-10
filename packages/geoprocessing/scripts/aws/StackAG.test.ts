@@ -36,8 +36,6 @@ describe("GeoprocessingStack - async geoprocessor only", () => {
       projectPath,
     });
 
-    expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
-
     // Check counts
     expect(stack).toCountResources("AWS::CloudFront::Distribution", 0);
     expect(stack).toCountResources("AWS::S3::Bucket", 1);

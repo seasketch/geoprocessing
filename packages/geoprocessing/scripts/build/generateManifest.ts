@@ -36,35 +36,39 @@ export function generateManifest(
     uri: "",
   };
 
-  manifest.preprocessingFunctions = preprocessingBundles.map((bundle) => ({
-    purpose: "preprocessing",
-    ...bundle.options,
-    handlerFilename: bundle.handlerFilename,
-    vectorDataSources: bundle.sources,
-    rateLimited: false,
-    rateLimit: 0,
-    rateLimitPeriod: "daily" as const,
-    rateLimitConsumed: 0,
-    medianDuration: 0,
-    medianCost: 0,
-    type: "javascript" as const,
-    issAllowList: ["*"],
-  }));
+  if (preprocessingBundles) {
+    manifest.preprocessingFunctions = preprocessingBundles.map((bundle) => ({
+      purpose: "preprocessing",
+      ...bundle.options,
+      handlerFilename: bundle.handlerFilename,
+      vectorDataSources: bundle.sources,
+      rateLimited: false,
+      rateLimit: 0,
+      rateLimitPeriod: "daily" as const,
+      rateLimitConsumed: 0,
+      medianDuration: 0,
+      medianCost: 0,
+      type: "javascript" as const,
+      issAllowList: ["*"],
+    }));
+  }
 
-  manifest.geoprocessingFunctions = geoprocessingBundles.map((bundle) => ({
-    purpose: "geoprocessing",
-    ...bundle.options,
-    handlerFilename: bundle.handlerFilename,
-    vectorDataSources: bundle.sources,
-    rateLimited: false,
-    rateLimit: 0,
-    rateLimitPeriod: "daily" as const,
-    rateLimitConsumed: 0,
-    medianDuration: 0,
-    medianCost: 0,
-    type: "javascript" as const,
-    issAllowList: ["*"],
-  }));
+  if (manifest.geoprocessingFunctions) {
+    manifest.geoprocessingFunctions = geoprocessingBundles.map((bundle) => ({
+      purpose: "geoprocessing",
+      ...bundle.options,
+      handlerFilename: bundle.handlerFilename,
+      vectorDataSources: bundle.sources,
+      rateLimited: false,
+      rateLimit: 0,
+      rateLimitPeriod: "daily" as const,
+      rateLimitConsumed: 0,
+      medianDuration: 0,
+      medianCost: 0,
+      type: "javascript" as const,
+      issAllowList: ["*"],
+    }));
+  }
 
   return manifest;
 }

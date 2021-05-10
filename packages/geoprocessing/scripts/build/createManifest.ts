@@ -9,7 +9,7 @@ import { getHandlerFilenameFromSrcPath } from "../util/handler";
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 
 const projectPath = process.env.PROJECT_PATH;
-const buildPath = "../../../";
+const buildPath = path.join("..", "..", "..", ".build");
 
 const config: GeoprocessingJsonConfig = JSON.parse(
   fs.readFileSync(path.join(projectPath, "geoprocessing.json")).toString()
@@ -32,12 +32,12 @@ function getHandlerModule(srcFuncPath: string) {
   return require(p);
 }
 
-const preprocessingBundles: PreprocessingBundle[] = config.preprocessingFunctions.map(
-  getHandlerModule
-);
-const geoprocessingBundles: GeoprocessingBundle[] = config.geoprocessingFunctions.map(
-  getHandlerModule
-);
+const preprocessingBundles: PreprocessingBundle[] =
+  config.preprocessingFunctions &&
+  config.preprocessingFunctions.map(getHandlerModule);
+const geoprocessingBundles: GeoprocessingBundle[] =
+  config.geoprocessingFunctions &&
+  config.geoprocessingFunctions.map(getHandlerModule);
 
 const manifest = generateManifest(
   config,

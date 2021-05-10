@@ -12,6 +12,9 @@ if (!PROJECT_PATH) {
 const geoprocessing = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
 );
+if (!geoprocessing) {
+  throw new Error("geoprocessing.json not found");
+}
 
 const dir = path.join(GP_ROOT, ".build");
 
@@ -19,10 +22,11 @@ if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }
 
-// These wrappers are necessary because otherwise the GeoprocessingHandler
-// class methods can't properly reference `this`
-const handlers = [];
-for (const funcPath of geoprocessing.functions) {
+/**
+ * Generates a root function for each Lambda that manages request and response, invoking the underlying Handler.
+ * This wrapper is necessary because otherwise the GeoprocessingHandler class methods can't properly reference `this`
+ */
+function generateHandler(funcPath) {
   const handlerFilename = path.basename(funcPath);
   const handlerPath = path.join(
     GP_ROOT,
@@ -40,18 +44,31 @@ for (const funcPath of geoprocessing.functions) {
       return await Handler.lambdaHandler(event, context);
     }
     // Exports for manifest
-    export const handlerFilename = ${handlerFilename};
+    export const handlerFilename = '${handlerFilename}';
     export const options = Handler.options;
     export const sources = VectorDataSource.getRegisteredSources();
     VectorDataSource.clearRegisteredSources();
   `
   );
-  handlers.push(handlerPath);
+  return handlerPath;
 }
 
-if (!geoprocessing.functions && !geoprocessing.functions.length) {
+if (
+  !geoprocessing.preprocessingFunctions &&
+  !geoprocessing.geoprocessingFunctions
+) {
   throw new Error("No functions found in geoprocessing.json");
 }
+
+const handlers = [];
+geoprocessing.preprocessingFunctions &&
+  geoprocessing.preprocessingFunctions.forEach((funcPath) =>
+    handlers.push(generateHandler(funcPath))
+  );
+geoprocessing.geoprocessingFunctions &&
+  geoprocessing.geoprocessingFunctions.forEach((funcPath) =>
+    handlers.push(generateHandler(funcPath))
+  );
 
 module.exports = {
   mode: "production",

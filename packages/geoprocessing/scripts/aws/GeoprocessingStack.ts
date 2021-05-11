@@ -528,7 +528,7 @@ export default class GeoprocessingStack extends core.Stack {
 
     const syncHandler = new lambda.Function(
       this,
-      `GpSyncHandler-${func.title}`,
+      `${func.title}GpSyncHandler`,
       {
         runtime: NODE_RUNTIME,
         code: lambda.Code.fromAsset(
@@ -619,7 +619,7 @@ export default class GeoprocessingStack extends core.Stack {
     // First Lambda is for starting GP function with http rest interface
     const asyncStartHandler = new lambda.Function(
       this,
-      `GpAsyncHandler-${func.title}-start`,
+      `${func.title}GpAsyncHandlerStart`,
       {
         runtime: NODE_RUNTIME,
         code: lambda.Code.fromAsset(
@@ -663,7 +663,7 @@ export default class GeoprocessingStack extends core.Stack {
     // Second Lambda is for running GP function and communicating results with web socket interface
     const asyncRunHandler = new lambda.Function(
       this,
-      `GpAsyncHandler-${func.title}-run`,
+      `${func.title}GpAsyncHandlerRun`,
       {
         runtime: NODE_RUNTIME,
         code: lambda.Code.fromAsset(

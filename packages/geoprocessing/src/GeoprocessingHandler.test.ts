@@ -133,12 +133,12 @@ test("Handler can be constructed an run simple geoprocessing", async () => {
   Tasks.prototype.get.mockResolvedValueOnce(false);
 
   const result = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
   );
@@ -169,22 +169,22 @@ test("Repeated requests should be 'cancelled'", async () => {
   // @ts-ignore
   Tasks.prototype.get.mockResolvedValueOnce(false);
   const result = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
   );
   const result2 = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
   );
@@ -213,22 +213,22 @@ test("Repeated requests should be 'cancelled' for async tasks", async () => {
   // @ts-ignore
   Tasks.prototype.get.mockResolvedValueOnce(false);
   const result = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
   );
   const result2 = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
   );
@@ -262,22 +262,22 @@ test("Results are cached using request.cacheKey", async () => {
     }
   );
   const result = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
   );
   const result2 = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "bar" }
   );
@@ -287,7 +287,9 @@ test("Results are cached using request.cacheKey", async () => {
   expect(result2.body.length).toBeGreaterThan(1);
   const task1 = JSON.parse(result.body) as GeoprocessingTask;
   const task2 = JSON.parse(result2.body) as GeoprocessingTask;
-  expect(task1.startedAt).toBe(task2.startedAt);
+  const task1ms = new Date(task1.startedAt).valueOf();
+  const task2ms = new Date(task2.startedAt).valueOf();
+  expect(task2ms - task1ms).toBeLessThanOrEqual(5);
 });
 
 test("Results are cached using request.cacheKey for asynchronous tasks", async () => {
@@ -316,22 +318,22 @@ test("Results are cached using request.cacheKey for asynchronous tasks", async (
   );
 
   const result = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
   );
   const result2 = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "bar" }
   );
@@ -342,7 +344,9 @@ test("Results are cached using request.cacheKey for asynchronous tasks", async (
   expect(result2.body.length).toBeGreaterThan(1);
   const task1 = JSON.parse(result.body) as GeoprocessingTask;
   const task2 = JSON.parse(result2.body) as GeoprocessingTask;
-  expect(task1.startedAt).toBe(task2.startedAt);
+  const task1ms = new Date(task1.startedAt).valueOf();
+  const task2ms = new Date(task2.startedAt).valueOf();
+  expect(task2ms - task1ms).toBeLessThanOrEqual(5);
 });
 
 test("Failed geometryUri fetches are communicated to requester", async () => {
@@ -365,12 +369,12 @@ test("Failed geometryUri fetches are communicated to requester", async () => {
   Tasks.prototype.get.mockResolvedValueOnce(false);
 
   const result = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/abc123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
   );
@@ -402,12 +406,12 @@ test("Exceptions in geoprocessing function are passed to requester", async () =>
   Tasks.prototype.get.mockResolvedValueOnce(false);
 
   const result = await handler.lambdaHandler(
-    ({
+    {
       body: JSON.stringify({
         geometryUri: "https://example.com/geom/123",
         cacheKey: "abc123",
       }),
-    } as unknown) as APIGatewayProxyEvent,
+    } as unknown as APIGatewayProxyEvent,
     // @ts-ignore
     { awsRequestId: "foo" }
   );

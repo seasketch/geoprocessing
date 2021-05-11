@@ -580,7 +580,6 @@ export default class GeoprocessingStack extends core.Stack {
     index: number
   ) {
     const rootPointer = getHandlerPointer(func);
-    let policies: iam.PolicyStatement[] = [];
     const startFunctionName = `gp-${this.props.projectName}-async-${func.title}-start`;
     const runFunctionName = `gp-${this.props.projectName}-async-${func.title}-run`;
 
@@ -616,7 +615,54 @@ export default class GeoprocessingStack extends core.Stack {
       WSS_STAGE: STAGE_NAME,
     };
 
-    // First Lambda is for starting GP function with http rest interface
+    /**
+     * runHandler Lambda is invoked by startHandler Lambda
+     * Used for running GP function and reporting back results async via socket
+     */
+    const asyncRunHandler = new lambda.Function(
+      this,
+      `${func.title}GpAsyncHandlerRun`,
+      {
+        runtime: NODE_RUNTIME,
+        code: lambda.Code.fromAsset(
+          path.join(this.props.projectPath, ".build")
+        ),
+
+        handler: rootPointer,
+        functionName: runFunctionName,
+        memorySize: func.memory,
+        timeout: core.Duration.seconds(
+          func.timeout || ASYNC_LAMBDA_RUN_TIMEOUT
+        ),
+        description: func.description,
+        environment: {
+          ...baseAsyncEnvOptions,
+          ASYNC_REQUEST_TYPE: "run",
+        },
+      }
+    );
+
+    // Policy to allow the async start handler to call the async run handler (or any other)
+    const asyncLambdaPolicy = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      resources: [asyncRunHandler.functionArn],
+      actions: ["lambda:InvokeFunction"],
+    });
+
+    const asyncLambdaRole = new iam.Role(this, "GpAsyncLambdaRole" + index, {
+      assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
+    });
+    asyncLambdaRole.addToPolicy(asyncLambdaPolicy);
+    const policies = [asyncLambdaPolicy];
+
+    this.tasksTbl.grantReadWriteData(asyncRunHandler);
+    this.estimatesTbl.grantReadWriteData(asyncRunHandler);
+    this.publicBucket.grantReadWrite(asyncRunHandler);
+
+    /**
+     * startHandler Lambda is connected to the REST API allowing client to
+     * start a GP function task, which invokes the runHandler Lambda
+     */
     const asyncStartHandler = new lambda.Function(
       this,
       `${func.title}GpAsyncHandlerStart`,
@@ -659,47 +705,6 @@ export default class GeoprocessingStack extends core.Stack {
     });
     resource.addMethod("POST", asyncStartHandlerIntegration);
     resource.addMethod("GET", asyncStartHandlerIntegration);
-
-    // Second Lambda is for running GP function and communicating results with web socket interface
-    const asyncRunHandler = new lambda.Function(
-      this,
-      `${func.title}GpAsyncHandlerRun`,
-      {
-        runtime: NODE_RUNTIME,
-        code: lambda.Code.fromAsset(
-          path.join(this.props.projectPath, ".build")
-        ),
-
-        handler: rootPointer,
-        functionName: runFunctionName,
-        memorySize: func.memory,
-        timeout: core.Duration.seconds(
-          func.timeout || ASYNC_LAMBDA_RUN_TIMEOUT
-        ),
-        description: func.description,
-        environment: {
-          ...baseAsyncEnvOptions,
-          ASYNC_REQUEST_TYPE: "run",
-        },
-      }
-    );
-
-    // Policy to allow the async start handler to call the async run handler (or any other)
-    const asyncLambdaPolicy = new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      resources: [asyncRunHandler.functionArn],
-      actions: ["lambda:InvokeFunction"],
-    });
-
-    const asyncLambdaRole = new iam.Role(this, "GpAsyncLambdaRole" + index, {
-      assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
-    });
-    asyncLambdaRole.addToPolicy(asyncLambdaPolicy);
-    policies = [asyncLambdaPolicy];
-
-    this.tasksTbl.grantReadWriteData(asyncRunHandler);
-    this.estimatesTbl.grantReadWriteData(asyncRunHandler);
-    this.publicBucket.grantReadWrite(asyncRunHandler);
   }
 }
 

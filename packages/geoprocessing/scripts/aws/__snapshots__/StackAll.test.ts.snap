@@ -457,431 +457,6 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GpAsyncHandlertestAsyncGeoprocessorrunAC93109B": Object {
-      "DependsOn": Array [
-        "GpAsyncHandlertestAsyncGeoprocessorrunServiceRoleDefaultPolicyD296A56C",
-        "GpAsyncHandlertestAsyncGeoprocessorrunServiceRole35AE0726",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
-          },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
-        },
-        "Description": "",
-        "Environment": Object {
-          "Variables": Object {
-            "ASYNC_REQUEST_TYPE": "run",
-            "ESTIMATES_TABLE": Object {
-              "Ref": "GpEstimatesTableBB595885",
-            },
-            "SOCKETS_TABLE": Object {
-              "Ref": "GpSubscriptionsTable6D399C8E",
-            },
-            "TASKS_TABLE": Object {
-              "Ref": "GpTasksTable2F8F158E",
-            },
-            "WSS_REF": Object {
-              "Ref": "SocketApi",
-            },
-            "WSS_REGION": "us-west-1",
-            "WSS_STAGE": "prod",
-          },
-        },
-        "FunctionName": "gp-all-async-testAsyncGeoprocessor-run",
-        "Handler": "testAsyncGeoprocessorHandler.handler",
-        "MemorySize": 1024,
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "GpAsyncHandlertestAsyncGeoprocessorrunServiceRole35AE0726",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs14.x",
-        "Timeout": 2,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "GpAsyncHandlertestAsyncGeoprocessorrunServiceRole35AE0726": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpAsyncHandlertestAsyncGeoprocessorrunServiceRoleDefaultPolicyD296A56C": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpTasksTable2F8F158E",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpEstimatesTableBB595885",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject*",
-                "s3:Abort*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpPublicBucket989E1AE8",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpPublicBucket989E1AE8",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpAsyncHandlertestAsyncGeoprocessorrunServiceRoleDefaultPolicyD296A56C",
-        "Roles": Array [
-          Object {
-            "Ref": "GpAsyncHandlertestAsyncGeoprocessorrunServiceRole35AE0726",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "GpAsyncHandlertestAsyncGeoprocessorstart0B5481FB": Object {
-      "DependsOn": Array [
-        "GpAsyncHandlertestAsyncGeoprocessorstartServiceRoleDefaultPolicy18ED478A",
-        "GpAsyncHandlertestAsyncGeoprocessorstartServiceRoleAB66ACC9",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
-          },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
-        },
-        "Description": "",
-        "Environment": Object {
-          "Variables": Object {
-            "ASYNC_REQUEST_TYPE": "start",
-            "ESTIMATES_TABLE": Object {
-              "Ref": "GpEstimatesTableBB595885",
-            },
-            "RUN_HANDLER_FUNCTION_NAME": "gp-all-async-testAsyncGeoprocessor-run",
-            "SOCKETS_TABLE": Object {
-              "Ref": "GpSubscriptionsTable6D399C8E",
-            },
-            "TASKS_TABLE": Object {
-              "Ref": "GpTasksTable2F8F158E",
-            },
-            "WSS_REF": Object {
-              "Ref": "SocketApi",
-            },
-            "WSS_REGION": "us-west-1",
-            "WSS_STAGE": "prod",
-          },
-        },
-        "FunctionName": "gp-all-async-testAsyncGeoprocessor-start",
-        "Handler": "testAsyncGeoprocessorHandler.handler",
-        "MemorySize": 1024,
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "GpAsyncHandlertestAsyncGeoprocessorstartServiceRoleAB66ACC9",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs14.x",
-        "Timeout": 5,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "GpAsyncHandlertestAsyncGeoprocessorstartServiceRoleAB66ACC9": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpAsyncHandlertestAsyncGeoprocessorstartServiceRoleDefaultPolicy18ED478A": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpTasksTable2F8F158E",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpEstimatesTableBB595885",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject*",
-                "s3:Abort*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpPublicBucket989E1AE8",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpPublicBucket989E1AE8",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpAsyncHandlertestAsyncGeoprocessorstartServiceRoleDefaultPolicy18ED478A",
-        "Roles": Array [
-          Object {
-            "Ref": "GpAsyncHandlertestAsyncGeoprocessorstartServiceRoleAB66ACC9",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "GpAsyncLambdaRole091B5FDCB": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
@@ -908,7 +483,7 @@ Object {
               "Effect": "Allow",
               "Resource": Object {
                 "Fn::GetAtt": Array [
-                  "GpAsyncHandlertestAsyncGeoprocessorrunAC93109B",
+                  "testAsyncGeoprocessorGpAsyncHandlerRun601CE57C",
                   "Arn",
                 ],
               },
@@ -1352,7 +927,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "GpRestApiDeployment8BC1361A32dbd693152e40d69f8a3c7572570a12": Object {
+    "GpRestApiDeployment8BC1361A7b771d2ac4a560c3fe018130cdc51b67": Object {
       "DependsOn": Array [
         "GpRestApiGET037A17F9",
         "GpRestApiOPTIONS0D97A1CF",
@@ -1379,7 +954,7 @@ Object {
     "GpRestApiDeploymentStageprodFDC6A6D1": Object {
       "Properties": Object {
         "DeploymentId": Object {
-          "Ref": "GpRestApiDeployment8BC1361A32dbd693152e40d69f8a3c7572570a12",
+          "Ref": "GpRestApiDeployment8BC1361A7b771d2ac4a560c3fe018130cdc51b67",
         },
         "MethodSettings": Array [
           Object {
@@ -1586,7 +1161,7 @@ Object {
                 ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
                 Object {
                   "Fn::GetAtt": Array [
-                    "GpAsyncHandlertestAsyncGeoprocessorstart0B5481FB",
+                    "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
                     "Arn",
                   ],
                 },
@@ -1609,7 +1184,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpAsyncHandlertestAsyncGeoprocessorstart0B5481FB",
+            "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
             "Arn",
           ],
         },
@@ -1642,7 +1217,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpAsyncHandlertestAsyncGeoprocessorstart0B5481FB",
+            "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
             "Arn",
           ],
         },
@@ -1718,7 +1293,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpAsyncHandlertestAsyncGeoprocessorstart0B5481FB",
+            "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
             "Arn",
           ],
         },
@@ -1751,7 +1326,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpAsyncHandlertestAsyncGeoprocessorstart0B5481FB",
+            "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
             "Arn",
           ],
         },
@@ -1804,7 +1379,7 @@ Object {
                 ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
                 Object {
                   "Fn::GetAtt": Array [
-                    "GpAsyncHandlertestAsyncGeoprocessorstart0B5481FB",
+                    "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
                     "Arn",
                   ],
                 },
@@ -1897,7 +1472,7 @@ Object {
                 ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
                 Object {
                   "Fn::GetAtt": Array [
-                    "GpSyncHandlertestPreprocessorEC6E6881",
+                    "testPreprocessorGpSyncHandler6EC47FBF",
                     "Arn",
                   ],
                 },
@@ -1920,7 +1495,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpSyncHandlertestPreprocessorEC6E6881",
+            "testPreprocessorGpSyncHandler6EC47FBF",
             "Arn",
           ],
         },
@@ -1953,7 +1528,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpSyncHandlertestPreprocessorEC6E6881",
+            "testPreprocessorGpSyncHandler6EC47FBF",
             "Arn",
           ],
         },
@@ -2021,7 +1596,7 @@ Object {
                 ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
                 Object {
                   "Fn::GetAtt": Array [
-                    "GpSyncHandlertestSyncGeoprocessorBDF8DCA1",
+                    "testSyncGeoprocessorGpSyncHandler16045421",
                     "Arn",
                   ],
                 },
@@ -2044,7 +1619,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpSyncHandlertestSyncGeoprocessorBDF8DCA1",
+            "testSyncGeoprocessorGpSyncHandler16045421",
             "Arn",
           ],
         },
@@ -2077,7 +1652,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpSyncHandlertestSyncGeoprocessorBDF8DCA1",
+            "testSyncGeoprocessorGpSyncHandler16045421",
             "Arn",
           ],
         },
@@ -2153,7 +1728,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpSyncHandlertestSyncGeoprocessorBDF8DCA1",
+            "testSyncGeoprocessorGpSyncHandler16045421",
             "Arn",
           ],
         },
@@ -2186,7 +1761,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpSyncHandlertestSyncGeoprocessorBDF8DCA1",
+            "testSyncGeoprocessorGpSyncHandler16045421",
             "Arn",
           ],
         },
@@ -2239,7 +1814,7 @@ Object {
                 ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
                 Object {
                   "Fn::GetAtt": Array [
-                    "GpSyncHandlertestSyncGeoprocessorBDF8DCA1",
+                    "testSyncGeoprocessorGpSyncHandler16045421",
                     "Arn",
                   ],
                 },
@@ -2970,338 +2545,6 @@ Object {
       "Type": "AWS::DynamoDB::Table",
       "UpdateReplacePolicy": "Delete",
     },
-    "GpSyncHandlertestPreprocessorEC6E6881": Object {
-      "DependsOn": Array [
-        "GpSyncHandlertestPreprocessorServiceRole0D8ABBC3",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
-          },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
-        },
-        "Description": "",
-        "Environment": Object {
-          "Variables": Object {
-            "ESTIMATES_TABLE": Object {
-              "Ref": "GpEstimatesTableBB595885",
-            },
-            "TASKS_TABLE": Object {
-              "Ref": "GpTasksTable2F8F158E",
-            },
-            "publicBucketUrl": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  "https://s3.us-west-1.",
-                  Object {
-                    "Ref": "AWS::URLSuffix",
-                  },
-                  "/",
-                  Object {
-                    "Ref": "GpPublicBucket989E1AE8",
-                  },
-                ],
-              ],
-            },
-          },
-        },
-        "FunctionName": "gp-all-sync-testPreprocessor",
-        "Handler": "testPreprocessorHandler.handler",
-        "MemorySize": 256,
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "GpSyncHandlertestPreprocessorServiceRole0D8ABBC3",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs14.x",
-        "Timeout": 1,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "GpSyncHandlertestPreprocessorServiceRole0D8ABBC3": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpSyncHandlertestSyncGeoprocessorBDF8DCA1": Object {
-      "DependsOn": Array [
-        "GpSyncHandlertestSyncGeoprocessorServiceRoleDefaultPolicy53BEF50E",
-        "GpSyncHandlertestSyncGeoprocessorServiceRoleD23C59FE",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
-          },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
-        },
-        "Description": "",
-        "Environment": Object {
-          "Variables": Object {
-            "ESTIMATES_TABLE": Object {
-              "Ref": "GpEstimatesTableBB595885",
-            },
-            "TASKS_TABLE": Object {
-              "Ref": "GpTasksTable2F8F158E",
-            },
-            "publicBucketUrl": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  "https://s3.us-west-1.",
-                  Object {
-                    "Ref": "AWS::URLSuffix",
-                  },
-                  "/",
-                  Object {
-                    "Ref": "GpPublicBucket989E1AE8",
-                  },
-                ],
-              ],
-            },
-          },
-        },
-        "FunctionName": "gp-all-sync-testSyncGeoprocessor",
-        "Handler": "testSyncGeoprocessorHandler.handler",
-        "MemorySize": 1024,
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "GpSyncHandlertestSyncGeoprocessorServiceRoleD23C59FE",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs14.x",
-        "Timeout": 2,
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "GpSyncHandlertestSyncGeoprocessorServiceRoleD23C59FE": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpSyncHandlertestSyncGeoprocessorServiceRoleDefaultPolicy53BEF50E": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpTasksTable2F8F158E",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpEstimatesTableBB595885",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject*",
-                "s3:Abort*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpPublicBucket989E1AE8",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpPublicBucket989E1AE8",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpSyncHandlertestSyncGeoprocessorServiceRoleDefaultPolicy53BEF50E",
-        "Roles": Array [
-          Object {
-            "Ref": "GpSyncHandlertestSyncGeoprocessorServiceRoleD23C59FE",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "GpTasksTable2F8F158E": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
@@ -3499,6 +2742,773 @@ Object {
         "RouteSelectionExpression": "$request.body.message",
       },
       "Type": "AWS::ApiGatewayV2::Api",
+    },
+    "testAsyncGeoprocessorGpAsyncHandlerRun601CE57C": Object {
+      "DependsOn": Array [
+        "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDefaultPolicy9BBEB807",
+        "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDA7CE4B5",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Description": "",
+        "Environment": Object {
+          "Variables": Object {
+            "ASYNC_REQUEST_TYPE": "run",
+            "ESTIMATES_TABLE": Object {
+              "Ref": "GpEstimatesTableBB595885",
+            },
+            "SOCKETS_TABLE": Object {
+              "Ref": "GpSubscriptionsTable6D399C8E",
+            },
+            "TASKS_TABLE": Object {
+              "Ref": "GpTasksTable2F8F158E",
+            },
+            "WSS_REF": Object {
+              "Ref": "SocketApi",
+            },
+            "WSS_REGION": "us-west-1",
+            "WSS_STAGE": "prod",
+          },
+        },
+        "FunctionName": "gp-all-async-testAsyncGeoprocessor-run",
+        "Handler": "testAsyncGeoprocessorHandler.handler",
+        "MemorySize": 1024,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDA7CE4B5",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 2,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDA7CE4B5": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDefaultPolicy9BBEB807": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpTasksTable2F8F158E",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpEstimatesTableBB595885",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpPublicBucket989E1AE8",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "GpPublicBucket989E1AE8",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDefaultPolicy9BBEB807",
+        "Roles": Array [
+          Object {
+            "Ref": "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDA7CE4B5",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29": Object {
+      "DependsOn": Array [
+        "testAsyncGeoprocessorGpAsyncHandlerStartServiceRoleDefaultPolicy83C59B27",
+        "testAsyncGeoprocessorGpAsyncHandlerStartServiceRoleB6E62873",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Description": "",
+        "Environment": Object {
+          "Variables": Object {
+            "ASYNC_REQUEST_TYPE": "start",
+            "ESTIMATES_TABLE": Object {
+              "Ref": "GpEstimatesTableBB595885",
+            },
+            "RUN_HANDLER_FUNCTION_NAME": "gp-all-async-testAsyncGeoprocessor-run",
+            "SOCKETS_TABLE": Object {
+              "Ref": "GpSubscriptionsTable6D399C8E",
+            },
+            "TASKS_TABLE": Object {
+              "Ref": "GpTasksTable2F8F158E",
+            },
+            "WSS_REF": Object {
+              "Ref": "SocketApi",
+            },
+            "WSS_REGION": "us-west-1",
+            "WSS_STAGE": "prod",
+          },
+        },
+        "FunctionName": "gp-all-async-testAsyncGeoprocessor-start",
+        "Handler": "testAsyncGeoprocessorHandler.handler",
+        "MemorySize": 1024,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "testAsyncGeoprocessorGpAsyncHandlerStartServiceRoleB6E62873",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 5,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "testAsyncGeoprocessorGpAsyncHandlerStartServiceRoleB6E62873": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "testAsyncGeoprocessorGpAsyncHandlerStartServiceRoleDefaultPolicy83C59B27": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "testAsyncGeoprocessorGpAsyncHandlerRun601CE57C",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpTasksTable2F8F158E",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpEstimatesTableBB595885",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpPublicBucket989E1AE8",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "GpPublicBucket989E1AE8",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "testAsyncGeoprocessorGpAsyncHandlerStartServiceRoleDefaultPolicy83C59B27",
+        "Roles": Array [
+          Object {
+            "Ref": "testAsyncGeoprocessorGpAsyncHandlerStartServiceRoleB6E62873",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "testPreprocessorGpSyncHandler6EC47FBF": Object {
+      "DependsOn": Array [
+        "testPreprocessorGpSyncHandlerServiceRole236C98CD",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Description": "",
+        "Environment": Object {
+          "Variables": Object {
+            "ESTIMATES_TABLE": Object {
+              "Ref": "GpEstimatesTableBB595885",
+            },
+            "TASKS_TABLE": Object {
+              "Ref": "GpTasksTable2F8F158E",
+            },
+            "publicBucketUrl": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "https://s3.us-west-1.",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Ref": "GpPublicBucket989E1AE8",
+                  },
+                ],
+              ],
+            },
+          },
+        },
+        "FunctionName": "gp-all-sync-testPreprocessor",
+        "Handler": "testPreprocessorHandler.handler",
+        "MemorySize": 256,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "testPreprocessorGpSyncHandlerServiceRole236C98CD",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 1,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "testPreprocessorGpSyncHandlerServiceRole236C98CD": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "testSyncGeoprocessorGpSyncHandler16045421": Object {
+      "DependsOn": Array [
+        "testSyncGeoprocessorGpSyncHandlerServiceRoleDefaultPolicy3441B6D2",
+        "testSyncGeoprocessorGpSyncHandlerServiceRoleC6504613",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Description": "",
+        "Environment": Object {
+          "Variables": Object {
+            "ESTIMATES_TABLE": Object {
+              "Ref": "GpEstimatesTableBB595885",
+            },
+            "TASKS_TABLE": Object {
+              "Ref": "GpTasksTable2F8F158E",
+            },
+            "publicBucketUrl": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "https://s3.us-west-1.",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Ref": "GpPublicBucket989E1AE8",
+                  },
+                ],
+              ],
+            },
+          },
+        },
+        "FunctionName": "gp-all-sync-testSyncGeoprocessor",
+        "Handler": "testSyncGeoprocessorHandler.handler",
+        "MemorySize": 1024,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "testSyncGeoprocessorGpSyncHandlerServiceRoleC6504613",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+        "Timeout": 2,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "testSyncGeoprocessorGpSyncHandlerServiceRoleC6504613": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "testSyncGeoprocessorGpSyncHandlerServiceRoleDefaultPolicy3441B6D2": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpTasksTable2F8F158E",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpEstimatesTableBB595885",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpPublicBucket989E1AE8",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "GpPublicBucket989E1AE8",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "testSyncGeoprocessorGpSyncHandlerServiceRoleDefaultPolicy3441B6D2",
+        "Roles": Array [
+          Object {
+            "Ref": "testSyncGeoprocessorGpSyncHandlerServiceRoleC6504613",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
   },
 }

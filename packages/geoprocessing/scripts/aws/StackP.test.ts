@@ -1,6 +1,5 @@
 import * as core from "@aws-cdk/core";
 import path from "path";
-import { SynthUtils } from "@aws-cdk/assert";
 import "@aws-cdk/assert/jest";
 import GeoprocessingStack, {
   STAGE_NAME,

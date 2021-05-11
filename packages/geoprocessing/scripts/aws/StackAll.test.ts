@@ -7,8 +7,8 @@ import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 import GeoprocessingStack, {
   STAGE_NAME,
   NODE_RUNTIME,
+  getHandlerPointer,
 } from "./GeoprocessingStack";
-import { getHandlerFilename } from "../manifest";
 
 const rootPath = `${__dirname}/__test__`;
 
@@ -80,26 +80,26 @@ describe("GeoprocessingStack - all components", () => {
     // Check preprocessor resources
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
-      Handler: getHandlerFilename(manifest.preprocessingFunctions[0]),
+      Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
       Runtime: NODE_RUNTIME.name,
     });
 
     // Check sync geoprocessing function resources
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[0].title}`,
-      Handler: getHandlerFilename(manifest.geoprocessingFunctions[0]),
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[0]),
       Runtime: NODE_RUNTIME.name,
     });
 
     // Check async function resources
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-start`,
-      Handler: getHandlerFilename(manifest.geoprocessingFunctions[1]),
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
       Runtime: NODE_RUNTIME.name,
     });
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-run`,
-      Handler: getHandlerFilename(manifest.geoprocessingFunctions[1]),
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
       Runtime: NODE_RUNTIME.name,
     });
   });

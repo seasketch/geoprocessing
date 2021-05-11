@@ -1,6 +1,7 @@
 import { Manifest } from "../manifest";
 import { Package, PreprocessingBundle, GeoprocessingBundle } from "../types";
 import { GeoprocessingJsonConfig } from "../../src/types";
+import slugify from "slugify";
 
 /**
  * Compiles project assets into a single Manifest
@@ -13,8 +14,10 @@ export function generateManifest(
   version: string
 ): Manifest {
   const manifest: Manifest = {
-    title: projectPkg.name,
-    author: config.author,
+    title: slugify(
+      projectPkg.name.replace(/@/g, "").replace("gp-", "").replace("/", "-")
+    ),
+    author: slugify(config.author.replace(/\<.*\>/, "")),
     region: config.region,
     apiVersion: version,
     version: projectPkg.version,

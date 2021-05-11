@@ -16,21 +16,15 @@ const manifest: Manifest = JSON.parse(
 );
 
 export async function createStack() {
-  const projectName = slugify(
-    manifest.title.replace(/@/g, "").replace("/", "-")
-  ); // assumed to be lowercase string from init but not guaranteed
-  const projectAuthor = slugify(manifest.author.replace(/\<.*\>/, ""));
-  const stackName = `${projectName}-geoprocessing-stack`;
-
   const app = new core.App();
-  const stack = new GeoprocessingCdkStack(app, stackName, {
+  const stack = new GeoprocessingCdkStack(app, `gp-${manifest.title}`, {
     env: { region: manifest.region },
-    projectName,
+    projectName: manifest.title,
     manifest,
     projectPath: PROJECT_PATH,
   });
-  core.Tags.of(stack).add("Author", projectAuthor);
+  core.Tags.of(stack).add("Author", manifest.author);
   core.Tags.of(stack).add("Cost Center", "seasketch-geoprocessing");
-  core.Tags.of(stack).add("Geoprocessing Project", projectName);
+  core.Tags.of(stack).add("Geoprocessing Project", manifest.title);
 }
 createStack();

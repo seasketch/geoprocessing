@@ -45,7 +45,3 @@ export interface Manifest extends GeoprocessingProject {
   region: string;
   version: string;
 }
-
-export function getHandlerFilename(funcMeta: ProcessingFunctionMetadata) {
-  return `${funcMeta.handlerFilename.replace(/\.js$/, "")}.handler`;
-}

@@ -5,10 +5,10 @@ import "@aws-cdk/assert/jest";
 import GeoprocessingStack, {
   STAGE_NAME,
   NODE_RUNTIME,
+  getHandlerPointer,
 } from "./GeoprocessingStack";
 import createTestProject from "../testing/createTestProject";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
-import { getHandlerFilename } from "../manifest";
 
 const rootPath = `${__dirname}/__test__`;
 
@@ -67,7 +67,7 @@ describe("GeoprocessingStack - preprocessor only", () => {
     // Check preprocessor resources
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
-      Handler: getHandlerFilename(manifest.preprocessingFunctions[0]),
+      Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
       Runtime: NODE_RUNTIME.name,
     });
   });

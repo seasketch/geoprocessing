@@ -78,8 +78,8 @@ export default class GeoprocessingStack extends core.Stack {
     );
     const hasAsync = asyncFunctions.length > 0;
 
+    if (hasClients) this.createClientResources(); // Run first to get cloudfront resource referenced later
     this.createSharedResources();
-    if (hasClients) this.createClientResources();
     if (hasAsync) this.createSharedAsyncFunctionResources();
     syncFunctions.forEach(this.createSyncFunctionResources, this);
     asyncFunctions.forEach(this.createAsyncFunctionResources, this);
@@ -509,7 +509,7 @@ export default class GeoprocessingStack extends core.Stack {
   }
 
   createSyncFunctionResources(func: ProcessingFunctionMetadata, index: number) {
-    const filename = path.basename(func.handlerFilename);
+    const rootPointer = getHandlerPointer(func);
     let policies: iam.PolicyStatement[] = [];
     let functionName = `gp-${this.props.projectName}-sync-${func.title}`;
 
@@ -534,7 +534,7 @@ export default class GeoprocessingStack extends core.Stack {
         code: lambda.Code.fromAsset(
           path.join(this.props.projectPath, ".build")
         ),
-        handler: filename.replace(/\.js$/, "") + ".handler",
+        handler: rootPointer,
         functionName,
         memorySize: func.memory,
         timeout: core.Duration.seconds(func.timeout || SYNC_LAMBDA_TIMEOUT),
@@ -579,7 +579,7 @@ export default class GeoprocessingStack extends core.Stack {
     func: GeoprocessingFunctionMetadata,
     index: number
   ) {
-    const filename = path.basename(func.handlerFilename);
+    const rootPointer = getHandlerPointer(func);
     let policies: iam.PolicyStatement[] = [];
     const startFunctionName = `gp-${this.props.projectName}-async-${func.title}-start`;
     const runFunctionName = `gp-${this.props.projectName}-async-${func.title}-run`;
@@ -625,7 +625,7 @@ export default class GeoprocessingStack extends core.Stack {
         code: lambda.Code.fromAsset(
           path.join(this.props.projectPath, ".build")
         ),
-        handler: filename.replace(/\.js$/, "") + ".handler",
+        handler: rootPointer,
         functionName: startFunctionName,
         memorySize: func.memory,
         timeout: core.Duration.seconds(ASYNC_LAMBDA_START_TIMEOUT),
@@ -670,7 +670,7 @@ export default class GeoprocessingStack extends core.Stack {
           path.join(this.props.projectPath, ".build")
         ),
 
-        handler: filename.replace(/\.js$/, "") + ".handler",
+        handler: rootPointer,
         functionName: runFunctionName,
         memorySize: func.memory,
         timeout: core.Duration.seconds(
@@ -701,4 +701,13 @@ export default class GeoprocessingStack extends core.Stack {
     this.estimatesTbl.grantReadWriteData(asyncRunHandler);
     this.publicBucket.grantReadWrite(asyncRunHandler);
   }
+}
+
+/**
+ * Returns root lambda handler method pointer in module.function dot notation
+ */
+export function getHandlerPointer(funcMeta: ProcessingFunctionMetadata) {
+  return `${funcMeta.handlerFilename
+    .replace(/\.js$/, "")
+    .replace(/\.ts$/, "")}Handler.handler`;
 }

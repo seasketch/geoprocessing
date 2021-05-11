@@ -41,7 +41,7 @@ const geoprocessingBundles: GeoprocessingBundle[] =
 
 const manifest = generateManifest(
   config,
-  pkgGeo,
+  projectPkg,
   preprocessingBundles,
   geoprocessingBundles,
   pkgGeo.version

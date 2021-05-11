@@ -522,7 +522,7 @@ Object {
           },
         },
         "FunctionName": "gp-all-async-testAsyncGeoprocessor-run",
-        "Handler": "testAsyncGeoprocessor.ts.handler",
+        "Handler": "testAsyncGeoprocessorHandler.handler",
         "MemorySize": 1024,
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -735,7 +735,7 @@ Object {
           },
         },
         "FunctionName": "gp-all-async-testAsyncGeoprocessor-start",
-        "Handler": "testAsyncGeoprocessor.ts.handler",
+        "Handler": "testAsyncGeoprocessorHandler.handler",
         "MemorySize": 1024,
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -1148,6 +1148,16 @@ Object {
                 },
               ],
             ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "clientUrl": Object {
+              "Fn::GetAtt": Array [
+                "ClientDistributionCFDistribution5E9F190B",
+                "DomainName",
+              ],
+            },
           },
         },
         "FunctionName": "gp-all-metadata",
@@ -3030,7 +3040,7 @@ Object {
           },
         },
         "FunctionName": "gp-all-sync-testPreprocessor",
-        "Handler": "testPreprocessor.ts.handler",
+        "Handler": "testPreprocessorHandler.handler",
         "MemorySize": 256,
         "Role": Object {
           "Fn::GetAtt": Array [
@@ -3145,7 +3155,7 @@ Object {
           },
         },
         "FunctionName": "gp-all-sync-testSyncGeoprocessor",
-        "Handler": "testSyncGeoprocessor.ts.handler",
+        "Handler": "testSyncGeoprocessorHandler.handler",
         "MemorySize": 1024,
         "Role": Object {
           "Fn::GetAtt": Array [

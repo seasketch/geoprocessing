@@ -262,6 +262,7 @@ export class GeoprocessingHandler<T> {
           body: JSON.stringify(task),
         };
       } catch (e) {
+        console.error(e);
         const failMessage =
           `Could not launch async handler function: ` +
           RUN_HANDLER_FUNCTION_NAME;
@@ -344,6 +345,7 @@ export class GeoprocessingHandler<T> {
    */
   parseRequest(event: APIGatewayProxyEvent): GeoprocessingRequest {
     let request: GeoprocessingRequest;
+    // geometry requires POST
     if ("geometry" in event) {
       // likely coming from aws console
       request = event as GeoprocessingRequest;

@@ -3,7 +3,7 @@ import ora from "ora";
 import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
-// @ts-ignore
+import { GeoprocessingJsonConfig } from "../../src/types";
 import pascalcase from "pascalcase";
 
 function getTemplateClientPath() {
@@ -65,7 +65,7 @@ export async function makeClient(
   }
   const geoprocessingJson = JSON.parse(
     fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
-  );
+  ) as GeoprocessingJsonConfig;
   geoprocessingJson.clients = geoprocessingJson.clients || [];
   geoprocessingJson.clients.push({
     name: options.title,
@@ -76,9 +76,11 @@ export async function makeClient(
     path.join(basePath, "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")
   );
-  const functions = geoprocessingJson.functions;
+  const functions = geoprocessingJson.geoprocessingFunctions;
   let functionName = "area";
-  if (functions && functions.length) {
+  if (options.functionName) {
+    functionName = options.functionName; // expected to be in geoprocessing.json
+  } else if (functions && functions.length) {
     functionName = path.basename(functions[0]).split(".")[0];
   }
   const resultsType = pascalcase(`${functionName} results`);
@@ -111,4 +113,6 @@ interface ClientOptions {
   title: string;
   typescript: boolean;
   description: string;
+  /** The geoprocessing function to run for this Client */
+  functionName?: string;
 }

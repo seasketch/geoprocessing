@@ -79,8 +79,20 @@ const PROJECT_PATH = `packages/example-project`;
   await makeClient(
     {
       title: "AreaClient",
-      description: "My client description",
+      description: "area report via sync function",
       typescript: true,
+      functionName: "area",
+    },
+    false,
+    PROJECT_PATH + "/"
+  );
+
+  await makeClient(
+    {
+      title: "AreaAsyncClient",
+      description: "area report via async function",
+      typescript: true,
+      functionName: "areaAsync",
     },
     false,
     PROJECT_PATH + "/"

@@ -13,17 +13,14 @@ AWS.config.update({
 
 describe("getDataSourceVersion", () => {
   test("recognizes missing buckets", async () => {
-    fetchMock.getOnce(
-      `https://${PKGNAME}-${NAME}.s3-${REGION}.amazonaws.com/metadata.json`,
-      301
-    );
+    fetchMock.getOnce(`https://${NAME}.s3.amazonaws.com/metadata.json`, 301);
     const version = await getDataSourceVersion(NAME);
-    expect(version).toBe(0);
+    expect(version.currentVersion).toBe(0);
   });
 
   test("recognizes existing version of DataSource", async () => {
     fetchMock.getOnce(
-      `https://${PKGNAME}-${NAME}.s3-${REGION}.amazonaws.com/metadata.json`,
+      `https://${NAME}.s3.amazonaws.com/metadata.json`,
       {
         version: 14,
       },
@@ -32,6 +29,6 @@ describe("getDataSourceVersion", () => {
       }
     );
     const version = await getDataSourceVersion(NAME);
-    expect(version).toBe(14);
+    expect(version.currentVersion).toBe(14);
   });
 });

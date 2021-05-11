@@ -3,8 +3,15 @@ import ora from "ora";
 import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
-// @ts-ignore
+import { GeoprocessingJsonConfig } from "../../src/types";
 import pascalcase from "pascalcase";
+
+function getTemplateClientPath() {
+  const gpPath = /dist/.test(__dirname)
+    ? `${__dirname}/../../..`
+    : `${__dirname}/../..`;
+  return `${gpPath}/templates/clients`;
+}
 
 async function createClient() {
   const answers = await inquirer.prompt([
@@ -12,20 +19,20 @@ async function createClient() {
       type: "input",
       name: "title",
       message: "Name for this client, in PascalCase",
-      validate: value =>
+      validate: (value) =>
         /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
-      transformer: value => pascalcase(value)
+      transformer: (value) => pascalcase(value),
     },
     {
       type: "input",
       name: "description",
-      message: "Describe what this client is for"
+      message: "Describe what this client is for",
     },
     {
       type: "confirm",
       name: "typescript",
-      message: "Use typescript? (Recommended)"
-    }
+      message: "Use typescript? (Recommended)",
+    },
   ]);
   answers.title = pascalcase(answers.title);
   await makeClient(answers, true, "");
@@ -47,9 +54,7 @@ export async function makeClient(
   // copy client template
   const fpath = basePath + "src/clients";
   // rename metadata in function definition
-  const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../../templates/clients`
-    : `${__dirname}/../../../templates/clients`;
+  const templatePath = getTemplateClientPath();
   const clientCode = await fs.readFile(`${templatePath}/Client.tsx`);
   const testCode = await fs.readFile(`${templatePath}/Client.stories.tsx`);
   if (!fs.existsSync(path.join(basePath, "src"))) {
@@ -60,20 +65,22 @@ export async function makeClient(
   }
   const geoprocessingJson = JSON.parse(
     fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
-  );
+  ) as GeoprocessingJsonConfig;
   geoprocessingJson.clients = geoprocessingJson.clients || [];
   geoprocessingJson.clients.push({
     name: options.title,
     description: options.description,
-    source: `src/clients/${options.title}.tsx`
+    source: `src/clients/${options.title}.tsx`,
   });
   fs.writeFileSync(
     path.join(basePath, "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")
   );
-  const functions = geoprocessingJson.functions;
+  const functions = geoprocessingJson.geoprocessingFunctions;
   let functionName = "area";
-  if (functions && functions.length) {
+  if (options.functionName) {
+    functionName = options.functionName; // expected to be in geoprocessing.json
+  } else if (functions && functions.length) {
     functionName = path.basename(functions[0]).split(".")[0];
   }
   const resultsType = pascalcase(`${functionName} results`);
@@ -106,4 +113,6 @@ interface ClientOptions {
   title: string;
   typescript: boolean;
   description: string;
+  /** The geoprocessing function to run for this Client */
+  functionName?: string;
 }

@@ -15,17 +15,29 @@ import {
   APIGatewayProxyResult,
   APIGatewayProxyEvent,
 } from "aws-lambda";
-import {
-  DynamoDB,
-  Lambda as LambdaClient,
-  ApiGatewayManagementApi,
-} from "aws-sdk";
-
-const WebSocket = require("ws");
+import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
 
 const Lambda = new LambdaClient();
 const Db = new DynamoDB.DocumentClient();
+const WebSocket = require("ws");
 
+const NODE_ENV = process.env.NODE_ENV;
+const TASKS_TABLE = process.env.TASKS_TABLE;
+const ESTIMATES_TABLE = process.env.ESTIMATES_TABLE;
+const ASYNC_REQUEST_TYPE = process.env.ASYNC_REQUEST_TYPE;
+const RUN_HANDLER_FUNCTION_NAME = process.env.RUN_HANDLER_FUNCTION_NAME;
+const WSS_REF = process.env.WSS_REF || "";
+const WSS_REGION = process.env.WSS_REGION || "";
+const WSS_STAGE = process.env.WSS_STAGE || "";
+
+/**
+ * This one class supports 2 different execution modes for running a geoprocessing function - sync and async
+ * These modes create 3 different request scenarios.  A lambda is created for each scenario, and they all run
+ * this one handler.
+ * 1 - sync executionMode - immediately run gp function and return result in resolved promise to client
+ * 2 - async executionMode, ASYNC_REQUEST_TYPE=start - invoke a second lambda to run gp function and return incomplete task to client with socket for notification of result
+ * 3 - async executionMode, ASYNC_REQUEST_TYPE=run - run gp function started by scenario 2 and send completed task info on socket for client to pick up result
+ */
 export class GeoprocessingHandler<T> {
   func: (sketch: Sketch | SketchCollection) => Promise<T>;
   options: GeoprocessingHandlerOptions;
@@ -40,11 +52,7 @@ export class GeoprocessingHandler<T> {
   ) {
     this.func = func;
     this.options = Object.assign({ memory: 1024 }, options);
-    this.Tasks = new TaskModel(
-      process.env.TASKS_TABLE!,
-      process.env.ESTIMATES_TABLE!,
-      Db
-    );
+    this.Tasks = new TaskModel(TASKS_TABLE!, ESTIMATES_TABLE!, Db);
   }
 
   async lambdaHandler(
@@ -52,7 +60,6 @@ export class GeoprocessingHandler<T> {
     context: Context
   ): Promise<APIGatewayProxyResult> {
     const { Tasks, options } = this;
-
     const serviceName = options.title;
 
     const request = this.parseRequest(event);
@@ -60,7 +67,7 @@ export class GeoprocessingHandler<T> {
     // Bail out if replaying previous task
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
       // don't replay
-      if (process.env.NODE_ENV !== "test") {
+      if (NODE_ENV !== "test") {
         console.warn("-------->>>>> cancelling since event is being replayed");
       }
       return {
@@ -70,17 +77,6 @@ export class GeoprocessingHandler<T> {
     } else {
       this.lastRequestId = context.awsRequestId;
     }
-
-    let wss_ref = process.env.WSS_REF || "";
-    let wss_region = process.env.WSS_REGION || "";
-    let wss_stage = process.env.WSS_STAGE || "";
-    let wss =
-      "wss://" +
-      encodeURIComponent(wss_ref) +
-      ".execute-api." +
-      encodeURIComponent(wss_region) +
-      ".amazonaws.com/" +
-      encodeURIComponent(wss_stage);
 
     if (request.checkCacheOnly) {
       if (request.cacheKey) {
@@ -115,11 +111,11 @@ export class GeoprocessingHandler<T> {
       }
     }
 
-    // check and respond with cache first if available
+    // If gp function to be executed and result returned (scenario 1 or 3),
+    // respond with cached result first if available
     if (
-      (process.env.RUN_AS_SYNC !== "true" ||
-        this.options.executionMode === "sync") &&
-      request.cacheKey
+      request.cacheKey &&
+      (this.options.executionMode === "sync" || ASYNC_REQUEST_TYPE === "run")
     ) {
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
       if (
@@ -137,6 +133,13 @@ export class GeoprocessingHandler<T> {
       }
     }
 
+    let wss =
+      "wss://" +
+      encodeURIComponent(WSS_REF) +
+      ".execute-api." +
+      encodeURIComponent(WSS_REGION) +
+      ".amazonaws.com/" +
+      encodeURIComponent(WSS_STAGE);
     if (request.wss && request.wss.length > 0) {
       wss = request.wss;
     }
@@ -147,15 +150,13 @@ export class GeoprocessingHandler<T> {
       context.awsRequestId,
       wss
     );
-    if (false) {
-      // TODO: container tasks
-      return Tasks.fail(task, "Docker tasks not yet implemented");
-    } else if (
-      process.env.RUN_AS_SYNC === "true" ||
-      this.options.executionMode === "sync"
+
+    if (
+      this.options.executionMode === "sync" ||
+      (this.options.executionMode === "async" && ASYNC_REQUEST_TYPE === "run")
     ) {
-      //EITHER execution mode === sync -or-
-      //this is the async method being run on the async lambda
+      // Execute the gp function immediately and if sync executionMode then resolve a promise with complete task result
+      // if async then send socket message with task id for client to get result
       process.removeAllListeners("uncaughtException");
       process.removeAllListeners("unhandledRejection");
       process.on("uncaughtException", async (error) => {
@@ -228,11 +229,9 @@ export class GeoprocessingHandler<T> {
         );
       }
     } else {
-      //execution mode === async, and this is synchronous call that launches
-      //the socket based asynchronous lambda.
-      // launch async handler
-      const asyncExecutionName = process.env.ASYNC_HANDLER_FUNCTION_NAME;
-      if (!asyncExecutionName) {
+      // Otherwise must be initial request in async executionMode
+      // Invoke a second lambda to run the gp function and return incomplete task meta
+      if (!RUN_HANDLER_FUNCTION_NAME) {
         return Tasks.fail(task, `No async handler function name defined`);
       }
 
@@ -248,7 +247,7 @@ export class GeoprocessingHandler<T> {
         event.queryStringParameters = params;
         let payload = JSON.stringify(event);
         await Lambda.invoke({
-          FunctionName: asyncExecutionName,
+          FunctionName: RUN_HANDLER_FUNCTION_NAME,
           ClientContext: JSON.stringify(task),
           InvocationType: "Event",
           Payload: payload,
@@ -263,23 +262,28 @@ export class GeoprocessingHandler<T> {
           body: JSON.stringify(task),
         };
       } catch (e) {
+        console.error(e);
         const failMessage =
-          `Could not launch async handler function: ` + asyncExecutionName;
+          `Could not launch async handler function: ` +
+          RUN_HANDLER_FUNCTION_NAME;
         return Tasks.fail(task, failMessage);
       }
     }
   }
 
+  /**
+   * Send task error message
+   */
   async sendSocketErrorMessage(
     wss: string,
-    key: string | undefined,
+    cacheKey: string | undefined,
     serviceName: string,
     failureMessage: string
   ) {
-    let socket = (await this.getSendSocket(wss, key, serviceName)) as WebSocket;
+    let socket = await this.getSendSocket(wss);
 
     let data = JSON.stringify({
-      cacheKey: key,
+      cacheKey,
       serviceName: serviceName,
       failureMessage: failureMessage,
     });
@@ -293,15 +297,18 @@ export class GeoprocessingHandler<T> {
     socket.close(1000, serviceName);
   }
 
+  /**
+   * Send completed task message
+   */
   async sendSocketMessage(
     wss: string,
-    key: string | undefined,
+    cacheKey: string | undefined,
     serviceName: string
   ) {
-    let socket = (await this.getSendSocket(wss, key, serviceName)) as WebSocket;
+    let socket = await this.getSendSocket(wss);
 
     let data = JSON.stringify({
-      cacheKey: key,
+      cacheKey,
       serviceName: serviceName,
       fromClient: "false",
     });
@@ -315,12 +322,11 @@ export class GeoprocessingHandler<T> {
     socket.close(1000, serviceName);
   }
 
-  async getSendSocket(
-    wss: string,
-    key: string | undefined,
-    serviceName: string
-  ): Promise<WebSocket> {
-    let socket = new WebSocket(wss);
+  /**
+   * Returns a new socket connection to send a message
+   */
+  async getSendSocket(wss: string): Promise<WebSocket> {
+    const socket = new WebSocket(wss) as WebSocket;
     return new Promise(function (resolve, reject) {
       socket.onopen = () => {
         resolve(socket);
@@ -334,8 +340,12 @@ export class GeoprocessingHandler<T> {
     });
   }
 
+  /**
+   * Parse gp request parameters
+   */
   parseRequest(event: APIGatewayProxyEvent): GeoprocessingRequest {
     let request: GeoprocessingRequest;
+    // geometry requires POST
     if ("geometry" in event) {
       // likely coming from aws console
       request = event as GeoprocessingRequest;
@@ -354,7 +364,6 @@ export class GeoprocessingHandler<T> {
     } else {
       throw new Error("Could not interpret incoming request");
     }
-    process.env.INFO_MSG = process.env.INFO_MSG + " and request: " + request;
     return request;
   }
 }

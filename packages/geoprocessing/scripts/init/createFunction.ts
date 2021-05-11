@@ -5,6 +5,14 @@ import path from "path";
 import chalk from "chalk";
 import { ExecutionMode } from "../../src/types";
 import camelcase from "camelcase";
+import { GeoprocessingJsonConfig } from "../../src/types";
+
+function getFunctionTemplatePath() {
+  const gpPath = /dist/.test(__dirname)
+    ? `${__dirname}/../../..`
+    : `${__dirname}/../..`;
+  return `${gpPath}/templates/functions`;
+}
 
 async function createFunction() {
   const answers = await inquirer.prompt([
@@ -97,9 +105,7 @@ export async function makeGeoprocessingHandler(
   // copy geoprocessing function template
   const fpath = basePath + "src/functions";
   // rename metadata in function definition
-  const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../../templates/functions`
-    : `${__dirname}/../../../templates/functions`;
+  const templatePath = getFunctionTemplatePath();
   const handlerCode = await fs.readFile(`${templatePath}/area.ts`);
   const testSmokeCode = await fs.readFile(`${templatePath}/areaSmoke.test.ts`);
   const testUnitCode = await fs.readFile(`${templatePath}/areaUnit.test.ts`);
@@ -138,9 +144,12 @@ export async function makeGeoprocessingHandler(
   );
   const geoprocessingJson = JSON.parse(
     fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
+  ) as GeoprocessingJsonConfig;
+  geoprocessingJson.geoprocessingFunctions =
+    geoprocessingJson.geoprocessingFunctions || [];
+  geoprocessingJson.geoprocessingFunctions.push(
+    `src/functions/${options.title}.ts`
   );
-  geoprocessingJson.functions = geoprocessingJson.functions || [];
-  geoprocessingJson.functions.push(`src/functions/${options.title}.ts`);
   fs.writeFileSync(
     path.join(basePath, "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")
@@ -169,9 +178,7 @@ export async function makePreprocessingHandler(
   // copy preprocessing function template
   const fpath = basePath + "src/functions";
   // rename metadata in function definition
-  const templatePath = /dist/.test(__dirname)
-    ? `${__dirname}/../../../templates/functions`
-    : `${__dirname}/../../../templates/functions`;
+  const templatePath = getFunctionTemplatePath();
   const handlerCode = await fs.readFile(`${templatePath}/clipToBounds.ts`);
   const testCode = await fs.readFile(`${templatePath}/clipToBounds.test.ts`);
   if (!fs.existsSync(path.join(basePath, "src"))) {
@@ -193,9 +200,12 @@ export async function makePreprocessingHandler(
   );
   const geoprocessingJson = JSON.parse(
     fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
+  ) as GeoprocessingJsonConfig;
+  geoprocessingJson.preprocessingFunctions =
+    geoprocessingJson.preprocessingFunctions || [];
+  geoprocessingJson.preprocessingFunctions.push(
+    `src/functions/${options.title}.ts`
   );
-  geoprocessingJson.functions = geoprocessingJson.functions || [];
-  geoprocessingJson.functions.push(`src/functions/${options.title}.ts`);
   fs.writeFileSync(
     path.join(basePath, "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")

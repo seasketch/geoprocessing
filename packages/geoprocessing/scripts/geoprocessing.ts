@@ -53,6 +53,12 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
+    case "synth":
+      spawn(`${__dirname}/../../scripts/deploy/synth.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
     case "deploy":
       spawn(`${__dirname}/../../scripts/deploy/deploy.sh`, {
         cwd: process.cwd(),

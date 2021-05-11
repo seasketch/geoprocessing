@@ -1,7 +1,7 @@
 {
-  "author": "Tim Welch <support@seasketch.org>",
-  "organization": "SeaSketch",
-  "region": "us-west-2",
+  "author": "Test <test@test.com>",
+  "organization": "Test Org",
+  "region": "us-west-1",
   "functions": [
     "src/functions/clipToBounds.ts"
   ],

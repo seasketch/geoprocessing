@@ -1,5 +1,5 @@
 {
-  "name": "example-reports",
+  "name": "example-project-template",
   "version": "1.0.0",
   "description": "Example project for testing @seaketch/geoprocessing framework",
   "main": "src/index.js",
@@ -9,6 +9,7 @@
     "create:function": "geoprocessing create:function",
     "create:client": "geoprocessing create:client",
     "start:client": "geoprocessing start:client",
+    "synth": "geoprocessing synth",
     "bootstrap": "geoprocessing bootstrap",
     "deploy": "geoprocessing deploy",
     "build": "geoprocessing build:lambda && geoprocessing build:client",
@@ -22,7 +23,10 @@
   "keywords": [
     "@seasketch/geoprocessing"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@turf/area": "^6.3.0",
+    "@turf/bbox-clip": "^6.3.0"
+  },
   "devDependencies": {
     "@seasketch/geoprocessing": "^0.7.0"
   }

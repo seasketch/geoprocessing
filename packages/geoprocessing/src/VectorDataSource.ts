@@ -27,7 +27,7 @@ const getBBox = (feature: Feature) => {
   return feature.bbox || bbox(feature);
 };
 
-interface VectorDataSourceDetails {
+export interface VectorDataSourceDetails {
   options: VectorDataSourceOptions;
   url: string;
 }

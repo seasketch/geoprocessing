@@ -4,6 +4,7 @@ import fs from "fs-extra";
 import chalk from "chalk";
 import { join } from "path";
 import { Package } from "../types";
+const exec = util.promisify(require("child_process").exec);
 
 export interface CreateProjectMetadata extends TemplateMetadata {
   name: string;
@@ -22,13 +23,8 @@ export async function createProject(
   interactive = true,
   basePath = ""
 ) {
-  const {
-    organization,
-    region,
-    email,
-    gpVersion,
-    ...packageJSONOptions
-  } = metadata;
+  const { organization, region, email, gpVersion, ...packageJSONOptions } =
+    metadata;
   const spinner = interactive
     ? ora("Creating new project").start()
     : {

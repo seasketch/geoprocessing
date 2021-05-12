@@ -23,3 +23,10 @@ jobs:
         run: npm install
       - name: Run tests
         run: npm test
+      - name: Create example
+        run: npm run create_example && npm install && cd packages/example-project
+      - name: Test example
+        run: npm test
+      - name: Build example
+        run: npm run build
+        

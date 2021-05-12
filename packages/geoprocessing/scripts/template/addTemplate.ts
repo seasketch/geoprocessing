@@ -4,6 +4,7 @@ import fs from "fs-extra";
 import path from "path";
 import { Package } from "../types";
 import util from "util";
+import { GeoprocessingJsonConfig } from "../../src/types";
 const exec = util.promisify(require("child_process").exec);
 
 export interface TemplateMetadata {
@@ -253,15 +254,19 @@ export async function copyTemplates(
       fs.readFileSync(path.join(projectPath, "geoprocessing.json")).toString()
     );
 
-    const geoprocessingJSON = {
+    const geoprocessingJSON: GeoprocessingJsonConfig = {
       ...dstGeoprocessing,
       clients: [
         ...(dstGeoprocessing?.clients || []),
         ...(tplGeoprocessing?.clients || []),
       ],
-      functions: [
-        ...(dstGeoprocessing?.functions || []),
-        ...(tplGeoprocessing?.functions || []),
+      preprocessingFunctions: [
+        ...(dstGeoprocessing?.preprocessingFunctions || []),
+        ...(tplGeoprocessing?.preprocessingFunctions || []),
+      ],
+      geoprocessingFunctions: [
+        ...(dstGeoprocessing?.geoprocessingFunctions || []),
+        ...(tplGeoprocessing?.geoprocessingFunctions || []),
       ],
     };
 

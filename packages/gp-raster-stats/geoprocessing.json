@@ -1,7 +1,7 @@
 {
   "author": "Test <test@test.com>",
   "organization": "Test Org",
-  "functions": [
+  "geoprocessingFunctions": [
     "src/functions/rasterSum.ts"
   ],
   "clients": [

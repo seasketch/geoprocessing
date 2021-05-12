@@ -1,3 +1,39 @@
+## v0.12.0 (2020-05-12)
+
+#### :rocket: New Feature
+
+* Add support for project templates with 4 nascent templates included - gp-area, gp-clip-ocean, gp-clip-bbox, gp-raster-stats (https://github.com/seasketch/geoprocessing/issues/41)
+* Add Node 14.x support
+* Added `start:client` CLI command.  Serves the project Client bundle locally using Webpack dev server, allowing user to load and test the project reports using Message interface, just as SeaSketch platform does.
+
+#### :bug: Bug Fix
+
+* Resolve bug bundling gp-clip-bbox when linked geoprocessing library is used
+* Resolve bug where geoprocessing library installed by init had fuzzy versioning, require exact version.
+* Resolve inability to build gp-ocean-clip template due to webpack module resolution being too narrow.
+* Fix missing .gitignore file in user-generated project.  Now it installs and ignores from each template are now merged in on install.
+* Fix bug that caused download dropdown order issue
+* Remove errant top-level monorepo dependencies
+* Fix streaming false message in console output when deploying stack
+
+#### :house: Internal
+
+* Refactor CloudFormation stack, extracting GeoprocessingStack, renaming most resource names and Logical IDs.  ***This will be a destructive change to all deployed stacks when upgrading, previous analysis results will be lost ***
+* Migrate CloudFormation stack to Node 14x Lambda runtime
+* Bump all dependencies to latest (webpack 5 support held back)
+* Add createProject() function to programmatically create projects.
+* Add CDK stack and template snapshot tests.
+* upgrade polygon-clipping with martinez 0.7n support
+* Add CI github workflow
+* Support full bucket delete on stack delete
+* Soup up the `create_example` script to create an example with async geoprocessing function as well as sync.  Ensure it is buildable and deployable out of the box.
+* Remove now unused IntersectHelper module.
+
+#### :memo: Documentation
+
+* Update docs on how to install templates
+* Add README to geoprocessing package for people finding via NPM
+
 ## v0.11.1 (2020-03-25)
 
 #### :bug: Bug Fix

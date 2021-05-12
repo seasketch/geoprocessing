@@ -202,7 +202,7 @@ VS Code - Press Command+Shift+B to open the build menu
 * `geoprocessing watch scripts` - build scripts only and watch for changes
 
 CLI - from packages/geoprocessing folder
-* `npm run prepare` - build core library and scripts.  Also runs automatically on initial install and publish
+* `npm run prepare` - compile core Typescript library and scripts using `tsc`.  Also runs automatically on initial install and publish
 * `npm run watch` - build core library and watch for changes
 * `npm run watch:scripts` - build scripts only and watch for changes
 
@@ -240,7 +240,7 @@ To test with projects other than `example-project` on your local machine, npm li
 
 To publish a new release of the framework, make sure you are in the `master` branch with no outstanding code changes. Then run the following:
 ```sh
-npm run publish
+npm run publish:stable
 ```
 
 Please follow [semantic versioning conventions](https://semver.org/).  This will generate new build artifacts in the `dist` folder first using the `prepare` script.

@@ -39,7 +39,7 @@ describe("GeoprocessingStack - preprocessor only", () => {
     expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1);
     expect(stack).toCountResources("AWS::ApiGateway::Stage", 1);
     expect(stack).toCountResources("AWS::DynamoDB::Table", 2);
-    expect(stack).toCountResources("AWS::Lambda::Function", 2);
+    expect(stack).toCountResources("AWS::Lambda::Function", 3);
 
     expect(stack).toHaveResourceLike("AWS::ApiGateway::Stage", {
       StageName: STAGE_NAME,

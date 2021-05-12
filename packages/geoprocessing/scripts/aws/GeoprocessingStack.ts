@@ -104,6 +104,7 @@ export default class GeoprocessingStack extends core.Stack {
         } as CorsRule,
       ],
       removalPolicy: core.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
     this.publicBucketUrl = this.publicBucket.urlForObject();
 
@@ -174,6 +175,8 @@ export default class GeoprocessingStack extends core.Stack {
       bucketName: `gp-${this.props.projectName}-client`,
       websiteIndexDocument: "index.html",
       publicReadAccess: true,
+      removalPolicy: core.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
 
     /** Single cloudfront for stack */

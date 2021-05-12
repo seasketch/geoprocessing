@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/geoprocessing",
-  "version": "0.11.1",
+  "version": "0.12.0",
   "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -45,13 +45,13 @@
     "gis"
   ],
   "dependencies": {
+    "@aws-cdk/assert": "1.101.0",
     "@aws-cdk/aws-apigateway": "1.101.0",
     "@aws-cdk/aws-cloudfront": "1.101.0",
     "@aws-cdk/aws-dynamodb": "1.101.0",
     "@aws-cdk/aws-lambda": "1.101.0",
     "@aws-cdk/aws-s3": "1.101.0",
     "@aws-cdk/aws-s3-deployment": "1.101.0",
-    "@aws-cdk/assert": "1.101.0",
     "@aws-cdk/core": "1.101.0",
     "@babel/core": "^7.13.15",
     "@babel/preset-env": "^7.13.15",

@@ -16,8 +16,12 @@ if (!manifest) throw new Error(`Missing manifest in ${buildPath}`);
 const bucket = `gp-${manifest.title}-client`;
 const indexPath = bucket + "/index.html";
 
-console.log(`Setting CacheControl for bucket ${bucket}`);
+// If no clients configured then there is no bucket to update
+if (manifest.clients.length === 0) {
+  process.exit();
+}
 
+console.log(`Setting CacheControl for bucket ${bucket}`);
 const s3 = new AWS.S3({ region: manifest.region });
 s3.copyObject(
   {

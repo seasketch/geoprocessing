@@ -24,7 +24,6 @@ export default new GeoprocessingHandler(area, {
   title: "area",
   description: "Produces the area of the given sketch",
   timeout: 2, // seconds
-  memory: 256, // megabytes
   executionMode: "sync",
   // Specify any Sketch Class form attributes that are required
   requiresProperties: [],

@@ -3,7 +3,6 @@ import {
   SketchCollection,
   GeoprocessingHandler,
   sketchArea,
-  isCollection
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import { AllGeoJSON, BBox } from "@turf/helpers";
@@ -19,7 +18,7 @@ async function calculateArea(
 ): Promise<CalculateAreaResults> {
   return {
     area: sketchArea(sketch),
-    bbox: bbox(sketch as AllGeoJSON)
+    bbox: bbox(sketch as AllGeoJSON),
   };
 }
 
@@ -27,8 +26,7 @@ export default new GeoprocessingHandler(calculateArea, {
   title: "calculateArea",
   description: "Function description",
   timeout: 2, // seconds
-  memory: 256, // megabytes
   executionMode: "async",
   // Specify any Sketch Class form attributes that are required
-  requiresProperties: []
+  requiresProperties: [],
 });

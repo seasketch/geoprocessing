@@ -24,7 +24,6 @@ export default new PreprocessingHandler(clipToBounds, {
   title: "clipToBounds",
   description: "Example-description",
   timeout: 1,
-  memory: 256,
   requiresProperties: [],
 });
 

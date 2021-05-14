@@ -9,7 +9,6 @@ const simpleHandler = new PreprocessingHandler(
   {
     title: "handler",
     description: "description",
-    memory: 256,
     timeout: 2,
     requiresProperties: [],
   }
@@ -51,7 +50,6 @@ test("Returns validation errors", async () => {
     {
       title: "handler",
       description: "description",
-      memory: 256,
       timeout: 2,
       requiresProperties: [],
     }
@@ -77,7 +75,6 @@ test("500 errors are returned to clients", async () => {
     {
       title: "handler",
       description: "description",
-      memory: 256,
       timeout: 2,
       requiresProperties: [],
     }

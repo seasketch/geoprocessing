@@ -1,19 +1,22 @@
-import Handler, { clipLand, clipOutsideEez } from "./clipToOceanEez";
+import { clipLand, clipOutsideEez } from "./clipToOceanEez";
 import {
   getExampleFeatures,
   getExampleFeaturesByName,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
-import { Feature, Polygon } from "geojson";
+import { Feature, Polygon, MultiPolygon } from "geojson";
 import { ValidationError } from "@seasketch/geoprocessing";
 import booleanValid from "@turf/boolean-valid";
 
 describe("Basic unit tests", () => {
   test("clipLand", async () => {
-    const examples = await getExampleFeatures();
+    const examples = (await getExampleFeatures()) as Feature<
+      Polygon | MultiPolygon
+    >[];
     for (const example of examples) {
       try {
         const result = await clipLand(example);
+        if (!result) fail("result should not be null");
         expect(result).toBeTruthy();
         expect(booleanValid(result));
         expect(
@@ -35,6 +38,7 @@ describe("Basic unit tests", () => {
     for (const example of examples) {
       try {
         const result = await clipOutsideEez(example);
+        if (!result) fail("result should not be null");
         expect(result).toBeTruthy();
         expect(booleanValid(result));
         expect(
@@ -56,6 +60,7 @@ describe("Basic unit tests", () => {
     const example = examples["both_sides_barbados.json"] as Feature<Polygon>;
     try {
       const result = await clipOutsideEez(example, ["Barbados"]);
+      if (!result) fail("result should not be null");
       expect(result).toBeTruthy();
       expect(booleanValid(result));
       expect(
@@ -65,7 +70,7 @@ describe("Basic unit tests", () => {
       writeResultOutput(
         result,
         "clipOutsideBarbadosEez",
-        example.properties.name
+        example.properties?.name
       );
     } catch (e) {
       if (e instanceof ValidationError) {
@@ -84,6 +89,7 @@ describe("Basic unit tests", () => {
         "Barbados",
         "Trinidad and Tobago",
       ]);
+      if (!result) fail("result should not be null");
       expect(result).toBeTruthy();
       expect(booleanValid(result));
       expect(
@@ -93,7 +99,7 @@ describe("Basic unit tests", () => {
       writeResultOutput(
         result,
         "clipOutsideMultipleEez",
-        example.properties.name
+        example.properties?.name
       );
     } catch (e) {
       if (e instanceof ValidationError) {

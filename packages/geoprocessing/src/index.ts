@@ -4,7 +4,12 @@ const isCollection = (
 ): sketch is SketchCollection => {
   return sketch.type === "FeatureCollection";
 };
-export { Sketch, SketchCollection, isCollection };
+const isSketch = (
+  sketch: Sketch | SketchCollection
+): sketch is SketchCollection => {
+  return sketch.type !== "FeatureCollection";
+};
+export { Sketch, SketchCollection, isCollection, isSketch };
 export { GeoprocessingHandler } from "./GeoprocessingHandler";
 
 export { PreprocessingHandler, ValidationError } from "./PreprocessingHandler";

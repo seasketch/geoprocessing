@@ -5,8 +5,21 @@ import {
   BBox,
   LineString,
   Polygon,
+  MultiPolygon,
   Point,
 } from "geojson";
+
+// Re-export geojson type declaractions for easy import by user project
+export {
+  FeatureCollection,
+  Feature,
+  Geometry,
+  BBox,
+  LineString,
+  Polygon,
+  MultiPolygon,
+  Point,
+};
 
 export type ExecutionMode = "async" | "sync";
 

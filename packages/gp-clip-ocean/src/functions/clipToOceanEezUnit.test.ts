@@ -4,13 +4,17 @@ import {
   getExampleFeaturesByName,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
-import { Feature, Polygon, MultiPolygon } from "geojson";
-import { ValidationError } from "@seasketch/geoprocessing";
+import {
+  ValidationError,
+  Feature,
+  Polygon,
+  MultiPolygon,
+} from "@seasketch/geoprocessing";
 import booleanValid from "@turf/boolean-valid";
 
 describe("Basic unit tests", () => {
   test("clipLand", async () => {
-    const examples = (await getExampleFeatures()) as Feature<
+    const examples = (await getExampleFeatures("gpClipOcean")) as Feature<
       Polygon | MultiPolygon
     >[];
     for (const example of examples) {
@@ -34,7 +38,9 @@ describe("Basic unit tests", () => {
   }, 10000);
 
   test("clipOutsideEez", async () => {
-    const examples = (await getExampleFeatures()) as Feature<Polygon>[];
+    const examples = (await getExampleFeatures(
+      "gpClipOcean"
+    )) as Feature<Polygon>[];
     for (const example of examples) {
       try {
         const result = await clipOutsideEez(example);
@@ -56,8 +62,10 @@ describe("Basic unit tests", () => {
   }, 10000);
 
   test("clipOutsideBarbadosEez", async () => {
-    const examples = await getExampleFeaturesByName();
-    const example = examples["both_sides_barbados.json"] as Feature<Polygon>;
+    const examples = await getExampleFeaturesByName("gpClipOcean");
+    const example = examples[
+      "gpClipOcean_both_sides_barbados.json"
+    ] as Feature<Polygon>;
     try {
       const result = await clipOutsideEez(example, ["Barbados"]);
       if (!result) fail("result should not be null");
@@ -82,8 +90,10 @@ describe("Basic unit tests", () => {
   }, 10000);
 
   test("clipOutsideMultipleEez", async () => {
-    const examples = await getExampleFeaturesByName();
-    const example = examples["both_sides_barbados.json"] as Feature<Polygon>;
+    const examples = await getExampleFeaturesByName("gpClipOcean");
+    const example = examples[
+      "gpClipOcean_both_sides_barbados.json"
+    ] as Feature<Polygon>;
     try {
       const result = await clipOutsideEez(example, [
         "Barbados",

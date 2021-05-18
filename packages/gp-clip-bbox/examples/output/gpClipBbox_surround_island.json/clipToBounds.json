@@ -1,7 +1,7 @@
 {
   "type": "Feature",
   "properties": {
-    "name": "surround_island.json"
+    "name": "gpClipBbox_surround_island.json"
   },
   "geometry": {
     "type": "Polygon",

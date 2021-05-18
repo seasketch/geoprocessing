@@ -2,7 +2,6 @@ import {
   Sketch,
   SketchCollection,
   GeoprocessingHandler,
-  sketchArea,
   isCollection,
 } from "@seasketch/geoprocessing";
 //@ts-ignore
@@ -16,7 +15,7 @@ export interface RasterSumResults {
   sum: number;
 }
 
-async function rasterSum(
+export async function rasterSum(
   sketch: Sketch | SketchCollection
 ): Promise<RasterSumResults> {
   const raster = await loadRaster(rasterUrl);

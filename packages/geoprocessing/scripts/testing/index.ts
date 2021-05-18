@@ -1,6 +1,5 @@
 import fs from "fs-extra";
-import { Sketch, SketchCollection } from "../../src/types";
-import { Feature } from "geojson";
+import { Sketch, SketchCollection, Feature } from "../../src/types";
 import path from "path";
 
 interface SketchMap {
@@ -10,10 +9,13 @@ interface FeatureMap {
   [name: string]: Feature;
 }
 
-/** Reads sketches from examples/sketches for testing. Run from project root */
-export async function getExampleSketches(): Promise<
-  Array<Sketch | SketchCollection>
-> {
+/**
+ * Reads sketches from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ */
+export async function getExampleSketches(
+  partialName?: string
+): Promise<Array<Sketch | SketchCollection>> {
   const sketches: Array<Sketch | SketchCollection> = [];
   if (fs.existsSync("examples/sketches")) {
     let filenames = await fs.readdir("examples/sketches");
@@ -26,14 +28,20 @@ export async function getExampleSketches(): Promise<
         })
     );
   }
-  return sketches;
+  const filtered = sketches.filter((f) =>
+    partialName ? f.properties?.name.includes(partialName) : f
+  );
+  return filtered;
 }
 
 /**
  * Convenience function returns object with sketches keyed by name
+ * Optionally filters out those that don't match partialName
  */
-export async function getExampleSketchesByName(): Promise<SketchMap> {
-  const sketches = await getExampleSketches();
+export async function getExampleSketchesByName(
+  partialName?: string
+): Promise<SketchMap> {
+  const sketches = await getExampleSketches(partialName);
   return sketches.reduce<SketchMap>((sketchObject, s) => {
     return {
       ...sketchObject,
@@ -60,7 +68,11 @@ export async function writeResultOutput(
   );
 }
 
-export async function getExampleFeatures() {
+/**
+ * Reads features from examples/features for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ */
+export async function getExampleFeatures(partialName?: string) {
   let features: Feature[] = [];
   if (fs.existsSync("examples/features")) {
     let filenames = await fs.readdir("examples/features");
@@ -75,14 +87,20 @@ export async function getExampleFeatures() {
         })
     );
   }
-  return features;
+  const filtered = features.filter((f) =>
+    partialName ? f.properties?.name.includes(partialName) : f
+  );
+  return filtered;
 }
 
 /**
  * Convenience function returns object with features keyed by name.  Features without a name will not be included
+ * Optionally filters out those that don't match partialName
  */
-export async function getExampleFeaturesByName(): Promise<FeatureMap> {
-  const features = await getExampleFeatures();
+export async function getExampleFeaturesByName(
+  partialName?: string
+): Promise<FeatureMap> {
+  const features = await getExampleFeatures(partialName);
   return features.reduce<FeatureMap>((featureMap, f) => {
     return f.properties?.name
       ? {

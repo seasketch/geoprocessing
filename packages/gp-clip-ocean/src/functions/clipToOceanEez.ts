@@ -5,9 +5,11 @@ import {
   intersect,
   difference,
   isPolygon,
+  Feature,
+  Polygon,
+  MultiPolygon,
 } from "@seasketch/geoprocessing";
 import area from "@turf/area";
-import { Feature, Polygon, MultiPolygon, FeatureCollection } from "geojson";
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
 import combine from "@turf/combine";
@@ -55,7 +57,7 @@ export async function clipOutsideEez(
  * Takes a Polygon feature and returns the portion that is in the ocean and within an EEZ boundary
  * If results in multiple polygons then returns the largest
  */
-async function clipToOceanEez(
+export async function clipToOceanEez(
   feature: Feature,
   eezFilterByNames?: string[]
 ): Promise<Feature> {

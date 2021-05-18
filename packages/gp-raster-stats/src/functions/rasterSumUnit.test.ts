@@ -2,17 +2,15 @@
  * @jest-environment node
  * @group unit
  */
-import Handler from "./rasterSum";
+import { rasterSum } from "./rasterSum";
 import {
   getExampleSketches,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
 
-const rasterSum = Handler.func;
-
 describe("Unit tests", () => {
   test("rasterSumTest", async () => {
-    const examples = await getExampleSketches();
+    const examples = await getExampleSketches("gpRasterSum");
     for (let example of examples) {
       const result = await rasterSum(example);
     }

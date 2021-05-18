@@ -1,4 +1,4 @@
-import Handler from "./clipToOceanEez";
+import { clipToOceanEez } from "./clipToOceanEez";
 import {
   getExampleFeatures,
   writeResultOutput,
@@ -6,15 +6,13 @@ import {
 import { ValidationError } from "@seasketch/geoprocessing";
 import booleanValid from "@turf/boolean-valid";
 
-const clipToOceanEez = Handler.func;
-
 describe("Basic smoke tests", () => {
   test("handler function is present", () => {
     expect(typeof clipToOceanEez).toBe("function");
   });
 
   test("clipToOceanEez", async () => {
-    const examples = await getExampleFeatures();
+    const examples = await getExampleFeatures("gpClipOcean");
     for (const example of examples) {
       try {
         const result = await clipToOceanEez(example);

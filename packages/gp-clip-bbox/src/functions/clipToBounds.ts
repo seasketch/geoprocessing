@@ -1,15 +1,17 @@
 import {
   ValidationError,
   PreprocessingHandler,
+  Feature,
+  BBox,
+  Polygon,
 } from "@seasketch/geoprocessing";
 import area from "@turf/area";
 import bboxClip from "@turf/bbox-clip";
-import { Feature, BBox, Polygon } from "geojson";
 
 // Covers California Channel Islands, change as needed to meet your needs using bboxfinder.com
 const bounds: BBox = [-120.652, 33.733, -119.279, 34.225];
 
-async function clipToBounds(feature: Feature): Promise<Feature> {
+export async function clipToBounds(feature: Feature): Promise<Feature> {
   if (!isPolygon(feature)) {
     throw new ValidationError("Input must be a polygon");
   }

@@ -13,7 +13,7 @@ export interface CalculateAreaResults {
   bbox: BBox;
 }
 
-async function calculateArea(
+export async function calculateArea(
   sketch: Sketch | SketchCollection
 ): Promise<CalculateAreaResults> {
   return {

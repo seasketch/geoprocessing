@@ -1,13 +1,11 @@
 /**
  * @group unit
  */
-import Handler from "./area";
+import { calculateArea } from "./area";
 import {
   getExampleSketches,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
-
-const calculateArea = Handler.func;
 
 describe("Unit tests", () => {
   test("Area should be > 700 sq km", async () => {

@@ -1,13 +1,11 @@
 /**
  * @group smoke
  */
-import Handler from "./area";
+import { calculateArea } from "./area";
 import {
   getExampleSketches,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
-
-const calculateArea = Handler.func;
 
 describe("Basic smoke tests", () => {
   test("handler function is present", () => {

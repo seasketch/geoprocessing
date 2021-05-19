@@ -1,11 +1,9 @@
-import Handler from "./clipToBounds";
+import { clipToBounds } from "./clipToBounds";
 import {
   getExampleFeatures,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
 import { ValidationError } from "@seasketch/geoprocessing";
-
-const clipToBounds = Handler.func;
 
 describe("Basic smoke tests", () => {
   test("handler function is present", () => {

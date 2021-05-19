@@ -12,12 +12,12 @@ export interface ResultsCardProps<T> extends CardProps {
 }
 
 const DefaultSkeleton = () => (
-  <p>
+  <div>
     <Skeleton />
     <Skeleton />
     <Skeleton />
     <Skeleton style={{ width: "25%" }} />
-  </p>
+  </div>
 );
 
 // styled-components are needed here to use the ::before pseudo selector

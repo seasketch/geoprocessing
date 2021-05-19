@@ -35,3 +35,6 @@ export {
 } from "./src/components/table/FilterSelectTable";
 
 export { default as CheckboxGroup } from "./src/components/checkbox/CheckboxGroup";
+
+// Helpers
+export * from "./src/helpers/units";

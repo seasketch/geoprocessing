@@ -4,7 +4,7 @@ import fixtures from "../fixtures";
 
 export default {
   component: DataDownload,
-  title: "Components|DataDownload",
+  title: "Components/DataDownload",
   decorators: [],
 };
 

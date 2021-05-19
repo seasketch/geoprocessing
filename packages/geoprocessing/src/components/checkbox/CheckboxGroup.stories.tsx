@@ -5,7 +5,7 @@ import CheckboxGroup from "./CheckboxGroup";
 
 export default {
   component: CheckboxGroup,
-  title: "Components|CheckboxGroup",
+  title: "Components/CheckboxGroup",
   decorators: [ReportCardDecorator],
 };
 

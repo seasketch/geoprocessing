@@ -3,7 +3,7 @@ import SimpleButton from "./SimpleButton";
 
 export default {
   component: SimpleButton,
-  title: "Components|Buttons|",
+  title: "Components/Buttons/SimpleButton",
   decorators: [],
 };
 

@@ -8,7 +8,7 @@ import fixtures from "../fixtures";
 
 export default {
   component: Toolbar,
-  title: "Components|Toolbar",
+  title: "Components/Toolbar",
   decorators: [ReportDecorator],
 };
 

@@ -5,7 +5,7 @@ import Dropdown from "./Dropdown";
 
 export default {
   component: Card,
-  title: "Components|Dropdown",
+  title: "Components/Dropdown",
   decorators: [],
 };
 

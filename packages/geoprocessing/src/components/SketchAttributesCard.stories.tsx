@@ -7,7 +7,7 @@ import { genSampleSketchContext } from "../fixtures/sketch";
 
 export default {
   component: SketchAttributesCard,
-  title: "Components|SketchAttributesCard",
+  title: "Components/SketchAttributesCard",
   decorators: [ReportCardDecorator],
 };
 

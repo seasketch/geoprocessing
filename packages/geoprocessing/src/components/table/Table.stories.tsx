@@ -12,7 +12,7 @@ import styled from "styled-components";
 
 export default {
   component: Table,
-  title: "Components|Table",
+  title: "Components/Table",
   decorators: [ReportCardDecorator],
 };
 

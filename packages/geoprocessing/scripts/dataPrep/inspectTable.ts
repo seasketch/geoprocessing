@@ -138,7 +138,7 @@ const inspectTable = async (
   );
   if (maxPoints && maxPoints > pointsLimit) {
     throw new Error(
-      `Features in table exceed bytes-limit (${maxPoints} > ${pointsLimit}). Subdivide large features first.`
+      `Features in table exceed bytes-limit (${maxPoints} > ${pointsLimit}). Subdivide large features first, or increase the limit using --points-limit option.`
     );
   }
   // Get a count of features in the table

@@ -12,7 +12,7 @@ export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
 }
 
 /**
- * Check if object is a SketchCollection and return with that type.  Useful for narrowing mixed use data structures
+ * Check if object is a SketchCollection and and narrows type to SketchCollection for any code in a block guarded by a call to this function.
  */
 export const isCollection = (
   sketch: Sketch | SketchCollection
@@ -21,10 +21,10 @@ export const isCollection = (
 };
 
 /**
- * Check if object is a Sketch and return with that type.  Useful for narrowing mixed use data structures
+ * Check if object is a Sketch and narrows type to Sketch for any code in a block guarded by a call to this function.
  */
 export const isSketch = (
   sketch: Sketch | SketchCollection
-): sketch is SketchCollection => {
+): sketch is Sketch => {
   return sketch.type !== "FeatureCollection";
 };

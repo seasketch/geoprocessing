@@ -2,7 +2,7 @@ import {
   Sketch,
   SketchCollection,
   GeoprocessingHandler,
-  isCollection,
+  isSketchCollection,
 } from "@seasketch/geoprocessing";
 //@ts-ignore
 import geoblaze from "geoblaze";
@@ -20,7 +20,7 @@ export async function rasterSum(
 ): Promise<RasterSumResults> {
   const raster = await loadRaster(rasterUrl);
   let rasterSum = 0;
-  if (isCollection(sketch)) {
+  if (isSketchCollection(sketch)) {
     const sums = await Promise.all(
       sketch.features.map(async (f) => {
         const sum = (await geoblaze.sum(raster, f))[0];

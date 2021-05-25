@@ -1,6 +1,7 @@
 // Re-export all
 export * from "./types";
 export * from "./helpers";
+export { default as toolbox } from "./toolbox";
 
 export { GeoprocessingHandler } from "./GeoprocessingHandler";
 export { PreprocessingHandler, ValidationError } from "./PreprocessingHandler";

@@ -1,5 +1,7 @@
 import { randomInt, randomFloat } from "../util/randomData";
 
+export * from "./sketch";
+
 let fixtures = {};
 
 export interface HumanUse {

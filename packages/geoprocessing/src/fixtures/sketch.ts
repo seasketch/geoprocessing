@@ -1,4 +1,22 @@
 import fixtures from "../fixtures";
+import { v4 as uuid } from "uuid";
+import { Sketch, Feature } from "../types";
+import bbox from "@turf/bbox";
+
+export const genSampleSketch = (geometry: Feature["geometry"]): Sketch => ({
+  type: "Feature",
+  properties: {
+    id: uuid(),
+    isCollection: false,
+    userAttributes: [],
+    sketchClassId: uuid(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    name: "genSampleSketch",
+  },
+  geometry,
+  bbox: bbox(geometry),
+});
 
 export const genSampleSketchContext = () => ({
   sketchProperties: {

@@ -1,9 +1,10 @@
-import { Sketch, SketchCollection } from "../types";
+import { Sketch, SketchCollection, Feature, FeatureCollection } from "../types";
 
 /**
  * Type narrowing to allow property checking when object can be multiple types
  * https://fettblog.eu/typescript-hasownproperty/
- * */
+ * Any code inside a block guarded by a conditional call to this function will have type narrowed to X
+ */
 export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
   obj: X,
   prop: Y
@@ -12,19 +13,37 @@ export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
 }
 
 /**
- * Check if object is a SketchCollection and and narrows type to SketchCollection for any code in a block guarded by a call to this function.
+ * Check if object is a Feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Feature
  */
-export const isCollection = (
-  sketch: Sketch | SketchCollection
-): sketch is SketchCollection => {
-  return sketch.type === "FeatureCollection";
+export function isFeature(
+  feature: Sketch | SketchCollection | Feature | FeatureCollection
+): feature is Feature {
+  return feature.type === "Feature";
+}
+
+/**
+ * Check if object is a Feature Collection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to FeatureCollection
+ */
+export function isFeatureCollection(
+  feature: Sketch | SketchCollection | Feature | FeatureCollection
+): feature is FeatureCollection {
+  return feature.type === "FeatureCollection";
+}
+
+/**
+ * Checks if object is a Sketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
+ */
+export const isSketch = (
+  feature: Sketch | SketchCollection | Feature | FeatureCollection
+): feature is Sketch => {
+  return feature.hasOwnProperty("bbox") && feature.type !== "FeatureCollection";
 };
 
 /**
- * Check if object is a Sketch and narrows type to Sketch for any code in a block guarded by a call to this function.
+ * Check if object is a SketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to SketchCollection
  */
-export const isSketch = (
-  sketch: Sketch | SketchCollection
-): sketch is Sketch => {
-  return sketch.type !== "FeatureCollection";
+export const isSketchCollection = (
+  feature: Sketch | SketchCollection | Feature | FeatureCollection
+): feature is SketchCollection => {
+  return feature.hasOwnProperty("bbox") && feature.type === "FeatureCollection";
 };

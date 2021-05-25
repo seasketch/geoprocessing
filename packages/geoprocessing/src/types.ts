@@ -7,6 +7,7 @@ import {
   Polygon,
   MultiPolygon,
   Point,
+  GeoJSON,
 } from "geojson";
 
 // Re-export geojson type declaractions for easy import by user project
@@ -19,6 +20,7 @@ export {
   Polygon,
   MultiPolygon,
   Point,
+  GeoJSON,
 };
 
 export type ExecutionMode = "async" | "sync";

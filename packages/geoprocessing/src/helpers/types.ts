@@ -43,7 +43,10 @@ export const isSketch = (
  * Check if object is a SketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to SketchCollection
  */
 export const isSketchCollection = (
-  feature: Sketch | SketchCollection | Feature | FeatureCollection
-): feature is SketchCollection => {
-  return feature.hasOwnProperty("bbox") && feature.type === "FeatureCollection";
+  collection: Sketch | SketchCollection | Feature | FeatureCollection
+): collection is SketchCollection => {
+  const hasAllSketches =
+    hasOwnProperty(collection, "features") &&
+    collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true);
+  return collection.type === "FeatureCollection" && hasAllSketches;
 };

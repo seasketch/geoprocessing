@@ -1,4 +1,10 @@
-import { Sketch, SketchCollection, Feature, FeatureCollection } from "../types";
+import {
+  Sketch,
+  SketchCollection,
+  Geometry,
+  Feature,
+  FeatureCollection,
+} from "../types";
 
 /**
  * Type narrowing to allow property checking when object can be multiple types
@@ -15,38 +21,59 @@ export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
 /**
  * Check if object is a Feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Feature
  */
-export function isFeature(
-  feature: Sketch | SketchCollection | Feature | FeatureCollection
-): feature is Feature {
-  return feature.type === "Feature";
+export function isGeometry(geometry: any): geometry is Geometry {
+  return (
+    geometry.hasOwnProperty("geometry") &&
+    geometry.hasOwnProperty("properties") &&
+    geometry.hasOwnProperty("type") &&
+    geometry.type !== "Feature"
+  );
+}
+
+/**
+ * Check if object is a Feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Feature
+ */
+export function isFeature(feature: any): feature is Feature {
+  return (
+    feature.hasOwnProperty("geometry") &&
+    feature.hasOwnProperty("properties") &&
+    feature.hasOwnProperty("type") &&
+    feature.type === "Feature"
+  );
 }
 
 /**
  * Check if object is a Feature Collection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to FeatureCollection
  */
 export function isFeatureCollection(
-  feature: Sketch | SketchCollection | Feature | FeatureCollection
+  feature: any
 ): feature is FeatureCollection {
-  return feature.type === "FeatureCollection";
+  return (
+    feature.hasOwnProperty("type") &&
+    feature.hasOwnProperty("features") &&
+    feature.type === "FeatureCollection"
+  );
 }
 
 /**
  * Checks if object is a Sketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
  */
-export const isSketch = (
-  feature: Sketch | SketchCollection | Feature | FeatureCollection
-): feature is Sketch => {
-  return feature.hasOwnProperty("bbox") && feature.type !== "FeatureCollection";
+export const isSketch = (feature: any): feature is Sketch => {
+  return (
+    feature.hasOwnProperty("bbox") &&
+    feature.hasOwnProperty("type") &&
+    feature.type !== "FeatureCollection"
+  );
 };
 
 /**
  * Check if object is a SketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to SketchCollection
  */
 export const isSketchCollection = (
-  collection: Sketch | SketchCollection | Feature | FeatureCollection
+  collection: any
 ): collection is SketchCollection => {
-  const hasAllSketches =
-    hasOwnProperty(collection, "features") &&
-    collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true);
-  return collection.type === "FeatureCollection" && hasAllSketches;
+  return (
+    isFeatureCollection(collection) &&
+    collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true)
+  );
 };

@@ -48,7 +48,7 @@ export interface UserAttribute {
 export interface Sketch extends Feature {
   properties: SketchProperties;
   geometry: Geometry;
-  bbox: BBox;
+  bbox?: BBox;
 }
 
 export interface SketchCollection extends FeatureCollection {

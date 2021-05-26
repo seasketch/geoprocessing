@@ -59,11 +59,7 @@ export function isFeatureCollection(
  * Checks if object is a Sketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
  */
 export const isSketch = (feature: any): feature is Sketch => {
-  return (
-    feature.hasOwnProperty("bbox") &&
-    feature.hasOwnProperty("type") &&
-    feature.type !== "FeatureCollection"
-  );
+  return isFeature(feature) && feature.hasOwnProperty("type");
 };
 
 /**

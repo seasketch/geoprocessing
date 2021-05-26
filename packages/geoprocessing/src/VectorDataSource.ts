@@ -1,14 +1,14 @@
-import Flatbush from "flatbush";
-import Pbf from "pbf";
-import geobuf from "geobuf";
-import LRUCache from "mnemonist/lru-cache";
 import {
   FeatureCollection,
   Feature,
   Polygon,
   MultiPolygon,
   BBox,
-} from "geojson";
+} from "./types";
+import Flatbush from "flatbush";
+import Pbf from "pbf";
+import geobuf from "geobuf";
+import LRUCache from "mnemonist/lru-cache";
 import RBush from "rbush";
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
@@ -465,12 +465,12 @@ export class VectorDataSource<T extends Feature> {
     // console.time("retrieval and processing");
     // debug(`Searching index`, bbox);
 
-    let features = (this.tree.search({
+    let features = this.tree.search({
       minX: bbox[0],
       minY: bbox[1],
       maxX: bbox[2],
       maxY: bbox[3],
-    }) as unknown) as T[];
+    }) as unknown as T[];
 
     // remove extra with overlap test since bundles sometimes aren't entirely well packed
     const a = bbox;
@@ -492,7 +492,7 @@ export class VectorDataSource<T extends Feature> {
     const features = await this.fetch(bbox);
     if (features.length !== 0) {
       return union(
-        fc((features as unknown) as Feature<Polygon | MultiPolygon>[]),
+        fc(features as unknown as Feature<Polygon | MultiPolygon>[]),
         unionProperty || undefined
       );
     } else {

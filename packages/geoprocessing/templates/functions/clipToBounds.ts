@@ -2,10 +2,12 @@ import {
   ValidationError,
   PreprocessingHandler,
   isPolygon,
+  Feature,
+  BBox,
+  Polygon,
 } from "@seasketch/geoprocessing";
 import area from "@turf/area";
 import bboxClip from "@turf/bbox-clip";
-import { Feature, BBox, Polygon } from "geojson";
 
 const bounds: BBox = [-120.652, 33.733, -119.279, 34.225];
 

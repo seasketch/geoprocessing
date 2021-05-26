@@ -1,4 +1,4 @@
-import { BBox } from "geojson";
+import { BBox } from "../../src/types";
 import Flatbush from "flatbush";
 import expand from "./expand";
 

@@ -1,4 +1,4 @@
-import { BBox } from "geojson";
+import { BBox } from "../types";
 
 /** Returns whether bounding box A overlaps with or touches bounding box B */
 export function bboxOverlap(a: BBox, b: BBox) {

@@ -3,11 +3,11 @@ import {
   APIGatewayProxyResult,
   APIGatewayProxyEvent,
 } from "aws-lambda";
-import { Feature } from "geojson";
 import {
   PreprocessingHandlerOptions,
   PreprocessingRequest,
   PreprocessingResponse,
+  Feature,
 } from "./types";
 
 export class ValidationError extends Error {}

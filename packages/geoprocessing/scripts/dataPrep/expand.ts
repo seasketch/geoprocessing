@@ -1,4 +1,4 @@
-import { BBox } from "geojson";
+import { BBox } from "../../src/types";
 
 /**
  * Expands bboxA to incorporate bboxB

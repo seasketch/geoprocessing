@@ -3,11 +3,11 @@ import {
   GeoprocessingJsonConfig,
   Sketch,
   SketchCollection,
+  Feature,
 } from "../../src/types";
 import { PreprocessingHandler, GeoprocessingHandler } from "../../src";
 import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src/VectorDataSource";
 import { point } from "@turf/helpers";
-import { Feature } from "geojson";
 import { Package, PreprocessingBundle, GeoprocessingBundle } from "../types";
 import { Manifest } from "../manifest";
 

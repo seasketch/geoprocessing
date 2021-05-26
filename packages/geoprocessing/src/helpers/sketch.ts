@@ -1,4 +1,5 @@
-import { Sketch } from "../types";
+import { Sketch, SketchCollection } from "../types";
+import { isSketch } from "./types";
 /**
  * UserAttributes are those filled in via the attributes form specified as
  * part of a SketchClass. This getter function is easier to use than searching
@@ -23,4 +24,12 @@ export function getUserAttribute<T>(
     (a) => a.exportId === exportid
   );
   return found?.value || defaultValue;
+}
+
+export function unpackSketches(input: Sketch | SketchCollection) {
+  if (isSketch(input)) {
+    return [input];
+  } else {
+    return input.features;
+  }
 }

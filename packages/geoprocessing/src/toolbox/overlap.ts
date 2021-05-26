@@ -4,39 +4,47 @@ import turfBoolOverlap from "@turf/boolean-overlap";
 import deepEqual from "fast-deep-equal";
 
 /**
- * Returns all B items that overlap with an A item
- * Note that not all Feature types are supported, see typedoc
+ * Returns all B items that overlap with a A items
+ * Not all Feature types are supported, see typedoc
  * A and B must have the same geometry dimension (single or multi). Builds on @turf/boolean-overlap.
- * @param  {Geometry|Feature<LineString|MultiLineString|Polygon|MultiPolygon>}[] featuresA array
- * @param  {Geometry|Feature<LineString|MultiLineString|Polygon|MultiPolygon>}[] featuresB array
+ * @param  {Geometry|Feature<LineString|MultiLineString|Polygon|MultiPolygon>} featuresA - single or array
+ * @param  {Geometry|Feature<LineString|MultiLineString|Polygon|MultiPolygon>} featuresB - single or array
  * @param idProperty - property in Feature B to track if overlap already found.
  * Useful if multiple features have same property value and you only want the first match.
  */
 export async function overlap<B extends Feature<any>>(
-  featuresA: Feature<any>[],
-  featuresB: B[],
+  featureAInput: Feature<any> | Feature<any>[],
+  featureBInput: B | B[],
   idProperty?: string
 ): Promise<B[]>;
 export async function overlap<B extends Feature<any>>(
-  featuresA: Geometry[],
-  featuresB: B[],
+  featureAInput: Geometry[],
+  featureBInput: B | B[],
   idProperty?: string
 ): Promise<B[]>;
 export async function overlap<B extends Geometry>(
-  featuresA: Feature<any>[],
-  featuresB: B[],
+  featureAInput: Feature<any> | Feature<any>[],
+  featureBInput: B | B[],
   idProperty?: string
 ): Promise<B[]>;
 export async function overlap<B extends Geometry>(
-  featuresA: Geometry[],
-  featuresB: B[],
+  featureAInput: Geometry | Geometry[],
+  featureBInput: B | B[],
   idProperty?: string
 ): Promise<B[]>;
 export async function overlap<B>(
-  featuresA,
-  featuresB: B[],
+  featureAInput,
+  featureBInput: B | B[],
   idProperty?: string
 ): Promise<B[]> {
+  // Normalize input to array
+  const featuresA = Array.isArray(featureAInput)
+    ? featureAInput
+    : [featureAInput];
+  const featuresB = Array.isArray(featureBInput)
+    ? featureBInput
+    : [featureBInput];
+
   let overlapFeatures: B[] = [];
   let overlapIds: string[] = [];
 

@@ -9,7 +9,8 @@ import ora from "ora";
 import inspectTable from "./inspectTable";
 import cliProgress from "cli-progress";
 import Pbf from "pbf";
-import { FeatureCollection, BBox } from "geojson";
+import { FeatureCollection, BBox, Geometry } from "../../src/types"; // Use geojson to avoid
+import { FeatureCollection as geobufFC } from "geojson";
 import { lineString } from "@turf/helpers";
 import length from "@turf/length";
 import geobuf from "geobuf";
@@ -195,7 +196,7 @@ async function createGeobuf(
       where ${pk} in (${sql.join(ids, sql`, `)})
     ) as t
   `);
-  const fc = collection as FeatureCollection;
+  const fc = collection as FeatureCollection<Geometry>;
   if (fc.features.length === 0) {
     throw new Error("Empty bundle with no features.");
   }
@@ -218,7 +219,8 @@ async function createGeobuf(
       }
     }
   }
-  const buffer = geobuf.encode(fc, new Pbf());
+  // geobuf types are incompatible so cast to geojson fc it expects
+  const buffer = geobuf.encode(fc as geobufFC, new Pbf());
   const { id, bytes, count } = await connection.one<{
     id: number;
     bytes: number;

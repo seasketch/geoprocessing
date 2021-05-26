@@ -68,6 +68,7 @@
     "@testing-library/react-hooks": "^5.1.2",
     "@turf/area": "^6.3.0",
     "@turf/bbox": "^6.3.0",
+    "@turf/bbox-clip": "^6.3.0",
     "@turf/boolean-overlap": "^6.3.0",
     "@turf/buffer": "^6.3.0",
     "@turf/combine": "^6.3.0",

@@ -22,7 +22,7 @@ It's specifically targeted to GIS practictioners, developers, and technical folk
 * Library of [React](https://reactjs.org/) components ready to add to report clients.
 * [Templates](#Templates) for common planning use cases that can be installed into your project.
 * Cloud-optimized tools for indexing large data and using in analysis
-* Cloud-native architecture with automated cloud provisioning and migration as a project evolves.
+* Cloud-native serverless architecture with automated provisioning and migration as a project evolves.
 * APIs for accessing project resources and integration including REST, Web Socket, and IFrame postMessage.
 
 ## System Components

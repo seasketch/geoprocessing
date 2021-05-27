@@ -1,18 +1,39 @@
-# @seasketch/geoprocessing
+# Geoprocessing
 
-A framework to create, combine, and publish geoprocessing `functions`, `datasources` and `client` reports for use in spatial planning tools.
+A framework for publishing low-cost and low-maintenance `geoprocessing` services and reports in the cloud.  Part of the [SeaSketch](https://seasketch.org/) ecosystem.
 
-Geoprocessing projects are designed to integrate with the [Seasketch](https://seasketch.org/) marine spatial planning platform, supporting continuous evaluation of user-designed planning areas (sketches) against science-based criteria.
+It works best where the same analysis needs to be run many times with different input by a large diverse group of users, as is often the case with spatial planning processes.  The original analysis may be prototyped in an environment like R, Jupyter Notebook, ArcGIS Desktop, etc. and this framework can be used to "operationalize" the analysis at a speed and cost that can't be achieved with other solutions.
 
-## System components
+## Who is this for?
 
-Geoprocessing projects consist of [geoprocessing](./docs/geoprocessing.md) or [preprocessing](./docs/preprocessing.md) functions, client javascript components and data prep scripts. Functions are bundled into services that are deployed to [AWS Lambda](https://aws.amazon.com/lambda/). The advantage of running on lambda is that costs are based directly on use, and are typically very low compared to a server running 24/7. They also scale up to hundreds of simulateous users very quickly. Client code is stored on AWS S3 and distributed via CloudFront. SeaSketch runs these clients inside a sandboxed iframe to protect user data.
+It's specifically targeted to GIS practictioners, developers, and technical folks that want to create and host geoprocessing projects themselves, independent of any planning tool used. The SeaSketch team uses it for [all projects](https://github.com/mcclintock-lab?q=-next&type=&language=&sort=)
+
+## Goals
+
+* Easy to create and publish a geoprocessing project (with datasets, functions, and client reports) in the cloud
+* Plug-and-play with the [SeaSketch](https://seasketch.org) platform using standardized APIs
+* Spins up to meet high demand, then spins down to near zero cost when not in use.
+
+## Features
+
+* Core library with command-line interface (CLI) for managing geoprocessing projects, and a straightforward upgrade path to new versions.
+* [Docker workspace](https://hub.docker.com/u/seasketch) packed with open source tools like PostGIS, OGR, GDAL for scripting data prep workflows.
+* Toolbox of geoprocessing functions suited for spatial planning.
+* Library of [React](https://reactjs.org/) components ready to add to report clients.
+* [Templates](#Templates) for common planning use cases that can be installed into your project.
+* Cloud-optimized tools for indexing large data and using in analysis
+* Cloud-native serverless architecture with automated provisioning and migration as a project evolves.
+* APIs for accessing project resources and integration including REST, Web Socket, and IFrame postMessage.
+
+## System Components
+
+Geoprocessing projects consist of [geoprocessing](./docs/geoprocessing.md) or [preprocessing](./docs/preprocessing.md) functions, client javascript components and data prep scripts. Functions are bundled into services that are deployed to [AWS Lambda](https://aws.amazon.com/lambda/). The advantage of running on lambda is that costs are based directly on use, and are typically very low compared to a server running 24/7. They also scale up to hundreds of simulateous users very quickly. Client code is stored on AWS S3 and distributed via CloudFront. The SeaSketch platform runs these report clients inside a sandboxed iframe to protect user data.
 
 ![Architecture overview](https://user-images.githubusercontent.com/511063/79143180-a1f22980-7d71-11ea-8624-6aacb73b94f3.png)
 
 All the infrastructure pictured above is created for each geoprocessing project implementation. Resources are not shared in order to avoid issues of version mismatches and so that report authors can deploy to their own AWS account.
 
-# Getting started
+## Getting started
 
 ## Creating a new project
 

@@ -35,6 +35,15 @@ All the infrastructure pictured above is created for each geoprocessing project 
 
 ## Getting started
 
+To develop projects initially on your local system you will need to:
+* Install [Node JS](https://nodejs.org/en/download/) version 14 or greater and the [NPM](https://www.npmjs.com/) package manager (these often come together).
+* Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+When you're ready to deploy your first project to the Amazon Cloud you will need to:
+* Create an Amazon [AWS account] such that you can login and access the main AWS Console page (https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).  You will find there is a fairly generous [free tier](https://aws.amazon.com/free)
+* Create an AWS IAM [admin account](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html).  This is what you will use to manage projects.
+* Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [configure](](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)) a new or default profile with your admin credentials in your shell environment
+
 ## Creating a new project
 
 Use the init command to create a new project

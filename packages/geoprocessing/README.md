@@ -1,8 +1,12 @@
-# @seasketch/geoprocessing
+# Geoprocessing
 
-A framework to create, combine, and publish geoprocessing `functions`, `datasources` and `client` reports for use in spatial planning tools.
+A framework for publishing low-cost and low-maintenance `geoprocessing` services and reports in the cloud.  Part of the [SeaSketch](https://seasketch.org/) ecosystem.
 
-Geoprocessing projects are designed to integrate with the [Seasketch](https://seasketch.org/) marine spatial planning platform, supporting continuous evaluation of user-designed planning areas (sketches) against science-based criteria.
+It's sweet spot is giving you fast spatial analysis functions that can be run at scale, over and over with different user input, with immediate report feedback, such as in support of an iterative spatial planning process.
+
+## Who is this for?
+
+Anyone that wants to publish geoprocessing capability at low cost, but specifically it's designed for GIS practictioners, developers, technical folks that want to create and host geoprocessing projects themselves, independent of any planning tool used. The SeaSketch team uses it for [all projects](https://github.com/mcclintock-lab?q=-next&type=&language=&sort=)
 
 [Geoprocessing Docs](https://github.com/seasketch/geoprocessing#readme)
 

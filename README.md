@@ -6,7 +6,7 @@ It works best where the same analysis needs to be run many times with different 
 
 ## Who is this for?
 
-It's specifically targeted to GIS practictioners, developers, and technical folks that want to create and host geoprocessing projects themselves, independent of any planning tool used. The SeaSketch team uses it for [all projects](https://github.com/mcclintock-lab?q=-next&type=&language=&sort=)
+It's specifically targeted to GIS practitioners, developers, and technical folks that want to create and host geoprocessing projects themselves, independent of any planning tool used. The SeaSketch team uses it for [all projects](https://github.com/mcclintock-lab?q=-next&type=&language=&sort=)
 
 ## Goals
 

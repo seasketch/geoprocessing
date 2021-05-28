@@ -1,4 +1,5 @@
 import {
+  FeatureCollection,
   Feature,
   Geometry,
   BBox,

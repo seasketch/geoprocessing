@@ -1,4 +1,14 @@
 import {
+  Feature,
+  Geometry,
+  BBox,
+  LineString,
+  Polygon,
+  Point,
+} from "@turf/helpers";
+
+// Re-export GeoJSON type declaractions for easy import by user project
+export type {
   FeatureCollection,
   Feature,
   Geometry,
@@ -10,20 +20,6 @@ import {
   MultiPolygon,
   Point,
 } from "@turf/helpers";
-
-// Re-export geojson type declaractions for easy import by user project
-export {
-  FeatureCollection,
-  Feature,
-  Geometry,
-  GeometryCollection,
-  BBox,
-  LineString,
-  MultiLineString,
-  Polygon,
-  MultiPolygon,
-  Point,
-};
 
 export type ExecutionMode = "async" | "sync";
 

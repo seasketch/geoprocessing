@@ -25,6 +25,28 @@ It's specifically targeted to GIS practitioners, developers, and technical folks
 * Cloud-native serverless architecture with automated provisioning and migration as a project evolves.
 * APIs for accessing project resources and integration including REST, Web Socket, and IFrame postMessage.
 
+## Limitations
+
+### Javascript-only
+
+* The current version of the library only supports spatial libraries written in Javascript.  This includes [Turf JS](http://turfjs.org/), [Geoblaze](https://geoblaze.io/), [cheap-ruler](https://github.com/mapbox/cheap-ruler) and anything else you can find.  There is discussion about supporting any analysis that can be packaged into a Docker container now that Lambda has [added container support](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/).  This will be done as need arises.
+
+### WGS84
+* Geoprocessing functions in this library only support data in the World Geodetic System 1984 (WGS 84) [WGS84] datum, with longitude and latitude units of decimal degrees.  The [GeoJSON spec](https://datatracker.ietf.org/doc/html/rfc7946#section-4) also only supports this.
+
+### Calculation Error
+Since the data is spherical (WGS84), most geoprocessing functions in this library (particularly [Turf.JS](http://turfjs.org/docs/#distance)) measure distance and area by approximating them on a sphere.  Algorithms are typically chosen that strike a balance between speed and accuracy.  So choose accordingly.  That said:
+
+* If the geographic area of your project is small, on the order of a few hundred miles, then `distance` error is usually not significant.
+* Calculating the percentage of an area is not subject to the error of the algorithm for calculating the area.  For example, if you write a function to calculate the % of a particular habitat captured by a polygon that overlaps the habitat, as long as the area of the total habitat, and the area overlapping are calculated using the same formula, the percentage should be the same as if it were calculated using a more accurate area formula.
+
+Sources:
+* [Fast Geodesic Approximations](https://blog.mapbox.com/fast-geodesic-approximations-with-cheap-ruler-106f229ad016)
+* [Calculate distance, bearing and more between Latitude/Longitude points](https://www.movable-type.co.uk/scripts/latlong.html)
+* [Haversine Formula on Wikipedia](https://en.wikipedia.org/wiki/Haversine_formula).  Used by [turf-distance](https://github.com/Turfjs/turf/tree/master/packages/turf-distance).  Error up to 0.5%
+* [Some algorithms for polygons on a sphere](https://sgp1.digitaloceanspaces.com/proletarian-library/books/5cc63c78dc09ee09864293f66e2716e2.pdf) - used by [turf-area](http://turfjs.org/docs/#area).  Greater error at higher latitudes vs. Vincenty.
+* [Vincenty algorithm](https://en.wikipedia.org/wiki/Vincenty%27s_formulae) used by [turf-vincenty-inverse](https://github.com/Turfjs/turf-vincenty-inverse)
+
 ## System Components
 
 Geoprocessing projects consist of [geoprocessing](./docs/geoprocessing.md) or [preprocessing](./docs/preprocessing.md) functions, client javascript components and data prep scripts. Functions are bundled into services that are deployed to [AWS Lambda](https://aws.amazon.com/lambda/). The advantage of running on lambda is that costs are based directly on use, and are typically very low compared to a server running 24/7. They also scale up to hundreds of simulateous users very quickly. Client code is stored on AWS S3 and distributed via CloudFront. The SeaSketch platform runs these report clients inside a sandboxed iframe to protect user data.

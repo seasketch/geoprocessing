@@ -3,7 +3,7 @@ const path = require("path");
 const baseStories = [
   "../src/**/*.stories.tsx",
   "../src/**/*.stories.js",
-  "../src/**/*.stories.ts"
+  "../src/**/*.stories.ts",
 ];
 
 const projectStories = [];
@@ -16,18 +16,21 @@ if (process.env.PROJECT_PATH) {
 
 module.exports = {
   stories: [...baseStories, ...projectStories],
-  webpackFinal: async config => {
+  typescript: {
+    reactDocgen: "none",
+  },
+  webpackFinal: async (config) => {
     config.module.rules.push({
       test: /\.(ts|tsx)$/,
       use: [
         {
-          loader: require.resolve("ts-loader")
-        }
+          loader: require.resolve("ts-loader"),
+        },
         // // Optional
         // {
         //   loader: require.resolve('react-docgen-typescript-loader'),
         // },
-      ]
+      ],
     });
     config.resolve.extensions.push(".ts", ".tsx");
     if (process.env.PROJECT_PATH) {
@@ -37,14 +40,14 @@ module.exports = {
           {
             loader: `val-loader`,
             options: {
-              examplesPath: path.join(process.env.PROJECT_PATH, "examples")
-            }
-          }
-        ]
+              examplesPath: path.join(process.env.PROJECT_PATH, "examples"),
+            },
+          },
+        ],
       });
     }
 
     console.log(process.cwd());
     return config;
-  }
+  },
 };

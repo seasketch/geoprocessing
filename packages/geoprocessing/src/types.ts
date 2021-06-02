@@ -2,6 +2,7 @@ import {
   FeatureCollection,
   Feature,
   Geometry,
+  Properties,
   BBox,
   LineString,
   Polygon,
@@ -13,6 +14,7 @@ export type {
   FeatureCollection,
   Feature,
   Geometry,
+  Properties,
   GeometryCollection,
   BBox,
   LineString,
@@ -44,16 +46,17 @@ export interface UserAttribute {
   fieldType: string;
 }
 
-export interface Sketch extends Feature {
+export interface Sketch<G = Geometry> extends Omit<Feature, "geometry"> {
   properties: SketchProperties;
-  geometry: Geometry;
+  geometry: G;
   bbox?: BBox;
 }
 
-export interface SketchCollection extends FeatureCollection {
+export interface SketchCollection<G = Geometry>
+  extends Omit<FeatureCollection, "features"> {
   properties: SketchProperties;
   bbox: BBox;
-  features: Sketch[];
+  features: Array<Sketch<G>>;
 }
 
 export interface GeoprocessingHandlerOptions {

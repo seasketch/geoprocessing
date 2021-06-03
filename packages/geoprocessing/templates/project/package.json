@@ -4,6 +4,7 @@
   "description": "Example project for testing @seaketch/geoprocessing framework",
   "main": "src/index.js",
   "scripts": {
+    "ts-node": "ts-node --transpile-only --compiler-options '{\"esModuleInterop\":true, \"module\":\"commonjs\"}'",
     "test": "geoprocessing test",
     "add:template": "geoprocessing add:template",
     "create:function": "geoprocessing create:function",

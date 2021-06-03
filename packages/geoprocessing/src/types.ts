@@ -46,13 +46,14 @@ export interface UserAttribute {
   fieldType: string;
 }
 
-export interface Sketch<G = Geometry> extends Omit<Feature, "geometry"> {
+export interface Sketch<G = Polygon | LineString | Point>
+  extends Omit<Feature, "geometry"> {
   properties: SketchProperties;
   geometry: G;
   bbox?: BBox;
 }
 
-export interface SketchCollection<G = Geometry>
+export interface SketchCollection<G = Polygon | LineString | Point>
   extends Omit<FeatureCollection, "features"> {
   properties: SketchProperties;
   bbox: BBox;

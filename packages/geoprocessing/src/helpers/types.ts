@@ -18,6 +18,10 @@ export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
   return obj.hasOwnProperty(prop);
 }
 
+function isObject(val: unknown) {
+  return val ? typeof val === "object" : false;
+}
+
 /**
  * Check if object is a Feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Feature
  */
@@ -59,7 +63,13 @@ export function isFeatureCollection(
  * Checks if object is a Sketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
  */
 export const isSketch = (feature: any): feature is Sketch => {
-  return isFeature(feature) && feature.hasOwnProperty("type");
+  return (
+    isFeature(feature) &&
+    hasOwnProperty(feature, "type") &&
+    hasOwnProperty(feature, "properties") &&
+    feature.properties &&
+    feature.properties.name
+  );
 };
 
 /**
@@ -70,6 +80,9 @@ export const isSketchCollection = (
 ): collection is SketchCollection => {
   return (
     isFeatureCollection(collection) &&
+    hasOwnProperty(collection, "properties") &&
+    isObject(collection.properties) &&
+    hasOwnProperty(collection.properties as Record<string, any>, "name") &&
     collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true)
   );
 };

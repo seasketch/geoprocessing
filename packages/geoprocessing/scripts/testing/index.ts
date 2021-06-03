@@ -1,7 +1,20 @@
 import fs from "fs-extra";
-import { Sketch, SketchCollection, Feature } from "../../src/types";
+import {
+  Sketch,
+  SketchCollection,
+  Feature,
+  Polygon,
+  LineString,
+  Point,
+} from "../../src/types";
 import path from "path";
-import { isSketch, isSketchCollection } from "../../src/helpers";
+import {
+  isSketch,
+  isSketchCollection,
+  isPolygon,
+  isLineString,
+  isPoint,
+} from "../../src/helpers";
 
 /**
  * A simple map of sketches and/or sketch collections keyed by their name
@@ -60,6 +73,45 @@ export async function getExampleSketches(
   partialName?: string
 ): Promise<Array<Sketch>> {
   return (await getExampleSketchAll(partialName)).filter(isSketch);
+}
+
+/**
+ * Reads all Polygon sketches from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExamplePolygonSketches(
+  partialName?: string
+): Promise<Array<Sketch<Polygon>>> {
+  return (await getExampleSketches(partialName)).filter(
+    isPolygon
+  ) as Sketch<Polygon>[];
+}
+
+/**
+ * Reads all Linestring sketches from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExampleLineStringSketches(
+  partialName?: string
+): Promise<Array<Sketch<LineString>>> {
+  return (await getExampleSketches(partialName)).filter(
+    isLineString
+  ) as Sketch<LineString>[];
+}
+
+/**
+ * Reads all Point sketches from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExamplePointSketches(
+  partialName?: string
+): Promise<Array<Sketch<Point>>> {
+  return (await getExampleSketches(partialName)).filter(
+    isPoint
+  ) as Sketch<Point>[];
 }
 
 /**

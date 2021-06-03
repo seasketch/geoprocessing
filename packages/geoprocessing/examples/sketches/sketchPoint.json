@@ -1,0 +1,12 @@
+{
+  "type": "Feature",
+  "properties": {
+    "name": "gpArea_sketch_point",
+    "updatedAt": "2020-01-29T16:02:53.645Z",
+    "sketchClassId": "123point"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [4, 4]
+  }
+}

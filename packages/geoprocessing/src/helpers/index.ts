@@ -1,4 +1,3 @@
-export * from "./isPolygon";
 export * from "./fs";
 export * from "./types";
 export * from "./sketch";

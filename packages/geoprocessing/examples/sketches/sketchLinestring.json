@@ -1,0 +1,15 @@
+{
+  "type": "Feature",
+  "properties": {
+    "name": "gpArea_sketch_line",
+    "updatedAt": "2020-01-29T16:02:53.645Z",
+    "sketchClassId": "123line"
+  },
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [
+      [4, 4],
+      [5, 10]
+    ]
+  }
+}

@@ -3,6 +3,9 @@ import {
   SketchCollection,
   Geometry,
   Feature,
+  Polygon,
+  LineString,
+  Point,
   FeatureCollection,
 } from "../types";
 
@@ -35,7 +38,7 @@ export function isGeometry(geometry: any): geometry is Geometry {
 }
 
 /**
- * Check if object is a Feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Feature
+ * Check if object is a Feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
 export function isFeature(feature: any): feature is Feature {
   return (
@@ -47,7 +50,28 @@ export function isFeature(feature: any): feature is Feature {
 }
 
 /**
- * Check if object is a Feature Collection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to FeatureCollection
+ * Check if object is a Polygon.  Any code inside a block guarded by a conditional call to this function will have type narrowed
+ */
+export function isPolygon(feature: Feature): feature is Feature<Polygon> {
+  return feature.geometry.type === "Polygon";
+}
+
+/**
+ * Check if object is a Linestring.  Any code inside a block guarded by a conditional call to this function will have type narrowed
+ */
+export function isLineString(feature: Feature): feature is Feature<LineString> {
+  return feature.geometry.type === "LineString";
+}
+
+/**
+ * Check if object is a Point.  Any code inside a block guarded by a conditional call to this function will have type narrowed
+ */
+export function isPoint(feature: Feature): feature is Feature<Point> {
+  return feature.geometry.type === "Point";
+}
+
+/**
+ * Check if object is a Feature Collection.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
 export function isFeatureCollection(
   feature: any

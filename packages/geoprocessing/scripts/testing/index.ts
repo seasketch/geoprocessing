@@ -117,6 +117,7 @@ export async function getExamplePointSketches(
 /**
  * Convenience function returns object with sketches keyed by name
  * Optionally filters out those that don't match partialName
+ * @deprecated use partialName support in getExample*Sketches(partialName) functions
  */
 export async function getExampleSketchesByName(
   partialName?: string

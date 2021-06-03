@@ -13,6 +13,11 @@ describe("Example load utilities", () => {
     const examples = await getExampleSketchAll();
     expect(examples.length).toBe(4);
   });
+  test("can filter examples by name", async () => {
+    console.log("cwd", process.cwd());
+    const examples = await getExampleSketchAll("sketch_line");
+    expect(examples.length).toBe(1);
+  });
   test("can get just collections", async () => {
     console.log("cwd", process.cwd());
     const examples = await getExampleSketchCollections();

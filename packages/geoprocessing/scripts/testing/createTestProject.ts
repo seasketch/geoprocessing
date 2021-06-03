@@ -4,6 +4,7 @@ import {
   Sketch,
   SketchCollection,
   Feature,
+  Polygon,
 } from "../../src/types";
 import { PreprocessingHandler, GeoprocessingHandler } from "../../src";
 import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src/VectorDataSource";

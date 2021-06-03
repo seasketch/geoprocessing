@@ -3,9 +3,14 @@ import { GeoprocessingRequest } from "./types";
 import isHostedOnLambda from "./isHostedOnLambda";
 import "./fetchPolyfill";
 
-export const fetchGeoJSON = async (
-  request: GeoprocessingRequest
-): Promise<Sketch | SketchCollection> => {
+/**
+ * Given geoprocessing function request, fetches the sketch JSON
+ * @param request
+ * @returns the sketch JSON with geometry type optionally specified by request
+ */
+export const fetchGeoJSON = async <G>(
+  request: GeoprocessingRequest<G>
+): Promise<Sketch<G> | SketchCollection<G>> => {
   if (request.geometry) {
     return request.geometry;
   } else if (request.geometryUri) {

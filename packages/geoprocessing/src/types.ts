@@ -46,8 +46,10 @@ export interface UserAttribute {
   fieldType: string;
 }
 
+// By omitting we can re-define new properties with narrower but compatible typing
+
 export interface Sketch<G = Polygon | LineString | Point>
-  extends Omit<Feature, "geometry"> {
+  extends Omit<Feature, "geometry" | "properties"> {
   properties: SketchProperties;
   geometry: G;
   bbox?: BBox;
@@ -206,8 +208,8 @@ export interface GeoprocessingJsonConfig {
   clients: ClientJsonConfig[];
 }
 
-export interface GeoprocessingRequest {
-  geometry?: Sketch;
+export interface GeoprocessingRequest<G = Polygon | LineString | Point> {
+  geometry?: Sketch<G>;
   geometryUri?: string; // must be https
   token?: string;
   cacheKey?: string;

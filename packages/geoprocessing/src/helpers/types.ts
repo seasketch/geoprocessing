@@ -119,7 +119,7 @@ const collectionHasGeometry = (collection: FeatureCollection, g: string) => {
   );
 };
 
-export const isSketchCollectionPolygon = (
+export const isPolygonSketchCollection = (
   collection: any
 ): collection is SketchCollection<Polygon> => {
   return (
@@ -128,7 +128,7 @@ export const isSketchCollectionPolygon = (
   );
 };
 
-export const isSketchCollectionLineString = (
+export const isLineStringSketchCollection = (
   collection: any
 ): collection is SketchCollection<LineString> => {
   return (
@@ -137,7 +137,7 @@ export const isSketchCollectionLineString = (
   );
 };
 
-export const isSketchCollectionPoint = (
+export const isPointSketchCollection = (
   collection: any
 ): collection is SketchCollection<Point> => {
   return (

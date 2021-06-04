@@ -14,6 +14,9 @@ import {
   isPolygon,
   isLineString,
   isPoint,
+  isPolygonSketchCollection,
+  isLineStringSketchCollection,
+  isPointSketchCollection,
 } from "../../src/helpers";
 
 /**
@@ -53,16 +56,6 @@ export async function getExampleSketchAll(
     partialName ? f.properties?.name.includes(partialName) : f
   );
   return filtered;
-}
-
-/**
- * Reads all sketche collections from examples/sketches for testing. Run from project root
- * Optionally filters out those that don't match partialName
- */
-export async function getExampleSketchCollections(
-  partialName?: string
-): Promise<Array<SketchCollection>> {
-  return (await getExampleSketchAll(partialName)).filter(isSketchCollection);
 }
 
 /**
@@ -112,6 +105,55 @@ export async function getExamplePointSketches(
   return (await getExampleSketches(partialName)).filter(
     isPoint
   ) as Sketch<Point>[];
+}
+
+/**
+ * Reads all sketche collections from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ */
+export async function getExampleSketchCollections(
+  partialName?: string
+): Promise<Array<SketchCollection>> {
+  return (await getExampleSketchAll(partialName)).filter(isSketchCollection);
+}
+
+/**
+ * Reads all Polygon sketch collections from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExamplePolygonSketchCollections(
+  partialName?: string
+): Promise<Array<SketchCollection<Polygon>>> {
+  return (await getExampleSketchCollections(partialName)).filter(
+    isPolygonSketchCollection
+  ) as SketchCollection<Polygon>[];
+}
+
+/**
+ * Reads all Linestring sketch collections from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExampleLineStringSketchCollections(
+  partialName?: string
+): Promise<Array<SketchCollection<LineString>>> {
+  return (await getExampleSketchCollections(partialName)).filter(
+    isLineStringSketchCollection
+  ) as SketchCollection<LineString>[];
+}
+
+/**
+ * Reads all Point sketch collections from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExamplePointSketchCollections(
+  partialName?: string
+): Promise<Array<SketchCollection<Point>>> {
+  return (await getExampleSketchCollections(partialName)).filter(
+    isPointSketchCollection
+  ) as SketchCollection<Point>[];
 }
 
 /**

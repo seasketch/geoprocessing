@@ -110,3 +110,37 @@ export const isSketchCollection = (
     collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true)
   );
 };
+
+// Verifies that features in collection are all of the specified type
+const collectionHasGeometry = (collection: FeatureCollection, g: string) => {
+  return collection.features.reduce<boolean>(
+    (acc, f) => acc && f.geometry.type === "Polygon",
+    true
+  );
+};
+
+export const isSketchCollectionPolygon = (
+  collection: any
+): collection is SketchCollection<Polygon> => {
+  return (
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "Polygon")
+  );
+};
+
+export const isSketchCollectionLineString = (
+  collection: any
+): collection is SketchCollection<LineString> => {
+  return (
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "LineString")
+  );
+};
+
+export const isSketchCollectionPoint = (
+  collection: any
+): collection is SketchCollection<Point> => {
+  return (
+    isSketchCollection(collection) && collectionHasGeometry(collection, "Point")
+  );
+};

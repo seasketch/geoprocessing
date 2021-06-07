@@ -11,9 +11,9 @@ import path from "path";
 import {
   isSketch,
   isSketchCollection,
-  isPolygon,
-  isLineString,
-  isPoint,
+  isPolygonFeature,
+  isLineStringFeature,
+  isPointFeature,
   isPolygonSketchCollection,
   isLineStringSketchCollection,
   isPointSketchCollection,
@@ -59,6 +59,45 @@ export async function getExampleSketchAll(
 }
 
 /**
+ * Reads all Polygon sketch and sketch collections from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExamplePolygonSketchAll(
+  partialName?: string
+): Promise<Array<Sketch<Polygon> | SketchCollection<Polygon>>> {
+  return (await getExampleSketchAll(partialName)).filter(
+    (s) => isPolygonFeature(s) || isPolygonSketchCollection(s)
+  ) as Sketch<Polygon>[];
+}
+
+/**
+ * Reads all LineString sketch and sketch collections from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExampleLineStringSketchAll(
+  partialName?: string
+): Promise<Array<Sketch<LineString> | SketchCollection<LineString>>> {
+  return (await getExampleSketchAll(partialName)).filter(
+    (s) => isLineStringFeature(s) || isLineStringSketchCollection(s)
+  ) as Sketch<LineString>[];
+}
+
+/**
+ * Reads all Point sketch and sketch collections from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExamplePointSketchAll(
+  partialName?: string
+): Promise<Array<Sketch<Point> | SketchCollection<Point>>> {
+  return (await getExampleSketchAll(partialName)).filter(
+    (s) => isPointFeature(s) || isPointSketchCollection(s)
+  ) as Sketch<Point>[];
+}
+
+/**
  * Reads all sketches from examples/sketches for testing. Run from project root
  * Optionally filters out those that don't match partialName
  */
@@ -77,7 +116,7 @@ export async function getExamplePolygonSketches(
   partialName?: string
 ): Promise<Array<Sketch<Polygon>>> {
   return (await getExampleSketches(partialName)).filter(
-    isPolygon
+    isPolygonFeature
   ) as Sketch<Polygon>[];
 }
 
@@ -90,7 +129,7 @@ export async function getExampleLineStringSketches(
   partialName?: string
 ): Promise<Array<Sketch<LineString>>> {
   return (await getExampleSketches(partialName)).filter(
-    isLineString
+    isLineStringFeature
   ) as Sketch<LineString>[];
 }
 
@@ -103,7 +142,7 @@ export async function getExamplePointSketches(
   partialName?: string
 ): Promise<Array<Sketch<Point>>> {
   return (await getExampleSketches(partialName)).filter(
-    isPoint
+    isPointFeature
   ) as Sketch<Point>[];
 }
 

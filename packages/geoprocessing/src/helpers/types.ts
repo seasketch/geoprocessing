@@ -52,22 +52,24 @@ export function isFeature(feature: any): feature is Feature {
 /**
  * Check if object is a Polygon.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
-export function isPolygon(feature: Feature): feature is Feature<Polygon> {
-  return feature.geometry.type === "Polygon";
+export function isPolygonFeature(feature: any): feature is Feature<Polygon> {
+  return isFeature(feature) && feature.geometry.type === "Polygon";
 }
 
 /**
  * Check if object is a Linestring.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
-export function isLineString(feature: Feature): feature is Feature<LineString> {
-  return feature.geometry.type === "LineString";
+export function isLineStringFeature(
+  feature: any
+): feature is Feature<LineString> {
+  return isFeature(feature) && feature.geometry.type === "LineString";
 }
 
 /**
  * Check if object is a Point.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
-export function isPoint(feature: Feature): feature is Feature<Point> {
-  return feature.geometry.type === "Point";
+export function isPointFeature(feature: any): feature is Feature<Point> {
+  return isFeature(feature) && feature.geometry.type === "Point";
 }
 
 /**

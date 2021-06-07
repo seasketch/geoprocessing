@@ -1,0 +1,38 @@
+{
+    "type": "FeatureCollection",
+    "properties": {
+        "id": "609ef1d65b3d7a396cdbc944",
+        "name": "sketch-point-collection",
+        "updatedAt": "2021-05-25T16:46:12.125Z",
+        "createdAt": "2021-05-14T21:55:34.020Z",
+        "sketchClassId": "5d0d437fa7c99269b81eff7f",
+        "isCollection": true,
+        "userAttributes": []
+    },
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "sketch_point1",
+          "updatedAt": "2020-01-29T16:02:53.645Z",
+          "sketchClassId": "123point"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [4, 4]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "sketch_point2",
+          "updatedAt": "2020-01-29T16:02:53.645Z",
+          "sketchClassId": "123point"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [1, 1]
+        }
+      }
+    ]
+}

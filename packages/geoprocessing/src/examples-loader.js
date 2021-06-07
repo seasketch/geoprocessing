@@ -3,10 +3,13 @@ module.exports = (options, loaderContext) => {
   const fs = require("fs");
   const path = require("path");
 
-  // get sketches
+  // get project sketches, that are not from templates (sketch filename is prefixed with gp)
   const fpaths = fs
     .readdirSync(path.join(EXAMPLES, "sketches"))
-    .filter(p => path.extname(p) === ".json");
+    .filter((sketchPath) => path.extname(sketchPath) === ".json")
+    .filter(
+      (sketchPath) => path.basename(sketchPath).startsWith("gp", 0) === false
+    );
   const sketches = [];
   for (const p of fpaths) {
     try {
@@ -34,7 +37,7 @@ module.exports = (options, loaderContext) => {
             results: JSON.parse(
               fs.readFileSync(path.join(outdir, outputpath)).toString()
             ),
-            functionName: path.basename(outputpath, ".json")
+            functionName: path.basename(outputpath, ".json"),
           });
         }
       }
@@ -43,11 +46,11 @@ module.exports = (options, loaderContext) => {
 
   const examples = {
     sketches,
-    outputs: outputs
+    outputs: outputs,
   };
 
   return {
     code: `module.exports = ${JSON.stringify(examples, null, "  ")};`,
-    contextDependencies: [options.examplesPath]
+    contextDependencies: [options.examplesPath],
   };
 };

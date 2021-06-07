@@ -2,7 +2,7 @@ import React, { ComponentType } from "react";
 import { storiesOf } from "@storybook/react";
 import ReportDecorator from "./src/components/ReportDecorator";
 import ReportContext, { TestExampleOutput } from "./src/ReportContext";
-import { GeoprocessingProject, SketchProperties } from "./src/types";
+import { SketchProperties } from "./src/types";
 import { v4 as uuid } from "uuid";
 const examples = require("./src/examples-loader.js");
 
@@ -22,7 +22,7 @@ export const registerExampleStories = (
           projectUrl: "https://example.com/project",
           exampleOutputs: examples.outputs.filter(
             (o: TestExampleOutput) => o.sketchName === sketch.properties.name
-          )
+          ),
         }}
       >
         <Component />
@@ -37,11 +37,11 @@ export const registerExampleStories = (
         sketchProperties: {
           name: "My Sketch",
           updatedAt: new Date().toISOString(),
-          sketchClassId: "abc123"
+          sketchClassId: "abc123",
         } as SketchProperties,
         projectUrl: "https://example.com/project",
         exampleOutputs: [],
-        simulateLoading: true
+        simulateLoading: true,
       }}
     >
       <Component />
@@ -55,11 +55,11 @@ export const registerExampleStories = (
         sketchProperties: {
           name: "My Sketch",
           updatedAt: new Date().toISOString(),
-          sketchClassId: "abc123"
+          sketchClassId: "abc123",
         } as SketchProperties,
         projectUrl: "https://example.com/project",
         exampleOutputs: [],
-        simulateError: "Internal server error"
+        simulateError: "Internal server error",
       }}
     >
       <Component />

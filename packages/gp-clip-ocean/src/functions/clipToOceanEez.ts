@@ -4,7 +4,7 @@ import {
   VectorDataSource,
   intersect,
   difference,
-  isPolygon,
+  isPolygonFeature,
   Feature,
   Polygon,
   MultiPolygon,
@@ -61,7 +61,7 @@ export async function clipToOceanEez(
   feature: Feature,
   eezFilterByNames?: string[]
 ): Promise<Feature> {
-  if (!isPolygon(feature)) {
+  if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
 

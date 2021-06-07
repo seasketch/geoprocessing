@@ -4,6 +4,7 @@ import {
   Feature,
   BBox,
   Polygon,
+  isPolygonFeature,
 } from "@seasketch/geoprocessing";
 import area from "@turf/area";
 import bboxClip from "@turf/bbox-clip";
@@ -12,7 +13,7 @@ import bboxClip from "@turf/bbox-clip";
 const bounds: BBox = [-120.652, 33.733, -119.279, 34.225];
 
 export async function clipToBounds(feature: Feature): Promise<Feature> {
-  if (!isPolygon(feature)) {
+  if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
   const clipped = bboxClip(feature, bounds);
@@ -29,7 +30,3 @@ export default new PreprocessingHandler(clipToBounds, {
   timeout: 1,
   requiresProperties: [],
 });
-
-function isPolygon(feature: Feature): feature is Feature<Polygon> {
-  return feature.geometry.type === "Polygon";
-}

@@ -12,7 +12,7 @@ describe("Basic smoke tests", () => {
   });
 
   test("clipToOceanEez", async () => {
-    const examples = await getExampleFeatures("gpClipOcean");
+    const examples = await getExampleFeatures("gp-clip-ocean");
     for (const example of examples) {
       try {
         const result = await clipToOceanEez(example);

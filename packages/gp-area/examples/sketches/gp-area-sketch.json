@@ -1,7 +1,7 @@
 {
   "type": "Feature",
   "properties": {
-    "name": "gpClipBbox_Sketch",
+    "name": "gp-area-sketch",
     "updatedAt": "2020-01-29T16:02:53.645Z",
     "sketchClassId": "123abc"
   },

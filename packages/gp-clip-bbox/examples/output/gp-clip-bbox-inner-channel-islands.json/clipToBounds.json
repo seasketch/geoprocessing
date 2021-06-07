@@ -1,7 +1,7 @@
 {
   "type": "Feature",
   "properties": {
-    "name": "gpClipBbox_inner_channel_islands.json"
+    "name": "gp-clip-bbox-inner-channel-islands.json"
   },
   "geometry": {
     "type": "Polygon",

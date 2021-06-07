@@ -10,7 +10,7 @@ describe("Basic smoke tests", () => {
     expect(typeof clipToBounds).toBe("function");
   });
   test("tests run against all examples", async () => {
-    const examples = await getExampleFeatures("gpClipBbox");
+    const examples = await getExampleFeatures("gp-clip-bbox");
     for (const example of examples) {
       try {
         const result = await clipToBounds(example);

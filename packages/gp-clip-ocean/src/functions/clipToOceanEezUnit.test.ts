@@ -14,7 +14,7 @@ import booleanValid from "@turf/boolean-valid";
 
 describe("Basic unit tests", () => {
   test("clipLand", async () => {
-    const examples = (await getExampleFeatures("gpClipOcean")) as Feature<
+    const examples = (await getExampleFeatures("gp-clip-ocean")) as Feature<
       Polygon | MultiPolygon
     >[];
     for (const example of examples) {
@@ -39,7 +39,7 @@ describe("Basic unit tests", () => {
 
   test("clipOutsideEez", async () => {
     const examples = (await getExampleFeatures(
-      "gpClipOcean"
+      "gp-clip-ocean"
     )) as Feature<Polygon>[];
     for (const example of examples) {
       try {
@@ -62,9 +62,9 @@ describe("Basic unit tests", () => {
   }, 10000);
 
   test("clipOutsideBarbadosEez", async () => {
-    const examples = await getExampleFeaturesByName("gpClipOcean");
+    const examples = await getExampleFeaturesByName("gp-clip-ocean");
     const example = examples[
-      "gpClipOcean_both_sides_barbados.json"
+      "gp-clip-ocean-both-sides-barbados.json"
     ] as Feature<Polygon>;
     try {
       const result = await clipOutsideEez(example, ["Barbados"]);
@@ -90,9 +90,9 @@ describe("Basic unit tests", () => {
   }, 10000);
 
   test("clipOutsideMultipleEez", async () => {
-    const examples = await getExampleFeaturesByName("gpClipOcean");
+    const examples = await getExampleFeaturesByName("gp-clip-ocean");
     const example = examples[
-      "gpClipOcean_both_sides_barbados.json"
+      "gp-clip-ocean-both-sides-barbados.json"
     ] as Feature<Polygon>;
     try {
       const result = await clipOutsideEez(example, [

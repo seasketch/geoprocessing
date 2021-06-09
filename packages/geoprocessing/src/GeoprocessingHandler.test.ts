@@ -3,6 +3,10 @@ import Tasks, { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { Context } from "aws-sdk/clients/costexplorer";
 import { v4 as uuid } from "uuid";
+import { Sketch, Feature } from "./types";
+import { isFeature, isSketch } from "./helpers";
+// @ts-ignore
+import fetchMock from "fetch-mock-jest";
 
 const init = Tasks.prototype.init;
 jest.mock("./tasks");
@@ -66,8 +70,11 @@ const exampleSketch = {
   },
 };
 
-// @ts-ignore
-import fetchMock from "fetch-mock-jest";
+const exampleResponse = {
+  foo: "bar",
+  id: exampleSketch.properties.id,
+};
+
 fetchMock.get("https://example.com/geom/123", JSON.stringify(exampleSketch));
 
 test("Handler can be constructed an run simple async geoprocessing", async () => {
@@ -115,19 +122,14 @@ test("Handler can be constructed an run simple async geoprocessing", async () =>
 });
 
 test("Handler can be constructed an run simple geoprocessing", async () => {
-  const handler = new GeoprocessingHandler(
-    async (sketch) => {
-      return { foo: "bar", id: sketch.properties.id };
-    },
-    {
-      title: "TestGP",
-      description: "Test gp function",
-      executionMode: "sync",
-      memory: 128,
-      requiresProperties: [],
-      timeout: 100,
-    }
-  );
+  const handler = new GeoprocessingHandler(async (feature) => exampleResponse, {
+    title: "TestGP",
+    description: "Test gp function",
+    executionMode: "sync",
+    memory: 128,
+    requiresProperties: [],
+    timeout: 100,
+  });
   expect(handler.options.title).toBe("TestGP");
   // @ts-ignore
   Tasks.prototype.get.mockResolvedValueOnce(false);
@@ -153,19 +155,14 @@ test("Handler can be constructed an run simple geoprocessing", async () => {
 });
 
 test("Repeated requests should be 'cancelled'", async () => {
-  const handler = new GeoprocessingHandler(
-    async (sketch) => {
-      return { foo: "bar", id: sketch.properties.id };
-    },
-    {
-      title: "TestGP",
-      description: "Test gp function",
-      executionMode: "sync",
-      memory: 128,
-      requiresProperties: [],
-      timeout: 100,
-    }
-  );
+  const handler = new GeoprocessingHandler(async (feature) => exampleResponse, {
+    title: "TestGP",
+    description: "Test gp function",
+    executionMode: "sync",
+    memory: 128,
+    requiresProperties: [],
+    timeout: 100,
+  });
   // @ts-ignore
   Tasks.prototype.get.mockResolvedValueOnce(false);
   const result = await handler.lambdaHandler(
@@ -197,19 +194,14 @@ test("Repeated requests should be 'cancelled'", async () => {
 //sure that the async ones follow the same behavior for caching and
 //cancelling repeats
 test("Repeated requests should be 'cancelled' for async tasks", async () => {
-  const handler = new GeoprocessingHandler(
-    async (sketch) => {
-      return { foo: "bar", id: sketch.properties.id };
-    },
-    {
-      title: "TestGP",
-      description: "Test gp function",
-      executionMode: "async",
-      memory: 128,
-      requiresProperties: [],
-      timeout: 100,
-    }
-  );
+  const handler = new GeoprocessingHandler(async (feature) => exampleResponse, {
+    title: "TestGP",
+    description: "Test gp function",
+    executionMode: "async",
+    memory: 128,
+    requiresProperties: [],
+    timeout: 100,
+  });
   // @ts-ignore
   Tasks.prototype.get.mockResolvedValueOnce(false);
   const result = await handler.lambdaHandler(
@@ -238,19 +230,14 @@ test("Repeated requests should be 'cancelled' for async tasks", async () => {
 });
 
 test("Results are cached using request.cacheKey", async () => {
-  const handler = new GeoprocessingHandler(
-    async (sketch) => {
-      return { foo: "bar", id: sketch.properties.id };
-    },
-    {
-      title: "TestGP",
-      description: "Test gp function",
-      executionMode: "sync",
-      memory: 128,
-      requiresProperties: [],
-      timeout: 100,
-    }
-  );
+  const handler = new GeoprocessingHandler(async (feature) => exampleResponse, {
+    title: "TestGP",
+    description: "Test gp function",
+    executionMode: "sync",
+    memory: 128,
+    requiresProperties: [],
+    timeout: 100,
+  });
   // @ts-ignore
   Tasks.prototype.get.mockImplementation(
     async (service: string, cacheKey: string) => {
@@ -293,19 +280,14 @@ test("Results are cached using request.cacheKey", async () => {
 });
 
 test("Results are cached using request.cacheKey for asynchronous tasks", async () => {
-  const handler = new GeoprocessingHandler(
-    async (sketch) => {
-      return { foo: "bar", id: sketch.properties.id };
-    },
-    {
-      title: "TestGP",
-      description: "Test gp function",
-      executionMode: "async",
-      memory: 128,
-      requiresProperties: [],
-      timeout: 100,
-    }
-  );
+  const handler = new GeoprocessingHandler(async (feature) => exampleResponse, {
+    title: "TestGP",
+    description: "Test gp function",
+    executionMode: "async",
+    memory: 128,
+    requiresProperties: [],
+    timeout: 100,
+  });
   // @ts-ignore
   Tasks.prototype.get.mockImplementation(
     async (service: string, cacheKey: string) => {
@@ -351,19 +333,14 @@ test("Results are cached using request.cacheKey for asynchronous tasks", async (
 
 test("Failed geometryUri fetches are communicated to requester", async () => {
   fetchMock.get("https://example.com/geom/abc123", 500);
-  const handler = new GeoprocessingHandler(
-    async (sketch) => {
-      return { foo: "bar", id: sketch.properties.id };
-    },
-    {
-      title: "TestGP",
-      description: "Test gp function",
-      executionMode: "sync",
-      memory: 128,
-      requiresProperties: [],
-      timeout: 100,
-    }
-  );
+  const handler = new GeoprocessingHandler(async (feature) => exampleResponse, {
+    title: "TestGP",
+    description: "Test gp function",
+    executionMode: "sync",
+    memory: 128,
+    requiresProperties: [],
+    timeout: 100,
+  });
   expect(handler.options.title).toBe("TestGP");
   // @ts-ignore
   Tasks.prototype.get.mockResolvedValueOnce(false);

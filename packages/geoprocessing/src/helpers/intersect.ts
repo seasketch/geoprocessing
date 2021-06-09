@@ -49,7 +49,7 @@ import polygonClipping from "polygon-clipping";
  * //addToMap
  * var addToMap = [poly1, poly2, intersection];
  */
-export default function intersect<P = Properties>(
+export function intersect<P = Properties>(
   poly1: Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon,
   poly2: Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon,
   options: {

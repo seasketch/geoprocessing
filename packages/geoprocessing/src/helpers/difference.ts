@@ -41,7 +41,7 @@ import { Feature, MultiPolygon, Polygon } from "@turf/helpers";
  * //addToMap
  * var addToMap = [polygon1, polygon2, difference];
  */
-function difference(
+export function difference(
   polygon1,
   polygon2
 ): Feature<Polygon | MultiPolygon, any> | null {
@@ -57,5 +57,3 @@ function difference(
   if (differenced.length === 1) return polygon(differenced[0], properties);
   return multiPolygon(differenced, properties);
 }
-
-export default difference;

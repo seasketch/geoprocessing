@@ -4,7 +4,9 @@ import {
   Sketch,
   SketchCollection,
   Feature,
+  FeatureCollection,
   Polygon,
+  Point,
 } from "../../src/types";
 import { PreprocessingHandler, GeoprocessingHandler } from "../../src";
 import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src/VectorDataSource";
@@ -56,11 +58,11 @@ export default async function createTestProject(
   interface TestResult {
     result: number;
   }
-  const testPpFunction = async (feature: Feature) => {
+  const testPpFunction = async (feature: Feature<Point>) => {
     return point([0, 0]);
   };
   const testGpFunction = async (
-    sketch: Sketch | SketchCollection
+    feature: Feature | FeatureCollection
   ): Promise<TestResult> => {
     return { result: 50 };
   };

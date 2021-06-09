@@ -8,6 +8,9 @@ import {
   PreprocessingRequest,
   PreprocessingResponse,
   Feature,
+  Polygon,
+  LineString,
+  Point,
 } from "./types";
 
 export class ValidationError extends Error {}
@@ -18,15 +21,15 @@ const commonHeaders = {
   "Access-Control-Allow-Headers": "*",
 };
 
-export class PreprocessingHandler {
-  func: (feature: Feature) => Promise<Feature>;
+export class PreprocessingHandler<G = Polygon | LineString | Point> {
+  func: (feature: Feature<G>) => Promise<Feature<G>>;
   options: PreprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
   // aws runs several retries and there appears to be no setting to avoid this
   lastRequestId?: string;
 
   constructor(
-    func: (feature: Feature) => Promise<Feature>,
+    func: (feature: Feature<G>) => Promise<Feature<G>>,
     options: PreprocessingHandlerOptions
   ) {
     this.func = func;
@@ -72,7 +75,7 @@ export class PreprocessingHandler {
         body: JSON.stringify({
           data: feature,
           status: "ok",
-        } as PreprocessingResponse),
+        } as PreprocessingResponse<Feature<G>>),
       };
     } catch (e) {
       if (e instanceof ValidationError) {

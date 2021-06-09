@@ -2,7 +2,7 @@
 
 A framework for publishing low-cost and low-maintenance `geoprocessing` services and reports in the cloud.  Part of the [SeaSketch](https://seasketch.org/) ecosystem.
 
-It works best where the same analysis needs to be run many times with different input by a large diverse group of users, as is often the case with spatial planning processes.  The original analysis may be prototyped in an environment like R, Jupyter Notebook, ArcGIS Desktop, etc. and this framework can be used to "operationalize" the analysis at a speed and cost that can't be achieved with other solutions.
+Its niche is where the same analysis needs to be run many times with different input by a large diverse group of users, as is often the case with spatial planning processes.  You might prototype the original analysis in an environment like R, Jupyter Notebook, ArcGIS Desktop, etc. and this framework can be used to "operationalize" the analysis at a cost and scale that is difficult match with other solutions.
 
 ## Who is this for?
 

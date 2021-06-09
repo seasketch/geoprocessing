@@ -1,7 +1,7 @@
 import {
   GeoprocessingHandlerOptions,
-  SketchCollection,
-  Sketch,
+  Feature,
+  FeatureCollection,
   Polygon,
   LineString,
   Point,
@@ -42,10 +42,10 @@ const WSS_STAGE = process.env.WSS_STAGE || "";
  * 3 - async executionMode, ASYNC_REQUEST_TYPE=run - run gp function started by scenario 2 and send completed task info on socket for client to pick up result
  *
  * @template T the return type of the geoprocessing function, automatically set from func return type
- * @template G the geometry type of sketches for the geoprocessing function, automatically set from func sketch type
+ * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
  */
 export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
-  func: (sketch: Sketch<G> | SketchCollection<G>) => Promise<T>;
+  func: (feature: Feature<G> | FeatureCollection<G>) => Promise<T>;
   options: GeoprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
   // aws runs several retries and there appears to be no setting to avoid this
@@ -56,10 +56,10 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
    * @param func the geoprocessing function
    * @param options geoprocessing function deployment options
    * @template T the return type of the geoprocessing function, automatically set from func return type
-   * @template G the geometry type of sketches for the geoprocessing function, automatically set from func sketch type
+   * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
    */
   constructor(
-    func: (sketch: Sketch<G> | SketchCollection<G>) => Promise<T>,
+    func: (feature: Feature<G> | FeatureCollection<G>) => Promise<T>,
     options: GeoprocessingHandlerOptions
   ) {
     this.func = func;
@@ -193,7 +193,9 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
       try {
         const featureSet = await fetchGeoJSON<G>(request);
         try {
+          console.time(`run func ${this.options.title}`);
           const results = await this.func(featureSet);
+          console.timeEnd(`run func ${this.options.title}`);
 
           task.data = results;
           task.status = GeoprocessingTaskStatus.Completed;
@@ -211,8 +213,8 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
             let ck = encodeURIComponent(task.id || "");
             let wssUrl =
               task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
-
             await this.sendSocketMessage(wssUrl, task.id, task.service);
+            console.info(`sent task ${task.id} result to socket ${wssUrl}`);
           }
           return promise;
         } catch (e) {

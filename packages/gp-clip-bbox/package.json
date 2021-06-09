@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/gp-clip-bbox",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "description": "preprocessor to clip feature within defined project bounding box",
   "author": "Tim Welch",
   "license": "BSD-3-Clause",
@@ -19,7 +19,7 @@
     "template"
   ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "^0.12.0"
+    "@seasketch/geoprocessing": "^0.12.1"
   },
   "dependencies": {
     "@turf/area": "^6.3.0",

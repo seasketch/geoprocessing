@@ -1,3 +1,44 @@
+## v0.12.1 (2020-06-08)
+
+#### :rocket: New Feature
+
+* Add robust isSketch and friends providing type guard/narrowing ability
+* Add robust helpers for fetching examples by sketch type and/or geometry type, utilizes the type guard functions to narrow type.
+* Migrate to turf base geojson types and re-export from GP lib for userspace
+* Add a few simple common unit conversion helpers like `squareMeterToMile` and `squareMeterToKilometer`
+* Add booleanOverlap helper
+* Add first toolbox function called `overlap`
+* Add unpackSketches helper to resolve ambiguous functions that accept Sketch or SketchCollection
+* Add Generics support to Sketch and SketchCollection to allow user to constrain what types of Feature geometries the Sketch will contain.
+
+#### :bug: Bug Fix
+
+* Storybook broke, downgrade ts-loader to last known to work with webpack 4
+* Fix top-level `p` tag warning for `ResultCard` component
+* Update storybook story separator to properly generate TOC
+* Add missing turf/bbox-clip used in clipToBounds template
+* temp disable docgen due to bug upstream
+* Filter out template sketch examples from example-loader (having gp prefix)
+
+#### :house: Internal
+
+* Clean up osm-land pre script
+* Remove unneeded memory settings in gp handlers now that there is sane default
+* gp-clip-ocean - improve error checking
+* Remove prep-data.sh stub file leaving to templates and docs
+* Migrate to prefixed example filenames for distinguishing templates and user projects
+* Add `data` and `src` to default gitignore.
+* Improve example sketch generator
+* deprecate getExampleSketchesByName and test partialName alternative
+* Consolidate example naming to hyphen
+* Switch all helpers to named exports (really everything should be)
+
+#### :memo: Documentation
+
+* Improve point limit messaging when bundling features
+* Update required install steps
+* Clarify public projects
+
 ## v0.12.0 (2020-05-12)
 
 #### :rocket: New Feature

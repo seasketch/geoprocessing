@@ -1,5 +1,7 @@
 import {
   GeoprocessingHandlerOptions,
+  Sketch,
+  SketchCollection,
   Feature,
   FeatureCollection,
   Polygon,
@@ -45,7 +47,9 @@ const WSS_STAGE = process.env.WSS_STAGE || "";
  * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
  */
 export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
-  func: (feature: Feature<G> | FeatureCollection<G>) => Promise<T>;
+  func: (
+    feature: Feature<G> | FeatureCollection<G> | Sketch<G> | SketchCollection<G>
+  ) => Promise<T>;
   options: GeoprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
   // aws runs several retries and there appears to be no setting to avoid this
@@ -59,7 +63,13 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
    * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
    */
   constructor(
-    func: (feature: Feature<G> | FeatureCollection<G>) => Promise<T>,
+    func: (
+      feature:
+        | Feature<G>
+        | FeatureCollection<G>
+        | Sketch<G>
+        | SketchCollection<G>
+    ) => Promise<T>,
     options: GeoprocessingHandlerOptions
   ) {
     this.func = func;

@@ -36,6 +36,7 @@ const WSS_REGION = process.env.WSS_REGION || "";
 const WSS_STAGE = process.env.WSS_STAGE || "";
 
 /**
+ * Lambda handler for a geoprocessing function
  * This one class supports 2 different execution modes for running a geoprocessing function - sync and async
  * These modes create 3 different request scenarios.  A lambda is created for each scenario, and they all run
  * this one handler.
@@ -57,19 +58,21 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
   Tasks: TaskModel;
 
   /**
-   * @param func the geoprocessing function
+   * @param func the geoprocessing function, overloaded to allow caller to pass Feature/FeatureCollection *or* Sketch/SketchCollection
    * @param options geoprocessing function deployment options
    * @template T the return type of the geoprocessing function, automatically set from func return type
    * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
    */
   constructor(
-    func: (
-      feature:
-        | Feature<G>
-        | FeatureCollection<G>
-        | Sketch<G>
-        | SketchCollection<G>
-    ) => Promise<T>,
+    func: (feature: Feature<G> | FeatureCollection<G>) => Promise<T>,
+    options: GeoprocessingHandlerOptions
+  );
+  constructor(
+    func: (feature: Sketch<G> | SketchCollection<G>) => Promise<T>,
+    options: GeoprocessingHandlerOptions
+  );
+  constructor(
+    func: (feature) => Promise<T>,
     options: GeoprocessingHandlerOptions
   ) {
     this.func = func;

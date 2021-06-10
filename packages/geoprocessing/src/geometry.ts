@@ -1,16 +1,18 @@
-import { Sketch, SketchCollection } from "./types";
+import { Feature, FeatureCollection, Sketch, SketchCollection } from "./types";
 import { GeoprocessingRequest } from "./types";
 import isHostedOnLambda from "./isHostedOnLambda";
 import "./fetchPolyfill";
 
 /**
- * Given geoprocessing function request, fetches the sketch JSON
- * @param request
+ * Given geoprocessing function request, fetches JSON, which can be a GeoJSON Feature|FeatureCollection
+ * or the superset Sketch|SketchCollection
  * @returns the sketch JSON with geometry type optionally specified by request
  */
 export const fetchGeoJSON = async <G>(
   request: GeoprocessingRequest<G>
-): Promise<Sketch<G> | SketchCollection<G>> => {
+): Promise<
+  Feature<G> | FeatureCollection<G> | Sketch<G> | SketchCollection<G>
+> => {
   if (request.geometry) {
     return request.geometry;
   } else if (request.geometryUri) {

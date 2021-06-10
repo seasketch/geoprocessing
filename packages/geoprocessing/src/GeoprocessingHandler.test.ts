@@ -1,10 +1,8 @@
 import { GeoprocessingHandler } from "./GeoprocessingHandler";
 import Tasks, { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks";
 import { APIGatewayProxyEvent } from "aws-lambda";
-import { Context } from "aws-sdk/clients/costexplorer";
 import { v4 as uuid } from "uuid";
-import { Sketch, Feature } from "./types";
-import { isFeature, isSketch } from "./helpers";
+import { Sketch, SketchCollection, Feature, FeatureCollection } from "./types";
 // @ts-ignore
 import fetchMock from "fetch-mock-jest";
 
@@ -75,9 +73,25 @@ const exampleResponse = {
   id: exampleSketch.properties.id,
 };
 
+const exampleFeature = {
+  type: "Feature",
+  properties: {
+    id: uuid(),
+  },
+  geometry: {
+    type: "Point",
+    coordinates: [1, 2],
+  },
+};
+
+const exampleFeatureResponse = {
+  foo: "bar",
+  id: exampleFeature.properties.id,
+};
+
 fetchMock.get("https://example.com/geom/123", JSON.stringify(exampleSketch));
 
-test("Handler can be constructed an run simple async geoprocessing", async () => {
+test("Handler can be constructed and run simple async geoprocessing", async () => {
   /*
   process.env.RUN_HANDLER_FUNCTION_NAME = "MockLambda";
   const handler = new GeoprocessingHandler(
@@ -121,15 +135,18 @@ test("Handler can be constructed an run simple async geoprocessing", async () =>
   */
 });
 
-test("Handler can be constructed an run simple geoprocessing", async () => {
-  const handler = new GeoprocessingHandler(async (feature) => exampleResponse, {
-    title: "TestGP",
-    description: "Test gp function",
-    executionMode: "sync",
-    memory: 128,
-    requiresProperties: [],
-    timeout: 100,
-  });
+test("Sketch handler can be constructed and run simple geoprocessing", async () => {
+  const handler = new GeoprocessingHandler(
+    async (sketch: Sketch | SketchCollection) => exampleResponse,
+    {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "sync",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    }
+  );
   expect(handler.options.title).toBe("TestGP");
   // @ts-ignore
   Tasks.prototype.get.mockResolvedValueOnce(false);
@@ -152,6 +169,42 @@ test("Handler can be constructed an run simple geoprocessing", async () => {
   expect(result.headers!["Access-Control-Allow-Origin"]).toBe("*");
   expect(result.headers!["Access-Control-Allow-Credentials"]).toBe(true);
   expect(task.data.id).toBe(exampleSketch.properties.id);
+});
+
+test("Feature handler can be constructed and run simple geoprocessing", async () => {
+  const handler = new GeoprocessingHandler(
+    async (feature: Feature | FeatureCollection) => exampleFeatureResponse,
+    {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "sync",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    }
+  );
+  expect(handler.options.title).toBe("TestGP");
+  // @ts-ignore
+  Tasks.prototype.get.mockResolvedValueOnce(false);
+
+  const result = await handler.lambdaHandler(
+    {
+      body: JSON.stringify({
+        geometryUri: "https://example.com/geom/123",
+        cacheKey: "abc123",
+      }),
+    } as unknown as APIGatewayProxyEvent,
+    // @ts-ignore
+    { awsRequestId: "foo" }
+  );
+  expect(result.statusCode).toBe(200);
+  const task = JSON.parse(result.body) as GeoprocessingTask;
+  expect(task.status).toBe(GeoprocessingTaskStatus.Completed);
+  expect(task.data.foo).toBe("bar");
+  // make sure cors headers are set
+  expect(result.headers!["Access-Control-Allow-Origin"]).toBe("*");
+  expect(result.headers!["Access-Control-Allow-Credentials"]).toBe(true);
+  expect(task.data.id).toBe(exampleFeature.properties.id);
 });
 
 test("Repeated requests should be 'cancelled'", async () => {

@@ -1,6 +1,7 @@
 // @ts-ignore
 import fetchMock from "fetch-mock-jest";
 import { fetchGeoJSON } from "../src/geometry";
+import { isSketch } from "./helpers";
 import { Sketch } from "./index";
 import { SketchProperties } from "./types";
 
@@ -31,7 +32,9 @@ test("Basic extraction from request", async () => {
   const sketch = await fetchGeoJSON({
     geometry: exampleSketch,
   });
-  expect(sketch.properties && sketch.properties["id"]).toBe("1234abcd");
+  if (isSketch(sketch)) {
+    expect(sketch.properties && sketch.properties["id"]).toBe("1234abcd");
+  }
 });
 
 test("Fetch sketch from a server", async () => {
@@ -42,5 +45,7 @@ test("Fetch sketch from a server", async () => {
   const sketch = await fetchGeoJSON({
     geometryUri: "https://seasketch.org/p/1/sketch/1234abcd?token=paralabrax",
   });
-  expect(sketch.properties && sketch.properties["id"]).toBe("1234abcd");
+  if (isSketch(sketch)) {
+    expect(sketch.properties && sketch.properties["id"]).toBe("1234abcd");
+  }
 });

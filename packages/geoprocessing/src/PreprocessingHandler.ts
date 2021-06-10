@@ -22,6 +22,10 @@ const commonHeaders = {
   "Access-Control-Allow-Headers": "*",
 };
 
+/**
+ * Lambda handler for a preprocessing function
+ * @template G the geometry type of the feature for the geoprocessing function, automatically set from func feature type
+ */
 export class PreprocessingHandler<G = Polygon | LineString | Point> {
   func: (feature: Feature<G> | Sketch<G>) => Promise<Feature<G> | Sketch<G>>;
   options: PreprocessingHandlerOptions;
@@ -29,8 +33,21 @@ export class PreprocessingHandler<G = Polygon | LineString | Point> {
   // aws runs several retries and there appears to be no setting to avoid this
   lastRequestId?: string;
 
+  /**
+   * @param func the preprocessing function, overloaded to allow caller to pass Feature *or* Sketch
+   * @param options prerocessing function deployment options
+   * @template G the geometry type of features for the preprocessing function, automatically set from func feature type
+   */
   constructor(
-    func: (feature: Feature<G> | Sketch<G>) => Promise<Feature<G> | Sketch<G>>,
+    func: (feature: Feature<G>) => Promise<Feature<G>>,
+    options: PreprocessingHandlerOptions
+  );
+  constructor(
+    func: (feature: Sketch<G>) => Promise<Sketch<G>>,
+    options: PreprocessingHandlerOptions
+  );
+  constructor(
+    func: (feature) => Promise<any>,
     options: PreprocessingHandlerOptions
   ) {
     this.func = func;

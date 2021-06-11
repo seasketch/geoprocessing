@@ -26,7 +26,8 @@ export function getUserAttribute<T>(
   return found?.value || defaultValue;
 }
 
-export function unpackSketches(input: Sketch | SketchCollection) {
+/** Helper to convert a Sketch or SketchCollection to a Sketch array */
+export function toSketchArray(input: Sketch | SketchCollection) {
   if (isSketch(input)) {
     return [input];
   } else {

@@ -44,7 +44,7 @@ describe("GeoprocessingStack - all components", () => {
 
     // Check counts
     expect(stack).toCountResources("AWS::CloudFront::Distribution", 1);
-    expect(stack).toCountResources("AWS::S3::Bucket", 2);
+    expect(stack).toCountResources("AWS::S3::Bucket", 3);
     expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1);
     expect(stack).toCountResources("AWS::ApiGateway::Stage", 1);
     expect(stack).toCountResources("AWS::DynamoDB::Table", 3);
@@ -60,6 +60,9 @@ describe("GeoprocessingStack - all components", () => {
     });
     expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
       BucketName: `gp-${projectName}-public`,
+    });
+    expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
+      BucketName: `gp-${projectName}-datasets`,
     });
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       Handler: "serviceHandlers.projectMetadata",

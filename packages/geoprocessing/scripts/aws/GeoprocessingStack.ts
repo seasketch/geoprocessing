@@ -55,6 +55,11 @@ export default class GeoprocessingStack extends core.Stack {
   publicBucket: s3.Bucket | undefined;
   /** URL to public bucket */
   publicBucketUrl: string | undefined;
+  /** S3 bucket for datasets */
+  datasetBucket: s3.Bucket | undefined;
+  /** URL to dataset bucket */
+  datasetBucketUrl: string | undefined;
+  /** API gateway for rest api */
   api: apigateway.RestApi | undefined;
   /** API gateway for web socket */
   apigatewaysocket: apigateway.CfnApiV2 | undefined;
@@ -107,6 +112,28 @@ export default class GeoprocessingStack extends core.Stack {
       autoDeleteObjects: true,
     });
     this.publicBucketUrl = this.publicBucket.urlForObject();
+
+    /**
+     * Bucket for large datasets that need to be stored outside of project code assets
+     * Can be read by gp functions whether in Lambda, local, or CI
+     */
+    this.datasetBucket = new s3.Bucket(this, `GpDatasetBucket`, {
+      bucketName: `gp-${this.props.projectName}-datasets`,
+      versioned: true,
+      publicReadAccess: true, // TODO: make private
+      cors: [
+        {
+          allowedOrigins: ["*"],
+          allowedMethods: ["HEAD", "GET"],
+          allowedHeaders: ["*"],
+          id: "cors-rule",
+          maxAge: 3600,
+        } as CorsRule,
+      ],
+      removalPolicy: core.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    });
+    this.datasetBucketUrl = this.datasetBucket.urlForObject();
 
     this.tasksTbl = new dynamodb.Table(this, `GpTasksTable`, {
       partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
@@ -520,6 +547,10 @@ export default class GeoprocessingStack extends core.Stack {
       throw new Error(
         "createSyncFunctionResources - Public bucket not defined"
       );
+    if (!this.datasetBucket || !this.datasetBucketUrl)
+      throw new Error(
+        "createSyncFunctionResources - Dataset bucket not defined"
+      );
     if (!this.tasksTbl)
       throw new Error("createSyncFunctionResources - Tasks table not defined");
     if (!this.estimatesTbl)
@@ -545,6 +576,7 @@ export default class GeoprocessingStack extends core.Stack {
         initialPolicy: policies,
         environment: {
           publicBucketUrl: this.publicBucketUrl,
+          datasetBucketUrl: this.datasetBucketUrl,
           TASKS_TABLE: this.tasksTbl.tableName,
           ESTIMATES_TABLE: this.estimatesTbl.tableName,
         },
@@ -555,6 +587,7 @@ export default class GeoprocessingStack extends core.Stack {
       this.tasksTbl.grantReadWriteData(syncHandler);
       this.estimatesTbl.grantReadWriteData(syncHandler);
       this.publicBucket.grantReadWrite(syncHandler);
+      this.datasetBucket.grantReadWrite(syncHandler);
     } // Preprocessors don't need access to these resources
 
     // Wire up the sync function lambda to the API gateway
@@ -589,6 +622,10 @@ export default class GeoprocessingStack extends core.Stack {
     if (!this.publicBucket || !this.publicBucketUrl)
       throw new Error(
         "createAsyncFunctionResources - Public bucket not defined"
+      );
+    if (!this.datasetBucket || !this.datasetBucketUrl)
+      throw new Error(
+        "createAsyncFunctionResources - Dataset bucket not defined"
       );
     if (!this.tasksTbl)
       throw new Error("createAsyncFunctionResources - Tasks table not defined");
@@ -661,6 +698,7 @@ export default class GeoprocessingStack extends core.Stack {
     this.tasksTbl.grantReadWriteData(asyncRunHandler);
     this.estimatesTbl.grantReadWriteData(asyncRunHandler);
     this.publicBucket.grantReadWrite(asyncRunHandler);
+    this.datasetBucket.grantReadWrite(asyncRunHandler);
 
     /**
      * startHandler Lambda is connected to the REST API allowing client to

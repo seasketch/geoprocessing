@@ -4,9 +4,9 @@ import isHostedOnLambda from "./isHostedOnLambda";
 import "./fetchPolyfill";
 
 /**
- * Given geoprocessing function request, fetches JSON, which can be a GeoJSON Feature|FeatureCollection
- * or the superset Sketch|SketchCollection
- * @returns the sketch JSON with geometry type optionally specified by request
+ * Given geoprocessing function request, fetches the GeoJSON, which can alsosketch JSON
+ * @param request
+ * @returns the JSON with geometry type optionally specified by request
  */
 export const fetchGeoJSON = async <G>(
   request: GeoprocessingRequest<G>

@@ -13,7 +13,7 @@ describe("Basic smoke tests", () => {
     expect(typeof rasterSum).toBe("function");
   });
   test("tests run against all examples", async () => {
-    const examples = await getExampleSketches("gpRasterStats");
+    const examples = await getExampleSketches("gp-raster-stats");
     for (const example of examples) {
       const result = await rasterSum(example);
       expect(result).toBeTruthy();

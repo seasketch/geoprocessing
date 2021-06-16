@@ -1,5 +1,5 @@
 import { overlap } from "./overlap";
-import { genSampleSketch } from "../fixtures";
+import { genSampleSketch } from "../helpers";
 
 const pointSketch = genSampleSketch({
   type: "Point",

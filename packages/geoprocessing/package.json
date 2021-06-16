@@ -79,6 +79,7 @@
     "@turf/invariant": "^6.3.0",
     "@turf/length": "^6.3.0",
     "@turf/meta": "^6.3.0",
+    "@turf/random": "^6.3.0",
     "@turf/rewind": "^6.3.0",
     "@turf/union": "^6.3.0",
     "@types/aws-lambda": "^8.10.75",

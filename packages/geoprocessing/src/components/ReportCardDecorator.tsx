@@ -2,7 +2,7 @@ import React from "react";
 import Card from "./Card";
 import { ReportWindow } from "./ReportDecorator";
 import ReportContext from "../ReportContext";
-import { genSampleSketchContext } from "../fixtures/sketch";
+import { genSampleSketchContext } from "../helpers";
 
 /**
  * ReportDecorator that wraps the story in a Card to see how it will look

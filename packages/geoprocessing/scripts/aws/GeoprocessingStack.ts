@@ -119,8 +119,8 @@ export default class GeoprocessingStack extends core.Stack {
      */
     this.datasetBucket = new s3.Bucket(this, `GpDatasetBucket`, {
       bucketName: `gp-${this.props.projectName}-datasets`,
-      versioned: true,
-      publicReadAccess: true, // TODO: make private
+      versioned: false,
+      publicReadAccess: false,
       cors: [
         {
           allowedOrigins: ["*"],

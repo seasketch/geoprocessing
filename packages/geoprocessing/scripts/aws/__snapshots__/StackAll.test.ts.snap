@@ -701,9 +701,6 @@ Object {
             },
           ],
         },
-        "VersioningConfiguration": Object {
-          "Status": "Enabled",
-        },
       },
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Delete",
@@ -715,25 +712,6 @@ Object {
         },
         "PolicyDocument": Object {
           "Statement": Array [
-            Object {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Principal": "*",
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
-                        "GpDatasetBucketFB843E6B",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
             Object {
               "Action": Array [
                 "s3:GetObject*",

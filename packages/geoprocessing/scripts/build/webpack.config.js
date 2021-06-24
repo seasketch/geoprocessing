@@ -1,8 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) {
@@ -22,6 +22,9 @@ if (!geoprocessing.clients && !geoprocessing.clients.length) {
 
 module.exports = {
   mode: "production",
+  node: {
+    fs: "empty",
+  },
   stats: {
     all: false,
     assets: true,

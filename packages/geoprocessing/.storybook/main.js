@@ -20,6 +20,9 @@ module.exports = {
     reactDocgen: "none",
   },
   webpackFinal: async (config) => {
+    config.node = {
+      fs: "empty",
+    };
     config.module.rules.push({
       test: /\.(ts|tsx)$/,
       use: [

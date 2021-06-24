@@ -6,11 +6,14 @@ import { SketchProperties } from "./src/types";
 import { v4 as uuid } from "uuid";
 const examples = require("./src/examples-loader.js");
 
-export const registerExampleStories = (
+export function registerExampleStories<T>(
   title: string,
-  Component: ComponentType
-) => {
+  component: ComponentType<T>
+) {
   const stories = storiesOf(title, module).addDecorator(ReportDecorator);
+
+  // This cast avoids a typing issue with passing the generic into the ComponentType
+  const Component = component as ComponentType<{}>;
 
   for (const sketch of examples.sketches) {
     const id = uuid();
@@ -65,4 +68,4 @@ export const registerExampleStories = (
       <Component />
     </ReportContext.Provider>
   ));
-};
+}

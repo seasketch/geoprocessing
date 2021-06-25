@@ -120,7 +120,7 @@ export default class GeoprocessingStack extends core.Stack {
     this.datasetBucket = new s3.Bucket(this, `GpDatasetBucket`, {
       bucketName: `gp-${this.props.projectName}-datasets`,
       versioned: false,
-      publicReadAccess: false,
+      publicReadAccess: true,
       cors: [
         {
           allowedOrigins: ["*"],
@@ -678,6 +678,8 @@ export default class GeoprocessingStack extends core.Stack {
         environment: {
           ...baseAsyncEnvOptions,
           ASYNC_REQUEST_TYPE: "run",
+          publicBucketUrl: this.publicBucketUrl,
+          datasetBucketUrl: this.datasetBucketUrl,
         },
       }
     );

@@ -713,6 +713,25 @@ Object {
         "PolicyDocument": Object {
           "Statement": Array [
             Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "GpDatasetBucketFB843E6B",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
+            Object {
               "Action": Array [
                 "s3:GetObject*",
                 "s3:GetBucket*",
@@ -3120,6 +3139,36 @@ Object {
             },
             "WSS_REGION": "us-west-1",
             "WSS_STAGE": "prod",
+            "datasetBucketUrl": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "https://s3.us-west-1.",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Ref": "GpDatasetBucketFB843E6B",
+                  },
+                ],
+              ],
+            },
+            "publicBucketUrl": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "https://s3.us-west-1.",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/",
+                  Object {
+                    "Ref": "GpPublicBucket989E1AE8",
+                  },
+                ],
+              ],
+            },
           },
         },
         "FunctionName": "gp-all-async-testAsyncGeoprocessor-run",

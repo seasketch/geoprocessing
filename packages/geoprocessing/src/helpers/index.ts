@@ -8,3 +8,4 @@ export * from "./intersect";
 export * from "./difference";
 export * from "./number";
 export * from "./functions";
+export * from "./string";

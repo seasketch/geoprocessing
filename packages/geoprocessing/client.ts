@@ -38,3 +38,4 @@ export { default as CheckboxGroup } from "./src/components/checkbox/CheckboxGrou
 
 // Helpers
 export * from "./src/helpers/units";
+export * from "./src/helpers/functions";

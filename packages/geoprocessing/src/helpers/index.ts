@@ -7,3 +7,4 @@ export * from "./bboxOverlap";
 export * from "./intersect";
 export * from "./difference";
 export * from "./number";
+export * from "./functions";

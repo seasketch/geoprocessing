@@ -100,10 +100,13 @@ module.exports = {
         use: ["style-loader", "css-loader"],
       },
       {
-        test: /\.(png|jpe?g|gif)$/i,
+        test: /\.(svg|ico|jpg|jpeg|png|apng|gif|eot|otf|webp|ttf|woff|woff2|cur|ani|pdf)(\?.*)?$/,
         use: [
           {
             loader: "file-loader",
+            options: {
+              esModule: false,
+            },
           },
         ],
       },

@@ -14,7 +14,7 @@ else
 fi
 # Build client
 rm -rf .build-web
-npx webpack --config scripts/build/webpack.config.js
+$(npm bin)/webpack --config scripts/build/webpack.config.js
 mv .build-web $PROJECT_PATH/
 cp src/favicon.ico $PROJECT_PATH/.build-web/
 echo ""

@@ -22,6 +22,11 @@ if (!geoprocessing.clients && !geoprocessing.clients.length) {
 
 module.exports = {
   mode: "production",
+  devServer: {
+    contentBase: path.join(PROJECT_PATH, ".build-web"),
+    compress: true,
+    port: 8080,
+  },
   node: {
     fs: "empty",
   },

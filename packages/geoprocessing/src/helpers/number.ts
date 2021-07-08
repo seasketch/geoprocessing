@@ -24,5 +24,7 @@ export const percentLower = (
 export const roundLower = (val: number, { lower } = { lower: 1 }) => {
   const NumberFormatter = new Intl.NumberFormat("en", { style: "decimal" });
 
-  return val < lower ? `< ${lower}` : NumberFormatter.format(roundDig(val, 1));
+  return val < lower
+    ? `< ${lower}`
+    : NumberFormatter.format(roundDecimal(val, 1));
 };

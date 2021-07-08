@@ -1,5 +1,5 @@
 /** Rounds a number to a fixed precision  */
-export const roundDig = (value: number, decimals = 1) => {
+export const roundDecimal = (value: number, decimals = 1) => {
   return Number(
     Math.round(parseFloat(`${value}e${decimals}`)) + `e-${decimals}`
   );

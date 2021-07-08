@@ -4,7 +4,7 @@
  */
 import { rasterSum } from "./rasterSum";
 import {
-  getExampleSketches,
+  getExamplePolygonSketchAll,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
 
@@ -13,7 +13,7 @@ describe("Basic smoke tests", () => {
     expect(typeof rasterSum).toBe("function");
   });
   test("tests run against all examples", async () => {
-    const examples = await getExampleSketches("gp-raster-stats");
+    const examples = await getExamplePolygonSketchAll("gp-raster-stats");
     for (const example of examples) {
       const result = await rasterSum(example);
       expect(result).toBeTruthy();

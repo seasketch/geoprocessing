@@ -4,13 +4,13 @@ A framework for publishing low-cost and low-maintenance `geoprocessing` services
 
 ## What is this for?
 
-This frameworks niche is running spatial analysis and generating reports quickly and simultaneously at scale, with different user input.  Then scaling down to near zero cost when not in use.
+This frameworks niche is running spatial analysis and generating reports quickly and simultaneously at scale, with different input, over and over again, such as part of a collaborative spatial planning process.
 
-Often, the original analysis might be prototyped in an environment like R, Jupyter Notebook, ArcGIS, etc. and this framework can be used to "operationalize" the analysis at a cost, speed and scale that is difficult to match with other solutions.
+Often, the original analysis might be prototyped in an environment like R, Jupyter Notebook, ArcGIS, etc. and this framework can be used to "operationalize" the analysis at a cost, speed and scale that other products out there can't match.
 
 ## Who is this for?
 
-It's specifically targeted to GIS practictioners, developers, and technical folks that want to create and host geoprocessing projects themselves, independent of any planning tool used. The SeaSketch team uses it for [all projects](https://github.com/mcclintock-lab?q=-next&type=&language=&sort=)
+It's specifically targeted to code-savvy folks that want to create and host geoprocessing projects themselves and plug it into their SeaSketch project, though it is not dependent on SeaSketch.  The SeaSketch team uses it for all projects, here are some [public ones](https://github.com/mcclintock-lab?q=-next&type=&language=&sort=)
 
 [Geoprocessing Docs](https://github.com/seasketch/geoprocessing#readme)
 

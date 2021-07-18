@@ -4,13 +4,13 @@ A framework for publishing low-cost and low-maintenance `geoprocessing` services
 
 ## What is this for?
 
-This frameworks niche is running spatial analysis and generating reports quickly and simultaneously at scale, with different user input.  Then scaling down to near zero cost when not in use.
+This frameworks niche is running spatial analysis and generating reports quickly and simultaneously at scale, with different input, over and over again, such as part of a collaborative spatial planning process.
 
-Often, the original analysis might be prototyped in an environment like R, Jupyter Notebook, ArcGIS, etc. and this framework can be used to "operationalize" the analysis at a cost, speed and scale that is difficult to match with other solutions.
+Often, the original analysis might be prototyped in an environment like R, Jupyter Notebook, ArcGIS, etc. and this framework can be used to "operationalize" the analysis at a cost, speed and scale that other products out there can't match.
 
 ## Who is this for?
 
-It's specifically targeted to GIS practitioners, developers, and technical folks that want to create and host geoprocessing projects themselves, independent of any planning tool used. The SeaSketch team uses it for all projects, here are some [public ones](https://github.com/mcclintock-lab?q=-next&type=&language=&sort=)
+It's specifically targeted to code-savvy folks that want to create and host geoprocessing projects themselves and plug it into their SeaSketch project, though it is not dependent on SeaSketch.  The SeaSketch team uses it for all projects, here are some [public ones](https://github.com/mcclintock-lab?q=-next&type=&language=&sort=)
 
 ## Goals
 
@@ -19,13 +19,12 @@ It's specifically targeted to GIS practitioners, developers, and technical folks
 * Make it relatively easy to create, publish and manage a geoprocessing project with data, functions, and reports in the cloud
 
 ## Features
-
+* Cloud-optimized techniques for indexing, storing and retrieving from big datasets to power analysis including [Flatgeobuf](https://flatgeobuf.org/), [Cloud-optimized GeoTIFFs (COGs)](https://www.cogeo.org/), and [subdivision](https://github.com/seasketch/union-subdivided-polygons).
 * Core library with command-line interface (CLI) for managing geoprocessing projects, and a straightforward upgrade path to new versions.
-* [Docker workspace](https://hub.docker.com/u/seasketch) packed with open source tools like PostGIS, OGR, GDAL for scripting data prep workflows.
-* Toolbox of geoprocessing functions suited for spatial planning.
+* [Docker workspace](https://hub.docker.com/u/seasketch) packed with open source tools for scripting data prep workflows.
+* Toolbox of geoprocessing functions utilizing [Turf JS](http://turfjs.org/), [Geoblaze](https://geoblaze.io/), [Simple Statistics](https://simplestatistics.org/).
 * Library of [React](https://reactjs.org/) components ready to add to report clients.
 * [Templates](#Templates) for common planning use cases that can be installed into your project.
-* Cloud-optimized tools for indexing large data and using in analysis
 * Cloud-native serverless architecture with automated provisioning and migration as a project evolves.
 * APIs for accessing project resources and integration including REST, Web Socket, and IFrame postMessage.
 

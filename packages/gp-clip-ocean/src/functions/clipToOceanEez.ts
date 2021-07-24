@@ -34,7 +34,7 @@ export async function clipLand(feature: Feature<Polygon | MultiPolygon>) {
     "gid"
   );
   const combined = combine(landFeatures).features[0] as Feature<MultiPolygon>;
-  return difference(feature, combined);
+  return combined ? difference(feature, combined) : feature;
 }
 
 export async function clipOutsideEez(

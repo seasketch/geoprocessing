@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Skeleton from "./Skeleton";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
 import { ErrorBoundary } from "react-error-boundary";
+import { logger } from "../util";
 
 export interface ResultsCardProps<T> extends CardProps {
   functionName: string;
@@ -53,7 +54,7 @@ export const EstimateLabel = styled.div`
   display: none;
 `;
 
-function ErrorFallback({ error }) {
+const ErrorFallback = ({ error }) => {
   return (
     <Card>
       <p role="alert">
@@ -62,7 +63,12 @@ function ErrorFallback({ error }) {
       </p>
     </Card>
   );
-}
+};
+
+const errorHandler = (error: Error, info: { componentStack: string }) => {
+  console.error(error.message, info);
+  throw error;
+};
 
 function ResultsCard<T>({
   functionName,
@@ -120,7 +126,9 @@ function ResultsCard<T>({
   }
 
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>{card}</ErrorBoundary>
+    <ErrorBoundary FallbackComponent={ErrorFallback} onError={errorHandler}>
+      {card}
+    </ErrorBoundary>
   );
 }
 

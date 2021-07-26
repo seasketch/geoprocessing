@@ -156,3 +156,66 @@ export const errorState = () => (
     </ResultsCard>
   </ReportContext.Provider>
 );
+
+export const noDataState = () => (
+  <ReportContext.Provider
+    value={{
+      geometryUri: `https://localhost/${uuid()}`,
+      sketchProperties: {
+        name: "My Sketch",
+        updatedAt: new Date().toISOString(),
+        sketchClassId: "abc123",
+      } as SketchProperties,
+      projectUrl: "https://example.com/project",
+      exampleOutputs: [
+        {
+          functionName: "area",
+          sketchName: "My Sketch",
+          results: null,
+        },
+      ],
+    }}
+  >
+    <ResultsCard title="Card Title" functionName="area">
+      {(data: any) => <p>This zone is {data.area} sq km.</p>}
+    </ResultsCard>
+  </ReportContext.Provider>
+);
+
+export const errorBoundary = () => (
+  <ReportContext.Provider
+    value={{
+      geometryUri: `https://localhost/${uuid()}`,
+      sketchProperties: {
+        name: "My Sketch",
+        updatedAt: new Date().toISOString(),
+        sketchClassId: "abc123",
+      } as SketchProperties,
+      projectUrl: "https://example.com/project",
+      exampleOutputs: [
+        {
+          functionName: "area",
+          sketchName: "My Sketch",
+          results: {
+            area: 704,
+          },
+        },
+      ],
+    }}
+  >
+    <ResultsCard title="Card Title" functionName="area">
+      {(data: any) => {
+        throw new Error("ErrorBoundary should display here in production");
+        return (
+          <p>
+            This zone is {data.area} sq km. Lorem ipsum dolor sit amet
+            consectetur adipisicing elit. Ut nisi beatae, officiis perferendis
+            quis inventore quisquam? Provident doloremque inventore, natus
+            beatae quam nisi eius quidem deserunt, aperiam aliquid corrupti
+            eveniet.
+          </p>
+        );
+      }}
+    </ResultsCard>
+  </ReportContext.Provider>
+);

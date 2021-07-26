@@ -4,6 +4,7 @@ import { useFunction } from "../hooks/useFunction";
 import styled from "styled-components";
 import Skeleton from "./Skeleton";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
+import { ErrorBoundary } from "react-error-boundary";
 
 export interface ResultsCardProps<T> extends CardProps {
   functionName: string;
@@ -52,6 +53,17 @@ export const EstimateLabel = styled.div`
   display: none;
 `;
 
+function ErrorFallback({ error }) {
+  return (
+    <Card>
+      <p role="alert">
+        <ErrorIndicator />
+        {error}
+      </p>
+    </Card>
+  );
+}
+
 function ResultsCard<T>({
   functionName,
   skeleton,
@@ -71,14 +83,16 @@ function ResultsCard<T>({
   if (task && task.estimate) {
     showLabel = true;
   }
-  if (!loading) {
-    if (!task?.data) {
-      error = task?.error;
-    }
+  if (!loading && !task?.data) {
+    error = task?.error;
+  }
+  if (!loading && task && !task.data) {
+    error = "Report run completed, but no results returned";
   }
 
+  let card: JSX.Element;
   if (error) {
-    return (
+    card = (
       <Card {...otherProps}>
         <p role="alert">
           <ErrorIndicator />
@@ -86,22 +100,28 @@ function ResultsCard<T>({
         </p>
       </Card>
     );
-  } else {
-    return (
+  } else if (loading) {
+    card = (
       <Card {...otherProps}>
-        {loading ? (
-          <>
-            {skeleton || <DefaultSkeleton />}
-            <ProgressBarWrapper>
-              <ProgressBar duration={taskEstimate} />
-            </ProgressBarWrapper>
-          </>
-        ) : (
-          <>{children(task?.data as T)}</>
-        )}
+        {skeleton || <DefaultSkeleton />}
+        <ProgressBarWrapper>
+          <ProgressBar duration={taskEstimate} />
+        </ProgressBarWrapper>
       </Card>
     );
+  } else if (task && task.data) {
+    card = (
+      <Card {...otherProps}>
+        <>{children(task.data as T)}</>
+      </Card>
+    );
+  } else {
+    throw new Error("Unexpected report result, please try again");
   }
+
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>{card}</ErrorBoundary>
+  );
 }
 
 export default ResultsCard;

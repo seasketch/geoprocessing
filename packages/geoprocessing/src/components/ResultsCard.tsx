@@ -89,11 +89,12 @@ function ResultsCard<T>({
   if (task && task.estimate) {
     showLabel = true;
   }
-  if (!loading && !task?.data) {
-    error = task?.error;
-  }
-  if (!loading && task && !task.data) {
-    error = "Report run completed, but no results returned";
+  if (task && !task.data && !loading) {
+    if (task.error) {
+      error = task.error;
+    } else {
+      error = "Report run completed, but no results returned";
+    }
   }
 
   let card: JSX.Element;

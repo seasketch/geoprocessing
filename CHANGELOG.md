@@ -1,4 +1,43 @@
-## v0.12.1 (2020-06-08)
+## v0.13.0 (2021-07-27)
+
+#### :rocket: New Feature
+
+* Add support for FlatGeoBuf datasets (flatgeobuf.ts)
+* Add support for Cloud Optimized Geotiff raster (cog.ts)
+* Add types for georaster and geoblaze (PRs open in upstream repos)
+* Add `areaByClass` metric helpers for calculating area for categorized data
+* Add `KeySection` and `SegmentControl` components.
+* Add react ErrorBoundary to ResultsCard to limit blast radius of uncaught errors.
+* Add `capitalize` helper method for strings
+* Add `groupBy` and `keyBy` helper methods, similar to lodash
+* Add generics support to PreprocessingHandler allowing implementer to specify more specific Geometry types
+* Expand generics support for GeoprocessingHandler and PreprocessingHandler to accept Feature in addition to Sketch.  Allows implementer to create gp functions for simpler Features instead of sketches.
+* Add `*All` variants of methods for getting test sketches, that also includes sketch collections. (e.g. there is both getExamplePolygonSketchAll and getExamplePolygonSketch)
+* Add helper functions `toFeatureArray`, `toSketchArray`, `toFeatureArray`, `toFeaturePolygonArray` to normalize function input that accepts either single features or a collection.
+* Add test helper functions `genSampleSketch`, `genSampleSketchCollection`, and `genSampleSketchContext`
+* Add `roundDecimal`, `roundLower`, and `percentLower` number formatting methods
+* Add `dataset` bucket to stack for quickly publishing simple datasets used in functions e.g. raster and flatgeobuf
+* Make webpack dev server required dependency so user project can access too
+* Add ts-node as direct dep for running user scripts
+* Add logger module to replace direct use of console
+
+#### :bug: Bug Fix
+
+* Fix ResultsCard handling of no data returned by function.
+* Stub 'fs' in webpack and storybook so that browser users of modules that use the filesystem module somewhere don't error.  Even if the code being imported doesn't have a code path that uses fs it will still occur.
+* drop esModule from file-loader to match storybook default behavior
+
+#### :house: Internal
+
+* Add sketch collections to unit tests, so not just single sketches
+* Split out types.ts types into directory
+* Add multiple versions of node to CI test strategy
+
+#### :memo: Documentation
+
+* Add short section on limitations of the framework and accuracy of geoprocessing algorithms.
+
+## v0.12.1 (2021-06-08)
 
 #### :rocket: New Feature
 
@@ -19,6 +58,7 @@
 * Add missing turf/bbox-clip used in clipToBounds template
 * temp disable docgen due to bug upstream
 * Filter out template sketch examples from example-loader (having gp prefix)
+* Polyfill TextEncoder and TextDecoder for older versions of Node
 
 #### :house: Internal
 
@@ -39,7 +79,7 @@
 * Update required install steps
 * Clarify public projects
 
-## v0.12.0 (2020-05-12)
+## v0.12.0 (2021-05-12)
 
 #### :rocket: New Feature
 
@@ -75,14 +115,14 @@
 * Update docs on how to install templates
 * Add README to geoprocessing package for people finding via NPM
 
-## v0.11.1 (2020-03-25)
+## v0.11.1 (2021-03-25)
 
 #### :bug: Bug Fix
 
 * Migrate from CSS modules to styled-components.  The CSS files were not being copied into the build so it was an opportunity to just consolidate on using SC
 * Remove duplicate Checkbox identifier.  Was only caught downstream by Webpack
 
-## v0.11.0 (2020-03-25)
+## v0.11.0 (2021-03-25)
 
 #### :rocket: New Feature
 
@@ -96,7 +136,7 @@
 * Replace useDropdown with Dropdown component based on popper.js and usePopper hook
 * Fix bug with Jest not being able to interpret CSS module imports, they are now stubbed.
 
-## v0.10.0 (2020-03-19)
+## v0.10.0 (2021-03-19)
 
 #### :rocket: New Feature
 

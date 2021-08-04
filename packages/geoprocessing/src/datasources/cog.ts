@@ -2,18 +2,31 @@ import { BBox } from "../types";
 // @ts-ignore
 import parseGeoraster from "georaster";
 
+interface CogOptions {
+  noDataValue?: number;
+  projection?: number;
+  windowBox?: BBox;
+}
+
 /**
  * Returns the raster subset defined by the bbox, otherwise loads the whole raster
  * */
-export const loadCogWindow = async (url: string, bbox?: BBox) => {
+export const loadCogWindow = async (url: string, options: CogOptions) => {
   const georaster = await parseGeoraster(url);
+  const {
+    windowBox = [
+      georaster.xmin,
+      georaster.ymin,
+      georaster.xmax,
+      georaster.ymax,
+    ],
+    noDataValue = 0,
+    projection = 4326,
+  } = options;
 
-  const windowBox = bbox
-    ? bbox
-    : [georaster.xmin, georaster.ymin, georaster.xmax, georaster.ymax];
   const window = bboxToPixel(windowBox, georaster);
 
-  const options = {
+  const rasterOptions = {
     left: window.left,
     top: window.top,
     right: window.right,
@@ -27,10 +40,8 @@ export const loadCogWindow = async (url: string, bbox?: BBox) => {
     throw new Error(
       "Missing getValues method, did you forget to load the raster via url?"
     );
-  const values = await georaster.getValues(options);
+  const values = await georaster.getValues(rasterOptions);
 
-  const noDataValue = 0;
-  const projection = 4326;
   const xmin = windowBox[0];
   const ymax = windowBox[3];
   const pixelWidth = georaster.pixelWidth;

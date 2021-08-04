@@ -75,7 +75,7 @@ export async function areaByClassRaster(
   config: RasterDatasourceMeta & ClassDatasourceMeta
 ) {
   try {
-    const raster = await loadCogWindow(config.rasterUrl, box);
+    const raster = await loadCogWindow(config.rasterUrl, { windowBox: box });
     const areaByClass = await rasterClassStats(raster, config, fc.features);
 
     return areaByClass;

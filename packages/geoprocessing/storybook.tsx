@@ -26,6 +26,7 @@ export function registerExampleStories<T>(
           exampleOutputs: examples.outputs.filter(
             (o: TestExampleOutput) => o.sketchName === sketch.properties.name
           ),
+          visibleLayers: [],
         }}
       >
         <Component />
@@ -45,6 +46,7 @@ export function registerExampleStories<T>(
         projectUrl: "https://example.com/project",
         exampleOutputs: [],
         simulateLoading: true,
+        visibleLayers: [],
       }}
     >
       <Component />
@@ -63,6 +65,7 @@ export function registerExampleStories<T>(
         projectUrl: "https://example.com/project",
         exampleOutputs: [],
         simulateError: "Internal server error",
+        visibleLayers: [],
       }}
     >
       <Component />

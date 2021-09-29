@@ -38,6 +38,7 @@ const ContextWrapper: React.FunctionComponent<{
         sketchProperties,
         projectUrl: "https://example.com/project",
         ...(props.value || {}),
+        visibleLayers: [],
       }}
     >
       {props.children}
@@ -186,6 +187,7 @@ const TestContainer: React.FunctionComponent = (props) => {
           props.sketchProperties || makeSketchProperties(sketchId.toString()),
         geometryUri: `https://example.com/geometry/${sketchId}`,
         projectUrl: "https://example.com/project",
+        visibleLayers: [],
       }}
     >
       <button onClick={() => setSketchId(sketchId + 1)}>
@@ -396,7 +398,7 @@ test("Returns error if ReportContext does not include required values", () => {
     wrapper: ({ children }) => (
       <ContextWrapper
         children={children}
-        value={({ projectUrl: null } as unknown) as ReportContextValue}
+        value={{ projectUrl: null } as unknown as ReportContextValue}
       />
     ),
   });
@@ -412,11 +414,11 @@ test("Exposes error to client if project metadata can't be fetched", async () =>
       <ContextWrapper
         children={children}
         value={
-          ({
+          {
             projectUrl: "https://example.com/project",
             geometryUri: "https://example.com/geometry/123",
             sketchProperties: {},
-          } as unknown) as ReportContextValue
+          } as unknown as ReportContextValue
         }
       />
     ),

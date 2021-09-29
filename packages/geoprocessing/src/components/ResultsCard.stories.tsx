@@ -31,6 +31,7 @@ export const usage = () => (
           },
         },
       ],
+      visibleLayers: [],
     }}
   >
     <ResultsCard title="Card Title" functionName="area">
@@ -66,6 +67,7 @@ export const loadingState = () => (
         },
       ],
       simulateLoading: true,
+      visibleLayers: [],
     }}
   >
     <ResultsCard title="Card Title" functionName="area">
@@ -101,6 +103,7 @@ export const customSkeleton = () => (
         },
       ],
       simulateLoading: true,
+      visibleLayers: [],
     }}
   >
     <ResultsCard
@@ -149,6 +152,7 @@ export const errorState = () => (
         },
       ],
       simulateError: "Internal server error",
+      visibleLayers: [],
     }}
   >
     <ResultsCard title="Card Title" functionName="area">
@@ -174,6 +178,7 @@ export const noDataState = () => (
           results: null,
         },
       ],
+      visibleLayers: [],
     }}
   >
     <ResultsCard title="Card Title" functionName="area">
@@ -201,6 +206,7 @@ export const errorBoundary = () => (
           },
         },
       ],
+      visibleLayers: [],
     }}
   >
     <ResultsCard title="Card Title" functionName="area">

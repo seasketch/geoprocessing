@@ -24,17 +24,18 @@ const ContextWrapper: React.FunctionComponent<{
               exportId: "field1",
               label: "Field 1",
               fieldType: "TextField",
-              value: "hi there"
+              value: "hi there",
             },
             {
               exportId: "field2",
               label: "Number",
               fieldType: "NumberField",
-              value: 1
-            }
-          ]
+              value: 1,
+            },
+          ],
         },
-        projectUrl: "https://example.com/project"
+        projectUrl: "https://example.com/project",
+        visibleLayers: [],
       }}
     >
       {children}
@@ -45,10 +46,10 @@ const ContextWrapper: React.FunctionComponent<{
 test("useSketchProperties passes sketch properties from context", () => {
   const {
     result: {
-      current: [sketchProperties]
-    }
+      current: [sketchProperties],
+    },
   } = renderHook(() => useSketchProperties(), {
-    wrapper: ContextWrapper
+    wrapper: ContextWrapper,
   });
   expect(sketchProperties.name).toBe("My Sketch");
   expect(sketchProperties.userAttributes[0].exportId).toBe("field1");
@@ -57,10 +58,10 @@ test("useSketchProperties passes sketch properties from context", () => {
 test("useSketchProperties provides a means of getting values by exportId", () => {
   const {
     result: {
-      current: [_, getByExportId]
-    }
+      current: [_, getByExportId],
+    },
   } = renderHook(() => useSketchProperties(), {
-    wrapper: ContextWrapper
+    wrapper: ContextWrapper,
   });
   expect(getByExportId("field1")).toBe("hi there");
   expect(getByExportId("field2")).toBe(1);

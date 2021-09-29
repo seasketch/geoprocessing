@@ -15,6 +15,8 @@ export interface ReportContextValue {
   exampleOutputs?: TestExampleOutput[];
   simulateLoading?: boolean;
   simulateError?: string;
+  visibleLayers: string[];
+  toggleLayerVisibility?: (layerId: string) => void;
 }
 
 export interface TestExampleOutput {

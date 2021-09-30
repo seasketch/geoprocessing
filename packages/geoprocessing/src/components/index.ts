@@ -13,6 +13,8 @@ export { default as Dropdown } from "./Dropdown";
 export { default as DataDownload } from "./DataDownload";
 export * from "./KeySection";
 export * from "./SegmentControl";
+export { default as CheckboxGroup } from "./checkbox/CheckboxGroup";
+export { default as LayerToggle } from "./LayerToggle";
 
 export {
   default as Table,
@@ -25,5 +27,3 @@ export {
   default as FilterSelectTable,
   FilterSelectTableStyled,
 } from "./table/FilterSelectTable";
-
-export { default as CheckboxGroup } from "./checkbox/CheckboxGroup";

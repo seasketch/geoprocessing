@@ -3,19 +3,26 @@
  */
 
 import polygonClipping from "polygon-clipping";
-import { polygon, multiPolygon } from "@turf/helpers";
+import {
+  Feature,
+  multiPolygon,
+  MultiPolygon,
+  polygon,
+  Polygon,
+  Properties,
+  Geometries,
+} from "@turf/helpers";
 import { getGeom } from "@turf/invariant";
-import { Feature, MultiPolygon, Polygon } from "@turf/helpers";
 
 /**
  * Finds the difference between two {@link Polygon|polygons} by clipping the second polygon from the first.
  *
  * @name difference
- * @param {Feature<Polygon|MultiPolygon>} polygon1 input Polygon feature
- * @param {Feature<Polygon|MultiPolygon>} polygon2 Polygon feature to difference from polygon1
- * @returns {Feature<Polygon|MultiPolygon>|null} a Polygon or MultiPolygon feature showing the area of `polygon1` excluding the area of `polygon2` (if empty returns `null`)
+ * @param {Feature<Polygon|MultiPolygon>} poly1 input Polygon feature
+ * @param {Feature<Polygon|MultiPolygon>} poly2 Polygon feature to difference from poly1
+ * @returns {Feature<Polygon|MultiPolygon>|null} a Polygon or MultiPolygon feature showing the area of `poly1` excluding the area of `poly2` (if empty returns `null`)
  * @example
- * var polygon1 = turf.polygon([[
+ * var poly1 = turf.polygon([[
  *   [128, -26],
  *   [141, -26],
  *   [141, -21],
@@ -25,7 +32,7 @@ import { Feature, MultiPolygon, Polygon } from "@turf/helpers";
  *   "fill": "#F00",
  *   "fill-opacity": 0.1
  * });
- * var polygon2 = turf.polygon([[
+ * var poly2 = turf.polygon([[
  *   [126, -28],
  *   [140, -28],
  *   [140, -20],
@@ -36,24 +43,39 @@ import { Feature, MultiPolygon, Polygon } from "@turf/helpers";
  *   "fill-opacity": 0.1
  * });
  *
- * var difference = turf.difference(polygon1, polygon2);
+ * var difference = turf.difference(poly1, poly2);
  *
  * //addToMap
- * var addToMap = [polygon1, polygon2, difference];
+ * var addToMap = [poly1, poly2, difference];
  */
-export function difference(
-  polygon1,
-  polygon2
+export function difference<P = Properties>(
+  poly1: Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon,
+  poly2:
+    | Feature<Polygon | MultiPolygon>
+    | Polygon
+    | MultiPolygon
+    | Feature<Polygon | MultiPolygon>[]
+    | Polygon[]
+    | MultiPolygon[],
+  options: {
+    properties?: P;
+  } = {}
 ): Feature<Polygon | MultiPolygon, any> | null {
-  var geom1 = getGeom(polygon1);
-  var geom2 = getGeom(polygon2);
-  var properties = polygon1.properties || {};
-
-  var differenced = polygonClipping.difference(
-    geom1.coordinates,
-    geom2.coordinates
+  var geom1 = getGeom(poly1);
+  const coords2 = (() => {
+    if (Array.isArray(poly2)) {
+      return poly2.map((poly) => getGeom(poly).coordinates);
+    } else {
+      return getGeom(poly2).coordinates;
+    }
+  })();
+  const differenced = polygonClipping.difference(
+    geom1.coordinates as any,
+    coords2 as any
   );
+
   if (differenced.length === 0) return null;
-  if (differenced.length === 1) return polygon(differenced[0], properties);
-  return multiPolygon(differenced, properties);
+  if (differenced.length === 1)
+    return polygon(differenced[0], options.properties);
+  return multiPolygon(differenced, options.properties);
 }

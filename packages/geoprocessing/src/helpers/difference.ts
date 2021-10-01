@@ -66,7 +66,7 @@ export function difference<P = Properties>(
     if (Array.isArray(poly2)) {
       return poly2.map((poly) => getGeom(poly).coordinates);
     } else {
-      return [getGeom(poly2).coordinates];
+      return getGeom(poly2).coordinates;
     }
   })();
   const differenced = polygonClipping.difference(

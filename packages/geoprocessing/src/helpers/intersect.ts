@@ -9,6 +9,7 @@ import {
   polygon,
   Polygon,
   Properties,
+  Geometries,
 } from "@turf/helpers";
 import { getGeom } from "@turf/invariant";
 import polygonClipping from "polygon-clipping";
@@ -51,17 +52,28 @@ import polygonClipping from "polygon-clipping";
  */
 export function intersect<P = Properties>(
   poly1: Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon,
-  poly2: Feature<Polygon | MultiPolygon> | Polygon | MultiPolygon,
+  poly2:
+    | Feature<Polygon | MultiPolygon>
+    | Polygon
+    | MultiPolygon
+    | Feature<Polygon | MultiPolygon>[]
+    | Polygon[]
+    | MultiPolygon[],
   options: {
     properties?: P;
   } = {}
 ): Feature<Polygon | MultiPolygon, P> | null {
   const geom1 = getGeom(poly1);
-  const geom2 = getGeom(poly2);
-
+  const coords2 = (() => {
+    if (Array.isArray(poly2)) {
+      return poly2.map((poly) => getGeom(poly).coordinates);
+    } else {
+      return [getGeom(poly2).coordinates];
+    }
+  })();
   const intersection = polygonClipping.intersection(
     geom1.coordinates as any,
-    geom2.coordinates as any
+    coords2 as any
   );
   if (intersection.length === 0) return null;
   if (intersection.length === 1)

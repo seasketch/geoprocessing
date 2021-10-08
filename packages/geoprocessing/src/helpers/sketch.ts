@@ -68,7 +68,7 @@ export const genSampleSketch = <G = Polygon | LineString | String>(
 });
 
 /**
- * Given feature collection, returns a sketch collection with reasonable random props.
+ * Given feature collection, return a sketch collection with reasonable random props.
  * The geometry type of the returned collection will match the one passed in
  * @param geometry
  */

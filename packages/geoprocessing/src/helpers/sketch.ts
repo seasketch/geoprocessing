@@ -36,7 +36,9 @@ export function getUserAttribute<T>(
 }
 
 /** Helper to convert a Sketch or SketchCollection to a Sketch array, maintaining geometry type */
-export function toSketchArray<G>(input: Sketch<G> | SketchCollection<G>) {
+export function toSketchArray<G>(
+  input: Sketch<G> | SketchCollection<G>
+): Sketch<G>[] {
   if (isSketch(input)) {
     return [input];
   } else if (isSketchCollection(input)) {

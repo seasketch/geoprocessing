@@ -22,13 +22,27 @@ export default function LayerToggle({
         alignItems: "center",
         // flexDirection: "row-reverse",
         width: "100%",
+        marginTop: 15,
+        cursor: "pointer",
         ...style,
       }}
     >
-      <Layer size={24} style={{ marginRight: 10, color: "#A4CEDE" }} />
+      <Layer
+        className="toggle-button"
+        size={24}
+        style={{ marginRight: 10, color: "#A4CEDE" }}
+        onClick={() => toggleLayer(layerId)}
+      />
       <label
-        style={{ flex: 1, height: 12, width: 12, color: "#555" }}
+        style={{
+          flex: 1,
+          height: 12,
+          width: 12,
+          color: "#555",
+          cursor: "pointer",
+        }}
         htmlFor={label + layerId}
+        onClick={() => toggleLayer(layerId)}
       >
         {label || "Show layer"}
       </label>

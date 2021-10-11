@@ -1,4 +1,5 @@
 import React from "react";
+import Card from "./Card";
 import LayerToggle from "./LayerToggle";
 import ReportDecorator from "./ReportDecorator";
 import ReportContext from "../ReportContext";
@@ -40,7 +41,12 @@ export const unchecked = () => (
       visibleLayers: [],
     }}
   >
-    <LayerToggle layerId={"5e80c8a8cd44abca6e5268af"} label="Show Map Layer" />
+    <Card title="Card Title">
+      <LayerToggle
+        layerId={"5e80c8a8cd44abca6e5268af"}
+        label="Show Map Layer"
+      />
+    </Card>
   </ReportContext.Provider>
 );
 
@@ -75,6 +81,11 @@ export const checked = () => (
       visibleLayers: ["5e80c8a8cd44abca6e5268af"],
     }}
   >
-    <LayerToggle layerId={"5e80c8a8cd44abca6e5268af"} label="Show Map Layer" />
+    <Card title="Card Title">
+      <LayerToggle
+        layerId={"5e80c8a8cd44abca6e5268af"}
+        label="Show Map Layer"
+      />
+    </Card>
   </ReportContext.Provider>
 );

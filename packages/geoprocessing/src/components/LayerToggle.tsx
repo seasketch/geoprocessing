@@ -1,5 +1,6 @@
 import React from "react";
 import useVisibleLayers from "../hooks/useVisibleLayers";
+import { Layer } from "@styled-icons/boxicons-solid/Layer";
 
 export default function LayerToggle({
   layerId,
@@ -24,7 +25,11 @@ export default function LayerToggle({
         ...style,
       }}
     >
-      <label style={{ flex: 1 }} htmlFor={label + layerId}>
+      <Layer size={24} style={{ marginRight: 10, color: "#A4CEDE" }} />
+      <label
+        style={{ flex: 1, height: 12, width: 12, color: "#555" }}
+        htmlFor={label + layerId}
+      >
         {label || "Show layer"}
       </label>
       <button
@@ -35,8 +40,7 @@ export default function LayerToggle({
           transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           transitionProperty:
             "background-color, border-color, color, fill, stroke",
-          backgroundColor:
-            on === true ? "rgb(37,93,167)" : "rgba(229, 231, 235, 1)",
+          backgroundColor: on === true ? "#6FC2DE" : "rgba(229, 231, 235, 1)",
           position: "relative",
           display: "inline-flex",
           boxShadow:

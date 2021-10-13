@@ -16,7 +16,7 @@ export const percentLower = (
   });
 
   return val < lower && val !== 0
-    ? `< ${PercentFormatter.format(lower)}`
+    ? `<${PercentFormatter.format(lower)}`
     : PercentFormatter.format(val);
 };
 

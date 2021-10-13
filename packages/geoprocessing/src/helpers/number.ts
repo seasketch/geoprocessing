@@ -15,7 +15,7 @@ export const percentLower = (
     maximumFractionDigits: digits,
   });
 
-  return val < lower
+  return val < lower && val !== 0
     ? `< ${PercentFormatter.format(lower)}`
     : PercentFormatter.format(val);
 };

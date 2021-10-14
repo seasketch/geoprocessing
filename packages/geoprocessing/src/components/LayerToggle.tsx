@@ -6,10 +6,12 @@ export default function LayerToggle({
   layerId,
   label,
   style,
+  simple,
 }: {
   layerId: string;
   label?: string;
   style?: React.CSSProperties;
+  simple?: boolean;
 }) {
   const [visibleLayers, toggleLayer] = useVisibleLayers();
   const on = visibleLayers.indexOf(layerId) !== -1;
@@ -27,25 +29,29 @@ export default function LayerToggle({
         ...style,
       }}
     >
-      <Layer
-        className="toggle-button"
-        size={24}
-        style={{ marginRight: 10, color: "#A4CEDE" }}
-        onClick={() => toggleLayer(layerId)}
-      />
-      <label
-        style={{
-          flex: 1,
-          height: 12,
-          width: 12,
-          color: "#555",
-          cursor: "pointer",
-        }}
-        htmlFor={label + layerId}
-        onClick={() => toggleLayer(layerId)}
-      >
-        {label || "Show layer"}
-      </label>
+      {!simple && (
+        <>
+          <Layer
+            className="toggle-button"
+            size={24}
+            style={{ marginRight: 10, color: "#A4CEDE" }}
+            onClick={() => toggleLayer(layerId)}
+          />
+          <label
+            style={{
+              flex: 1,
+              height: 12,
+              width: 12,
+              color: "#555",
+              cursor: "pointer",
+            }}
+            htmlFor={label + layerId}
+            onClick={() => toggleLayer(layerId)}
+          >
+            {label || "Show layer"}
+          </label>
+        </>
+      )}
       <button
         type="button"
         id={label + layerId}

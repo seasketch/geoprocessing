@@ -3,6 +3,7 @@ import {
   SketchCollection,
   GeoprocessingHandler,
   sketchArea,
+  Polygon,
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import { AllGeoJSON, BBox } from "@turf/helpers";
@@ -14,7 +15,7 @@ export interface CalculateAreaResults {
 }
 
 export async function calculateArea(
-  sketch: Sketch | SketchCollection
+  sketch: Sketch<Polygon> | SketchCollection<Polygon>
 ): Promise<CalculateAreaResults> {
   return {
     area: sketchArea(sketch),

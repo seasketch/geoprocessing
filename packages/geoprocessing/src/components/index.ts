@@ -15,6 +15,7 @@ export * from "./KeySection";
 export * from "./SegmentControl";
 export { default as CheckboxGroup } from "./checkbox/CheckboxGroup";
 export { default as LayerToggle } from "./LayerToggle";
+export * from "./ReportError";
 
 export {
   default as Table,

@@ -4,8 +4,7 @@ import { useFunction } from "../hooks/useFunction";
 import styled from "styled-components";
 import Skeleton from "./Skeleton";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
-import { ErrorBoundary } from "react-error-boundary";
-import { logger } from "../util";
+import { ReportError } from "./ReportError";
 
 export interface ResultsCardProps<T> extends CardProps {
   functionName: string;
@@ -65,11 +64,6 @@ const ErrorFallback = ({ error }) => {
   );
 };
 
-const errorHandler = (error: Error, info: { componentStack: string }) => {
-  console.error(error.message, info);
-  throw error;
-};
-
 function ResultsCard<T>({
   functionName,
   skeleton,
@@ -126,11 +120,7 @@ function ResultsCard<T>({
     throw new Error("Unexpected report result, please try again");
   }
 
-  return (
-    <ErrorBoundary FallbackComponent={ErrorFallback} onError={errorHandler}>
-      {card}
-    </ErrorBoundary>
-  );
+  return <ReportError>{card}</ReportError>;
 }
 
 export default ResultsCard;

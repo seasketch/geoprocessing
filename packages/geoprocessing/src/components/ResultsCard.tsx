@@ -117,7 +117,7 @@ function ResultsCard<T>({
       </Card>
     );
   } else {
-    throw new Error("Unexpected report result, please try again");
+    throw new Error(); // trigger ReportError boundary
   }
 
   return <ReportError>{card}</ReportError>;

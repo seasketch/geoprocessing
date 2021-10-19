@@ -28,12 +28,9 @@ const ErrorCard = () => {
     <Card>
       <p role="alert">
         <ErrorIndicator />
-        Something went wrong. Please try again.
+        Something went wrong. Please close this report and try again.
       </p>
-      <p>
-        If it persists, press the "help" button above to report the issue and we
-        will follow up with you.
-      </p>
+      <p>If it persists, press the "help" button above to report the issue.</p>
     </Card>
   );
 };

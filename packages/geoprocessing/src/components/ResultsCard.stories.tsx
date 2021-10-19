@@ -5,6 +5,7 @@ import ReportContext, { TestExampleOutput } from "../ReportContext";
 import { GeoprocessingProject, SketchProperties } from "../types";
 import { v4 as uuid } from "uuid";
 import Skeleton from "./Skeleton";
+import { ReportError } from "../components/ReportError";
 
 export default {
   component: ResultsCard,
@@ -187,6 +188,11 @@ export const noDataState = () => (
   </ReportContext.Provider>
 );
 
+const ThrowComponent = () => {
+  throw Error("error!");
+  return <></>;
+};
+
 export const errorBoundary = () => (
   <ReportContext.Provider
     value={{
@@ -211,16 +217,7 @@ export const errorBoundary = () => (
   >
     <ResultsCard title="Card Title" functionName="area">
       {(data: any) => {
-        throw new Error("ErrorBoundary should display here in production");
-        return (
-          <p>
-            This zone is {data.area} sq km. Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Ut nisi beatae, officiis perferendis
-            quis inventore quisquam? Provident doloremque inventore, natus
-            beatae quam nisi eius quidem deserunt, aperiam aliquid corrupti
-            eveniet.
-          </p>
-        );
+        return <ThrowComponent />;
       }}
     </ResultsCard>
   </ReportContext.Provider>

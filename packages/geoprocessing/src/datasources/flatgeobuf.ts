@@ -1,7 +1,6 @@
 import { ReadableStream } from "web-streams-polyfill/ponyfill";
 import { takeAsync } from "flatgeobuf/lib/cjs/streams/utils";
 import { BBox, GeometryTypes } from "../types";
-import { deserialize } from "flatgeobuf/lib/cjs/geojson";
 
 //@ts-ignore
 global["ReadableStream"] = ReadableStream;
@@ -20,6 +19,7 @@ if (typeof TextEncoder === "undefined" && typeof require !== "undefined") {
 //@ts-ignore
 global["TextEncoder"] = TextEncoder;
 
+import { deserialize } from "flatgeobuf/lib/cjs/geojson";
 export { deserialize as fgbDeserialize } from "flatgeobuf/lib/cjs/geojson";
 
 export function fgBoundingBox(box: BBox) {

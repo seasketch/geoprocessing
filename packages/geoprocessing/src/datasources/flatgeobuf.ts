@@ -20,7 +20,7 @@ if (typeof TextEncoder === "undefined" && typeof require !== "undefined") {
 //@ts-ignore
 global["TextEncoder"] = TextEncoder;
 
-export { deserialize } from "flatgeobuf/lib/cjs/geojson";
+export { deserialize as fgbDeserialize } from "flatgeobuf/lib/cjs/geojson";
 
 export function fgBoundingBox(box: BBox) {
   return {
@@ -33,9 +33,9 @@ export function fgBoundingBox(box: BBox) {
 
 /** Fetch features within bounding box and deserializes them, awaiting all of them before returning.
  * Useful when running a spatial function on the whole set is faster than running
- * one at a time as the generator provides them
+ * one at a time as the deserialize generator provides them
  */
-export async function fetchAll<T = GeometryTypes>(url: string, box: BBox) {
+export async function fgbFetchAll<T = GeometryTypes>(url: string, box: BBox) {
   return (await takeAsync(
     deserialize(url, fgBoundingBox(box)) as AsyncGenerator
   )) as T[];

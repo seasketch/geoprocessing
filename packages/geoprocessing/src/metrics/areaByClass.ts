@@ -12,7 +12,7 @@ import {
   ClassDatasourceMeta,
   loadCogWindow,
   fgBoundingBox,
-  deserialize,
+  fgbDeserialize,
 } from "..";
 import { Georaster } from "../types/georaster";
 import logger from "../util/logger";
@@ -36,7 +36,7 @@ export async function areaByClassVector<P extends ClassFeatureProps>(
   try {
     const featureMulti = (combine(features) as FeatureCollection<MultiPolygon>)
       .features[0];
-    const iter = deserialize(config.vectorUrl, fgBoundingBox(box));
+    const iter = fgbDeserialize(config.vectorUrl, fgBoundingBox(box));
 
     let clippedFeatures: Feature<Polygon, P>[] = [];
     let areaByClass: Record<string, number> = {};

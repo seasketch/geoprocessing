@@ -2,8 +2,8 @@
 export const classIdAttribute = "class_id";
 export const classNameAttribute = "class";
 
-// Categorical vector data must have these properties
+// Categorical data properties, class_id is used for raster data where integer maps to a class name
 export interface ClassFeatureProps {
-  class_id: number;
+  class_id?: number;
   class: string;
 }

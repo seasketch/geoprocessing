@@ -32,12 +32,12 @@ export async function calcAreaStatsRaster(
   );
 
   // Calculate percentage area by type
-  const areaStatsByType = Object.keys(areaByClass).map((type) => {
+  const areaStatsByType = Object.keys(areaByClass).map((type, index) => {
     const area = areaByClass[type];
     assert(area >= 0 && area <= totalArea);
     return {
-      class_id: parseInt(type),
-      class: config.classIdToName[type],
+      class_id: config.classIdToName ? parseInt(type) : index,
+      class: config.classIdToName ? config.classIdToName[type] : type,
       totalArea: roundDecimal(area, 6),
       percArea:
         area === 0 || totalArea === 0 ? 0 : roundDecimal(area / totalArea, 6),

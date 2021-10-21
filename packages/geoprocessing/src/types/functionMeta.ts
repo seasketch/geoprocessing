@@ -5,7 +5,8 @@ export interface FunctionMeta {
 
 export interface ClassDatasourceMeta {
   /** Hash mapping class IDs to names */
-  classIdToName: Record<string, string>;
+  classIdToName?: Record<string, string>;
+  classProperty: string;
 }
 
 export interface RasterDatasourceMeta {

@@ -115,6 +115,16 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
+    case "data":
+      spawn(
+        "node",
+        [`${__dirname}/dataPrep/data.js`, ...process.argv.slice(3)],
+        {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        }
+      );
+      break;
     default:
       throw new Error(`Command ${command} not supported.`);
   }

@@ -93,6 +93,9 @@ export async function rasterClassStats(
   /** polygons to search */
   features?: Feature<Polygon>[]
 ): Promise<Record<string, number>> {
+  if (!config.classIdToName)
+    throw new Error("Missing classIdToName map in config");
+
   const histograms = (() => {
     if (features) {
       // Get count of unique cell IDs in each feature

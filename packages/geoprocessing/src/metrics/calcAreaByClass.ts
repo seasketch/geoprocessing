@@ -4,31 +4,45 @@ import {
   Polygon,
   Feature,
   roundDecimal,
-  FunctionMeta,
   ClassDatasourceMeta,
 } from "..";
 import { strict as assert } from "assert";
 
 /**
  * Calculates area stats for a given feature collection.
+ * Maintains existing type property for joining with other data
  * Results are rounded to 6 decimal places
  * @param {} collection - a GeoJSON feature collection
- * @param {*} typeProperty - feature property to stratify by
+ * @param {*} config.classProperty - feature property to stratify by
+ * @param {*} config. - feature property to stratify by
  */
 export function calcAreaStats(
   collection: FeatureCollection<Polygon>,
-  config: FunctionMeta & ClassDatasourceMeta
+  config: ClassDatasourceMeta
 ) {
   // Sum area by type, single pass
   const areaByClass = collection.features.reduce<{ [key: string]: number }>(
     (progress, feat) => {
+      if (!feat || !feat.properties) {
+        console.log(
+          "Warning: feature has no properties, skipped",
+          JSON.stringify(feat)
+        );
+        return progress;
+      }
+      if (!feat.geometry) {
+        console.log(
+          "Warning: feature is missing geometry, skipped",
+          JSON.stringify(feat)
+        );
+        return progress;
+      }
       const featArea = area(feat);
-      if (!feat || !feat.properties) return progress;
       return {
         ...progress,
-        [feat.properties.class_id]:
-          feat.properties.class_id in progress
-            ? progress[feat.properties.class_id] + featArea
+        [feat.properties[config.classProperty]]:
+          feat.properties[config.classProperty] in progress
+            ? progress[feat.properties[config.classProperty]] + featArea
             : featArea,
       };
     },
@@ -41,9 +55,9 @@ export function calcAreaStats(
     if (!feat || !feat.properties) return progress;
     return {
       ...progress,
-      [feat.properties.class_id]:
-        feat.properties.class_id in progress
-          ? progress[feat.properties.class_id].concat(feat)
+      [feat.properties[config.classProperty]]:
+        feat.properties[config.classProperty] in progress
+          ? progress[feat.properties[config.classProperty]].concat(feat)
           : [feat],
     };
   }, {});
@@ -55,11 +69,12 @@ export function calcAreaStats(
   );
 
   // Calculate percentage area by type
-  const areaStatsByType = Object.keys(areaByClass).map((type) => {
+  const areaStatsByType = Object.keys(areaByClass).map((type, index) => {
     assert(areaByClass[type] >= 0 && areaByClass[type] <= totalArea);
     return {
-      class_id: parseInt(type),
-      class: config.classIdToName[type],
+      [config.classProperty]: type,
+      class_id: config.classIdToName ? parseInt(type) : index + 1,
+      class: config.classIdToName ? config.classIdToName[type] : type,
       totalArea: roundDecimal(areaByClass[type], 6),
       percArea: roundDecimal(areaByClass[type] / totalArea, 6),
     };
@@ -70,6 +85,6 @@ export function calcAreaStats(
   return {
     totalArea: +totalArea.toFixed(6),
     areaByClass: areaStatsByType,
-    areaUnit: config.areaUnits,
+    areaUnit: "square meters",
   };
 }

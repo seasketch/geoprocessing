@@ -6,12 +6,9 @@ import {
   FeatureCollection,
   roundDecimal,
   BBox,
-  ClassFeatureProps,
-  VectorDatasourceMeta,
   RasterDatasourceMeta,
   ClassDatasourceMeta,
   loadCogWindow,
-  fgbFetchAll,
 } from "..";
 import { Georaster } from "../types/georaster";
 import logger from "../util/logger";
@@ -20,43 +17,34 @@ import logger from "../util/logger";
 import geoblaze from "geoblaze";
 import area from "@turf/area";
 import combine from "@turf/combine";
-import bbox from "@turf/bbox";
 
 /**
- * returns areaByClass metric calculation.  Class-based features are fetched
- * from flatgeobuf datasource and only the portion within features (e.g. sketch
- * collection) are included in calculation.
+ * returns area of overlapping features by class.  Class-based features are fetched
+ * from flatgeobuf datasource.
  */
-export async function areaByClassVector<P extends ClassFeatureProps>(
-  /** collection of features each with one assigned class */
+export async function areaOverlapByClassVector(
+  /** collection of features to intersect and get area overlap */
   features: FeatureCollection<Polygon>,
+  /** array of features each with one assigned class */
+  classFeatures: Feature<Polygon>[],
   /** The feature property containing the class name */
-  className: string,
-  config: VectorDatasourceMeta,
-  /** bounding fox of the features */
-  box?: BBox
+  classProperty: string
 ) {
   try {
     const featureMulti = (combine(features) as FeatureCollection<MultiPolygon>)
       .features[0];
 
-    // Fetch all features in order to intersect them in groups, much faster than one at a time
-    const featuresToIntersect = await fgbFetchAll<Feature<Polygon>>(
-      config.vectorUrl,
-      box || bbox(features)
-    );
-    const type = className || "type";
-    type VectorFeature = Feature<Polygon>;
-
     // Group features by type up front.  We cannot simply intersect them all in one shot because we will lose the knowledge of which clipped poly has which class
-    const featuresByClass = featuresToIntersect.reduce<
-      Record<string, VectorFeature[]>
+    const featuresByClass = classFeatures.reduce<
+      Record<string, Feature<Polygon>[]>
     >((acc, curFeature) => {
-      const className: string = curFeature.properties?.className;
+      const cProperty =
+        (curFeature.properties && curFeature.properties[classProperty]) ||
+        "type";
       return {
         ...acc,
-        [className]: acc[className]
-          ? acc[className].concat(curFeature)
+        [cProperty]: acc[cProperty]
+          ? acc[cProperty].concat(curFeature)
           : [curFeature],
       };
     }, {});
@@ -76,11 +64,10 @@ export async function areaByClassVector<P extends ClassFeatureProps>(
 }
 
 /**
- * returns areaByClass metric calculation.  Class-based features are fetched
- * from COG raster and only cells within a feature collection) are included
- * in calculation
+ * returns area of overlapping features by class.  Class-based features are fetched
+ * from COG raster
  */
-export async function areaByClassRaster(
+export async function areaOverlapByClassRaster(
   fc: FeatureCollection<Polygon>,
   box: BBox,
   config: RasterDatasourceMeta & ClassDatasourceMeta

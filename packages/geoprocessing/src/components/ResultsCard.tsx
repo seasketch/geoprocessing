@@ -65,11 +65,10 @@ function ResultsCard<T>({
   }
 
   const titleStyle: React.CSSProperties = {
-    fontSize: 18,
-    textAlign: "center",
-    fontWeight: 800,
-    color: "#999",
-    marginBottom: "0.9em",
+    fontSize: "1em",
+    fontWeight: 500,
+    color: "#6C7282",
+    marginBottom: "1.5em",
     ...(otherProps.titleStyle || {}),
   };
   const cardProps = { ...otherProps, titleStyle };

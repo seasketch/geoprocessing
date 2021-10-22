@@ -5,7 +5,9 @@ export const roundDecimal = (value: number, decimals = 1) => {
   );
 };
 
-/** Formats number value as percent string with special handling of minimum bound */
+/**
+ * Formats number value as percent string with special handling of numbers greater than zero up to lower
+ */
 export const percentLower = (
   val: number,
   options: { lower: number; digits: number; lowerOverride?: string } = {
@@ -20,7 +22,7 @@ export const percentLower = (
     maximumFractionDigits: digits,
   });
 
-  if (val < lower) {
+  if (val > 0 && val < lower) {
     if (lowerOverride) {
       return `${lowerOverride}`;
     } else {

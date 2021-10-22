@@ -68,7 +68,7 @@ function ResultsCard<T>({
     fontSize: 18,
     textAlign: "center",
     fontWeight: 800,
-    color: "#bbb",
+    color: "#999",
     marginBottom: "0.9em",
     ...(otherProps.titleStyle || {}),
   };

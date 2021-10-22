@@ -10,6 +10,7 @@ export interface ResultsCardProps<T> extends CardProps {
   functionName: string;
   children: (results: T) => ReactNode;
   skeleton?: ReactNode;
+  titleStyle?: React.CSSProperties;
 }
 
 const DefaultSkeleton = () => (
@@ -53,17 +54,6 @@ export const EstimateLabel = styled.div`
   display: none;
 `;
 
-const ErrorFallback = ({ error }) => {
-  return (
-    <Card>
-      <p role="alert">
-        <ErrorIndicator />
-        {error}
-      </p>
-    </Card>
-  );
-};
-
 function ResultsCard<T>({
   functionName,
   skeleton,
@@ -73,6 +63,17 @@ function ResultsCard<T>({
   if (!functionName) {
     throw new Error("No function specified for ResultsCard");
   }
+
+  const titleStyle: React.CSSProperties = {
+    fontSize: 18,
+    textAlign: "center",
+    fontWeight: 800,
+    color: "#bbb",
+    marginBottom: "0.9em",
+    ...(otherProps.titleStyle || {}),
+  };
+  const cardProps = { ...otherProps, titleStyle };
+
   let { task, loading, error } = useFunction(functionName);
   let taskEstimate = 5;
   if (task && task.estimate) {
@@ -91,36 +92,34 @@ function ResultsCard<T>({
     }
   }
 
-  let card: JSX.Element;
+  let contents: JSX.Element;
   if (error) {
-    card = (
-      <Card {...otherProps}>
-        <p role="alert">
-          <ErrorIndicator />
-          {error}
-        </p>
-      </Card>
+    contents = (
+      <p role="alert">
+        <ErrorIndicator />
+        {error}
+      </p>
     );
   } else if (loading) {
-    card = (
-      <Card {...otherProps}>
+    contents = (
+      <>
         {skeleton || <DefaultSkeleton />}
         <ProgressBarWrapper>
           <ProgressBar duration={taskEstimate} />
         </ProgressBarWrapper>
-      </Card>
+      </>
     );
   } else if (task && task.data) {
-    card = (
-      <Card {...otherProps}>
-        <>{children(task.data as T)}</>
-      </Card>
-    );
+    contents = <>{children(task.data as T)}</>;
   } else {
     throw new Error(); // trigger ReportError boundary
   }
 
-  return <ReportError>{card}</ReportError>;
+  return (
+    <ReportError>
+      <Card {...cardProps}>{contents}</Card>
+    </ReportError>
+  );
 }
 
 export default ResultsCard;

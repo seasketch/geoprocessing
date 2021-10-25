@@ -20,8 +20,8 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
       georaster.xmax,
       georaster.ymax,
     ],
-    noDataValue = 0,
-    projection = 4326,
+    noDataValue = georaster.noDataValue || 0,
+    projection = georaster.projection || 4326,
   } = options;
 
   const window = bboxToPixel(windowBox, georaster);

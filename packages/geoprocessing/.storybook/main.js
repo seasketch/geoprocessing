@@ -12,6 +12,9 @@ if (process.env.PROJECT_PATH) {
   projectStories.push(
     path.join(process.env.PROJECT_PATH, "src/clients") + "/**/*.stories.tsx"
   );
+  projectStories.push(
+    path.join(process.env.PROJECT_PATH, "src/components") + "/**/*.stories.tsx"
+  );
 }
 
 module.exports = {

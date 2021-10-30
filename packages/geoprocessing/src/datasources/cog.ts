@@ -13,6 +13,8 @@ interface CogOptions {
   windowBox?: BBox;
   /** if window is smaller than one pixel, will buffer the widest dimension to the size of one pixel, ensuring at least one pixel is returned */
   bufferSmall?: boolean;
+  /** optional buffer as percentage of max width of bbox of window, defaults to amount less than max pixel size + 20% of width */
+  bufferWidthMultiple?: number;
 }
 
 /**
@@ -30,6 +32,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     noDataValue = georaster.noDataValue || 0,
     projection = georaster.projection || 4326,
     bufferSmall = true,
+    bufferWidthMultiple = 0.2,
   } = options;
 
   const window = ((box: BBox) => {
@@ -43,7 +46,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
       const diff = maxWidth(box) - maxResolution;
       if (diff < 0) {
         // Buffer to make up the difference, plus at least 20% of width extra needed in testing
-        const radius = Math.abs(diff) + maxWidth(box) * 0.2;
+        const radius = Math.abs(diff) + maxWidth(box) * bufferWidthMultiple;
         const bufPoly = buffer(bboxPolygon(box), radius, {
           units: "degrees",
         });

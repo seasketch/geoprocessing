@@ -17,4 +17,16 @@ describe("COG test", () => {
     expect(raster).toBeTruthy();
     expect(raster.values.length).toBeGreaterThan(0);
   });
+
+  test("window box 2 smaller than and within pixel should work properly", async () => {
+    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const raster = await loadCogWindow(url, {
+      windowBox: [
+        -64.86625596136682, 32.20595207620439, -64.76875229925741,
+        32.250097107343166,
+      ],
+    });
+    expect(raster).toBeTruthy();
+    expect(raster.values.length).toBeGreaterThan(0);
+  });
 });

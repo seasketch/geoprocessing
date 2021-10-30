@@ -5,6 +5,7 @@ import { maxWidth } from "../toolbox";
 import buffer from "@turf/buffer";
 import bboxPolygon from "@turf/bbox-polygon";
 import bbox from "@turf/bbox";
+import { featureCollection } from "@turf/helpers";
 
 interface CogOptions {
   noDataValue?: number;
@@ -41,8 +42,9 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
       // Check if largest window dimension is smaller
       const diff = maxWidth(box) - maxResolution;
       if (diff < 0) {
-        // Buffer to make up the difference
-        const bufPoly = buffer(bboxPolygon(box), Math.abs(diff), {
+        // Buffer to make up the difference, plus at least 20% of width extra needed in testing
+        const radius = Math.abs(diff) + maxWidth(box) * 0.2;
+        const bufPoly = buffer(bboxPolygon(box), radius, {
           units: "degrees",
         });
         const bufBox = bbox(bufPoly);

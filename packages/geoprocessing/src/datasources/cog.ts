@@ -35,7 +35,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     bufferWidthMultiple = 0.2,
   } = options;
 
-  const window = ((box: BBox) => {
+  const { finalBox, finalWindow } = ((box: BBox) => {
     if (bufferSmall) {
       // get largest pixel dimension
       const maxResolution = Math.max(
@@ -51,19 +51,19 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
           units: "degrees",
         });
         const bufBox = bbox(bufPoly);
-        return bboxToPixel(bufBox, georaster);
+        return { finalBox: box, finalWindow: bboxToPixel(bufBox, georaster) };
       }
     }
-    return bboxToPixel(box, georaster);
+    return { finalBox: box, finalWindow: bboxToPixel(box, georaster) };
   })(windowBox);
 
   const rasterOptions = {
-    left: window.left,
-    top: window.top,
-    right: window.right,
-    bottom: window.bottom,
-    width: window.right - window.left,
-    height: window.bottom - window.top,
+    left: finalWindow.left,
+    top: finalWindow.top,
+    right: finalWindow.right,
+    bottom: finalWindow.bottom,
+    width: finalWindow.right - finalWindow.left,
+    height: finalWindow.bottom - finalWindow.top,
     resampleMethod: "nearest",
   };
 
@@ -73,8 +73,8 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     );
   const values = await georaster.getValues(rasterOptions);
 
-  const xmin = windowBox[0];
-  const ymax = windowBox[3];
+  const xmin = finalBox[0];
+  const ymax = finalBox[3];
   const pixelWidth = georaster.pixelWidth;
   const pixelHeight = georaster.pixelHeight;
   const metadata = {

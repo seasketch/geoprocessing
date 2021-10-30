@@ -12,7 +12,8 @@
   "scripts": {
     "build:core": "tsc",
     "build:scripts": "cd scripts && tsc",
-    "test": "jest && npm run test:scripts",
+    "test": "jest --group=-e2e && npm run test:scripts",
+    "test:e2e": "start-server-and-test start-data 8080 'jest --runInBand --group=e2e'",
     "test:watch": "jest --watch",
     "test:scripts": "jest --projects scripts",
     "test:scripts:watch": "jest --projects scripts --watch",
@@ -20,6 +21,7 @@
     "storybook": "start-storybook",
     "prepare": "npm run build:core && npm run _prepare && npm run build:scripts",
     "_prepare": "npx ts-node scripts/npm/prepare",
+    "start-data": "http-server data -c-1 --silent",
     "watch": "tsc --watch",
     "watch:scripts": "npx tsc --build scripts/tsconfig.json --watch"
   },
@@ -179,7 +181,8 @@
   },
   "devDependencies": {
     "identity-obj-proxy": "^3.0.0",
-    "mock-socket": "^9.0.3"
+    "mock-socket": "^9.0.3",
+    "start-server-and-test": "^1.12.5"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",

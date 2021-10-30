@@ -1,11 +1,17 @@
 import { BBox } from "../types";
 // @ts-ignore
 import parseGeoraster from "georaster";
+import { maxWidth } from "../toolbox";
+import buffer from "@turf/buffer";
+import bboxPolygon from "@turf/bbox-polygon";
+import bbox from "@turf/bbox";
 
 interface CogOptions {
   noDataValue?: number;
   projection?: number;
   windowBox?: BBox;
+  /** if window is smaller than one pixel, will buffer the widest dimension to the size of one pixel, ensuring at least one pixel is returned */
+  bufferSmall?: boolean;
 }
 
 /**
@@ -22,9 +28,29 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     ],
     noDataValue = georaster.noDataValue || 0,
     projection = georaster.projection || 4326,
+    bufferSmall = true,
   } = options;
 
-  const window = bboxToPixel(windowBox, georaster);
+  const window = ((box: BBox) => {
+    if (bufferSmall) {
+      // get largest pixel dimension
+      const maxResolution = Math.max(
+        georaster.pixelHeight,
+        georaster.pixelWidth
+      );
+      // Check if largest window dimension is smaller
+      const diff = maxWidth(box) - maxResolution;
+      if (diff < 0) {
+        // Buffer to make up the difference
+        const bufPoly = buffer(bboxPolygon(box), Math.abs(diff), {
+          units: "degrees",
+        });
+        const bufBox = bbox(bufPoly);
+        return bboxToPixel(bufBox, georaster);
+      }
+    }
+    return bboxToPixel(box, georaster);
+  })(windowBox);
 
   const rasterOptions = {
     left: window.left,

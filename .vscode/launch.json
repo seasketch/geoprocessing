@@ -4,6 +4,7 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+    
     {
         "name": "geoprocessing - debug tests",
         "type": "node",
@@ -17,6 +18,20 @@
         "internalConsoleOptions": "neverOpen",
         "port": 9229        
     }, {
+      "name": "geoprocessing - debug e2e tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/geoprocessing",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
+        "--runInBand",
+        "--group=e2e"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229        
+  }, {
       "name": "geoprocessing scripts- debug tests",
       "type": "node",
       "request": "launch",

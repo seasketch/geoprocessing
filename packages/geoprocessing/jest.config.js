@@ -6,4 +6,5 @@ module.exports = {
   moduleNameMapper: {
     "\\.css$": "identity-obj-proxy",
   },
+  runner: "groups",
 };

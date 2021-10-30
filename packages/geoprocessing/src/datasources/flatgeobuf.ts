@@ -35,8 +35,8 @@ export function fgBoundingBox(box: BBox) {
  * Useful when running a spatial function on the whole set is faster than running
  * one at a time as the deserialize generator provides them
  */
-export async function fgbFetchAll<T = GeometryTypes>(url: string, box: BBox) {
+export async function fgbFetchAll<T = GeometryTypes>(url: string, box?: BBox) {
   return (await takeAsync(
-    deserialize(url, fgBoundingBox(box)) as AsyncGenerator
+    deserialize(url, box ? fgBoundingBox(box) : box) as AsyncGenerator
   )) as T[];
 }

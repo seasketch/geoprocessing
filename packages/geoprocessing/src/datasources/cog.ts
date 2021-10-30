@@ -42,10 +42,10 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
         georaster.pixelHeight,
         georaster.pixelWidth
       );
-      // Check if largest window dimension is smaller
+      // Check if largest window dimension is smaller, or within .01 degrees of max pixel dimension
+      // If so, buffer to make up the difference
       const diff = maxWidth(box) - maxResolution;
-      if (diff < 0) {
-        // Buffer to make up the difference, plus at least 20% of width extra needed in testing
+      if (diff < 0.01) {
         const radius = Math.abs(diff) + maxWidth(box) * bufferWidthMultiple;
         const bufPoly = buffer(bboxPolygon(box), radius, {
           units: "degrees",

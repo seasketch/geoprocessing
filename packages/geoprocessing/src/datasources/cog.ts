@@ -17,9 +17,6 @@ interface CogOptions {
   bufferWidthMultiple?: number;
 }
 
-// xmin - left
-// ymax - top
-
 /**
  * Returns georaster window (image subset) defined by options.windowBox, otherwise loads the whole raster
  * windowBox is extended out to the nearest pixel edge to avoid resampling. Assumes raster is in WGS84 degrees
@@ -40,8 +37,9 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     bufferWidthMultiple = 0.2,
   } = options;
 
-  // Calculate window in geographic and image coordinates, buffering if necessary
+  // Calculate window in geographic and image coordinates
   const { image: finalWindow, bbox: finalBox } = ((box: BBox) => {
+    // Special case buffer window smaller than pixel
     if (bufferSmall) {
       // get largest pixel dimension
       const maxResolution = Math.max(
@@ -60,6 +58,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
         return bboxToPixelEdge(bufBox, georaster);
       }
     }
+
     return bboxToPixelEdge(box, georaster);
   })(windowBox);
 
@@ -101,22 +100,28 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
  * and geographic coordinates at that edge.
  */
 const bboxToPixelEdge = (bbox: number[], rasterMeta: any) => {
+  // COG window
+  // Image coordinates start in top left, which is 0, 0 and go down and to the right
+  // georaster  - { left: 0, top: 0, right: 4000, bottom: 4000, width: 10, height: 10 }
+
+  // Calculate whole window image coordinates
   const image = {
     left: Math.floor((bbox[0] - rasterMeta.xmin) / rasterMeta.pixelWidth),
-    bottom: Math.floor((rasterMeta.ymax - bbox[1]) / rasterMeta.pixelHeight),
-    right: Math.floor((bbox[2] - rasterMeta.xmin) / rasterMeta.pixelWidth),
+    bottom: Math.ceil((rasterMeta.ymax - bbox[1]) / rasterMeta.pixelHeight),
+    right: Math.ceil((bbox[2] - rasterMeta.xmin) / rasterMeta.pixelWidth),
     top: Math.floor((rasterMeta.ymax - bbox[3]) / rasterMeta.pixelHeight),
   };
-  // Convert to get geographic coordinates of pixels
+
+  // Geographic coordinates start in bottom left
   // [xmin, ymin, xmax, ymax]
   // [left, bottom, right, top]
-  // Notice the ymax above so that it's always bigger number ymax subtracting a smaller number
-  // DOUBLE CHECK THIS
+
+  // Convert whole image coordinates back to geographic
   const imageBbox = [
     rasterMeta.xmin + image.left * rasterMeta.pixelWidth,
-    rasterMeta.ymin + image.bottom * rasterMeta.pixelHeight,
+    rasterMeta.ymax - image.bottom * rasterMeta.pixelHeight,
     rasterMeta.xmin + image.right * rasterMeta.pixelWidth,
-    rasterMeta.ymin + image.top * rasterMeta.pixelHeight,
+    rasterMeta.ymax - image.top * rasterMeta.pixelHeight,
   ];
   return { image, bbox: imageBbox };
 };

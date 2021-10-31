@@ -17,11 +17,16 @@ interface CogOptions {
   bufferWidthMultiple?: number;
 }
 
+// xmin - left
+// ymax - top
+
 /**
- * Returns the raster subset defined by the bbox, otherwise loads the whole raster
+ * Returns georaster window (image subset) defined by options.windowBox, otherwise loads the whole raster
+ * windowBox is extended out to the nearest pixel edge to avoid resampling. Assumes raster is in WGS84 degrees
  * */
 export const loadCogWindow = async (url: string, options: CogOptions) => {
   const georaster = await parseGeoraster(url);
+  // Default to meta parsed from raster
   const {
     windowBox = [
       georaster.xmin,
@@ -35,7 +40,8 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     bufferWidthMultiple = 0.2,
   } = options;
 
-  const { finalBox, finalWindow } = ((box: BBox) => {
+  // Calculate window in geographic and image coordinates, buffering if necessary
+  const { image: finalWindow, bbox: finalBox } = ((box: BBox) => {
     if (bufferSmall) {
       // get largest pixel dimension
       const maxResolution = Math.max(
@@ -51,10 +57,10 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
           units: "degrees",
         });
         const bufBox = bbox(bufPoly);
-        return { finalBox: box, finalWindow: bboxToPixel(bufBox, georaster) };
+        return bboxToPixelEdge(bufBox, georaster);
       }
     }
-    return { finalBox: box, finalWindow: bboxToPixel(box, georaster) };
+    return bboxToPixelEdge(box, georaster);
   })(windowBox);
 
   const rasterOptions = {
@@ -77,6 +83,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
   const ymax = finalBox[3];
   const pixelWidth = georaster.pixelWidth;
   const pixelHeight = georaster.pixelHeight;
+  //
   const metadata = {
     noDataValue,
     projection,
@@ -88,11 +95,28 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
   return await parseGeoraster(values, metadata);
 };
 
-const bboxToPixel = (bbox: number[], georaster: any) => {
-  return {
-    left: Math.floor((bbox[0] - georaster.xmin) / georaster.pixelWidth),
-    bottom: Math.floor((georaster.ymax - bbox[1]) / georaster.pixelHeight),
-    right: Math.floor((bbox[2] - georaster.xmin) / georaster.pixelWidth),
-    top: Math.floor((georaster.ymax - bbox[3]) / georaster.pixelHeight),
+/**
+ * Finds boundary of raster window in pixel coordinates given bbox.
+ * Extends out to nearest whole image pixel edge and returns both image
+ * and geographic coordinates at that edge.
+ */
+const bboxToPixelEdge = (bbox: number[], rasterMeta: any) => {
+  const image = {
+    left: Math.floor((bbox[0] - rasterMeta.xmin) / rasterMeta.pixelWidth),
+    bottom: Math.floor((rasterMeta.ymax - bbox[1]) / rasterMeta.pixelHeight),
+    right: Math.floor((bbox[2] - rasterMeta.xmin) / rasterMeta.pixelWidth),
+    top: Math.floor((rasterMeta.ymax - bbox[3]) / rasterMeta.pixelHeight),
   };
+  // Convert to get geographic coordinates of pixels
+  // [xmin, ymin, xmax, ymax]
+  // [left, bottom, right, top]
+  // Notice the ymax above so that it's always bigger number ymax subtracting a smaller number
+  // DOUBLE CHECK THIS
+  const imageBbox = [
+    rasterMeta.xmin + image.left * rasterMeta.pixelWidth,
+    rasterMeta.ymin + image.bottom * rasterMeta.pixelHeight,
+    rasterMeta.xmin + image.right * rasterMeta.pixelWidth,
+    rasterMeta.ymin + image.top * rasterMeta.pixelHeight,
+  ];
+  return { image, bbox: imageBbox };
 };

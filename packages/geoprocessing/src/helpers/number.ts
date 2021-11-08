@@ -10,12 +10,12 @@ export const roundDecimal = (value: number, decimals = 1) => {
  */
 export const percentLower = (
   val: number,
-  options: { lower: number; digits: number; lowerOverride?: string } = {
+  options: { lower?: number; digits?: number; lowerOverride?: string } = {
     lower: 0.001,
     digits: 1,
   }
 ) => {
-  const { lower, digits, lowerOverride } = options;
+  const { lower = 0.001, digits = 1, lowerOverride } = options;
 
   const PercentFormatter = new Intl.NumberFormat("en", {
     style: "percent",

@@ -14,14 +14,21 @@ const SketchAttributesCard = ({
   autoHide,
   mappings,
 }: SketchAttributesCardProps) => {
+  const titleStyle: React.CSSProperties = {
+    fontSize: "1em",
+    fontWeight: 500,
+    color: "#6C7282",
+    marginBottom: "1.5em",
+  };
+
   const [properties] = useSketchProperties();
   if (autoHide === true && properties.userAttributes.length === 0) {
     return null;
   }
   if (properties) {
     return (
-      <Card title={title || "Attributes"}>
-        <table style={{ fontSize: 14, width: "100%" }}>
+      <Card titleStyle={titleStyle} title={title || "Attributes"}>
+        <table style={{ width: "100%" }}>
           <tbody>
             {properties.userAttributes.map((attr) => {
               const value = attr.value || "";
@@ -75,7 +82,7 @@ const SketchAttributesCard = ({
     );
   } else {
     return (
-      <Card title={title || "Attributes"}>
+      <Card titleStyle={titleStyle} title={title || "Attributes"}>
         <p>No attributes found</p>
       </Card>
     );

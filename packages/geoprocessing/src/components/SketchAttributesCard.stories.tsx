@@ -9,6 +9,14 @@ export default {
   decorators: [ReportDecorator],
 };
 
+const mappings = {
+  ACTIVITIES: {
+    WORKS: "Works",
+    UNTREATED_WATER: "Untreated Water",
+    HABITATION: "Habitation",
+  },
+};
+
 export const simple = () => (
   <ReportContext.Provider
     value={{
@@ -33,6 +41,24 @@ export const simple = () => (
             value:
               "This is my MPA and it is going to be the greatest. Amazing.",
           },
+          {
+            label: "Allowed Activities no mapping",
+            fieldType: "ChoiceField",
+            exportId: "ACTIVITIEZ",
+            value: '["WORKS","UNTREATED_WATER","HABITATION"]',
+          },
+          {
+            label: "Allowed Activities with mapping",
+            fieldType: "ChoiceField",
+            exportId: "ACTIVITIES",
+            value: '["WORKS","UNTREATED_WATER","HABITATION"]',
+          },
+          {
+            label: "Allowed Activities JSON string with mapping",
+            fieldType: "ChoiceField",
+            exportId: "ACTIVITIES",
+            value: ["WORKS", "UNTREATED_WATER", "HABITATION"],
+          },
         ],
       },
       geometryUri: "",
@@ -40,6 +66,6 @@ export const simple = () => (
       visibleLayers: [],
     }}
   >
-    <SketchAttributesCard title="Attributes" />
+    <SketchAttributesCard title="Attributes" mappings={mappings} />
   </ReportContext.Provider>
 );

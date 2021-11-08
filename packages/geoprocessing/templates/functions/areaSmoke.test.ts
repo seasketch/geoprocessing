@@ -3,7 +3,7 @@
  */
 import { calculateArea } from "./area";
 import {
-  getExampleSketches,
+  getExamplePolygonSketchAll,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
 
@@ -12,7 +12,7 @@ describe("Basic smoke tests", () => {
     expect(typeof calculateArea).toBe("function");
   });
   test("tests run against all examples", async () => {
-    const examples = await getExampleSketches();
+    const examples = await getExamplePolygonSketchAll();
     for (const example of examples) {
       const result = await calculateArea(example);
       expect(result).toBeTruthy();

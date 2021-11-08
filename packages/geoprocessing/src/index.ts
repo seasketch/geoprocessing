@@ -8,6 +8,7 @@ export { default as toolbox } from "./toolbox";
 
 export { GeoprocessingHandler } from "./GeoprocessingHandler";
 export { PreprocessingHandler, ValidationError } from "./PreprocessingHandler";
+export { default as ReportContext } from "./ReportContext";
 
 import sketchArea from "@turf/area";
 export { sketchArea };

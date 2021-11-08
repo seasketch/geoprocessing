@@ -35,6 +35,19 @@ export function getUserAttribute<T>(
   return found?.value || defaultValue;
 }
 
+export function getJsonUserAttribute<T>(
+  sketch: Sketch,
+  exportid: string,
+  defaultValue: T
+): T {
+  const value = getUserAttribute(sketch, exportid, defaultValue);
+  if (typeof value === "string") {
+    return JSON.parse(value);
+  } else {
+    return value;
+  }
+}
+
 /** Helper to convert a Sketch or SketchCollection to a Sketch array, maintaining geometry type */
 export function toSketchArray<G>(
   input: Sketch<G> | SketchCollection<G>

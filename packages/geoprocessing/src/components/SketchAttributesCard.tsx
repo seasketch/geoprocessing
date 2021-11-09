@@ -35,7 +35,11 @@ const SketchAttributesCard = ({
               let valueDisplay = value;
               if (mappings && mappings[attr.exportId]) {
                 const listValues =
-                  typeof value === "string" ? JSON.parse(value) : value;
+                  typeof value === "string"
+                    ? value === ""
+                      ? []
+                      : JSON.parse(value)
+                    : value;
                 const displayValues = listValues.map(
                   (listValue) => mappings[attr.exportId][listValue]
                 );

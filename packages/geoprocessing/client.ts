@@ -16,3 +16,8 @@ export * from "./src/helpers/functions";
 export * from "./src/helpers/string";
 export * from "./src/helpers/number";
 export * from "./src/helpers/types";
+export {
+  toSketchArray,
+  getUserAttribute,
+  getJsonUserAttribute,
+} from "./src/helpers/sketch";

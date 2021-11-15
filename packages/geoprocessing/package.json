@@ -165,6 +165,7 @@
     "slonik-sql-tag-raw": "^1.0.2",
     "slugify": "^1.4.0",
     "spdx-license-ids": "^3.0.5",
+    "storybook-addon-turbo-build": "^1.0.1",
     "styled-components": "^5.2.3",
     "ts-loader": "^8.2.0",
     "ts-node": "^10.0.0",

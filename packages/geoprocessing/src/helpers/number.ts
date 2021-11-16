@@ -6,8 +6,10 @@ export const roundDecimal = (value: number, decimals = 1) => {
 };
 
 /**
- * Formats number value as percent string with special handling of numbers approaching z than zero up to lower
- * All bound values are expected to be in decimal percent.  So 1/10th of a percent is .001
+ * Formats number value as percent string, with special handling of numbers
+ * within some edge of lower or upper bounds.  Defaults to handle only lower
+ * with lowerBound = 0 and lower = .001. All bound values are expected to be
+ * in decimal percent.  So 1/10th of a percent is .001
  */
 export const percentWithEdge = (
   val: number,
@@ -68,6 +70,21 @@ export const percentWithEdge = (
     return PercentFormatter.format(val);
   }
 };
+
+/**
+ * Special percent formatter designed to produce readable percent values for display given an upper percent goal
+ * All parameters are expected to be decimal percent values e.g. .001 = 1/10th of a percent.
+ */
+export const percentGoalWithEdge = (
+  /** Actual percent value */
+  val: number,
+  /** Goal percent value */
+  goal: number
+) =>
+  percentWithEdge(val, {
+    upperBound: goal,
+    upper: goal - 0.001,
+  });
 
 /** Formats number to string, rounding decimal to number of digits, with special handling of minimum bound */
 export const roundLower = (val: number, { lower } = { lower: 1 }) => {

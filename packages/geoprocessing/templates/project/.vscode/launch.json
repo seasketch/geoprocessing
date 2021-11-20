@@ -31,5 +31,13 @@
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
   }
+  ],
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "testNamePattern",
+      "description": "jest -t 'regex pattern to select tests'",
+      "default": "name of my test"
+    }
   ]
 }

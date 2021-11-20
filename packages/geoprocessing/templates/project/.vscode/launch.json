@@ -16,6 +16,20 @@
         "console": "integratedTerminal",
         "internalConsoleOptions": "neverOpen",
         "port": 9229        
-    }
+    },{
+      "name": "Debug tests - with pattern",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/.bin/geoprocessing",
+        "test",
+        "-t",
+        "${input:testNamePattern}"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229        
+  }
   ]
 }

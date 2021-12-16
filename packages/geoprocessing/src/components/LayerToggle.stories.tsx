@@ -10,37 +10,36 @@ export default {
   decorators: [ReportDecorator],
 };
 
-export const simpleUnchecked = () => (
-  <ReportContext.Provider
-    value={{
-      sketchProperties: {
-        name: "My Sketch",
-        id: "abc123",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        sketchClassId: "efg345",
-        isCollection: false,
-        userAttributes: [
-          {
-            exportId: "DESIGNATION",
-            fieldType: "ChoiceField",
-            label: "Designation",
-            value: "Marine Reserve",
-          },
-          {
-            exportId: "COMMENTS",
-            fieldType: "TextArea",
-            label: "Comments",
-            value:
-              "This is my MPA and it is going to be the greatest. Amazing.",
-          },
-        ],
+const sampleSketch = {
+  sketchProperties: {
+    name: "My Sketch",
+    id: "abc123",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    sketchClassId: "efg345",
+    isCollection: false,
+    userAttributes: [
+      {
+        exportId: "DESIGNATION",
+        fieldType: "ChoiceField",
+        label: "Designation",
+        value: "Marine Reserve",
       },
-      geometryUri: "",
-      projectUrl: "https://example.com/project",
-      visibleLayers: [],
-    }}
-  >
+      {
+        exportId: "COMMENTS",
+        fieldType: "TextArea",
+        label: "Comments",
+        value: "This is my MPA and it is going to be the greatest. Amazing.",
+      },
+    ],
+  },
+  geometryUri: "",
+  projectUrl: "https://example.com/project",
+  visibleLayers: [],
+};
+
+export const simpleUnchecked = () => (
+  <ReportContext.Provider value={sampleSketch}>
     <Card title="Card Title">
       <LayerToggle layerId={"5e80c8a8cd44abca6e5268af"} simple />
     </Card>
@@ -48,36 +47,7 @@ export const simpleUnchecked = () => (
 );
 
 export const unchecked = () => (
-  <ReportContext.Provider
-    value={{
-      sketchProperties: {
-        name: "My Sketch",
-        id: "abc123",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        sketchClassId: "efg345",
-        isCollection: false,
-        userAttributes: [
-          {
-            exportId: "DESIGNATION",
-            fieldType: "ChoiceField",
-            label: "Designation",
-            value: "Marine Reserve",
-          },
-          {
-            exportId: "COMMENTS",
-            fieldType: "TextArea",
-            label: "Comments",
-            value:
-              "This is my MPA and it is going to be the greatest. Amazing.",
-          },
-        ],
-      },
-      geometryUri: "",
-      projectUrl: "https://example.com/project",
-      visibleLayers: [],
-    }}
-  >
+  <ReportContext.Provider value={sampleSketch}>
     <Card title="Card Title">
       <LayerToggle
         layerId={"5e80c8a8cd44abca6e5268af"}
@@ -88,36 +58,7 @@ export const unchecked = () => (
 );
 
 export const checked = () => (
-  <ReportContext.Provider
-    value={{
-      sketchProperties: {
-        name: "My Sketch",
-        id: "abc123",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        sketchClassId: "efg345",
-        isCollection: false,
-        userAttributes: [
-          {
-            exportId: "DESIGNATION",
-            fieldType: "ChoiceField",
-            label: "Designation",
-            value: "Marine Reserve",
-          },
-          {
-            exportId: "COMMENTS",
-            fieldType: "TextArea",
-            label: "Comments",
-            value:
-              "This is my MPA and it is going to be the greatest. Amazing.",
-          },
-        ],
-      },
-      geometryUri: "",
-      projectUrl: "https://example.com/project",
-      visibleLayers: ["5e80c8a8cd44abca6e5268af"],
-    }}
-  >
+  <ReportContext.Provider value={sampleSketch}>
     <Card title="Card Title">
       <LayerToggle
         layerId={"5e80c8a8cd44abca6e5268af"}
@@ -128,38 +69,17 @@ export const checked = () => (
 );
 
 export const emptyStringLayerId = () => (
-  <ReportContext.Provider
-    value={{
-      sketchProperties: {
-        name: "My Sketch",
-        id: "abc123",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        sketchClassId: "efg345",
-        isCollection: false,
-        userAttributes: [
-          {
-            exportId: "DESIGNATION",
-            fieldType: "ChoiceField",
-            label: "Designation",
-            value: "Marine Reserve",
-          },
-          {
-            exportId: "COMMENTS",
-            fieldType: "TextArea",
-            label: "Comments",
-            value:
-              "This is my MPA and it is going to be the greatest. Amazing.",
-          },
-        ],
-      },
-      geometryUri: "",
-      projectUrl: "https://example.com/project",
-      visibleLayers: ["5e80c8a8cd44abca6e5268af"],
-    }}
-  >
+  <ReportContext.Provider value={sampleSketch}>
     <Card title="Card Title">
       <LayerToggle layerId={""} label="Show Map Layer" />
+    </Card>
+  </ReportContext.Provider>
+);
+
+export const noLayerId = () => (
+  <ReportContext.Provider value={sampleSketch}>
+    <Card title="Card Title">
+      <LayerToggle label="Show Map Layer" />
     </Card>
   </ReportContext.Provider>
 );

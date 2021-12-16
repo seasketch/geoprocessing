@@ -8,15 +8,15 @@ export default function LayerToggle({
   style,
   simple,
 }: {
-  layerId: string;
+  layerId?: string;
   label?: string;
   style?: React.CSSProperties;
   simple?: boolean;
 }) {
   const [visibleLayers, toggleLayer] = useVisibleLayers();
-  const on = visibleLayers.indexOf(layerId) !== -1;
 
   if (!layerId) return <></>;
+  const on = visibleLayers.indexOf(layerId) !== -1;
 
   return (
     <span

@@ -14,6 +14,7 @@ import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
 import combine from "@turf/combine";
 import flatten from "@turf/flatten";
+import kinks from "@turf/kinks";
 
 const MAX_SIZE = 500000 * 1000 ** 2;
 
@@ -71,6 +72,11 @@ export async function clipToOceanEez(
     throw new ValidationError(
       "Please limit sketches to under 500,000 square km"
     );
+  }
+
+  const kinkPoints = kinks(feature);
+  if (kinkPoints.features.length > 0) {
+    throw new ValidationError("Your sketch polygon crosses itself.");
   }
 
   let clipped = await clipLand(feature);

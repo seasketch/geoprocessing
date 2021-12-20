@@ -7,6 +7,8 @@ import {
   FeatureCollection,
 } from "./geojson";
 
+export type SketchGeometryTypes = Polygon | LineString | Point;
+
 export interface SketchProperties {
   id: string;
   /** Name specified by the author of the sketch */
@@ -28,16 +30,26 @@ export interface UserAttribute {
 }
 
 // By omitting we can re-define new properties with narrower but compatible typing
-export interface Sketch<G = Polygon | LineString | Point>
+export interface Sketch<G = SketchGeometryTypes>
   extends Omit<Feature, "geometry" | "properties"> {
   properties: SketchProperties;
   geometry: G;
   bbox?: BBox;
 }
 
-export interface SketchCollection<G = Polygon | LineString | Point>
+export interface SketchCollection<G = SketchGeometryTypes>
   extends Omit<FeatureCollection, "features"> {
   properties: SketchProperties;
   bbox: BBox;
-  features: Array<Sketch<G>>;
+  features: Sketch<G>[];
+}
+
+// Sketch with no geometry, useful for lightweight exchange when geometry not needed
+export interface NullSketch extends Omit<Sketch, "geometry"> {
+  geometry?: null;
+}
+
+export interface NullSketchCollection
+  extends Omit<FeatureCollection, "features"> {
+  features: NullSketch[];
 }

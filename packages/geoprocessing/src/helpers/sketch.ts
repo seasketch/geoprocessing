@@ -75,6 +75,30 @@ export function toNullSketchArray(
 }
 
 /**
+ * Returns sketch or sketch collection with null geometry
+ */
+export function toNullSketch(
+  sketch: Sketch | SketchCollection,
+  useNull: boolean = false
+): NullSketch | NullSketchCollection {
+  if (isSketchCollection(sketch)) {
+    return {
+      ...sketch,
+      features: sketch.features.map(({ geometry, ...nonGeom }) => ({
+        ...nonGeom,
+        ...(useNull ? { geometry: null } : {}),
+      })),
+    };
+  } else {
+    const { geometry, ...nonGeom } = sketch;
+    return {
+      ...nonGeom,
+      ...(useNull ? { geometry: null } : {}),
+    };
+  }
+}
+
+/**
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
 export const genSampleSketch = <G = Polygon | LineString | String>(

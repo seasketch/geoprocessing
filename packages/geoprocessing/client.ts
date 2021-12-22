@@ -18,6 +18,7 @@ export * from "./src/helpers/number";
 export * from "./src/helpers/types";
 export {
   toSketchArray,
+  toNullSketchArray,
   getUserAttribute,
   getJsonUserAttribute,
 } from "./src/helpers/sketch";

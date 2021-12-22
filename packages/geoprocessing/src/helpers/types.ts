@@ -1,6 +1,8 @@
 import {
   Sketch,
   SketchCollection,
+  NullSketch,
+  NullSketchCollection,
   Geometry,
   Feature,
   Polygon,
@@ -110,6 +112,35 @@ export const isSketchCollection = (
     isObject(collection.properties) &&
     hasOwnProperty(collection.properties as Record<string, any>, "name") &&
     collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true)
+  );
+};
+
+/**
+ * Checks if object is a Sketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
+ */
+export const isNullSketch = (feature: any): feature is NullSketch => {
+  return (
+    isFeature(feature) &&
+    hasOwnProperty(feature, "type") &&
+    hasOwnProperty(feature, "properties") &&
+    feature.properties &&
+    feature.properties.name &&
+    !feature.geometry
+  );
+};
+
+/**
+ * Check if object is a SketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to SketchCollection
+ */
+export const isNullSketchCollection = (
+  collection: any
+): collection is NullSketchCollection => {
+  return (
+    isFeatureCollection(collection) &&
+    hasOwnProperty(collection, "properties") &&
+    isObject(collection.properties) &&
+    hasOwnProperty(collection.properties as Record<string, any>, "name") &&
+    collection.features.map(isNullSketch).reduce((acc, cur) => acc && cur, true)
   );
 };
 

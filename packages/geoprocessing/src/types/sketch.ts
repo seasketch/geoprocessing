@@ -44,12 +44,13 @@ export interface SketchCollection<G = SketchGeometryTypes>
   features: Sketch<G>[];
 }
 
-// Sketch with no geometry, useful for lightweight exchange when geometry not needed
+// Sketch with no geometry or null geometry, useful for lightweight exchange when geometry not needed
 export interface NullSketch extends Omit<Sketch, "geometry"> {
   geometry?: null;
 }
 
 export interface NullSketchCollection
-  extends Omit<FeatureCollection, "features"> {
+  extends Omit<SketchCollection, "features" | "bbox"> {
+  bbox?: BBox;
   features: NullSketch[];
 }

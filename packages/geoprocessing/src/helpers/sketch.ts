@@ -1,6 +1,8 @@
 import {
   Sketch,
   SketchCollection,
+  NullSketch,
+  NullSketchCollection,
   FeatureCollection,
   Polygon,
   LineString,
@@ -60,6 +62,18 @@ export function toSketchArray<G>(
   throw new Error("invalid input, must be Sketch or SketchCollection");
 }
 
+/** Helper to convert a NullSketch or NullSketchCollection to a NullSketch array */
+export function toNullSketchArray(
+  input: NullSketch | NullSketchCollection
+): NullSketch[] {
+  if (isSketch(input)) {
+    return [input];
+  } else if (isSketchCollection(input)) {
+    return input.features;
+  }
+  throw new Error("invalid input, must be NullSketch or NullSketchCollection");
+}
+
 /**
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
@@ -78,6 +92,22 @@ export const genSampleSketch = <G = Polygon | LineString | String>(
   },
   geometry,
   bbox: bbox(geometry),
+});
+
+/**
+ * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
+ */
+export const genSampleNullSketch = (): NullSketch => ({
+  type: "Feature",
+  properties: {
+    id: uuid(),
+    isCollection: false,
+    userAttributes: [],
+    sketchClassId: uuid(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    name: "genSampleSketch",
+  },
 });
 
 /**
@@ -104,6 +134,30 @@ export const genSampleSketchCollection = <G = Polygon | LineString | String>(
       name: `genSampleSketchCollection_${uuid()}`,
     },
     bbox: bbox(fc),
+  };
+};
+
+/**
+ * Given feature collection, return a sketch collection with reasonable random props.
+ * The geometry type of the returned collection will match the one passed in
+ * @param geometry
+ */
+export const genSampleNullSketchCollection = (
+  sketches: NullSketch[]
+): NullSketchCollection => {
+  // Rebuild into sketch collection
+  return {
+    type: "FeatureCollection",
+    features: sketches,
+    properties: {
+      id: uuid(),
+      isCollection: true,
+      userAttributes: [],
+      sketchClassId: uuid(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      name: `genSampleSketchCollection_${uuid()}`,
+    },
   };
 };
 

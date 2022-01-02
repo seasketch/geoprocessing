@@ -3,7 +3,7 @@ import {
   ResultsCard,
   SketchAttributesCard,
   Skeleton,
-} from "@seasketch/geoprocessing/client";
+} from "@seasketch/geoprocessing/client-ui";
 import { RasterSumResults } from "../functions/rasterSum";
 
 const Number = new Intl.NumberFormat("en", { style: "decimal" });

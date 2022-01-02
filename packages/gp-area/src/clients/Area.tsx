@@ -3,7 +3,7 @@ import {
   ResultsCard,
   SketchAttributesCard,
   Skeleton,
-} from "@seasketch/geoprocessing/client";
+} from "@seasketch/geoprocessing/client-ui";
 // Import the results type definition from your functions to type-check your
 // component render functions
 import { AreaResults } from "../functions/area";

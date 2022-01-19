@@ -24,8 +24,8 @@ interface DropownProps {
 }
 
 const DropdownContainer = styled.div<DropdownContainerProps>`
-  visibility: ${({ open }) => (open ? "visible" : "hidden")}
-  display: "flex";
+  visibility: ${({ open }) => (open ? "visible" : "hidden")};
+  display: ${({ open }) => (open ? "flex" : "none")};
   width: 100%;
   flex-direction: column;
   background-color: #fff;
@@ -54,7 +54,7 @@ const DropdownItem = styled.div`
   }
 `;
 
-const DropownTrigger = styled.button`
+const DropdownTrigger = styled.button`
   border: none;
   background: none;
   font-family: sans-serif;
@@ -101,15 +101,15 @@ const Dropdown = ({
   }
 
   return (
-    <>
+    <React.StrictMode>
       <div ref={DropownRef}>
-        <DropownTrigger
+        <DropdownTrigger
           type="button"
           ref={referenceRef}
           onClick={handleDropdownClick}
         >
           {TitleElement}
-        </DropownTrigger>
+        </DropdownTrigger>
       </div>
       <div ref={popperRef} style={styles.popper} {...attributes.popper}>
         <DropdownContainer style={styles.offset} open={open}>
@@ -119,7 +119,7 @@ const Dropdown = ({
             })}
         </DropdownContainer>
       </div>
-    </>
+    </React.StrictMode>
   );
 };
 

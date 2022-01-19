@@ -11,7 +11,7 @@ export default {
 
 export const simpleButton = () => {
   return (
-    <Dropdown titleElement={<SimpleButton>⋮</SimpleButton>}>
+    <Dropdown titleElement={<>⋮</>}>
       <a href="https://seasketch.org" target="_blank">
         <SimpleButton>➥ Seasketch</SimpleButton>
       </a>

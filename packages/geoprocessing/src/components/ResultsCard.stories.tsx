@@ -125,12 +125,12 @@ export const customSkeleton = () => (
 );
 
 const CustomSkeleton = () => (
-  <p>
+  <div>
     <Skeleton style={{ width: "100%", height: "130px" }} />
     <Skeleton />
     <Skeleton />
     <Skeleton style={{ width: "50%" }} />
-  </p>
+  </div>
 );
 
 export const errorState = () => (

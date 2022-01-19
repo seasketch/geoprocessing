@@ -26,10 +26,10 @@ const ErrorIndicator = styled.div`
 const ErrorCard = () => {
   return (
     <Card>
-      <p role="alert">
+      <div role="alert">
         <ErrorIndicator />
         Something went wrong. Please close this report and try again.
-      </p>
+      </div>
       <p>If it persists, press the "help" button above to report the issue.</p>
     </Card>
   );

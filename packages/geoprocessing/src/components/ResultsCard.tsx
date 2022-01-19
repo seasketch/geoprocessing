@@ -94,10 +94,10 @@ function ResultsCard<T>({
   let contents: JSX.Element;
   if (error) {
     contents = (
-      <p role="alert">
+      <div role="alert">
         <ErrorIndicator />
         {error}
-      </p>
+      </div>
     );
   } else if (loading) {
     contents = (

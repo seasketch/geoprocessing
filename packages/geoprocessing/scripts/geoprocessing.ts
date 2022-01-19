@@ -71,8 +71,8 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
-    case "storybook":
-      spawn(`${__dirname}/../../scripts/storybook.sh`, {
+    case "start-storybook":
+      spawn(`${__dirname}/../../scripts/start-storybook.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });

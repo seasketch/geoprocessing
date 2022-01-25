@@ -5,3 +5,4 @@ export * from "./src/components";
 export type { FilterSelectTableOptions } from "./src/components/table/FilterSelectTable";
 export { default as ReportContext } from "./src/ReportContext";
 export * from "./src/hooks";
+export * from "./src/metrics/helpers";

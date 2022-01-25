@@ -230,7 +230,7 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
             console.info(`sent task ${task.id} result to socket ${wssUrl}`);
           }
           return promise;
-        } catch (e) {
+        } catch (e: any) {
           let sname = encodeURIComponent(task.service);
           let ck = encodeURIComponent(task.id || "");
           let wssUrl =
@@ -246,7 +246,7 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
           let failedTask = await Tasks.fail(task, failureMessage);
           return failedTask;
         }
-      } catch (e) {
+      } catch (e: any) {
         return Tasks.fail(
           task,
           request.geometryUri

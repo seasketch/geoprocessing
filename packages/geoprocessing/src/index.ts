@@ -2,8 +2,7 @@
 export * from "./types";
 export * from "./helpers";
 export * from "./datasources";
-// export * from "./metrics";
-export * from "./util";
+export * from "./metrics";
 export { default as toolbox } from "./toolbox";
 
 export { GeoprocessingHandler } from "./GeoprocessingHandler";

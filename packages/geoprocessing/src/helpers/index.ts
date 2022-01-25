@@ -8,3 +8,7 @@ export * from "./number";
 export * from "./groupBy";
 export * from "./keyBy";
 export * from "./string";
+export * from "./clip";
+export * from "./chunk";
+export * from "./removeHoles";
+export * from "./randomData";

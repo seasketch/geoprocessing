@@ -1,10 +1,9 @@
 export * from "./geojson";
-export * from "./functionMeta";
 export * from "./sketch";
 export * from "./project";
 export * from "./service";
 export * from "./data";
-export * from "./metric";
+export * from "./metrics";
 
 // 3rd party
 export * from "./georaster";

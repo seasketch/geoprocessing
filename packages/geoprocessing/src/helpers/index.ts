@@ -5,5 +5,6 @@ export * from "./sketch";
 export * from "./units";
 export * from "./bboxOverlap";
 export * from "./number";
-export * from "./functions";
+export * from "./groupBy";
+export * from "./keyBy";
 export * from "./string";

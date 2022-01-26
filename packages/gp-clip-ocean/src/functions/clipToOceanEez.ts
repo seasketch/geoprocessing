@@ -14,7 +14,6 @@ import { featureCollection as fc } from "@turf/helpers";
 import combine from "@turf/combine";
 import flatten from "@turf/flatten";
 import kinks from "@turf/kinks";
-import { featureCollection } from "@turf/turf";
 
 const MAX_SIZE = 500000 * 1000 ** 2;
 
@@ -36,9 +35,7 @@ export async function clipLand(feature: Feature<Polygon | MultiPolygon>) {
   );
   if (landFeatures.features.length === 0) return feature;
   const combined = combine(landFeatures).features[0] as Feature<MultiPolygon>;
-  return combined
-    ? clip(featureCollection([feature, combined]), "difference")
-    : feature;
+  return combined ? clip(fc([feature, combined]), "difference") : feature;
 }
 
 export async function clipOutsideEez(
@@ -55,7 +52,7 @@ export async function clipOutsideEez(
   }
   const combined = combine(fc(eezFeatures))
     .features[0] as Feature<MultiPolygon>;
-  return clip(featureCollection([feature, combined]), "intersection");
+  return clip(fc([feature, combined]), "intersection");
 }
 
 /**

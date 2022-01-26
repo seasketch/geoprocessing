@@ -1,4 +1,4 @@
-// Re-export all
+// top-level module for geoprocessing library, primarily used for node environmnent
 export * from "./types";
 export * from "./helpers";
 export * from "./datasources";

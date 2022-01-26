@@ -1,7 +1,7 @@
 import { Feature, FeatureCollection, Sketch, SketchCollection } from "../types";
 import { GeoprocessingRequest } from "../types";
 import isHostedOnLambda from "../util/isHostedOnLambda";
-import "./util/fetchPolyfill";
+import "../util/fetchPolyfill";
 
 // Seasketch client
 

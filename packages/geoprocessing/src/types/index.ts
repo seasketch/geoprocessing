@@ -1,8 +1,8 @@
+export * from "./base";
 export * from "./geojson";
 export * from "./sketch";
 export * from "./project";
 export * from "./service";
-export * from "./data";
 export * from "./metrics";
 
 // 3rd party

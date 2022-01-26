@@ -1,3 +1,4 @@
+import { ISO8601DateTime } from "./base";
 import {
   Polygon,
   LineString,
@@ -13,10 +14,8 @@ export interface SketchProperties {
   id: string;
   /** Name specified by the author of the sketch */
   name: string;
-  // ISO 8601 date/time string
-  updatedAt: string;
-  // ISO 8601 date/time string
-  createdAt: string;
+  updatedAt: ISO8601DateTime;
+  createdAt: ISO8601DateTime;
   sketchClassId: string;
   isCollection: boolean;
   userAttributes: UserAttribute[];

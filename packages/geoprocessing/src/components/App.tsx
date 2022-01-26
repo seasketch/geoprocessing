@@ -6,7 +6,7 @@ import {
   SeaSketchReportingVisibleLayersChangeEvent,
   SeaSketchReportingToggleLayerVisibilityEvent,
 } from "../types";
-import ReportContext from "../ReportContext";
+import { ReportContext } from "../storybook";
 import ReactDOM from "react-dom";
 
 const REPORTS = require("./client-loader");

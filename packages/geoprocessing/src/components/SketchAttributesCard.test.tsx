@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import SketchAttributesCard from "./SketchAttributesCard";
-import ReportContext from "../ReportContext";
+import { ReportContext } from "../storybook";
 
 test("SketchAttributesCard renders all userAttributes", () => {
   const { getByRole, getByText, getAllByText } = render(

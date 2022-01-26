@@ -5,7 +5,7 @@ import {
   MultiPolygon,
   SketchCollection,
   Metric,
-} from "../../types";
+} from "../types";
 import {
   genSampleSketchCollection,
   keyBy,
@@ -13,8 +13,8 @@ import {
   isSketchCollection,
   groupBy,
   clip,
-} from "../../helpers";
-import { createMetric } from "./../helpers";
+} from "../helpers";
+import { createMetric } from "../metrics";
 import { overlapFeatures } from "./overlapFeatures";
 import { overlapArea } from "./overlapArea";
 import flatten from "@turf/flatten";

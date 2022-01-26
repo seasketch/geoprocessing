@@ -1,5 +1,5 @@
 import React from "react";
-import { SketchProperties, GeoprocessingProject } from "./types";
+import { SketchProperties, GeoprocessingProject } from "../types";
 
 /**
  * Provides necessary context to ReportClient components, particularly for
@@ -25,6 +25,6 @@ export interface TestExampleOutput {
   results: any;
 }
 
-const ReportContext = React.createContext<ReportContextValue | null>(null);
-
-export default ReportContext;
+export const ReportContext = React.createContext<ReportContextValue | null>(
+  null
+);

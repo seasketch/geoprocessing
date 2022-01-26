@@ -1,23 +1,17 @@
-import {
-  Polygon,
-  Sketch,
-  SketchCollection,
-  Georaster,
-  Metric,
-} from "../../types";
+import { Polygon, Sketch, SketchCollection, Georaster, Metric } from "../types";
 import {
   toSketchArray,
   isSketchCollection,
   clip,
   removeSketchPolygonHoles,
   removeSketchCollPolygonHoles,
-} from "../../helpers";
-import { createMetric } from "../helpers";
+} from "../helpers";
+import { createMetric } from "../metrics";
 import flatten from "@turf/flatten";
 import area from "@turf/area";
+import { featureCollection } from "@turf/helpers";
 // @ts-ignore
 import geoblaze from "geoblaze";
-import { featureCollection } from "@turf/helpers";
 
 /**
  * Calculates sum of overlap between sketches and feature classes in raster
@@ -29,18 +23,17 @@ export async function overlapRasterClass(
   raster: Georaster,
   /** single sketch or collection. */
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
+  /** Object mapping numeric class IDs to their string counterpart */
+  classIdMapping: Record<string, string>,
   options: {
-    /** Map from numeric class ID to string */
-    classIdMapping: Record<string, string>;
     /** Whether to remove holes from sketch polygons. Geoblaze can overcount with them. Default to true */
     removeSketchHoles?: boolean;
-  } = { classIdMapping: {}, removeSketchHoles: true }
+  } = { removeSketchHoles: true }
 ): Promise<Metric[]> {
-  if (!options.classIdMapping)
-    throw new Error("Missing classIdMapping in config");
+  if (!classIdMapping) throw new Error("Missing classIdMapping");
   const sketches = toSketchArray(sketch);
   const sketchArea = area(sketch);
-  const classIds = Object.keys(options.classIdMapping);
+  const numericClassIds = Object.keys(classIdMapping);
 
   // overallHistograms account for sketch overlap, sketchHistograms do not
   // histogram will exclude a class in result if not in raster, rather than return zero
@@ -107,11 +100,11 @@ export async function overlapRasterClass(
     sketchHistograms.forEach((sketchHist, index) => {
       if (!sketchHist) {
         // push zero result for sketch for all classes
-        classIds.forEach((classId) =>
+        numericClassIds.forEach((numericClassId) =>
           sketchMetrics.push(
             createMetric({
               metricId,
-              classId: options.classIdMapping[classId],
+              classId: classIdMapping[numericClassId],
               sketchId: sketches[index].properties.id,
               value: 0,
               extra: {
@@ -121,20 +114,18 @@ export async function overlapRasterClass(
           )
         );
       } else {
-        classIds.forEach((classId) => {
-          if (classIds.includes(classId)) {
-            sketchMetrics.push(
-              createMetric({
-                metricId,
-                classId: options.classIdMapping[classId],
-                sketchId: sketches[index].properties.id,
-                value: sketchHist[classId] || 0,
-                extra: {
-                  sketchName: sketches[index].properties.name,
-                },
-              })
-            );
-          }
+        numericClassIds.forEach((numericClassId) => {
+          sketchMetrics.push(
+            createMetric({
+              metricId,
+              classId: classIdMapping[numericClassId],
+              sketchId: sketches[index].properties.id,
+              value: sketchHist[numericClassId] || 0,
+              extra: {
+                sketchName: sketches[index].properties.name,
+              },
+            })
+          );
         });
       }
     });
@@ -147,7 +138,7 @@ export async function overlapRasterClass(
       if (!overallHist) {
         return; // skip undefined result
       }
-      classIds.forEach((classId) => {
+      numericClassIds.forEach((classId) => {
         const value = overallHist[classId] ? overallHist[classId] : 0;
         sumByClass[classId] = sumByClass[classId]
           ? sumByClass[classId] + value
@@ -155,11 +146,11 @@ export async function overlapRasterClass(
       });
     });
 
-    classIds.forEach((classId) => {
+    numericClassIds.forEach((classId) => {
       sketchMetrics.push(
         createMetric({
           metricId,
-          classId: options.classIdMapping[classId],
+          classId: classIdMapping[classId],
           sketchId: sketch.properties.id,
           value: sumByClass[classId] || 0,
           extra: {

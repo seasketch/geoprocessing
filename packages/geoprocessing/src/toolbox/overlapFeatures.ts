@@ -1,12 +1,6 @@
-import {
-  Sketch,
-  SketchCollection,
-  Polygon,
-  Feature,
-  Metric,
-} from "../../types";
-import { toSketchArray, isSketchCollection, chunk, clip } from "../../helpers";
-import { createMetric } from "../helpers";
+import { Sketch, SketchCollection, Polygon, Feature, Metric } from "../types";
+import { toSketchArray, isSketchCollection, chunk, clip } from "../helpers";
+import { createMetric } from "../metrics";
 import { featureCollection, MultiPolygon } from "@turf/helpers";
 import { featureEach } from "@turf/meta";
 import area from "@turf/area";

@@ -1,10 +1,15 @@
 import React, { ComponentType } from "react";
 import { storiesOf } from "@storybook/react";
 import ReportDecorator from "./src/components/ReportDecorator";
-import ReportContext, { TestExampleOutput } from "./src/ReportContext";
+import {
+  ReportContext,
+  TestExampleOutput,
+} from "./src/storybook/ReportContext";
 import { SketchProperties } from "./src/types";
 import { v4 as uuid } from "uuid";
-const examples = require("./src/examples-loader.js");
+const examples = require("./src/storybook/examples-loader.js");
+
+// top-level level entry into storybook
 
 export function registerExampleStories<T>(
   title: string,

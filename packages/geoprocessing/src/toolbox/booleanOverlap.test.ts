@@ -1,4 +1,4 @@
-import { overlap } from "./overlap";
+import { booleanOverlap } from "./booleanOverlap";
 import { genSampleSketch } from "../helpers";
 
 const pointSketch = genSampleSketch({
@@ -94,50 +94,56 @@ const polySketchD = genSampleSketch({
 
 describe("Overlap unit tests", () => {
   test("sketches cannot be equal", async () => {
-    const result = await overlap(polySketchA, polySketchA);
+    const result = await booleanOverlap(polySketchA, polySketchA);
     expect(result.length).toBe(0);
   });
 
   // Polygons
   test("A and B poly feature overlap", async () => {
-    const result = await overlap(polySketchA, polySketchB);
+    const result = await booleanOverlap(polySketchA, polySketchB);
     expect(result.length).toBe(1);
   });
   test("A and C poly feature do not overlap", async () => {
-    const result = await overlap(polySketchA, polySketchC);
+    const result = await booleanOverlap(polySketchA, polySketchC);
     expect(result.length).toBe(0);
   });
   test("A and B poly geometry overlap", async () => {
-    const result = await overlap(
+    const result = await booleanOverlap(
       [polySketchA.geometry],
       [polySketchB.geometry]
     );
     expect(result.length).toBe(1);
   });
   test("A and C poly geometry do not overlap", async () => {
-    const result = await overlap(
+    const result = await booleanOverlap(
       [polySketchA.geometry],
       [polySketchC.geometry]
     );
     expect(result.length).toBe(0);
   });
   test("A and B together overlap with C", async () => {
-    const result = await overlap([polySketchA, polySketchB], polySketchC);
+    const result = await booleanOverlap(
+      [polySketchA, polySketchB],
+      polySketchC
+    );
     expect(result.length).toBe(1);
   });
   test("A and B together overlap with C and D", async () => {
-    const result = await overlap(
+    const result = await booleanOverlap(
       [polySketchA, polySketchB],
       [polySketchC, polySketchD]
     );
     expect(result.length).toBe(2);
   });
   test("A overlaps with B but not C", async () => {
-    const result = await overlap(polySketchA, [polySketchB, polySketchC]);
+    const result = await booleanOverlap(polySketchA, [
+      polySketchB,
+      polySketchC,
+    ]);
     expect(result.length).toBe(1);
   });
   test("idProperty of name should return just one poly", async () => {
-    const result = await overlap(
+    const result = await booleanOverlap(
       polySketchB,
       [polySketchA, polySketchC, polySketchD],
       "name"
@@ -148,19 +154,22 @@ describe("Overlap unit tests", () => {
 
   // Lines
   test("A and B line overlap", async () => {
-    const result = await overlap([lineSketchA], [lineSketchB]);
+    const result = await booleanOverlap([lineSketchA], [lineSketchB]);
     expect(result.length).toBe(1);
   });
   test("A and C line do not overlap", async () => {
-    const result = await overlap([lineSketchA], [lineSketchC]);
+    const result = await booleanOverlap([lineSketchA], [lineSketchC]);
     expect(result.length).toBe(0);
   });
   test("A overlaps with B but not C", async () => {
-    const result = await overlap([lineSketchA], [lineSketchB, lineSketchC]);
+    const result = await booleanOverlap(
+      [lineSketchA],
+      [lineSketchB, lineSketchC]
+    );
     expect(result.length).toBe(1);
   });
   test("idProperty of name should return just one line", async () => {
-    const result = await overlap(
+    const result = await booleanOverlap(
       [lineSketchB],
       [lineSketchA, lineSketchC, lineSketchD],
       "name"

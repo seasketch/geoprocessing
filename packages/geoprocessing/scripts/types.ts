@@ -7,7 +7,7 @@ import {
   PreprocessingHandlerOptions,
   GeoprocessingHandlerOptions,
 } from "../src/types";
-import { VectorDataSourceDetails } from "../src/VectorDataSource";
+import { VectorDataSourceDetails } from "../src";
 
 /**
  * Represents parts of project package.json that are manifested and published

@@ -3,7 +3,7 @@ import {
   GeoprocessingServiceMetadata,
   PreprocessingServiceMetadata,
 } from "../src/types";
-import { VectorDataSourceDetails } from "../src/VectorDataSource";
+import { VectorDataSourceDetails } from "../src";
 import { getHandlerFilenameFromSrcPath } from "./util/handler";
 
 /**

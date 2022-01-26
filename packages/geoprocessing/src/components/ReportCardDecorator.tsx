@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "./Card";
 import { ReportWindow } from "./ReportDecorator";
-import ReportContext from "../ReportContext";
+import { ReportContext } from "../storybook";
 import { genSampleSketchContext } from "../helpers";
 
 /**

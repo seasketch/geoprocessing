@@ -12,27 +12,27 @@ import deepEqual from "fast-deep-equal";
  * @param idProperty - property in Feature B to track if overlap already found.
  * Useful if multiple features have same property value and you only want the first match.
  */
-export async function overlap<B extends Feature<any>>(
+export async function booleanOverlap<B extends Feature<any>>(
   featureAInput: Feature<any> | Feature<any>[],
   featureBInput: B | B[],
   idProperty?: string
 ): Promise<B[]>;
-export async function overlap<B extends Feature<any>>(
+export async function booleanOverlap<B extends Feature<any>>(
   featureAInput: Geometry[],
   featureBInput: B | B[],
   idProperty?: string
 ): Promise<B[]>;
-export async function overlap<B extends Geometry>(
+export async function booleanOverlap<B extends Geometry>(
   featureAInput: Feature<any> | Feature<any>[],
   featureBInput: B | B[],
   idProperty?: string
 ): Promise<B[]>;
-export async function overlap<B extends Geometry>(
+export async function booleanOverlap<B extends Geometry>(
   featureAInput: Geometry | Geometry[],
   featureBInput: B | B[],
   idProperty?: string
 ): Promise<B[]>;
-export async function overlap<B>(
+export async function booleanOverlap<B>(
   featureAInput,
   featureBInput: B | B[],
   idProperty?: string

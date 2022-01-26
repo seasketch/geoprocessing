@@ -1,17 +1,17 @@
-import { Sketch, SketchCollection, Polygon, Metric } from "../../types";
+import { Sketch, SketchCollection, Polygon, Metric } from "../types";
 import {
   isSketchCollection,
   clip,
   removeSketchPolygonHoles,
   removeSketchCollPolygonHoles,
-} from "../../helpers";
+} from "../helpers";
+import { createMetric } from "../metrics";
 import { featureEach } from "@turf/meta";
 import area from "@turf/area";
+import { featureCollection } from "@turf/helpers";
 
 // @ts-ignore
 import geoblaze, { Georaster } from "geoblaze";
-import { createMetric } from "../helpers";
-import { featureCollection } from "@turf/helpers";
 
 /**
  * Returns sum metric for raster.  If sketch parameter provided, sum overlap is also calculated for each sketch polygon.
@@ -25,7 +25,7 @@ export async function overlapRaster(
   /** single sketch or collection. */
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
   options: {
-    /** Whether to remove holes from sketch polygons. Geoblaze can overcount with them.  Default to true */
+    /** Remove holes from sketch polygons before calculating overlap. Geoblaze doesn't handle them correctly and overcounts.  Default to true.  Just make sure raster has e.g. lang clipped out already */
     removeSketchHoles: boolean;
   } = { removeSketchHoles: true }
 ): Promise<Metric[]> {

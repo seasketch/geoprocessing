@@ -51,7 +51,7 @@ module.exports = {
     config.resolve.extensions.push(".ts", ".tsx");
     if (process.env.PROJECT_PATH) {
       config.module.rules.push({
-        test: /examples-loader.js$/,
+        test: /storybook\/examples-loader.js$/,
         use: [
           {
             loader: `val-loader`,

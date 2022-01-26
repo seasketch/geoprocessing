@@ -4,7 +4,7 @@ import {
   Polygon,
   MultiPolygon,
   BBox,
-} from "./types";
+} from "../types";
 import Flatbush from "flatbush";
 import Pbf from "pbf";
 import geobuf from "geobuf";
@@ -12,8 +12,8 @@ import LRUCache from "mnemonist/lru-cache";
 import RBush from "rbush";
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
-import isHostedOnLambda from "./isHostedOnLambda";
-import "./fetchPolyfill";
+import isHostedOnLambda from "../util/isHostedOnLambda";
+import "../util/fetchPolyfill";
 import { union } from "union-subdivided-polygons";
 
 // import { recombineTree } from "./recombine";

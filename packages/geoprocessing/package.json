@@ -32,8 +32,8 @@
     "geoprocessing": "dist/scripts/geoprocessing.js"
   },
   "sideEffects": [
-    "./src/fetchPolyfill.js",
-    "./dist/src/fetchPolyfill.js"
+    "./src/util/fetchPolyfill.js",
+    "./dist/src/util/fetchPolyfill.js"
   ],
   "repository": {
     "type": "git",

@@ -2,7 +2,7 @@ import { GeoprocessingHandler } from "./GeoprocessingHandler";
 import Tasks, { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { v4 as uuid } from "uuid";
-import { Sketch, SketchCollection, Feature, FeatureCollection } from "./types";
+import { Sketch, SketchCollection, Feature, FeatureCollection } from "../types";
 // @ts-ignore
 import fetchMock from "fetch-mock-jest";
 

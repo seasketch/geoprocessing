@@ -1,7 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
-import { String } from "aws-sdk/clients/cloudtrail";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",

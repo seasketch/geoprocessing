@@ -1,5 +1,5 @@
 import { PreprocessingHandler, ValidationError } from "./PreprocessingHandler";
-import feature from "../templates/exampleFeature.json";
+import feature from "../../templates/exampleFeature.json";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
 
 const simpleHandler = new PreprocessingHandler(

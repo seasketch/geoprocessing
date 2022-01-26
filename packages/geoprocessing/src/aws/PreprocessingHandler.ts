@@ -12,7 +12,7 @@ import {
   LineString,
   Point,
   Sketch,
-} from "./types";
+} from "../types";
 
 export class ValidationError extends Error {}
 
@@ -62,12 +62,12 @@ export class PreprocessingHandler<G = Polygon | LineString | Point> {
     let request;
     try {
       request = this.parseRequest(event);
-    } catch (e) {
+    } catch (e: unknown) {
       return {
         statusCode: 500,
         headers: commonHeaders,
         body: JSON.stringify({
-          error: e.message,
+          error: e instanceof Error ? e.message : "Internal server error",
           status: "error",
         }),
       };
@@ -95,7 +95,7 @@ export class PreprocessingHandler<G = Polygon | LineString | Point> {
           status: "ok",
         } as PreprocessingResponse<Feature<G> | Sketch<G>>),
       };
-    } catch (e) {
+    } catch (e: unknown) {
       if (e instanceof ValidationError) {
         return {
           statusCode: 200,
@@ -110,7 +110,7 @@ export class PreprocessingHandler<G = Polygon | LineString | Point> {
           statusCode: 500,
           headers: commonHeaders,
           body: JSON.stringify({
-            error: e.message,
+            error: e instanceof Error ? e.message : "Internal server error",
             status: "error",
           } as PreprocessingResponse),
         };

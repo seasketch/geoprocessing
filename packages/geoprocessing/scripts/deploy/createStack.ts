@@ -2,7 +2,6 @@ import * as core from "@aws-cdk/core";
 import fs from "fs";
 import path from "path";
 import { Manifest } from "../manifest";
-import slugify from "slugify";
 import GeoprocessingCdkStack from "../aws/GeoprocessingStack";
 
 if (!process.env.PROJECT_PATH) {

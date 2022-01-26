@@ -1,4 +1,4 @@
-import TaskModel from "../src/tasks";
+import TaskModel from "./tasks";
 import { DynamoDB } from "aws-sdk";
 
 const db = new DynamoDB.DocumentClient({

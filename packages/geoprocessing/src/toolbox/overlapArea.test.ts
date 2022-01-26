@@ -2,12 +2,12 @@
  * @group unit
  */
 
-import { SketchCollection } from "../../types";
+import { SketchCollection } from "../types";
+import { genSampleSketch } from "../helpers";
+import { firstMatchingMetric } from "../metrics";
 import { overlapArea, overlapSubarea } from "./overlapArea";
-import { genSampleSketch } from "../../helpers";
 import { feature, Feature, Polygon, polygon } from "@turf/helpers";
 import area from "@turf/area";
-import { firstMatchingMetric } from "../helpers";
 
 const outer: Feature<Polygon> = feature({
   type: "Polygon",

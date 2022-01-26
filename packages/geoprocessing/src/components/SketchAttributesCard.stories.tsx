@@ -1,7 +1,7 @@
 import React from "react";
 import SketchAttributesCard from "./SketchAttributesCard";
 import ReportDecorator from "./ReportDecorator";
-import ReportContext from "../ReportContext";
+import { ReportContext } from "../storybook";
 
 export default {
   component: SketchAttributesCard,

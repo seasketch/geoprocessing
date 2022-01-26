@@ -1,7 +1,9 @@
-import { Feature, FeatureCollection, Sketch, SketchCollection } from "./types";
-import { GeoprocessingRequest } from "./types";
-import isHostedOnLambda from "./isHostedOnLambda";
-import "./fetchPolyfill";
+import { Feature, FeatureCollection, Sketch, SketchCollection } from "../types";
+import { GeoprocessingRequest } from "../types";
+import isHostedOnLambda from "../util/isHostedOnLambda";
+import "./util/fetchPolyfill";
+
+// Seasketch client
 
 /**
  * Given geoprocessing function request, fetches the GeoJSON, which can alsosketch JSON

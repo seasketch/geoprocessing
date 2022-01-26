@@ -8,13 +8,13 @@ import {
   LineString,
   Point,
   GeoprocessingRequest,
-} from "./types";
+} from "../types";
 import TaskModel, {
   commonHeaders,
   GeoprocessingTask,
   GeoprocessingTaskStatus,
 } from "./tasks";
-import { fetchGeoJSON } from "./geometry";
+import { fetchGeoJSON } from "../datasources/seasketch";
 import {
   Context,
   APIGatewayProxyResult,
@@ -230,13 +230,16 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
             console.info(`sent task ${task.id} result to socket ${wssUrl}`);
           }
           return promise;
-        } catch (e: any) {
+        } catch (e: unknown) {
           let sname = encodeURIComponent(task.service);
           let ck = encodeURIComponent(task.id || "");
           let wssUrl =
             task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
 
-          let failureMessage = `Geoprocessing exception: \n${e.stack}`;
+          let failureMessage =
+            e instanceof Error
+              ? `Geoprocessing exception: \n${e.stack}`
+              : "Geoprocessing exception";
           await this.sendSocketErrorMessage(
             wssUrl,
             request.cacheKey,
@@ -246,13 +249,13 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
           let failedTask = await Tasks.fail(task, failureMessage);
           return failedTask;
         }
-      } catch (e: any) {
+      } catch (e: unknown) {
         return Tasks.fail(
           task,
           request.geometryUri
             ? `Failed to retrieve geometry from ${request.geometryUri}`
             : `Failed to extract geometry from request`,
-          e
+          e as Error
         );
       }
     } else {

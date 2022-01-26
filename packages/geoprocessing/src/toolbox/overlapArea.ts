@@ -5,9 +5,9 @@ import {
   MultiPolygon,
   Polygon,
   Metric,
-} from "../../types";
-import { isSketchCollection, toSketchArray, clip } from "../../helpers";
-import { createMetric } from "../helpers";
+} from "../types";
+import { isSketchCollection, toSketchArray, clip } from "../helpers";
+import { createMetric } from "../metrics";
 import { featureCollection } from "@turf/helpers";
 import { featureEach } from "@turf/meta";
 import turfArea from "@turf/area";

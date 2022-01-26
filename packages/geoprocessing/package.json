@@ -6,7 +6,9 @@
   "types": "dist/src/index.d.ts",
   "exports": {
     ".": "./dist/src/index.js",
-    "./client": "./dist/client.js"
+    "./client-ui": "./dist/client-ui.js",
+    "./client-core": "./dist/client-core.js",
+    "./dataproviders": "./dist/dataproviders.js"
   },
   "readme": "https://github.com/seasketch/geoprocessing#readme",
   "scripts": {

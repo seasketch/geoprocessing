@@ -7,7 +7,7 @@ import fixtures, {
   Ranked,
   Categorical,
   getRandomCategorical,
-} from "../../fixtures";
+} from "../../testing/fixtures";
 import styled from "styled-components";
 
 export default {

@@ -8,7 +8,7 @@ import {
   LineString,
 } from "../types";
 import { isSketch, isSketchCollection } from "./types";
-import fixtures from "../fixtures";
+import fixtures from "../testing/fixtures";
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
 /**
@@ -102,7 +102,8 @@ export function toNullSketch(
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
 export const genSampleSketch = <G = Polygon | LineString | String>(
-  geometry: G
+  geometry: G,
+  name?: string
 ): Sketch<G> => ({
   type: "Feature",
   properties: {
@@ -112,7 +113,7 @@ export const genSampleSketch = <G = Polygon | LineString | String>(
     sketchClassId: uuid(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    name: "genSampleSketch",
+    name: name || "genSampleSketch",
   },
   geometry,
   bbox: bbox(geometry),

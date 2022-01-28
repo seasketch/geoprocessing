@@ -16,11 +16,15 @@ interface OverlapFeatureOptions {
   sumProperty?: string;
 }
 
+// ToDo: support
+// point - sum of points
+// linestring - sum of length
+// polygon - sum of area
+
 /**
- * Calculates overlap between sketches and features, including overall and per sketch
- * point - sum of points
- * linestring - sum of length
- * polygon - sum of area
+ * Calculates overlap between sketch(es) and an array of polygon features.
+ * Supports area or sum operation (given sumProperty), defaults to area
+ * If sketch collection includes overall and per sketch
  */
 export async function overlapFeatures(
   metricId: string,
@@ -161,13 +165,18 @@ const getSketchPolygonIntersectSumValue = (
         featureCollection([featureA, curFeature]),
         "intersection"
       );
+      let count: number = 0;
+      if (!rem) {
+        count = 0;
+      } else if (!sumProperty) {
+        count = 1;
+      } else if (curFeature.properties![sumProperty] >= 0) {
+        count = curFeature.properties![sumProperty];
+      } else {
+        count = 1;
+      }
       return {
-        count: rem
-          ? sumProperty
-            ? curFeature.properties![sumProperty]
-            : 1
-          : 0,
-        rem,
+        count,
       };
     })
     .reduce((sumSoFar, { count }) => sumSoFar + count, 0);

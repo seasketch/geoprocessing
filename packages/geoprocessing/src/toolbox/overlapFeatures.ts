@@ -1,5 +1,11 @@
 import { Sketch, SketchCollection, Polygon, Feature, Metric } from "../types";
-import { toSketchArray, isSketchCollection, chunk, clip } from "../helpers";
+import {
+  toSketchArray,
+  isSketchCollection,
+  chunk,
+  clip,
+  clipMultiMerge,
+} from "../helpers";
 import { createMetric } from "../metrics";
 import { featureCollection, MultiPolygon } from "@turf/helpers";
 import { featureEach } from "@turf/meta";
@@ -138,9 +144,14 @@ const getSketchPolygonIntersectArea = (
   const chunks = chunk(featuresB, chunkSize || 5000);
   // intersect and get area of remainder
   const sketchValue = chunks
-    .map((curChunk) =>
-      clip(featureCollection([featureA, ...curChunk]), "intersection")
-    )
+    .map((curChunk) => {
+      const rem = clipMultiMerge(
+        featureA,
+        featureCollection(curChunk),
+        "intersection"
+      );
+      return rem;
+    })
     .reduce((sumSoFar, rem) => (rem ? area(rem) + sumSoFar : sumSoFar), 0);
   return sketchValue;
 };

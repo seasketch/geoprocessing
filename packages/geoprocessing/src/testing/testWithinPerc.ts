@@ -16,7 +16,7 @@ export const testWithinPerc = (
         console.log(`test: ${testValue}, expected: ${expectedValue}, skipped`);
       return;
     } else {
-      // Get it just up off of 0
+      // Zero edge case still worth testing, get it just up off of 0
       expectedValue = testValue * 0.00000000001;
     }
   }

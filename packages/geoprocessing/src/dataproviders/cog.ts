@@ -19,7 +19,7 @@ interface CogOptions {
 
 /**
  * Returns georaster window (image subset) defined by options.windowBox, otherwise loads the whole raster
- * windowBox is extended out to the nearest pixel edge to avoid resampling. Assumes raster is in WGS84 degrees
+ * windowBox is extended out to the nearest pixel edge to (in theory) avoid resampling. Assumes raster is in WGS84 degrees
  * */
 export const loadCogWindow = async (url: string, options: CogOptions) => {
   const georaster = await parseGeoraster(url);

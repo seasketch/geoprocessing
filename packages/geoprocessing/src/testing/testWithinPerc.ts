@@ -20,7 +20,8 @@ export const testWithinPerc = (
       expectedValue = testValue * 0.00000000001;
     }
   }
-  const percDiff = (testValue / expectedValue) % 1;
+  const percDiff = Math.abs(testValue - expectedValue) / expectedValue;
+
   if (debug)
     console.log(
       `test: ${testValue}, expected: ${expectedValue}, percDiff: ${percDiff}`

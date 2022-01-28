@@ -6,6 +6,7 @@ import { firstMatchingMetric } from "../metrics";
 import { overlapArea, overlapSubarea } from "./overlapArea";
 import area from "@turf/area";
 import fix from "../testing/fixtures/squareSketches";
+import { testWithinPerc } from "..";
 
 describe("Area stats tool", () => {
   test("function is present", () => {
@@ -85,7 +86,8 @@ describe("Area stats tool", () => {
       metrics,
       (m) => m.sketchId === "CCCC" && m.metricId === "test"
     );
-    expect(collAreaMetric.value).toBeCloseTo(fix.scArea / 2); // Expect about half, but not exactly same as inside
+    // Expect about half, but not exactly same as inside
+    testWithinPerc(collAreaMetric.value, fix.scArea / 2, { withinPerc: 0.5 });
 
     const collAreaPercMetric = firstMatchingMetric(
       metrics,
@@ -114,7 +116,8 @@ describe("Area stats tool", () => {
       metrics,
       (m) => m.sketchId === "CCCC" && m.metricId === "test"
     );
-    expect(collAreaMetric.value).toBeCloseTo(24748835838.326283); // Expect about half, but not exactly same as inside
+    // Expect about half, but not exactly same as inside
+    testWithinPerc(collAreaMetric.value, fix.scArea / 2, { debug: true });
 
     const collAreaPercMetric = firstMatchingMetric(
       metrics,

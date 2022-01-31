@@ -38,7 +38,7 @@ export const ToolbarStyled = styled.div`
   }
 `;
 
-const Toolbar = ({
+export const Toolbar = ({
   children,
   variant = "regular",
   useGutters = true,

@@ -12,9 +12,8 @@ import {
   LineString,
   Point,
   Sketch,
+  ValidationError,
 } from "../types";
-
-export class ValidationError extends Error {}
 
 const commonHeaders = {
   "Access-Control-Allow-Origin": "*",

@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "./Card";
-import LayerToggle from "./LayerToggle";
+import { LayerToggle } from "./LayerToggle";
 import ReportDecorator from "./ReportDecorator";
 import { ReportContext } from "../storybook";
 
@@ -10,7 +10,7 @@ export default {
   decorators: [ReportDecorator],
 };
 
-const sampleSketch = {
+const defaultContext = {
   sketchProperties: {
     name: "My Sketch",
     id: "abc123",
@@ -38,8 +38,13 @@ const sampleSketch = {
   visibleLayers: [],
 };
 
+const checkedContext = {
+  ...defaultContext,
+  visibleLayers: ["5e80c8a8cd44abca6e5268af"],
+};
+
 export const simpleUnchecked = () => (
-  <ReportContext.Provider value={sampleSketch}>
+  <ReportContext.Provider value={defaultContext}>
     <Card title="Card Title">
       <LayerToggle layerId={"5e80c8a8cd44abca6e5268af"} simple />
     </Card>
@@ -47,7 +52,7 @@ export const simpleUnchecked = () => (
 );
 
 export const unchecked = () => (
-  <ReportContext.Provider value={sampleSketch}>
+  <ReportContext.Provider value={defaultContext}>
     <Card title="Card Title">
       <LayerToggle
         layerId={"5e80c8a8cd44abca6e5268af"}
@@ -58,7 +63,7 @@ export const unchecked = () => (
 );
 
 export const checked = () => (
-  <ReportContext.Provider value={sampleSketch}>
+  <ReportContext.Provider value={checkedContext}>
     <Card title="Card Title">
       <LayerToggle
         layerId={"5e80c8a8cd44abca6e5268af"}
@@ -69,7 +74,7 @@ export const checked = () => (
 );
 
 export const emptyStringLayerId = () => (
-  <ReportContext.Provider value={sampleSketch}>
+  <ReportContext.Provider value={defaultContext}>
     <Card title="Card Title">
       <LayerToggle layerId={""} label="Show Map Layer" />
     </Card>
@@ -77,7 +82,7 @@ export const emptyStringLayerId = () => (
 );
 
 export const noLayerId = () => (
-  <ReportContext.Provider value={sampleSketch}>
+  <ReportContext.Provider value={defaultContext}>
     <Card title="Card Title">
       <LayerToggle label="Show Map Layer" />
     </Card>

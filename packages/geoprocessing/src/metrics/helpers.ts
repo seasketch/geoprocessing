@@ -23,7 +23,12 @@ import {
 import reduce from "lodash/reduce";
 import cloneDeep from "lodash/cloneDeep";
 
-export const createMetric = (metricProps: Partial<Metric>): Metric => {
+/**
+ * Create a fully defined metric from a partial.  Metric values not provided are initialized to null
+ * @param metric - partial metric
+ * @returns metric
+ */
+export const createMetric = (metric: Partial<Metric>): Metric => {
   return {
     metricId: "metric",
     value: 0,
@@ -31,9 +36,17 @@ export const createMetric = (metricProps: Partial<Metric>): Metric => {
     groupId: null,
     geographyId: null,
     sketchId: null,
-    ...metricProps,
+    ...metric,
   };
 };
+
+/**
+ * Creates fully defined metrics from partial.  Metric values not provided are initialized to null
+ * @param metric - partial metrics
+ * @returns metrics
+ */
+export const createMetrics = (metrics: Partial<Metric>[]): Metric[] =>
+  metrics.map((m) => createMetric(m));
 
 /**
  * Reorders metrics to a consistent key order for readability

@@ -30,10 +30,7 @@ interface CheckboxGroupProps {
  * @param param0
  * @returns
  */
-export default function CheckboxGroup({
-  checkboxes,
-  setCheckbox,
-}: CheckboxGroupProps) {
+export function CheckboxGroup({ checkboxes, setCheckbox }: CheckboxGroupProps) {
   return (
     <div className="checkbox-group">
       {checkboxes.map((checkbox, i) => (
@@ -55,3 +52,5 @@ export default function CheckboxGroup({
     </div>
   );
 }
+
+export default CheckboxGroup;

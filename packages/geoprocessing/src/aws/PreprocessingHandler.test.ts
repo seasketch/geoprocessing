@@ -1,4 +1,5 @@
-import { PreprocessingHandler, ValidationError } from "./PreprocessingHandler";
+import { PreprocessingHandler } from "./PreprocessingHandler";
+import { ValidationError } from "../types";
 import feature from "../../templates/exampleFeature.json";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
 

@@ -11,10 +11,9 @@ import {
 import area from "@turf/area";
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
-import combine from "@turf/combine";
 import flatten from "@turf/flatten";
 import kinks from "@turf/kinks";
-import { clipMultiMerge } from "@seasketch/geoprocessing/src/helpers";
+import { clipMultiMerge } from "@seasketch/geoprocessing";
 
 const MAX_SIZE = 500000 * 1000 ** 2;
 

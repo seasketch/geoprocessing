@@ -4,7 +4,6 @@ import FilterSelectTable, { FilterSelect } from "./FilterSelectTable";
 import ReportCardDecorator from "../ReportCardDecorator";
 import fixtures, {
   HumanUse,
-  Ranked,
   Categorical,
   getRandomCategorical,
 } from "../../testing/fixtures";
@@ -12,7 +11,7 @@ import styled from "styled-components";
 
 export default {
   component: Table,
-  title: "Components/Table",
+  title: "Components/Table/Table",
   decorators: [ReportCardDecorator],
 };
 

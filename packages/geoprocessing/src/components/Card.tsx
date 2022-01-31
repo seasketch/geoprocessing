@@ -7,7 +7,12 @@ export interface CardProps {
   style?: object;
 }
 
-const Card = ({ children, title, style, titleStyle = {} }: CardProps) => {
+export const Card = ({
+  children,
+  title,
+  style,
+  titleStyle = {},
+}: CardProps) => {
   const styles = {
     box: {
       fontFamily: "sans-serif",

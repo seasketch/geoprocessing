@@ -4,6 +4,7 @@ export * from "./sketch";
 export * from "./project";
 export * from "./service";
 export * from "./metrics";
+export * from "./error";
 
 // 3rd party
 export * from "./georaster";

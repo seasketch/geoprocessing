@@ -6,6 +6,7 @@ export interface HumanUse {
   name: string;
   count: number;
   perc: number;
+  group: string;
 }
 
 const humanUse: HumanUse[] = [
@@ -13,41 +14,49 @@ const humanUse: HumanUse[] = [
     name: "Motorboat, anchoring, swimming",
     count: 0,
     perc: 0.0,
+    group: "high",
   },
   {
     name: "Rec fishing from a self-propelled boat",
     count: 2,
     perc: 0.023,
+    group: "med",
   },
   {
     name: "Rec shell fishing, clamming",
     count: 1,
     perc: 0.115,
+    group: "low",
   },
   {
     name: "Scuba or snorkel from shore",
     count: 0,
     perc: 0.0,
+    group: "low",
   },
   {
     name: "Rec fishing from a motorboat",
     count: 4,
     perc: 0.045,
+    group: "high",
   },
   {
     name: "Commercial fishing",
     count: 0,
     perc: 0.0,
+    group: "low",
   },
   {
     name: "Motorboating, no anchoring",
     count: 1,
     perc: 0.018,
+    group: "med",
   },
   {
     name: "Surfing",
     count: 0,
     perc: 0.0,
+    group: "med",
   },
 ];
 

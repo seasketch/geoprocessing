@@ -46,7 +46,7 @@ export interface FilterSelectTableOptions<D extends object = {}>
  * filter the rows if the function return true.  By default only 'some' filter function
  * has to match for it to filter the row
  */
-export default function FilterSelectTable<D extends object>(
+export function FilterSelectTable<D extends object>(
   props: FilterSelectTableOptions<D>
 ): ReactElement {
   const { filterSelect, data, ...otherProps } = props;
@@ -77,3 +77,5 @@ export default function FilterSelectTable<D extends object>(
     </FilterSelectTableStyled>
   );
 }
+
+export default FilterSelectTable;

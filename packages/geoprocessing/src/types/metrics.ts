@@ -19,8 +19,8 @@ export interface DataClass {
   layerId?: string;
   /** Optional nodata value used by raster dataset */
   noDataValue?: number;
-  /** Optional project specific goal for this class */
-  goalPerc?: number;
+  /** Optional project specific goal value for this class */
+  goalValue?: number;
 }
 
 /**

@@ -1,5 +1,4 @@
 import React, { CSSProperties, useState } from "react";
-import Card from "./Card";
 
 const containerStyle = {
   height: "auto",
@@ -57,4 +56,5 @@ export const ReportWindow = ({ storyFn }: { storyFn }) => {
 };
 
 // @ts-ignore
-export default (storyFn) => <ReportWindow storyFn={storyFn} />;
+export const ReportDecorator = (storyFn) => <ReportWindow storyFn={storyFn} />;
+export default ReportDecorator;

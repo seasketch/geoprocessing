@@ -9,7 +9,7 @@ export interface SketchAttributesCardProps {
   mappings?: { [exportId: string]: { [value: string]: string } };
 }
 
-const SketchAttributesCard = ({
+export const SketchAttributesCard = ({
   title,
   autoHide,
   mappings,

@@ -4,3 +4,4 @@ export * from "./FilterSelectTable";
 export * from "./SmallReportTableStyled";
 export * from "./ReportTableStyled";
 export * from "./GroupCircleRow";
+export * from "./SketchClassTable";

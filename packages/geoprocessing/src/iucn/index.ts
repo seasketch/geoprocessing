@@ -1,2 +1,2 @@
 export * from "./iucnProtectionLevel";
-export * from "./iucnHelpers";
+export * from "./helpers";

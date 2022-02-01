@@ -3,7 +3,7 @@
  */
 
 import { Sketch } from "../types";
-import { getCategoryForActivities } from "./iucnProtectionLevel";
+import { getIucnCategoryForActivities } from "./iucnProtectionLevel";
 
 const genSketchWithActivities = (activities: string[]): Sketch => {
   return {
@@ -33,56 +33,56 @@ const genSketchWithActivities = (activities: string[]): Sketch => {
 
 describe("IUCN protection level", () => {
   test("no allowed activity returns None category", async () => {
-    const category = getCategoryForActivities([]);
+    const category = getIucnCategoryForActivities([]);
     expect(category.category).toBe("1a");
   });
 
   test("single activity - 1a", async () => {
-    const category = getCategoryForActivities(["RESEARCH_NE"]);
+    const category = getIucnCategoryForActivities(["RESEARCH_NE"]);
     expect(category.category).toBe("1a");
   });
 
   test("single activity - 1b", async () => {
-    const category = getCategoryForActivities(["TRAD_FISH_COLLECT"]);
+    const category = getIucnCategoryForActivities(["TRAD_FISH_COLLECT"]);
     expect(category.category).toBe("1b");
   });
 
   test("single activity - 2/3", async () => {
-    const category = getCategoryForActivities(["TOURISM"]);
+    const category = getIucnCategoryForActivities(["TOURISM"]);
     expect(category.category).toBe("2/3");
   });
 
   // Category 3 is unreachable because 2 will always match
 
   test("single activity - 4/6", async () => {
-    const category = getCategoryForActivities(["SHIPPING"]);
+    const category = getIucnCategoryForActivities(["SHIPPING"]);
     expect(category.category).toBe("4/6");
   });
 
   test("single activity - 5", async () => {
-    const category = getCategoryForActivities(["HABITATION"]);
+    const category = getIucnCategoryForActivities(["HABITATION"]);
     expect(category.category).toBe("5");
   });
 
   // Category 6 is unreachable because 4 will always match
 
   test("single - industrial should match None", async () => {
-    const category = getCategoryForActivities(["FISH_AQUA_INDUSTRIAL"]);
+    const category = getIucnCategoryForActivities(["FISH_AQUA_INDUSTRIAL"]);
     expect(category.category).toBe("None");
   });
 
   test("single - works should match None", async () => {
-    const category = getCategoryForActivities(["UNTREATED_WATER"]);
+    const category = getIucnCategoryForActivities(["UNTREATED_WATER"]);
     expect(category.category).toBe("None");
   });
 
   test("single - mining should match None", async () => {
-    const category = getCategoryForActivities(["MINING_OIL_GAS"]);
+    const category = getIucnCategoryForActivities(["MINING_OIL_GAS"]);
     expect(category.category).toBe("None");
   });
 
   test("multiple - research + mining should match None", async () => {
-    const category = getCategoryForActivities([
+    const category = getIucnCategoryForActivities([
       "RESEARCH_NE",
       "MINING_OIL_GAS",
     ]);

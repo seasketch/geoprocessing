@@ -1,5 +1,5 @@
 import React from "react";
-import { iucnCategories, IucnCategory } from "../../iucn";
+import { iucnCategoriesMap, IucnCategory } from "../../iucn";
 import { capitalize } from "../../helpers";
 import { Table, Column } from "../table/Table";
 import { IucnLevelPill } from "./IucnLevelPill";
@@ -25,7 +25,7 @@ const columns: Column<IucnCategory>[] = [
 ];
 
 export const IucnDesignationTable = () => {
-  const categories: IucnCategory[] = Object.values(iucnCategories).reduce<
+  const categories: IucnCategory[] = Object.values(iucnCategoriesMap).reduce<
     IucnCategory[]
   >((acc, combCat) => {
     return combCat.categories

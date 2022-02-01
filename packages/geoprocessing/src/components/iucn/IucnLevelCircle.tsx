@@ -1,40 +1,40 @@
 import React, { ReactNode } from "react";
-import { Circle } from "../Circle";
+import { GroupCircle } from "..";
 
-export interface LevelCircleProps {
+export interface IucnLevelCircleProps {
   children: ReactNode;
   level: string;
 }
 
-export const LevelCircle: React.FunctionComponent<LevelCircleProps> = ({
+const groupColorMap = {
+  full: "#BEE4BE",
+  high: "#FFE1A3",
+  low: "#F7A6B4",
+};
+
+export const IucnLevelCircle: React.FunctionComponent<IucnLevelCircleProps> = ({
   level,
   children,
 }) => {
   return (
-    <Circle
-      color={
-        level === "full" ? "#BEE4BE" : level === "high" ? "#FFE1A3" : "#F7A6B4"
-      }
-    >
+    <GroupCircle groupColorMap={groupColorMap} group={level}>
       {children}
-    </Circle>
+    </GroupCircle>
   );
 };
 
-export interface LevelCircleRowProps {
+export interface IucnLevelCircleRowProps {
   level: string;
   circleText?: string | number;
   rowText?: string | ReactNode;
 }
 
-export const LevelCircleRow: React.FunctionComponent<LevelCircleRowProps> = ({
-  level,
-  circleText,
-  rowText,
-}) => {
+export const IucnLevelCircleRow: React.FunctionComponent<
+  IucnLevelCircleRowProps
+> = ({ level, circleText, rowText }) => {
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      <LevelCircle level={level}>{circleText || " "}</LevelCircle>
+      <IucnLevelCircle level={level}>{circleText || " "}</IucnLevelCircle>
       <span style={{ marginLeft: 5 }}>{rowText || ""}</span>
     </div>
   );

@@ -250,9 +250,11 @@ export const nestMetrics = (
 };
 
 /**
- * Flattens class sketch metrics into array of objects, one for each sketch, where each object contains all class metrics values
- * @param classMetrics - class metric data with sketch
- * @param classes
+ * Flattens class sketch metrics into array of objects, one for each sketch,
+ * where each object contains sketch id, sketch name, and all metric value for each class
+ * @param classMetrics - metric data by class and sketch
+ * @param classes - data classes represented in metrics
+ * @param sketches - the sketches contained in metrics
  * @returns
  */
 export const flattenBySketchAllClass = (

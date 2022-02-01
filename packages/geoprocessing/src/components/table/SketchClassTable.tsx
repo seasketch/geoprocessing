@@ -1,6 +1,6 @@
 import React from "react";
 import { percentWithEdge } from "../../helpers";
-import { DataClass } from "../../types";
+import { DataGroup } from "../../types";
 import { Column, Table } from "./Table";
 
 import styled from "styled-components";
@@ -34,9 +34,9 @@ export interface SketchClassTableProps {
   /** Table rows, expected to have sketchName property and one property for each classId in classes */
   rows: Record<string, string | number>[];
   /** Data class definitions */
-  classes: DataClass[];
-  /** Whether to format values as percentages, defaults to true */
-  usePerc?: boolean;
+  dataGroup: DataGroup;
+  /** Whether to format values as percentages, defaults to false */
+  formatPerc?: boolean;
 }
 
 /**
@@ -44,21 +44,18 @@ export interface SketchClassTableProps {
  * @param param0
  * @returns
  */
-const SketchClassTable: React.FunctionComponent<SketchClassTableProps> = ({
-  rows,
-  classes,
-  usePerc = true,
-}) => {
-  const classColumns: Column<Record<string, string | number>>[] = classes.map(
-    (curClass) => ({
+export const SketchClassTable: React.FunctionComponent<
+  SketchClassTableProps
+> = ({ rows, dataGroup, formatPerc: usePerc = false }) => {
+  const classColumns: Column<Record<string, string | number>>[] =
+    dataGroup.classes.map((curClass) => ({
       Header: curClass.display,
       accessor: (row) => {
         return usePerc
           ? percentWithEdge(row[curClass.classId] as number)
           : row[curClass.classId];
       },
-    })
-  );
+    }));
 
   const columns: Column<Record<string, string | number>>[] = [
     {

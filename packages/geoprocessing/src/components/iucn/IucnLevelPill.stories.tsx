@@ -12,8 +12,8 @@ export default {
 export const pill = () => (
   <Card title="Report Title">
     <p>
-      <IucnLevelPill level="full">Full</IucnLevelPill>
-      <IucnLevelPill level="high">High</IucnLevelPill>
+      <IucnLevelPill level="full">Full</IucnLevelPill> +{" "}
+      <IucnLevelPill level="high">High</IucnLevelPill> +{" "}
       <IucnLevelPill level="low">Low</IucnLevelPill>
     </p>
   </Card>

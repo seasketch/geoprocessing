@@ -1,6 +1,6 @@
 import React from "react";
 import { percentWithEdge, keyBy } from "../../helpers";
-import { DataClass, Metric } from "../../types";
+import { DataGroup, Metric } from "../../types";
 import { Column, Table } from "./Table";
 import { LayerToggle } from "../LayerToggle";
 import { GreenPill } from "../Pill";
@@ -9,8 +9,8 @@ import { ReportTableStyled } from "./ReportTableStyled";
 export interface ClassTableProps {
   /** Table row objects, each expected to have a classId and value. Defaults to "Class" */
   rows: Metric[];
-  /** Data class definitions */
-  classes: DataClass[];
+  /** Data class definitions. if group has layerId at top-level, will display one toggle for whole group */
+  dataGroup: DataGroup;
   /** Whether to format metric value and goal value as a percent.  Defaults to false */
   formatPerc?: boolean;
   /** Text to display for class name column.  Defaults to "Class" */
@@ -40,7 +40,7 @@ export interface ClassTableProps {
 export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   titleText = "Class",
   rows,
-  classes,
+  dataGroup,
   formatPerc = false,
   valueColText = "Within Plan",
   showLayerToggle = false,
@@ -72,7 +72,10 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
       ? "20%"
       : "50%",
   };
-  const classesByName = keyBy(classes, (curClass) => curClass.classId);
+  const classesByName = keyBy(
+    dataGroup.classes,
+    (curClass) => curClass.classId
+  );
   const columns: Column<Metric>[] = [
     {
       Header: titleText,
@@ -88,7 +91,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
           ? percentWithEdge(row.value)
           : row.value;
         const goal =
-          classes.find((curClass) => curClass.classId === row.classId)
+          dataGroup.classes.find((curClass) => curClass.classId === row.classId)
             ?.goalValue || 0;
         if (showGoal && row.value > goal) {
           return <GreenPill>{valueDisplay}</GreenPill>;
@@ -103,17 +106,29 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   if (showLayerToggle) {
     columns.push({
       Header: layerColText,
-      accessor: (row) => {
-        const layerId = classesByName[row.classId!].layerId;
-        return layerId ? (
-          <LayerToggle
-            simple
-            layerId={layerId}
-            style={{ marginTop: 0, marginLeft: 15 }}
-          />
-        ) : (
-          <></>
-        );
+      accessor: (row, index) => {
+        const isSimpleGroup = dataGroup.layerId ? false : true;
+        const layerId =
+          dataGroup.layerId || classesByName[row.classId!].layerId;
+        if (isSimpleGroup && layerId) {
+          return (
+            <LayerToggle
+              simple
+              layerId={layerId}
+              style={{ marginTop: 0, marginLeft: 15 }}
+            />
+          );
+        } else if (!isSimpleGroup && layerId && index === 0) {
+          return (
+            <LayerToggle
+              simple
+              layerId={layerId}
+              style={{ marginTop: 0, marginLeft: 15 }}
+            />
+          );
+        } else {
+          return <></>;
+        }
       },
       style: { width: colWidths.showMapWidth },
     });
@@ -125,7 +140,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
       Header: goalColText,
       style: { textAlign: "right", width: colWidths.goalWidth },
       accessor: (row) => {
-        const goalValue = classes.find(
+        const goalValue = dataGroup.classes.find(
           (curClass) => curClass.classId === row.classId
         )?.goalValue;
         if (!goalValue)

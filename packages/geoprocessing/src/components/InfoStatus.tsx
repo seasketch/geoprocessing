@@ -1,13 +1,13 @@
 import React from "react";
 import { InfoCircleFill } from "@styled-icons/bootstrap";
 
-export interface ObjectiveStatusProps {
+export interface InfoStatusProps {
   msg: JSX.Element;
   size?: number;
   style?: React.HTMLAttributes<HTMLElement>["style"];
 }
 
-export const InfoStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
+export const InfoStatus: React.FunctionComponent<InfoStatusProps> = ({
   msg,
   size = 36,
   style = {},

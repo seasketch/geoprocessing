@@ -3,7 +3,12 @@ import Card from "../Card";
 import { ClassTable } from "./ClassTable";
 import ReportDecorator from "../ReportDecorator";
 import { ReportContext } from "../../storybook";
-import { dataClasses, classPercMetrics } from "../../testing/fixtures/metrics";
+import {
+  simpleGroup,
+  categoricalGroup,
+  simpleClassMetrics,
+  categoricalClassMetrics,
+} from "../../testing/fixtures/metrics";
 
 export default {
   component: ClassTable,
@@ -11,7 +16,7 @@ export default {
   decorators: [ReportDecorator],
 };
 
-const defaultContext = {
+const simpleContext = {
   sketchProperties: {
     name: "My Sketch",
     id: "abc123",
@@ -36,29 +41,26 @@ const defaultContext = {
   },
   geometryUri: "",
   projectUrl: "https://example.com/project",
-  visibleLayers: ["1"],
+  visibleLayers: ["a"],
 };
 
 export const simple = () => {
   return (
-    <ReportContext.Provider value={defaultContext}>
-      <Card title="Report Title">
-        <ClassTable
-          rows={Object.values(classPercMetrics)}
-          classes={dataClasses}
-        />
+    <ReportContext.Provider value={simpleContext}>
+      <Card title="Simple">
+        <ClassTable rows={simpleClassMetrics} dataGroup={simpleGroup} />
       </Card>
     </ReportContext.Provider>
   );
 };
 
-export const withLayerToggle = () => {
+export const simpleLayerToggle = () => {
   return (
-    <ReportContext.Provider value={defaultContext}>
-      <Card title="Report Title">
+    <ReportContext.Provider value={simpleContext}>
+      <Card title="Simple">
         <ClassTable
-          rows={Object.values(classPercMetrics)}
-          classes={dataClasses}
+          rows={simpleClassMetrics}
+          dataGroup={simpleGroup}
           showLayerToggle
         />
       </Card>
@@ -66,13 +68,13 @@ export const withLayerToggle = () => {
   );
 };
 
-export const withGoal = () => {
+export const simpleGoal = () => {
   return (
-    <ReportContext.Provider value={defaultContext}>
-      <Card title="Report Title">
+    <ReportContext.Provider value={simpleContext}>
+      <Card title="Simple">
         <ClassTable
-          rows={Object.values(classPercMetrics)}
-          classes={dataClasses}
+          rows={simpleClassMetrics}
+          dataGroup={simpleGroup}
           showGoal
         />
       </Card>
@@ -80,13 +82,13 @@ export const withGoal = () => {
   );
 };
 
-export const withBoth = () => {
+export const simpleBoth = () => {
   return (
-    <ReportContext.Provider value={defaultContext}>
-      <Card title="Report Title">
+    <ReportContext.Provider value={simpleContext}>
+      <Card title="Simple">
         <ClassTable
-          rows={Object.values(classPercMetrics)}
-          classes={dataClasses}
+          rows={simpleClassMetrics}
+          dataGroup={simpleGroup}
           showLayerToggle
           showGoal
         />
@@ -95,13 +97,13 @@ export const withBoth = () => {
   );
 };
 
-export const formatPerc = () => {
+export const simpleFormatPerc = () => {
   return (
-    <ReportContext.Provider value={defaultContext}>
-      <Card title="Report Title">
+    <ReportContext.Provider value={simpleContext}>
+      <Card title="Simple">
         <ClassTable
-          rows={Object.values(classPercMetrics)}
-          classes={dataClasses}
+          rows={simpleClassMetrics}
+          dataGroup={simpleGroup}
           showGoal
           formatPerc
         />
@@ -110,19 +112,33 @@ export const formatPerc = () => {
   );
 };
 
-export const overrideText = () => {
+export const simpleOverrideText = () => {
   return (
-    <ReportContext.Provider value={defaultContext}>
-      <Card title="Report Title">
+    <ReportContext.Provider value={simpleContext}>
+      <Card title="Simple">
         <ClassTable
           titleText="The Habitat"
           valueColText="The Value"
           layerColText="Toggle Map"
           goalColText="The Goal"
-          rows={Object.values(classPercMetrics)}
-          classes={dataClasses}
+          rows={simpleClassMetrics}
+          dataGroup={simpleGroup}
           showGoal
           formatPerc
+        />
+      </Card>
+    </ReportContext.Provider>
+  );
+};
+
+export const categoricalLayerToggle = () => {
+  return (
+    <ReportContext.Provider value={simpleContext}>
+      <Card title="Categorical">
+        <ClassTable
+          rows={categoricalClassMetrics}
+          dataGroup={categoricalGroup}
+          showLayerToggle
         />
       </Card>
     </ReportContext.Provider>

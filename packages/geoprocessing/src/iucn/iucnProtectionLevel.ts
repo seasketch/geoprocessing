@@ -18,14 +18,14 @@ export interface IucnActivity {
   name: string;
 }
 
-export type ActivityRankId = "yes" | "yesbut" | "no" | "nobut" | "variable";
-export interface ActivityRank {
-  id: ActivityRankId;
+export type IucnActivityRankId = "yes" | "yesbut" | "no" | "nobut" | "variable";
+export interface IucnActivityRank {
+  id: IucnActivityRankId;
   desc: string;
   display: string;
 }
 
-export const activityRanks: Record<ActivityRankId, ActivityRank> = {
+export const activityRanks: Record<IucnActivityRankId, IucnActivityRank> = {
   no: {
     id: "no",
     desc: "No",
@@ -33,8 +33,7 @@ export const activityRanks: Record<ActivityRankId, ActivityRank> = {
   },
   nobut: {
     id: "nobut",
-    desc:
-      "Generally no, a strong prerogative against unless special circumstances apply",
+    desc: "Generally no, a strong prerogative against unless special circumstances apply",
     display: "N*",
   },
   yes: {
@@ -44,14 +43,12 @@ export const activityRanks: Record<ActivityRankId, ActivityRank> = {
   },
   yesbut: {
     id: "yesbut",
-    desc:
-      "Yes because no alternative exists, but special approval is essential",
+    desc: "Yes because no alternative exists, but special approval is essential",
     display: "Y*",
   },
   variable: {
     id: "variable",
-    desc:
-      "Variable; depends on whether this activity can be managed in such a way that it is compatible with the MPA’s objectives",
+    desc: "Variable; depends on whether this activity can be managed in such a way that it is compatible with the MPA’s objectives",
     display: "*",
   },
 };
@@ -127,9 +124,9 @@ export const iucnCategoriesList: Record<
     name: "Protected area with sustainable use",
   },
 };
-export const levels = ["full", "high", "low"];
+export const iucnLevels = ["full", "high", "low"];
 
-export const iucnActivityCategories: Record<string, ActivityRankId[]> = {
+export const iucnActivityCategories: Record<string, IucnActivityRankId[]> = {
   RESEARCH_NE: ["yesbut", "yes", "yes", "yes", "yes", "yes", "yes"],
   TRAD_USE_NE: ["yesbut", "yes", "yes", "yes", "yes", "yes", "yes"],
   RESTORE_CON: ["yes", "yes", "yes", "yes", "yes", "yes", "yes"],
@@ -151,7 +148,7 @@ export const iucnActivityCategories: Record<string, ActivityRankId[]> = {
 };
 
 /** IUCN category definitions.  Note categories 2/3 and 4/6 have been merged because they have the same allowed uses */
-export const iucnCategories: Record<string, IucnCategoryCombined> = {
+export const iucnCategoriesMap: Record<string, IucnCategoryCombined> = {
   "1a": {
     category: "1a",
     level: "full",
@@ -220,8 +217,7 @@ export const iucnCategories: Record<string, IucnCategoryCombined> = {
   "4/6": {
     category: "4/6",
     level: "high",
-    name:
-      "Habitat/Species Management Area or Protected area with sustainable use",
+    name: "Habitat/Species Management Area or Protected area with sustainable use",
     allowedActivities: [
       "RESEARCH_NE",
       "TRAD_USE_NE",
@@ -338,7 +334,7 @@ export const iucnCategories: Record<string, IucnCategoryCombined> = {
   },
 };
 
-export const categories = Object.keys(iucnCategories);
+export const iucnCategories = Object.keys(iucnCategoriesMap);
 
 /**
  * Given list of allowed activities in the sketch, returns the highest category allowable
@@ -346,16 +342,16 @@ export const categories = Object.keys(iucnCategories);
  * @param sketch
  * @param activityAttrib
  */
-export const getCategoryForActivities = (
+export const getIucnCategoryForActivities = (
   activities: string[]
 ): IucnCategoryCombined => {
-  if (activities.length === 0) return iucnCategories["1a"];
+  if (activities.length === 0) return iucnCategoriesMap["1a"];
 
   // Get first category where all activities allowed in sketch are allowed by the category
   let firstCategory: IucnCategoryCombined | undefined = undefined;
-  const categoryIds = Object.keys(iucnCategories).sort();
+  const categoryIds = Object.keys(iucnCategoriesMap).sort();
   for (const categoryId of categoryIds) {
-    const curCategory = iucnCategories[categoryId];
+    const curCategory = iucnCategoriesMap[categoryId];
     const matchCategory = activities
       .map((act) => curCategory.allowedActivities.includes(act))
       .reduce((acc, hasActivity) => acc && hasActivity, true);
@@ -364,6 +360,6 @@ export const getCategoryForActivities = (
       break;
     }
   }
-  if (!firstCategory) firstCategory = iucnCategories["None"];
+  if (!firstCategory) firstCategory = iucnCategoriesMap["None"];
   return firstCategory;
 };

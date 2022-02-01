@@ -2,19 +2,19 @@ import { Sketch } from "../types";
 import { getJsonUserAttribute } from "../helpers";
 import {
   IucnCategoryCombined,
-  getCategoryForActivities,
+  getIucnCategoryForActivities,
 } from "./iucnProtectionLevel";
 
 /**
  * Return Category for each sketch keyed by sketchId
  */
-export const getCategoryForSketches = (sketches: Sketch[]) => {
+export const getIucnCategoryForSketches = (sketches: Sketch[]) => {
   const sketchCategoryMap = sketches.reduce<
     Record<string, IucnCategoryCombined>
   >((acc, sketch) => {
     // Get sketch allowed activities, then category
     const activities: string[] = getJsonUserAttribute(sketch, "ACTIVITIES", []);
-    const category = getCategoryForActivities(activities);
+    const category = getIucnCategoryForActivities(activities);
     return {
       ...acc,
       [sketch.properties.id]: category,
@@ -26,8 +26,8 @@ export const getCategoryForSketches = (sketches: Sketch[]) => {
 /**
  * Return Category name for each sketch keyed by sketchId
  */
-export const getCategoryNameForSketches = (sketches: Sketch[]) => {
-  const sketchCatMap = getCategoryForSketches(sketches);
+export const getIucnCategoryNameForSketches = (sketches: Sketch[]) => {
+  const sketchCatMap = getIucnCategoryForSketches(sketches);
   return Object.keys(sketchCatMap).reduce<Record<string, string>>(
     (sofar, sketchId) => ({
       ...sofar,
@@ -40,8 +40,8 @@ export const getCategoryNameForSketches = (sketches: Sketch[]) => {
 /**
  * Return level name for each sketch keyed by sketchId
  */
-export const getLevelNameForSketches = (sketches: Sketch[]) => {
-  const sketchCatMap = getCategoryForSketches(sketches);
+export const getIucnLevelNameForSketches = (sketches: Sketch[]) => {
+  const sketchCatMap = getIucnCategoryForSketches(sketches);
   return Object.keys(sketchCatMap).reduce<Record<string, string>>(
     (sofar, sketchId) => ({
       ...sofar,

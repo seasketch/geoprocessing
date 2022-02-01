@@ -1,8 +1,8 @@
 import { Nullable } from "./base";
 
 /**
- * Represents a single class of data within a report.
- * Used to access the data, calculate and report metrics based on them.
+ * Represents a single class of data.
+ * Used to access the data, and calculate metrics based on them.
  */
 export interface DataClass {
   /** Unique name for class */
@@ -25,7 +25,7 @@ export interface DataClass {
 
 /**
  * Represents a group of data classes.
- * Used to access the data, calculate and report metrics based on them.
+ * Used to access the data, and calcualte metrics based on them.
  * This interface is murky but it supports a variety of scenarios:
  * - Vector dataset with one feature class
  * - Vector dataset with multiple feature class, each with their own file datasource, and possibly only one layerId to display them all
@@ -33,7 +33,7 @@ export interface DataClass {
  * - Raster with multiple feature classes represented by unique integer values that map to class names
  */
 export interface DataGroup {
-  /** data classes used by report group */
+  /** data classes used by group */
   classes: DataClass[];
   /** Identifier for datasource */
   datasourceId?: string;
@@ -51,14 +51,6 @@ export interface DataGroup {
 export interface MetricGroup extends DataGroup {
   /** Unique identifier for metric */
   metricId: string;
-}
-
-/** Represents a single report */
-export interface Report {
-  /** unique identifier for report */
-  reportId: string;
-  /** report metrics keyed by metricId for easy retrieval */
-  metrics: Record<string, MetricGroup>;
 }
 
 //// METRICS ////

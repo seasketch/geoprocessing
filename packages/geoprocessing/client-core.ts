@@ -14,3 +14,4 @@ export * from "./src/helpers/units";
 
 export * from "./src/metrics/helpers";
 export * from "./src/iucn/helpers";
+export * from "./src/iucn/iucnProtectionLevel";

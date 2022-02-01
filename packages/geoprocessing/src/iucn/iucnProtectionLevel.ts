@@ -335,31 +335,3 @@ export const iucnCategoriesMap: Record<string, IucnCategoryCombined> = {
 };
 
 export const iucnCategories = Object.keys(iucnCategoriesMap);
-
-/**
- * Given list of allowed activities in the sketch, returns the highest category allowable
- * The lack of an activity assumes it is not allowed
- * @param sketch
- * @param activityAttrib
- */
-export const getIucnCategoryForActivities = (
-  activities: string[]
-): IucnCategoryCombined => {
-  if (activities.length === 0) return iucnCategoriesMap["1a"];
-
-  // Get first category where all activities allowed in sketch are allowed by the category
-  let firstCategory: IucnCategoryCombined | undefined = undefined;
-  const categoryIds = Object.keys(iucnCategoriesMap).sort();
-  for (const categoryId of categoryIds) {
-    const curCategory = iucnCategoriesMap[categoryId];
-    const matchCategory = activities
-      .map((act) => curCategory.allowedActivities.includes(act))
-      .reduce((acc, hasActivity) => acc && hasActivity, true);
-    if (matchCategory) {
-      firstCategory = curCategory;
-      break;
-    }
-  }
-  if (!firstCategory) firstCategory = iucnCategoriesMap["None"];
-  return firstCategory;
-};

@@ -334,4 +334,4 @@ export const iucnCategoriesMap: Record<string, IucnCategoryCombined> = {
   },
 };
 
-export const iucnCategories = Object.keys(iucnCategoriesMap);
+export const iucnCategoryNames = Object.keys(iucnCategoriesMap);

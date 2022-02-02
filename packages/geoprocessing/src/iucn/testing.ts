@@ -1,6 +1,6 @@
 import { Sketch } from "../types";
 
-const genSketchWithActivities = (activities: string[]): Sketch => {
+export const genSketchWithActivities = (activities: string[]): Sketch => {
   return {
     type: "Feature",
     geometry: {

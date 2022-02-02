@@ -15,7 +15,6 @@ export * from "./InfoStatus";
 export * from "./iucn";
 export * from "./KeySection";
 export * from "./LayerToggle";
-export * from "./LoadingSkeleton";
 export * from "./ObjectiveStatus";
 export * from "./Pill";
 export * from "./ProgressBar";

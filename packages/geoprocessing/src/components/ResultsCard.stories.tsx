@@ -110,7 +110,7 @@ export const customSkeleton = () => (
     <ResultsCard
       title="Card Title"
       functionName="area"
-      skeleton={<CustomSkeleton />}
+      skeleton={<DefaultSkeleton />}
     >
       {(data: any) => (
         <p>
@@ -124,7 +124,7 @@ export const customSkeleton = () => (
   </ReportContext.Provider>
 );
 
-const CustomSkeleton = () => (
+const DefaultSkeleton = () => (
   <div>
     <Skeleton style={{ width: "100%", height: "130px" }} />
     <Skeleton />

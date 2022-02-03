@@ -1,6 +1,6 @@
 import React from "react";
 import { ReportError } from "./ReportError";
-import ReportDecorator from "./ReportDecorator";
+import ReportDecorator from "./storybook/ReportDecorator";
 import Card from "./Card";
 
 export default {

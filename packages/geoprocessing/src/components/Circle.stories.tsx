@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "./Card";
 import { Circle, GroupCircle } from "./Circle";
-import ReportDecorator from "./ReportDecorator";
+import ReportDecorator from "./storybook/ReportDecorator";
 
 export default {
   component: Circle,
@@ -16,7 +16,7 @@ const groupColorMap = {
 };
 
 export const simple = () => (
-  <Card title="Report Title">
+  <Card>
     <div>
       <Circle>S</Circle>
       <Circle color="#FFE1A3" size={30}>

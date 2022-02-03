@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "../Card";
 import { IucnLevelPill } from "./IucnLevelPill";
-import ReportDecorator from "../ReportDecorator";
+import ReportDecorator from "../storybook/ReportDecorator";
 
 export default {
   component: IucnLevelPill,

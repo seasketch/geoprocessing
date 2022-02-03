@@ -1,7 +1,7 @@
 import React, { CSSProperties } from "react";
-import Table, { Column, Row } from "./Table";
+import Table, { Column } from "./Table";
 import FilterSelectTable, { FilterSelect } from "./FilterSelectTable";
-import ReportCardDecorator from "../ReportCardDecorator";
+import { ReportDecorator, CardDecorator } from "../storybook";
 import fixtures, {
   HumanUse,
   Categorical,
@@ -12,7 +12,7 @@ import styled from "styled-components";
 export default {
   component: Table,
   title: "Components/Table/Table",
-  decorators: [ReportCardDecorator],
+  decorators: [CardDecorator, ReportDecorator],
 };
 
 const TableStyled = styled.div`

@@ -11,6 +11,7 @@ import { isSketch, isSketchCollection } from "./types";
 import fixtures from "../testing/fixtures";
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
+import { ReportContextValue } from "../storybook";
 /**
  * UserAttributes are those filled in via the attributes form specified as
  * part of a SketchClass. This getter function is easier to use than searching
@@ -188,7 +189,7 @@ export const genSampleNullSketchCollection = (
   };
 };
 
-export const genSampleSketchContext = () => ({
+export const genSampleSketchContext = (): ReportContextValue => ({
   sketchProperties: {
     name: "My Sketch",
     id: "abc123",
@@ -223,4 +224,5 @@ export const genSampleSketchContext = () => ({
       },
     },
   ],
+  visibleLayers: [],
 });

@@ -1,7 +1,7 @@
 import React from "react";
-import Card from "../Card";
 import { IucnLevelCircle } from "./IucnLevelCircle";
-import ReportDecorator from "../ReportDecorator";
+import ReportDecorator from "../storybook/ReportDecorator";
+import { Card } from "../Card";
 
 export default {
   component: IucnLevelCircle,

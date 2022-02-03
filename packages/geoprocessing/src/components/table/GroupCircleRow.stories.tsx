@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "../Card";
 import { GroupCircleRow } from "./GroupCircleRow";
-import ReportDecorator from "../ReportDecorator";
+import ReportDecorator from "../storybook/ReportDecorator";
 import { Table, Column } from "./Table";
 import fixtures, { HumanUse } from "../../testing/fixtures";
 import { capitalize } from "../..";

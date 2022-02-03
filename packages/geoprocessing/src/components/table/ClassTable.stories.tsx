@@ -1,7 +1,6 @@
 import React from "react";
-import Card from "../Card";
 import { ClassTable } from "./ClassTable";
-import ReportDecorator from "../ReportDecorator";
+import { ReportDecorator, CardDecorator } from "../storybook";
 import { ReportContext } from "../../storybook";
 import {
   simpleGroup,
@@ -13,7 +12,7 @@ import {
 export default {
   component: ClassTable,
   title: "Components/Table/ClassTable",
-  decorators: [ReportDecorator],
+  decorators: [CardDecorator, ReportDecorator],
 };
 
 const simpleContext = {
@@ -47,9 +46,7 @@ const simpleContext = {
 export const simple = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
-      <Card title="Simple">
-        <ClassTable rows={simpleClassMetrics} dataGroup={simpleGroup} />
-      </Card>
+      <ClassTable rows={simpleClassMetrics} dataGroup={simpleGroup} />
     </ReportContext.Provider>
   );
 };
@@ -57,13 +54,11 @@ export const simple = () => {
 export const simpleLayerToggle = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
-      <Card title="Simple">
-        <ClassTable
-          rows={simpleClassMetrics}
-          dataGroup={simpleGroup}
-          showLayerToggle
-        />
-      </Card>
+      <ClassTable
+        rows={simpleClassMetrics}
+        dataGroup={simpleGroup}
+        showLayerToggle
+      />
     </ReportContext.Provider>
   );
 };
@@ -71,13 +66,7 @@ export const simpleLayerToggle = () => {
 export const simpleGoal = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
-      <Card title="Simple">
-        <ClassTable
-          rows={simpleClassMetrics}
-          dataGroup={simpleGroup}
-          showGoal
-        />
-      </Card>
+      <ClassTable rows={simpleClassMetrics} dataGroup={simpleGroup} showGoal />
     </ReportContext.Provider>
   );
 };
@@ -85,14 +74,12 @@ export const simpleGoal = () => {
 export const simpleBoth = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
-      <Card title="Simple">
-        <ClassTable
-          rows={simpleClassMetrics}
-          dataGroup={simpleGroup}
-          showLayerToggle
-          showGoal
-        />
-      </Card>
+      <ClassTable
+        rows={simpleClassMetrics}
+        dataGroup={simpleGroup}
+        showLayerToggle
+        showGoal
+      />
     </ReportContext.Provider>
   );
 };
@@ -100,14 +87,12 @@ export const simpleBoth = () => {
 export const simpleFormatPerc = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
-      <Card title="Simple">
-        <ClassTable
-          rows={simpleClassMetrics}
-          dataGroup={simpleGroup}
-          showGoal
-          formatPerc
-        />
-      </Card>
+      <ClassTable
+        rows={simpleClassMetrics}
+        dataGroup={simpleGroup}
+        showGoal
+        formatPerc
+      />
     </ReportContext.Provider>
   );
 };
@@ -115,18 +100,16 @@ export const simpleFormatPerc = () => {
 export const simpleOverrideText = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
-      <Card title="Simple">
-        <ClassTable
-          titleText="The Habitat"
-          valueColText="The Value"
-          layerColText="Toggle Map"
-          goalColText="The Goal"
-          rows={simpleClassMetrics}
-          dataGroup={simpleGroup}
-          showGoal
-          formatPerc
-        />
-      </Card>
+      <ClassTable
+        titleText="The Habitat"
+        valueColText="The Value"
+        layerColText="Toggle Map"
+        goalColText="The Goal"
+        rows={simpleClassMetrics}
+        dataGroup={simpleGroup}
+        showGoal
+        formatPerc
+      />
     </ReportContext.Provider>
   );
 };
@@ -134,13 +117,11 @@ export const simpleOverrideText = () => {
 export const categoricalLayerToggle = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
-      <Card title="Categorical">
-        <ClassTable
-          rows={categoricalClassMetrics}
-          dataGroup={categoricalGroup}
-          showLayerToggle
-        />
-      </Card>
+      <ClassTable
+        rows={categoricalClassMetrics}
+        dataGroup={categoricalGroup}
+        showLayerToggle
+      />
     </ReportContext.Provider>
   );
 };

@@ -1,6 +1,6 @@
 /* Storybook helper components */
-export * from "./ReportDecorator";
-export * from "./ReportCardDecorator";
+export * from "./storybook/ReportDecorator";
+export * from "./storybook/StoryLayout";
 
 /* Components */
 export * from "./Card";

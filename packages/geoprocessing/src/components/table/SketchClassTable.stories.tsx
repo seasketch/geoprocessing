@@ -1,7 +1,6 @@
 import React from "react";
-import Card from "../Card";
 import { SketchClassTable } from "./SketchClassTable";
-import ReportDecorator from "../ReportDecorator";
+import { ReportDecorator, CardDecorator } from "../storybook";
 import { ReportContext } from "../../storybook";
 import {
   simpleGroup,
@@ -12,7 +11,7 @@ import {
 export default {
   component: SketchClassTable,
   title: "Components/Table/SketchClassTable",
-  decorators: [ReportDecorator],
+  decorators: [CardDecorator, ReportDecorator],
 };
 
 const simpleContext = {
@@ -46,12 +45,10 @@ const simpleContext = {
 export const simple = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
-      <Card title="Simple">
-        <SketchClassTable
-          rows={simpleSketchClassAggMetrics}
-          dataGroup={simpleGroup}
-        />
-      </Card>
+      <SketchClassTable
+        rows={simpleSketchClassAggMetrics}
+        dataGroup={simpleGroup}
+      />
     </ReportContext.Provider>
   );
 };
@@ -59,13 +56,11 @@ export const simple = () => {
 export const simplePerc = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
-      <Card title="Simple">
-        <SketchClassTable
-          rows={simpleSketchClassAggMetricsPerc}
-          dataGroup={simpleGroup}
-          formatPerc
-        />
-      </Card>
+      <SketchClassTable
+        rows={simpleSketchClassAggMetricsPerc}
+        dataGroup={simpleGroup}
+        formatPerc
+      />
     </ReportContext.Provider>
   );
 };

@@ -1,6 +1,6 @@
 import React, { ComponentType } from "react";
 import { storiesOf } from "@storybook/react";
-import ReportDecorator from "./src/components/ReportDecorator";
+import { ReportDecorator } from "./src/components/storybook/ReportDecorator";
 import {
   ReportContext,
   TestExampleOutput,

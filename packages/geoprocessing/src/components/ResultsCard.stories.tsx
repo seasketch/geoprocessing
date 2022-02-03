@@ -1,6 +1,6 @@
 import React from "react";
 import ResultsCard from "./ResultsCard";
-import ReportDecorator from "./ReportDecorator";
+import ReportDecorator from "./storybook/ReportDecorator";
 import { ReportContext, TestExampleOutput } from "../storybook";
 import { GeoprocessingProject, SketchProperties } from "../types";
 import { v4 as uuid } from "uuid";

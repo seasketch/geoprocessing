@@ -10,7 +10,7 @@ import { PromiseResult } from "aws-sdk/lib/request";
  * Assumes socket connection already exists for given cacheKey
  * If connectionId found for cacheKey and post to socket fails, assumes stale and clears from DB
  */
-exports.sendHandler = async function (event) {
+export const sendHandler = async (event) => {
   let cacheKey: string;
   let serviceName: string;
   let failureMessage: string;

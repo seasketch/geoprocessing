@@ -6,7 +6,7 @@ import { DocumentClient } from "aws-sdk/clients/dynamodb";
 /**
  * Puts new socket connection record in DB
  */
-exports.connectHandler = async function (event) {
+export const connectHandler = async (event) => {
   try {
     if (!process.env.SOCKETS_TABLE)
       throw new Error("SOCKETS_TABLE is undefined");

@@ -6,7 +6,7 @@ import { DocumentClient } from "aws-sdk/clients/dynamodb";
 /**
  * Removes socket connection record from DB given connectionId
  */
-exports.disconnectHandler = async function (event) {
+export const disconnectHandler = async (event) => {
   if (!process.env.SOCKETS_TABLE) throw new Error("SOCKETS_TABLE is undefined");
 
   console.warn("trying to disconnect");

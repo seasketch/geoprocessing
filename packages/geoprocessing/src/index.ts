@@ -1,16 +1,11 @@
-// Re-export all
-export * from "./types";
-export * from "./helpers";
+// top-level module for geoprocessing library, primarily used for node environmnent
+export * from "./aws";
 export * from "./datasources";
+export * from "./helpers";
+export * from "./iucn";
 export * from "./metrics";
-export * from "./util";
-export { default as toolbox } from "./toolbox";
-
-export { GeoprocessingHandler } from "./GeoprocessingHandler";
-export { PreprocessingHandler, ValidationError } from "./PreprocessingHandler";
-
-import sketchArea from "@turf/area";
-export { sketchArea };
+export * from "./testing";
+export * from "./toolbox";
+export * from "./types";
 
 export { default as version } from "../package.json";
-export { VectorDataSource, VectorFeature } from "./VectorDataSource";

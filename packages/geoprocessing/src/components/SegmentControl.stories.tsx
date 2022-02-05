@@ -1,6 +1,6 @@
 import React from "react";
 import { SegmentControl } from "./SegmentControl";
-import ReportDecorator from "./ReportDecorator";
+import ReportDecorator from "./storybook/ReportDecorator";
 
 export default {
   component: SegmentControl,

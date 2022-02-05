@@ -54,7 +54,7 @@ export const EstimateLabel = styled.div`
   display: none;
 `;
 
-function ResultsCard<T>({
+export function ResultsCard<T>({
   functionName,
   skeleton,
   children,

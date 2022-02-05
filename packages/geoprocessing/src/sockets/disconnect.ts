@@ -1,13 +1,20 @@
-//@ts-nocheck
+// Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: MIT-0
 
-exports.disconnectHandler = async function (event, context) {
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
+
+/**
+ * Removes socket connection record from DB given connectionId
+ */
+export const disconnectHandler = async (event) => {
+  if (!process.env.SOCKETS_TABLE) throw new Error("SOCKETS_TABLE is undefined");
+
   console.warn("trying to disconnect");
-  let AWS = require("aws-sdk");
 
   try {
-    let connectionId = event.requestContext.connectionId;
+    const connectionId = event.requestContext.connectionId;
 
-    const ddb = new AWS.DynamoDB.DocumentClient({
+    const ddb = new DocumentClient({
       apiVersion: "2012-08-10",
       region: process.env.AWS_REGION,
     });
@@ -18,7 +25,6 @@ exports.disconnectHandler = async function (event, context) {
         connectionId: connectionId,
       },
     };
-    //@ts-ignore
     await ddb.delete(deleteParams).promise();
   } catch (err) {
     console.warn(": error trying to disconnect: ", JSON.stringify(err));

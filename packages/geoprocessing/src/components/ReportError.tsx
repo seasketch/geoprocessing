@@ -1,7 +1,6 @@
 import React from "react";
 import Card from "./Card";
 import styled from "styled-components";
-import { logger } from "../util";
 
 // styled-components are needed here to use the ::before pseudo selector
 const ErrorIndicator = styled.div`
@@ -53,7 +52,7 @@ export class ReportError extends React.Component {
   render() {
     const { hasError, error, info } = this.state;
 
-    if (hasError) logger.info(error.message, info);
+    if (hasError) console.info(error.message, info);
     const { children } = this.props;
 
     return hasError ? <ErrorCard /> : children;

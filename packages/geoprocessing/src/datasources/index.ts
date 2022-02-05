@@ -1,2 +1,3 @@
-export * from "./cog";
-export * from "./flatgeobuf";
+export * from "./VectorDataSource";
+export * from "./seasketch";
+export * from "./helpers";

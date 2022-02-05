@@ -1,12 +1,13 @@
 import React from "react";
-import ReportCardDecorator from "../ReportCardDecorator";
+import ReportDecorator from "../storybook/ReportDecorator";
 import useCheckboxes from "../../hooks/useCheckboxes";
 import CheckboxGroup from "./CheckboxGroup";
+import { Card } from "../Card";
 
 export default {
   component: CheckboxGroup,
   title: "Components/CheckboxGroup",
-  decorators: [ReportCardDecorator],
+  decorators: [ReportDecorator],
 };
 
 export const simple = () => {
@@ -42,8 +43,10 @@ export const smallText = () => {
   const checkboxState = useCheckboxes(options);
 
   return (
-    <div style={{ fontSize: 10 }}>
-      <CheckboxGroup {...checkboxState} />
-    </div>
+    <Card>
+      <div style={{ fontSize: 10 }}>
+        <CheckboxGroup {...checkboxState} />
+      </div>
+    </Card>
   );
 };

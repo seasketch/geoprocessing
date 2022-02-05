@@ -8,9 +8,10 @@ import {
   LineString,
 } from "../types";
 import { isSketch, isSketchCollection } from "./types";
-import fixtures from "../fixtures";
+import fixtures from "../testing/fixtures";
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
+import { ReportContextValue } from "../storybook";
 /**
  * UserAttributes are those filled in via the attributes form specified as
  * part of a SketchClass. This getter function is easier to use than searching
@@ -102,17 +103,18 @@ export function toNullSketch(
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
 export const genSampleSketch = <G = Polygon | LineString | String>(
-  geometry: G
+  geometry: G,
+  name?: string
 ): Sketch<G> => ({
   type: "Feature",
   properties: {
-    id: uuid(),
+    id: name || uuid(),
     isCollection: false,
     userAttributes: [],
     sketchClassId: uuid(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    name: "genSampleSketch",
+    name: name || "genSampleSketch",
   },
   geometry,
   bbox: bbox(geometry),
@@ -121,16 +123,16 @@ export const genSampleSketch = <G = Polygon | LineString | String>(
 /**
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
-export const genSampleNullSketch = (): NullSketch => ({
+export const genSampleNullSketch = (name?: string): NullSketch => ({
   type: "Feature",
   properties: {
-    id: uuid(),
+    id: name || uuid(),
     isCollection: false,
     userAttributes: [],
     sketchClassId: uuid(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    name: "genSampleSketch",
+    name: name || "genSampleNullSketch",
   },
 });
 
@@ -140,7 +142,8 @@ export const genSampleNullSketch = (): NullSketch => ({
  * @param geometry
  */
 export const genSampleSketchCollection = <G = Polygon | LineString | String>(
-  fc: FeatureCollection<G>
+  fc: FeatureCollection<G>,
+  name?: string
 ): SketchCollection<G> => {
   // Convert features to sketches
   const sketches = fc.features.map((f) => genSampleSketch(f.geometry));
@@ -149,13 +152,13 @@ export const genSampleSketchCollection = <G = Polygon | LineString | String>(
     ...fc,
     features: sketches,
     properties: {
-      id: uuid(),
+      id: name || uuid(),
       isCollection: true,
       userAttributes: [],
       sketchClassId: uuid(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      name: `genSampleSketchCollection_${uuid()}`,
+      name: name || `genSampleSketchCollection_${uuid()}`,
     },
     bbox: bbox(fc),
   };
@@ -167,25 +170,26 @@ export const genSampleSketchCollection = <G = Polygon | LineString | String>(
  * @param geometry
  */
 export const genSampleNullSketchCollection = (
-  sketches: NullSketch[]
+  sketches: NullSketch[],
+  name?: string
 ): NullSketchCollection => {
   // Rebuild into sketch collection
   return {
     type: "FeatureCollection",
     features: sketches,
     properties: {
-      id: uuid(),
+      id: name || uuid(),
       isCollection: true,
       userAttributes: [],
-      sketchClassId: uuid(),
+      sketchClassId: name || uuid(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      name: `genSampleSketchCollection_${uuid()}`,
+      name: name || `genSampleSketchCollection_${uuid()}`,
     },
   };
 };
 
-export const genSampleSketchContext = () => ({
+export const genSampleSketchContext = (): ReportContextValue => ({
   sketchProperties: {
     name: "My Sketch",
     id: "abc123",
@@ -220,4 +224,5 @@ export const genSampleSketchContext = () => ({
       },
     },
   ],
+  visibleLayers: [],
 });

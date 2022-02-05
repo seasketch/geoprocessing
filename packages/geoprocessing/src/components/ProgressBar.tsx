@@ -1,6 +1,3 @@
-//@ts-nocheck
-import React, { useState, ReactNode } from "react";
-// @ts-ignore
 import styled, { keyframes } from "styled-components";
 
 const fill = keyframes`

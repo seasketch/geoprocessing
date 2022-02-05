@@ -60,7 +60,7 @@ const DropdownTrigger = styled.button`
   font-family: sans-serif;
 `;
 
-const Dropdown = ({
+export const Dropdown = ({
   titleElement: TitleElement = <></>,
   placement = "auto",
   offset = { horizontal: 0, vertical: 0 },

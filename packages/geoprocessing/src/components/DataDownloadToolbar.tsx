@@ -18,7 +18,7 @@ const DataDownloadToolbarStyled = styled.div`
 /**
  * Convenience component that creates a Toolbar with Header and DataDownload
  */
-const DataDownloadToolbar = ({
+export const DataDownloadToolbar = ({
   title,
   variant = "dense",
   useGutters = false,

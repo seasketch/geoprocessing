@@ -2,19 +2,18 @@ import {
   ValidationError,
   PreprocessingHandler,
   VectorDataSource,
-  intersect,
-  difference,
   isPolygonFeature,
   Feature,
   Polygon,
   MultiPolygon,
+  clip,
 } from "@seasketch/geoprocessing";
 import area from "@turf/area";
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
-import combine from "@turf/combine";
 import flatten from "@turf/flatten";
 import kinks from "@turf/kinks";
+import { clipMultiMerge } from "@seasketch/geoprocessing";
 
 const MAX_SIZE = 500000 * 1000 ** 2;
 
@@ -35,8 +34,7 @@ export async function clipLand(feature: Feature<Polygon | MultiPolygon>) {
     "gid"
   );
   if (landFeatures.features.length === 0) return feature;
-  const combined = combine(landFeatures).features[0] as Feature<MultiPolygon>;
-  return combined ? difference(feature, combined) : feature;
+  return clip(fc([feature, ...landFeatures.features]), "difference");
 }
 
 export async function clipOutsideEez(
@@ -51,9 +49,7 @@ export async function clipOutsideEez(
       eezFilterByNames.includes(e.properties.UNION)
     );
   }
-  const combined = combine(fc(eezFeatures))
-    .features[0] as Feature<MultiPolygon>;
-  return intersect(feature, combined);
+  return clipMultiMerge(feature, fc(eezFeatures), "intersection");
 }
 
 /**

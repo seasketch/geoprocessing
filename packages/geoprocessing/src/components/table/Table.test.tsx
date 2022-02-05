@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Table, { Column } from "./Table";
-import fixtures from "../../fixtures";
+import fixtures from "../../testing/fixtures";
 
 test("Table renders", () => {
   const columns: Column[] = [

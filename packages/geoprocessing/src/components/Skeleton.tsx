@@ -1,10 +1,7 @@
-import React, { useState, ReactNode } from "react";
-// @ts-ignore
 import styled from "styled-components";
 
 // styled-components are needed here to use the ::before pseudo selector
-// @ts-ignore
-export default styled.div`
+export const Skeleton = styled.div`
   display: inline-block;
   height: 16px;
   border-radius: 3px;
@@ -27,3 +24,5 @@ export default styled.div`
     opacity: 0;
   }
 `;
+
+export default Skeleton;

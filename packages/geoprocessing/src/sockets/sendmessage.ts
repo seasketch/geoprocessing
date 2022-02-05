@@ -1,63 +1,89 @@
-//@ts-nocheck
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License
-//import { DynamoDB, ApiGatewayManagementApi } from "aws-sdk";
-//import { AWS } from "aws-sdk";
-exports.sendHandler = async function (event, context) {
-  let AWS = require("aws-sdk");
 
+import { ApiGatewayManagementApi, AWSError } from "aws-sdk";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { PromiseResult } from "aws-sdk/lib/request";
+
+/**
+ * Posts message to socket connection
+ * Assumes socket connection already exists for given cacheKey
+ * If connectionId found for cacheKey and post to socket fails, assumes stale and clears from DB
+ */
+export const sendHandler = async (event) => {
   let cacheKey: string;
   let serviceName: string;
   let failureMessage: string;
-  let responses;
   let postData;
+  let ddb: DocumentClient;
+  let responses: PromiseResult<DocumentClient.ScanOutput, AWSError>;
+
+  if (!process.env.SOCKETS_TABLE) throw new Error("SOCKETS_TABLE is undefined");
+
   try {
     postData = JSON.parse(event.body).data;
-    let eventData = JSON.parse(postData);
+    const eventData = JSON.parse(postData);
     cacheKey = eventData["cacheKey"];
     serviceName = eventData["serviceName"];
     failureMessage = eventData["failureMessage"];
-    let connectionId = event.requestContext.connectionId;
-    //@ts-ignore
-    ddb = new AWS.DynamoDB.DocumentClient({
+
+    ddb = new DocumentClient({
       apiVersion: "2012-08-10",
       region: process.env.AWS_REGION,
     });
-    //@ts-ignore
+
     responses = await ddb
       .scan({
         TableName: process.env.SOCKETS_TABLE,
         ProjectionExpression: "serviceName, connectionId, cacheKey",
       })
       .promise();
-  } catch (e) {
-    console.warn("error getting values: ", e);
-    return { statusCode: 500, body: "PROBLEM::::::" + e.stack };
+  } catch (e: unknown) {
+    console.warn("Error finding socket connection: ", e);
+    return {
+      statusCode: 500,
+      body: "Server Error" + (e instanceof Error ? ` - ${e.stack}` : ""),
+    };
+  }
+
+  if (!responses || !responses.Items) {
+    console.warn(
+      `Search for socket connection returned no items for ${serviceName} service, cache key ${cacheKey}`
+    );
+    return {
+      statusCode: 500,
+      body: "Server Error",
+    };
   }
 
   let endpoint =
     event.requestContext.domainName + "/" + event.requestContext.stage;
 
-  const apigwManagementApi = new AWS.ApiGatewayManagementApi({
+  const apigwManagementApi = new ApiGatewayManagementApi({
     apiVersion: "2018-11-29",
-
     endpoint: endpoint,
   });
 
+  interface ResultItem {
+    cacheKey: any;
+    serviceName: any;
+    failureMessage?: string;
+  }
+
   for (let responseItem of responses.Items) {
-    let d = {
+    const resultItem: ResultItem = {
       cacheKey: responseItem.cacheKey,
       serviceName: responseItem.serviceName,
     };
     if (failureMessage) {
-      d.failureMessage = failureMessage;
+      resultItem.failureMessage = failureMessage;
     }
     if (
       responseItem.cacheKey === cacheKey &&
       responseItem.serviceName == serviceName
     ) {
       try {
-        let postData = JSON.stringify(d);
+        let postData = JSON.stringify(resultItem);
 
         try {
           await apigwManagementApi
@@ -66,8 +92,8 @@ exports.sendHandler = async function (event, context) {
               Data: postData,
             })
             .promise();
-        } catch (e) {
-          if (e.statusCode === 410) {
+        } catch (e: any) {
+          if (e.statusCode && e.statusCode === 410) {
             console.log(
               `Found stale connection, deleting ${responseItem.connectionId}`
             );

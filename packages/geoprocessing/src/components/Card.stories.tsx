@@ -1,7 +1,6 @@
 import React from "react";
 import Card from "./Card";
-import SimpleButton from "./buttons/SimpleButton";
-import ReportDecorator from "./ReportDecorator";
+import ReportDecorator from "./storybook/ReportDecorator";
 
 export default {
   component: Card,

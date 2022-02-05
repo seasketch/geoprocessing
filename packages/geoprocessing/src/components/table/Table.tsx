@@ -1,5 +1,5 @@
 import React, { ReactElement, useMemo, ReactNode } from "react";
-import { useTable, usePagination, useSortBy, Row, IdType } from "react-table";
+import { useTable, usePagination, useSortBy } from "react-table";
 import styled from "styled-components";
 import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
 import DataDownload, { DataDownloadProps } from "../DataDownload";

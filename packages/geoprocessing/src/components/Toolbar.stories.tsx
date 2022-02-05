@@ -2,9 +2,9 @@ import React from "react";
 import Toolbar from "./Toolbar";
 import Card from "./Card";
 import SimpleButton from "./buttons/SimpleButton";
-import ReportDecorator from "./ReportDecorator";
+import ReportDecorator from "./storybook/ReportDecorator";
 import DataDownloadToolbar from "./DataDownloadToolbar";
-import fixtures from "../fixtures";
+import fixtures from "../testing/fixtures";
 
 export default {
   component: Toolbar,

@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 const GP_ROOT = path.join(__dirname, "../../");
@@ -84,7 +84,7 @@ module.exports = {
       prev[path.basename(f)] = f;
       return prev;
     }, {}),
-    serviceHandlers: path.join(GP_ROOT, "src/serviceHandlers.ts"),
+    serviceHandlers: path.join(GP_ROOT, "src/aws/serviceHandlers.ts"),
     sendmessage: path.join(GP_ROOT, "src/sockets/sendmessage.ts"),
     connect: path.join(GP_ROOT, "src/sockets/connect.ts"),
     disconnect: path.join(GP_ROOT, "src/sockets/disconnect.ts"),

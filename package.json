@@ -10,7 +10,8 @@
     "postinstall": "lerna bootstrap",
     "test": "lerna run test",
     "publish:stable": "CI=1 lerna publish",
-    "publish:alpha": "CI=1 lerna publish --force-publish --canary --preid alpha --npm-tag=alpha",
+    "publish:beta": "CI=1 lerna publish --preid beta --dist-tag=beta",
+    "publish:alpha": "CI=1 lerna publish --force-publish --canary --preid alpha --dist-tag=alpha",
     "create_example": "node packages/geoprocessing/dist/scripts/init/createExampleProject.js"
   },
   "repository": {

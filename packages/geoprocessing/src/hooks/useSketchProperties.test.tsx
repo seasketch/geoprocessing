@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
-import ReportContext, { ReportContextValue } from "../ReportContext";
+import { ReportContext, ReportContextValue } from "../storybook";
 import { GeoprocessingProject, SketchProperties } from "../types";
 import { renderHook, act } from "@testing-library/react-hooks";
 import useSketchProperties from "./useSketchProperties";

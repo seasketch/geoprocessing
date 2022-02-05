@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "./Card";
 import { KeySection } from "./KeySection";
-import ReportDecorator from "./ReportDecorator";
+import ReportDecorator from "./storybook/ReportDecorator";
 
 export default {
   component: KeySection,

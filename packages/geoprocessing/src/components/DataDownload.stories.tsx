@@ -1,6 +1,6 @@
 import React from "react";
 import DataDownload from "./DataDownload";
-import fixtures from "../fixtures";
+import fixtures from "../testing/fixtures";
 
 export default {
   component: DataDownload,

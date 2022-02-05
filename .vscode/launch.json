@@ -18,6 +18,20 @@
         "internalConsoleOptions": "neverOpen",
         "port": 9229        
     }, {
+      "name": "geoprocessing - debug tests with pattern",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/geoprocessing",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
+        "-t",
+        "${input:testNamePattern}"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229        
+    }, {
       "name": "geoprocessing - debug e2e tests",
       "type": "node",
       "request": "launch",
@@ -85,19 +99,6 @@
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
     }, {
-      "name": "gp-area - debug tests",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/packages/gp-area",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/packages/gp-area/node_modules/.bin/geoprocessing",
-          "test"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229        
-    }, {
       "name": "gp-clip - debug tests",
       "type": "node",
       "request": "launch",
@@ -110,6 +111,14 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
+    }
+  ],
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "testNamePattern",
+      "description": "jest -t 'regex pattern to select tests'",
+      "default": "name of my test"
     }
   ]
 }

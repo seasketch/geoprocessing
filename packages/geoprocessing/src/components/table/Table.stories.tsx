@@ -1,19 +1,18 @@
 import React, { CSSProperties } from "react";
-import Table, { Column, Row } from "./Table";
+import Table, { Column } from "./Table";
 import FilterSelectTable, { FilterSelect } from "./FilterSelectTable";
-import ReportCardDecorator from "../ReportCardDecorator";
+import { ReportDecorator, CardDecorator } from "../storybook";
 import fixtures, {
   HumanUse,
-  Ranked,
   Categorical,
   getRandomCategorical,
-} from "../../fixtures";
+} from "../../testing/fixtures";
 import styled from "styled-components";
 
 export default {
   component: Table,
-  title: "Components/Table",
-  decorators: [ReportCardDecorator],
+  title: "Components/Table/Table",
+  decorators: [CardDecorator, ReportDecorator],
 };
 
 const TableStyled = styled.div`

@@ -1,15 +1,12 @@
 import { generateManifest } from "../build/generateManifest";
 import {
   GeoprocessingJsonConfig,
-  Sketch,
-  SketchCollection,
   Feature,
   FeatureCollection,
-  Polygon,
   Point,
 } from "../../src/types";
 import { PreprocessingHandler, GeoprocessingHandler } from "../../src";
-import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src/VectorDataSource";
+import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src";
 import { point } from "@turf/helpers";
 import { Package, PreprocessingBundle, GeoprocessingBundle } from "../types";
 import { Manifest } from "../manifest";

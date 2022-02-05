@@ -16,5 +16,5 @@ fi
 rm -rf .build-web
 npx webpack --config scripts/build/webpack.config.js
 mv .build-web $PROJECT_PATH/
-cp src/favicon.ico $PROJECT_PATH/.build-web/
+cp src/assets/favicon.ico $PROJECT_PATH/.build-web/
 echo ""

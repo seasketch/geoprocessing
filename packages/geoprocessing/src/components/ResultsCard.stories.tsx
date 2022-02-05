@@ -1,7 +1,7 @@
 import React from "react";
 import ResultsCard from "./ResultsCard";
-import ReportDecorator from "./ReportDecorator";
-import ReportContext, { TestExampleOutput } from "../ReportContext";
+import ReportDecorator from "./storybook/ReportDecorator";
+import { ReportContext, TestExampleOutput } from "../storybook";
 import { GeoprocessingProject, SketchProperties } from "../types";
 import { v4 as uuid } from "uuid";
 import Skeleton from "./Skeleton";
@@ -110,7 +110,7 @@ export const customSkeleton = () => (
     <ResultsCard
       title="Card Title"
       functionName="area"
-      skeleton={<CustomSkeleton />}
+      skeleton={<DefaultSkeleton />}
     >
       {(data: any) => (
         <p>
@@ -124,7 +124,7 @@ export const customSkeleton = () => (
   </ReportContext.Provider>
 );
 
-const CustomSkeleton = () => (
+const DefaultSkeleton = () => (
   <div>
     <Skeleton style={{ width: "100%", height: "130px" }} />
     <Skeleton />

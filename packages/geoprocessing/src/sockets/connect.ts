@@ -1,21 +1,23 @@
-//@ts-nocheck
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
-//import * as AWS from "aws-sdk";
-//@ts-ignore
-let AWS = require("aws-sdk");
-//import { DynamoDB } from "aws-sdk";
-//import { AWS } from "aws-sdk";
 
-exports.connectHandler = async function (event, context) {
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
+
+/**
+ * Puts new socket connection record in DB
+ */
+export const connectHandler = async (event) => {
   try {
-    const ddb = new AWS.DynamoDB.DocumentClient({
+    if (!process.env.SOCKETS_TABLE)
+      throw new Error("SOCKETS_TABLE is undefined");
+
+    const ddb = new DocumentClient({
       apiVersion: "2012-08-10",
       region: process.env.AWS_REGION,
     });
 
-    let serviceName = event.queryStringParameters["serviceName"];
-    let cacheKey = event.queryStringParameters["cacheKey"];
+    const serviceName = event.queryStringParameters["serviceName"];
+    const cacheKey = event.queryStringParameters["cacheKey"];
 
     const putParams = {
       TableName: process.env.SOCKETS_TABLE,
@@ -25,7 +27,6 @@ exports.connectHandler = async function (event, context) {
         serviceName: serviceName,
       },
     };
-    //@ts-ignore
     await ddb.put(putParams).promise();
   } catch (err) {
     return {

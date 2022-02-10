@@ -6,12 +6,15 @@ import {
   FeatureCollection,
   Polygon,
   LineString,
+  SketchProperties,
+  UserAttribute,
 } from "../types";
 import { isSketch, isSketchCollection } from "./types";
 import fixtures from "../testing/fixtures";
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
 import { ReportContextValue } from "../storybook";
+
 /**
  * UserAttributes are those filled in via the attributes form specified as
  * part of a SketchClass. This getter function is easier to use than searching
@@ -19,31 +22,32 @@ import { ReportContextValue } from "../storybook";
  * easier to use with typescript.
  */
 export function getUserAttribute<T>(
-  sketch: Sketch,
+  sketchOrProps: Sketch | SketchProperties,
   exportid: string
 ): T | undefined;
 export function getUserAttribute<T>(
-  sketch: Sketch,
+  sketchOrProps: Sketch | SketchProperties,
   exportid: string,
   defaultValue: T
 ): T;
 export function getUserAttribute<T>(
-  sketch: Sketch,
+  sketchOrProps: Sketch | SketchProperties,
   exportid: string,
   defaultValue?: T
 ) {
-  let found = sketch.properties.userAttributes.find(
-    (a) => a.exportId === exportid
-  );
+  const props: SketchProperties = isSketch(sketchOrProps)
+    ? sketchOrProps.properties
+    : sketchOrProps;
+  let found = props.userAttributes.find((a) => a.exportId === exportid);
   return found?.value || defaultValue;
 }
 
 export function getJsonUserAttribute<T>(
-  sketch: Sketch,
+  sketchOrProps: Sketch | SketchProperties,
   exportid: string,
   defaultValue: T
 ): T {
-  const value = getUserAttribute(sketch, exportid, defaultValue);
+  const value = getUserAttribute(sketchOrProps, exportid, defaultValue);
   if (typeof value === "string") {
     return JSON.parse(value);
   } else {
@@ -99,6 +103,29 @@ export function toNullSketch(
   }
 }
 
+export const genSampleUserAttributes = (): UserAttribute[] => {
+  return [
+    {
+      label: "single",
+      fieldType: "ChoiceField",
+      exportId: "SINGLE",
+      value: "single",
+    },
+    {
+      label: "multi",
+      fieldType: "ChoiceField",
+      exportId: "MULTI",
+      value: ["one", "two"],
+    },
+    {
+      label: "multiJson",
+      fieldType: "ChoiceField",
+      exportId: "MULTISTRING",
+      value: JSON.stringify(["one", "two"]),
+    },
+  ];
+};
+
 /**
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
@@ -110,7 +137,7 @@ export const genSampleSketch = <G = Polygon | LineString | String>(
   properties: {
     id: name || uuid(),
     isCollection: false,
-    userAttributes: [],
+    userAttributes: genSampleUserAttributes(),
     sketchClassId: uuid(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -128,7 +155,7 @@ export const genSampleNullSketch = (name?: string): NullSketch => ({
   properties: {
     id: name || uuid(),
     isCollection: false,
-    userAttributes: [],
+    userAttributes: genSampleUserAttributes(),
     sketchClassId: uuid(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

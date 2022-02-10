@@ -93,6 +93,22 @@ const sketchCollection: SketchCollection<Polygon> = {
 
 const scArea = area(sketchCollection);
 
+/** 2nd and 3rd sketches are the same */
+const overlapCollection: SketchCollection<Polygon> = {
+  type: "FeatureCollection",
+  properties: {
+    id: collectionId,
+    name: "Collection 1",
+    updatedAt: "2021-11-20T00:00:34.269Z",
+    createdAt: "2021-11-19T23:34:12.889Z",
+    sketchClassId: "615b65a2aac8c8285d50d9f3",
+    isCollection: true,
+    userAttributes: [],
+  },
+  bbox: bbox(featureCollection([sketch1, sketch2])),
+  features: [sketch1, sketch2, sketch2],
+};
+
 export default {
   outer,
   outerArea,
@@ -105,5 +121,6 @@ export default {
   sketch3,
   collectionId,
   sketchCollection,
+  overlapCollection,
   scArea,
 };

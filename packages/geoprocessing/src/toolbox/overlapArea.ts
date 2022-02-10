@@ -37,7 +37,7 @@ export async function overlapArea(
     ? clip(sketch, "union")
     : featureCollection([sketch]);
 
-  if (!combinedSketch) throw new Error("areaStats - invalid sketch");
+  if (!combinedSketch) throw new Error("Invalid sketch");
   const combinedSketchArea = turfArea(combinedSketch);
 
   const sketchMetrics: Metric[] = [];

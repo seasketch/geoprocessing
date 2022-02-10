@@ -28,8 +28,7 @@ export async function area(
   const percMetricId = `${metricId}Perc`;
 
   // if collection - union to remove overlap
-  const isCollection = isSketchCollection(sketch);
-  const combinedSketch = isCollection
+  const combinedSketch = isSketchCollection(sketch)
     ? clip(sketch, "union")
     : featureCollection([sketch]);
 
@@ -82,7 +81,7 @@ export async function area(
             },
           })
         );
-        if (includePercMetric && isCollection) {
+        if (includePercMetric && isSketchCollection(sketch)) {
           sketchMetrics.push(
             createMetric({
               metricId: percMetricId,
@@ -99,7 +98,7 @@ export async function area(
   }
 
   const collMetrics: Metric[] = [];
-  if (isCollection) {
+  if (isSketchCollection(sketch)) {
     collMetrics.push(
       createMetric({
         metricId,

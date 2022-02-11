@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
 
-const StyledPill = styled.span`
+export const StyledPill = styled.span`
   background-color: ${(props) => (props.color ? props.color : "#CCC")};
   border-radius: 6px;
   padding: 3px 5px;

@@ -7,7 +7,7 @@ interface StyledCircleProps {
 }
 
 /** Default style for Circle */
-const StyledCircle = styled.span<StyledCircleProps>`
+export const StyledCircle = styled.span<StyledCircleProps>`
   background-color: ${(props) => (props.color ? props.color : "#DDD")};
   padding: 3px 5px;
   border-radius: ${(props) => (props.size ? `${props.size}px` : "17px")};

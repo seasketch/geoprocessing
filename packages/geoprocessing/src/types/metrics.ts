@@ -1,4 +1,4 @@
-import { Nullable } from "./base";
+import { Nullable, JSONValue } from "./base";
 
 /**
  * Represents a single class of data.
@@ -88,7 +88,7 @@ export interface Metric {
   /** The metric value */
   value: number;
   /** Additional ad-hoc properties, often used to ease interpretation */
-  extra?: Record<string, string | number | boolean>;
+  extra?: Record<string, JSONValue>;
 
   // Time
   /** Metric duration of time */

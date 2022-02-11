@@ -44,7 +44,6 @@ export function isGeometry(geometry: any): geometry is Geometry {
  */
 export function isFeature(feature: any): feature is Feature {
   return (
-    feature.hasOwnProperty("geometry") &&
     feature.hasOwnProperty("properties") &&
     feature.hasOwnProperty("type") &&
     feature.type === "Feature"
@@ -116,7 +115,7 @@ export const isSketchCollection = (
 };
 
 /**
- * Checks if object is a Sketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
+ * Checks if object is a NullSketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to NullSketch
  */
 export const isNullSketch = (feature: any): feature is NullSketch => {
   return (
@@ -130,7 +129,7 @@ export const isNullSketch = (feature: any): feature is NullSketch => {
 };
 
 /**
- * Check if object is a SketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to SketchCollection
+ * Check if object is a NullSketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to NullSketchCollection
  */
 export const isNullSketchCollection = (
   collection: any

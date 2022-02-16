@@ -7,6 +7,7 @@ import { overlapArea, overlapSubarea } from "./overlapArea";
 import area from "@turf/area";
 import fix from "../testing/fixtures/squareSketches";
 import { testWithinPerc } from "..";
+import { ValidationError } from "../types";
 
 describe("overlapArea", () => {
   test("function is present", () => {
@@ -20,12 +21,33 @@ describe("overlapArea", () => {
     expect(fix.outerOuterArea).toBeCloseTo(198111444408.08057);
   });
 
+  test("overlapArea - undefined sketch throws", async () => {
+    expect(
+      async () => await overlapArea("test", undefined!, 500)
+    ).rejects.toThrow(ValidationError);
+  });
+
   // sketch always assumed to be within outer boundary.  outerArea is passed as pre-calculated area avoiding need to compute it on the fly
   test("overlapArea overall - single polygon fully inside", async () => {
     const metrics = await overlapArea("test", fix.sketch1, fix.outerArea);
     expect(metrics[0].value).toBeCloseTo(12391399902.071104);
     expect(metrics[1].value).toBeCloseTo(0.25); // takes up bottom left quadrant of outer
   });
+
+  test("overlapSubarea - undefined sketch throws", async () => {
+    expect(
+      async () => await overlapSubarea("test", undefined!, fix.outer)
+    ).rejects.toThrow(ValidationError);
+  });
+});
+
+describe("overlapSubarea", () => {
+  test("overlapSubarea - undefined subareaFeature returns zero value metrics", async () => {
+    const metrics = await overlapSubarea("test", fix.sketch1, undefined!);
+    expect(metrics.length).toBe(2);
+    metrics.forEach((m) => expect(m.value).toEqual(0));
+  });
+
   test("overlapSubarea intersect - single polygon fully inside", async () => {
     const metrics = await overlapSubarea("test", fix.sketch1, fix.outer);
     expect(metrics[0].value).toBeCloseTo(12391399902.071104);

@@ -11,6 +11,7 @@ import { createMetric } from "../metrics";
 import { featureCollection } from "@turf/helpers";
 import { featureEach } from "@turf/meta";
 import turfArea from "@turf/area";
+import { ValidationError } from "../types";
 
 /**
  * Assuming sketches are within some outer boundary with size outerArea,
@@ -30,6 +31,7 @@ export async function overlapArea(
     includePercMetric?: boolean;
   } = {}
 ): Promise<Metric[]> {
+  if (!sketch) throw new ValidationError("Missing sketch");
   const { includePercMetric = true, includeChildMetrics = true } = options;
   const percMetricId = `${metricId}Perc`;
   // Union to remove overlap
@@ -37,7 +39,7 @@ export async function overlapArea(
     ? clip(sketch, "union")
     : featureCollection([sketch]);
 
-  if (!combinedSketch) throw new Error("Invalid sketch");
+  if (!combinedSketch) throw new ValidationError("Invalid sketch");
   const combinedSketchArea = turfArea(combinedSketch);
 
   const sketchMetrics: Metric[] = [];
@@ -152,23 +154,28 @@ export async function overlapSubarea(
     outerArea?: number | undefined;
   }
 ): Promise<Metric[]> {
+  if (!sketch) throw new ValidationError("Missing sketch");
   const percMetricId = `${metricId}Perc`;
   const operation = options?.operation || "intersection";
   const subareaArea =
     options?.outerArea && operation === "intersection"
       ? options?.outerArea
-      : turfArea(subareaFeature);
+      : subareaFeature
+      ? turfArea(subareaFeature)
+      : 0;
   const sketches = toSketchArray(sketch);
 
   if (operation === "difference" && !options?.outerArea)
-    throw new Error(
+    throw new ValidationError(
       "Missing outerArea which is required when operation is difference"
     );
 
   // Run op and keep null remainders for reporting purposes
   const subsketches = (() => {
     return sketches.map((sketch) =>
-      clip(featureCollection([sketch, subareaFeature]), operation)
+      subareaFeature
+        ? clip(featureCollection([sketch, subareaFeature]), operation)
+        : null
     );
   })();
 

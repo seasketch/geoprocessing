@@ -7,5 +7,6 @@ export * from "./metrics";
 export * from "./testing";
 export * from "./toolbox";
 export * from "./types";
+export * from "./testing";
 
 export { default as version } from "../package.json";

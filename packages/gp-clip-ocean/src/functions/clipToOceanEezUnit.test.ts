@@ -1,4 +1,8 @@
-import { clipLand, clipOutsideEez } from "./clipToOceanEez";
+/**
+ * @group unit
+ */
+
+import { clipLand, clipOutsideEez, clipToOceanEez } from "./clipToOceanEez";
 import {
   getExampleFeatures,
   getExampleFeaturesByName,
@@ -9,6 +13,7 @@ import {
   Feature,
   Polygon,
   MultiPolygon,
+  fixtures,
 } from "@seasketch/geoprocessing";
 import booleanValid from "@turf/boolean-valid";
 
@@ -119,4 +124,11 @@ describe("Basic unit tests", () => {
       }
     }
   }, 10000);
+
+  test("clipToOceanEez - should throw ValidationError if self-crossing", async () => {
+    expect(
+      async () =>
+        await clipToOceanEez(fixtures.invalid.selfCrossingSketchPolygon)
+    ).rejects.toThrow(ValidationError);
+  });
 });

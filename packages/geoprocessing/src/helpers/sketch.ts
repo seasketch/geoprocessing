@@ -245,10 +245,7 @@ export const genSampleSketchContext = (): ReportContextValue => ({
     {
       functionName: "ranked",
       sketchName: "My Sketch",
-      results: {
-        // RankedResult
-        ranked: fixtures.ranked,
-      },
+      results: {},
     },
   ],
   visibleLayers: [],

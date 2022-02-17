@@ -15,3 +15,6 @@ export * from "./src/helpers/units";
 export * from "./src/metrics/helpers";
 export * from "./src/iucn/helpers";
 export * from "./src/iucn/iucnProtectionLevel";
+
+// Testing
+export * from "./src/testing";

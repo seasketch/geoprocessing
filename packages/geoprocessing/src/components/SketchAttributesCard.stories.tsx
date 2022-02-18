@@ -15,6 +15,10 @@ const mappings = {
     UNTREATED_WATER: "Untreated Water",
     HABITATION: "Habitation",
   },
+  ROMAN: {
+    I: "One",
+    II: "Two",
+  },
 };
 
 export const simple = () => (
@@ -58,6 +62,12 @@ export const simple = () => (
             fieldType: "ChoiceField",
             exportId: "ACTIVITIES",
             value: ["WORKS", "UNTREATED_WATER", "HABITATION"],
+          },
+          {
+            exportId: "ROMAN",
+            fieldType: "ChoiceField",
+            label: "Roman number",
+            value: "II",
           },
         ],
       },

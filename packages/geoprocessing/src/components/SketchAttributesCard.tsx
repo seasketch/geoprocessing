@@ -33,19 +33,22 @@ export const SketchAttributesCard = ({
             {properties.userAttributes.map((attr) => {
               const value = attr.value || "";
               let valueDisplay = value;
-              if (mappings && mappings[attr.exportId]) {
-                const listValues =
-                  typeof value === "string"
-                    ? value === ""
-                      ? []
-                      : JSON.parse(value)
-                    : value;
-                const displayValues = listValues.map(
-                  (listValue) => mappings[attr.exportId][listValue]
-                );
-                valueDisplay = displayValues
-                  .map((v) => v.toString())
-                  .join(", ");
+              if (
+                mappings &&
+                mappings[attr.exportId] &&
+                typeof value === "string"
+              ) {
+                if (value[0] === "[") {
+                  const listValues = JSON.parse(value);
+                  const displayValues = listValues.map(
+                    (listValue) => mappings[attr.exportId][listValue]
+                  );
+                  valueDisplay = displayValues
+                    .map((v) => v.toString())
+                    .join(", ");
+                } else {
+                  valueDisplay = mappings[attr.exportId][value];
+                }
               } else if (Array.isArray(value)) {
                 // array no mapping
                 valueDisplay = value.map((v) => v.toString()).join(", ");

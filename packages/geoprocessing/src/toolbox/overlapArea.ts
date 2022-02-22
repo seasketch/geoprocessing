@@ -11,6 +11,7 @@ import { createMetric } from "../metrics";
 import { featureCollection } from "@turf/helpers";
 import { featureEach } from "@turf/meta";
 import turfArea from "@turf/area";
+import simplify from "@turf/simplify";
 import { ValidationError } from "../types";
 
 /**
@@ -29,18 +30,53 @@ export async function overlapArea(
     includeChildMetrics?: boolean;
     /** Includes metrics with percent of total area, in addition to raw area value metrics, defaults to true */
     includePercMetric?: boolean;
+    /** simplify sketches with tolerance in degrees. .000001 is a good first value to try. only used for calculating area of collection (avoiding clip union to remove overlap blowing up) */
+    simplifyTolerance?: number;
   } = {}
 ): Promise<Metric[]> {
   if (!sketch) throw new ValidationError("Missing sketch");
   const { includePercMetric = true, includeChildMetrics = true } = options;
   const percMetricId = `${metricId}Perc`;
-  // Union to remove overlap
-  const combinedSketch = isSketchCollection(sketch)
-    ? clip(sketch, "union")
-    : featureCollection([sketch]);
+  let collectionExtra: Metric["extra"] = {};
 
-  if (!combinedSketch) throw new ValidationError("Invalid sketch");
-  const combinedSketchArea = turfArea(combinedSketch);
+  // Remove overlap
+  const combinedSketchArea = (() => {
+    let sketches = toSketchArray(sketch);
+    try {
+      // Simplify if enabled
+      if (options?.simplifyTolerance)
+        sketches = simplify(featureCollection(sketches), {
+          tolerance: options.simplifyTolerance,
+          highQuality: true,
+        }).features;
+
+      const combinedSketch = clip(featureCollection(sketches), "union");
+      return combinedSketch ? turfArea(combinedSketch) : 0;
+    } catch (err: unknown) {
+      if (
+        err instanceof Error &&
+        err.message.includes("Unable to complete output ring")
+      ) {
+        // Fallback to simplify
+        const tolerance = options?.simplifyTolerance || 0.000001;
+        const combinedSketch = clip(
+          simplify(featureCollection(sketches), {
+            tolerance,
+            highQuality: true,
+          }),
+          "union"
+        );
+        collectionExtra.simplifyTolerance = tolerance;
+        return combinedSketch ? turfArea(combinedSketch) : 0;
+      } else {
+        // Return zero to return something and flag error
+        collectionExtra.error = true;
+        console.error(err);
+        console.log("Returning zero area with error flagged");
+        return 0;
+      }
+    }
+  })();
 
   const sketchMetrics: Metric[] = [];
   if (sketch) {
@@ -152,11 +188,14 @@ export async function overlapSubarea(
     operation?: "intersection" | "difference";
     /** area of outer boundary.  Use for total area of the subarea for intersection when you don't have the whole feature, or use for the total area of the boundar outside of the subarea for difference (typically EEZ or planning area) */
     outerArea?: number | undefined;
+    /** simplify sketches with tolerance in degrees. .000001 is a good first value to try. only used for calculating area of collection (avoiding clip union to remove overlap blowing up) */
+    simplifyTolerance?: number;
   }
 ): Promise<Metric[]> {
   if (!sketch) throw new ValidationError("Missing sketch");
   const percMetricId = `${metricId}Perc`;
   const operation = options?.operation || "intersection";
+  let collectionExtra: Metric["extra"] = {};
   const subareaArea =
     options?.outerArea && operation === "intersection"
       ? options?.outerArea
@@ -182,20 +221,50 @@ export async function overlapSubarea(
   // calculate area of all subsketches
   const subsketchArea = (() => {
     // Remove null
-    const allSubsketches = subsketches.reduce<
-      Feature<Polygon | MultiPolygon>[]
-    >(
+    let allSubsketches = subsketches.reduce<Feature<Polygon | MultiPolygon>[]>(
       (subsketches, subsketch) =>
         subsketch ? [...subsketches, subsketch] : subsketches,
       []
     );
-    // Remove overlap
-    const combinedSketch =
-      allSubsketches.length > 0
-        ? clip(featureCollection(allSubsketches), "union")
-        : featureCollection(allSubsketches);
 
-    return allSubsketches && combinedSketch ? turfArea(combinedSketch) : 0;
+    // Remove overlap
+    try {
+      // Simplify if enabled
+      if (options?.simplifyTolerance)
+        allSubsketches = simplify(featureCollection(allSubsketches), {
+          tolerance: options.simplifyTolerance,
+          highQuality: true,
+        }).features;
+
+      const combinedSketch =
+        allSubsketches.length > 0
+          ? clip(featureCollection(allSubsketches), "union")
+          : featureCollection(allSubsketches);
+      return allSubsketches && combinedSketch ? turfArea(combinedSketch) : 0;
+    } catch (err: unknown) {
+      if (
+        err instanceof Error &&
+        err.message.includes("Unable to complete output ring")
+      ) {
+        // Fallback to simplify
+        const tolerance = options?.simplifyTolerance || 0.000001;
+        const combinedSketch = clip(
+          simplify(featureCollection(allSubsketches), {
+            tolerance,
+            highQuality: true,
+          }),
+          "union"
+        );
+        collectionExtra.simplifyTolerance = tolerance;
+        return combinedSketch ? turfArea(combinedSketch) : 0;
+      } else {
+        // Return zero to return something and flag error
+        collectionExtra.error = true;
+        console.error(err);
+        console.log("Returning zero area with error flagged");
+        return 0;
+      }
+    }
   })();
 
   // Choose inner or outer subarea for calculating percentage
@@ -265,6 +334,7 @@ export async function overlapSubarea(
         sketchId: sketch.properties.id,
         value: subsketchArea,
         extra: {
+          ...collectionExtra,
           sketchName: sketch.properties.name,
           isCollection: true,
         },
@@ -276,6 +346,7 @@ export async function overlapSubarea(
         sketchId: sketch.properties.id,
         value: subsketchArea === 0 ? 0 : subsketchArea / operationArea,
         extra: {
+          ...collectionExtra,
           sketchName: sketch.properties.name,
           isCollection: true,
         },

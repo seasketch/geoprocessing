@@ -5,18 +5,17 @@
 import polygonClipping from "polygon-clipping";
 import {
   Feature,
-  featureCollection,
   multiPolygon,
   MultiPolygon,
   polygon,
   Polygon,
   Position,
   Properties,
-  GeometryCollection,
   FeatureCollection,
 } from "@turf/helpers";
 import { geomEach } from "@turf/meta";
 import { getGeom } from "@turf/invariant";
+import { ValidationError } from "..";
 
 export function clip<P = Properties>(
   features: FeatureCollection<Polygon | MultiPolygon>,
@@ -25,6 +24,8 @@ export function clip<P = Properties>(
     properties?: P;
   } = {}
 ): Feature<Polygon | MultiPolygon> | null {
+  if (!features || !features.features || features.features.length === 0)
+    throw new ValidationError("Missing or empty features for clip");
   const coords: (Position[][] | Position[][][])[] = [];
   geomEach(features, (geom) => {
     coords.push(geom.coordinates);
@@ -49,6 +50,14 @@ export function clipMultiMerge<P = Properties>(
     properties?: P;
   } = {}
 ): Feature<Polygon | MultiPolygon> | null {
+  if (
+    !feature1 ||
+    !features2 ||
+    !features2.features ||
+    features2.features.length === 0
+  )
+    throw new ValidationError("Missing or empty features for clip");
+
   const geom1 = getGeom(feature1);
   // Combine into one multipoly coordinate array
   const coords2 = (() => {

@@ -1,7 +1,3 @@
-/**
- * @group unit
- */
-
 import { clipLand, clipOutsideEez, clipToOceanEez } from "./clipToOceanEez";
 import {
   getExampleFeatures,

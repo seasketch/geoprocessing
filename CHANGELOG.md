@@ -1,3 +1,59 @@
+## v0.14.0 (2022-02-27)
+
+#### :rocket: New Feature / Improvement
+
+* Refactor overlap gp toolbox - overlapArea, overlapFeatures, overlapRaster, overlapRasterClass, overlapGroupMetrics, booleanOverlap.  Removes overlap for SketchCollection metrics. Remove old functions - areaByClass, calcAreaByClass, calcAreaByClassRaster, intersect, difference
+* Add core Metrics support including aggregation - types, helpers, components
+* Add DataClass and DataGroup types for representing datasources
+* Add Report and ReportResult types for standardizing project level config and combining data and metrics
+* Add iucn module with core, helpers, components
+* Add overrides to percentLower helper
+* SketchAttributesCard: allow user-provided mapping of attribute names to readable for display
+* Add Circle and Pill components
+* Add LayerToggle component
+* Add InfoStatus and ObjectiveStatus components
+* getUserAttribute/getJsonUserAttribue - allow input of either sketch or sketchProperties
+* Add getJsonUserAttribute helper
+* Allow raster-defined and user-defined nodata and projection for cog dataset
+* Speed up clipping operations utilizing single sweep support
+* Add ReportError error boundary around ResultsCard body
+* Add fetchAll flatgeobuf method avoiding streaming generator (slower)
+* Add fgb prefix to exported flatgeobuf methods
+* Add COG library tests
+* Improve base ReportsCard style
+* Split client library into client-core and client-ui
+* Export ReportContext to client library
+* Export base types to client library
+* Export sketch helpers to client library
+* Add storybook build speedup
+* Add percentGoalWithEdgeHelper
+* Add beta canary release script to go with alpha, useful if alphas deployed from feature branch and commit number collision
+* Consolidate fixtures and export for gp project use
+
+#### :bug: Bug Fix
+
+* Fix DataDownload component initial render
+* Add babel-class-property plugin to fix build error
+* Fix toSketchArray return type
+* gpClipOcean - add check for no land feature to clip
+* Refactor cog module, improve window calculation for fetch, allow caller override for extra fetch
+* Fix various React warnings with improper use of p tags
+* Clean up socket handlers, thou shalt not ts-ignore!
+* Lock flatgeobuf to version with commonjs
+
+#### :house: Internal
+
+* Add invalid sketch fixture for testing error conditions
+* Consolidate util modules into helpers and export all helpers
+* Move top-level files into new aws, datasources, storybook, assets folders
+* Migrate storybook stories for latest version
+* Migrate areaByClass to fgbDeserialize
+* Add new test cmnd and debug launcher with runtime prompt of user for test to run (regex)
+* Consolidate on start-storybook name for consistency
+* Refactor ReportDecorator and remove ReportCardDecorator
+
+#### :memo: Documentation
+
 ## v0.13.0 (2021-07-27)
 
 #### :rocket: New Feature

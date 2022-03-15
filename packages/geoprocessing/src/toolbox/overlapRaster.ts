@@ -47,7 +47,17 @@ export async function overlapRaster(
     isOverlap = sketchUnionArea < sketchArea;
     if (isOverlap) {
       featureEach(sketchUnion, (feat) => {
-        sumValue += geoblaze.sum(raster, feat)[0];
+        let curSum: number;
+        try {
+          curSum = geoblaze.sum(raster, feat)[0];
+        } catch (err) {
+          if (err === "No Values were found in the given geometry") {
+            curSum = 0;
+          } else {
+            throw err;
+          }
+        }
+        sumValue += curSum;
       });
     }
   }

@@ -8,7 +8,7 @@ import {
 import { createMetric } from "../metrics";
 import { featureEach } from "@turf/meta";
 import area from "@turf/area";
-import { featureCollection } from "@turf/helpers";
+import { Feature, featureCollection, MultiPolygon } from "@turf/helpers";
 
 // @ts-ignore
 import geoblaze, { Georaster } from "geoblaze";
@@ -47,17 +47,7 @@ export async function overlapRaster(
     isOverlap = sketchUnionArea < sketchArea;
     if (isOverlap) {
       featureEach(sketchUnion, (feat) => {
-        let curSum: number;
-        try {
-          curSum = geoblaze.sum(raster, feat)[0];
-        } catch (err) {
-          if (err === "No Values were found in the given geometry") {
-            curSum = 0;
-          } else {
-            throw err;
-          }
-        }
-        sumValue += curSum;
+        sumValue += getSum(raster, feat);
       });
     }
   }
@@ -69,7 +59,8 @@ export async function overlapRaster(
     const remSketch = options.removeSketchHoles
       ? removeSketchPolygonHoles(feat)
       : feat;
-    const sketchValue = geoblaze.sum(raster, remSketch)[0];
+
+    const sketchValue = getSum(raster, remSketch);
 
     if (!isOverlap) {
       sumValue += sketchValue;
@@ -103,3 +94,15 @@ export async function overlapRaster(
 
   return sketchMetrics;
 }
+
+const getSum = (raster: Georaster, feat: Feature<Polygon | MultiPolygon>) => {
+  try {
+    return geoblaze.sum(raster, feat)[0];
+  } catch (err) {
+    if (err === "No Values were found in the given geometry") {
+      return 0;
+    } else {
+      throw err;
+    }
+  }
+};

@@ -156,7 +156,6 @@ describe("overlapAreaGroupMetrics", () => {
       outerArea: STUDY_REGION_AREA_SQ_METERS,
     });
 
-    console.log(metrics);
     expect(metrics.length).toEqual(7);
 
     // Expect one group metric for each sketch feature
@@ -194,7 +193,6 @@ describe("overlapAreaGroupMetrics", () => {
       ) {
         expect(curLevelMetric.value).toBeGreaterThan(0);
       } else {
-        console.log(curLevelMetric);
         expect(curLevelMetric.value).toBe(0);
       }
     });

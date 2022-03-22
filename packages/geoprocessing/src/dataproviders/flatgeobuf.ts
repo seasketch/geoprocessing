@@ -37,6 +37,6 @@ export function fgBoundingBox(box: BBox) {
  */
 export async function fgbFetchAll<T = GeometryTypes>(url: string, box?: BBox) {
   return (await takeAsync(
-    deserialize(url, box ? fgBoundingBox(box) : box) as AsyncGenerator
+    deserialize(url, box ? fgBoundingBox(box) : undefined) as AsyncGenerator
   )) as T[];
 }

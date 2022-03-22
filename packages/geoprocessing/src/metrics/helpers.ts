@@ -190,7 +190,9 @@ const classSortAlphaDisplay = (a: DataClass, b: DataClass) => {
  */
 export const toPercentMetric = (
   metrics: Metric[],
-  totals: Metric[]
+  totals: Metric[],
+  /** Set percent metrics with new metricId.  Defaults to leaving the same */
+  percMetricId: string
 ): Metric[] => {
   const totalsByKey = (() => {
     return keyBy(totals, (total) =>
@@ -220,6 +222,7 @@ export const toPercentMetric = (
     return {
       ...cloneDeep(curMetric),
       value: curMetric.value / totalMetric.value,
+      ...(percMetricId ? { metricId: percMetricId } : {}),
     };
   });
 };

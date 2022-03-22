@@ -10,6 +10,9 @@ import {
   createMetric,
 } from "./helpers";
 import { NullSketch, NullSketchCollection, Metric } from "../types";
+import { toPercentMetric } from "../../client-core";
+
+const metricName = "metric1";
 
 const CLASSES = [
   {
@@ -24,17 +27,17 @@ const CLASSES = [
 
 const PRECALC_TOTALS: Metric[] = [
   createMetric({
-    metricId: "metric1",
+    metricId: metricName,
     value: 100,
   }),
   createMetric({
     classId: "class1",
-    metricId: "metric1",
+    metricId: metricName,
     value: 100,
   }),
   createMetric({
     classId: "class2",
-    metricId: "metric1",
+    metricId: metricName,
     value: 100,
   }),
 ];
@@ -105,49 +108,49 @@ const collection: NullSketchCollection = {
 
 const metrics: Metric[] = [
   createMetric({
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchAId,
     value: 10,
     classId: "class1",
   }),
   createMetric({
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchBId,
     value: 20,
     classId: "class1",
   }),
   createMetric({
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchDId,
     value: 40,
     classId: "class1",
   }),
   createMetric({
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: collectionId,
     value: 30,
     classId: "class1",
   }),
   createMetric({
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchAId,
     value: 40,
     classId: "class2",
   }),
   createMetric({
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchBId,
     value: 50,
     classId: "class2",
   }),
   createMetric({
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchDId,
     value: 60,
     classId: "class2",
   }),
   createMetric({
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: collectionId,
     value: 90,
     classId: "class2",
@@ -159,42 +162,42 @@ const groupMetrics: Metric[] = [
   createMetric({
     groupId: "group1",
     classId: "class1",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: collectionId,
     value: 25,
   }),
   createMetric({
     groupId: "group2",
     classId: "class1",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: collectionId,
     value: 30,
   }),
   createMetric({
     groupId: "group3",
     classId: "class1",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: collectionId,
     value: 35,
   }),
   createMetric({
     groupId: "group1",
     classId: "class2",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: collectionId,
     value: 25,
   }),
   createMetric({
     groupId: "group2",
     classId: "class2",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: collectionId,
     value: 30,
   }),
   createMetric({
     groupId: "group3",
     classId: "class2",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: collectionId,
     value: 35,
   }),
@@ -202,21 +205,21 @@ const groupMetrics: Metric[] = [
   createMetric({
     groupId: "group1",
     classId: "class1",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchAId,
     value: 15,
   }),
   createMetric({
     groupId: "group1",
     classId: "class1",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchBId,
     value: 20,
   }),
   createMetric({
     groupId: "group2",
     classId: "class1",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchDId,
     value: 30,
   }),
@@ -224,21 +227,21 @@ const groupMetrics: Metric[] = [
   createMetric({
     groupId: "group1",
     classId: "class2",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchAId,
     value: 15,
   }),
   createMetric({
     groupId: "group1",
     classId: "class2",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchBId,
     value: 20,
   }),
   createMetric({
     groupId: "group2",
     classId: "class2",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchDId,
     value: 30,
   }),
@@ -246,14 +249,14 @@ const groupMetrics: Metric[] = [
   createMetric({
     groupId: "group3",
     classId: "class2",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchAId,
     value: 20,
   }),
   createMetric({
     groupId: "group3",
     classId: "class2",
-    metricId: "metric1",
+    metricId: metricName,
     sketchId: sketchDId,
     value: 15,
   }),
@@ -284,6 +287,16 @@ describe("flattenSketchAllClass", () => {
 
     const rows = flattenBySketchAllClass(metrics, CLASSES, sketches);
     expect(rows).toEqual(answer);
+  });
+
+  test("toPercentMetric - set new percent metric ID", async () => {
+    const percMetricName = `${metricName}Perc`;
+    const percMetrics = toPercentMetric(
+      groupMetrics,
+      PRECALC_TOTALS,
+      percMetricName
+    );
+    percMetrics.forEach((m) => expect(m.metricId).toEqual(percMetricName));
   });
 
   test("flattenByGroup - single class", async () => {

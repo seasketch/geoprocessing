@@ -95,14 +95,17 @@ export async function overlapRaster(
   return sketchMetrics;
 }
 
+/**
+ * Returns sum of value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
+ */
 const getSum = (raster: Georaster, feat: Feature<Polygon | MultiPolygon>) => {
+  let sum = 0;
   try {
-    return geoblaze.sum(raster, feat)[0];
+    sum = geoblaze.sum(raster, feat)[0];
   } catch (err) {
-    if (err === "No Values were found in the given geometry") {
-      return 0;
-    } else {
-      throw err;
-    }
+    console.log(
+      "overlapRaster raster sum threw, must not be any overlapping cells with value"
+    );
   }
+  return sum;
 };

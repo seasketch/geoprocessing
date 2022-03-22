@@ -192,7 +192,7 @@ export const toPercentMetric = (
   metrics: Metric[],
   totals: Metric[],
   /** Set percent metrics with new metricId.  Defaults to leaving the same */
-  percMetricId: string
+  percMetricId?: string
 ): Metric[] => {
   const totalsByKey = (() => {
     return keyBy(totals, (total) =>

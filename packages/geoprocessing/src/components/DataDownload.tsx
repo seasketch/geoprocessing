@@ -37,6 +37,7 @@ export interface DataDownloadProps {
   addSketchName?: boolean;
   /** Add timestamp to filename, defaults to true */
   addTimestamp?: boolean;
+  titleElement?: JSX.Element;
 }
 
 const DownloadButtonStyled = styled(SimpleButtonStyled)`
@@ -69,6 +70,7 @@ export const DataDownload = ({
   formats = ["csv", "json"],
   addSketchName = true,
   addTimestamp = true,
+  titleElement = <>⋮</>,
 }: DataDownloadProps) => {
   const defaultState: DownloadOption[] = formatConfigs.filter((c) =>
     formats.includes(c.extension)
@@ -131,7 +133,7 @@ export const DataDownload = ({
 
   return (
     <>
-      <Dropdown titleElement={<>⋮</>}>{links}</Dropdown>
+      <Dropdown titleElement={titleElement}>{links}</Dropdown>
     </>
   );
 };

@@ -3,6 +3,7 @@ export * from "./storybook/ReportDecorator";
 export * from "./storybook/StoryLayout";
 
 /* Components */
+export * from "./buttons";
 export * from "./Card";
 export * from "./Circle";
 export * from "./Collapse";

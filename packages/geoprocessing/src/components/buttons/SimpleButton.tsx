@@ -17,8 +17,6 @@ export const SimpleButtonStyled = styled.button`
 /**
  * A simple button component that accepts any text value so unicode can be used including emojis
  */
-const SimpleButton = ({ children, ...props }) => {
+export const SimpleButton = ({ children, ...props }) => {
   return <SimpleButtonStyled {...props}>{children}</SimpleButtonStyled>;
 };
-
-export default SimpleButton;

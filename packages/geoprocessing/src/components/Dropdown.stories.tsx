@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "./Card";
-import SimpleButton from "./buttons/SimpleButton";
+import { SimpleButton } from "./buttons/SimpleButton";
 import Dropdown from "./Dropdown";
 
 export default {

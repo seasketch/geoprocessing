@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Dropdown from "./Dropdown";
-import SimpleButton from "./buttons/SimpleButton";
-import SimpleButtonStyled from "./buttons/SimpleButton";
+import { SimpleButton, SimpleButtonStyled } from "./buttons/SimpleButton";
 import styled from "styled-components";
 import { Parser, transforms } from "json2csv";
 import useSketchProperties from "../hooks/useSketchProperties";

@@ -1,5 +1,5 @@
 import React from "react";
-import SimpleButton from "./SimpleButton";
+import { SimpleButton } from "./SimpleButton";
 
 export default {
   component: SimpleButton,

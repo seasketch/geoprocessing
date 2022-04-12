@@ -1,0 +1,35 @@
+{
+  "name": "@seasketch/heatmap-examples",
+  "version": "0.0.1",
+  "description": "Generate heatmaps from geojson features",
+  "private": true,
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
+  "exports": {
+    ".": "./dist/lib/index.js"
+  },
+  "dependencies": {
+    "@seasketch/heatmap-cli": "0.0.1",
+    "ts-node": "^10.7.0"    
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "run-example": "npx ts-node-esm lib/examples/maldives/run.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seasketch/geoprocessing.git"
+  },
+  "author": "Tim Welch",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/seasketch/geoprocessing/issues"
+  },
+  "homepage": "https://github.com/seasketch/geoprocessing#readme"
+}

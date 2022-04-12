@@ -2,7 +2,6 @@
   "name": "@seasketch/heatmap-core",
   "version": "0.0.1",
   "description": "Generate heatmaps from geojson features in-memory",
-  "type": "module",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
   "exports": {
@@ -13,7 +12,7 @@
     "@turf/turf": "^6.5.0",
     "@types/d3": "^7.1.0",
     "@types/geojson": "^7946.0.8",
-    "d3": "7.4.4",
+    "d3": "6.7.0",
     "d3-scale": "^4.0.2",
     "geojson2h3": "^1.2.0",
     "h3-js": "^3.7.2",

@@ -2,7 +2,6 @@
   "name": "@seasketch/heatmap-core",
   "version": "0.0.1",
   "description": "Generate heatmaps from geojson features in-memory",
-  "type": "module",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
   "exports": {

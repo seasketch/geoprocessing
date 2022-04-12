@@ -2,7 +2,6 @@
   "name": "@seasketch/heatmap-cli",
   "version": "0.0.1",
   "description": "CLI for generating heatmaps from geojson features",
-  "type": "module",
   "engines": {
     "node": ">=14.0.0"
   },

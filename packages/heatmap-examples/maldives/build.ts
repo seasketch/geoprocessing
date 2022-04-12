@@ -1,6 +1,6 @@
 import { buildFileIndex } from "@seasketch/heatmap-cli";
 
-async function build() {
+export function build() {
   // const { buildFileIndex } = await import("@seasketch/heatmap-cli"); // async import converts to commonJS
   const infFile = "./community.geojson";
   const outDir = `./output`;

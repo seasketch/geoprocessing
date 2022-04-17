@@ -1,5 +1,4 @@
 const path = require("path");
-const { inspect } = require("util");
 
 const baseStories = [
   "../src/**/*.stories.tsx",
@@ -20,18 +19,18 @@ if (process.env.PROJECT_PATH) {
 
 module.exports = {
   stories: [...baseStories, ...projectStories],
-  typescript: {
-    check: false,
-    checkOptions: {},
-    reactDocgen: "none",
-    reactDocgenTypescriptOptions: {
-      shouldExtractLiteralValuesFromEnum: true,
-      propFilter: (prop) =>
-        prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
-    },
-  },
+  addons: [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@storybook/addon-interactions",
+  ],
+  framework: "@storybook/react",
   webpackFinal: async (config) => {
+    /// stub fs to avoid not found error
     config.node = { fs: "empty" };
+    // allow ts files to be picked up in project path
+    config.resolve.extensions.push(".ts", ".tsx");
+    // load project example sketches and smoke test output
     if (process.env.PROJECT_PATH) {
       config.module.rules.push({
         test: /storybook\/examples-loader.js$/,

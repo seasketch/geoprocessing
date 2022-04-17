@@ -21,7 +21,7 @@
     "test:scripts": "jest --projects scripts",
     "test:scripts:watch": "jest --projects scripts --watch",
     "test:scripts:update": "npm run test:scripts -- --updateSnapshot",
-    "start-storybook": "start-storybook",
+    "start-storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "prepare": "npm run build:core && npm run _prepare && npm run build:scripts",
     "_prepare": "npx ts-node scripts/npm/prepare",
@@ -189,6 +189,11 @@
     "ws": "^7.3.0"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^6.4.22",
+    "@storybook/addon-essentials": "^6.4.22",
+    "@storybook/addon-interactions": "^6.4.22",
+    "@storybook/addon-links": "^6.4.22",
+    "@storybook/testing-library": "^0.0.9",
     "identity-obj-proxy": "^3.0.0",
     "mock-socket": "^9.0.3",
     "start-server-and-test": "^1.12.5"

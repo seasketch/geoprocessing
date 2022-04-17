@@ -1,6 +1,6 @@
 # Geoprocessing
 
-A framework for publishing low-cost and low-maintenance `geoprocessing` services and reports in the cloud.  Part of the [SeaSketch](https://seasketch.org/) ecosystem.
+A serverless framework for publishing low-cost and low-maintenance `geoprocessing` services and reports in the cloud.  Part of the [SeaSketch](https://seasketch.org/) ecosystem.
 
 ## What is this for?
 

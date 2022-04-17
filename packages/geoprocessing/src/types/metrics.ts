@@ -1,4 +1,5 @@
 import { Nullable, JSONValue } from "./base";
+import { MetricProperties } from "../metrics/helpers";
 
 /**
  * Represents a single class of data.
@@ -56,21 +57,10 @@ export interface MetricGroup extends DataGroup {
 //// METRICS ////
 
 export type MetricIdTypes = string | number;
-
-/** Properties used in Metric */
-export const MetricProperties = [
-  "metricId",
-  "sketchId",
-  "classId",
-  "groupId",
-  "geographyId",
-  "value",
-  "extra",
-] as const;
 export type MetricProperty = typeof MetricProperties[number] & keyof Metric;
 
 /** Dimensions used in Metric */
-export const MetricDimensions = [
+const MetricDimensions = [
   "metricId",
   "geographyId",
   "sketchId",

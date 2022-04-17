@@ -1,16 +1,22 @@
 import {
+  FeatureCollection,
+  Point,
+  Polygon,
+  LineString,
+} from "../types/geojson";
+
+import {
   Sketch,
   SketchCollection,
   NullSketch,
   NullSketchCollection,
-  FeatureCollection,
-  Polygon,
-  LineString,
   SketchProperties,
   UserAttribute,
-} from "../types";
-import { isSketch, isSketchCollection } from "./types";
-import fixtures from "../testing/fixtures";
+} from "../types/sketch";
+
+import { hasOwnProperty, isObject } from "./native";
+import { isFeature, isFeatureCollection, collectionHasGeometry } from "./geo";
+
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
 import { ReportContextValue } from "../storybook";
@@ -102,6 +108,89 @@ export function toNullSketch(
     };
   }
 }
+
+/**
+ * Checks if object is a Sketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
+ */
+export const isSketch = (feature: any): feature is Sketch => {
+  return (
+    isFeature(feature) &&
+    hasOwnProperty(feature, "type") &&
+    hasOwnProperty(feature, "properties") &&
+    feature.properties &&
+    feature.properties.name
+  );
+};
+
+/**
+ * Check if object is a SketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to SketchCollection
+ */
+export const isSketchCollection = (
+  collection: any
+): collection is SketchCollection => {
+  return (
+    isFeatureCollection(collection) &&
+    hasOwnProperty(collection, "properties") &&
+    isObject(collection.properties) &&
+    hasOwnProperty(collection.properties as Record<string, any>, "name") &&
+    collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true)
+  );
+};
+
+/**
+ * Checks if object is a NullSketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to NullSketch
+ */
+export const isNullSketch = (feature: any): feature is NullSketch => {
+  return (
+    isFeature(feature) &&
+    hasOwnProperty(feature, "type") &&
+    hasOwnProperty(feature, "properties") &&
+    feature.properties &&
+    feature.properties.name &&
+    !feature.geometry
+  );
+};
+
+/**
+ * Check if object is a NullSketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to NullSketchCollection
+ */
+export const isNullSketchCollection = (
+  collection: any
+): collection is NullSketchCollection => {
+  return (
+    isFeatureCollection(collection) &&
+    hasOwnProperty(collection, "properties") &&
+    isObject(collection.properties) &&
+    hasOwnProperty(collection.properties as Record<string, any>, "name") &&
+    collection.features.map(isNullSketch).reduce((acc, cur) => acc && cur, true)
+  );
+};
+
+export const isPolygonSketchCollection = (
+  collection: any
+): collection is SketchCollection<Polygon> => {
+  return (
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "Polygon")
+  );
+};
+
+export const isLineStringSketchCollection = (
+  collection: any
+): collection is SketchCollection<LineString> => {
+  return (
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "LineString")
+  );
+};
+
+export const isPointSketchCollection = (
+  collection: any
+): collection is SketchCollection<Point> => {
+  return (
+    isSketchCollection(collection) && collectionHasGeometry(collection, "Point")
+  );
+};
 
 export const genSampleUserAttributes = (): UserAttribute[] => {
   return [

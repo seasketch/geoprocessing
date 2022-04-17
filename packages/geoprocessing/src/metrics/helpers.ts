@@ -1,27 +1,39 @@
 import {
-  Metric,
-  MetricDimension,
-  MetricProperties,
-  MetricProperty,
   Sketch,
   SketchCollection,
   NullSketch,
   NullSketchCollection,
+} from "../types/sketch";
+import {
+  Metric,
+  MetricDimension,
+  MetricProperty,
   DataClass,
   MetricIdTypes,
   GroupMetricSketchAgg,
-} from "../types";
+} from "../types/metrics";
+
+import { groupBy, keyBy } from "../helpers";
 import {
-  isNullSketchCollection,
   isSketch,
   isSketchCollection,
   isNullSketch,
-  groupBy,
-  keyBy,
-} from "../helpers";
+  isNullSketchCollection,
+} from "../helpers/sketch";
 
 import reduce from "lodash/reduce";
 import cloneDeep from "lodash/cloneDeep";
+
+/** Properties used in Metric */
+export const MetricProperties = [
+  "metricId",
+  "sketchId",
+  "classId",
+  "groupId",
+  "geographyId",
+  "value",
+  "extra",
+] as const;
 
 /**
  * Create a fully defined metric from a partial.  Metric values not provided are initialized to null

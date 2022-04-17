@@ -21,25 +21,17 @@ if (process.env.PROJECT_PATH) {
 module.exports = {
   stories: [...baseStories, ...projectStories],
   typescript: {
+    check: false,
+    checkOptions: {},
     reactDocgen: "none",
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      propFilter: (prop) =>
+        prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
+    },
   },
   webpackFinal: async (config) => {
-    config.node = {
-      fs: "empty",
-    };
-    config.module.rules.push({
-      test: /\.(ts|tsx)$/,
-      use: [
-        {
-          loader: require.resolve("ts-loader"),
-        },
-        // // Optional
-        // {
-        //   loader: require.resolve('react-docgen-typescript-loader'),
-        // },
-      ],
-    });
-    config.resolve.extensions.push(".ts", ".tsx");
+    config.node = { fs: "empty" };
     if (process.env.PROJECT_PATH) {
       config.module.rules.push({
         test: /storybook\/examples-loader.js$/,
@@ -53,15 +45,6 @@ module.exports = {
         ],
       });
     }
-
-    config.plugins = config.plugins.filter(
-      (p) =>
-        !inspect(p).match(
-          /^(DocgenPlugin|ESLintWebpackPlugin|ForkTsCheckerWebpackPlugin)/
-        )
-    );
-
-    console.log(process.cwd());
     return config;
   },
 };

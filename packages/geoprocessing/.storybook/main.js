@@ -20,15 +20,6 @@ if (process.env.PROJECT_PATH) {
 
 module.exports = {
   stories: [...baseStories, ...projectStories],
-  addons: [
-    {
-      name: "storybook-addon-turbo-build",
-      options: {
-        // Please refer below tables for available options
-        optimizationLevel: 3,
-      },
-    },
-  ],
   typescript: {
     reactDocgen: "none",
   },

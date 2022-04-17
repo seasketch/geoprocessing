@@ -30,6 +30,15 @@ module.exports = {
     config.node = { fs: "empty" };
     // allow ts files to be picked up in project path
     config.resolve.extensions.push(".ts", ".tsx");
+    // configure ts files in project path to be transpiled too
+    config.module.rules.push({
+      test: /\.(ts|tsx)$/,
+      use: [
+        {
+          loader: require.resolve("babel-loader"),
+        },
+      ],
+    });
     // load project example sketches and smoke test output
     if (process.env.PROJECT_PATH) {
       config.module.rules.push({

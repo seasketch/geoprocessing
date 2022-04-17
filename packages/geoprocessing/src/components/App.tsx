@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
   SeaSketchReportingMessageEvent,
-  SeaSketchReportingMessageEventType,
-  SketchProperties,
   SeaSketchReportingVisibleLayersChangeEvent,
   SeaSketchReportingToggleLayerVisibilityEvent,
-} from "../types";
-import { ReportContext } from "../storybook";
+} from "../types/service";
+
+import { SketchProperties } from "../types/sketch";
+import { ReportContext } from "../storybook/ReportContext";
 import ReactDOM from "react-dom";
+import {
+  seaSketchReportingMessageEventType,
+  seaSketchReportingVisibleLayersChangeEvent,
+} from "../helpers/service";
 
 const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);
@@ -35,7 +39,7 @@ const App = () => {
     try {
       if (
         event.data &&
-        event.data.type === SeaSketchReportingMessageEventType
+        event.data.type === seaSketchReportingMessageEventType
       ) {
         const message: SeaSketchReportingMessageEvent = event.data;
         setReportContext({
@@ -73,7 +77,7 @@ const App = () => {
         });
       } else if (
         event.data &&
-        event.data.type === SeaSketchReportingVisibleLayersChangeEvent
+        event.data.type === seaSketchReportingVisibleLayersChangeEvent
       ) {
         const message: SeaSketchReportingVisibleLayersChangeEvent = event.data;
         // Don't update context unless report is already initialized with SeaSketchReportingMessageEvent

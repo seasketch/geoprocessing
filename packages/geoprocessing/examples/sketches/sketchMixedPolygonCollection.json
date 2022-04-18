@@ -2,7 +2,7 @@
     "type": "FeatureCollection",
     "properties": {
         "id": "609ef1d65b3d7a396cdbc944",
-        "name": "polygon",
+        "name": "mixed-polygon",
         "updatedAt": "2021-05-25T16:46:12.125Z",
         "createdAt": "2021-05-14T21:55:34.020Z",
         "sketchClassId": "5d0d437fa7c99269b81eff7f",
@@ -78,8 +78,8 @@
         {
             "type": "Feature",
             "geometry": {
-                "type": "Polygon",
-                "coordinates": [
+                "type": "MultiPolygon",
+                "coordinates": [[
                     [
                         [
                             -154.92923855790372,
@@ -106,7 +106,7 @@
                             19.592869349399095
                         ]
                     ]
-                ],
+                ]],
                 "bbox": [
                     -154.93901851781655,
                     19.532663557180157,
@@ -147,8 +147,8 @@
         {
             "type": "Feature",
             "geometry": {
-                "type": "Polygon",
-                "coordinates": [
+                "type": "MultiPolygon",
+                "coordinates": [[
                     [
                         [
                             -155.9849281480671,
@@ -171,7 +171,7 @@
                             19.84300506352331
                         ]
                     ]
-                ],
+                ]],
                 "bbox": [
                     -155.9892625989909,
                     19.8414710982367,

@@ -37,7 +37,10 @@ export async function overlapFeatures(
   /** features to intersect and get overlap stats */
   features: Feature<Polygon | MultiPolygon>[],
   /** the sketches.  If empty will return 0 result. */
-  sketch: Sketch<Polygon> | SketchCollection<Polygon> | Sketch<Polygon>[],
+  sketch:
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>
+    | Sketch<Polygon | MultiPolygon>[],
   options?: Partial<OverlapFeatureOptions>
 ): Promise<Metric[]> {
   const newOptions: OverlapFeatureOptions = {

@@ -2,6 +2,7 @@ import {
   FeatureCollection,
   Point,
   Polygon,
+  MultiPolygon,
   LineString,
 } from "../types/geojson";
 
@@ -175,6 +176,24 @@ export const isPolygonSketchCollection = (
   );
 };
 
+export const isMultiPolygonSketchCollection = (
+  collection: any
+): collection is SketchCollection<MultiPolygon> => {
+  return (
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "MultiPolygon")
+  );
+};
+
+export const isPolygonAllSketchCollection = (
+  collection: any
+): collection is SketchCollection<Polygon | MultiPolygon> => {
+  return (
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, ["Polygon", "MultiPolygon"])
+  );
+};
+
 export const isLineStringSketchCollection = (
   collection: any
 ): collection is SketchCollection<LineString> => {
@@ -218,7 +237,9 @@ export const genSampleUserAttributes = (): UserAttribute[] => {
 /**
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
-export const genSampleSketch = <G = Polygon | LineString | String>(
+export const genSampleSketch = <
+  G = Polygon | MultiPolygon | LineString | String
+>(
   geometry: G,
   name?: string
 ): Sketch<G> => ({

@@ -2,6 +2,7 @@ import {
   Geometry,
   Feature,
   Polygon,
+  MultiPolygon,
   LineString,
   Point,
   FeatureCollection,
@@ -38,6 +39,27 @@ export function isPolygonFeature(feature: any): feature is Feature<Polygon> {
 }
 
 /**
+ * Check if object is a MultiPolygon.  Any code inside a block guarded by a conditional call to this function will have type narrowed
+ */
+export function isMultiPolygonFeature(
+  feature: any
+): feature is Feature<MultiPolygon> {
+  return isFeature(feature) && feature.geometry.type === "MultiPolygon";
+}
+
+/**
+ * Check if object is a Polygon or MultiPolygon.  Any code inside a block guarded by a conditional call to this function will have type narrowed
+ */
+export function isPolygonAnyFeature(
+  feature: any
+): feature is Feature<MultiPolygon> {
+  return (
+    isFeature(feature) &&
+    (isPolygonFeature(feature) || isMultiPolygonFeature(feature))
+  );
+}
+
+/**
  * Check if object is a Linestring.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
 export function isLineStringFeature(
@@ -69,10 +91,16 @@ export function isFeatureCollection(
 // Verifies that features in collection are all of the specified type
 export const collectionHasGeometry = (
   collection: FeatureCollection,
-  g: string
+  /** one or more geometry types */
+  g: string | string[]
 ) => {
+  const gTypes = Array.isArray(g) ? g : [g];
   return collection.features.reduce<boolean>(
-    (acc, f) => acc && f.geometry.type === "Polygon",
+    (acc, f) =>
+      acc &&
+      !!f.geometry &&
+      !!f.geometry.type &&
+      gTypes.includes(f.geometry.type),
     true
   );
 };

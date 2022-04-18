@@ -25,6 +25,15 @@ describe("overlapFeatures", () => {
     expect(metrics[0].value).toBeCloseTo(area(fix.sketch1));
   });
 
+  test("overlapFeatures - sketch multipolygon fully inside", async () => {
+    const metrics = await overlapFeatures(
+      "test",
+      [fix.outer],
+      fix.sketchMultiPoly1
+    );
+    expect(metrics[0].value).toBeCloseTo(area(fix.sketchMultiPoly1));
+  });
+
   test("overlapFeatures - sketch polygon half inside", async () => {
     const metrics = await overlapFeatures("test", [fix.outer], fix.sketch2);
     expect(metrics.length).toEqual(1);
@@ -38,6 +47,32 @@ describe("overlapFeatures", () => {
     const metrics = await overlapFeatures("test", [fix.outer], fix.sketch3);
     expect(metrics.length).toEqual(1);
     expect(metrics[0].value).toBe(0);
+  });
+
+  test("overlapFeatures - mixed poly sketch collection fully inside", async () => {
+    const metrics = await overlapFeatures(
+      "test",
+      [fix.outer],
+      fix.mixedPolySketchCollection
+    );
+    expect(metrics.length).toBe(3);
+    const ids = [
+      fix.mixedCollectionId,
+      ...fix.mixedPolySketchCollection.features.map((sk) => sk.properties.id),
+    ];
+    const areas = [
+      area(fix.mixedPolySketchCollection),
+      ...fix.mixedPolySketchCollection.features.map((sk) => area(sk)),
+    ];
+    const percs = [0.5, 1, 1]; // the poly and multipoly overlap 100% so overlapFeatures area should be half
+    ids.forEach((curSketchId, index) => {
+      console.log("index", index);
+      testWithinPerc(
+        firstMatchingMetric(metrics, (m) => m.sketchId === curSketchId).value,
+        areas[index] * percs[index],
+        { debug: true }
+      );
+    });
   });
 
   test("overlapFeatures - sketch collection half inside", async () => {

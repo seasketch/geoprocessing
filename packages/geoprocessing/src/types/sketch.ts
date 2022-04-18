@@ -1,6 +1,7 @@
 import { ISO8601DateTime } from "./base";
 import {
   Polygon,
+  MultiPolygon,
   LineString,
   Point,
   Feature,
@@ -8,7 +9,7 @@ import {
   FeatureCollection,
 } from "./geojson";
 
-export type SketchGeometryTypes = Polygon | LineString | Point;
+export type SketchGeometryTypes = Polygon | MultiPolygon | LineString | Point;
 
 export interface SketchProperties {
   id: string;

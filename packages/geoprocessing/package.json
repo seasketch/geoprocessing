@@ -63,6 +63,7 @@
     "@aws-cdk/core": "1.101.0",
     "@babel/core": "^7.13.15",
     "@babel/plugin-proposal-class-properties": "^7.13.15",
+    "@babel/plugin-proposal-numeric-separator": "^7.16.7",
     "@babel/preset-env": "^7.13.15",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",

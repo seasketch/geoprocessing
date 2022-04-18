@@ -40,7 +40,11 @@ module.exports = {
       test: /\.(ts|tsx)$/,
       use: [
         {
+          // bab
           loader: require.resolve("babel-loader"),
+          options: {
+            plugins: ["@babel/plugin-proposal-numeric-separator"],
+          },
         },
       ],
     });

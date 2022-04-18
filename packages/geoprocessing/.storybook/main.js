@@ -25,6 +25,11 @@ module.exports = {
     "@storybook/addon-interactions",
   ],
   framework: "@storybook/react",
+  typescript: {
+    check: false,
+    checkOptions: {},
+    reactDocgen: "none",
+  },
   webpackFinal: async (config) => {
     /// stub fs to avoid not found error
     config.node = { fs: "empty" };

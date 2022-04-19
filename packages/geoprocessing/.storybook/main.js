@@ -26,8 +26,7 @@ module.exports = {
   ],
   framework: "@storybook/react",
   typescript: {
-    check: false,
-    checkOptions: {},
+    check: true,
     reactDocgen: "none",
   },
   webpackFinal: async (config) => {

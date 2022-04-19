@@ -31,9 +31,8 @@ interface ReportContextState {
 }
 
 const App = () => {
-  const [reportContext, setReportContext] = useState<ReportContextState | null>(
-    null
-  );
+  const [reportContext, setReportContext] =
+    useState<ReportContextState | null>(null);
   const [initialized, setInitialized] = useState(false);
   const onMessage = (event: MessageEvent) => {
     try {
@@ -128,6 +127,10 @@ const App = () => {
 
   if (reportContext) {
     const Report = REPORTS[reportContext.clientName];
+    if (!Report)
+      throw new Error(
+        `Report ${reportContext.clientName} not found in client bundle.  Did you forget to add it to geoprocessing.json?`
+      );
     return (
       <ReportContext.Provider
         value={{

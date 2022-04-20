@@ -20,10 +20,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Node version
+      - name: Check node version
         run: node -v
       - name: Upgrade npm
         run: npm install -g npm@7.10.0
+      - name: Check npm version
         run: npm -v
       - name: Install modules
         run: npm install

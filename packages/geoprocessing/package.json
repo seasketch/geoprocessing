@@ -194,7 +194,7 @@
     "@storybook/addon-essentials": "^6.4.22",
     "@storybook/addon-interactions": "^6.4.22",
     "@storybook/addon-links": "^6.4.22",
-    "@storybook/testing-library": "^0.0.9",
+    "@storybook/testing-library": "^0.0.10",
     "http-server": "^14.1.0",
     "identity-obj-proxy": "^3.0.0",
     "jest-docblock": "^27.5.1",

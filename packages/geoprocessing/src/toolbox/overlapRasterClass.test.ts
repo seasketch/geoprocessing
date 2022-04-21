@@ -269,7 +269,7 @@ describe("overlapRasterClass test", () => {
     const metrics = await overlapRasterClass(
       "test",
       raster,
-      multiPoly1,
+      multiPoly2,
       classIdMapping(classes)
     );
     expect(metrics.length).toBe(2);

@@ -121,6 +121,7 @@ export function toNullSketch(
  */
 export const isSketch = (feature: any): feature is Sketch => {
   return (
+    feature &&
     isFeature(feature) &&
     hasOwnProperty(feature, "type") &&
     hasOwnProperty(feature, "properties") &&
@@ -133,7 +134,7 @@ export const isSketch = (feature: any): feature is Sketch => {
  * Checks if sketch is a Polygon
  */
 export const isPolygonSketch = (sketch: any): sketch is Sketch<Polygon> => {
-  return isSketch(sketch) && isPolygonFeature(sketch);
+  return sketch && isSketch(sketch) && isPolygonFeature(sketch);
 };
 
 /**
@@ -142,7 +143,7 @@ export const isPolygonSketch = (sketch: any): sketch is Sketch<Polygon> => {
 export const isMultiPolygonSketch = (
   sketch: any
 ): sketch is Sketch<MultiPolygon> => {
-  return isSketch(sketch) && isMultiPolygonFeature(sketch);
+  return sketch && isSketch(sketch) && isMultiPolygonFeature(sketch);
 };
 
 /**
@@ -152,6 +153,7 @@ export const isSketchCollection = (
   collection: any
 ): collection is SketchCollection => {
   return (
+    collection &&
     isFeatureCollection(collection) &&
     hasOwnProperty(collection, "properties") &&
     isObject(collection.properties) &&
@@ -165,6 +167,7 @@ export const isSketchCollection = (
  */
 export const isNullSketch = (feature: any): feature is NullSketch => {
   return (
+    feature &&
     isFeature(feature) &&
     hasOwnProperty(feature, "type") &&
     hasOwnProperty(feature, "properties") &&
@@ -181,6 +184,7 @@ export const isNullSketchCollection = (
   collection: any
 ): collection is NullSketchCollection => {
   return (
+    collection &&
     isFeatureCollection(collection) &&
     hasOwnProperty(collection, "properties") &&
     isObject(collection.properties) &&
@@ -193,6 +197,7 @@ export const isPolygonSketchCollection = (
   collection: any
 ): collection is SketchCollection<Polygon> => {
   return (
+    collection &&
     isSketchCollection(collection) &&
     collectionHasGeometry(collection, "Polygon")
   );
@@ -202,6 +207,7 @@ export const isMultiPolygonSketchCollection = (
   collection: any
 ): collection is SketchCollection<MultiPolygon> => {
   return (
+    collection &&
     isSketchCollection(collection) &&
     collectionHasGeometry(collection, "MultiPolygon")
   );
@@ -211,6 +217,7 @@ export const isPolygonAllSketchCollection = (
   collection: any
 ): collection is SketchCollection<Polygon | MultiPolygon> => {
   return (
+    collection &&
     isSketchCollection(collection) &&
     collectionHasGeometry(collection, ["Polygon", "MultiPolygon"])
   );
@@ -220,6 +227,7 @@ export const isLineStringSketchCollection = (
   collection: any
 ): collection is SketchCollection<LineString> => {
   return (
+    collection &&
     isSketchCollection(collection) &&
     collectionHasGeometry(collection, "LineString")
   );
@@ -229,7 +237,9 @@ export const isPointSketchCollection = (
   collection: any
 ): collection is SketchCollection<Point> => {
   return (
-    isSketchCollection(collection) && collectionHasGeometry(collection, "Point")
+    collection &&
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "Point")
   );
 };
 

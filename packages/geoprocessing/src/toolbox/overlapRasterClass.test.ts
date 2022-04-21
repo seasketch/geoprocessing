@@ -124,6 +124,40 @@ const classes: DataClass[] = Array.from({ length: 2 }, (v, i) => ({
 }));
 
 describe("overlapRasterClass test", () => {
+  test("overlapRasterClass - undefined sketch should return class sum for whole raster", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [0, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await overlapRasterClass(
+      "test",
+      raster,
+      null,
+      classIdMapping(classes)
+    );
+    // only cell in polygon should have been nodata in bottom left
+    expect(metrics.length).toBe(2);
+    expect(metrics[0].sketchId).toBe(null);
+    expect(metrics[0].classId).toBe("1");
+    expect(metrics[0].value).toBe(2);
+
+    expect(metrics[1].classId).toBe("2");
+    expect(metrics[1].sketchId).toBe(null);
+    expect(metrics[1].value).toBe(1);
+  });
+
   test("overlapRasterClass - single polygon sketch bottom left", async () => {
     const raster = await parseGeoraster(
       [

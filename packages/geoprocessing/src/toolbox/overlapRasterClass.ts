@@ -12,6 +12,7 @@ import area from "@turf/area";
 import { Feature, featureCollection, MultiPolygon } from "@turf/helpers";
 // @ts-ignore
 import geoblaze from "geoblaze";
+import { Histogram } from "../types/georaster";
 
 /**
  * Calculates sum of overlap between sketches and feature classes in raster
@@ -21,10 +22,14 @@ export async function overlapRasterClass(
   metricId: string,
   /** raster to search */
   raster: Georaster,
-  /** single sketch or collection.  Supports polygon or multipolygon.  Will remove overlap between sketches, but will not remove overlap within Multipolygon sketch */
+  /**
+   * single sketch or collection.  If undefined will return sum by feature class for the whole raster.
+   * Supports polygon or multipolygon.  Will remove overlap between sketches, but will not remove overlap within Multipolygon sketch
+   */
   sketch:
     | Sketch<Polygon | MultiPolygon>
-    | SketchCollection<Polygon | MultiPolygon>,
+    | SketchCollection<Polygon | MultiPolygon>
+    | null,
   /** Object mapping numeric class IDs to their string counterpart */
   classIdMapping: Record<string, string>,
   options: {
@@ -33,16 +38,16 @@ export async function overlapRasterClass(
   } = { removeSketchHoles: true }
 ): Promise<Metric[]> {
   if (!classIdMapping) throw new Error("Missing classIdMapping");
-  const sketches = toSketchArray(sketch);
-  const sketchArea = area(sketch);
+  const sketches = sketch ? toSketchArray(sketch) : [];
+  const sketchArea = sketch ? area(sketch) : 0;
   const numericClassIds = Object.keys(classIdMapping);
 
   // overallHistograms account for sketch overlap, sketchHistograms do not
   // histogram will exclude a class in result if not in raster, rather than return zero
   // histogram will be undefined if no raster cells are found within sketch feature
   const { sketchHistograms, overallHistograms } = (() => {
-    let overallHistograms: any[] = [];
-    let sketchHistograms: any[] = [];
+    let overallHistograms: Histogram[] = [];
+    let sketchHistograms: Histogram[] = [];
     if (sketch) {
       // Get histogram for each feature
       // If feature overlap, remove with union
@@ -78,7 +83,7 @@ export async function overlapRasterClass(
       overallHistograms = clippedSketches.map((feature) => {
         return geoblaze.histogram(raster, feature, {
           scaleType: "nominal",
-        })[0];
+        })[0] as Histogram;
       });
 
       // For each sketch
@@ -90,7 +95,7 @@ export async function overlapRasterClass(
         const polyHistograms = polys.map((poly) => {
           const histo = geoblaze.histogram(raster, poly, {
             scaleType: "nominal",
-          })[0];
+          })[0] as Histogram;
 
           // Create zeroed poly histogram, one key per class and merge in the non-zero histogram values
           const polyHisto = Object.keys(classIdMapping).reduce(
@@ -106,10 +111,10 @@ export async function overlapRasterClass(
           return polyHisto;
         });
 
-        // Now sum poly histos into one sketch histo by class ID
-        const sketchHisto = polyHistograms[0]; // start with first poly
+        // Now sum polygon histos into one sketch histo by class ID.
+        const sketchHisto = polyHistograms[0]; // seed with first polygon histo
 
-        // If sketch is multipolygon, add in the other poly parts
+        // If sketch is multipolygon, add in the other poly histos
         if (polyHistograms.length > 1) {
           polyHistograms.slice(1).forEach((polyHisto) => {
             Object.keys(polyHisto).forEach((classId) => {
@@ -123,7 +128,7 @@ export async function overlapRasterClass(
       // Get histogram for whole raster
       const hist = geoblaze.histogram(raster, undefined, {
         scaleType: "nominal",
-      })[0];
+      })[0] as Histogram;
       // If there are no sketches, then they are the same
       overallHistograms = [hist];
       sketchHistograms = [hist];
@@ -135,12 +140,12 @@ export async function overlapRasterClass(
     };
   })();
 
-  let sketchMetrics: Metric[] = [];
+  let metrics: Metric[] = [];
 
-  if (sketches) {
+  if (sketches && sketches.length > 0) {
     sketchHistograms.forEach((sketchHist, index) => {
       numericClassIds.forEach((numericClassId) => {
-        sketchMetrics.push(
+        metrics.push(
           createMetric({
             metricId,
             classId: classIdMapping[numericClassId],
@@ -155,8 +160,8 @@ export async function overlapRasterClass(
     });
   }
 
-  // Sum the counts by class for each histogram
-  if (isSketchCollection(sketch)) {
+  if (!sketch || isSketchCollection(sketch)) {
+    // Sum the overallHistograms into one
     const sumByClass: Record<string, number> = {};
     overallHistograms.forEach((overallHist) => {
       if (!overallHist) {
@@ -170,21 +175,27 @@ export async function overlapRasterClass(
       });
     });
 
+    const extra =
+      sketch && isSketchCollection(sketch)
+        ? {
+            sketchName: sketch.properties.name,
+            isCollection: true,
+          }
+        : {};
+
+    // Transform to metrics
     numericClassIds.forEach((classId) => {
-      sketchMetrics.push(
+      metrics.push(
         createMetric({
           metricId,
           classId: classIdMapping[classId],
-          sketchId: sketch.properties.id,
-          value: sumByClass[classId] || 0,
-          extra: {
-            sketchName: sketch.properties.name,
-            isCollection: true,
-          },
+          sketchId: sketch ? sketch.properties.id : null,
+          value: sumByClass[classId] || 0, // should never be undefined but default to 0 anyway
+          ...extra,
         })
       );
     });
   }
 
-  return sketchMetrics;
+  return metrics;
 }

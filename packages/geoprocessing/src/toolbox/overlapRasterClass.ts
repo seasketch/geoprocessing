@@ -9,7 +9,7 @@ import {
 import { createMetric } from "../metrics";
 import flatten from "@turf/flatten";
 import area from "@turf/area";
-import { featureCollection } from "@turf/helpers";
+import { Feature, featureCollection, MultiPolygon } from "@turf/helpers";
 // @ts-ignore
 import geoblaze from "geoblaze";
 
@@ -21,8 +21,10 @@ export async function overlapRasterClass(
   metricId: string,
   /** raster to search */
   raster: Georaster,
-  /** single sketch or collection. */
-  sketch: Sketch<Polygon> | SketchCollection<Polygon>,
+  /** single sketch or collection.  Supports polygon or multipolygon.  Will remove overlap between sketches, but will not remove overlap within Multipolygon sketch */
+  sketch:
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
   /** Object mapping numeric class IDs to their string counterpart */
   classIdMapping: Record<string, string>,
   options: {
@@ -45,6 +47,8 @@ export async function overlapRasterClass(
       // Get histogram for each feature
       // If feature overlap, remove with union
       // Optionally remove polygon holes (geoblaze polygon hole bug)
+      // Then get the histogram for each sketch
+      // If multipolygon sketch, geoblaze does not support, so break down into polygons, then sum the result
 
       const holeSketches = (() => {
         if (options.removeSketchHoles) {
@@ -62,9 +66,13 @@ export async function overlapRasterClass(
         throw new Error(`rasterClassStats ${metricId} - something went wrong`);
       const sketchUnionArea = area(sketchUnion);
       const isOverlap = sketchUnionArea < sketchArea;
+
       const clippedSketches = isOverlap
         ? flatten(sketchUnion).features
-        : sketches;
+        : sketches.reduce<Feature<Polygon>[]>((soFar, sk) => {
+            const skPolyFC = flatten(sk);
+            return soFar.concat(skPolyFC.features); // handles poly and multipoly
+          }, []);
 
       // Get count of unique cell IDs in each feature
       overallHistograms = clippedSketches.map((feature) => {
@@ -73,10 +81,43 @@ export async function overlapRasterClass(
         })[0];
       });
 
+      // For each sketch
       sketchHistograms = sketches.map((feature) => {
-        return geoblaze.histogram(raster, feature, {
-          scaleType: "nominal",
-        })[0];
+        // consolidate to polys array - handling both poly and multipoly
+        const polys = flatten(feature).features;
+
+        // get histogram for each poly
+        const polyHistograms = polys.map((poly) => {
+          const histo = geoblaze.histogram(raster, poly, {
+            scaleType: "nominal",
+          })[0];
+
+          // Create zeroed poly histogram, one key per class and merge in the non-zero histogram values
+          const polyHisto = Object.keys(classIdMapping).reduce(
+            (histoSoFar, curClassId) => ({ ...histoSoFar, [curClassId]: 0 }),
+            {}
+          );
+          if (histo) {
+            Object.keys(histo).forEach((classId) => {
+              polyHisto[classId] = histo[classId];
+            });
+          }
+
+          return polyHisto;
+        });
+
+        // Now sum poly histos into one sketch histo by class ID
+        const sketchHisto = polyHistograms[0]; // start with first poly
+
+        // If sketch is multipolygon, add in the other poly parts
+        if (polyHistograms.length > 1) {
+          polyHistograms.slice(1).forEach((polyHisto) => {
+            Object.keys(polyHisto).forEach((classId) => {
+              sketchHisto[classId] += polyHisto[classId];
+            });
+          });
+        }
+        return sketchHisto;
       });
     } else {
       // Get histogram for whole raster
@@ -98,36 +139,19 @@ export async function overlapRasterClass(
 
   if (sketches) {
     sketchHistograms.forEach((sketchHist, index) => {
-      if (!sketchHist) {
-        // push zero result for sketch for all classes
-        numericClassIds.forEach((numericClassId) =>
-          sketchMetrics.push(
-            createMetric({
-              metricId,
-              classId: classIdMapping[numericClassId],
-              sketchId: sketches[index].properties.id,
-              value: 0,
-              extra: {
-                sketchName: sketches[index].properties.name,
-              },
-            })
-          )
+      numericClassIds.forEach((numericClassId) => {
+        sketchMetrics.push(
+          createMetric({
+            metricId,
+            classId: classIdMapping[numericClassId],
+            sketchId: sketches[index].properties.id,
+            value: sketchHist[numericClassId] || 0, // should never be undefined but default to 0 anyway
+            extra: {
+              sketchName: sketches[index].properties.name,
+            },
+          })
         );
-      } else {
-        numericClassIds.forEach((numericClassId) => {
-          sketchMetrics.push(
-            createMetric({
-              metricId,
-              classId: classIdMapping[numericClassId],
-              sketchId: sketches[index].properties.id,
-              value: sketchHist[numericClassId] || 0,
-              extra: {
-                sketchName: sketches[index].properties.name,
-              },
-            })
-          );
-        });
-      }
+      });
     });
   }
 

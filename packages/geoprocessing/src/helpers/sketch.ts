@@ -16,7 +16,13 @@ import {
 } from "../types/sketch";
 
 import { hasOwnProperty, isObject } from "./native";
-import { isFeature, isFeatureCollection, collectionHasGeometry } from "./geo";
+import {
+  isFeature,
+  isFeatureCollection,
+  collectionHasGeometry,
+  isMultiPolygonFeature,
+  isPolygonFeature,
+} from "./geo";
 
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
@@ -121,6 +127,22 @@ export const isSketch = (feature: any): feature is Sketch => {
     feature.properties &&
     feature.properties.name
   );
+};
+
+/**
+ * Checks if sketch is a Polygon
+ */
+export const isPolygonSketch = (sketch: any): sketch is Sketch<Polygon> => {
+  return isSketch(sketch) && isPolygonFeature(sketch);
+};
+
+/**
+ * Checks if sketch is a MultiPolygon. Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
+ */
+export const isMultiPolygonSketch = (
+  sketch: any
+): sketch is Sketch<MultiPolygon> => {
+  return isSketch(sketch) && isMultiPolygonFeature(sketch);
 };
 
 /**

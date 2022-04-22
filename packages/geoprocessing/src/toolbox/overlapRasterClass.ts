@@ -175,25 +175,21 @@ export async function overlapRasterClass(
       });
     });
 
-    const extra =
-      sketch && isSketchCollection(sketch)
-        ? {
-            sketchName: sketch.properties.name,
-            isCollection: true,
-          }
-        : {};
-
     // Transform to metrics
     numericClassIds.forEach((classId) => {
-      metrics.push(
-        createMetric({
-          metricId,
-          classId: classIdMapping[classId],
-          sketchId: sketch ? sketch.properties.id : null,
-          value: sumByClass[classId] || 0, // should never be undefined but default to 0 anyway
-          ...extra,
-        })
-      );
+      const newMetric = createMetric({
+        metricId,
+        classId: classIdMapping[classId],
+        sketchId: sketch ? sketch.properties.id : null,
+        value: sumByClass[classId] || 0, // should never be undefined but default to 0 anyway
+      });
+      if (sketch && isSketchCollection(sketch)) {
+        newMetric.extra = {
+          sketchName: sketch.properties.name,
+          isCollection: true,
+        };
+      }
+      metrics.push(newMetric);
     });
   }
 

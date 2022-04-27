@@ -36,7 +36,7 @@ export const MetricProperties = [
 ] as const;
 
 /**
- * Create a fully defined metric from a partial.  Metric values not provided are initialized to null
+ * Creates a base metric object with 0 value, metricId of 'metric' and all other IDs null.  Then overrides with properties of passed metric.
  * @param metric - partial metric
  * @returns metric
  */

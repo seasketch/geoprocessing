@@ -5,7 +5,7 @@ export const roundDecimal = (value: number, decimals = 1) => {
   );
 };
 
-interface PercentEdgeOptions {
+export interface PercentEdgeOptions {
   /** Number of decimal digits to round value to if is within lower or upper edge range.  defaults to 1.  Override with this option */
   digits?: number;
   /** Number of decimal digits to round value to if exactly matches lowerBound, defaults to 0 (whole number)  */

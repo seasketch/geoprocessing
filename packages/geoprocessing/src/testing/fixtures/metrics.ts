@@ -1,5 +1,5 @@
 import { createMetrics } from "../../metrics";
-import { DataClass, DataGroup, Metric } from "../../types";
+import { DataClass, DataGroup, Metric, MetricGroup } from "../../types";
 
 /** One dataset per class, layer ID for each class */
 export const simpleClasses: DataClass[] = [
@@ -65,14 +65,21 @@ export const simpleGroup: DataGroup = {
   classes: simpleClasses,
 };
 
+export const simpleMetricGroup: MetricGroup = {
+  metricId: "metric",
+  ...simpleGroup,
+};
+
 export const simpleClassMetrics: Metric[] = createMetrics([
   {
     classId: "Abyssopelagic",
     value: 0.13,
+    metricId: simpleMetricGroup.metricId,
   },
   {
     classId: "Bathypelagic",
     value: 0.44,
+    metricId: simpleMetricGroup.metricId,
   },
 ]);
 
@@ -218,13 +225,20 @@ export const categoricalGroup: DataGroup = {
   layerId: "a",
 };
 
+export const categoricalMetricGroup: MetricGroup = {
+  ...categoricalGroup,
+  metricId: "metric",
+};
+
 export const categoricalClassMetrics: Metric[] = createMetrics([
   {
     classId: "Bays and Coast",
     value: 0.13,
+    metricId: categoricalMetricGroup.metricId,
   },
   {
     classId: "Madracis Reef",
     value: 0.44,
+    metricId: categoricalMetricGroup.metricId,
   },
 ]);

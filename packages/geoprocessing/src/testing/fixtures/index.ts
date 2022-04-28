@@ -3,6 +3,7 @@ import {
   selfCrossingPolygon,
   selfCrossingSketchPolygon,
 } from "./invalidSketches";
+import * as metricsFixtures from "./metrics";
 
 let fixtures = {};
 
@@ -152,4 +153,5 @@ export default {
     selfCrossingPolygon,
     selfCrossingSketchPolygon,
   },
+  metrics: metricsFixtures,
 };

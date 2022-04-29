@@ -3,23 +3,22 @@ import {
   SketchCollection,
   NullSketch,
   NullSketchCollection,
-} from "../types/sketch";
-import {
   Metric,
   MetricDimension,
   MetricProperty,
   DataClass,
   MetricIdTypes,
   GroupMetricSketchAgg,
-} from "../types/metrics";
+} from "../types";
 
-import { groupBy, keyBy } from "../helpers";
 import {
+  groupBy,
+  keyBy,
   isSketch,
   isSketchCollection,
   isNullSketch,
   isNullSketchCollection,
-} from "../helpers/sketch";
+} from "../helpers";
 
 import reduce from "lodash/reduce";
 import cloneDeep from "lodash/cloneDeep";

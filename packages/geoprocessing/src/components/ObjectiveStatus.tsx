@@ -4,21 +4,33 @@ import {
   XCircleFill,
   QuestionCircleFill,
 } from "@styled-icons/bootstrap";
+import { ObjectiveAnswer } from "../types/objective";
+import styled from "styled-components";
 
 export interface ObjectiveStatusProps {
-  status: "yes" | "no" | "maybe";
+  status: ObjectiveAnswer;
   msg: JSX.Element;
   size?: number;
   style?: React.HTMLAttributes<HTMLElement>["style"];
 }
 
+const TableStyled = styled.div`
+  .container {
+    display: flex;
+    margin: 10px 0px 10px 0px;
+  }
+  .icon {
+    padding-right: 10px;
+  }
+`;
+
 export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
   status,
   msg,
-  size = 36,
+  size = 30,
   style = {},
 }) => {
-  let icon: JSX.Element;
+  let icon: JSX.Element = <></>;
   switch (status) {
     case "yes":
       icon = (
@@ -47,9 +59,11 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
   }
 
   return (
-    <div style={{ display: "flex" }}>
-      <div style={{ paddingRight: 10 }}>{icon}</div>
-      <div>{msg}</div>
-    </div>
+    <TableStyled>
+      <div className="container">
+        <div className="icon">{icon}</div>
+        <div>{msg}</div>
+      </div>
+    </TableStyled>
   );
 };

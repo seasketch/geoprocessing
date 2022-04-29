@@ -5,6 +5,10 @@ export * from "./storybook/StoryLayout";
 
 /* Components */
 export * from "./buttons";
+export * from "./chart";
+export * from "./iucn";
+export * from "./table";
+
 export * from "./Card";
 export * from "./Circle";
 export * from "./Collapse";
@@ -14,7 +18,6 @@ export * from "./DataDownloadToolbar";
 export * from "./Dropdown";
 export * from "./DataDownload";
 export * from "./InfoStatus";
-export * from "./iucn";
 export * from "./KeySection";
 export * from "./LayerToggle";
 export * from "./ObjectiveStatus";
@@ -25,5 +28,4 @@ export * from "./ResultsCard";
 export * from "./SegmentControl";
 export * from "./Skeleton";
 export * from "./SketchAttributesCard";
-export * from "./table";
 export * from "./Toolbar";

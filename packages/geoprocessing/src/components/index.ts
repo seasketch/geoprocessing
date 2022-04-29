@@ -3,7 +3,7 @@ export * from "./storybook/ReportDecorator";
 export * from "./storybook/CardDecorator";
 export * from "./storybook/StoryLayout";
 
-/* Components */
+/* Core Components */
 export * from "./buttons";
 export * from "./chart";
 export * from "./iucn";
@@ -29,3 +29,6 @@ export * from "./SegmentControl";
 export * from "./Skeleton";
 export * from "./SketchAttributesCard";
 export * from "./Toolbar";
+
+/** Other Modules */
+export * from "../rbcs/components";

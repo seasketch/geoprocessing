@@ -12,6 +12,7 @@ export * from "./src/helpers/number";
 export * from "./src/helpers/string";
 export * from "./src/helpers/sketch";
 export * from "./src/helpers/units";
+export * from "./src/helpers/ts";
 
 export * from "./src/metrics/helpers";
 export * from "./src/iucn/helpers";

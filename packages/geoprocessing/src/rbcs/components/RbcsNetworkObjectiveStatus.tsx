@@ -1,6 +1,6 @@
 import React from "react";
+import { RbcsObjective } from "../types";
 import { OBJECTIVE_YES, OBJECTIVE_NO, ObjectiveAnswer } from "../../types";
-import { RbcsObjective } from "../rbcs";
 import { percentWithEdge } from "../../helpers";
 import { ObjectiveStatus } from "../../components/ObjectiveStatus";
 

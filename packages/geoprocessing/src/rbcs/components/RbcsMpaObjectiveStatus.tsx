@@ -1,5 +1,5 @@
 import React from "react";
-import { RbcsObjective, RbcsMpaProtectionLevel } from "../rbcs";
+import { RbcsObjective, RbcsMpaProtectionLevel } from "../types";
 import { OBJECTIVE_YES, OBJECTIVE_NO } from "../../types";
 import { percentWithEdge } from "../../helpers";
 import { ObjectiveStatus } from "../../components";

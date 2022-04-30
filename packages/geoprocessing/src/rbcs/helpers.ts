@@ -1,12 +1,13 @@
 import { MpaClassification, Zone } from "./types";
 import {
-  RbcsMpaProtectionLevel,
   rbcsMpaProtectionLevels,
   rbcsScores,
   rbcsConstants,
   classifyMPA,
   RegBasedClassificationMetric,
-} from "./rbcs";
+  RbcsMpaProtectionLevel,
+} from ".";
+
 import {
   Sketch,
   SketchCollection,

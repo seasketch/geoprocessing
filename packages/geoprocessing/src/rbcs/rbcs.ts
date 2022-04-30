@@ -1,6 +1,4 @@
 import { MpaClassification, Zone, ZoneColor, ZoneId, ZoneName } from "./types";
-import { Objective, ObjectiveAnswer } from "../types/objective";
-import { Metric } from "../types";
 
 export const rbcsConstants: Record<string, Record<string, string>> = {
   GEAR_TYPES: {
@@ -245,48 +243,4 @@ export function getClassificationLabel(index) {
   } else {
     return "Unprotected Area";
   }
-}
-
-//// ADDITIONAL TYPES ////
-
-export const FULLY_PROTECTED_LEVEL = "Fully Protected Area";
-export const HIGHLY_PROTECTED_LEVEL = "Highly Protected Area";
-export const MODERATELY_PROTECTED_LEVEL = "Moderately Protected Area";
-export const POORLY_PROTECTED_LEVEL = "Poorly Protected Area";
-export const UNPROTECTED_LEVEL = "Unprotected Area";
-
-export const rbcsMpaProtectionLevels = [
-  FULLY_PROTECTED_LEVEL,
-  HIGHLY_PROTECTED_LEVEL,
-  MODERATELY_PROTECTED_LEVEL,
-  POORLY_PROTECTED_LEVEL,
-  UNPROTECTED_LEVEL,
-] as const;
-
-export type RbcsMpaProtectionLevel = typeof rbcsMpaProtectionLevels[number];
-
-/**
- * Mapping of RBCS MPA Classification ID to whether it counts toward or meets an objective
- */
-export type RbcsMpaObjectiveAnswerMap = Record<
-  RbcsMpaProtectionLevel,
-  ObjectiveAnswer
->;
-
-export interface RbcsObjective extends Objective {
-  /** Map of RBCS protection levels to whether they count towards objective */
-  countsToward: RbcsMpaObjectiveAnswerMap;
-}
-
-/**
- * Extended metric for mpa-reg-based-classification results, either zone or mpa classification
- */
-export interface RegBasedClassificationMetric extends Omit<Metric, "extra"> {
-  sketchId: string;
-  extra?: {
-    gearTypes?: string[];
-    aquaculture?: string;
-    boating?: string;
-    label?: string;
-  };
 }

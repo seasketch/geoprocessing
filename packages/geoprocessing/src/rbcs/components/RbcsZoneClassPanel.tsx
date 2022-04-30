@@ -1,5 +1,5 @@
 import React from "react";
-import { ZoneRegIcon } from "./RbcsIcons";
+import { RbcsZoneRegIcon } from "./RbcsIcons";
 import { getZoneClassificationName } from "..";
 
 export interface RbcsPanelProps {
@@ -22,7 +22,7 @@ export const RbcsZoneClassPanel: React.FunctionComponent<RbcsPanelProps> = ({
       }}
     >
       <div style={{ paddingRight: 10 }}>
-        <ZoneRegIcon value={value} size={size} />
+        <RbcsZoneRegIcon value={value} size={size} />
       </div>
       <div style={{ fontSize: 18 }}>{getZoneClassificationName(value)}</div>
     </div>

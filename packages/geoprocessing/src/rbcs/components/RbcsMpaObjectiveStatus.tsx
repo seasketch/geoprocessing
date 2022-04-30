@@ -4,7 +4,7 @@ import { OBJECTIVE_YES, OBJECTIVE_NO } from "../../types";
 import { percentWithEdge } from "../../helpers";
 import { ObjectiveStatus } from "../../components";
 
-export type RenderMsgFunction = (
+export type RbcsMpaObjectiveRenderMsgFunction = (
   objective: RbcsObjective,
   level: RbcsMpaProtectionLevel
 ) => JSX.Element;
@@ -15,7 +15,7 @@ export interface RbcsMpaObjectiveStatusProps {
   /** RBCS objective to weigh protection level against */
   objective: RbcsObjective;
   /** optional custom objective message */
-  renderMsg?: RenderMsgFunction;
+  renderMsg?: RbcsMpaObjectiveRenderMsgFunction;
 }
 
 export const RbcsMpaObjectiveStatus: React.FunctionComponent<RbcsMpaObjectiveStatusProps> =

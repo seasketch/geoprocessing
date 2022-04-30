@@ -4,24 +4,24 @@ import { RbcsObjective } from "../rbcs";
 import { percentWithEdge } from "../../helpers";
 import { ObjectiveStatus } from "../../components/ObjectiveStatus";
 
-export type RenderMsgFunction = (
+export type RbcsNetworkObjectiveRenderMsgFunction = (
   objective: RbcsObjective,
   objectiveMet: ObjectiveAnswer
 ) => JSX.Element;
 
-export interface AzoresNetworkObjectiveProps {
+export interface RbcsNetworkObjectiveProps {
   /** Objective to display status */
   objective: RbcsObjective;
   /** Answer to whether objective is met */
   objectiveMet: ObjectiveAnswer;
   /** optional custom objective message */
-  renderMsg?: RenderMsgFunction;
+  renderMsg?: RbcsNetworkObjectiveRenderMsgFunction;
 }
 
 /**
  * Displays status toward meeting Network objective
  */
-export const RbcsNetworkObjectiveStatus: React.FunctionComponent<AzoresNetworkObjectiveProps> =
+export const RbcsNetworkObjectiveStatus: React.FunctionComponent<RbcsNetworkObjectiveProps> =
   ({ objective, objectiveMet, renderMsg }) => {
     const msg = renderMsg
       ? renderMsg(objective, objectiveMet)

@@ -10,7 +10,7 @@ export interface RbcsIconProps {
   displayValue?: boolean;
 }
 
-export const ZoneRegIcon: React.FunctionComponent<RbcsIconProps> = ({
+export const RbcsZoneRegIcon: React.FunctionComponent<RbcsIconProps> = ({
   value,
   size = 20,
   displayValue = true,

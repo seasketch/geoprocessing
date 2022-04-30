@@ -1,6 +1,6 @@
 import React from "react";
 import { ReportDecorator, CardDecorator } from "../../components/storybook";
-import { RbcsIcon, ZoneRegIcon } from "./RbcsIcons";
+import { RbcsIcon, RbcsZoneRegIcon } from "./RbcsIcons";
 
 export default {
   component: RbcsIcon,
@@ -10,14 +10,14 @@ export default {
 
 export const zone = () => (
   <>
-    <ZoneRegIcon value={1} />
-    <ZoneRegIcon value={2} />
-    <ZoneRegIcon value={3} />
-    <ZoneRegIcon value={4} />
-    <ZoneRegIcon value={5} />
-    <ZoneRegIcon value={6} />
-    <ZoneRegIcon value={7} />
-    <ZoneRegIcon value={8} />
+    <RbcsZoneRegIcon value={1} />
+    <RbcsZoneRegIcon value={2} />
+    <RbcsZoneRegIcon value={3} />
+    <RbcsZoneRegIcon value={4} />
+    <RbcsZoneRegIcon value={5} />
+    <RbcsZoneRegIcon value={6} />
+    <RbcsZoneRegIcon value={7} />
+    <RbcsZoneRegIcon value={8} />
   </>
 );
 

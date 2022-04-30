@@ -2,7 +2,7 @@ import React from "react";
 import { PointyCircle, TwoColorPointyCircle } from "./PointyCircle";
 import { getIndexIconPerc } from "..";
 import { roundDecimal } from "../../helpers";
-import { scores } from "../rbcs";
+import { rbcsScores } from "../rbcs";
 
 export interface RbcsIconProps {
   value: number;
@@ -27,7 +27,7 @@ export const ZoneRegIcon: React.FunctionComponent<RbcsIconProps> = ({
   )
     throw new Error("ZoneRegIcon: value must be integer 1-8");
   return (
-    <PointyCircle size={size || 20} color={scores[value].color}>
+    <PointyCircle size={size || 20} color={rbcsScores[value].color}>
       {displayValue ? value : "'"}
     </PointyCircle>
   );

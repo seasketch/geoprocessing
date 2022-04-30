@@ -2,12 +2,12 @@
  * @group unit
  */
 
-import { classifyZone, constants, classifyMPA } from "./rbcs";
+import { classifyZone, rbcsConstants, classifyMPA } from "./rbcs";
 import { Zone } from "./types";
 
-const gearTypes = constants.GEAR_TYPES;
-const aquaculture = constants.AQUACULTURE_AND_BOTTOM_EXPLOITATION;
-const anchoring = constants.BOATING_AND_ANCHORING;
+const gearTypes = rbcsConstants.GEAR_TYPES;
+const aquaculture = rbcsConstants.AQUACULTURE_AND_BOTTOM_EXPLOITATION;
+const anchoring = rbcsConstants.BOATING_AND_ANCHORING;
 
 describe("rbcs", () => {
   test("rbcs - No-take/No-go", () => {

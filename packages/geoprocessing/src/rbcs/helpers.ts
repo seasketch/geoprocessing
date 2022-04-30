@@ -2,8 +2,8 @@ import { MpaClassification, Zone } from "./types";
 import {
   RbcsMpaProtectionLevel,
   rbcsMpaProtectionLevels,
-  scores,
-  constants,
+  rbcsScores,
+  rbcsConstants,
   classifyMPA,
   RegBasedClassificationMetric,
 } from "./rbcs";
@@ -53,7 +53,7 @@ export function getMpaClassificationName(index: number) {
 }
 
 export function getZoneClassificationName(zoneId: number) {
-  return scores[zoneId].label;
+  return rbcsScores[zoneId].label;
 }
 
 export const sketchToZone = (
@@ -71,10 +71,10 @@ export const sketchToZone = (
     "AQUACULTURE",
     ""
   );
-  const gearTypesMapped = gearTypes.map((gt) => constants.GEAR_TYPES[gt]);
-  const boatingMapped = constants.BOATING_AND_ANCHORING[boating];
+  const gearTypesMapped = gearTypes.map((gt) => rbcsConstants.GEAR_TYPES[gt]);
+  const boatingMapped = rbcsConstants.BOATING_AND_ANCHORING[boating];
   const aquacultureMapped =
-    constants.AQUACULTURE_AND_BOTTOM_EXPLOITATION[aquaculture];
+    rbcsConstants.AQUACULTURE_AND_BOTTOM_EXPLOITATION[aquaculture];
   return [gearTypesMapped, aquacultureMapped, boatingMapped, sketchArea];
 };
 

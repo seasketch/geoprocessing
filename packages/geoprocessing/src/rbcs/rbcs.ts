@@ -2,9 +2,7 @@ import { MpaClassification, Zone, ZoneColor, ZoneId, ZoneName } from "./types";
 import { Objective, ObjectiveAnswer } from "../types/objective";
 import { Metric } from "../types";
 
-//// CONSTANTS ////
-
-export const constants: Record<string, Record<string, string>> = {
+export const rbcsConstants: Record<string, Record<string, string>> = {
   GEAR_TYPES: {
     BEACH_SEINES: "Beach seines",
     CAST_NETS: "Cast nets",
@@ -46,7 +44,7 @@ export const constants: Record<string, Record<string, string>> = {
 
 //// SCORES ////
 
-export const gearTypes: Record<string, number> = {
+export const rbcsGearTypes: Record<string, number> = {
   "Beach seines": 8,
   "Cast nets": 3,
   "Dredges (bivalves)": 7,
@@ -70,24 +68,24 @@ export const gearTypes: Record<string, number> = {
   "Trawl (pelagic)": 5,
 };
 
-export const aquacultureActivities: Record<string, number> = {
+export const rbcsAquacultureActivities: Record<string, number> = {
   "Aquaculture and bottom exploitation not allowed": 0,
   "Aquaculture OR bottom exploitation allowed, but not mining/oil platforms/sand extraction/detonations": 1,
   "Both aquaculture AND bottom exploitation allowed with no restrictions (or if aquaculture is not allowed but mining/oil platforms/sand ex-traction/detonations are)": 2,
 };
 
-export const anchoringActivities: Record<string, number> = {
+export const rbcsAnchoringActivities: Record<string, number> = {
   "No anchoring": 0,
   "Boating and/or anchoring allowed but anchoring is fully regulated: restricted to particular areas or mooring buoys": 1,
   "Boating and/or anchoring allowed but anchoring is only partially 2 regulated or unregulated": 2,
 };
 
 export const gearTypeScore = (regulation: string) =>
-  getScore(regulation, gearTypes, "Gear Type");
+  getScore(regulation, rbcsGearTypes, "Gear Type");
 export const aquacultureScore = (regulation: string) =>
-  getScore(regulation, aquacultureActivities, "Aquaculture Activity Type");
+  getScore(regulation, rbcsAquacultureActivities, "Aquaculture Activity Type");
 export const anchorScore = (regulation: string) =>
-  getScore(regulation, anchoringActivities, "Anchoring Activity Type");
+  getScore(regulation, rbcsAnchoringActivities, "Anchoring Activity Type");
 
 function getScore(
   key: string,
@@ -199,42 +197,43 @@ export function classifyMPA(zones: Zone[]): MpaClassification {
   };
 }
 
-export const scores: Record<ZoneId, { label: ZoneName; color: ZoneColor }> = {
-  1: {
-    label: "No-take/No-go",
-    color: "rgb(78, 142, 135)",
-  },
-  2: {
-    label: "No-take/Regulated access",
-    color: "rgb(147,181,54)",
-  },
-  3: {
-    label: "No-take/Unregulated access",
-    color: "rgb(235,204,53)",
-  },
-  4: {
-    label: "Highly regulated extraction",
-    color: "rgb(203,131,44)",
-  },
-  5: {
-    label: "Moderately regulated extraction",
-    color: "rgb(176,33,97)",
-  },
-  6: {
-    label: "Weakly regulated extraction",
-    color: "rgb(115,25,74)",
-  },
-  7: {
-    label: "Very weakly regulated extraction",
-    color: "rgb(68,25,105)",
-  },
-  8: {
-    label: "Unregulated extraction",
-    color: "rgb(72,46,19)",
-  },
-};
+export const rbcsScores: Record<ZoneId, { label: ZoneName; color: ZoneColor }> =
+  {
+    1: {
+      label: "No-take/No-go",
+      color: "rgb(78, 142, 135)",
+    },
+    2: {
+      label: "No-take/Regulated access",
+      color: "rgb(147,181,54)",
+    },
+    3: {
+      label: "No-take/Unregulated access",
+      color: "rgb(235,204,53)",
+    },
+    4: {
+      label: "Highly regulated extraction",
+      color: "rgb(203,131,44)",
+    },
+    5: {
+      label: "Moderately regulated extraction",
+      color: "rgb(176,33,97)",
+    },
+    6: {
+      label: "Weakly regulated extraction",
+      color: "rgb(115,25,74)",
+    },
+    7: {
+      label: "Very weakly regulated extraction",
+      color: "rgb(68,25,105)",
+    },
+    8: {
+      label: "Unregulated extraction",
+      color: "rgb(72,46,19)",
+    },
+  };
 
-function getClassificationLabel(index) {
+export function getClassificationLabel(index) {
   if (index < 3) {
     return "Fully Protected Area";
   } else if (index < 5) {

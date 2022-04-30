@@ -1,7 +1,11 @@
 import React from "react";
 import { ObjectiveGroup } from "../../types/objective";
 import { getMinYesCountMap, getKeys } from "../../helpers";
-import { anchoringActivities, aquacultureActivities, gearTypes } from "../rbcs";
+import {
+  rbcsAnchoringActivities,
+  rbcsAquacultureActivities,
+  rbcsGearTypes,
+} from "../rbcs";
 
 export interface RbcsLearnMoreProps {
   objectives: ObjectiveGroup;
@@ -93,32 +97,34 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
           </tr>
         </thead>
         <tbody>
-          {Object.keys(gearTypes).map((gearType, index) => {
+          {Object.keys(rbcsGearTypes).map((gearType, index) => {
             return (
               <tr key={index}>
                 <td>{gearType}</td>
-                <td>{gearTypes[gearType]}</td>
+                <td>{rbcsGearTypes[gearType]}</td>
               </tr>
             );
           })}
-          {Object.keys(aquacultureActivities).map(
+          {Object.keys(rbcsAquacultureActivities).map(
             (aquacultureActivity, index) => {
               return (
                 <tr key={index}>
                   <td>{aquacultureActivity}</td>
-                  <td>{aquacultureActivities[aquacultureActivity]}</td>
+                  <td>{rbcsAquacultureActivities[aquacultureActivity]}</td>
                 </tr>
               );
             }
           )}
-          {Object.keys(anchoringActivities).map((anchoringActivity, index) => {
-            return (
-              <tr key={index}>
-                <td>{anchoringActivity}</td>
-                <td>{anchoringActivities[anchoringActivity]}</td>
-              </tr>
-            );
-          })}
+          {Object.keys(rbcsAnchoringActivities).map(
+            (anchoringActivity, index) => {
+              return (
+                <tr key={index}>
+                  <td>{anchoringActivity}</td>
+                  <td>{rbcsAnchoringActivities[anchoringActivity]}</td>
+                </tr>
+              );
+            }
+          )}
         </tbody>
       </table>
       <b>MPA Classification</b>

@@ -1,6 +1,6 @@
 import React from "react";
 import { SketchAttributesCard } from "../../components";
-import { constants } from "mpa-reg-based-classification";
+import { constants } from "../rbcs";
 
 export const RbcsActivitiesCard = () => {
   const mappings = {

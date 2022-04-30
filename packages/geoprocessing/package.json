@@ -155,7 +155,6 @@
     "lodash": "^4.17.21",
     "mnemonist": "^0.38.3",
     "mock-require": "^3.0.3",
-    "mpa-reg-based-classification": "^1.0.1",
     "node-fetch": "^2.6.0",
     "ora": "^5.4.0",
     "pascalcase": "^1.0.0",
@@ -205,6 +204,5 @@
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
     "utf-8-validate": "^5.0.2"
-  },
-  "gitHead": "260cddfb9b9a6f4c1eb1a1a5a73b555be4b8593d"
+  }
 }

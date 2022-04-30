@@ -1,7 +1,7 @@
 import React from "react";
 import { ObjectiveGroup } from "../../types/objective";
 import { getMinYesCountMap, getKeys } from "../../helpers";
-import { gearTypeScores } from "..";
+import { anchoringActivities, aquacultureActivities, gearTypes } from "../rbcs";
 
 export interface RbcsLearnMoreProps {
   objectives: ObjectiveGroup;
@@ -93,11 +93,29 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
           </tr>
         </thead>
         <tbody>
-          {Object.keys(gearTypeScores).map((gearType, index) => {
+          {Object.keys(gearTypes).map((gearType, index) => {
             return (
               <tr key={index}>
                 <td>{gearType}</td>
-                <td>{gearTypeScores[gearType]}</td>
+                <td>{gearTypes[gearType]}</td>
+              </tr>
+            );
+          })}
+          {Object.keys(aquacultureActivities).map(
+            (aquacultureActivity, index) => {
+              return (
+                <tr key={index}>
+                  <td>{aquacultureActivity}</td>
+                  <td>{aquacultureActivities[aquacultureActivity]}</td>
+                </tr>
+              );
+            }
+          )}
+          {Object.keys(anchoringActivities).map((anchoringActivity, index) => {
+            return (
+              <tr key={index}>
+                <td>{anchoringActivity}</td>
+                <td>{anchoringActivities[anchoringActivity]}</td>
               </tr>
             );
           })}

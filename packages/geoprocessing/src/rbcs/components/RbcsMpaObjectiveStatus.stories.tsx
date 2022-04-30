@@ -2,7 +2,7 @@ import React from "react";
 import { RbcsMpaObjectiveStatus } from "./RbcsMpaObjectiveStatus";
 import { ReportDecorator, CardDecorator } from "../../components/storybook";
 import { percentWithEdge, getKeys } from "../../helpers";
-import { RbcsObjective, RbcsMpaProtectionLevel } from "..";
+import { RbcsObjective, RbcsMpaProtectionLevel } from "../rbcs";
 import { OBJECTIVE_YES, OBJECTIVE_NO } from "../../types";
 
 export default {

@@ -2,7 +2,7 @@ import React from "react";
 import { PointyCircle, TwoColorPointyCircle } from "./PointyCircle";
 import { getIndexIconPerc } from "..";
 import { roundDecimal } from "../../helpers";
-import { scores } from "mpa-reg-based-classification";
+import { scores } from "../rbcs";
 
 export interface RbcsIconProps {
   value: number;

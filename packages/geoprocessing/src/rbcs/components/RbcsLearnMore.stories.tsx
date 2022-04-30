@@ -1,7 +1,7 @@
 import React from "react";
 import { RbcsLearnMore } from "./RbcsLearnMore";
 import { ReportDecorator, CardDecorator } from "../../components/storybook";
-import { RbcsObjective } from "..";
+import { RbcsObjective } from "../rbcs";
 
 export default {
   component: RbcsLearnMore,

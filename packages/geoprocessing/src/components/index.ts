@@ -24,6 +24,7 @@ export * from "./ObjectiveStatus";
 export * from "./Pill";
 export * from "./ProgressBar";
 export * from "./ReportError";
+export * from "./ReportPage";
 export * from "./ResultsCard";
 export * from "./SegmentControl";
 export * from "./Skeleton";

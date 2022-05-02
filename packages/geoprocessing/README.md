@@ -10,7 +10,7 @@ Often, the original analysis might be prototyped in an environment like R, Jupyt
 
 ## Who is this for?
 
-  This framework is specifically targeted to code-savvy folks that want to create and host geoprocessing projects themselves and plug them into their SeaSketch project, though it is not dependent on SeaSketch.  The SeaSketch team uses it for all projects, here are some [public ones](https://github.com/mcclintock-lab?q=-next&type=&language=&sort=)
+  This framework is specifically targeted to code-savvy folks that want to create and host geoprocessing projects themselves and plug them into their SeaSketch project, though it is not dependent on SeaSketch.  The SeaSketch team uses it for all projects, here are some [public ones](https://github.com/seasketch/geoprocessing/network/dependents?package_id=UGFja2FnZS0xMTc3OTQ1NDg5)
 
   The primary efficiency to this framework is that almost everything is written in Typescript/Javascript, both backend and frontend.  Third-party tools are accessible via Node bindings (AWS) or a standard shell environment using Docker (OGR, GDAL, PostGIS, Python).
 

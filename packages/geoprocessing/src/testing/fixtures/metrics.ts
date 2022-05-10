@@ -136,7 +136,7 @@ export const simpleSketchClassAggMetricsPerc: Record<
   },
 ];
 
-// CATEGORICAL
+// CATEGORICAL CLASSES - SAME TARGET
 
 /** One dataset with multiple classes, one layer ID at group level */
 export const categoricalClasses: DataClass[] = [
@@ -240,5 +240,132 @@ export const categoricalClassMetrics: Metric[] = createMetrics([
     classId: "Madracis Reef",
     value: 0.44,
     metricId: categoricalMetricGroup.metricId,
+  },
+]);
+
+// CATEGORICAL - MIXED TARGET
+
+/** One dataset with multiple classes, one layer ID at group level */
+export const categoricalClassesMixedTarget: DataClass[] = [
+  {
+    numericClassId: 1,
+    classId: "Bays and Coast",
+    display: "Bays and Coast",
+    goalValue: 0.3,
+  },
+  {
+    numericClassId: 2,
+    classId: "Madracis Reef",
+    display: "Madracis Reef",
+    goalValue: 0.2,
+  },
+  {
+    numericClassId: 3,
+    classId: "Montastraea Reef",
+    display: "Montastraea Reef",
+    goalValue: 0.45,
+  },
+  {
+    numericClassId: 4,
+    classId: "Diploria Porites Reef",
+    display: "Diploria Porites Reef",
+    goalValue: 0.27,
+  },
+  {
+    numericClassId: 5,
+    classId: "Castle Harbour Madracis",
+    display: "Castle Harbour Madracis",
+    goalValue: 1,
+  },
+  {
+    numericClassId: 6,
+    classId: "Algal Vermetid Reef",
+    display: "Algal Vermetid Reef",
+    goalValue: 45,
+  },
+  {
+    numericClassId: 7,
+    classId: "Rim Reef",
+    display: "Rim Reef",
+    goalValue: 0.55,
+  },
+  {
+    numericClassId: 8,
+    classId: "Main Terrace Reef",
+    display: "Main Terrace Reef",
+    goalValue: 0.55,
+  },
+  {
+    numericClassId: 9,
+    classId: "Fore Reef",
+    display: "Fore Reef",
+    goalValue: 0.55,
+  },
+  {
+    numericClassId: 10,
+    classId: "Mesophotic",
+    display: "Mesophotic",
+    goalValue: 0.25,
+  },
+  {
+    numericClassId: 11,
+    classId: "Rariphotic",
+    display: "Rariphotic",
+    goalValue: 0.25,
+  },
+  {
+    numericClassId: 12,
+    classId: "Mesopelagic",
+    display: "Mesopelagic",
+    goalValue: 0.2,
+  },
+  {
+    numericClassId: 13,
+    classId: "Bathypelagic",
+    display: "Bathypelagic",
+    goalValue: 0.2,
+  },
+];
+
+export const categoricalGroupMixedTarget: DataGroup = {
+  classes: categoricalClassesMixedTarget,
+  layerId: "a",
+};
+
+export const categoricalMetricGroupMixedTarget: MetricGroup = {
+  ...categoricalGroupMixedTarget,
+  metricId: "metric",
+};
+
+export const categoricalClassMetricsMixedTarget: Metric[] = createMetrics([
+  {
+    classId: "Bays and Coast",
+    value: 0.13,
+    metricId: categoricalMetricGroupMixedTarget.metricId,
+  },
+  {
+    classId: "Madracis Reef",
+    value: 0.65,
+    metricId: categoricalMetricGroupMixedTarget.metricId,
+  },
+  {
+    classId: "Mesophotic",
+    value: 0.89,
+    metricId: categoricalMetricGroupMixedTarget.metricId,
+  },
+  {
+    classId: "Rariphotic",
+    value: 0.02,
+    metricId: categoricalMetricGroupMixedTarget.metricId,
+  },
+  {
+    classId: "Mesopelagic",
+    value: 0.12,
+    metricId: categoricalMetricGroupMixedTarget.metricId,
+  },
+  {
+    classId: "Bathypelagic",
+    value: 0.23,
+    metricId: categoricalMetricGroupMixedTarget.metricId,
   },
 ]);

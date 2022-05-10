@@ -8,8 +8,11 @@ import {
   simpleGroup,
   simpleMetricGroup,
   categoricalClassMetrics,
+  categoricalClassMetricsMixedTarget,
   categoricalMetricGroup,
+  categoricalMetricGroupMixedTarget,
 } from "../../testing/fixtures/metrics";
+import { valueFormatter } from "../../helpers/valueFormatter";
 
 export default {
   component: ClassTable,
@@ -399,7 +402,7 @@ export const valueFormatAndLabel = () => {
   );
 };
 
-export const chart = () => {
+export const chartWithSeparateSortableValueColumn = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
@@ -416,13 +419,13 @@ export const chart = () => {
             valueFormatter: "percent",
             width: 15,
             colStyle: { textAlign: "right" },
-            columnLabel: " ",
+            columnLabel: "%",
           },
           {
             type: "metricChart",
             metricId: simpleMetricGroup.metricId,
             valueFormatter: "percent",
-            columnLabel: "Within plan",
+            columnLabel: "Found Within plan",
             chartOptions: {
               showTitle: false,
             },
@@ -434,7 +437,34 @@ export const chart = () => {
   );
 };
 
-export const chartWithTarget = () => {
+export const chartWithIntegratedValueAndTargetPass = () => {
+  return (
+    <ReportContext.Provider value={simpleContext}>
+      <ClassTable
+        rows={categoricalClassMetrics}
+        dataGroup={categoricalMetricGroup}
+        columnConfig={[
+          {
+            type: "class",
+            width: 30,
+          },
+          {
+            type: "metricChart",
+            metricId: simpleMetricGroup.metricId,
+            valueFormatter: "percent",
+            columnLabel: "Found Within plan",
+            chartOptions: {
+              showTitle: true,
+            },
+            width: 55,
+          },
+        ]}
+      />
+    </ReportContext.Provider>
+  );
+};
+
+export const chartWithObjective = () => {
   return (
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
@@ -450,21 +480,99 @@ export const chartWithTarget = () => {
             width: 30,
           },
           {
-            type: "metricValue",
+            type: "metricChart",
             metricId: simpleMetricGroup.metricId,
             valueFormatter: "percent",
-            width: 15,
-            colStyle: { textAlign: "right" },
-            columnLabel: "Within Plan",
+            columnLabel: "Found Within Plan",
+            chartOptions: {
+              showTitle: true,
+              targetLabelStyle: "tight",
+            },
+            width: 55,
+          },
+        ]}
+      />
+    </ReportContext.Provider>
+  );
+};
+
+export const chartWithMixedTarget = () => {
+  return (
+    <ReportContext.Provider value={simpleContext}>
+      <ClassTable
+        rows={categoricalClassMetricsMixedTarget}
+        dataGroup={{
+          ...categoricalMetricGroupMixedTarget,
+        }}
+        columnConfig={[
+          {
+            type: "class",
+            width: 30,
           },
           {
             type: "metricChart",
             metricId: simpleMetricGroup.metricId,
             valueFormatter: "percent",
+            columnLabel: "Found Within Plan",
             chartOptions: {
-              showTitle: false,
+              showTitle: true,
+              targetLabelPosition: "bottom",
+              targetLabelStyle: "tight",
             },
             width: 55,
+            targetValueFormatter: (
+              value: number,
+              row: number,
+              numRows: number
+            ) => {
+              if (row === 0) {
+                return (value: number) =>
+                  `${valueFormatter(value / 100, "percent0dig")} Target`;
+              } else {
+                return (value: number) =>
+                  `${valueFormatter(value / 100, "percent0dig")}`;
+              }
+            },
+          },
+        ]}
+      />
+    </ReportContext.Provider>
+  );
+};
+
+export const chartWithSeparateTargetColumn = () => {
+  return (
+    <ReportContext.Provider value={simpleContext}>
+      <ClassTable
+        rows={categoricalClassMetricsMixedTarget}
+        dataGroup={{
+          ...categoricalMetricGroupMixedTarget,
+        }}
+        columnConfig={[
+          {
+            type: "class",
+            width: 30,
+          },
+          {
+            type: "metricChart",
+            metricId: simpleMetricGroup.metricId,
+            valueFormatter: "percent",
+            columnLabel: "Found Within Plan",
+            chartOptions: {
+              showTitle: true,
+              targetLabelPosition: "bottom",
+              targetLabelStyle: "tight",
+              showTargetLabel: false,
+            },
+            width: 55,
+          },
+          {
+            type: "metricGoal",
+            metricId: simpleMetricGroup.metricId,
+            valueFormatter: "percent",
+            width: 15,
+            colStyle: { textAlign: "right" },
+            columnLabel: "Target",
           },
         ]}
       />

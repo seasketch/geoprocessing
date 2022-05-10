@@ -8,6 +8,7 @@ export interface StyledHorizontalStackedBarProps {
   target?: number;
   barHeight?: number;
   targetLabelPosition?: "top" | "bottom";
+  targetLabelStyle?: "normal" | "tight";
 }
 
 const defaults = {
@@ -165,7 +166,9 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
       ? `
         .marker-label {
           position: absolute;
-          ${props.targetLabelPosition || "top"}: -16px;
+          ${props.targetLabelPosition || "top"}: ${
+          props.targetLabelStyle === "normal" ? "-15" : "-12"
+        }px;
           left: ${props.target ? props.target : 0}%;
           width: 100px;
           text-align: left;
@@ -240,6 +243,7 @@ export interface HorizontalStackedBarProps {
   showLegend?: boolean;
   showTotalLabel?: boolean;
   targetLabelPosition?: "top" | "bottom";
+  targetLabelStyle?: "normal" | "tight";
   valueFormatter?: (value: number) => string | JSX.Element;
   targetValueFormatter?: (value: number) => string | JSX.Element;
   targetReachedColor?: string;
@@ -259,6 +263,7 @@ export const HorizontalStackedBar: React.FunctionComponent<HorizontalStackedBarP
     showTotalLabel = true,
     showTargetLabel = true,
     targetLabelPosition = "top",
+    targetLabelStyle = "normal",
     target,
     blockGroupNames,
     valueFormatter,
@@ -297,6 +302,7 @@ export const HorizontalStackedBar: React.FunctionComponent<HorizontalStackedBarP
           .map((style) => style.backgroundColor)
           .slice(0, numBlockGroups)}
         targetLabelPosition={targetLabelPosition}
+        targetLabelStyle={targetLabelStyle}
       >
         <>
           <div className="graphic">
@@ -343,7 +349,7 @@ export const HorizontalStackedBar: React.FunctionComponent<HorizontalStackedBarP
                         {showTargetLabel && rowNumber === 0 && (
                           <div className="marker-label">
                             {targetValueFormatter
-                              ? targetValueFormatter(rowTotals[rowNumber])
+                              ? targetValueFormatter(target)
                               : "Target"}
                           </div>
                         )}

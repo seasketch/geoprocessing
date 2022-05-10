@@ -12,6 +12,18 @@ import {
 } from "../chart/HorizontalStackedBar";
 import { ValueFormatter, valueFormatter } from "../../helpers/valueFormatter";
 
+/**
+ * Function that given target value for current table row, the table row index, and total number of
+ * table rows, returns a function that given target value returns a
+ * formatted string or Element.  In other words a function that handles the formatting based on where
+ * the row is in the table and returns a function handling the remaining formatting.
+ */
+export type TargetFormatter = (
+  value: number,
+  row: number,
+  numRows: number
+) => (value: number) => string | JSX.Element;
+
 export interface ClassTableColumnConfig {
   /** column display type */
   type: "class" | "metricValue" | "metricChart" | "metricGoal" | "layerToggle";
@@ -25,8 +37,10 @@ export interface ClassTableColumnConfig {
   width?: number;
   /** additional style properties for column */
   colStyle?: React.CSSProperties;
-  /** formatting to apply to values in column row, defaults to as-is 'value' formatting.  Other options are 'number', 'percent', and custom function */
+  /** formatting to apply to values in column row, defaults to as-is 'value' formatting. */
   valueFormatter?: ValueFormatter;
+  /** formatting of target value based on the location of the row in the table */
+  targetValueFormatter?: TargetFormatter;
   /** config options for percent value formatting.  see percentWithEdge function for more details */
   percentFormatterOptions?: PercentEdgeOptions;
   /** override options for metricChart column type */
@@ -109,14 +123,23 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
             const value =
               metricsByClassByMetric[row.classId][colConfig.metricId][0].value;
 
+            const goalValue =
+              classesByName[row.classId] && classesByName[row.classId].goalValue
+                ? classesByName[row.classId].goalValue! * 100
+                : 0;
+            let target = 0;
             // @ts-ignore: need to add objective to type
-            const goal = dataGroup.objective
-              ? colConfig.valueFormatter === "percent"
-                ? // @ts-ignore: need to add objective to type
-                  dataGroup.objective.target * 100
-                : // @ts-ignore: need to add objective to type
-                  dataGroup.objective.target
-              : 0;
+            if (dataGroup.objective) {
+              if (colConfig.valueFormatter === "percent") {
+                // @ts-ignore: need to add objective to type
+                target = dataGroup.objective.target * 100;
+              } else {
+                // @ts-ignore: need to add objective to type
+                target = dataGroup.objective.target;
+              }
+            } else if (goalValue > 0) {
+              target = goalValue;
+            }
 
             const chartProps = {
               ...(colConfig.chartOptions ? colConfig.chartOptions : {}),
@@ -133,7 +156,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                 {
                   title: (value: number) => (
                     <>
-                      {goal && value >= goal ? (
+                      {target && value >= target ? (
                         <CheckCircleFill
                           size={14}
                           style={{ color: "#78c679", paddingRight: 5 }}
@@ -149,6 +172,25 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
               max: 100,
             };
 
+            let targetValueFormatter:
+              | ((value: number) => string | JSX.Element)
+              | undefined;
+            if (typeof colConfig.targetValueFormatter === "function") {
+              targetValueFormatter = colConfig.targetValueFormatter(
+                target,
+                rowIndex,
+                tableRows.length
+              );
+            } else {
+              targetValueFormatter = (targetValue) =>
+                rowIndex === tableRows.length - 1
+                  ? `Target - ${valueFormatter(
+                      targetValue / 100,
+                      "percent0dig"
+                    )}`
+                  : "";
+            }
+
             return (
               <div style={{ display: "flex", alignItems: "center" }}>
                 <div style={{ flex: 1 }}>
@@ -157,16 +199,12 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                     blockGroupStyles={[{ backgroundColor: "#ACD0DE" }]}
                     showTitle={true}
                     showLegend={false}
-                    showTargetLabel={
-                      rowIndex === rows.length - 1 ? true : false
-                    }
+                    showTargetLabel={true}
                     targetLabelPosition="bottom"
                     showTotalLabel={false}
-                    barHeight={15}
-                    target={goal || undefined}
-                    targetValueFormatter={(value: number) =>
-                      `Target - ${percentWithEdge(goal / 100)}`
-                    }
+                    barHeight={10}
+                    target={target || undefined}
+                    targetValueFormatter={targetValueFormatter}
                     {...chartProps}
                   />
                 </div>

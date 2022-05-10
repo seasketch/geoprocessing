@@ -202,7 +202,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                     showTargetLabel={true}
                     targetLabelPosition="bottom"
                     showTotalLabel={false}
-                    barHeight={10}
+                    barHeight={12}
                     target={target || undefined}
                     targetValueFormatter={targetValueFormatter}
                     {...chartProps}

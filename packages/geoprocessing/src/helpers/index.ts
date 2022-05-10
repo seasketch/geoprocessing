@@ -15,3 +15,4 @@ export * from "./sketch";
 export * from "./string";
 export * from "./ts";
 export * from "./units";
+export * from "./valueFormatter";

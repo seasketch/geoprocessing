@@ -134,7 +134,7 @@ module.exports = {
             presets: [
               [
                 require.resolve("@babel/preset-env"),
-                { targets: { node: "14" } },
+                { targets: { node: "16" } },
               ],
               require.resolve("@babel/preset-typescript"),
             ],

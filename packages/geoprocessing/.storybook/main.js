@@ -9,12 +9,19 @@ const baseStories = [
 const projectStories = [];
 
 if (process.env.PROJECT_PATH) {
-  projectStories.push(
-    path.join(process.env.PROJECT_PATH, "src/clients") + "/**/*.stories.tsx"
-  );
-  projectStories.push(
-    path.join(process.env.PROJECT_PATH, "src/components") + "/**/*.stories.tsx"
-  );
+  if ((process.env.PROJECT_PATH, "src/clients")) {
+    console.log("src/clients directory not found, skipping");
+    projectStories.push(
+      path.join(process.env.PROJECT_PATH, "src/clients") + "/**/*.stories.tsx"
+    );
+  }
+  if ((process.env.PROJECT_PATH, "src/components")) {
+    console.log("src/components directory not found, skipping");
+    projectStories.push(
+      path.join(process.env.PROJECT_PATH, "src/components") +
+        "/**/*.stories.tsx"
+    );
+  }
 }
 
 module.exports = {

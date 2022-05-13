@@ -42,7 +42,10 @@ module.exports = {
           // bab
           loader: require.resolve("babel-loader"),
           options: {
-            plugins: ["@babel/plugin-proposal-numeric-separator"],
+            plugins: [
+              "@babel/plugin-proposal-numeric-separator",
+              "@babel/plugin-proposal-optional-chaining",
+            ],
           },
         },
       ],

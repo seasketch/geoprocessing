@@ -1,6 +1,6 @@
 import React from "react";
 import { RbcsZoneRegIcon } from "./RbcsIcons";
-import { getZoneClassificationName } from "..";
+import { getZoneClassificationName } from "../helpers";
 
 export interface RbcsPanelProps {
   value: number;

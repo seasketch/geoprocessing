@@ -15,7 +15,7 @@ import {
 } from "@turf/helpers";
 import { geomEach } from "@turf/meta";
 import { getGeom } from "@turf/invariant";
-import { ValidationError } from "..";
+import { ValidationError } from "../types";
 
 export function clip<P = Properties>(
   features: FeatureCollection<Polygon | MultiPolygon>,

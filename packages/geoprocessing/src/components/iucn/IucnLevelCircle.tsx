@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { GroupCircle } from "..";
+import { GroupCircle } from "../Circle";
 
 export interface IucnLevelCircleProps {
   children: ReactNode;
@@ -29,13 +29,12 @@ export interface IucnLevelCircleRowProps {
   rowText?: string | ReactNode;
 }
 
-export const IucnLevelCircleRow: React.FunctionComponent<
-  IucnLevelCircleRowProps
-> = ({ level, circleText, rowText }) => {
-  return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <IucnLevelCircle level={level}>{circleText || " "}</IucnLevelCircle>
-      <span style={{ marginLeft: 5 }}>{rowText || ""}</span>
-    </div>
-  );
-};
+export const IucnLevelCircleRow: React.FunctionComponent<IucnLevelCircleRowProps> =
+  ({ level, circleText, rowText }) => {
+    return (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <IucnLevelCircle level={level}>{circleText || " "}</IucnLevelCircle>
+        <span style={{ marginLeft: 5 }}>{rowText || ""}</span>
+      </div>
+    );
+  };

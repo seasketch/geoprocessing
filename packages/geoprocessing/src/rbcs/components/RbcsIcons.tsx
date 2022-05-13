@@ -1,6 +1,6 @@
 import React from "react";
 import { PointyCircle, TwoColorPointyCircle } from "./PointyCircle";
-import { getIndexIconPerc } from "..";
+import { getIndexIconPerc } from "../helpers";
 import { roundDecimal } from "../../helpers";
 import { rbcsScores } from "../rbcs";
 

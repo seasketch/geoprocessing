@@ -78,6 +78,7 @@ module.exports = {
               require.resolve("@babel/preset-typescript"),
               require.resolve("@babel/preset-react"),
             ],
+            plugins: ["@babel/plugin-proposal-optional-chaining"],
           },
         },
       },

@@ -6,6 +6,8 @@ import {
   rbcsAquacultureActivities,
   rbcsGearTypes,
 } from "../rbcs";
+import zoneClassificationImg from "../assets/img/zone_classification.png";
+import mpaClassificationImg from "../assets/img/mpa_classification.png";
 
 export interface RbcsLearnMoreProps {
   objectives: ObjectiveGroup;
@@ -77,10 +79,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
       </p>
       <p>Zones are classified based on the following decision tree:</p>
       <p>
-        <img
-          src={require("../assets/img/zone_classification.png")}
-          style={{ maxWidth: "100%" }}
-        />
+        <img src={zoneClassificationImg} style={{ maxWidth: "100%" }} />
         <a
           target="_blank"
           href="https://www.sciencedirect.com/science/article/pii/S0308597X16300197"
@@ -142,11 +141,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
         with the activities of the MPA.
       </p>
       <p>
-        <img
-          src={require("../assets/img/mpa_classification.png")}
-          style={{ maxWidth: "100%" }}
-        />
-        (
+        <img src={mpaClassificationImg} style={{ maxWidth: "100%" }} />(
         <a
           target="_blank"
           href="https://www.sciencedirect.com/science/article/pii/S0308597X16300197"

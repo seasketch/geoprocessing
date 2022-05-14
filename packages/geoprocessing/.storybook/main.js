@@ -37,6 +37,9 @@ module.exports = {
     "@storybook/addon-interactions",
   ],
   framework: "@storybook/react",
+  features: {
+    postcss: false,
+  },
   typescript: {
     check: true,
     reactDocgen: "none",

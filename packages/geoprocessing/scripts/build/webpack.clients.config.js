@@ -79,16 +79,18 @@ module.exports = {
                   },
                 },
               ],
+              require.resolve("@babel/preset-typescript"),
+              require.resolve("@babel/preset-react"),
+            ],
+            plugins: [
+              "@babel/plugin-proposal-optional-chaining",
               [
-                require.resolve("@babel/transform-runtime"),
+                "@babel/plugin-transform-runtime",
                 {
                   regenerator: true,
                 },
               ],
-              require.resolve("@babel/preset-typescript"),
-              require.resolve("@babel/preset-react"),
             ],
-            plugins: ["@babel/plugin-proposal-optional-chaining"],
           },
         },
       },

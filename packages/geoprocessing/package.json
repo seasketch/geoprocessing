@@ -205,6 +205,14 @@
     "mock-socket": "^9.0.3",
     "start-server-and-test": "^1.12.5"
   },
+  "peerDependencies": {
+    "@storybook/builder-webpack5": "^6.4.22",
+    "@storybook/manager-webpack5": "^6.4.22",
+    "@storybook/addon-actions": "^6.4.22",
+    "@storybook/addon-essentials": "^6.4.22",
+    "@storybook/addon-interactions": "^6.4.22",
+    "@storybook/addon-links": "^6.4.22"
+  },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
     "utf-8-validate": "^5.0.2"

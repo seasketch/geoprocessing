@@ -79,6 +79,12 @@ module.exports = {
                   },
                 },
               ],
+              [
+                require.resolve("@babel/transform-runtime"),
+                {
+                  regenerator: true,
+                },
+              ],
               require.resolve("@babel/preset-typescript"),
               require.resolve("@babel/preset-react"),
             ],

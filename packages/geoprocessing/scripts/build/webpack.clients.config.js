@@ -27,9 +27,6 @@ module.exports = {
     compress: true,
     port: 8080,
   },
-  node: {
-    fs: "empty",
-  },
   stats: {
     all: false,
     assets: true,
@@ -48,6 +45,9 @@ module.exports = {
   },
   devtool: "source-map",
   resolve: {
+    fallback: {
+      fs: false,
+    },
     extensions: [".ts", ".tsx", ".js"],
     modules: [
       path.resolve(__dirname, "../../node_modules"),

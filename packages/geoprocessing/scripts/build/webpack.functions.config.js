@@ -112,8 +112,8 @@ module.exports = {
   },
   plugins: process.env.ANALYZE_FUNCTIONS ? [new BundleAnalyzerPlugin()] : [],
   performance: {
-    maxAssetSize: 500000,
-    maxEntrypointSize: 500000,
+    maxAssetSize: 1000000,
+    maxEntrypointSize: 1000000,
     hints: "warning",
   },
   externals: function (context, request, callback) {

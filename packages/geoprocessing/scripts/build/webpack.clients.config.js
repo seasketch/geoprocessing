@@ -35,8 +35,8 @@ module.exports = {
     errorDetails: true,
   },
   performance: {
-    maxAssetSize: 300_000,
-    maxEntrypointSize: 300_000,
+    maxAssetSize: 1_00_000,
+    maxEntrypointSize: 1_000_000,
   },
   entry: "./src/components/App.tsx",
   output: {

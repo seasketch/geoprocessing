@@ -37,6 +37,9 @@ module.exports = {
     "@storybook/addon-interactions",
   ],
   framework: "@storybook/react",
+  core: {
+    builder: "webpack5",
+  },
   features: {
     postcss: false,
   },
@@ -46,7 +49,7 @@ module.exports = {
   },
   webpackFinal: async (config) => {
     /// stub fs to avoid not found error
-    config.node = { fs: "empty" };
+    config.resolve.fallback.fs = false;
     // allow ts files to be picked up in project path
     config.resolve.extensions.push(".ts", ".tsx");
     // configure ts files in project path to be transpiled too

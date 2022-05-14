@@ -18,4 +18,4 @@ Often, the original analysis might be prototyped in an environment like R, Jupyt
 
 ## Versions
 
-This project follows Semantic Versioning. The `latest` version is the most stable. `alpha` versions are early canary releases for testing.  They are likely to have bugs and unfinished features.
+This project follows Semantic Versioning. The `latest` version is the most stable. `alpha` versions are early canary releases for testing. `experimental` versions are feature branches not ready for merging.   All but stable are likely to have bugs and unfinished features.

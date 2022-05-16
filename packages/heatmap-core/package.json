@@ -29,9 +29,10 @@
     "d3-scale": "^4.0.2"
   },
   "scripts": {
+    "build": "rm -rf dist && tsc",
+    "prepare": "npm run build",
     "test": "jest",
-    "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
-    "build": "rm -rf dist && tsc"
+    "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js"
   },
   "repository": {
     "type": "git",

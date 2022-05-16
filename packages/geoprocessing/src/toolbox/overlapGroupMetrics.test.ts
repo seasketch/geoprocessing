@@ -3,7 +3,7 @@
  */
 
 import { overlapAreaGroupMetrics } from "./overlapGroupMetrics";
-import { SketchCollection, Polygon, Metric } from "..";
+import { SketchCollection, Polygon, Metric } from "../types";
 
 const sketch: SketchCollection<Polygon> = {
   type: "FeatureCollection",

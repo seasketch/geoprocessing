@@ -78,7 +78,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
       <p>Zones are classified based on the following decision tree:</p>
       <p>
         <img
-          src={require("../assets/img/zone_classification.png")}
+          src={require("../../assets/img/zone_classification.png")}
           style={{ maxWidth: "100%" }}
         />
         <a
@@ -143,7 +143,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
       </p>
       <p>
         <img
-          src={require("../assets/img/mpa_classification.png")}
+          src={require("../../assets/img/mpa_classification.png")}
           style={{ maxWidth: "100%" }}
         />
         (

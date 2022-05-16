@@ -6,7 +6,7 @@ import { firstMatchingMetric } from "../metrics";
 import { overlapArea, overlapSubarea } from "./overlapArea";
 import area from "@turf/area";
 import fix from "../testing/fixtures/squareSketches";
-import { testWithinPerc } from "..";
+import { testWithinPerc } from "../testing";
 import { ValidationError } from "../types";
 
 describe("overlapArea", () => {

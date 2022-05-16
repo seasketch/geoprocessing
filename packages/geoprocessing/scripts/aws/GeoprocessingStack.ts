@@ -15,7 +15,7 @@ import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as s3deploy from "@aws-cdk/aws-s3-deployment";
 import { CacheControl } from "@aws-cdk/aws-s3-deployment";
 
-export const NODE_RUNTIME = lambda.Runtime.NODEJS_14_X;
+export const NODE_RUNTIME = lambda.Runtime.NODEJS_16_X;
 export const STAGE_NAME = "prod";
 const SYNC_LAMBDA_TIMEOUT = 10; // seconds
 const ASYNC_LAMBDA_START_TIMEOUT = 5;
@@ -27,6 +27,9 @@ interface GeoprocessingStackProps extends core.StackProps {
   projectName: string;
   projectPath: string;
   manifest: Manifest;
+  env: {
+    region: string;
+  };
 }
 
 /**

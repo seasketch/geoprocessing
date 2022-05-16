@@ -1,6 +1,7 @@
 import React from "react";
 import { IucnMatrix } from "./IucnMatrix";
-import { Card, ReportDecorator } from "..";
+import { Card } from "../Card";
+import { ReportDecorator } from "../storybook/ReportDecorator";
 
 export default {
   component: IucnMatrix,

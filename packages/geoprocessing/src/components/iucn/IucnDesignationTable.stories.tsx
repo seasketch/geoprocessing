@@ -1,6 +1,7 @@
 import React from "react";
 import { IucnDesignationTable } from "./IucnDesignationTable";
-import { Card, ReportDecorator } from "..";
+import { Card } from "../Card";
+import { ReportDecorator } from "../storybook/ReportDecorator";
 
 export default {
   component: IucnDesignationTable,

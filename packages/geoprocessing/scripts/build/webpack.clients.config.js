@@ -27,9 +27,6 @@ module.exports = {
     compress: true,
     port: 8080,
   },
-  node: {
-    fs: "empty",
-  },
   stats: {
     all: false,
     assets: true,
@@ -38,8 +35,8 @@ module.exports = {
     errorDetails: true,
   },
   performance: {
-    maxAssetSize: 300_000,
-    maxEntrypointSize: 300_000,
+    maxAssetSize: 1_00_000,
+    maxEntrypointSize: 1_000_000,
   },
   entry: "./src/components/App.tsx",
   output: {
@@ -48,6 +45,9 @@ module.exports = {
   },
   devtool: "source-map",
   resolve: {
+    fallback: {
+      fs: false,
+    },
     extensions: [".ts", ".tsx", ".js"],
     modules: [
       path.resolve(__dirname, "../../node_modules"),
@@ -73,10 +73,23 @@ module.exports = {
             presets: [
               [
                 require.resolve("@babel/preset-env"),
-                { targets: { node: "current" } },
+                {
+                  targets: {
+                    browsers: [">0.2%", "not dead"],
+                  },
+                },
               ],
               require.resolve("@babel/preset-typescript"),
               require.resolve("@babel/preset-react"),
+            ],
+            plugins: [
+              "@babel/plugin-proposal-optional-chaining",
+              [
+                "@babel/plugin-transform-runtime",
+                {
+                  regenerator: true,
+                },
+              ],
             ],
           },
         },

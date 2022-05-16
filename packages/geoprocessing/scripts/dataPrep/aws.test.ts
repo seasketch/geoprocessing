@@ -22,13 +22,13 @@ describe("getDataSourceVersion", () => {
     fetchMock.getOnce(
       `https://${NAME}.s3.amazonaws.com/metadata.json`,
       {
-        version: 14,
+        version: 16,
       },
       {
         overwriteRoutes: true,
       }
     );
     const version = await getDataSourceVersion(NAME);
-    expect(version.currentVersion).toBe(14);
+    expect(version.currentVersion).toBe(16);
   });
 });

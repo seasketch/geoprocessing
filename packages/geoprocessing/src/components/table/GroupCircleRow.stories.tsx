@@ -4,7 +4,7 @@ import { GroupCircleRow } from "./GroupCircleRow";
 import ReportDecorator from "../storybook/ReportDecorator";
 import { Table, Column } from "./Table";
 import fixtures, { HumanUse } from "../../testing/fixtures";
-import { capitalize } from "../..";
+import { capitalize } from "../../helpers/string";
 
 export default {
   component: GroupCircleRow,

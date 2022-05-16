@@ -107,9 +107,6 @@ export interface GeoprocessingRequest<G = Polygon | LineString | Point> {
   onSocketConnect?: string;
 }
 
-export const SeaSketchReportingMessageEventType =
-  "SeaSketchReportingMessageEventType";
-
 export interface SeaSketchReportingMessageEvent {
   client: string;
   sketchProperties: SketchProperties;
@@ -118,9 +115,6 @@ export interface SeaSketchReportingMessageEvent {
   /* List of ids for layers which are visible in the table of contents */
   visibleLayers?: string[];
 }
-
-export const SeaSketchReportingVisibleLayersChangeEvent =
-  "SeaSketchReportingVisibleLayersChangeEvent";
 
 export interface SeaSketchReportingVisibleLayersChangeEvent {
   visibleLayers: string[];

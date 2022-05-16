@@ -1,7 +1,6 @@
 import React from "react";
-import Card from "./Card";
 import { ObjectiveStatus } from "./ObjectiveStatus";
-import ReportDecorator from "./storybook/ReportDecorator";
+import { ReportDecorator, CardDecorator } from "./storybook";
 
 export default {
   component: ObjectiveStatus,
@@ -9,16 +8,38 @@ export default {
   decorators: [ReportDecorator],
 };
 
-export const simple = () => (
-  <Card title="Report Title">
-    <ObjectiveStatus
-      status="yes"
-      msg={
-        <>
-          This MPA meets the objective of protecting <b>20%</b>
-          of key habitat
-        </>
-      }
-    />
-  </Card>
+export const yes = () => (
+  <ObjectiveStatus
+    status="yes"
+    msg={
+      <>
+        This MPA meets the objective of protecting <b>20%</b>
+        of key habitat
+      </>
+    }
+  />
+);
+
+export const no = () => (
+  <ObjectiveStatus
+    status="no"
+    msg={
+      <>
+        This MPA meets the objective of protecting <b>20%</b>
+        of key habitat
+      </>
+    }
+  />
+);
+
+export const maybe = () => (
+  <ObjectiveStatus
+    status="maybe"
+    msg={
+      <>
+        This MPA meets the objective of protecting <b>20%</b>
+        of key habitat
+      </>
+    }
+  />
 );

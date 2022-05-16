@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
   SeaSketchReportingMessageEvent,
-  SeaSketchReportingMessageEventType,
-  SketchProperties,
   SeaSketchReportingVisibleLayersChangeEvent,
   SeaSketchReportingToggleLayerVisibilityEvent,
-} from "../types";
-import { ReportContext } from "../storybook";
+} from "../types/service";
+
+import { SketchProperties } from "../types/sketch";
+import { ReportContext } from "../storybook/ReportContext";
 import ReactDOM from "react-dom";
+import {
+  seaSketchReportingMessageEventType,
+  seaSketchReportingVisibleLayersChangeEvent,
+} from "../helpers/service";
 
 const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);
@@ -27,15 +31,14 @@ interface ReportContextState {
 }
 
 const App = () => {
-  const [reportContext, setReportContext] = useState<ReportContextState | null>(
-    null
-  );
+  const [reportContext, setReportContext] =
+    useState<ReportContextState | null>(null);
   const [initialized, setInitialized] = useState(false);
   const onMessage = (event: MessageEvent) => {
     try {
       if (
         event.data &&
-        event.data.type === SeaSketchReportingMessageEventType
+        event.data.type === seaSketchReportingMessageEventType
       ) {
         const message: SeaSketchReportingMessageEvent = event.data;
         setReportContext({
@@ -73,7 +76,7 @@ const App = () => {
         });
       } else if (
         event.data &&
-        event.data.type === SeaSketchReportingVisibleLayersChangeEvent
+        event.data.type === seaSketchReportingVisibleLayersChangeEvent
       ) {
         const message: SeaSketchReportingVisibleLayersChangeEvent = event.data;
         // Don't update context unless report is already initialized with SeaSketchReportingMessageEvent
@@ -124,6 +127,10 @@ const App = () => {
 
   if (reportContext) {
     const Report = REPORTS[reportContext.clientName];
+    if (!Report)
+      throw new Error(
+        `Report ${reportContext.clientName} not found in client bundle.  Did you forget to add it to geoprocessing.json?`
+      );
     return (
       <ReportContext.Provider
         value={{

@@ -1,5 +1,4 @@
 const path = require("path");
-const { inspect } = require("util");
 
 const baseStories = [
   "../src/**/*.stories.tsx",
@@ -21,34 +20,34 @@ if (process.env.PROJECT_PATH) {
 module.exports = {
   stories: [...baseStories, ...projectStories],
   addons: [
-    {
-      name: "storybook-addon-turbo-build",
-      options: {
-        // Please refer below tables for available options
-        optimizationLevel: 3,
-      },
-    },
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@storybook/addon-interactions",
   ],
+  framework: "@storybook/react",
   typescript: {
+    check: true,
     reactDocgen: "none",
   },
   webpackFinal: async (config) => {
-    config.node = {
-      fs: "empty",
-    };
+    /// stub fs to avoid not found error
+    config.node = { fs: "empty" };
+    // allow ts files to be picked up in project path
+    config.resolve.extensions.push(".ts", ".tsx");
+    // configure ts files in project path to be transpiled too
     config.module.rules.push({
       test: /\.(ts|tsx)$/,
       use: [
         {
-          loader: require.resolve("ts-loader"),
+          // bab
+          loader: require.resolve("babel-loader"),
+          options: {
+            plugins: ["@babel/plugin-proposal-numeric-separator"],
+          },
         },
-        // // Optional
-        // {
-        //   loader: require.resolve('react-docgen-typescript-loader'),
-        // },
       ],
     });
-    config.resolve.extensions.push(".ts", ".tsx");
+    // load project example sketches and smoke test output
     if (process.env.PROJECT_PATH) {
       config.module.rules.push({
         test: /storybook\/examples-loader.js$/,
@@ -62,15 +61,6 @@ module.exports = {
         ],
       });
     }
-
-    config.plugins = config.plugins.filter(
-      (p) =>
-        !inspect(p).match(
-          /^(DocgenPlugin|ESLintWebpackPlugin|ForkTsCheckerWebpackPlugin)/
-        )
-    );
-
-    console.log(process.cwd());
     return config;
   },
 };

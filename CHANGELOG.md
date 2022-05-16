@@ -1,3 +1,53 @@
+## v0.15.0 (2022-05-02)
+
+#### :boom: Breaking Changes
+
+* Refactor Class Table making column configuration flexible and supporting multiple column types (including bar chart).
+* Drop support for Node 12.x.  AWS CloudFormation/Lambda currently uses 14.x.  CI now tests only 14.x and 16.x
+
+#### :rocket: New Feature / Improvement
+
+* Upgrade to Geoblaze 1.3.2
+* Upgrade to Webpack 4.46.  Migrate start-client dev server script to use webpack serve CLI command.
+* Uprade to Storybook 6.4.22.  Refactor storybook config/loader.  Cold start time is greatly improved.  Uses babel-loader instead of ts-loader. Could now be ready for webpack 5 and React upgrade.
+
+* Add support for regulation-based classification scheme (RBCS) - types, helpers, UI components, and relating to objectives and metrics.
+* Add initial support for MultiPolygon sketches - types, testing, helpers, fixtures.
+* Add MultiPolygon support to overlapFeatures and overlapRasterClass toolbox functions
+
+* Add HorizontalStackedBar chart component
+* Add ChartLegend chart component providing standalone legend separate from chart
+* Add ReportChartFigure component for spacing a chart within a Card
+* Add VerticalSpacer UI component as alternative to ye old break tag
+* DataDownload - add caller-provided titleElement prop
+* Export SimpleButton
+* Export CardDecorator
+
+* Add valueFormatter function - providing shortcut for formatting numbers for human consumption (percentage, commas, fractional digits, custom).  Can be exposed by Table components giving caller control over column formatting.
+* Add input sanity check to all type guard helpers (with any parameter), ensuring input is truthy
+* toPercentMetric: support assigning new metric name
+* fgbFetchAll - make support for undefined bbox explicit
+* Add getSketchFeatures helper
+* Add getKeys helper
+
+* Add support for Objectives and tying them to Metrics
+
+#### :bug: Bug Fix
+
+* Lock CI npm version to npm@7.10.0 for now due to error with lockfile in newer version.
+* Add check that report client exists in bundle before trying to access in App.tsx
+* Add numeric-separator plugin for proper babel-loader handling of underscore
+* Fix DataDownload dropdown stuck open on startup bug
+
+#### :house: Internal
+
+* overlapRaster - handle case of no overlapping pixels found, fallback to identify on nearest cell
+* Add overlapGroupMetrics unit tests
+* Add overlapRasterClass unit tests
+* Consolidate iframe service types and constants
+* Refactor some of helpers - break out geo and native
+* Refactor some of types - break datasource out of metric
+
 ## v0.14.0 (2022-02-27)
 
 #### :rocket: New Feature / Improvement

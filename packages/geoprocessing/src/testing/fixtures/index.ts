@@ -1,8 +1,4 @@
 import { randomInt, randomFloat } from "../../helpers/randomData";
-import {
-  selfCrossingPolygon,
-  selfCrossingSketchPolygon,
-} from "./invalidSketches";
 
 let fixtures = {};
 
@@ -148,8 +144,4 @@ export default {
   humanUse,
   nested,
   randomCategorical: getRandomCategorical(),
-  invalid: {
-    selfCrossingPolygon,
-    selfCrossingSketchPolygon,
-  },
 };

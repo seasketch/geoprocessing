@@ -12,6 +12,7 @@ import {
   fixtures,
 } from "@seasketch/geoprocessing";
 import booleanValid from "@turf/boolean-valid";
+import { selfCrossingSketchPolygon } from "@seasketch/geoprocessing/dist/src/testing/fixtures/invalidSketches";
 
 describe("Basic unit tests", () => {
   test("clipLand", async () => {
@@ -123,8 +124,7 @@ describe("Basic unit tests", () => {
 
   test("clipToOceanEez - should throw ValidationError if self-crossing", async () => {
     expect(
-      async () =>
-        await clipToOceanEez(fixtures.invalid.selfCrossingSketchPolygon)
+      async () => await clipToOceanEez(selfCrossingSketchPolygon)
     ).rejects.toThrow(ValidationError);
   });
 });

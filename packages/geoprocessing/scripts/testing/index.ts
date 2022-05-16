@@ -4,6 +4,7 @@ import {
   SketchCollection,
   Feature,
   Polygon,
+  MultiPolygon,
   LineString,
   Point,
 } from "../../src/types";
@@ -12,9 +13,13 @@ import {
   isSketch,
   isSketchCollection,
   isPolygonFeature,
+  isMultiPolygonFeature,
+  isPolygonAnyFeature,
   isLineStringFeature,
   isPointFeature,
   isPolygonSketchCollection,
+  isMultiPolygonSketchCollection,
+  isPolygonAllSketchCollection,
   isLineStringSketchCollection,
   isPointSketchCollection,
 } from "../../src/helpers";
@@ -72,6 +77,37 @@ export async function getExamplePolygonSketchAll(
 }
 
 /**
+ * Reads all MultiPolygon sketch and sketch collections from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExampleMultiPolygonSketchAll(
+  partialName?: string
+): Promise<Array<Sketch<MultiPolygon> | SketchCollection<MultiPolygon>>> {
+  return (await getExampleSketchAll(partialName)).filter(
+    (s) => isMultiPolygonFeature(s) || isMultiPolygonSketchCollection(s)
+  ) as Sketch<MultiPolygon>[];
+}
+
+/**
+ * Reads all polygon type (Polygon or MultiPolygon) sketch and sketch
+ * collections from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExamplePolygonAllSketchAll(
+  partialName?: string
+): Promise<
+  Array<
+    Sketch<Polygon | MultiPolygon> | SketchCollection<Polygon | MultiPolygon>
+  >
+> {
+  return (await getExampleSketchAll(partialName)).filter(
+    (s) => isPolygonAnyFeature(s) || isPolygonAllSketchCollection(s)
+  ) as Sketch<Polygon | MultiPolygon>[];
+}
+
+/**
  * Reads all LineString sketch and sketch collections from examples/sketches for testing. Run from project root
  * Optionally filters out those that don't match partialName
  * TODO: remove cast if possible
@@ -118,6 +154,32 @@ export async function getExamplePolygonSketches(
   return (await getExampleSketches(partialName)).filter(
     isPolygonFeature
   ) as Sketch<Polygon>[];
+}
+
+/**
+ * Reads all MultiPolygon sketches from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExampleMultiPolygonSketches(
+  partialName?: string
+): Promise<Array<Sketch<MultiPolygon>>> {
+  return (await getExampleSketches(partialName)).filter(
+    isMultiPolygonFeature
+  ) as Sketch<MultiPolygon>[];
+}
+
+/**
+ * Reads all Polygon or MultiPolygon sketches from examples/sketches for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ * TODO: remove cast if possible
+ */
+export async function getExamplePolygonAllSketches(
+  partialName?: string
+): Promise<Array<Sketch<Polygon | MultiPolygon>>> {
+  return (await getExampleSketches(partialName)).filter(
+    isPolygonAnyFeature
+  ) as Sketch<Polygon | MultiPolygon>[];
 }
 
 /**

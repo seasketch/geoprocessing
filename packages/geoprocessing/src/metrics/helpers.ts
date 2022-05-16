@@ -1,30 +1,41 @@
 import {
-  Metric,
-  MetricDimension,
-  MetricProperties,
-  MetricProperty,
   Sketch,
   SketchCollection,
   NullSketch,
   NullSketchCollection,
+  Metric,
+  MetricDimension,
+  MetricProperty,
   DataClass,
   MetricIdTypes,
   GroupMetricSketchAgg,
 } from "../types";
+
 import {
-  isNullSketchCollection,
+  groupBy,
+  keyBy,
   isSketch,
   isSketchCollection,
   isNullSketch,
-  groupBy,
-  keyBy,
+  isNullSketchCollection,
 } from "../helpers";
 
 import reduce from "lodash/reduce";
 import cloneDeep from "lodash/cloneDeep";
 
+/** Properties used in Metric */
+export const MetricProperties = [
+  "metricId",
+  "sketchId",
+  "classId",
+  "groupId",
+  "geographyId",
+  "value",
+  "extra",
+] as const;
+
 /**
- * Create a fully defined metric from a partial.  Metric values not provided are initialized to null
+ * Creates a base metric object with 0 value, metricId of 'metric' and all other IDs null.  Then overrides with properties of passed metric.
  * @param metric - partial metric
  * @returns metric
  */

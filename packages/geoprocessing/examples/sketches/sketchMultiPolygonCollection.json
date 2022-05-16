@@ -1,0 +1,213 @@
+{
+    "type": "FeatureCollection",
+    "properties": {
+        "id": "609ef1d65b3d7a396cdbc944",
+        "name": "multi-polygon",
+        "updatedAt": "2021-05-25T16:46:12.125Z",
+        "createdAt": "2021-05-14T21:55:34.020Z",
+        "sketchClassId": "5d0d437fa7c99269b81eff7f",
+        "isCollection": true,
+        "userAttributes": []
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [[
+                    [
+                        [
+                            -156.90900215013355,
+                            21.1748363266983
+                        ],
+                        [
+                            -156.92271259686578,
+                            21.17195157781254
+                        ],
+                        [
+                            -156.92084743408168,
+                            21.182275043439105
+                        ],
+                        [
+                            -156.9017930208691,
+                            21.185796391842885
+                        ],
+                        [
+                            -156.90900215013355,
+                            21.1748363266983
+                        ]
+                    ]
+                ]],
+                "bbox": [
+                    -156.92271259686578,
+                    21.17195157781254,
+                    -156.9017930208691,
+                    21.185796391842885
+                ]
+            },
+            "properties": {
+                "id": "60907815f087a55d051c97ed",
+                "name": "test1",
+                "updatedAt": "2021-05-25T16:46:12.126Z",
+                "createdAt": "2021-05-03T22:24:21.261Z",
+                "sketchClassId": "5d0d435ba7c99269b81eff6c",
+                "isCollection": false,
+                "userAttributes": [
+                    {
+                        "label": "Type of MMA",
+                        "fieldType": "ChoiceField",
+                        "exportId": "TYPE_OF_MMA",
+                        "value": "Community-Based Fishing Area"
+                    },
+                    {
+                        "label": "What other type?",
+                        "fieldType": "TextArea",
+                        "exportId": "WHAT_OTHER_TY",
+                        "value": ""
+                    }
+                ]
+            },
+            "id": "1",
+            "bbox": [
+                -156.92271259686578,
+                21.17195157781254,
+                -156.9017930208691,
+                21.185796391842885
+            ]
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [[
+                    [
+                        [
+                            -154.92923855790372,
+                            19.592869349399095
+                        ],
+                        [
+                            -154.92925044613307,
+                            19.59296431778552
+                        ],
+                        [
+                            -154.92930327091187,
+                            19.592992569286988
+                        ],
+                        [
+                            -154.9293790803479,
+                            19.59295820437848
+                        ],
+                        [
+                            -154.92937205874426,
+                            19.592858832432256
+                        ],
+                        [
+                            -154.92923855790372,
+                            19.592869349399095
+                        ]
+                    ]
+                ]],
+                "bbox": [
+                    -154.93901851781655,
+                    19.532663557180157,
+                    -154.78071595699348,
+                    19.655159895457032
+                ]
+            },
+            "properties": {
+                "id": "609ef2525b3d7a396cdbc951",
+                "name": "test2",
+                "updatedAt": "2021-05-14T21:57:45.842Z",
+                "createdAt": "2021-05-14T21:57:38.768Z",
+                "sketchClassId": "5d0d435ba7c99269b81eff6c",
+                "isCollection": false,
+                "userAttributes": [
+                    {
+                        "label": "Type of MMA",
+                        "fieldType": "ChoiceField",
+                        "exportId": "TYPE_OF_MMA",
+                        "value": "Marine Life Conservation District"
+                    },
+                    {
+                        "label": "What other type?",
+                        "fieldType": "TextArea",
+                        "exportId": "WHAT_OTHER_TY",
+                        "value": ""
+                    }
+                ]
+            },
+            "id": "2",
+            "bbox": [
+                -154.93901851781655,
+                19.532663557180157,
+                -154.78071595699348,
+                19.655159895457032
+            ]
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [[
+                    [
+                        [
+                            -155.9849281480671,
+                            19.84300506352331
+                        ],
+                        [
+                            -155.98638727030644,
+                            19.8414710982367
+                        ],
+                        [
+                            -155.9892625989909,
+                            19.844296811423252
+                        ],
+                        [
+                            -155.98776056123597,
+                            19.84550781641468
+                        ],
+                        [
+                            -155.9849281480671,
+                            19.84300506352331
+                        ]
+                    ]
+                ]],
+                "bbox": [
+                    -155.9892625989909,
+                    19.8414710982367,
+                    -155.9849281480671,
+                    19.84550781641468
+                ]
+            },
+            "properties": {
+                "id": "60ad299c9554743cd643b985",
+                "name": "test3",
+                "updatedAt": "2021-05-25T16:45:24.298Z",
+                "createdAt": "2021-05-25T16:45:16.678Z",
+                "sketchClassId": "5d0d435ba7c99269b81eff6c",
+                "isCollection": false,
+                "userAttributes": [
+                    {
+                        "label": "Type of MMA",
+                        "fieldType": "ChoiceField",
+                        "exportId": "TYPE_OF_MMA",
+                        "value": "Makai Watch"
+                    },
+                    {
+                        "label": "What other type?",
+                        "fieldType": "TextArea",
+                        "exportId": "WHAT_OTHER_TY",
+                        "value": ""
+                    }
+                ]
+            },
+            "id": "3",
+            "bbox": [
+                -155.9892625989909,
+                19.8414710982367,
+                -155.9849281480671,
+                19.84550781641468
+            ]
+        }
+    ]
+}

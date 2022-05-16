@@ -1,5 +1,5 @@
 import { Feature, Geometry } from "../types";
-import { isFeature } from "../helpers";
+import { isFeature } from "../helpers/geo";
 import turfBoolOverlap from "@turf/boolean-overlap";
 import deepEqual from "fast-deep-equal";
 

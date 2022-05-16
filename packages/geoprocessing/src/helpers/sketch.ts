@@ -1,16 +1,29 @@
 import {
+  FeatureCollection,
+  Point,
+  Polygon,
+  MultiPolygon,
+  LineString,
+} from "../types/geojson";
+
+import {
   Sketch,
   SketchCollection,
   NullSketch,
   NullSketchCollection,
-  FeatureCollection,
-  Polygon,
-  LineString,
   SketchProperties,
   UserAttribute,
-} from "../types";
-import { isSketch, isSketchCollection } from "./types";
-import fixtures from "../testing/fixtures";
+} from "../types/sketch";
+
+import { hasOwnProperty, isObject } from "./native";
+import {
+  isFeature,
+  isFeatureCollection,
+  collectionHasGeometry,
+  isMultiPolygonFeature,
+  isPolygonFeature,
+} from "./geo";
+
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
 import { ReportContextValue } from "../storybook";
@@ -103,6 +116,133 @@ export function toNullSketch(
   }
 }
 
+/**
+ * Checks if object is a Sketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
+ */
+export const isSketch = (feature: any): feature is Sketch => {
+  return (
+    feature &&
+    isFeature(feature) &&
+    hasOwnProperty(feature, "type") &&
+    hasOwnProperty(feature, "properties") &&
+    feature.properties &&
+    feature.properties.name
+  );
+};
+
+/**
+ * Checks if sketch is a Polygon
+ */
+export const isPolygonSketch = (sketch: any): sketch is Sketch<Polygon> => {
+  return sketch && isSketch(sketch) && isPolygonFeature(sketch);
+};
+
+/**
+ * Checks if sketch is a MultiPolygon. Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
+ */
+export const isMultiPolygonSketch = (
+  sketch: any
+): sketch is Sketch<MultiPolygon> => {
+  return sketch && isSketch(sketch) && isMultiPolygonFeature(sketch);
+};
+
+/**
+ * Check if object is a SketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to SketchCollection
+ */
+export const isSketchCollection = (
+  collection: any
+): collection is SketchCollection => {
+  return (
+    collection &&
+    isFeatureCollection(collection) &&
+    hasOwnProperty(collection, "properties") &&
+    isObject(collection.properties) &&
+    hasOwnProperty(collection.properties as Record<string, any>, "name") &&
+    collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true)
+  );
+};
+
+/**
+ * Checks if object is a NullSketch.  Any code inside a block guarded by a conditional call to this function will have type narrowed to NullSketch
+ */
+export const isNullSketch = (feature: any): feature is NullSketch => {
+  return (
+    feature &&
+    isFeature(feature) &&
+    hasOwnProperty(feature, "type") &&
+    hasOwnProperty(feature, "properties") &&
+    feature.properties &&
+    feature.properties.name &&
+    !feature.geometry
+  );
+};
+
+/**
+ * Check if object is a NullSketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to NullSketchCollection
+ */
+export const isNullSketchCollection = (
+  collection: any
+): collection is NullSketchCollection => {
+  return (
+    collection &&
+    isFeatureCollection(collection) &&
+    hasOwnProperty(collection, "properties") &&
+    isObject(collection.properties) &&
+    hasOwnProperty(collection.properties as Record<string, any>, "name") &&
+    collection.features.map(isNullSketch).reduce((acc, cur) => acc && cur, true)
+  );
+};
+
+export const isPolygonSketchCollection = (
+  collection: any
+): collection is SketchCollection<Polygon> => {
+  return (
+    collection &&
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "Polygon")
+  );
+};
+
+export const isMultiPolygonSketchCollection = (
+  collection: any
+): collection is SketchCollection<MultiPolygon> => {
+  return (
+    collection &&
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "MultiPolygon")
+  );
+};
+
+export const isPolygonAllSketchCollection = (
+  collection: any
+): collection is SketchCollection<Polygon | MultiPolygon> => {
+  return (
+    collection &&
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, ["Polygon", "MultiPolygon"])
+  );
+};
+
+export const isLineStringSketchCollection = (
+  collection: any
+): collection is SketchCollection<LineString> => {
+  return (
+    collection &&
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "LineString")
+  );
+};
+
+export const isPointSketchCollection = (
+  collection: any
+): collection is SketchCollection<Point> => {
+  return (
+    collection &&
+    isSketchCollection(collection) &&
+    collectionHasGeometry(collection, "Point")
+  );
+};
+
 export const genSampleUserAttributes = (): UserAttribute[] => {
   return [
     {
@@ -129,7 +269,9 @@ export const genSampleUserAttributes = (): UserAttribute[] => {
 /**
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
-export const genSampleSketch = <G = Polygon | LineString | String>(
+export const genSampleSketch = <
+  G = Polygon | MultiPolygon | LineString | String
+>(
   geometry: G,
   name?: string
 ): Sketch<G> => ({
@@ -250,3 +392,21 @@ export const genSampleSketchContext = (): ReportContextValue => ({
   ],
   visibleLayers: [],
 });
+
+/**
+ * Given single or collection of sketches, returns array of sketch features, ignoring sketch collections.  Assumes collection objects can root or leaf
+ * @param sketch
+ */
+export function getSketchFeatures(
+  sketch: Sketch | SketchCollection | NullSketchCollection | NullSketch
+) {
+  if (isSketch(sketch) || isNullSketch(sketch)) {
+    return [sketch];
+  } else if (isSketchCollection(sketch)) {
+    return sketch.features.filter((feat) => !feat.properties.isCollection);
+  } else if (isNullSketchCollection(sketch)) {
+    return sketch.features.filter((feat) => !feat.properties.isCollection);
+  } else {
+    throw new Error("Not a valid sketch");
+  }
+}

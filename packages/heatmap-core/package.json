@@ -30,6 +30,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
     "build": "rm -rf dist && tsc"
   },
   "repository": {

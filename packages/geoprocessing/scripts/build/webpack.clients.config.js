@@ -73,11 +73,7 @@ module.exports = {
             presets: [
               [
                 require.resolve("@babel/preset-env"),
-                {
-                  targets: {
-                    browsers: [">0.2%", "not dead"],
-                  },
-                },
+                { targets: { node: "14" } },
               ],
               require.resolve("@babel/preset-typescript"),
               require.resolve("@babel/preset-react"),

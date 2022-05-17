@@ -38,7 +38,7 @@ module.exports = {
   ],
   framework: "@storybook/react",
   core: {
-    builder: "webpack5",
+    builder: "webpack4",
   },
   features: {
     postcss: false,
@@ -49,7 +49,11 @@ module.exports = {
   },
   webpackFinal: async (config) => {
     /// stub fs to avoid not found error
-    config.resolve.fallback.fs = false;
+    // webpack 5 only, enable when webpack 5 works
+    // config.resolve.fallback.fs = false;
+    // webpack 4 only, disable when webpack 4 dropped
+    config.node = { fs: "empty" };
+
     // allow ts files to be picked up in project path
     config.resolve.extensions.push(".ts", ".tsx");
     // configure ts files in project path to be transpiled too

@@ -105,6 +105,30 @@
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
     }, {
+      "name": "heatmap-core - debug tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/heatmap-core",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+          "run-script", "test:debug"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229        
+    }, {
+      "name": "heatmap-cli - debug tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/heatmap-cli",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+          "run-script", "test:debug"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229        
+    }, {
       "name": "gp-clip-ocean - debug tests",
       "type": "node",
       "request": "launch",

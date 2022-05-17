@@ -44,24 +44,33 @@ export interface HeatCell {
 
 export type HeatMap = Record<string, HeatCell>;
 
+export interface BuildOptions {
+  resolutions: number[];
+  numClasses: number;
+}
+
 /** Given FeatureCollection */
 export function buildIndex(
   featureColl: FeatureCollection<Polygon | MultiPolygon>,
-  resolutions: number[] = [8, 9, 10, 11],
-  numClasses: number = 20
+  buildOptions: BuildOptions
 ) {
   const result: Meta["resolutions"] = Array.from(
-    { length: resolutions.length },
-    (x, resIndex) => ({ resolution: resolutions[resIndex], methods: {} })
+    { length: buildOptions.resolutions.length },
+    (x, resIndex) => ({
+      resolution: buildOptions.resolutions[resIndex],
+      methods: {},
+    })
   ).reduce((soFar, resResult) => {
     return { ...soFar, [resResult.resolution]: resResult };
   }, {});
 
-  const index = resolutions.map((res, resIndex) => genRes(res, resIndex));
+  const index = buildOptions.resolutions.map((res, resIndex) =>
+    genRes(res, resIndex)
+  );
 
   const meta = {
     resolutions: result,
-    numClasses,
+    numClasses: buildOptions.numClasses,
   };
 
   return {
@@ -75,13 +84,15 @@ export function buildIndex(
   function genRes(res: number, resIndex: number) {
     const heatMap: Record<string, HeatCell> = {};
 
+    const weightField = "importance";
+
     featureColl.features.forEach((feat) => {
       // Calculate heatmap value for feature
       const area = turf.area(feat);
       const sap = calcSap(area);
       const sapWeighted = (() => {
-        if (feat.properties?.weight >= 0) {
-          return calcSap(area, { importance: feat.properties?.weight });
+        if (feat.properties![weightField] >= 0) {
+          return calcSap(area, { importance: feat.properties![weightField] });
         } else {
           console.log(`Missing weight property: ${feat.properties?.resp_id}`);
           return null;
@@ -125,7 +136,10 @@ export function buildIndex(
     // Object.keys(heatMap).forEach(cellId => heatMap[cellId] = scale(heatMap[cellId]))
 
     // initialize quantile classes and bins
-    const heatClasses = Array.from({ length: numClasses }, (x, i) => i);
+    const heatClasses = Array.from(
+      { length: buildOptions.numClasses },
+      (x, i) => i
+    );
 
     let sapByClassCompact: H3Index[][] = heatClasses.map(() => []);
 
@@ -147,8 +161,8 @@ export function buildIndex(
     );
 
     // Geo
-    const sapByClassGeo = geojsonFromH3Classes(sapByClassCompact);
-    const heatMapGeo = geojsonFromH3HeatMap(heatMap);
+    // const sapByClassGeo = geojsonFromH3Classes(sapByClassCompact);
+    // const heatMapGeo = geojsonFromH3HeatMap(heatMap);
 
     result[res].methods.sap = {
       name: "sap",
@@ -157,7 +171,8 @@ export function buildIndex(
       quantileBreaks: quantileScale.quantiles(),
     };
 
-    return { heatMap, heatMapGeo, sapByClassCompact, sapByClassGeo };
+    // return { heatMap, heatMapGeo, sapByClassCompact, sapByClassGeo };
+    return { heatMap, sapByClassCompact };
   }
 }
 

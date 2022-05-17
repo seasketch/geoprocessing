@@ -24,6 +24,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:smoke": "npm run test --group=smoke",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
     "build": "rm -rf dist && tsc",
     "build-index": "npx ts-node-esm lib/examples/maldives/run.ts",

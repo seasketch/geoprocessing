@@ -32,6 +32,7 @@
     "build": "rm -rf dist && tsc",
     "prepare": "npm run build",
     "test": "jest",
+    "test:smoke": "npm run test --group=smoke",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js"
   },
   "repository": {

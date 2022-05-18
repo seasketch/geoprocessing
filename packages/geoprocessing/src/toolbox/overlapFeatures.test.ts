@@ -5,7 +5,7 @@
 import { overlapFeatures } from "./overlapFeatures";
 import area from "@turf/area";
 import fix from "../testing/fixtures/squareSketches";
-import { firstMatchingMetric } from "..";
+import { firstMatchingMetric } from "../metrics";
 import { testWithinPerc } from "../testing";
 
 describe("overlapFeatures", () => {

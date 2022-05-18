@@ -60,14 +60,14 @@ if (
   throw new Error("No functions found in geoprocessing.json");
 }
 
-const handlers = [];
+const handlerFunctions = [];
 geoprocessing.preprocessingFunctions &&
   geoprocessing.preprocessingFunctions.forEach((funcPath) =>
-    handlers.push(generateHandler(funcPath))
+    handlerFunctions.push(generateHandler(funcPath))
   );
 geoprocessing.geoprocessingFunctions &&
   geoprocessing.geoprocessingFunctions.forEach((funcPath) =>
-    handlers.push(generateHandler(funcPath))
+    handlerFunctions.push(generateHandler(funcPath))
   );
 
 module.exports = {
@@ -80,9 +80,9 @@ module.exports = {
     errorDetails: true,
   },
   entry: {
-    ...handlers.reduce((prev, f) => {
-      prev[path.basename(f)] = f;
-      return prev;
+    ...handlerFunctions.reduce((handlerMapSoFar, handlerFunction) => {
+      handlerMapSoFar[path.basename(handlerFunction)] = handlerFunction;
+      return handlerMapSoFar;
     }, {}),
     serviceHandlers: path.join(GP_ROOT, "src/aws/serviceHandlers.ts"),
     sendmessage: path.join(GP_ROOT, "src/sockets/sendmessage.ts"),
@@ -134,7 +134,7 @@ module.exports = {
             presets: [
               [
                 require.resolve("@babel/preset-env"),
-                { targets: { node: "14" } },
+                { targets: { node: "16" } },
               ],
               require.resolve("@babel/preset-typescript"),
             ],

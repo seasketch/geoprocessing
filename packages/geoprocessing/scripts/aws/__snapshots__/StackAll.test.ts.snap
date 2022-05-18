@@ -27,6 +27,18 @@ Object {
     },
   },
   "Parameters": Object {
+    "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538ArtifactHash154EE95B": Object {
+      "Description": "Artifact hash for asset \\"15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538\\"",
+      "Type": "String",
+    },
+    "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3BucketB021608E": Object {
+      "Description": "S3 bucket for asset \\"15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538\\"",
+      "Type": "String",
+    },
+    "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3VersionKeyC73B105A": Object {
+      "Description": "S3 key for asset version \\"15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538\\"",
+      "Type": "String",
+    },
     "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0ArtifactHash4A934180": Object {
       "Description": "Artifact hash for asset \\"1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0\\"",
       "Type": "String",
@@ -39,40 +51,28 @@ Object {
       "Description": "S3 key for asset version \\"1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0\\"",
       "Type": "String",
     },
-    "AssetParameters4cd61014b71160e8c66fe167e43710d5ba068b80b134e9bd84508cf9238b2392ArtifactHashE56CD69A": Object {
-      "Description": "Artifact hash for asset \\"4cd61014b71160e8c66fe167e43710d5ba068b80b134e9bd84508cf9238b2392\\"",
+    "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cArtifactHash07A347C7": Object {
+      "Description": "Artifact hash for asset \\"e6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2c\\"",
       "Type": "String",
     },
-    "AssetParameters4cd61014b71160e8c66fe167e43710d5ba068b80b134e9bd84508cf9238b2392S3BucketBF7A7F3F": Object {
-      "Description": "S3 bucket for asset \\"4cd61014b71160e8c66fe167e43710d5ba068b80b134e9bd84508cf9238b2392\\"",
+    "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3BucketE2407207": Object {
+      "Description": "S3 bucket for asset \\"e6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2c\\"",
       "Type": "String",
     },
-    "AssetParameters4cd61014b71160e8c66fe167e43710d5ba068b80b134e9bd84508cf9238b2392S3VersionKeyFAF93626": Object {
-      "Description": "S3 key for asset version \\"4cd61014b71160e8c66fe167e43710d5ba068b80b134e9bd84508cf9238b2392\\"",
+    "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3VersionKey0667D5EA": Object {
+      "Description": "S3 key for asset version \\"e6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2c\\"",
       "Type": "String",
     },
-    "AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfArtifactHash85F58E48": Object {
-      "Description": "Artifact hash for asset \\"c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf\\"",
+    "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daArtifactHashD85D28D8": Object {
+      "Description": "Artifact hash for asset \\"f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da\\"",
       "Type": "String",
     },
-    "AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3Bucket55EFA30C": Object {
-      "Description": "S3 bucket for asset \\"c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf\\"",
+    "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3BucketF23C0DE7": Object {
+      "Description": "S3 bucket for asset \\"f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da\\"",
       "Type": "String",
     },
-    "AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3VersionKey60329B70": Object {
-      "Description": "S3 key for asset version \\"c24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cf\\"",
-      "Type": "String",
-    },
-    "AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68ArtifactHashD9A515C3": Object {
-      "Description": "Artifact hash for asset \\"e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68\\"",
-      "Type": "String",
-    },
-    "AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3BucketAEADE8C7": Object {
-      "Description": "S3 bucket for asset \\"e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68\\"",
-      "Type": "String",
-    },
-    "AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F": Object {
-      "Description": "S3 key for asset version \\"e9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68\\"",
+    "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3VersionKey5E97B17D": Object {
+      "Description": "S3 key for asset version \\"f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da\\"",
       "Type": "String",
     },
   },
@@ -100,6 +100,16 @@ Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "BucketName": "gp-all-client",
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+          Object {
+            "Key": "aws-cdk:cr-owned:5135519a",
+            "Value": "true",
+          },
+        ],
         "WebsiteConfiguration": Object {
           "IndexDocument": "index.html",
         },
@@ -111,7 +121,7 @@ Object {
       "Properties": Object {
         "Content": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3BucketAEADE8C7",
+            "Ref": "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3BucketE2407207",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -124,7 +134,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F",
+                          "Ref": "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3VersionKey0667D5EA",
                         },
                       ],
                     },
@@ -137,7 +147,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameterse9882ab123687399f934da0d45effe675ecc8ce13b40cb946f3e1d6141fe8d68S3VersionKeyE415415F",
+                          "Ref": "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3VersionKey0667D5EA",
                         },
                       ],
                     },
@@ -227,7 +237,9 @@ Object {
             Object {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Principal": "*",
+              "Principal": Object {
+                "AWS": "*",
+              },
               "Resource": Object {
                 "Fn::Join": Array [
                   "",
@@ -245,7 +257,6 @@ Object {
             },
             Object {
               "Action": Array [
-                "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
@@ -345,7 +356,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3Bucket55EFA30C",
+            "Ref": "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3BucketF23C0DE7",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -358,7 +369,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3VersionKey60329B70",
+                          "Ref": "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3VersionKey5E97B17D",
                         },
                       ],
                     },
@@ -371,7 +382,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParametersc24b999656e4fe6c609c31bae56a1cf4717a405619c3aa6ba1bc686b8c2c86cfS3VersionKey60329B70",
+                          "Ref": "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3VersionKey5E97B17D",
                         },
                       ],
                     },
@@ -393,7 +404,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.6",
+        "Runtime": "python3.7",
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
@@ -534,7 +545,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters4cd61014b71160e8c66fe167e43710d5ba068b80b134e9bd84508cf9238b2392S3BucketBF7A7F3F",
+            "Ref": "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3BucketB021608E",
           },
           "S3Key": Object {
             "Fn::Join": Array [
@@ -547,7 +558,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters4cd61014b71160e8c66fe167e43710d5ba068b80b134e9bd84508cf9238b2392S3VersionKeyFAF93626",
+                          "Ref": "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3VersionKeyC73B105A",
                         },
                       ],
                     },
@@ -560,7 +571,7 @@ Object {
                       "Fn::Split": Array [
                         "||",
                         Object {
-                          "Ref": "AssetParameters4cd61014b71160e8c66fe167e43710d5ba068b80b134e9bd84508cf9238b2392S3VersionKeyFAF93626",
+                          "Ref": "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3VersionKeyC73B105A",
                         },
                       ],
                     },
@@ -701,6 +712,12 @@ Object {
             },
           ],
         },
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Delete",
@@ -715,7 +732,9 @@ Object {
             Object {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Principal": "*",
+              "Principal": Object {
+                "AWS": "*",
+              },
               "Resource": Object {
                 "Fn::Join": Array [
                   "",
@@ -733,7 +752,6 @@ Object {
             },
             Object {
               "Action": Array [
-                "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
@@ -1019,7 +1037,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -1067,6 +1085,7 @@ Object {
                 "dynamodb:GetItem",
                 "dynamodb:Scan",
                 "dynamodb:ConditionCheckItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -1115,6 +1134,12 @@ Object {
             },
           ],
         },
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+        ],
       },
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Delete",
@@ -1148,7 +1173,9 @@ Object {
             Object {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Principal": "*",
+              "Principal": Object {
+                "AWS": "*",
+              },
               "Resource": Object {
                 "Fn::Join": Array [
                   "",
@@ -1166,7 +1193,6 @@ Object {
             },
             Object {
               "Action": Array [
-                "s3:GetObject*",
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
@@ -1286,12 +1312,16 @@ Object {
       "Type": "AWS::ApiGateway::Deployment",
     },
     "GpRestApiDeploymentStageprodFDC6A6D1": Object {
+      "DependsOn": Array [
+        "GpRestApiAccountFCFC4532",
+      ],
       "Properties": Object {
         "DeploymentId": Object {
           "Ref": "GpRestApiDeployment8BC1361A7b771d2ac4a560c3fe018130cdc51b67",
         },
         "MethodSettings": Array [
           Object {
+            "DataTraceEnabled": false,
             "HttpMethod": "*",
             "ResourcePath": "/*",
             "ThrottlingBurstLimit": 20,
@@ -2227,7 +2257,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 3,
       },
       "Type": "AWS::Lambda::Function",
@@ -2300,6 +2330,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -2327,6 +2358,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -2759,7 +2791,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 3,
       },
       "Type": "AWS::Lambda::Function",
@@ -2832,6 +2864,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -2969,7 +3002,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 3,
       },
       "Type": "AWS::Lambda::Function",
@@ -3011,6 +3044,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -3180,7 +3214,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 2,
       },
       "Type": "AWS::Lambda::Function",
@@ -3233,6 +3267,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -3260,6 +3295,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -3426,7 +3462,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 5,
       },
       "Type": "AWS::Lambda::Function",
@@ -3489,6 +3525,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -3516,6 +3553,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -3668,7 +3706,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 1,
       },
       "Type": "AWS::Lambda::Function",
@@ -3798,7 +3836,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 2,
       },
       "Type": "AWS::Lambda::Function",
@@ -3851,6 +3889,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -3878,6 +3917,7 @@ Object {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [

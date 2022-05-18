@@ -73,11 +73,12 @@ module.exports = {
             presets: [
               [
                 require.resolve("@babel/preset-env"),
-                { targets: { node: "current" } },
+                { targets: { node: "14" } },
               ],
               require.resolve("@babel/preset-typescript"),
               require.resolve("@babel/preset-react"),
             ],
+            plugins: ["@babel/plugin-proposal-optional-chaining"],
           },
         },
       },

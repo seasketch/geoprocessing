@@ -1,12 +1,9 @@
-// Script to copy templates from their standalone package into geoprocessing distribution
-// Templates are then installed via gp commands.  This could be improved to publish template bundles
-// outside of the gp library
 const fs = require("fs-extra");
 const path = require("path");
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 
-const templatesPath = path.join(__dirname, "..", "..", "..");
+const packagesPath = path.join(__dirname, "..", "..", "..");
 const distPath = path.join(__dirname, "..", "..", "dist");
 const distTemplatesPath = path.join(distPath, "templates", "gp-templates");
 
@@ -15,6 +12,35 @@ const distTemplatesPath = path.join(distPath, "templates", "gp-templates");
 // console.log("dist path:", distPath);
 // console.log("distTemplatesPath", distTemplatesPath);
 
+/**
+ * Copy assets for project use. e.g. project start-storybook looks for img assets in dist
+ */
+async function bundleAssets() {
+  const assetsPath = path.join(__dirname, "..", "..", "src", "assets");
+  const distAssetsPath = path.join(distPath, "src", "assets");
+
+  // Delete old assets if they exist
+  if (fs.existsSync(path.join(distAssetsPath))) {
+    fs.rmdirSync(distAssetsPath, { recursive: true });
+  }
+
+  if (!fs.existsSync(path.join(distAssetsPath))) {
+    fs.mkdirSync(path.join(distAssetsPath));
+  }
+
+  if (fs.existsSync(assetsPath)) {
+    // if (!fs.existsSync(distAssetsPath)) {
+    //   fs.mkdirSync(distAssetsPath, "src", "functions"));
+    // }
+    await fs.copySync(assetsPath, distAssetsPath);
+  }
+}
+
+/**
+ * Copy templates from their standalone package into geoprocessing distribution
+ * Templates are then installed via gp commands.  This could be improved to publish template bundles
+ * outside of the gp library
+ */
 async function bundleTemplates() {
   // Delete old template bundles if they exist
   if (fs.existsSync(path.join(distTemplatesPath))) {
@@ -26,12 +52,12 @@ async function bundleTemplates() {
   }
 
   // Find packages with keyword 'template'
-  const templateNames = (await fs.readdir(templatesPath))
-    .filter((name) => fs.statSync(path.join(templatesPath, name)).isDirectory())
+  const templateNames = (await fs.readdir(packagesPath))
+    .filter((name) => fs.statSync(path.join(packagesPath, name)).isDirectory())
     .filter((dirName) => {
       try {
         const templatePackageMetaPath = path.join(
-          templatesPath,
+          packagesPath,
           dirName,
           "package.json"
         );
@@ -48,7 +74,7 @@ async function bundleTemplates() {
     });
 
   for (const templateName of templateNames) {
-    const templatePath = path.join(templatesPath, templateName);
+    const templatePath = path.join(packagesPath, templateName);
     const distTemplatePath = path.join(distTemplatesPath, templateName);
 
     if (fs.existsSync(templatePath)) {
@@ -148,6 +174,10 @@ async function bundleTemplates() {
     }
   }
 }
+
+bundleAssets().then(() => {
+  console.log("finished bundling assets");
+});
 
 bundleTemplates().then(() => {
   console.log("finished bundling templates");

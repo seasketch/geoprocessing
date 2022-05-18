@@ -8,7 +8,8 @@
     ".": "./dist/src/index.js",
     "./client-ui": "./dist/client-ui.js",
     "./client-core": "./dist/client-core.js",
-    "./dataproviders": "./dist/dataproviders.js"
+    "./dataproviders": "./dist/dataproviders.js",
+    "./storybook": "./dist/storybook.js"
   },
   "readme": "https://github.com/seasketch/geoprocessing#readme",
   "scripts": {
@@ -195,12 +196,22 @@
     "@storybook/addon-essentials": "^6.4.22",
     "@storybook/addon-interactions": "^6.4.22",
     "@storybook/addon-links": "^6.4.22",
+    "@storybook/builder-webpack5": "^6.4.22",
+    "@storybook/manager-webpack5": "^6.4.22",
     "@storybook/testing-library": "^0.0.10",
     "http-server": "^14.1.0",
     "identity-obj-proxy": "^3.0.0",
     "jest-docblock": "^27.5.1",
     "mock-socket": "^9.0.3",
     "start-server-and-test": "^1.12.5"
+  },
+  "peerDependencies": {
+    "@storybook/builder-webpack5": "^6.4.22",
+    "@storybook/manager-webpack5": "^6.4.22",
+    "@storybook/addon-actions": "^6.4.22",
+    "@storybook/addon-essentials": "^6.4.22",
+    "@storybook/addon-interactions": "^6.4.22",
+    "@storybook/addon-links": "^6.4.22"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",

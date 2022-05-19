@@ -26,6 +26,15 @@ jobs:
         run: npm install -g npm@8.5
       - name: Check npm version
         run: npm -v
+      - name: Restore npm cache if possible
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-lerna-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-lerna-
       - name: Install modules
         run: npm install
       - name: Run tests

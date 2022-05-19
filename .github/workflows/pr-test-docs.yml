@@ -19,7 +19,7 @@ jobs:
         run: npm install -g npm@8.5
       - name: Check npm version
         run: npm -v
-      - name: Restore npm cache if present
+      - name: Restore npm cache if possible
         uses: actions/cache@v2
         with:
           path: |

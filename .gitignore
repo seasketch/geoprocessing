@@ -5,6 +5,7 @@ lerna-debug.log
 .build
 .build-web
 packages/geoprocessing/dist
+packages/geoprocessing/docs
 .workspace.env
 packages/example-project/
 report.*

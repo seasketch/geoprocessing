@@ -1,4 +1,10 @@
-// Top-level module for core client functions (non-jsx)
+/**
+ * `client-ui` provides everything for creating geoprocessing client interface,
+ * except for individual React Components. It provides everthing you need to
+ * work with sketches, call geoprocessing functions, transform and format data
+ * (metric results, geojson types, numbers), and input it to the React components.
+ * @packageDocumentation
+ */
 
 // Base types
 export * from "./src/types";

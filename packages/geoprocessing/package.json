@@ -24,6 +24,8 @@
     "test:scripts:update": "npm run test:scripts -- --updateSnapshot",
     "start-storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
+    "start-docs": "npx typedoc --watch",
+    "build-docs": "rm -rf docs && npx typedoc",
     "prepare": "npm run build:core && npm run _prepare && npm run build:scripts",
     "_prepare": "npx ts-node scripts/npm/prepare",
     "start-data": "http-server data -c-1 --silent",

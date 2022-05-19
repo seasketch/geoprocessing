@@ -2,6 +2,8 @@
 
 A serverless framework for publishing low-cost and low-maintenance `geoprocessing` services and reports in the cloud.  Part of the [SeaSketch](https://seasketch.org/) ecosystem.
 
+[Documentation](https://github.com/seasketch/geoprocessing/wiki)
+
 ## What is this for?
 
 This frameworks niche is running spatial analysis, particularly overlay statistics, and generating real-time reports at scale, with different input, such as part of a collaborative spatial planning process.
@@ -13,8 +15,6 @@ Often, the original analysis might be prototyped in an environment like R, Jupyt
   This framework is specifically targeted to code-savvy folks that want to create and host geoprocessing projects themselves and plug them into their SeaSketch project, though it is not dependent on SeaSketch.  The SeaSketch team uses it for all projects, here are some [public ones](https://github.com/seasketch/geoprocessing/network/dependents?package_id=UGFja2FnZS0xMTc3OTQ1NDg5)
 
   The primary efficiency to this framework is that almost everything is written in Typescript/Javascript, both backend and frontend.  Third-party tools are accessible via Node bindings (AWS) or a standard shell environment using Docker (OGR, GDAL, PostGIS, Python).
-
-[Geoprocessing Docs](https://github.com/seasketch/geoprocessing#readme)
 
 ## Goals
 
@@ -312,16 +312,3 @@ By default, a release will be tagged as `latest` so that users installing from n
 ```sh
 npm run publish:alpha
 ```
-
-## Roadmap
-
-  * v0.7 testing on simple vector reports with legacy version of SeaSketch
-    * Replace recent geoprocessing functions and use for new projects
-    * Build out component library as needed
-    * Add [benchmarking and VectorDataSource stats](https://github.com/seasketch/geoprocessing/issues/10) tool
-  * v0.9 Add support for [async execution model](https://github.com/seasketch/geoprocessing/issues/4) for longer running reports with progress bars
-  * v0.9.1 Add [`requiresProperties` support](https://github.com/seasketch/geoprocessing/issues/2)
-  * [Log access](https://github.com/seasketch/geoprocessing/issues/7)
-  * v1.0 - [Authorization](https://github.com/seasketch/geoprocessing/issues/6) for protected datasets
-  * v1.1 [Docker container-based geoprocessing](https://github.com/seasketch/geoprocessing/issues/8)
-  * **v1.2** Open/encourage use by 3rd party developers

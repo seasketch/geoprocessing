@@ -1,13 +1,14 @@
-name: "Test Docs"
-on: 
-- pull_request
+name: "Publish Docs"
+
+on:
+  push:
+    branches:    
+      - main
 
 jobs:
-  docs:
+  build:
+
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -23,3 +24,8 @@ jobs:
         run: npm install
       - name: Build docs
         run: npm run build-docs 
+      - name: Deploy docs 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: packages/geoprocessing/docs

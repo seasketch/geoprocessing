@@ -1,20 +1,14 @@
-name: CI
+name: "Publish Docs"
 
 on:
   push:
-    branches: [ master, dev ]
-  pull_request:
-    branches: [ master, dev ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    branches:    
+      - main
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -28,5 +22,10 @@ jobs:
         run: npm -v
       - name: Install modules
         run: npm install
-      - name: Run tests
-        run: npm test
+      - name: Build docs
+        run: npm run build-docs 
+      - name: Deploy docs 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: packages/geoprocessing/docs

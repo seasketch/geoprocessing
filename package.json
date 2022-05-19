@@ -3,7 +3,8 @@
   "private": true,
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "typedoc": "^0.22.15"
   },
   "engines": {
     "node": ">=16.0.0",
@@ -13,6 +14,7 @@
     "clean": "git clean -fdx",
     "postinstall": "lerna bootstrap",
     "test": "lerna run test",
+    "build-docs": "lerna run build-docs",
     "publish:stable": "CI=1 lerna publish",
     "publish:beta:canary": "CI=1 lerna publish --force-publish --canary --preid beta --dist-tag=beta",
     "publish:alpha:canary": "CI=1 lerna publish --force-publish --canary --preid alpha --dist-tag=alpha",

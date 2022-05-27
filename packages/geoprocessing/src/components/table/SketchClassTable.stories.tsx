@@ -1,7 +1,7 @@
 import React from "react";
 import { SketchClassTable } from "./SketchClassTable";
 import { ReportDecorator, CardDecorator } from "../storybook";
-import { ReportContext } from "../../storybook";
+import { ReportContext } from "../../context";
 import {
   simpleGroup,
   simpleSketchClassAggMetrics,

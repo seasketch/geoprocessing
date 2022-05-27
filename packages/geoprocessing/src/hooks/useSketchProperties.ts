@@ -1,6 +1,6 @@
 import { SketchProperties, UserAttribute } from "../types";
 import { useContext } from "react";
-import { ReportContext } from "../storybook";
+import { ReportContext } from "../context";
 
 function useSketchProperties(): [
   SketchProperties,

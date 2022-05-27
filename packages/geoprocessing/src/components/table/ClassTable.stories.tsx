@@ -1,6 +1,6 @@
 import React from "react";
 import { ClassTable } from "./ClassTable";
-import { ReportContext } from "../../storybook";
+import { ReportContext } from "../../context";
 import { ReportDecorator, CardDecorator } from "../storybook/";
 import { createMetric } from "../../metrics";
 import {

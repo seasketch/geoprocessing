@@ -5,7 +5,7 @@ import { ReportDecorator, CardDecorator } from "./storybook";
 export default {
   component: ObjectiveStatus,
   title: "Components/ObjectiveStatus",
-  decorators: [ReportDecorator],
+  decorators: [CardDecorator, ReportDecorator],
 };
 
 export const yes = () => (

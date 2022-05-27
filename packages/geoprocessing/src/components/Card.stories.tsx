@@ -4,7 +4,7 @@ import ReportDecorator from "./storybook/ReportDecorator";
 
 export default {
   component: Card,
-  title: "Components/Card",
+  title: "Components/Card/Card",
   decorators: [ReportDecorator],
 };
 

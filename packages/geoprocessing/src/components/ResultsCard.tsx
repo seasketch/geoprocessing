@@ -5,12 +5,18 @@ import styled from "styled-components";
 import Skeleton from "./Skeleton";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
 import { ReportError } from "./ReportError";
+import ToolbarCard from "./ToolbarCard";
 
 export interface ResultsCardProps<T> extends CardProps {
   functionName: string;
   children: (results: T) => ReactNode;
   skeleton?: ReactNode;
+  title?: string | ReactNode;
   titleStyle?: React.CSSProperties;
+  /** Toolbar elements for right side */
+  rightItems?: string | ReactNode;
+  /** Optional style properties for right side */
+  rightStyle?: React.CSSProperties;
 }
 
 const DefaultSkeleton = () => (
@@ -58,6 +64,9 @@ export function ResultsCard<T>({
   functionName,
   skeleton,
   children,
+  title,
+  rightItems = <></>,
+  rightStyle = {},
   ...otherProps
 }: ResultsCardProps<T>) {
   if (!functionName) {
@@ -65,13 +74,15 @@ export function ResultsCard<T>({
   }
 
   const titleStyle: React.CSSProperties = {
-    fontSize: "1em",
-    fontWeight: 500,
-    color: "#6C7282",
-    marginBottom: "1.5em",
     ...(otherProps.titleStyle || {}),
   };
-  const cardProps = { ...otherProps, titleStyle };
+  const cardProps = {
+    ...otherProps,
+    leftItems: title,
+    leftStyle: titleStyle,
+    rightItems,
+    rightStyle,
+  };
 
   let { task, loading, error } = useFunction(functionName);
   let taskEstimate = 5;
@@ -116,7 +127,7 @@ export function ResultsCard<T>({
 
   return (
     <ReportError>
-      <Card {...cardProps}>{contents}</Card>
+      <ToolbarCard {...cardProps}>{contents}</ToolbarCard>
     </ReportError>
   );
 }

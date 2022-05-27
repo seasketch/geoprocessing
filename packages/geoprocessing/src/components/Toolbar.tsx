@@ -4,7 +4,8 @@ import classnames from "classnames";
 
 export interface ToolbarProps {
   children: ReactNode;
-  variant?: "regular" | "dense";
+  /** defaults to regular height, dense is smaller height, min is height of toolbar items */
+  variant?: "regular" | "dense" | "min";
   useGutters?: boolean;
   toolbarCls?: string;
   titleAlign?: "flex-start" | "flex-end" | "center" | "baseline" | "stretch";
@@ -15,6 +16,7 @@ export const ToolbarStyled = styled.div`
   &.gp-toolbar {
     display: flex;
     position: relative;
+    justify-content: space-between;
   }
 
   & h2 {

@@ -26,7 +26,6 @@ export function LayerToggle({
         alignItems: "center",
         // flexDirection: "row-reverse",
         width: "100%",
-        marginTop: 15,
         cursor: "pointer",
         ...style,
       }}
@@ -50,7 +49,27 @@ export function LayerToggle({
             htmlFor={label + layerId}
             onClick={() => toggleLayer(layerId)}
           >
-            {label || "Show layer"}
+            {label || "View Layer"}
+          </label>
+        </>
+      )}
+      {simple && (
+        <>
+          <label
+            style={{
+              flex: 1,
+              height: 12,
+              width: 12,
+              color: on === true ? "#62ACC4" : "#888",
+              cursor: "pointer",
+              textAlign: "right",
+              fontSize: "0.8em",
+              marginRight: 6,
+            }}
+            htmlFor={label + layerId}
+            onClick={() => toggleLayer(layerId)}
+          >
+            {label || "Show Map"}
           </label>
         </>
       )}
@@ -92,12 +111,18 @@ export function LayerToggle({
             borderRadius: 9999,
             boxShadow:
               "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-            display: "inline-block",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             boxSizing: "border-box",
           }}
           aria-hidden="true"
           className="translate-x-0 pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
-        ></span>
+        >
+          {simple && (
+            <Layer size="15" color={on === true ? "#6FC2DE" : "#888"} />
+          )}
+        </span>
       </button>
     </span>
   );

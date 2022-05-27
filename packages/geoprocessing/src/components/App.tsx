@@ -6,7 +6,7 @@ import {
 } from "../types/service";
 
 import { SketchProperties } from "../types/sketch";
-import { ReportContext } from "../storybook/ReportContext";
+import { ReportContext } from "../context";
 import ReactDOM from "react-dom";
 import {
   seaSketchReportingMessageEventType,

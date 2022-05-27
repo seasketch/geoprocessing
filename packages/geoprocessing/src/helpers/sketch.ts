@@ -26,7 +26,7 @@ import {
 
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
-import { ReportContextValue } from "../storybook";
+import { ReportContextValue } from "../context";
 
 /**
  * UserAttributes are those filled in via the attributes form specified as

@@ -1,10 +1,7 @@
 import React, { ComponentType } from "react";
 import { storiesOf } from "@storybook/react";
 import { ReportDecorator } from "./src/components/storybook/ReportDecorator";
-import {
-  ReportContext,
-  TestExampleOutput,
-} from "./src/storybook/ReportContext";
+import { TestExampleOutput, ReportContext } from "./src/context";
 import { SketchProperties } from "./src/types";
 import { v4 as uuid } from "uuid";
 const examples = require("./src/storybook/examples-loader.js");

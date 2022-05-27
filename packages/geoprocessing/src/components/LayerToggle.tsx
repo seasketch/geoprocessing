@@ -4,7 +4,7 @@ import { Layer } from "@styled-icons/boxicons-solid/Layer";
 
 export function LayerToggle({
   layerId,
-  label,
+  label = "",
   style,
   simple,
 }: {
@@ -49,17 +49,15 @@ export function LayerToggle({
             htmlFor={label + layerId}
             onClick={() => toggleLayer(layerId)}
           >
-            {label || "View Layer"}
+            {label}
           </label>
         </>
       )}
-      {simple && (
+      {simple && label && label.length > 0 && (
         <>
           <label
             style={{
-              flex: 1,
               height: 12,
-              width: 12,
               color: on === true ? "#62ACC4" : "#888",
               cursor: "pointer",
               textAlign: "right",
@@ -69,7 +67,7 @@ export function LayerToggle({
             htmlFor={label + layerId}
             onClick={() => toggleLayer(layerId)}
           >
-            {label || "Show Map"}
+            {label}
           </label>
         </>
       )}

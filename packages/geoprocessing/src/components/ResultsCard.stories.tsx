@@ -46,7 +46,7 @@ export const titleOnly = () => (
 );
 
 const loadedRightItems = (
-  <div style={{ width: 250, display: "flex" }}>
+  <>
     <LayerToggle
       label="Show EEZ Boundary"
       layerId="5e80c8a8cd44abca6e5268af"
@@ -58,7 +58,7 @@ const loadedRightItems = (
       formats={["csv", "json"]}
       titleElement={<CloudDownload color="#999" size="26" />}
     />
-  </div>
+  </>
 );
 
 export const toolbarItems = () => (

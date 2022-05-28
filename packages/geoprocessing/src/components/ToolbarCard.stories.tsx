@@ -10,12 +10,12 @@ export default {
 };
 
 export const titleOnly = () => (
-  <ToolbarCard leftItems="ToolbarCard Title">
+  <ToolbarCard title="ToolbarCard Title">
     <p>Body text goes here.</p>
   </ToolbarCard>
 );
 
-const rightItems = (
+const items = (
   <div>
     <SimpleButton>⬇</SimpleButton>
     <SimpleButton>➥</SimpleButton>
@@ -23,7 +23,7 @@ const rightItems = (
 );
 
 export const buttons = () => (
-  <ToolbarCard leftItems="Card with Tools" rightItems={rightItems}>
+  <ToolbarCard title="Card with Tools" items={items}>
     <p>Body text goes here.</p>
   </ToolbarCard>
 );

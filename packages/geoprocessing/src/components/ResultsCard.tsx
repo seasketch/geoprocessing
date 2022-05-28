@@ -5,7 +5,6 @@ import styled from "styled-components";
 import Skeleton from "./Skeleton";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
 import { ReportError } from "./ReportError";
-import ToolbarCard from "./ToolbarCard";
 
 export interface ResultsCardProps<T> extends CardProps {
   functionName: string;
@@ -13,10 +12,8 @@ export interface ResultsCardProps<T> extends CardProps {
   skeleton?: ReactNode;
   title?: string | ReactNode;
   titleStyle?: React.CSSProperties;
-  /** Toolbar elements for right side */
-  rightItems?: string | ReactNode;
-  /** Optional style properties for right side */
-  rightStyle?: React.CSSProperties;
+  /** Assumes caller will provide card in children to use results (e.g. ToolbarCard with DataDownload). Shows a simple card until loading complete */
+  useChildCard?: boolean;
 }
 
 const DefaultSkeleton = () => (
@@ -65,23 +62,18 @@ export function ResultsCard<T>({
   skeleton,
   children,
   title,
-  rightItems = <></>,
-  rightStyle = {},
-  ...otherProps
+  titleStyle = {},
+  style = {},
+  useChildCard = false,
 }: ResultsCardProps<T>) {
   if (!functionName) {
     throw new Error("No function specified for ResultsCard");
   }
 
-  const titleStyle: React.CSSProperties = {
-    ...(otherProps.titleStyle || {}),
-  };
   const cardProps = {
-    ...otherProps,
-    leftItems: title,
-    leftStyle: titleStyle,
-    rightItems,
-    rightStyle,
+    style,
+    title,
+    titleStyle,
   };
 
   let { task, loading, error } = useFunction(functionName);
@@ -105,31 +97,36 @@ export function ResultsCard<T>({
   let contents: JSX.Element;
   if (error) {
     contents = (
-      <div role="alert">
-        <ErrorIndicator />
-        {error}
-      </div>
+      <Card {...cardProps}>
+        <div role="alert">
+          <ErrorIndicator />
+          {error}
+        </div>
+      </Card>
     );
   } else if (loading) {
     contents = (
-      <>
+      <Card {...cardProps}>
         {skeleton || <DefaultSkeleton />}
         <ProgressBarWrapper>
           <ProgressBar duration={taskEstimate} />
         </ProgressBarWrapper>
-      </>
+      </Card>
     );
   } else if (task && task.data) {
-    contents = <>{children(task.data as T)}</>;
+    const renderedChildren = children(task.data as T);
+    if (useChildCard) {
+      // Assume caller will provide card in children
+      contents = <>{renderedChildren}</>;
+    } else {
+      // Default card
+      contents = <Card {...cardProps}>{renderedChildren}</Card>;
+    }
   } else {
     throw new Error(); // trigger ReportError boundary
   }
 
-  return (
-    <ReportError>
-      <ToolbarCard {...cardProps}>{contents}</ToolbarCard>
-    </ReportError>
-  );
+  return <ReportError>{contents}</ReportError>;
 }
 
 export default ResultsCard;

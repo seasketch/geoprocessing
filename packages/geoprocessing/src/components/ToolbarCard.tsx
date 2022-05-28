@@ -8,22 +8,22 @@ export interface ToolbarCardProps {
   /** Parent toolbar style properties */
   toolbarStyle?: object;
   /** Title string or elements for left side */
-  leftItems?: string | ReactNode;
+  title?: string | ReactNode;
   /** Optional style properties for left side */
-  leftStyle?: React.CSSProperties;
-  /** Toolbar elements for right side */
-  rightItems?: string | ReactNode;
-  /** Optional style properties for right side */
-  rightStyle?: React.CSSProperties;
+  titleStyle?: React.CSSProperties;
+  /** Toolbar items for right side  */
+  items?: ReactNode;
+  /** Optional style properties for items container */
+  itemsStyle?: React.CSSProperties;
 }
 
 export const ToolbarCard = ({
   children,
-  leftItems = <></>,
-  rightItems = <></>,
   toolbarStyle,
-  leftStyle = {},
-  rightStyle = {},
+  title = <></>,
+  titleStyle = {},
+  items = <></>,
+  itemsStyle = {},
 }: ToolbarCardProps) => {
   const styles = {
     box: {
@@ -41,6 +41,7 @@ export const ToolbarCard = ({
       color: "#6C7282",
       marginBottom: 0,
       marginTop: 0,
+      minHeight: 24,
     },
     right: {
       display: "flex",
@@ -52,7 +53,7 @@ export const ToolbarCard = ({
       <div
         style={{ position: "relative", ...styles.box, ...(toolbarStyle || {}) }}
       >
-        {leftItems && leftItems !== "" && (
+        {title && title !== "" && (
           <Toolbar
             titleAlign="center"
             variant="min"
@@ -62,18 +63,18 @@ export const ToolbarCard = ({
             <div
               style={{
                 ...styles.left,
-                ...(leftStyle || {}),
+                ...(titleStyle || {}),
               }}
             >
-              {leftItems}
+              {title}
             </div>
             <div
               style={{
                 ...styles.right,
-                ...(rightStyle || {}),
+                ...(itemsStyle || {}),
               }}
             >
-              {rightItems}
+              {items}
             </div>
           </Toolbar>
         )}

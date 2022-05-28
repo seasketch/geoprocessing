@@ -24,18 +24,19 @@ export const Card = ({
       margin: "8px 0px",
     },
     title: {
-      fontSize: 14,
-      color: "rgba(116, 116, 116, 1)",
-      marginBottom: "1em",
+      fontSize: "1em",
+      fontWeight: 500,
+      color: "#6C7282",
+      marginBottom: 0,
       marginTop: 0,
-      fontWeight: 400,
+      minHeight: 24,
     },
   };
 
   return (
     <div style={{ position: "relative", ...styles.box, ...(style || {}) }}>
       {title && title !== "" && (
-        <h2 style={{ ...styles.title, ...(titleStyle || {}) }}>{title}</h2>
+        <div style={{ ...styles.title, ...(titleStyle || {}) }}>{title}</div>
       )}
       {children}
     </div>

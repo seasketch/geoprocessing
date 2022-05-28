@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Dropdown from "./Dropdown";
-import { SimpleButton, SimpleButtonStyled } from "./buttons/SimpleButton";
+import Dropdown, { DropdownProps } from "./Dropdown";
+import { SimpleButtonStyled } from "./buttons/SimpleButton";
 import styled from "styled-components";
 import { Parser, transforms } from "json2csv";
 import useSketchProperties from "../hooks/useSketchProperties";
+import { CloudDownload } from "@styled-icons/boxicons-solid";
 
 // Strictly limit format and data types accepted
 const SUPPORTED_FORMATS = ["json", "csv"] as const;
@@ -25,7 +26,7 @@ export interface DownloadOption {
   url: string;
 }
 
-export interface DataDownloadProps {
+export interface DataDownloadProps extends Omit<DropdownProps, "children"> {
   /** Name minus extension */
   filename?: string;
   /** Raw data to format and allow to download, nested objects and arrays will get flattened */
@@ -69,7 +70,7 @@ export const DataDownload = ({
   formats = ["csv", "json"],
   addSketchName = true,
   addTimestamp = true,
-  titleElement = <>⋮</>,
+  ...dropdownProps
 }: DataDownloadProps) => {
   const defaultState: DownloadOption[] = formatConfigs.filter((c) =>
     formats.includes(c.extension)
@@ -126,13 +127,16 @@ export const DataDownload = ({
       href={data && data.length > 0 ? dOption.url : "javascript:;"}
       aria-disabled={!data || data.length === 0}
     >
-      <DownloadButtonStyled>➥ {dOption.label}</DownloadButtonStyled>
+      <DownloadButtonStyled>
+        <CloudDownload color="#999" size="20" style={{ paddingRight: 5 }} />
+        <span style={{ verticalAlign: "middle" }}>{dOption.label}</span>
+      </DownloadButtonStyled>
     </a>
   ));
 
   return (
     <>
-      <Dropdown titleElement={titleElement}>{links}</Dropdown>
+      <Dropdown {...dropdownProps}>{links}</Dropdown>
     </>
   );
 };

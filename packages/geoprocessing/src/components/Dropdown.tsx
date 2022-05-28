@@ -1,10 +1,10 @@
 import React, { FC, useState, useRef } from "react";
 import styled from "styled-components";
 import { usePopper } from "react-popper";
-import { Placement } from "@popperjs/core";
+import popper from "@popperjs/core";
 import useClickOutside from "../hooks/useClickOutside";
 
-interface DropdownContainerProps {
+export interface DropdownContainerProps {
   /* Whether dropdown contain is rendered (open) or not */
   open: boolean;
 }
@@ -12,18 +12,18 @@ interface DropdownContainerProps {
 /**
  * Renders an element with a dropdown list
  */
-interface DropownProps {
+export interface DropdownProps {
   /* Child components to list in dropdown.  Each is wrapped in a DropdownItem */
   children: React.ReactNode;
   /* The base element which opens a dropdown onClick, typically a button */
   titleElement?: React.ReactElement;
   /* How to place the dropdown, defaults to 'auto'.  See types or https://popper.js.org/ for available placements */
-  placement?: Placement;
+  placement?: popper.Placement;
   /* Distance pixels to offset from titleElement */
   offset?: { horizontal: number; vertical: number };
 }
 
-const DropdownContainer = styled.div<DropdownContainerProps>`
+export const DropdownContainer = styled.div<DropdownContainerProps>`
   visibility: ${({ open }) => (open ? "visible" : "hidden")};
   display: ${({ open }) => (open ? "flex" : "none")};
   width: 100%;
@@ -33,7 +33,7 @@ const DropdownContainer = styled.div<DropdownContainerProps>`
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.14);
 `;
 
-const DropdownItem = styled.div`
+export const DropdownItem = styled.div`
   font-family: sans-serif;
   justify-content: flex-start;
   padding: 5px;
@@ -54,7 +54,7 @@ const DropdownItem = styled.div`
   }
 `;
 
-const DropdownTrigger = styled.button`
+export const DropdownTrigger = styled.button`
   border: none;
   background: none;
   font-family: sans-serif;
@@ -65,7 +65,7 @@ export const Dropdown = ({
   placement = "auto",
   offset = { horizontal: 0, vertical: 0 },
   children,
-}: DropownProps) => {
+}: DropdownProps) => {
   const [open, setOpen] = useState(false);
 
   /** Used for updates */

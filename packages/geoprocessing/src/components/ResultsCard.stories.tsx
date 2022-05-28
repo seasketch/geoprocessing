@@ -51,22 +51,6 @@ export const basic = () => (
   </ReportContext.Provider>
 );
 
-const loadedRightItems = (
-  <>
-    <LayerToggle
-      label="Show EEZ Boundary"
-      layerId="5e80c8a8cd44abca6e5268af"
-      simple
-    />
-    <DataDownload
-      filename="sample"
-      data={fixtures.ranked}
-      formats={["csv", "json"]}
-      placement="left-end"
-    />
-  </>
-);
-
 export const loadingState = () => (
   <ReportContext.Provider
     value={{
@@ -169,6 +153,22 @@ export const errorBoundary = () => (
       }}
     </ResultsCard>
   </ReportContext.Provider>
+);
+
+const loadedRightItems = (
+  <>
+    <LayerToggle
+      label="Show EEZ Boundary"
+      layerId="5e80c8a8cd44abca6e5268af"
+      simple
+    />
+    <DataDownload
+      filename="sample"
+      data={fixtures.ranked}
+      formats={["csv", "json"]}
+      placement="left-end"
+    />
+  </>
 );
 
 export const customCard = () => (

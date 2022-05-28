@@ -30,6 +30,7 @@ export * from "./SegmentControl";
 export * from "./Skeleton";
 export * from "./SketchAttributesCard";
 export * from "./Toolbar";
+export * from "./ToolbarCard";
 
 /** Other Modules */
 export * from "../rbcs/components";

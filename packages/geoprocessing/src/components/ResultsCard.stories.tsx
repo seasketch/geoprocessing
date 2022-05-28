@@ -56,7 +56,6 @@ const loadedRightItems = (
       filename="sample"
       data={fixtures.ranked}
       formats={["csv", "json"]}
-      titleElement={<CloudDownload color="#999" size="26" />}
       placement="left-end"
     />
   </>

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Parser, transforms } from "json2csv";
 import useSketchProperties from "../hooks/useSketchProperties";
 import { CloudDownload } from "@styled-icons/boxicons-solid";
+import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical";
 
 // Strictly limit format and data types accepted
 const SUPPORTED_FORMATS = ["json", "csv"] as const;
@@ -26,7 +27,9 @@ export interface DownloadOption {
   url: string;
 }
 
-export interface DataDownloadProps extends Omit<DropdownProps, "children"> {
+type DataDownloadDropdownProps = Omit<DropdownProps, "children">;
+
+export interface DataDownloadProps extends DataDownloadDropdownProps {
   /** Name minus extension */
   filename?: string;
   /** Raw data to format and allow to download, nested objects and arrays will get flattened */
@@ -134,9 +137,14 @@ export const DataDownload = ({
     </a>
   ));
 
+  const dropdownPropsMerged: DataDownloadDropdownProps = {
+    titleElement: <ThreeDotsVertical size={18} color="#999" />,
+    ...dropdownProps,
+  };
+
   return (
     <>
-      <Dropdown {...dropdownProps}>{links}</Dropdown>
+      <Dropdown {...dropdownPropsMerged}>{links}</Dropdown>
     </>
   );
 };

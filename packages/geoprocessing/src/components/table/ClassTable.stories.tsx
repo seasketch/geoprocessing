@@ -534,6 +534,10 @@ export const chartWithMixedTarget = () => {
               }
             },
           },
+          {
+            type: "layerToggle",
+            width: 15,
+          },
         ]}
       />
     </ReportContext.Provider>

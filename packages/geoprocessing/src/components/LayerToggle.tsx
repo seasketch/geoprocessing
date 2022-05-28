@@ -7,11 +7,13 @@ export function LayerToggle({
   label = "",
   style,
   simple,
+  size = "regular",
 }: {
   layerId?: string;
   label?: string;
   style?: React.CSSProperties;
   simple?: boolean;
+  size?: "small" | "regular";
 }) {
   const [visibleLayers, toggleLayer] = useVisibleLayers();
 
@@ -58,7 +60,7 @@ export function LayerToggle({
           <label
             style={{
               height: 12,
-              color: on === true ? "#62ACC4" : "#888",
+              color: on === true ? "#62ACC4" : "#AAA",
               cursor: "pointer",
               textAlign: "right",
               fontSize: "0.8em",
@@ -84,8 +86,8 @@ export function LayerToggle({
           display: "inline-flex",
           boxShadow:
             "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-          height: "1.5rem",
-          width: "2.75rem",
+          height: size === "regular" ? "1.5rem" : "1.25rem",
+          width: size === "regular" ? "2.75rem" : "2.25rem",
           borderColor: "transparent",
           borderWidth: 2,
           borderRadius: 9999,
@@ -101,11 +103,13 @@ export function LayerToggle({
         {/* <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" --> */}
         <span
           style={{
-            transform: `translateX(${on ? "1.25rem" : "0px"})`,
+            transform: `translateX(${
+              on ? (size === "regular" ? "1.25rem" : "1.00rem") : "0px"
+            })`,
             background: "white",
             pointerEvents: "none",
-            width: "1.25rem",
-            height: "1.25rem",
+            width: size === "regular" ? "1.25rem" : "1.00rem",
+            height: size === "regular" ? "1.25rem" : "1.00rem",
             borderRadius: 9999,
             boxShadow:
               "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
@@ -118,7 +122,7 @@ export function LayerToggle({
           className="translate-x-0 pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
         >
           {simple && (
-            <Layer size="15" color={on === true ? "#6FC2DE" : "#888"} />
+            <Layer size="15" color={on === true ? "#6FC2DE" : "#AAA"} />
           )}
         </span>
       </button>

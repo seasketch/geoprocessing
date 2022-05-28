@@ -3,7 +3,6 @@ import { nestMetrics } from "../../metrics/helpers";
 import { percentWithEdge, PercentEdgeOptions, keyBy } from "../../helpers";
 import { DataGroup, Metric } from "../../types";
 import { Table, Column } from "../table/Table";
-import { SmallReportTableStyled } from "../table/SmallReportTableStyled";
 import { LayerToggle } from "../LayerToggle";
 import { CheckCircleFill } from "@styled-icons/bootstrap";
 import {
@@ -11,6 +10,18 @@ import {
   HorizontalStackedBarProps,
 } from "../chart/HorizontalStackedBar";
 import { ValueFormatter, valueFormatter } from "../../helpers/valueFormatter";
+
+import { ReportTableStyled } from "../table/ReportTableStyled";
+import styled from "styled-components";
+
+export const ClassTableStyled = styled(ReportTableStyled)`
+  .styled {
+    font-size: 13px;
+    td {
+      padding: 6px 5px;
+    }
+  }
+`;
 
 /**
  * Function that given target value for current table row, the table row index, and total number of
@@ -231,7 +242,8 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
         };
       } else if (colConfig.type === "layerToggle") {
         return {
-          Header: colConfig.columnLabel || "Show Map",
+          Header: colConfig.columnLabel || "Map",
+          style: { textAlign: "center", ...style },
           accessor: (row, index) => {
             const isSimpleGroup = dataGroup.layerId ? false : true;
             const layerId =
@@ -240,23 +252,27 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
               return (
                 <LayerToggle
                   simple
+                  size="small"
                   layerId={layerId}
-                  style={{ marginTop: 0, marginLeft: 15 }}
+                  style={{
+                    marginTop: 0,
+                    justifyContent: "center",
+                  }}
                 />
               );
             } else if (!isSimpleGroup && layerId && index === 0) {
               return (
                 <LayerToggle
                   simple
+                  size="small"
                   layerId={layerId}
-                  style={{ marginTop: 0, marginLeft: 15 }}
+                  style={{ marginTop: 0, justifyContent: "center" }}
                 />
               );
             } else {
               return <></>;
             }
           },
-          style,
         };
       } else {
         throw new Error(
@@ -270,8 +286,8 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   const columns = genColumns(columnConfig);
 
   return (
-    <SmallReportTableStyled>
+    <ClassTableStyled>
       <Table className="styled" columns={columns} data={tableRows} />
-    </SmallReportTableStyled>
+    </ClassTableStyled>
   );
 };

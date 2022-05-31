@@ -1,10 +1,10 @@
-import * as core from "@aws-cdk/core";
+import { App } from "aws-cdk-lib";
 import path from "path";
 import "@aws-cdk/assert/jest";
 import GeoprocessingStack, {
   STAGE_NAME,
   NODE_RUNTIME,
-} from "./GeoprocessingStack";
+} from "./GeoprocessingStackV1";
 import createTestProject from "../testing/createTestProject";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 
@@ -24,7 +24,7 @@ describe("GeoprocessingStack - client only", () => {
     expect(manifest.preprocessingFunctions.length).toBe(0);
     expect(manifest.geoprocessingFunctions.length).toBe(0);
 
-    const app = new core.App();
+    const app = new App();
     const stack = new GeoprocessingStack(app, projectName, {
       env: { region: manifest.region },
       projectName,

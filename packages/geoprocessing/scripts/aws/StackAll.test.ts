@@ -1,14 +1,12 @@
-import * as core from "@aws-cdk/core";
+import { App } from "aws-cdk-lib";
 import path from "path";
 import { SynthUtils } from "@aws-cdk/assert";
-import "@aws-cdk/assert/jest";
+import "@aws-cdk-lib/assert/jest";
 import createTestProject from "../testing/createTestProject";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
-import GeoprocessingStack, {
-  STAGE_NAME,
-  NODE_RUNTIME,
-  getHandlerPointer,
-} from "./GeoprocessingStack";
+import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack";
+
+import config from "./config";
 
 const rootPath = `${__dirname}/__test__`;
 
@@ -31,7 +29,7 @@ describe("GeoprocessingStack - all components", () => {
     expect(manifest.preprocessingFunctions.length).toBe(1);
     expect(manifest.geoprocessingFunctions.length).toBe(2);
 
-    const app = new core.App();
+    const app = new App();
     const stack = new GeoprocessingStack(app, projectName, {
       env: { region: manifest.region },
       projectName,
@@ -51,7 +49,7 @@ describe("GeoprocessingStack - all components", () => {
     expect(stack).toCountResources("AWS::Lambda::Function", 10);
 
     expect(stack).toHaveResourceLike("AWS::ApiGateway::Stage", {
-      StageName: STAGE_NAME,
+      StageName: config.STAGE_NAME,
     });
 
     // Check shared resources
@@ -66,7 +64,7 @@ describe("GeoprocessingStack - all components", () => {
     });
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       Handler: "serviceHandlers.projectMetadata",
-      Runtime: NODE_RUNTIME.name,
+      Runtime: config.NODE_RUNTIME.name,
     });
     expect(stack).toHaveResourceLike("AWS::DynamoDB::Table", {
       TableName: `gp-${projectName}-tasks`,
@@ -84,26 +82,26 @@ describe("GeoprocessingStack - all components", () => {
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
       Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
-      Runtime: NODE_RUNTIME.name,
+      Runtime: config.NODE_RUNTIME.name,
     });
 
     // Check sync geoprocessing function resources
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[0].title}`,
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[0]),
-      Runtime: NODE_RUNTIME.name,
+      Runtime: config.NODE_RUNTIME.name,
     });
 
     // Check async function resources
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-start`,
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
-      Runtime: NODE_RUNTIME.name,
+      Runtime: config.NODE_RUNTIME.name,
     });
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-run`,
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
-      Runtime: NODE_RUNTIME.name,
+      Runtime: config.NODE_RUNTIME.name,
     });
   });
 });

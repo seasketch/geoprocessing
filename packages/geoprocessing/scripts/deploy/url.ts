@@ -15,21 +15,18 @@ const geoprocessing = JSON.parse(
 );
 const cf = new AWS.CloudFormation({ region: geoprocessing.region });
 
-cf.describeStacks(
-  { StackName: `${packageName}-geoprocessing-stack` },
-  (err, data) => {
-    if (err) {
-      throw err;
-    }
-    if (!data.Stacks || !data.Stacks.length) {
-      throw new Error(`No stack named ${packageName}-geoprocessing-stack`);
-    }
-    const Outputs = data.Stacks[0].Outputs;
-    const output = Outputs?.find((o) => /apiEndpoint/.test(o.OutputKey || ""));
-    if (!output) {
-      throw new Error("Could not find output named ProjectRoot");
-    }
-    console.log(output.OutputValue);
-    process.exit();
+cf.describeStacks({ StackName: `gp-${packageName}` }, (err, data) => {
+  if (err) {
+    throw err;
   }
-);
+  if (!data.Stacks || !data.Stacks.length) {
+    throw new Error(`No stack named gp-${packageName}`);
+  }
+  const Outputs = data.Stacks[0].Outputs;
+  const output = Outputs?.find((o) => /apiEndpoint/.test(o.OutputKey || ""));
+  if (!output) {
+    throw new Error("Could not find output named ProjectRoot");
+  }
+  console.log(output.OutputValue);
+  process.exit();
+});

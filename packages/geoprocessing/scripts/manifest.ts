@@ -21,6 +21,50 @@ export interface GeoprocessingFunctionMetadata
   endpoint?: string; // Add back to override as optional.  Type smell
 }
 
+/** Returns true if metadata is for geoprocessing function and narrows type */
+export const isGeoprocessingFunctionMetadata = (
+  meta: any
+): meta is GeoprocessingFunctionMetadata => {
+  return (
+    meta &&
+    meta.hasOwnProperty("purpose") &&
+    meta.hasOwnProperty.purpose === "geoprocessing" &&
+    meta.hasOwnProperty("executionMode") &&
+    (meta.executionMode === "async" || meta.executionmode === "sync")
+  );
+};
+
+/** Returns true if metadata is for preprocessing function and narrows type */
+export const isPreprocessingFunctionMetadata = (
+  meta: any
+): meta is PreprocessingFunctionMetadata => {
+  return (
+    meta &&
+    meta.hasOwnProperty("purpose") &&
+    meta.hasOwnProperty.purpose === "preprocessing" &&
+    !meta.hasOwnProperty("executionMode")
+  );
+};
+
+/** Returns true if metadata is for sync function and narrows type */
+export const isSyncFunctionMetadata = (
+  meta: any
+): meta is GeoprocessingFunctionMetadata => {
+  return (
+    isPreprocessingFunctionMetadata(meta) ||
+    (isGeoprocessingFunctionMetadata(meta) && meta.executionMode === "sync")
+  );
+};
+
+/** Returns true if metadata is for async function and narrows type */
+export const isAsyncFunctionMetadata = (
+  meta: any
+): meta is ProcessingFunctionMetadata => {
+  return (
+    isGeoprocessingFunctionMetadata(meta) && meta.executionMode === "async"
+  );
+};
+
 /**
  * Select metadata of PreprocessingBundle for manifest
  */

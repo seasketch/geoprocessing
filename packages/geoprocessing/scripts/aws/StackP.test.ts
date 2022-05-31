@@ -1,11 +1,8 @@
-import * as core from "@aws-cdk/core";
+import { App } from "aws-cdk-lib";
 import path from "path";
 import "@aws-cdk/assert/jest";
-import GeoprocessingStack, {
-  STAGE_NAME,
-  NODE_RUNTIME,
-  getHandlerPointer,
-} from "./GeoprocessingStack";
+import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack";
+import config from "./config";
 import createTestProject from "../testing/createTestProject";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 
@@ -25,7 +22,7 @@ describe("GeoprocessingStack - preprocessor only", () => {
     expect(manifest.preprocessingFunctions.length).toBe(1);
     expect(manifest.geoprocessingFunctions.length).toBe(0);
 
-    const app = new core.App();
+    const app = new App();
     const stack = new GeoprocessingStack(app, projectName, {
       env: { region: manifest.region },
       projectName,
@@ -42,7 +39,7 @@ describe("GeoprocessingStack - preprocessor only", () => {
     expect(stack).toCountResources("AWS::Lambda::Function", 3);
 
     expect(stack).toHaveResourceLike("AWS::ApiGateway::Stage", {
-      StageName: STAGE_NAME,
+      StageName: config.STAGE_NAME,
     });
 
     // Check shared resources
@@ -57,7 +54,7 @@ describe("GeoprocessingStack - preprocessor only", () => {
     });
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       Handler: "serviceHandlers.projectMetadata",
-      Runtime: NODE_RUNTIME.name,
+      Runtime: config.NODE_RUNTIME.name,
     });
     expect(stack).toHaveResourceLike("AWS::DynamoDB::Table", {
       TableName: `gp-${projectName}-tasks`,
@@ -70,7 +67,7 @@ describe("GeoprocessingStack - preprocessor only", () => {
     expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
       Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
-      Runtime: NODE_RUNTIME.name,
+      Runtime: config.NODE_RUNTIME.name,
     });
   });
 });

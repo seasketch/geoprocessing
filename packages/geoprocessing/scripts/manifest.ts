@@ -21,6 +21,34 @@ export interface GeoprocessingFunctionMetadata
   endpoint?: string; // Add back to override as optional.  Type smell
 }
 
+/**
+ * Select metadata of PreprocessingBundle for manifest
+ */
+export interface PreprocessingFunctionMetadata
+  extends Omit<
+    PreprocessingServiceMetadata,
+    "restrictedAccess" | "uri" | "endpoint"
+  > {
+  handlerFilename: string;
+  purpose: "geoprocessing" | "preprocessing";
+  uri?: string; // Add back to override as optional.  Type smell
+  endpoint?: string; // Add back to override as optional.  Type smell
+}
+
+export type ProcessingFunctionMetadata =
+  | PreprocessingFunctionMetadata
+  | GeoprocessingFunctionMetadata;
+
+export type SyncFunctionMetadata = ProcessingFunctionMetadata;
+export type AsyncFunctionMetadata = GeoprocessingFunctionMetadata;
+
+export interface Manifest extends GeoprocessingProject {
+  preprocessingFunctions: PreprocessingFunctionMetadata[];
+  geoprocessingFunctions: GeoprocessingFunctionMetadata[];
+  region: string;
+  version: string;
+}
+
 /** Returns true if metadata is for geoprocessing function and narrows type */
 export const isGeoprocessingFunctionMetadata = (
   meta: any
@@ -49,7 +77,7 @@ export const isPreprocessingFunctionMetadata = (
 /** Returns true if metadata is for sync function and narrows type */
 export const isSyncFunctionMetadata = (
   meta: any
-): meta is GeoprocessingFunctionMetadata => {
+): meta is SyncFunctionMetadata => {
   return (
     isPreprocessingFunctionMetadata(meta) ||
     (isGeoprocessingFunctionMetadata(meta) && meta.executionMode === "sync")
@@ -59,33 +87,8 @@ export const isSyncFunctionMetadata = (
 /** Returns true if metadata is for async function and narrows type */
 export const isAsyncFunctionMetadata = (
   meta: any
-): meta is ProcessingFunctionMetadata => {
+): meta is AsyncFunctionMetadata => {
   return (
     isGeoprocessingFunctionMetadata(meta) && meta.executionMode === "async"
   );
 };
-
-/**
- * Select metadata of PreprocessingBundle for manifest
- */
-export interface PreprocessingFunctionMetadata
-  extends Omit<
-    PreprocessingServiceMetadata,
-    "restrictedAccess" | "uri" | "endpoint"
-  > {
-  handlerFilename: string;
-  purpose: "geoprocessing" | "preprocessing";
-  uri?: string; // Add back to override as optional.  Type smell
-  endpoint?: string; // Add back to override as optional.  Type smell
-}
-
-export type ProcessingFunctionMetadata =
-  | PreprocessingFunctionMetadata
-  | GeoprocessingFunctionMetadata;
-
-export interface Manifest extends GeoprocessingProject {
-  preprocessingFunctions: PreprocessingFunctionMetadata[];
-  geoprocessingFunctions: GeoprocessingFunctionMetadata[];
-  region: string;
-  version: string;
-}

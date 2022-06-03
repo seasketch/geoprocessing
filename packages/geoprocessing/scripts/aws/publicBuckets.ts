@@ -1,23 +1,7 @@
 import { GeoprocessingStack } from "./GeoprocessingStack";
 import { RemovalPolicy } from "aws-cdk-lib";
 import { Bucket, CorsRule } from "aws-cdk-lib/aws-s3";
-import {
-  getSyncFunctionsWithMeta,
-  GpProjectFunctions,
-} from "./functionResources";
-
-export interface GpPublicBuckets {
-  /**
-   * Publicly accessible bucket for large datasets that need to be stored outside of project code assets
-   * Location is not published or able to be listed.  Can be read by gp functions whether in Lambda, local, or CI
-   */
-  dataset: Bucket;
-  /**
-   * Create publicly accessible bucket for function results that aren't simple JSON serializable
-   * Location is not published or able to be listed.
-   */
-  result: Bucket;
-}
+import { GpProjectFunctions, GpPublicBuckets } from "./types";
 
 export const createPublicBuckets = (
   stack: GeoprocessingStack
@@ -63,16 +47,11 @@ export const createPublicBuckets = (
 };
 
 /** Setup resource access to buckets */
-export const setupBucketAccess = (
-  stack: GeoprocessingStack,
-  buckets: GpPublicBuckets,
-  projectFunctions: GpProjectFunctions
-) => {
+export const setupFunctionBucketAccess = (stack: GeoprocessingStack) => {
   // Preprocessors don't need access to these resources
-  getSyncFunctionsWithMeta(projectFunctions.processingFunctions).forEach(
-    (syncFunctionWithMeta) => {
-      buckets.result.grantReadWrite(syncFunctionWithMeta.func);
-      buckets.dataset.grantRead(syncFunctionWithMeta.func);
-    }
-  );
+  // TODO: so should we be asking for something different?
+  stack.getSyncFunctionsWithMeta().forEach((syncFunctionWithMeta) => {
+    stack.publicBuckets.result.grantReadWrite(syncFunctionWithMeta.func);
+    stack.publicBuckets.dataset.grantRead(syncFunctionWithMeta.func);
+  });
 };

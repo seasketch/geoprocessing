@@ -1,15 +1,7 @@
 import { GeoprocessingStack } from "./GeoprocessingStack";
 import { RemovalPolicy } from "aws-cdk-lib";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
-import {
-  GpProjectFunctions,
-  getSyncFunctionsWithMeta,
-} from "./functionResources";
-
-export interface GpDynamoTables {
-  tasks: Table;
-  estimates: Table;
-}
+import { GpDynamoTables } from "./types";
 
 /**
  * Create database tables
@@ -33,23 +25,32 @@ export const createTables = (stack: GeoprocessingStack): GpDynamoTables => {
     removalPolicy: RemovalPolicy.DESTROY,
   });
 
+  const subscriptions = (() => {
+    if (stack.getAsyncFunctionMetas.length > 0) {
+      return new Table(stack, "GpSubscriptionsTable", {
+        partitionKey: {
+          name: "connectionId",
+          type: AttributeType.STRING,
+        },
+        billingMode: BillingMode.PAY_PER_REQUEST,
+        tableName: `gp-${stack.props.projectName}-subscriptions`,
+        removalPolicy: RemovalPolicy.DESTROY,
+      });
+    }
+  })();
+
   return {
     tasks,
     estimates,
+    subscriptions,
   };
 };
 
-/** Setup resource access to tables */
-export const setupTableAccess = (
-  stack: GeoprocessingStack,
-  tables: GpDynamoTables,
-  projectFunctions: GpProjectFunctions
-) => {
+/** Setup function access to tables */
+export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
   // Preprocessors don't need access to these resources
-  getSyncFunctionsWithMeta(projectFunctions.processingFunctions).forEach(
-    (syncFunctionWithMeta) => {
-      tables.tasks.grantReadWriteData(syncFunctionWithMeta.func);
-      tables.estimates.grantReadWriteData(syncFunctionWithMeta.func);
-    }
-  );
+  stack.getSyncFunctionsWithMeta().forEach((syncFunctionWithMeta) => {
+    stack.tables.tasks.grantReadWriteData(syncFunctionWithMeta.func);
+    stack.tables.estimates.grantReadWriteData(syncFunctionWithMeta.func);
+  });
 };

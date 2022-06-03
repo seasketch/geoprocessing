@@ -1,67 +1,109 @@
 import { GeoprocessingStack } from "./GeoprocessingStack";
 import { Duration } from "aws-cdk-lib";
 import { Function, Code } from "aws-cdk-lib/aws-lambda";
+import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { SyncFunctionWithMeta, AsyncFunctionWithMeta } from "./types";
 import {
-  Manifest,
-  GeoprocessingFunctionMetadata,
   ProcessingFunctionMetadata,
-  isGeoprocessingFunctionMetadata,
-  isPreprocessingFunctionMetadata,
-  isSyncFunctionMetadata,
-  isAsyncFunctionMetadata,
+  GeoprocessingFunctionMetadata,
 } from "../manifest";
+
 import config from "./config";
+import {
+  GpProjectFunctions,
+  GpSocketFunctions,
+  GpDynamoTables,
+  GpPublicBuckets,
+} from "./types";
 
-/**
- * Group of all Lambda functions for project
- */
-export interface GpProjectFunctions {
-  serviceRootFunction: Function;
-  processingFunctions: FunctionWithMeta[];
+export interface CreateFunctionOptions {
+  clientDistributionUrl?: string;
+  publicBuckets: GpPublicBuckets;
+  tables: GpDynamoTables;
 }
-
-/**
- * A lambda function paired with original user-defined metadata used to configure it
- */
-export interface FunctionWithMeta {
-  meta: ProcessingFunctionMetadata;
-  func: Function;
-}
-
-type SyncEnvironmentRequiredKeys =
-  | "publicDatasetBucketUrl"
-  | "publicResultBucketUrl"
-  | "TASKS_TABLE"
-  | "ESTIMATES_TABLE";
-/**
- * Environment variables for sync function to access external resources
- */
-type SyncEnvironmentRecord = Record<SyncEnvironmentRequiredKeys, string>;
 
 /**
  * Create Lambda function constructs
  */
 export const createFunctions = (
-  stack: GeoprocessingStack,
-  options: {
-    /** Url endpoint to access clients */
-    clientUrl?: string;
-    /** Environment variables to passing into sync functions */
-    syncEnvironment: SyncEnvironmentRecord;
-  }
+  stack: GeoprocessingStack
 ): GpProjectFunctions => {
-  const { clientUrl, syncEnvironment } = options;
-  const serviceRootFunction = new Function(stack, "GpServiceRootFunction", {
+  return {
+    serviceRootFunction: createRootFunction(stack),
+    socketFunctions: createSocketFunctions(stack),
+    processingFunctions: [
+      ...createSyncFunctions(stack),
+      ...createAsyncFunctions(stack),
+    ],
+  };
+};
+
+const createRootFunction = (stack: GeoprocessingStack): Function => {
+  return new Function(stack, "GpServiceRootFunction", {
     runtime: config.NODE_RUNTIME,
     code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
     functionName: `gp-${stack.props.projectName}-metadata`,
     handler: "serviceHandlers.projectMetadata",
-    environment: {
-      ...(clientUrl ? { clientUrl } : {}),
-    },
+    // environment: {
+    //   ...(clientDistributionUrl ? { clientDistributionUrl } : {}),
+    // },
+  });
+};
+
+const createSocketFunctions = (
+  stack: GeoprocessingStack
+): GpSocketFunctions => {
+  // const environment = {
+  //   ...(options.tables.subscriptions
+  //     ? { SOCKETS_TABLE: options.tables.subscriptions.tableName }
+  //     : {}),
+  // };
+
+  const subscribe = new Function(stack, "GpSubscribeHandler", {
+    runtime: config.NODE_RUNTIME,
+    code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+    handler: "connect.connectHandler",
+    functionName: `gp-${stack.props.projectName}-subscribe`,
+    memorySize: config.SOCKET_HANDLER_MEMORY,
+    timeout: config.SOCKET_HANDLER_TIMEOUT,
+    description: "Subscribe to messages",
+    // environment,
   });
 
-  // Create sync lambda functions
+  const unsubscribe = new Function(stack, "GpUnsubscribeHandler", {
+    runtime: config.NODE_RUNTIME,
+    code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+    handler: "disconnect.disconnectHandler",
+    functionName: `gp-${stack.props.projectName}-unsubscribe`,
+    memorySize: config.SOCKET_HANDLER_MEMORY,
+    timeout: config.SOCKET_HANDLER_TIMEOUT,
+    description: "Unsubscribe from messages",
+    // environment,
+  });
+
+  const send = new Function(stack, "GpSendHandler", {
+    runtime: config.NODE_RUNTIME,
+    code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+    handler: "sendmessage.sendHandler",
+    functionName: `gp-${stack.props.projectName}-send`,
+    memorySize: config.SOCKET_HANDLER_MEMORY,
+    timeout: config.SOCKET_HANDLER_TIMEOUT,
+    description: " for sending messages on sockets",
+    // environment,
+  });
+
+  return {
+    subscribe,
+    unsubscribe,
+    send,
+  };
+};
+
+// MOVE ENVIRONMENT VARIABLE SETTING TO POST FUNCTION
+const createSyncFunctions = (
+  stack: GeoprocessingStack
+): SyncFunctionWithMeta[] => {
+  // const { publicBuckets, tables } = options;
   const syncFunctionMetas: ProcessingFunctionMetadata[] = [
     ...stack.props.manifest.preprocessingFunctions,
     ...stack.props.manifest.geoprocessingFunctions.filter(
@@ -69,7 +111,7 @@ export const createFunctions = (
     ),
   ];
 
-  let syncFunctionsWithMeta: FunctionWithMeta[] = syncFunctionMetas.map(
+  return syncFunctionMetas.map(
     (functionMeta: ProcessingFunctionMetadata, index: number) => {
       const rootPointer = getHandlerPointer(functionMeta);
       const functionName = `gp-${stack.props.projectName}-sync-${functionMeta.title}`;
@@ -83,7 +125,12 @@ export const createFunctions = (
           functionMeta.timeout || config.SYNC_LAMBDA_TIMEOUT
         ),
         description: functionMeta.description,
-        environment: syncEnvironment,
+        // environment: {
+        //   publicDatasetBucketUrl: publicBuckets.dataset.urlForObject(),
+        //   publicResultBucketUrl: publicBuckets.dataset.urlForObject(),
+        //   TASKS_TABLE: tables.tasks.tableName,
+        //   ESTIMATES_TABLE: tables.estimates.tableName,
+        // },
       });
       return {
         func,
@@ -91,50 +138,102 @@ export const createFunctions = (
       };
     }
   );
-
-  // Create async lambda functions
-  let asyncFunctionsWithMeta: FunctionWithMeta[] = [];
-
-  return {
-    serviceRootFunction,
-    processingFunctions: [...syncFunctionsWithMeta, ...asyncFunctionsWithMeta],
-  };
 };
 
-/** Returns geoprocessing lambda functions for project */
-export const getGeoprocessingFunctionsWithMeta = (
-  processingFunctions: FunctionWithMeta[]
-) => {
-  return processingFunctions.filter((funcWithMeta) =>
-    isGeoprocessingFunctionMetadata(funcWithMeta.meta)
+// MOVE ENVIRONMENT VARIABLE SETTING TO POST FUNCTION
+const createAsyncFunctions = (
+  stack: GeoprocessingStack
+): AsyncFunctionWithMeta[] => {
+  const asyncFunctionMetas = stack.props.manifest.geoprocessingFunctions.filter(
+    (func) => func.executionMode === "async" && func.purpose !== "preprocessing"
+  );
+
+  return asyncFunctionMetas.map(
+    (functionMeta: GeoprocessingFunctionMetadata, index: number) => {
+      const rootPointer = getHandlerPointer(functionMeta);
+      const startFunctionName = `gp-${stack.props.projectName}-async-${functionMeta.title}-start`;
+      const runFunctionName = `gp-${stack.props.projectName}-async-${functionMeta.title}-run`;
+
+      /**
+       * runHandler Lambda is invoked by startHandler Lambda
+       * Used for running GP function and reporting back results async via socket
+       */
+      const runFunc = new Function(
+        stack,
+        `${functionMeta.title}GpAsyncHandlerRun`,
+        {
+          runtime: config.NODE_RUNTIME,
+          code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+
+          handler: rootPointer,
+          functionName: runFunctionName,
+          memorySize: functionMeta.memory,
+          timeout: Duration.seconds(
+            functionMeta.timeout || config.ASYNC_LAMBDA_RUN_TIMEOUT
+          ),
+          description: functionMeta.description,
+          environment: {
+            ASYNC_REQUEST_TYPE: "run",
+          },
+        }
+      );
+
+      const asyncLambdaPolicy = new PolicyStatement({
+        effect: Effect.ALLOW,
+        resources: [runFunc.functionArn],
+        actions: ["lambda:InvokeFunction"],
+      });
+
+      /**
+       * startHandler Lambda is connected to the REST API allowing client to
+       * start a GP function task, which invokes the runHandler Lambda
+       */
+      const startFunc = new Function(
+        stack,
+        `${functionMeta.title}GpAsyncHandlerStart`,
+        {
+          runtime: config.NODE_RUNTIME,
+          code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+          handler: rootPointer,
+          functionName: startFunctionName,
+          memorySize: functionMeta.memory,
+          timeout: Duration.seconds(config.ASYNC_LAMBDA_START_TIMEOUT),
+          description: functionMeta.description,
+          initialPolicy: [asyncLambdaPolicy],
+          environment: {
+            ASYNC_REQUEST_TYPE: "start",
+            RUN_HANDLER_FUNCTION_NAME: runFunctionName,
+          },
+        }
+      );
+
+      return {
+        startFunc,
+        runFunc,
+        meta: functionMeta,
+      };
+    }
   );
 };
 
-/** Returns preprocessing lambda functions for project */
-export const getPreprocessingFunctionsWithMeta = (
-  processingFunctions: FunctionWithMeta[]
-) => {
-  return processingFunctions.filter((funcWithMeta) =>
-    isPreprocessingFunctionMetadata(funcWithMeta.meta)
-  );
-};
+/** Setup resource access to tables */
+export const setupFunctionEnvironments = (stack: GeoprocessingStack) => {
+  // Preprocessors don't need access to these resources
+  // TODO: so should we be using different method?
+  stack.getSyncFunctionsWithMeta().forEach((syncFunctionWithMeta) => {
+    const baseAsyncEnvOptions = {
+      TASKS_TABLE: stack.tables.tasks.tableName,
+      ESTIMATES_TABLE: stack.tables.estimates.tableName,
+      ...(stack.tables.subscriptions
+        ? { SOCKETS_TABLE: stack.tables.subscriptions.tableName }
+        : {}),
+      WSS_REF: stack.socketApi.apiId,
+      WSS_REGION: stack.region,
+      WSS_STAGE: config.STAGE_NAME,
+    };
+  });
 
-/** Returns sync lambda functions for project */
-export const getSyncFunctionsWithMeta = (
-  processingFunctions: FunctionWithMeta[]
-) => {
-  return processingFunctions.filter((funcWithMeta) =>
-    isSyncFunctionMetadata(funcWithMeta.meta)
-  );
-};
-
-/** Returns async lambda functions for project */
-export const getAsyncFunctionsWithMeta = (
-  processingFunctions: FunctionWithMeta[]
-) => {
-  return processingFunctions.filter((funcWithMeta) =>
-    isSyncFunctionMetadata(funcWithMeta.meta)
-  );
+  // now async
 };
 
 /**

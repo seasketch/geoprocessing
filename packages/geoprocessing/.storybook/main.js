@@ -32,6 +32,7 @@ if (process.env.PROJECT_PATH) {
 module.exports = {
   stories: [...baseStories, ...projectStories],
   addons: [
+    "@storybook/addon-actions", // Fixes issue running storybook in devcontainer https://github.com/storybookjs/storybook/issues/17996
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",

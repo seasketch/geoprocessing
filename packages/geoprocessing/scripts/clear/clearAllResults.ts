@@ -1,13 +1,10 @@
-import * as core from "@aws-cdk/core";
+import { DocumentClient, ScanInput } from "aws-sdk/clients/dynamodb";
+import { StackProps } from "aws-cdk-lib/core";
+import { AWSError } from "aws-sdk";
 
 import fs from "fs";
 import path from "path";
-import { Manifest } from "../manifest";
-import dynamodb = require("@aws-cdk/aws-dynamodb");
-import slugify from "slugify";
-import inquirer from "inquirer";
 import * as AWS from "aws-sdk";
-import { ScanInput } from "aws-sdk/clients/dynamodb";
 
 interface ClearCacheOptions {
   tableName: string;
@@ -27,9 +24,9 @@ export async function clearResults() {
 
 //@ts-ignore
 async function doScan(
-  err: AWS.AWSError,
-  data: AWS.DynamoDB.DocumentClient.ScanOutput,
-  docClient: AWS.DynamoDB.DocumentClient,
+  err: AWSError,
+  data: DocumentClient.ScanOutput,
+  docClient: DocumentClient,
   tableName: string
 ) {
   if (err) {
@@ -101,7 +98,7 @@ export async function clearCachedResults() {
     doScan(err, data, docClient, tableName);
   });
 }
-interface GeoprocessingStackProps extends core.StackProps {
+interface GeoprocessingStackProps extends StackProps {
   tableName: string;
 }
 clearResults();

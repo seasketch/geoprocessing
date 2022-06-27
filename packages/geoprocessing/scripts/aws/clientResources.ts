@@ -17,11 +17,10 @@ import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
  * Create client bucket and deploy client build into it.  Serve via Cloudfront
  */
 export const createClientResources = (stack: GeoprocessingStack) => {
-  const hasClients = stack.props.manifest.clients.length > 0;
   let clientBucket: Bucket | undefined;
   let clientDistribution: Distribution | undefined;
 
-  if (hasClients) {
+  if (stack.hasClients()) {
     /** Client bundle bucket. Public access is via Cloudfront */
     clientBucket = new Bucket(stack, "GpClientBucket", {
       bucketName: `gp-${stack.props.projectName}-client`,
@@ -76,4 +75,13 @@ export const createClientResources = (stack: GeoprocessingStack) => {
     clientBucket,
     clientDistribution,
   };
+};
+
+export const setupClientFunctionAccess = (stack: GeoprocessingStack) => {
+  if (stack.clientDistribution) {
+    stack.functions.serviceRootFunction.addEnvironment(
+      "clientDistributionUrl",
+      stack.clientDistribution.distributionDomainName
+    );
+  }
 };

@@ -47,11 +47,36 @@ export const createPublicBuckets = (
 };
 
 /** Setup resource access to buckets */
-export const setupFunctionBucketAccess = (stack: GeoprocessingStack) => {
-  // Preprocessors don't need access to these resources
-  // TODO: so should we be asking for something different?
+export const setupBucketFunctionAccess = (stack: GeoprocessingStack) => {
+  // sync
   stack.getSyncFunctionsWithMeta().forEach((syncFunctionWithMeta) => {
     stack.publicBuckets.result.grantReadWrite(syncFunctionWithMeta.func);
+    syncFunctionWithMeta.func.addEnvironment(
+      "resultBucketUrl",
+      stack.publicBuckets.result.urlForObject()
+    );
+
     stack.publicBuckets.dataset.grantRead(syncFunctionWithMeta.func);
+    syncFunctionWithMeta.func.addEnvironment(
+      "datasetBucketUrl",
+      stack.publicBuckets.dataset.urlForObject()
+    );
+  });
+
+  // async
+  stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
+    stack.publicBuckets.result.grantReadWrite(asyncFunctionWithMeta.startFunc);
+
+    stack.publicBuckets.result.grantReadWrite(asyncFunctionWithMeta.runFunc);
+    asyncFunctionWithMeta.runFunc.addEnvironment(
+      "resultBucketUrl",
+      stack.publicBuckets.result.urlForObject()
+    );
+
+    stack.publicBuckets.dataset.grantRead(asyncFunctionWithMeta.runFunc);
+    asyncFunctionWithMeta.runFunc.addEnvironment(
+      "datasetBucketUrl",
+      stack.publicBuckets.dataset.urlForObject()
+    );
   });
 };

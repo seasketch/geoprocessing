@@ -1,5 +1,6 @@
 import { CfnOutput, Stack, StackProps, Duration } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
+import { Distribution } from "aws-cdk-lib/aws-cloudfront";
 import {
   Manifest,
   GeoprocessingFunctionMetadata,
@@ -7,17 +8,20 @@ import {
 } from "../manifest";
 import {
   createPublicBuckets,
-  setupFunctionBucketAccess,
+  setupBucketFunctionAccess,
 } from "./publicBuckets";
-import { createClientResources } from "./clientResources";
 import {
-  createFunctions,
-  setupFunctionEnvironments,
-} from "./functionResources";
+  createClientResources,
+  setupClientFunctionAccess,
+} from "./clientResources";
+import { createFunctions } from "./functionResources";
 
-import { createTables, setupTableFunctionAccess } from "./dynamoDb";
+import { createTables, setupTableFunctionAccess } from "./dynamodb";
 import { createRestApi } from "./restApiGateway";
-import { createSocketApi } from "./socketApiGateway";
+import {
+  createWebSocketApi,
+  setupWebSocketFunctionAccess,
+} from "./socketApiGateway";
 import { RestApi } from "aws-cdk-lib/aws-apigateway";
 import { WebSocketApi } from "@aws-cdk/aws-apigatewayv2-alpha";
 import {
@@ -34,9 +38,6 @@ export interface GeoprocessingStackProps extends StackProps {
   projectName: string;
   projectPath: string;
   manifest: Manifest;
-  env: {
-    region: string;
-  };
 }
 
 export class GeoprocessingStack extends Stack {
@@ -46,6 +47,7 @@ export class GeoprocessingStack extends Stack {
   functions: GpProjectFunctions;
   restApi: RestApi;
   socketApi: WebSocketApi;
+  clientDistribution?: Distribution;
 
   constructor(scope: Construct, id: string, props: GeoprocessingStackProps) {
     super(scope, id, props);
@@ -57,6 +59,7 @@ export class GeoprocessingStack extends Stack {
 
     // Bundle clients and deploy to bucket, serve via cloudfront
     const { clientBucket, clientDistribution } = createClientResources(this);
+    this.clientDistribution = clientDistribution;
 
     const clientDistributionUrl = clientDistribution
       ? clientDistribution.distributionDomainName
@@ -64,28 +67,33 @@ export class GeoprocessingStack extends Stack {
 
     this.tables = createTables(this);
 
-    // Create lambdas for gp functions and provide link to other services
+    // Create lambdas for gp functions
     this.functions = createFunctions(this);
 
     // Create rest endpoints for gp lambdas
     this.restApi = createRestApi(this);
-    this.socketApi = createSocketApi(this);
+    this.socketApi = createWebSocketApi(this);
 
     // Provide gp lambdas permission to use other services
     setupTableFunctionAccess(this);
-    setupFunctionBucketAccess(this);
-    // setupFunctionEnvironments();
+    setupBucketFunctionAccess(this);
+    setupWebSocketFunctionAccess(this);
+    setupClientFunctionAccess(this);
 
     // Output notable values
-    new CfnOutput(this, "publicDatasetBucketUrl", {
+    new CfnOutput(this, "datasetBucketUrl", {
       value: publicDatasetBucketUrl,
     });
-    new CfnOutput(this, "publicResultBucketUrl", {
+    new CfnOutput(this, "resultBucketUrl", {
       value: publicResultBucketUrl,
     });
     new CfnOutput(this, "clientDistributionUrl", {
       value: clientDistributionUrl ? clientDistributionUrl : "undefined",
     });
+  }
+
+  hasClients(): boolean {
+    return this.props.manifest.clients.length > 0;
   }
 
   getSyncFunctionMetas(): ProcessingFunctionMetadata[] {

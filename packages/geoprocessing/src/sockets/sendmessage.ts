@@ -18,7 +18,8 @@ export const sendHandler = async (event) => {
   let ddb: DocumentClient;
   let responses: PromiseResult<DocumentClient.ScanOutput, AWSError>;
 
-  if (!process.env.SOCKETS_TABLE) throw new Error("SOCKETS_TABLE is undefined");
+  if (!process.env.SUBSCRIPTIONS_TABLE)
+    throw new Error("SUBSCRIPTIONS_TABLE is undefined");
 
   try {
     postData = JSON.parse(event.body).data;
@@ -34,7 +35,7 @@ export const sendHandler = async (event) => {
 
     responses = await ddb
       .scan({
-        TableName: process.env.SOCKETS_TABLE,
+        TableName: process.env.SUBSCRIPTIONS_TABLE,
         ProjectionExpression: "serviceName, connectionId, cacheKey",
       })
       .promise();
@@ -101,7 +102,7 @@ export const sendHandler = async (event) => {
               await ddb
                 .delete({
                   //@ts-ignore
-                  TableName: process.env.SOCKETS_TABLE,
+                  TableName: process.env.SUBSCRIPTIONS_TABLE,
                   Key: {
                     connectionId: responseItem.connectionId,
                   },

@@ -2,6 +2,7 @@ import { GeoprocessingStack } from "./GeoprocessingStack";
 import { RemovalPolicy } from "aws-cdk-lib";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
 import { GpDynamoTables } from "./types";
+import { Function } from "aws-cdk-lib/aws-lambda";
 
 /**
  * Create database tables
@@ -48,9 +49,51 @@ export const createTables = (stack: GeoprocessingStack): GpDynamoTables => {
 
 /** Setup function access to tables */
 export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
-  // Preprocessors don't need access to these resources
+  // sync
   stack.getSyncFunctionsWithMeta().forEach((syncFunctionWithMeta) => {
     stack.tables.tasks.grantReadWriteData(syncFunctionWithMeta.func);
+    syncFunctionWithMeta.func.addEnvironment(
+      "TASKS_TABLE",
+      stack.tables.tasks.tableName
+    );
+
     stack.tables.estimates.grantReadWriteData(syncFunctionWithMeta.func);
+    syncFunctionWithMeta.func.addEnvironment(
+      "ESTIMATES_TABLE",
+      stack.tables.estimates.tableName
+    );
   });
+
+  // async
+  stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
+    stack.tables.tasks.grantReadWriteData(asyncFunctionWithMeta.startFunc);
+    stack.tables.estimates.grantReadWriteData(asyncFunctionWithMeta.startFunc);
+    addAsyncEnv(stack, asyncFunctionWithMeta.startFunc);
+
+    stack.tables.tasks.grantReadWriteData(asyncFunctionWithMeta.runFunc);
+    stack.tables.estimates.grantReadWriteData(asyncFunctionWithMeta.runFunc);
+    addAsyncEnv(stack, asyncFunctionWithMeta.runFunc);
+  });
+
+  // socket
+  Object.values(stack.functions.socketFunctions).forEach((socketFunction) => {
+    if (stack.tables.subscriptions) {
+      stack.tables.subscriptions.grantReadWriteData(socketFunction);
+      socketFunction.addEnvironment(
+        "SUBSCRIPTIONS_TABLE",
+        stack.tables.subscriptions.tableName
+      );
+    }
+  });
+
+  stack.tables.estimates.grantReadWriteData(
+    stack.functions.socketFunctions.send
+  );
+};
+
+const addAsyncEnv = (stack: GeoprocessingStack, func: Function) => {
+  func.addEnvironment("TASKS_TABLE", stack.tables.tasks.tableName);
+  func.addEnvironment("ESTIMATES_TABLE", stack.tables.estimates.tableName);
+  if (stack.tables.subscriptions)
+    func.addEnvironment("TASKS_TABLE", stack.tables.subscriptions.tableName);
 };

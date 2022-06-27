@@ -265,7 +265,7 @@ export default class GeoprocessingStack extends core.Stack {
       routeSelectionExpression: "$request.body.message",
     });
 
-    // PUT IN socketApiGateway
+    // CHECK - socketApiGateway
     let gatewayArn = `arn:aws:execute-api:${this.region}:${this.account}:${this.apigatewaysocket.ref}/*`;
     const sendExecutePolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
@@ -287,14 +287,14 @@ export default class GeoprocessingStack extends core.Stack {
 
     //policy to allow the socket apigateway to call the socket lambdas
     //without this the send messages fail
-    // CHECK
+    // TODO - added to socketApiGateway but is that sufficient?  Does rest api need anything?  planetstack implies it should already have
     const apigatewayPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
       actions: ["lambda:InvokeFunction", "sts:AssumeRole"],
     });
 
-    // CHECK EXCEPT ADDING sendExecutePolicy
+    // CHECK
     const subscribeHandler = new lambda.Function(this, "GpSubscribeHandler", {
       runtime: NODE_RUNTIME,
       code: lambda.Code.fromAsset(path.join(this.props.projectPath, ".build/")),
@@ -309,7 +309,7 @@ export default class GeoprocessingStack extends core.Stack {
       initialPolicy: [sendExecutePolicy],
     });
 
-    // CHECK EXCEPT ADDING sendExecutePolicy
+    // CHECK
     const unsubscribeHandler = new lambda.Function(
       this,
       "GpUnsubscribeHandler",
@@ -451,8 +451,8 @@ export default class GeoprocessingStack extends core.Stack {
       }
     );
 
+    // CHECK
     /** Send message to subscribed clients */
-    // CHECK EXCEPT ADDING sendExecutePolicy
     const sendHandler = new lambda.Function(this, "GpSendHandler", {
       runtime: NODE_RUNTIME,
       code: lambda.Code.fromAsset(path.join(this.props.projectPath, ".build/")),
@@ -466,6 +466,9 @@ export default class GeoprocessingStack extends core.Stack {
       },
       initialPolicy: [sendExecutePolicy],
     });
+
+    // CHECK - socketApiGateway
+    // REPLACED with direct principals on PolicyStatement per planetstack, role already in place?
     const socketApiSendRole = new iam.Role(this, "GpSocketApiSendRole", {
       assumedBy: new iam.ServicePrincipal("apigateway.amazonaws.com"),
     });
@@ -487,13 +490,14 @@ export default class GeoprocessingStack extends core.Stack {
         "dynamodb:ConditionCheckItem",
       ],
     });
-
     socketApiSendRole.addToPolicy(socketApiSendPolicy);
     const dynamoSendRole = new iam.Role(this, "GpDynamoSendRole", {
       assumedBy: new iam.ServicePrincipal("dynamodb.amazonaws.com"),
     });
     dynamoSendRole.addToPolicy(socketApiSendPolicy);
 
+    // CHECK
+    // Assume replaced by L2 WebSocketLambdaIntegration construct
     const socketApiSendRoute = new apigateway.CfnRouteV2(
       this,
       "GpSocketApiSendRoute",
@@ -523,11 +527,14 @@ export default class GeoprocessingStack extends core.Stack {
       }
     );
 
-    this.subscriptionsTbl.grantReadWriteData(subscribeHandler);
-    this.subscriptionsTbl.grantReadWriteData(unsubscribeHandler);
-    this.subscriptionsTbl.grantReadWriteData(sendHandler);
-    this.estimatesTbl?.grantReadWriteData(sendHandler);
+    // CHECK
+    this.subscriptionsTbl.grantReadWriteData(subscribeHandler); // CHECK
+    this.subscriptionsTbl.grantReadWriteData(unsubscribeHandler); // CHECK
+    this.subscriptionsTbl.grantReadWriteData(sendHandler); // CHECK
+    this.estimatesTbl?.grantReadWriteData(sendHandler); // CHECK
 
+    // CHECK
+    // Assume replaced by L2 WebSocketLambdaIntegration construct
     // deployment
     const socketApiDeployment = new apigateway.CfnDeploymentV2(
       this,
@@ -537,6 +544,7 @@ export default class GeoprocessingStack extends core.Stack {
       }
     );
 
+    // CHECK
     // stage
     const socketApiStage = new apigateway.CfnStageV2(this, "GpSocketApiStage", {
       apiId: this.apigatewaysocket.ref,
@@ -549,12 +557,13 @@ export default class GeoprocessingStack extends core.Stack {
       },
     });
 
+    // CHECK
+    // Assume repalced by L2 WebSocketStage construct
     // all the routes are dependencies of the deployment
     const routes = new core.ConcreteDependable();
     routes.add(socketApiSubscribeRoute);
     routes.add(socketApiUnsubscribeRoute);
     routes.add(socketApiSendRoute);
-
     // Add the dependency
     socketApiDeployment.node.addDependency(routes);
   }
@@ -581,7 +590,7 @@ export default class GeoprocessingStack extends core.Stack {
     if (!this.api)
       throw new Error("createSyncFunctionResources - API not defined");
 
-    // CHECK
+    // CHECK - policies not needed as is empty
     const syncHandler = new lambda.Function(
       this,
       `${func.title}GpSyncHandler`,
@@ -597,20 +606,20 @@ export default class GeoprocessingStack extends core.Stack {
         description: func.description,
         initialPolicy: policies,
         environment: {
-          publicBucketUrl: this.publicBucketUrl,
-          datasetBucketUrl: this.datasetBucketUrl,
-          TASKS_TABLE: this.tasksTbl.tableName,
-          ESTIMATES_TABLE: this.estimatesTbl.tableName,
+          publicBucketUrl: this.publicBucketUrl, // CHECK
+          datasetBucketUrl: this.datasetBucketUrl, // CHECK
+          TASKS_TABLE: this.tasksTbl.tableName, // CHECK
+          ESTIMATES_TABLE: this.estimatesTbl.tableName, // CHECK
         },
       }
     );
 
     // CHECK
     if (func.purpose === "geoprocessing") {
-      this.tasksTbl.grantReadWriteData(syncHandler);
-      this.estimatesTbl.grantReadWriteData(syncHandler);
-      this.publicBucket.grantReadWrite(syncHandler);
-      this.datasetBucket.grantReadWrite(syncHandler);
+      this.tasksTbl.grantReadWriteData(syncHandler); // CHECK
+      this.estimatesTbl.grantReadWriteData(syncHandler); // CHECK
+      this.publicBucket.grantReadWrite(syncHandler); // CHECK
+      this.datasetBucket.grantReadWrite(syncHandler); // CHECK
     } // Preprocessors don't need access to these resources
 
     // Wire up the sync function lambda to the API gateway
@@ -625,7 +634,7 @@ export default class GeoprocessingStack extends core.Stack {
     const resource = this.api.root.addResource(func.title);
 
     // TODO: remove due to unused? does it do anything?
-    // Think intention was to allow gateway to invoke lambda
+    // Think intention was to allow resources with given principal (like gateway) to invoke lambda
     const apigatewayPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       principals: [new iam.ServicePrincipal("apigateway.amazonaws.com")],
@@ -688,7 +697,7 @@ export default class GeoprocessingStack extends core.Stack {
      * runHandler Lambda is invoked by startHandler Lambda
      * Used for running GP function and reporting back results async via socket
      */
-    // CHECK except environment variables
+    // CHECK - functionResources. except environment variables
     const asyncRunHandler = new lambda.Function(
       this,
       `${func.title}GpAsyncHandlerRun`,
@@ -706,14 +715,15 @@ export default class GeoprocessingStack extends core.Stack {
         ),
         description: func.description,
         environment: {
-          ...baseAsyncEnvOptions,
-          ASYNC_REQUEST_TYPE: "run",
-          publicBucketUrl: this.publicBucketUrl,
-          datasetBucketUrl: this.datasetBucketUrl,
+          ...baseAsyncEnvOptions, // CHECK
+          ASYNC_REQUEST_TYPE: "run", // CHECK
+          publicBucketUrl: this.publicBucketUrl, // CHECK
+          datasetBucketUrl: this.datasetBucketUrl, // CHECK
         },
       }
     );
 
+    // CHECK - functionResources
     // Policy to allow the async start handler to call the async run handler (or any other)
     const asyncLambdaPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
@@ -721,16 +731,18 @@ export default class GeoprocessingStack extends core.Stack {
       actions: ["lambda:InvokeFunction"],
     });
 
+    // CHECK - functionResources
     const asyncLambdaRole = new iam.Role(this, "GpAsyncLambdaRole" + index, {
       assumedBy: new iam.ServicePrincipal("lambda.amazonaws.com"),
     });
     asyncLambdaRole.addToPolicy(asyncLambdaPolicy);
     const policies = [asyncLambdaPolicy];
 
-    this.tasksTbl.grantReadWriteData(asyncRunHandler);
-    this.estimatesTbl.grantReadWriteData(asyncRunHandler);
-    this.publicBucket.grantReadWrite(asyncRunHandler);
-    this.datasetBucket.grantReadWrite(asyncRunHandler);
+    // CHECK
+    this.tasksTbl.grantReadWriteData(asyncRunHandler); // CHECK
+    this.estimatesTbl.grantReadWriteData(asyncRunHandler); // CHECK
+    this.publicBucket.grantReadWrite(asyncRunHandler); // CHECK
+    this.datasetBucket.grantReadWrite(asyncRunHandler); // CHECK
 
     /**
      * startHandler Lambda is connected to the REST API allowing client to
@@ -751,25 +763,27 @@ export default class GeoprocessingStack extends core.Stack {
         description: func.description,
         initialPolicy: policies,
         environment: {
-          ...baseAsyncEnvOptions,
-          ASYNC_REQUEST_TYPE: "start",
-          RUN_HANDLER_FUNCTION_NAME: runFunctionName,
+          ...baseAsyncEnvOptions, // CHEcK
+          ASYNC_REQUEST_TYPE: "start", // CHECK
+          RUN_HANDLER_FUNCTION_NAME: runFunctionName, // CHECK
         },
       }
     );
 
-    this.tasksTbl.grantReadWriteData(asyncStartHandler);
-    this.estimatesTbl.grantReadWriteData(asyncStartHandler);
-    this.publicBucket.grantReadWrite(asyncStartHandler);
+    // CHECK
+    this.tasksTbl.grantReadWriteData(asyncStartHandler); // CHECK
+    this.estimatesTbl.grantReadWriteData(asyncStartHandler); // CHECK
+    this.publicBucket.grantReadWrite(asyncStartHandler); // CHECK
 
+    // CHECK - requestTemplate no longer available in WebSocketLambdaIntegration
     const asyncStartHandlerIntegration = new apigateway.LambdaIntegration(
       asyncStartHandler,
       {
         requestTemplates: { "application/json": '{ "statusCode": "200" }' },
       }
     );
-
     const resource = this.api.root.addResource(func.title);
+
     //TODO: remove, this is never used?
     const apigatewayPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,

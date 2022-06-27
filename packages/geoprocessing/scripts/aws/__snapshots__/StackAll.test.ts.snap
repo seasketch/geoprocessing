@@ -25,137 +25,57 @@ Object {
         ],
       },
     },
-  },
-  "Parameters": Object {
-    "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538ArtifactHash154EE95B": Object {
-      "Description": "Artifact hash for asset \\"15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538\\"",
-      "Type": "String",
+    "clientDistributionUrl": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "GpClientDistributionB595F696",
+          "DomainName",
+        ],
+      },
     },
-    "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3BucketB021608E": Object {
-      "Description": "S3 bucket for asset \\"15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538\\"",
-      "Type": "String",
+    "datasetBucketUrl": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://s3.us-west-1.",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "GpDatasetBucketFB843E6B",
+            },
+          ],
+        ],
+      },
     },
-    "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3VersionKeyC73B105A": Object {
-      "Description": "S3 key for asset version \\"15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538\\"",
-      "Type": "String",
-    },
-    "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0ArtifactHash4A934180": Object {
-      "Description": "Artifact hash for asset \\"1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0\\"",
-      "Type": "String",
-    },
-    "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF": Object {
-      "Description": "S3 bucket for asset \\"1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0\\"",
-      "Type": "String",
-    },
-    "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821": Object {
-      "Description": "S3 key for asset version \\"1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0\\"",
-      "Type": "String",
-    },
-    "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cArtifactHash07A347C7": Object {
-      "Description": "Artifact hash for asset \\"e6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2c\\"",
-      "Type": "String",
-    },
-    "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3BucketE2407207": Object {
-      "Description": "S3 bucket for asset \\"e6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2c\\"",
-      "Type": "String",
-    },
-    "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3VersionKey0667D5EA": Object {
-      "Description": "S3 key for asset version \\"e6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2c\\"",
-      "Type": "String",
-    },
-    "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daArtifactHashD85D28D8": Object {
-      "Description": "Artifact hash for asset \\"f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da\\"",
-      "Type": "String",
-    },
-    "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3BucketF23C0DE7": Object {
-      "Description": "S3 bucket for asset \\"f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da\\"",
-      "Type": "String",
-    },
-    "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3VersionKey5E97B17D": Object {
-      "Description": "S3 key for asset version \\"f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da\\"",
-      "Type": "String",
+    "resultBucketUrl": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://s3.us-west-1.",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "GpResultBucketE67AA9DE",
+            },
+          ],
+        ],
+      },
     },
   },
   "Resources": Object {
-    "ClientBucketAutoDeleteObjectsCustomResourceDE3D6BE4": Object {
-      "DeletionPolicy": "Delete",
-      "DependsOn": Array [
-        "ClientBucketPolicy9ED057B2",
-      ],
-      "Properties": Object {
-        "BucketName": Object {
-          "Ref": "ClientBucketB0EC996F",
-        },
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "Custom::S3AutoDeleteObjects",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "ClientBucketB0EC996F": Object {
-      "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "BucketName": "gp-all-client",
-        "Tags": Array [
-          Object {
-            "Key": "aws-cdk:auto-delete-objects",
-            "Value": "true",
-          },
-          Object {
-            "Key": "aws-cdk:cr-owned:5135519a",
-            "Value": "true",
-          },
-        ],
-        "WebsiteConfiguration": Object {
-          "IndexDocument": "index.html",
-        },
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Delete",
-    },
     "ClientBucketDeployAwsCliLayer500B9061": Object {
       "Properties": Object {
         "Content": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3BucketE2407207",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3VersionKey0667D5EA",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameterse6b3c8169ff937ea363b0bb4d13b24b0a38c958c42318f72066e3e59f0148c2cS3VersionKey0667D5EA",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "74ffc8606670c67d6fb0102782b44a64a139c8f4aca1f9c0de934bb6517010e7.zip",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -165,10 +85,10 @@ Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "DestinationBucketName": Object {
-          "Ref": "ClientBucketB0EC996F",
+          "Ref": "GpClientBucket52FF5CA3",
         },
         "DistributionId": Object {
-          "Ref": "ClientDistributionCFDistribution5E9F190B",
+          "Ref": "GpClientDistributionB595F696",
         },
         "DistributionPaths": Array [
           "/*",
@@ -182,43 +102,11 @@ Object {
         },
         "SourceBucketNames": Array [
           Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
         ],
         "SourceObjectKeys": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0.zip",
         ],
         "SystemMetadata": Object {
           "cache-control": "public, max-age=31536000",
@@ -226,127 +114,6 @@ Object {
       },
       "Type": "Custom::CDKBucketDeployment",
       "UpdateReplacePolicy": "Delete",
-    },
-    "ClientBucketPolicy9ED057B2": Object {
-      "Properties": Object {
-        "Bucket": Object {
-          "Ref": "ClientBucketB0EC996F",
-        },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Principal": Object {
-                "AWS": "*",
-              },
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
-                        "ClientBucketB0EC996F",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-            Object {
-              "Action": Array [
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::GetAtt": Array [
-                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                    "Arn",
-                  ],
-                },
-              },
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "ClientBucketB0EC996F",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "ClientBucketB0EC996F",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
-    },
-    "ClientDistributionCFDistribution5E9F190B": Object {
-      "Properties": Object {
-        "DistributionConfig": Object {
-          "Comment": "gp-all",
-          "DefaultCacheBehavior": Object {
-            "AllowedMethods": Array [
-              "GET",
-              "HEAD",
-            ],
-            "CachedMethods": Array [
-              "GET",
-              "HEAD",
-            ],
-            "Compress": true,
-            "ForwardedValues": Object {
-              "Cookies": Object {
-                "Forward": "none",
-              },
-              "QueryString": false,
-            },
-            "TargetOriginId": "origin1",
-            "ViewerProtocolPolicy": "redirect-to-https",
-          },
-          "DefaultRootObject": "index.html",
-          "Enabled": true,
-          "HttpVersion": "http2",
-          "IPV6Enabled": true,
-          "Origins": Array [
-            Object {
-              "ConnectionAttempts": 3,
-              "ConnectionTimeout": 10,
-              "DomainName": Object {
-                "Fn::GetAtt": Array [
-                  "ClientBucketB0EC996F",
-                  "RegionalDomainName",
-                ],
-              },
-              "Id": "origin1",
-              "S3OriginConfig": Object {},
-            },
-          ],
-          "PriceClass": "PriceClass_100",
-          "ViewerCertificate": Object {
-            "CloudFrontDefaultCertificate": true,
-          },
-        },
-      },
-      "Type": "AWS::CloudFront::Distribution",
     },
     "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536": Object {
       "DependsOn": Array [
@@ -356,41 +123,9 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3BucketF23C0DE7",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3VersionKey5E97B17D",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParametersf98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711daS3VersionKey5E97B17D",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da.zip",
         },
         "Handler": "index.handler",
         "Layers": Array [
@@ -462,7 +197,7 @@ Object {
                       },
                       ":s3:::",
                       Object {
-                        "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+                        "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
                       },
                     ],
                   ],
@@ -477,7 +212,7 @@ Object {
                       },
                       ":s3:::",
                       Object {
-                        "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+                        "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
                       },
                       "/*",
                     ],
@@ -491,14 +226,18 @@ Object {
                 "s3:GetBucket*",
                 "s3:List*",
                 "s3:DeleteObject*",
-                "s3:PutObject*",
+                "s3:PutObject",
+                "s3:PutObjectLegalHold",
+                "s3:PutObjectRetention",
+                "s3:PutObjectTagging",
+                "s3:PutObjectVersionTagging",
                 "s3:Abort*",
               ],
               "Effect": "Allow",
               "Resource": Array [
                 Object {
                   "Fn::GetAtt": Array [
-                    "ClientBucketB0EC996F",
+                    "GpClientBucket52FF5CA3",
                     "Arn",
                   ],
                 },
@@ -508,7 +247,7 @@ Object {
                     Array [
                       Object {
                         "Fn::GetAtt": Array [
-                          "ClientBucketB0EC996F",
+                          "GpClientBucket52FF5CA3",
                           "Arn",
                         ],
                       },
@@ -545,41 +284,9 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3BucketB021608E",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3VersionKeyC73B105A",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters15684a15d07860e99d2a8079150ad33dd2cb743677fcd7016dd07345e1b69538S3VersionKeyC73B105A",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "0758db37a61ce7177f50559cad0340df233a2001b5880615afa517203dd67c21.zip",
         },
         "Description": Object {
           "Fn::Join": Array [
@@ -587,7 +294,7 @@ Object {
             Array [
               "Lambda function for auto-deleting objects in ",
               Object {
-                "Ref": "ClientBucketB0EC996F",
+                "Ref": "GpResultBucketE67AA9DE",
               },
               " S3 bucket.",
             ],
@@ -670,6 +377,193 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "GpClientBucket52FF5CA3": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "BucketName": "gp-all-client",
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
+          },
+          Object {
+            "Key": "aws-cdk:cr-owned:5135519a",
+            "Value": "true",
+          },
+        ],
+        "WebsiteConfiguration": Object {
+          "IndexDocument": "index.html",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "GpClientBucketAutoDeleteObjectsCustomResource951B71A6": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "GpClientBucketPolicy237E3CB1",
+      ],
+      "Properties": Object {
+        "BucketName": Object {
+          "Ref": "GpClientBucket52FF5CA3",
+        },
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "GpClientBucketPolicy237E3CB1": Object {
+      "Properties": Object {
+        "Bucket": Object {
+          "Ref": "GpClientBucket52FF5CA3",
+        },
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::GetAtt": Array [
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+                    "Arn",
+                  ],
+                },
+              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpClientBucket52FF5CA3",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "GpClientBucket52FF5CA3",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Principal": Object {
+                "CanonicalUser": Object {
+                  "Fn::GetAtt": Array [
+                    "OriginAccessIdentityDF1E3CAC",
+                    "S3CanonicalUserId",
+                  ],
+                },
+              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpClientBucket52FF5CA3",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "GpClientBucket52FF5CA3",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::S3::BucketPolicy",
+    },
+    "GpClientDistributionB595F696": Object {
+      "Properties": Object {
+        "DistributionConfig": Object {
+          "Comment": "gp-all",
+          "CustomErrorResponses": Array [
+            Object {
+              "ErrorCode": 404,
+              "ResponseCode": 200,
+              "ResponsePagePath": "/index.html",
+            },
+          ],
+          "DefaultCacheBehavior": Object {
+            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+            "Compress": true,
+            "TargetOriginId": "allGpClientDistributionOrigin1D8692DA0",
+            "ViewerProtocolPolicy": "redirect-to-https",
+          },
+          "DefaultRootObject": "index.html",
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": true,
+          "Origins": Array [
+            Object {
+              "CustomOriginConfig": Object {
+                "OriginProtocolPolicy": "http-only",
+                "OriginSSLProtocols": Array [
+                  "TLSv1.2",
+                ],
+              },
+              "DomainName": Object {
+                "Fn::Select": Array [
+                  2,
+                  Object {
+                    "Fn::Split": Array [
+                      "/",
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "GpClientBucket52FF5CA3",
+                          "WebsiteURL",
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+              "Id": "allGpClientDistributionOrigin1D8692DA0",
+            },
+          ],
+        },
+      },
+      "Type": "AWS::CloudFront::Distribution",
     },
     "GpDatasetBucketAutoDeleteObjectsCustomResourceD389095A": Object {
       "DeletionPolicy": "Delete",
@@ -794,166 +688,6 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "GpDynamoSendRole0E222F37": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "dynamodb.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpDynamoSendRoleDefaultPolicy214FC2F6": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "lambda:InvokeFunction",
-                "execute-api:ManageConnections",
-                "dynamodb:GetItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:PutItem",
-                "dynamodb:Scan",
-                "dynamodb:Query",
-                "dynamodb:UpdateItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:DescribeTable",
-                "dynamodb:ConditionCheckItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "GpSendHandlerEE9E8D5C",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpDynamoSendRoleDefaultPolicy214FC2F6",
-        "Roles": Array [
-          Object {
-            "Ref": "GpDynamoSendRole0E222F37",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "GpDynamoSubscribeRole2EA474FE": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "dynamodb.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpDynamoSubscribeRoleDefaultPolicyC5D18507": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "lambda:InvokeFunction",
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "GpSubscribeHandler254785F4",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpDynamoSubscribeRoleDefaultPolicyC5D18507",
-        "Roles": Array [
-          Object {
-            "Ref": "GpDynamoSubscribeRole2EA474FE",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "GpDynamoUnsubscribeRoleB4076C4A": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "dynamodb.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpDynamoUnsubscribeRoleDefaultPolicy93D53FE8": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "lambda:InvokeFunction",
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "GpUnsubscribeHandler4BC55849",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpDynamoUnsubscribeRoleDefaultPolicy93D53FE8",
-        "Roles": Array [
-          Object {
-            "Ref": "GpDynamoUnsubscribeRoleB4076C4A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "GpEstimatesTableBB595885": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
@@ -974,266 +708,6 @@ Object {
       },
       "Type": "AWS::DynamoDB::Table",
       "UpdateReplacePolicy": "Delete",
-    },
-    "GpMetadataHandler5D0745A7": Object {
-      "DependsOn": Array [
-        "GpMetadataHandlerServiceRoleDefaultPolicyD81D593B",
-        "GpMetadataHandlerServiceRole7107682D",
-      ],
-      "Properties": Object {
-        "Code": Object {
-          "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
-          },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
-        },
-        "Environment": Object {
-          "Variables": Object {
-            "clientUrl": Object {
-              "Fn::GetAtt": Array [
-                "ClientDistributionCFDistribution5E9F190B",
-                "DomainName",
-              ],
-            },
-          },
-        },
-        "FunctionName": "gp-all-metadata",
-        "Handler": "serviceHandlers.projectMetadata",
-        "Role": Object {
-          "Fn::GetAtt": Array [
-            "GpMetadataHandlerServiceRole7107682D",
-            "Arn",
-          ],
-        },
-        "Runtime": "nodejs16.x",
-      },
-      "Type": "AWS::Lambda::Function",
-    },
-    "GpMetadataHandlerServiceRole7107682D": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "lambda.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "ManagedPolicyArns": Array [
-          Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-              ],
-            ],
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpMetadataHandlerServiceRoleDefaultPolicyD81D593B": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:DescribeTable",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpTasksTable2F8F158E",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpMetadataHandlerServiceRoleDefaultPolicyD81D593B",
-        "Roles": Array [
-          Object {
-            "Ref": "GpMetadataHandlerServiceRole7107682D",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "GpPublicBucket989E1AE8": Object {
-      "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "BucketName": "gp-all-public",
-        "CorsConfiguration": Object {
-          "CorsRules": Array [
-            Object {
-              "AllowedHeaders": Array [
-                "*",
-              ],
-              "AllowedMethods": Array [
-                "HEAD",
-                "GET",
-              ],
-              "AllowedOrigins": Array [
-                "*",
-              ],
-              "Id": "cors-rule",
-              "MaxAge": 3600,
-            },
-          ],
-        },
-        "Tags": Array [
-          Object {
-            "Key": "aws-cdk:auto-delete-objects",
-            "Value": "true",
-          },
-        ],
-      },
-      "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "GpPublicBucketAutoDeleteObjectsCustomResource1645A98D": Object {
-      "DeletionPolicy": "Delete",
-      "DependsOn": Array [
-        "GpPublicBucketPolicyAAA4C049",
-      ],
-      "Properties": Object {
-        "BucketName": Object {
-          "Ref": "GpPublicBucket989E1AE8",
-        },
-        "ServiceToken": Object {
-          "Fn::GetAtt": Array [
-            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
-            "Arn",
-          ],
-        },
-      },
-      "Type": "Custom::S3AutoDeleteObjects",
-      "UpdateReplacePolicy": "Delete",
-    },
-    "GpPublicBucketPolicyAAA4C049": Object {
-      "Properties": Object {
-        "Bucket": Object {
-          "Ref": "GpPublicBucket989E1AE8",
-        },
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Principal": Object {
-                "AWS": "*",
-              },
-              "Resource": Object {
-                "Fn::Join": Array [
-                  "",
-                  Array [
-                    Object {
-                      "Fn::GetAtt": Array [
-                        "GpPublicBucket989E1AE8",
-                        "Arn",
-                      ],
-                    },
-                    "/*",
-                  ],
-                ],
-              },
-            },
-            Object {
-              "Action": Array [
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-              ],
-              "Effect": "Allow",
-              "Principal": Object {
-                "AWS": Object {
-                  "Fn::GetAtt": Array [
-                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
-                    "Arn",
-                  ],
-                },
-              },
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpPublicBucket989E1AE8",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpPublicBucket989E1AE8",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::S3::BucketPolicy",
     },
     "GpRestApi3C403820": Object {
       "Properties": Object {
@@ -1287,21 +761,10 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "GpRestApiDeployment8BC1361A7b771d2ac4a560c3fe018130cdc51b67": Object {
+    "GpRestApiDeployment8BC1361Af934d3388b2ee4ea1aea37b0267cbbfa": Object {
       "DependsOn": Array [
         "GpRestApiGET037A17F9",
         "GpRestApiOPTIONS0D97A1CF",
-        "GpRestApitestAsyncGeoprocessorGET5EEF21D2",
-        "GpRestApitestAsyncGeoprocessorOPTIONS5536AC3F",
-        "GpRestApitestAsyncGeoprocessorPOSTB047E8EA",
-        "GpRestApitestAsyncGeoprocessor74C8F6D0",
-        "GpRestApitestPreprocessorOPTIONSF3E96077",
-        "GpRestApitestPreprocessorPOST8DD6678F",
-        "GpRestApitestPreprocessor47A725A2",
-        "GpRestApitestSyncGeoprocessorGET0995D01E",
-        "GpRestApitestSyncGeoprocessorOPTIONSEA2E29D8",
-        "GpRestApitestSyncGeoprocessorPOSTC2863875",
-        "GpRestApitestSyncGeoprocessorACDEBF58",
       ],
       "Properties": Object {
         "Description": "Automatically created by the RestApi construct",
@@ -1317,7 +780,7 @@ Object {
       ],
       "Properties": Object {
         "DeploymentId": Object {
-          "Ref": "GpRestApiDeployment8BC1361A7b771d2ac4a560c3fe018130cdc51b67",
+          "Ref": "GpRestApiDeployment8BC1361Af934d3388b2ee4ea1aea37b0267cbbfa",
         },
         "MethodSettings": Array [
           Object {
@@ -1356,7 +819,7 @@ Object {
                 ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
                 Object {
                   "Fn::GetAtt": Array [
-                    "GpMetadataHandler5D0745A7",
+                    "GpServiceRootFunction2A71395D",
                     "Arn",
                   ],
                 },
@@ -1382,7 +845,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpMetadataHandler5D0745A7",
+            "GpServiceRootFunction2A71395D",
             "Arn",
           ],
         },
@@ -1415,7 +878,7 @@ Object {
         "Action": "lambda:InvokeFunction",
         "FunctionName": Object {
           "Fn::GetAtt": Array [
-            "GpMetadataHandler5D0745A7",
+            "GpServiceRootFunction2A71395D",
             "Arn",
           ],
         },
@@ -1489,712 +952,128 @@ Object {
       },
       "Type": "AWS::ApiGateway::Method",
     },
-    "GpRestApitestAsyncGeoprocessor74C8F6D0": Object {
+    "GpResultBucketAutoDeleteObjectsCustomResource1EBB06E5": Object {
+      "DeletionPolicy": "Delete",
+      "DependsOn": Array [
+        "GpResultBucketPolicyD12C641A",
+      ],
       "Properties": Object {
-        "ParentId": Object {
+        "BucketName": Object {
+          "Ref": "GpResultBucketE67AA9DE",
+        },
+        "ServiceToken": Object {
           "Fn::GetAtt": Array [
-            "GpRestApi3C403820",
-            "RootResourceId",
-          ],
-        },
-        "PathPart": "testAsyncGeoprocessor",
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
-      },
-      "Type": "AWS::ApiGateway::Resource",
-    },
-    "GpRestApitestAsyncGeoprocessorGET5EEF21D2": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "GET",
-        "Integration": Object {
-          "IntegrationHttpMethod": "POST",
-          "RequestTemplates": Object {
-            "application/json": "{ \\"statusCode\\": \\"200\\" }",
-          },
-          "Type": "AWS_PROXY",
-          "Uri": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
-                Object {
-                  "Fn::GetAtt": Array [
-                    "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
-                    "Arn",
-                  ],
-                },
-                "/invocations",
-              ],
-            ],
-          },
-        },
-        "ResourceId": Object {
-          "Ref": "GpRestApitestAsyncGeoprocessor74C8F6D0",
-        },
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
-    },
-    "GpRestApitestAsyncGeoprocessorGETApiPermissionTestallGpRestApiBEE13B7AGETtestAsyncGeoprocessor1A6CB520": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
+            "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
             "Arn",
           ],
         },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/test-invoke-stage/GET/testAsyncGeoprocessor",
-            ],
-          ],
-        },
       },
-      "Type": "AWS::Lambda::Permission",
+      "Type": "Custom::S3AutoDeleteObjects",
+      "UpdateReplacePolicy": "Delete",
     },
-    "GpRestApitestAsyncGeoprocessorGETApiPermissionallGpRestApiBEE13B7AGETtestAsyncGeoprocessor8D6FA5DD": Object {
+    "GpResultBucketE67AA9DE": Object {
+      "DeletionPolicy": "Delete",
       "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/",
-              Object {
-                "Ref": "GpRestApiDeploymentStageprodFDC6A6D1",
-              },
-              "/GET/testAsyncGeoprocessor",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "GpRestApitestAsyncGeoprocessorOPTIONS5536AC3F": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "Integration": Object {
-          "IntegrationResponses": Array [
+        "BucketName": "gp-all-results",
+        "CorsConfiguration": Object {
+          "CorsRules": Array [
             Object {
-              "ResponseParameters": Object {
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-              },
-              "StatusCode": "204",
+              "AllowedHeaders": Array [
+                "*",
+              ],
+              "AllowedMethods": Array [
+                "HEAD",
+                "GET",
+              ],
+              "AllowedOrigins": Array [
+                "*",
+              ],
+              "Id": "cors-rule",
+              "MaxAge": 3600,
             },
           ],
-          "RequestTemplates": Object {
-            "application/json": "{ statusCode: 200 }",
-          },
-          "Type": "MOCK",
         },
-        "MethodResponses": Array [
+        "Tags": Array [
           Object {
-            "ResponseParameters": Object {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-            },
-            "StatusCode": "204",
+            "Key": "aws-cdk:auto-delete-objects",
+            "Value": "true",
           },
         ],
-        "ResourceId": Object {
-          "Ref": "GpRestApitestAsyncGeoprocessor74C8F6D0",
-        },
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
       },
-      "Type": "AWS::ApiGateway::Method",
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Delete",
     },
-    "GpRestApitestAsyncGeoprocessorPOSTApiPermissionTestallGpRestApiBEE13B7APOSTtestAsyncGeoprocessorA91C6452": Object {
+    "GpResultBucketPolicyD12C641A": Object {
       "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
-            "Arn",
-          ],
+        "Bucket": Object {
+          "Ref": "GpResultBucketE67AA9DE",
         },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/test-invoke-stage/POST/testAsyncGeoprocessor",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "GpRestApitestAsyncGeoprocessorPOSTApiPermissionallGpRestApiBEE13B7APOSTtestAsyncGeoprocessor32204A3B": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/",
-              Object {
-                "Ref": "GpRestApiDeploymentStageprodFDC6A6D1",
-              },
-              "/POST/testAsyncGeoprocessor",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "GpRestApitestAsyncGeoprocessorPOSTB047E8EA": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "POST",
-        "Integration": Object {
-          "IntegrationHttpMethod": "POST",
-          "RequestTemplates": Object {
-            "application/json": "{ \\"statusCode\\": \\"200\\" }",
-          },
-          "Type": "AWS_PROXY",
-          "Uri": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
-                Object {
-                  "Fn::GetAtt": Array [
-                    "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29",
-                    "Arn",
-                  ],
-                },
-                "/invocations",
-              ],
-            ],
-          },
-        },
-        "ResourceId": Object {
-          "Ref": "GpRestApitestAsyncGeoprocessor74C8F6D0",
-        },
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
-    },
-    "GpRestApitestPreprocessor47A725A2": Object {
-      "Properties": Object {
-        "ParentId": Object {
-          "Fn::GetAtt": Array [
-            "GpRestApi3C403820",
-            "RootResourceId",
-          ],
-        },
-        "PathPart": "testPreprocessor",
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
-      },
-      "Type": "AWS::ApiGateway::Resource",
-    },
-    "GpRestApitestPreprocessorOPTIONSF3E96077": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "Integration": Object {
-          "IntegrationResponses": Array [
+        "PolicyDocument": Object {
+          "Statement": Array [
             Object {
-              "ResponseParameters": Object {
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": "*",
               },
-              "StatusCode": "204",
-            },
-          ],
-          "RequestTemplates": Object {
-            "application/json": "{ statusCode: 200 }",
-          },
-          "Type": "MOCK",
-        },
-        "MethodResponses": Array [
-          Object {
-            "ResponseParameters": Object {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-            },
-            "StatusCode": "204",
-          },
-        ],
-        "ResourceId": Object {
-          "Ref": "GpRestApitestPreprocessor47A725A2",
-        },
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
-    },
-    "GpRestApitestPreprocessorPOST8DD6678F": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "POST",
-        "Integration": Object {
-          "IntegrationHttpMethod": "POST",
-          "RequestTemplates": Object {
-            "application/json": "{ \\"statusCode\\": \\"200\\" }",
-          },
-          "Type": "AWS_PROXY",
-          "Uri": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
-                Object {
-                  "Fn::GetAtt": Array [
-                    "testPreprocessorGpSyncHandler6EC47FBF",
-                    "Arn",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "GpResultBucketE67AA9DE",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
                   ],
-                },
-                "/invocations",
-              ],
-            ],
-          },
-        },
-        "ResourceId": Object {
-          "Ref": "GpRestApitestPreprocessor47A725A2",
-        },
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
-    },
-    "GpRestApitestPreprocessorPOSTApiPermissionTestallGpRestApiBEE13B7APOSTtestPreprocessorCFD488AF": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testPreprocessorGpSyncHandler6EC47FBF",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
+                ],
               },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/test-invoke-stage/POST/testPreprocessor",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "GpRestApitestPreprocessorPOSTApiPermissionallGpRestApiBEE13B7APOSTtestPreprocessor1AD6F63E": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testPreprocessorGpSyncHandler6EC47FBF",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/",
-              Object {
-                "Ref": "GpRestApiDeploymentStageprodFDC6A6D1",
-              },
-              "/POST/testPreprocessor",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "GpRestApitestSyncGeoprocessorACDEBF58": Object {
-      "Properties": Object {
-        "ParentId": Object {
-          "Fn::GetAtt": Array [
-            "GpRestApi3C403820",
-            "RootResourceId",
-          ],
-        },
-        "PathPart": "testSyncGeoprocessor",
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
-      },
-      "Type": "AWS::ApiGateway::Resource",
-    },
-    "GpRestApitestSyncGeoprocessorGET0995D01E": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "GET",
-        "Integration": Object {
-          "IntegrationHttpMethod": "POST",
-          "RequestTemplates": Object {
-            "application/json": "{ \\"statusCode\\": \\"200\\" }",
-          },
-          "Type": "AWS_PROXY",
-          "Uri": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
-                Object {
-                  "Fn::GetAtt": Array [
-                    "testSyncGeoprocessorGpSyncHandler16045421",
-                    "Arn",
-                  ],
-                },
-                "/invocations",
-              ],
-            ],
-          },
-        },
-        "ResourceId": Object {
-          "Ref": "GpRestApitestSyncGeoprocessorACDEBF58",
-        },
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
-    },
-    "GpRestApitestSyncGeoprocessorGETApiPermissionTestallGpRestApiBEE13B7AGETtestSyncGeoprocessorDEBFA09A": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testSyncGeoprocessorGpSyncHandler16045421",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/test-invoke-stage/GET/testSyncGeoprocessor",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "GpRestApitestSyncGeoprocessorGETApiPermissionallGpRestApiBEE13B7AGETtestSyncGeoprocessor0CDB24C7": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testSyncGeoprocessorGpSyncHandler16045421",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/",
-              Object {
-                "Ref": "GpRestApiDeploymentStageprodFDC6A6D1",
-              },
-              "/GET/testSyncGeoprocessor",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "GpRestApitestSyncGeoprocessorOPTIONSEA2E29D8": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "Integration": Object {
-          "IntegrationResponses": Array [
+            },
             Object {
-              "ResponseParameters": Object {
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-              },
-              "StatusCode": "204",
-            },
-          ],
-          "RequestTemplates": Object {
-            "application/json": "{ statusCode: 200 }",
-          },
-          "Type": "MOCK",
-        },
-        "MethodResponses": Array [
-          Object {
-            "ResponseParameters": Object {
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Allow-Origin": true,
-            },
-            "StatusCode": "204",
-          },
-        ],
-        "ResourceId": Object {
-          "Ref": "GpRestApitestSyncGeoprocessorACDEBF58",
-        },
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
-        },
-      },
-      "Type": "AWS::ApiGateway::Method",
-    },
-    "GpRestApitestSyncGeoprocessorPOSTApiPermissionTestallGpRestApiBEE13B7APOSTtestSyncGeoprocessor89420705": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testSyncGeoprocessorGpSyncHandler16045421",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/test-invoke-stage/POST/testSyncGeoprocessor",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "GpRestApitestSyncGeoprocessorPOSTApiPermissionallGpRestApiBEE13B7APOSTtestSyncGeoprocessorC26C2277": Object {
-      "Properties": Object {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": Object {
-          "Fn::GetAtt": Array [
-            "testSyncGeoprocessorGpSyncHandler16045421",
-            "Arn",
-          ],
-        },
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:",
-              Object {
-                "Ref": "AWS::Partition",
-              },
-              ":execute-api:us-west-1:",
-              Object {
-                "Ref": "AWS::AccountId",
-              },
-              ":",
-              Object {
-                "Ref": "GpRestApi3C403820",
-              },
-              "/",
-              Object {
-                "Ref": "GpRestApiDeploymentStageprodFDC6A6D1",
-              },
-              "/POST/testSyncGeoprocessor",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::Lambda::Permission",
-    },
-    "GpRestApitestSyncGeoprocessorPOSTC2863875": Object {
-      "Properties": Object {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "POST",
-        "Integration": Object {
-          "IntegrationHttpMethod": "POST",
-          "RequestTemplates": Object {
-            "application/json": "{ \\"statusCode\\": \\"200\\" }",
-          },
-          "Type": "AWS_PROXY",
-          "Uri": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                "arn:",
-                Object {
-                  "Ref": "AWS::Partition",
-                },
-                ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
-                Object {
+              "Action": Array [
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+              ],
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
                   "Fn::GetAtt": Array [
-                    "testSyncGeoprocessorGpSyncHandler16045421",
+                    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
                     "Arn",
                   ],
                 },
-                "/invocations",
+              },
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "GpResultBucketE67AA9DE",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "GpResultBucketE67AA9DE",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
               ],
-            ],
-          },
-        },
-        "ResourceId": Object {
-          "Ref": "GpRestApitestSyncGeoprocessorACDEBF58",
-        },
-        "RestApiId": Object {
-          "Ref": "GpRestApi3C403820",
+            },
+          ],
+          "Version": "2012-10-17",
         },
       },
-      "Type": "AWS::ApiGateway::Method",
+      "Type": "AWS::S3::BucketPolicy",
     },
     "GpSendHandlerEE9E8D5C": Object {
       "DependsOn": Array [
@@ -2204,46 +1083,14 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0.zip",
         },
         "Description": " for sending messages on sockets",
         "Environment": Object {
           "Variables": Object {
-            "SOCKETS_TABLE": Object {
+            "SUBSCRIPTIONS_TABLE": Object {
               "Ref": "GpSubscriptionsTable6D399C8E",
             },
           },
@@ -2310,7 +1157,7 @@ Object {
                     },
                     ":",
                     Object {
-                      "Ref": "SocketApi",
+                      "Ref": "WebSocketApi34BCF99B",
                     },
                     "/*",
                   ],
@@ -2385,50 +1232,40 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
-    "GpSocketApiDeployment": Object {
+    "GpServiceRootFunction2A71395D": Object {
       "DependsOn": Array [
-        "GpSocketApiSendRoute",
-        "GpSocketApiSubscribeRoute",
-        "GpSocketApiUnsubscribeRoute",
+        "GpServiceRootFunctionServiceRoleEE990671",
       ],
       "Properties": Object {
-        "ApiId": Object {
-          "Ref": "SocketApi",
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
+          },
+          "S3Key": "1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0.zip",
         },
-      },
-      "Type": "AWS::ApiGatewayV2::Deployment",
-    },
-    "GpSocketApiSendHandlerIntegration": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "SocketApi",
+        "Environment": Object {
+          "Variables": Object {
+            "clientDistributionUrl": Object {
+              "Fn::GetAtt": Array [
+                "GpClientDistributionB595F696",
+                "DomainName",
+              ],
+            },
+          },
         },
-        "CredentialsArn": Object {
+        "FunctionName": "gp-all-metadata",
+        "Handler": "serviceHandlers.projectMetadata",
+        "Role": Object {
           "Fn::GetAtt": Array [
-            "GpSocketApiSendRole928275AE",
+            "GpServiceRootFunctionServiceRoleEE990671",
             "Arn",
           ],
         },
-        "IntegrationType": "AWS_PROXY",
-        "IntegrationUri": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/",
-              Object {
-                "Fn::GetAtt": Array [
-                  "GpSendHandlerEE9E8D5C",
-                  "Arn",
-                ],
-              },
-              "/invocations",
-            ],
-          ],
-        },
+        "Runtime": "nodejs16.x",
       },
-      "Type": "AWS::ApiGatewayV2::Integration",
+      "Type": "AWS::Lambda::Function",
     },
-    "GpSocketApiSendRole928275AE": Object {
+    "GpServiceRootFunctionServiceRoleEE990671": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -2436,299 +1273,44 @@ Object {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Principal": Object {
-                "Service": "apigateway.amazonaws.com",
+                "Service": "lambda.amazonaws.com",
               },
             },
           ],
           "Version": "2012-10-17",
         },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpSocketApiSendRoleDefaultPolicy4B6425F9": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "lambda:InvokeFunction",
-                "execute-api:ManageConnections",
-                "dynamodb:GetItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:PutItem",
-                "dynamodb:Scan",
-                "dynamodb:Query",
-                "dynamodb:UpdateItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:BatchGetItem",
-                "dynamodb:DescribeTable",
-                "dynamodb:ConditionCheckItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "GpSendHandlerEE9E8D5C",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpSocketApiSendRoleDefaultPolicy4B6425F9",
-        "Roles": Array [
+        "ManagedPolicyArns": Array [
           Object {
-            "Ref": "GpSocketApiSendRole928275AE",
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
           },
         ],
       },
-      "Type": "AWS::IAM::Policy",
+      "Type": "AWS::IAM::Role",
     },
-    "GpSocketApiSendRoute": Object {
+    "GpSocketApiStageD8D179F5": Object {
       "Properties": Object {
         "ApiId": Object {
-          "Ref": "SocketApi",
+          "Ref": "WebSocketApi34BCF99B",
         },
-        "AuthorizationType": "NONE",
-        "OperationName": "SendRoute",
-        "RouteKey": "sendmessage",
-        "Target": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "integrations/",
-              Object {
-                "Ref": "GpSocketApiSendHandlerIntegration",
-              },
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Route",
-    },
-    "GpSocketApiStage": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "SocketApi",
-        },
+        "AutoDeploy": true,
         "DefaultRouteSettings": Object {
+          "DataTraceEnabled": true,
+          "LoggingLevel": "INFO",
           "ThrottlingBurstLimit": 500,
           "ThrottlingRateLimit": 1000,
-        },
-        "DeploymentId": Object {
-          "Ref": "GpSocketApiDeployment",
         },
         "StageName": "prod",
       },
       "Type": "AWS::ApiGatewayV2::Stage",
-    },
-    "GpSocketApiSubscribeHandlerIntegration": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "SocketApi",
-        },
-        "CredentialsArn": Object {
-          "Fn::GetAtt": Array [
-            "GpSocketApiSubscribeRoleACEB50C9",
-            "Arn",
-          ],
-        },
-        "IntegrationType": "AWS_PROXY",
-        "IntegrationUri": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/",
-              Object {
-                "Fn::GetAtt": Array [
-                  "GpSubscribeHandler254785F4",
-                  "Arn",
-                ],
-              },
-              "/invocations",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Integration",
-    },
-    "GpSocketApiSubscribeRoleACEB50C9": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "apigateway.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpSocketApiSubscribeRoleDefaultPolicy3035A207": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "lambda:InvokeFunction",
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "GpSubscribeHandler254785F4",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpSocketApiSubscribeRoleDefaultPolicy3035A207",
-        "Roles": Array [
-          Object {
-            "Ref": "GpSocketApiSubscribeRoleACEB50C9",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "GpSocketApiSubscribeRoute": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "SocketApi",
-        },
-        "AuthorizationType": "NONE",
-        "OperationName": "SubscribeRoute",
-        "RouteKey": "$connect",
-        "Target": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "integrations/",
-              Object {
-                "Ref": "GpSocketApiSubscribeHandlerIntegration",
-              },
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Route",
-    },
-    "GpSocketApiUnsubscribeHandlerIntegration": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "SocketApi",
-        },
-        "CredentialsArn": Object {
-          "Fn::GetAtt": Array [
-            "GpSocketApiUnsubscribeRoleDD09B28A",
-            "Arn",
-          ],
-        },
-        "IntegrationType": "AWS_PROXY",
-        "IntegrationUri": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/",
-              Object {
-                "Fn::GetAtt": Array [
-                  "GpUnsubscribeHandler4BC55849",
-                  "Arn",
-                ],
-              },
-              "/invocations",
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Integration",
-    },
-    "GpSocketApiUnsubscribeRoleDD09B28A": Object {
-      "Properties": Object {
-        "AssumeRolePolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": Object {
-                "Service": "apigateway.amazonaws.com",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::Role",
-    },
-    "GpSocketApiUnsubscribeRoleDefaultPolicyA90E1454": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "lambda:InvokeFunction",
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-              ],
-              "Effect": "Allow",
-              "Resource": Object {
-                "Fn::GetAtt": Array [
-                  "GpUnsubscribeHandler4BC55849",
-                  "Arn",
-                ],
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "GpSocketApiUnsubscribeRoleDefaultPolicyA90E1454",
-        "Roles": Array [
-          Object {
-            "Ref": "GpSocketApiUnsubscribeRoleDD09B28A",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "GpSocketApiUnsubscribeRoute": Object {
-      "Properties": Object {
-        "ApiId": Object {
-          "Ref": "SocketApi",
-        },
-        "AuthorizationType": "NONE",
-        "OperationName": "UnsubscribeRoute",
-        "RouteKey": "$disconnect",
-        "Target": Object {
-          "Fn::Join": Array [
-            "",
-            Array [
-              "integrations/",
-              Object {
-                "Ref": "GpSocketApiUnsubscribeHandlerIntegration",
-              },
-            ],
-          ],
-        },
-      },
-      "Type": "AWS::ApiGatewayV2::Route",
     },
     "GpSubscribeHandler254785F4": Object {
       "DependsOn": Array [
@@ -2738,46 +1320,14 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0.zip",
         },
         "Description": "Subscribe to messages",
         "Environment": Object {
           "Variables": Object {
-            "SOCKETS_TABLE": Object {
+            "SUBSCRIPTIONS_TABLE": Object {
               "Ref": "GpSubscriptionsTable6D399C8E",
             },
           },
@@ -2844,7 +1394,7 @@ Object {
                     },
                     ":",
                     Object {
-                      "Ref": "SocketApi",
+                      "Ref": "WebSocketApi34BCF99B",
                     },
                     "/*",
                   ],
@@ -2949,46 +1499,14 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0.zip",
         },
         "Description": "Unsubscribe from messages",
         "Environment": Object {
           "Variables": Object {
-            "SOCKETS_TABLE": Object {
+            "SUBSCRIPTIONS_TABLE": Object {
               "Ref": "GpSubscriptionsTable6D399C8E",
             },
           },
@@ -3024,7 +1542,7 @@ Object {
                     },
                     ":",
                     Object {
-                      "Ref": "SocketApi",
+                      "Ref": "WebSocketApi34BCF99B",
                     },
                     "/*",
                   ],
@@ -3102,7 +1620,15 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "SocketApi": Object {
+    "OriginAccessIdentityDF1E3CAC": Object {
+      "Properties": Object {
+        "CloudFrontOriginAccessIdentityConfig": Object {
+          "Comment": "Allows CloudFront to reach the bucket",
+        },
+      },
+      "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    },
+    "WebSocketApi34BCF99B": Object {
       "Properties": Object {
         "Description": "Serves web socket requests for all.",
         "Name": "gp-all-socket",
@@ -3111,98 +1637,185 @@ Object {
       },
       "Type": "AWS::ApiGatewayV2::Api",
     },
+    "WebSocketApiconnectRoute846149DD": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi34BCF99B",
+        },
+        "AuthorizationType": "NONE",
+        "RouteKey": "$connect",
+        "Target": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "integrations/",
+              Object {
+                "Ref": "WebSocketApiconnectRouteOnConnectIntegration50849185",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "WebSocketApiconnectRouteOnConnectIntegration50849185": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi34BCF99B",
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
+              Object {
+                "Fn::GetAtt": Array [
+                  "GpSubscribeHandler254785F4",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "WebSocketApiconnectRouteOnConnectIntegrationPermission63C86F11": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "GpSubscribeHandler254785F4",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:us-west-1:",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "WebSocketApi34BCF99B",
+              },
+              "/*/*$connect",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "WebSocketApidisconnectRouteC181A19C": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi34BCF99B",
+        },
+        "AuthorizationType": "NONE",
+        "RouteKey": "$disconnect",
+        "Target": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "integrations/",
+              Object {
+                "Ref": "WebSocketApidisconnectRouteOnDisconnectIntegrationB7DBE1EF",
+              },
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Route",
+    },
+    "WebSocketApidisconnectRouteOnDisconnectIntegrationB7DBE1EF": Object {
+      "Properties": Object {
+        "ApiId": Object {
+          "Ref": "WebSocketApi34BCF99B",
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":apigateway:us-west-1:lambda:path/2015-03-31/functions/",
+              Object {
+                "Fn::GetAtt": Array [
+                  "GpUnsubscribeHandler4BC55849",
+                  "Arn",
+                ],
+              },
+              "/invocations",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGatewayV2::Integration",
+    },
+    "WebSocketApidisconnectRouteOnDisconnectIntegrationPermission1BB6126D": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "GpUnsubscribeHandler4BC55849",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:us-west-1:",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "WebSocketApi34BCF99B",
+              },
+              "/*/*$disconnect",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
     "testAsyncGeoprocessorGpAsyncHandlerRun601CE57C": Object {
       "DependsOn": Array [
-        "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDefaultPolicy9BBEB807",
         "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDA7CE4B5",
       ],
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0.zip",
         },
         "Description": "",
         "Environment": Object {
           "Variables": Object {
             "ASYNC_REQUEST_TYPE": "run",
-            "ESTIMATES_TABLE": Object {
-              "Ref": "GpEstimatesTableBB595885",
-            },
-            "SOCKETS_TABLE": Object {
-              "Ref": "GpSubscriptionsTable6D399C8E",
-            },
-            "TASKS_TABLE": Object {
-              "Ref": "GpTasksTable2F8F158E",
-            },
-            "WSS_REF": Object {
-              "Ref": "SocketApi",
-            },
-            "WSS_REGION": "us-west-1",
-            "WSS_STAGE": "prod",
-            "datasetBucketUrl": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  "https://s3.us-west-1.",
-                  Object {
-                    "Ref": "AWS::URLSuffix",
-                  },
-                  "/",
-                  Object {
-                    "Ref": "GpDatasetBucketFB843E6B",
-                  },
-                ],
-              ],
-            },
-            "publicBucketUrl": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  "https://s3.us-west-1.",
-                  Object {
-                    "Ref": "AWS::URLSuffix",
-                  },
-                  "/",
-                  Object {
-                    "Ref": "GpPublicBucket989E1AE8",
-                  },
-                ],
-              ],
-            },
           },
         },
         "FunctionName": "gp-all-async-testAsyncGeoprocessor-run",
@@ -3250,144 +1863,6 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDefaultPolicy9BBEB807": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:DescribeTable",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpTasksTable2F8F158E",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:DescribeTable",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpEstimatesTableBB595885",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject*",
-                "s3:Abort*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpPublicBucket989E1AE8",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpPublicBucket989E1AE8",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject*",
-                "s3:Abort*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpDatasetBucketFB843E6B",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpDatasetBucketFB843E6B",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDefaultPolicy9BBEB807",
-        "Roles": Array [
-          Object {
-            "Ref": "testAsyncGeoprocessorGpAsyncHandlerRunServiceRoleDA7CE4B5",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "testAsyncGeoprocessorGpAsyncHandlerStartC5A7FD29": Object {
       "DependsOn": Array [
         "testAsyncGeoprocessorGpAsyncHandlerStartServiceRoleDefaultPolicy83C59B27",
@@ -3396,61 +1871,15 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0.zip",
         },
         "Description": "",
         "Environment": Object {
           "Variables": Object {
             "ASYNC_REQUEST_TYPE": "start",
-            "ESTIMATES_TABLE": Object {
-              "Ref": "GpEstimatesTableBB595885",
-            },
             "RUN_HANDLER_FUNCTION_NAME": "gp-all-async-testAsyncGeoprocessor-run",
-            "SOCKETS_TABLE": Object {
-              "Ref": "GpSubscriptionsTable6D399C8E",
-            },
-            "TASKS_TABLE": Object {
-              "Ref": "GpTasksTable2F8F158E",
-            },
-            "WSS_REF": Object {
-              "Ref": "SocketApi",
-            },
-            "WSS_REGION": "us-west-1",
-            "WSS_STAGE": "prod",
           },
         },
         "FunctionName": "gp-all-async-testAsyncGeoprocessor-start",
@@ -3512,95 +1941,6 @@ Object {
                 ],
               },
             },
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:DescribeTable",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpTasksTable2F8F158E",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:DescribeTable",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpEstimatesTableBB595885",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject*",
-                "s3:Abort*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpPublicBucket989E1AE8",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpPublicBucket989E1AE8",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
           ],
           "Version": "2012-10-17",
         },
@@ -3620,83 +1960,11 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0.zip",
         },
         "Description": "",
-        "Environment": Object {
-          "Variables": Object {
-            "ESTIMATES_TABLE": Object {
-              "Ref": "GpEstimatesTableBB595885",
-            },
-            "TASKS_TABLE": Object {
-              "Ref": "GpTasksTable2F8F158E",
-            },
-            "datasetBucketUrl": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  "https://s3.us-west-1.",
-                  Object {
-                    "Ref": "AWS::URLSuffix",
-                  },
-                  "/",
-                  Object {
-                    "Ref": "GpDatasetBucketFB843E6B",
-                  },
-                ],
-              ],
-            },
-            "publicBucketUrl": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  "https://s3.us-west-1.",
-                  Object {
-                    "Ref": "AWS::URLSuffix",
-                  },
-                  "/",
-                  Object {
-                    "Ref": "GpPublicBucket989E1AE8",
-                  },
-                ],
-              ],
-            },
-          },
-        },
         "FunctionName": "gp-all-sync-testPreprocessor",
         "Handler": "testPreprocessorHandler.handler",
         "MemorySize": 256,
@@ -3744,89 +2012,16 @@ Object {
     },
     "testSyncGeoprocessorGpSyncHandler16045421": Object {
       "DependsOn": Array [
-        "testSyncGeoprocessorGpSyncHandlerServiceRoleDefaultPolicy3441B6D2",
         "testSyncGeoprocessorGpSyncHandlerServiceRoleC6504613",
       ],
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3Bucket5EA66AEF",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": Object {
-            "Fn::Join": Array [
-              "",
-              Array [
-                Object {
-                  "Fn::Select": Array [
-                    0,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-                Object {
-                  "Fn::Select": Array [
-                    1,
-                    Object {
-                      "Fn::Split": Array [
-                        "||",
-                        Object {
-                          "Ref": "AssetParameters1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0S3VersionKeyD171B821",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
+          "S3Key": "1ebc9d3ac2033816c4abb63e4afd69d350b4aba8704cc9236b82ea520b74f4b0.zip",
         },
         "Description": "",
-        "Environment": Object {
-          "Variables": Object {
-            "ESTIMATES_TABLE": Object {
-              "Ref": "GpEstimatesTableBB595885",
-            },
-            "TASKS_TABLE": Object {
-              "Ref": "GpTasksTable2F8F158E",
-            },
-            "datasetBucketUrl": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  "https://s3.us-west-1.",
-                  Object {
-                    "Ref": "AWS::URLSuffix",
-                  },
-                  "/",
-                  Object {
-                    "Ref": "GpDatasetBucketFB843E6B",
-                  },
-                ],
-              ],
-            },
-            "publicBucketUrl": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  "https://s3.us-west-1.",
-                  Object {
-                    "Ref": "AWS::URLSuffix",
-                  },
-                  "/",
-                  Object {
-                    "Ref": "GpPublicBucket989E1AE8",
-                  },
-                ],
-              ],
-            },
-          },
-        },
         "FunctionName": "gp-all-sync-testSyncGeoprocessor",
         "Handler": "testSyncGeoprocessorHandler.handler",
         "MemorySize": 1024,
@@ -3871,144 +2066,6 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Role",
-    },
-    "testSyncGeoprocessorGpSyncHandlerServiceRoleDefaultPolicy3441B6D2": Object {
-      "Properties": Object {
-        "PolicyDocument": Object {
-          "Statement": Array [
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:DescribeTable",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpTasksTable2F8F158E",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "dynamodb:BatchGetItem",
-                "dynamodb:GetRecords",
-                "dynamodb:GetShardIterator",
-                "dynamodb:Query",
-                "dynamodb:GetItem",
-                "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:DescribeTable",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpEstimatesTableBB595885",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Ref": "AWS::NoValue",
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject*",
-                "s3:Abort*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpPublicBucket989E1AE8",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpPublicBucket989E1AE8",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            Object {
-              "Action": Array [
-                "s3:GetObject*",
-                "s3:GetBucket*",
-                "s3:List*",
-                "s3:DeleteObject*",
-                "s3:PutObject*",
-                "s3:Abort*",
-              ],
-              "Effect": "Allow",
-              "Resource": Array [
-                Object {
-                  "Fn::GetAtt": Array [
-                    "GpDatasetBucketFB843E6B",
-                    "Arn",
-                  ],
-                },
-                Object {
-                  "Fn::Join": Array [
-                    "",
-                    Array [
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpDatasetBucketFB843E6B",
-                          "Arn",
-                        ],
-                      },
-                      "/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "testSyncGeoprocessorGpSyncHandlerServiceRoleDefaultPolicy3441B6D2",
-        "Roles": Array [
-          Object {
-            "Ref": "testSyncGeoprocessorGpSyncHandlerServiceRoleC6504613",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
   },
 }

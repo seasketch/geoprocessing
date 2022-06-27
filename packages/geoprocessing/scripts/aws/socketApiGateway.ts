@@ -4,7 +4,7 @@ import { WebSocketLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integratio
 import { RemovalPolicy, Stack } from "aws-cdk-lib";
 import { CfnAccount } from "aws-cdk-lib/aws-apigateway";
 import config from "./config";
-import { CfnStage } from "aws-cdk-lib/aws-apigatewayv2";
+import { CfnIntegration, CfnStage } from "aws-cdk-lib/aws-apigatewayv2";
 import {
   PolicyStatement,
   Effect,
@@ -12,15 +12,20 @@ import {
   Role,
   ManagedPolicy,
 } from "aws-cdk-lib/aws-iam";
-import { createSocketFunctions } from "./functionResources";
 import { Function } from "aws-cdk-lib/aws-lambda";
-import { STAGE_NAME } from "./GeoprocessingStackV1";
 
 /**
  * Create Web Socket API for async functions
  */
-export const createWebSocketApi = (stack: GeoprocessingStack): WebSocketApi => {
-  const fns = createSocketFunctions(stack);
+export const createWebSocketApi = (
+  stack: GeoprocessingStack
+): WebSocketApi | undefined => {
+  if (
+    !stack.functions.socketFunctions.subscribe ||
+    !stack.functions.socketFunctions.unsubscribe ||
+    !stack.functions.socketFunctions.send
+  )
+    return undefined;
 
   // Create web socket with subscribe and unsubscribe routes
   const webSocketApi = new WebSocketApi(stack, "WebSocketApi", {
@@ -29,56 +34,16 @@ export const createWebSocketApi = (stack: GeoprocessingStack): WebSocketApi => {
     connectRouteOptions: {
       integration: new WebSocketLambdaIntegration(
         "OnConnectIntegration",
-        fns.subscribe
+        stack.functions.socketFunctions.subscribe
       ),
     },
     disconnectRouteOptions: {
       integration: new WebSocketLambdaIntegration(
         "OnDisconnectIntegration",
-        fns.unsubscribe
+        stack.functions.socketFunctions.unsubscribe
       ),
     },
     routeSelectionExpression: "$request.body.message",
-  });
-
-  /**
-   * Allow send lambda function to manage socket connections, invoke lambda, and manage socket subscriptions in dynamodb
-   * TODO: not sure need all these for dynamodb... need to double check
-   * TODO: verify v1 role removed as may not be needed.
-   */
-  const socketApiSendPolicy = new PolicyStatement({
-    effect: Effect.ALLOW,
-    resources: [fns.send.functionArn],
-    principals: [new ServicePrincipal("apigateway.amazonaws.com")],
-    actions: [
-      "lambda:InvokeFunction",
-      "execute-api:ManageConnections",
-      "dynamodb:GetItem",
-      "dynamodb:DeleteItem",
-      "dynamodb:PutItem",
-      "dynamodb:Scan",
-      "dynamodb:Query",
-      "dynamodb:UpdateItem",
-      "dynamodb:BatchWriteItem",
-      "dynamodb:BatchGetItem",
-      "dynamodb:DescribeTable",
-      "dynamodb:ConditionCheckItem",
-    ],
-  });
-  fns.send.addToRolePolicy(socketApiSendPolicy);
-
-  // Is this needed?
-  const dynamoSendRole = new Role(stack, "GpDynamoSendRole", {
-    assumedBy: new ServicePrincipal("dynamodb.amazonaws.com"),
-  });
-  dynamoSendRole.addToPolicy(socketApiSendPolicy);
-
-  // Add send message route
-  webSocketApi.addRoute("sendMessage", {
-    integration: new WebSocketLambdaIntegration(
-      `sendMessageIntegration`,
-      fns.send
-    ),
   });
 
   // Allow socket lambda functions to manage socket connections
@@ -89,9 +54,13 @@ export const createWebSocketApi = (stack: GeoprocessingStack): WebSocketApi => {
       `arn:aws:execute-api:${stack.region}:${stack.account}:${webSocketApi.apiId}/*`,
     ],
   });
-  fns.send.addToRolePolicy(socketExecutePolicy);
-  fns.subscribe.addToRolePolicy(socketExecutePolicy);
-  fns.unsubscribe.addToRolePolicy(socketExecutePolicy);
+  stack.functions.socketFunctions.send.addToRolePolicy(socketExecutePolicy);
+  stack.functions.socketFunctions.subscribe.addToRolePolicy(
+    socketExecutePolicy
+  );
+  stack.functions.socketFunctions.unsubscribe.addToRolePolicy(
+    socketExecutePolicy
+  );
 
   // Allow the socket apigateway to call the socket lambdas.  Supposedly RestApi automatically creates this, but not WebSocketApi
   const apigatewayPolicy = new PolicyStatement({
@@ -176,6 +145,8 @@ const createStage = (
 
 /** Setup function access to web socket */
 export const setupWebSocketFunctionAccess = (stack: GeoprocessingStack) => {
+  if (!stack.socketApi) return;
+
   stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
     addAsyncEnv(stack, asyncFunctionWithMeta.startFunc);
     addAsyncEnv(stack, asyncFunctionWithMeta.runFunc);
@@ -183,7 +154,9 @@ export const setupWebSocketFunctionAccess = (stack: GeoprocessingStack) => {
 };
 
 const addAsyncEnv = (stack: GeoprocessingStack, func: Function) => {
-  func.addEnvironment("WSS_REF", stack.socketApi.apiId);
-  func.addEnvironment("WSS_REGION", stack.region);
-  func.addEnvironment("WSS_STAGE", STAGE_NAME);
+  if (stack.socketApi) {
+    func.addEnvironment("WSS_REF", stack.socketApi.apiId);
+    func.addEnvironment("WSS_REGION", stack.region);
+    func.addEnvironment("WSS_STAGE", config.STAGE_NAME);
+  }
 };

@@ -56,7 +56,10 @@ export interface GpPublicBuckets {
 }
 
 type SocketFunctionKeys = "subscribe" | "unsubscribe" | "send";
-export type GpSocketFunctions = Record<SocketFunctionKeys, Function>;
+export type GpSocketFunctions = Record<
+  SocketFunctionKeys,
+  Function | undefined
+>;
 
 /**
  * Group of all Lambda functions for project

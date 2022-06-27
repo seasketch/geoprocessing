@@ -46,7 +46,7 @@ export class GeoprocessingStack extends Stack {
   tables: GpDynamoTables;
   functions: GpProjectFunctions;
   restApi: RestApi;
-  socketApi: WebSocketApi;
+  socketApi?: WebSocketApi;
   clientDistribution?: Distribution;
 
   constructor(scope: Construct, id: string, props: GeoprocessingStackProps) {

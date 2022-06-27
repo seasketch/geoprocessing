@@ -1,7 +1,7 @@
 import { App } from "aws-cdk-lib";
 import path from "path";
 import { SynthUtils } from "@aws-cdk/assert";
-import "@aws-cdk-lib/assert/jest";
+import "@aws-cdk/assert/jest";
 import createTestProject from "../testing/createTestProject";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack";
@@ -57,7 +57,7 @@ describe("GeoprocessingStack - all components", () => {
       Name: `gp-${projectName}`,
     });
     expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
-      BucketName: `gp-${projectName}-public`,
+      BucketName: `gp-${projectName}-results`,
     });
     expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
       BucketName: `gp-${projectName}-datasets`,

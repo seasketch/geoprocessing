@@ -26,6 +26,7 @@ export interface CreateFunctionOptions {
   publicBuckets: GpPublicBuckets;
   tables: GpDynamoTables;
 }
+import path from "path";
 
 /**
  * Create Lambda function constructs
@@ -55,41 +56,51 @@ const createRootFunction = (stack: GeoprocessingStack): Function => {
 export const createSocketFunctions = (
   stack: GeoprocessingStack
 ): GpSocketFunctions => {
-  const subscribe = new Function(stack, "GpSubscribeHandler", {
-    runtime: config.NODE_RUNTIME,
-    code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
-    handler: "connect.connectHandler",
-    functionName: `gp-${stack.props.projectName}-subscribe`,
-    memorySize: config.SOCKET_HANDLER_MEMORY,
-    timeout: config.SOCKET_HANDLER_TIMEOUT,
-    description: "Subscribe to messages",
-  });
-
-  const unsubscribe = new Function(stack, "GpUnsubscribeHandler", {
-    runtime: config.NODE_RUNTIME,
-    code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
-    handler: "disconnect.disconnectHandler",
-    functionName: `gp-${stack.props.projectName}-unsubscribe`,
-    memorySize: config.SOCKET_HANDLER_MEMORY,
-    timeout: config.SOCKET_HANDLER_TIMEOUT,
-    description: "Unsubscribe from messages",
-  });
-
-  const send = new Function(stack, "GpSendHandler", {
-    runtime: config.NODE_RUNTIME,
-    code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
-    handler: "sendmessage.sendHandler",
-    functionName: `gp-${stack.props.projectName}-send`,
-    memorySize: config.SOCKET_HANDLER_MEMORY,
-    timeout: config.SOCKET_HANDLER_TIMEOUT,
-    description: " for sending messages on sockets",
-  });
-
-  return {
-    subscribe,
-    unsubscribe,
-    send,
+  let socketFunctions: GpSocketFunctions = {
+    subscribe: undefined,
+    unsubscribe: undefined,
+    send: undefined,
   };
+
+  if (stack.hasAsyncFunctionMetas()) {
+    const subscribe = new Function(stack, "GpSubscribeHandler", {
+      runtime: config.NODE_RUNTIME,
+      code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+      handler: "connect.connectHandler",
+      functionName: `gp-${stack.props.projectName}-subscribe`,
+      memorySize: config.SOCKET_HANDLER_MEMORY,
+      timeout: config.SOCKET_HANDLER_TIMEOUT,
+      description: "Subscribe to messages",
+    });
+
+    const unsubscribe = new Function(stack, "GpUnsubscribeHandler", {
+      runtime: config.NODE_RUNTIME,
+      code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+      handler: "disconnect.disconnectHandler",
+      functionName: `gp-${stack.props.projectName}-unsubscribe`,
+      memorySize: config.SOCKET_HANDLER_MEMORY,
+      timeout: config.SOCKET_HANDLER_TIMEOUT,
+      description: "Unsubscribe from messages",
+    });
+
+    const send = new Function(stack, "GpSendHandler", {
+      runtime: config.NODE_RUNTIME,
+      code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+      handler: "sendmessage.sendHandler",
+      functionName: `gp-${stack.props.projectName}-send`,
+      memorySize: config.SOCKET_HANDLER_MEMORY,
+      timeout: config.SOCKET_HANDLER_TIMEOUT,
+      description: " for sending messages on sockets",
+    });
+
+    socketFunctions = {
+      subscribe,
+      unsubscribe,
+      send,
+    };
+  }
+
+  return socketFunctions;
 };
 
 /** Create Lambda function constructs for sync functions that return result immediately */

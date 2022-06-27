@@ -47,7 +47,7 @@ describe("GeoprocessingStack - preprocessor only", () => {
       Name: `gp-${projectName}`,
     });
     expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
-      BucketName: `gp-${projectName}-public`,
+      BucketName: `gp-${projectName}-results`,
     });
     expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
       BucketName: `gp-${projectName}-datasets`,

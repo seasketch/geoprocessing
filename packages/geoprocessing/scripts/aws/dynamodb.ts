@@ -27,7 +27,7 @@ export const createTables = (stack: GeoprocessingStack): GpDynamoTables => {
   });
 
   const subscriptions = (() => {
-    if (stack.getAsyncFunctionMetas.length > 0) {
+    if (stack.getAsyncFunctionMetas().length > 0) {
       return new Table(stack, "GpSubscriptionsTable", {
         partitionKey: {
           name: "connectionId",
@@ -77,7 +77,7 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
 
   // socket
   Object.values(stack.functions.socketFunctions).forEach((socketFunction) => {
-    if (stack.tables.subscriptions) {
+    if (socketFunction && stack.tables.subscriptions) {
       stack.tables.subscriptions.grantReadWriteData(socketFunction);
       socketFunction.addEnvironment(
         "SUBSCRIPTIONS_TABLE",
@@ -86,9 +86,10 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
     }
   });
 
-  stack.tables.estimates.grantReadWriteData(
-    stack.functions.socketFunctions.send
-  );
+  if (stack.functions.socketFunctions.send)
+    stack.tables.estimates.grantReadWriteData(
+      stack.functions.socketFunctions.send
+    );
 };
 
 const addAsyncEnv = (stack: GeoprocessingStack, func: Function) => {

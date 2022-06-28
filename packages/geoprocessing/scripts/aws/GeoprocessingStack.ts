@@ -1,4 +1,4 @@
-import { CfnOutput, Stack, StackProps, Duration } from "aws-cdk-lib/core";
+import { Stack, StackProps, Duration } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
 import { Distribution } from "aws-cdk-lib/aws-cloudfront";
 import {
@@ -32,6 +32,7 @@ import {
   AsyncFunctionWithMeta,
 } from "./types";
 import { isAsyncFunctionWithMeta, isSyncFunctionWithMeta } from "./helpers";
+import { genOutputMeta } from "./outputMeta";
 
 /** StackProps extended with geoprocessing project metadata */
 export interface GeoprocessingStackProps extends StackProps {
@@ -40,8 +41,21 @@ export interface GeoprocessingStackProps extends StackProps {
   manifest: Manifest;
 }
 
+/**
+ * A geoprocessing project is deployed as a single monolithic stack using CloudFormation.
+ * The stack inspects the manifest and creates stack resources
+ * Supports functions being sync or async in executionMode and preprocessor or geoprocessor in purpose
+ * Async + preprocessor combination is not supported
+ * Each project gets one API gateway, s3 bucket, and db table for tracking tasks and function run timeestimates
+ * If async functions also get a socket subscriptions db table and web socket machinery
+ * Each function gets a lambda and rest endpoint for sync mode, or a set of lambdas (start + run) for async mode
+ */
 export class GeoprocessingStack extends Stack {
   props: GeoprocessingStackProps;
+
+  // Refer to key stack resources using class properties for easy reference, just pass the stack instance around
+  // See types for more info on these resources
+
   publicBuckets: GpPublicBuckets;
   tables: GpDynamoTables;
   functions: GpProjectFunctions;
@@ -54,16 +68,10 @@ export class GeoprocessingStack extends Stack {
     this.props = props;
 
     this.publicBuckets = createPublicBuckets(this);
-    const publicDatasetBucketUrl = this.publicBuckets.dataset.urlForObject();
-    const publicResultBucketUrl = this.publicBuckets.result.urlForObject();
 
-    // Bundle clients and deploy to bucket, serve via cloudfront
+    // Create client bundle with bucket deploymentand and Cloudfront distribution
     const { clientBucket, clientDistribution } = createClientResources(this);
     this.clientDistribution = clientDistribution;
-
-    const clientDistributionUrl = clientDistribution
-      ? clientDistribution.distributionDomainName
-      : undefined;
 
     this.tables = createTables(this);
 
@@ -74,22 +82,13 @@ export class GeoprocessingStack extends Stack {
     this.restApi = createRestApi(this);
     this.socketApi = createWebSocketApi(this);
 
-    // Provide gp lambdas permission to use other services
+    // Provide gp lambdas access to other services
     setupTableFunctionAccess(this);
     setupBucketFunctionAccess(this);
     setupWebSocketFunctionAccess(this);
     setupClientFunctionAccess(this);
 
-    // Output notable values
-    new CfnOutput(this, "datasetBucketUrl", {
-      value: publicDatasetBucketUrl,
-    });
-    new CfnOutput(this, "resultBucketUrl", {
-      value: publicResultBucketUrl,
-    });
-    new CfnOutput(this, "clientDistributionUrl", {
-      value: clientDistributionUrl ? clientDistributionUrl : "undefined",
-    });
+    genOutputMeta(this);
   }
 
   hasClients(): boolean {

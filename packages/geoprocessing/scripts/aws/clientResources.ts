@@ -22,7 +22,7 @@ export const createClientResources = (stack: GeoprocessingStack) => {
   let clientDistribution: Distribution | undefined;
 
   if (stack.hasClients()) {
-    /** Client bundle bucket. Public access is via Cloudfront */
+    /** Private client bucket. Public access is via Cloudfront */
     clientBucket = new Bucket(stack, "GpClientBucket", {
       bucketName: `gp-${stack.props.projectName}-client`,
       websiteIndexDocument: "index.html",

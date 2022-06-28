@@ -1,9 +1,9 @@
-import { ScanInput } from "aws-sdk/clients/dynamodb";
+import { config } from "aws-sdk";
+import { DocumentClient, ScanInput } from "aws-sdk/clients/dynamodb";
 import { StackProps } from "aws-cdk-lib/core";
 import fs from "fs";
 import path from "path";
 import inquirer from "inquirer";
-import * as AWS from "aws-sdk";
 
 interface ClearCacheOptions {
   tableName: string;
@@ -139,11 +139,11 @@ export async function clearCachedResults(options: ClearCacheOptions) {
   let projectName = packageJson.name;
 
   let regionName = geoprocessingJson.region;
-  AWS.config.update({
+  config.update({
     region: regionName,
   });
 
-  let docClient = new AWS.DynamoDB.DocumentClient();
+  let docClient = new DocumentClient();
 
   //let tableName = "gp-fsm-next-reports-tasks";
   let tableName = buildProjectName(projectName);

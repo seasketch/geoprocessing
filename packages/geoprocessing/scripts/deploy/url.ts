@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import AWS from "aws-sdk";
+import { CloudFormation } from "aws-sdk";
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) {
   throw new Error("process.env.PROJECT_PATH not defined");
@@ -13,7 +13,7 @@ const packageName = pkg.name;
 const geoprocessing = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
 );
-const cf = new AWS.CloudFormation({ region: geoprocessing.region });
+const cf = new CloudFormation({ region: geoprocessing.region });
 
 cf.describeStacks({ StackName: `gp-${packageName}` }, (err, data) => {
   if (err) {

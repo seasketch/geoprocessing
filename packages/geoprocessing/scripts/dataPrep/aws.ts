@@ -1,16 +1,16 @@
-import AWS from "aws-sdk";
+import { config, CloudFront, S3 } from "aws-sdk";
+import { LifecycleRules } from "aws-sdk/clients/s3";
 import { Flatbush } from "flatbush";
 import { sync } from "read-pkg-up";
 import slugify from "slugify";
 import fetch from "node-fetch";
 import { CompositeIndexDetails } from "./indexes";
-import { LifecycleRules } from "aws-sdk/clients/s3";
 import fs from "fs";
 
 // TODO: Set tags for Cost Center, Author, and Geoprocessing Project using
 // geoprocessing.json if available
-const cloudfront = new AWS.CloudFront({ apiVersion: "2019-03-26" });
-const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
+const cloudfront = new CloudFront({ apiVersion: "2019-03-26" });
+const s3 = new S3({ apiVersion: "2006-03-01" });
 
 /**
  * Retrieves metadata from the given DataSource on s3. If a deployed version of
@@ -22,7 +22,7 @@ const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
 export async function getDataSourceVersion(
   name: string
 ): Promise<{ currentVersion: number; lastPublished?: Date; bucket?: string }> {
-  if (!AWS.config.region) {
+  if (!config.region) {
     throw new Error(
       `AWS region not configured. Set AWS_REGION environment variable or use "aws configure" from the command line.`
     );
@@ -62,7 +62,7 @@ export async function createBucket(name: string, publicAccess?: boolean) {
       Bucket: bucket,
       ACL: "private",
       CreateBucketConfiguration: {
-        LocationConstraint: AWS.config.region,
+        LocationConstraint: config.region,
       },
     })
     .promise();

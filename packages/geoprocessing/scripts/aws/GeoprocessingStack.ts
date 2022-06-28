@@ -67,6 +67,9 @@ export class GeoprocessingStack extends Stack {
     super(scope, id, props);
     this.props = props;
 
+    // Create lambdas for all functions
+    this.functions = createFunctions(this);
+
     this.publicBuckets = createPublicBuckets(this);
 
     // Create client bundle with bucket deploymentand and Cloudfront distribution
@@ -74,9 +77,6 @@ export class GeoprocessingStack extends Stack {
     this.clientDistribution = clientDistribution;
 
     this.tables = createTables(this);
-
-    // Create lambdas for gp functions
-    this.functions = createFunctions(this);
 
     // Create rest endpoints for gp lambdas
     this.restApi = createRestApi(this);

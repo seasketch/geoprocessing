@@ -35,9 +35,9 @@ export type ProcessingFunctionWithMeta =
 
 export interface GpDynamoTables {
   /** Tracks gp function run status */
-  tasks: Table;
+  tasks?: Table;
   /** Tracks estimated time to run a function based on past runs */
-  estimates: Table;
+  estimates?: Table;
   /** Optional subscriptions table, if there are async gp functions */
   subscriptions?: Table;
 }
@@ -52,7 +52,7 @@ export interface GpPublicBuckets {
    * Create publicly accessible bucket for function results that aren't simple JSON serializable
    * Location is not published or able to be listed.
    */
-  result: Bucket;
+  result?: Bucket;
 }
 
 type SocketFunctionKeys = "subscribe" | "unsubscribe" | "send";

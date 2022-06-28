@@ -2,10 +2,13 @@ import createTestProject from "./createTestProject";
 
 describe("createTestProject", () => {
   const projectName = "test-project";
-  it("should require at least one component", async () => {
-    expect(
-      async () => await createTestProject(projectName, [])
-    ).rejects.toThrow(Error);
+  it("should allow no components", async () => {
+    const manifest = await createTestProject(projectName, []);
+    expect(manifest).toBeTruthy();
+    expect(manifest.preprocessingFunctions.length).toBe(0);
+    expect(manifest.geoprocessingFunctions.length).toBe(0);
+    expect(manifest.clients.length).toBe(0);
+    expect(manifest.title).toBe(projectName);
   });
 
   it("should create a valid manifest", async () => {

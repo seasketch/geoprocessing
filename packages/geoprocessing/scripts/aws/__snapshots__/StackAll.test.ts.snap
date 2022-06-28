@@ -50,23 +50,6 @@ Object {
         ],
       },
     },
-    "resultBucketUrl": Object {
-      "Value": Object {
-        "Fn::Join": Array [
-          "",
-          Array [
-            "https://s3.us-west-1.",
-            Object {
-              "Ref": "AWS::URLSuffix",
-            },
-            "/",
-            Object {
-              "Ref": "GpResultBucketE67AA9DE",
-            },
-          ],
-        ],
-      },
-    },
   },
   "Resources": Object {
     "ClientBucketDeployAwsCliLayer500B9061": Object {
@@ -294,7 +277,7 @@ Object {
             Array [
               "Lambda function for auto-deleting objects in ",
               Object {
-                "Ref": "GpResultBucketE67AA9DE",
+                "Ref": "GpDatasetBucketFB843E6B",
               },
               " S3 bucket.",
             ],

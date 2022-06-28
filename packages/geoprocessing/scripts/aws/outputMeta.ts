@@ -6,16 +6,18 @@ export function genOutputMeta(stack: GeoprocessingStack) {
     ? stack.clientDistribution.distributionDomainName
     : undefined;
   const publicDatasetBucketUrl = stack.publicBuckets.dataset.urlForObject();
-  const publicResultBucketUrl = stack.publicBuckets.result.urlForObject();
-
   // Output notable values
   new CfnOutput(stack, "datasetBucketUrl", {
     value: publicDatasetBucketUrl,
   });
-  new CfnOutput(stack, "resultBucketUrl", {
-    value: publicResultBucketUrl,
-  });
   new CfnOutput(stack, "clientDistributionUrl", {
     value: clientDistributionUrl ? clientDistributionUrl : "undefined",
   });
+
+  if (stack.publicBuckets.result) {
+    const publicResultBucketUrl = stack.publicBuckets.result.urlForObject();
+    new CfnOutput(stack, "resultBucketUrl", {
+      value: publicResultBucketUrl,
+    });
+  }
 }

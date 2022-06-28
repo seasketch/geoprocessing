@@ -1,10 +1,6 @@
 import { generateManifest } from "../build/generateManifest";
-import {
-  GeoprocessingJsonConfig,
-  Feature,
-  FeatureCollection,
-  Point,
-} from "../../src/types";
+import { GeoprocessingJsonConfig } from "../../src/types/project";
+import { Feature, FeatureCollection, Point } from "../../src/types/geojson";
 import { PreprocessingHandler, GeoprocessingHandler } from "../../src";
 import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src";
 import { point } from "@turf/helpers";
@@ -26,9 +22,6 @@ export default async function createTestProject(
   /** test components to add */
   components: TestComponentTypes[]
 ): Promise<Manifest> {
-  if (components.length === 0)
-    throw new Error("createTestProject called with no components");
-
   // Create source package
   const pkgGeo: Package = {
     name: projectName,

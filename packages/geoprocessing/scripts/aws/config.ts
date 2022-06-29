@@ -1,5 +1,5 @@
 import { Runtime } from "aws-cdk-lib/aws-lambda";
-import { Duration } from "aws-cdk-lib/core";
+import { Duration } from "aws-cdk-lib";
 
 const config = {
   STAGE_NAME: "prod",

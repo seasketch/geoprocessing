@@ -1,4 +1,4 @@
-import { CfnOutput } from "aws-cdk-lib/core";
+import { CfnOutput } from "aws-cdk-lib";
 import { GeoprocessingStack } from "./GeoprocessingStack";
 
 export function genOutputMeta(stack: GeoprocessingStack) {

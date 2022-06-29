@@ -1,6 +1,6 @@
 import { config } from "aws-sdk";
 import { DocumentClient, ScanInput } from "aws-sdk/clients/dynamodb";
-import { StackProps } from "aws-cdk-lib/core";
+import { StackProps } from "aws-cdk-lib";
 import fs from "fs";
 import path from "path";
 import inquirer from "inquirer";

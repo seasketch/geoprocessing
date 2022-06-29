@@ -46,6 +46,14 @@ export const createWebSocketApi = (
     routeSelectionExpression: "$request.body.message",
   });
 
+  // Add sendmessage route
+  webSocketApi.addRoute("sendmessage", {
+    integration: new WebSocketLambdaIntegration(
+      `OnSendIntegration`,
+      stack.functions.socketFunctions.send
+    ),
+  });
+
   // Allow socket lambda functions to manage socket connections
   const socketExecutePolicy = new PolicyStatement({
     effect: Effect.ALLOW,
@@ -72,7 +80,7 @@ export const createWebSocketApi = (
   // Create async function resources
   stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
     const action = `start${asyncFunctionWithMeta.meta.title}`;
-    const route = webSocketApi.addRoute(action, {
+    webSocketApi.addRoute(action, {
       integration: new WebSocketLambdaIntegration(
         `${action}Integration`,
         asyncFunctionWithMeta.startFunc

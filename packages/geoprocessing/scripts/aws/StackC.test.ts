@@ -31,10 +31,20 @@ describe("GeoprocessingStack - client only", () => {
     });
 
     // Check counts
+    expect(stack.hasClients()).toEqual(true);
+    expect(stack.hasSyncFunctions()).toEqual(false);
+    expect(stack.hasAsyncFunctions()).toEqual(false);
+    expect(stack.getSyncFunctionMetas().length).toBe(0);
+    expect(stack.getAsyncFunctionMetas().length).toBe(0);
+    expect(stack.getSyncFunctionsWithMeta().length).toBe(0);
+    expect(stack.getAsyncFunctionsWithMeta().length).toBe(0);
+
     expect(stack).toCountResources("AWS::CloudFront::Distribution", 1); // shared
     expect(stack).toCountResources("AWS::S3::Bucket", 2);
     expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1);
     expect(stack).toCountResources("AWS::ApiGateway::Stage", 1);
+    expect(stack).toCountResources("AWS::ApiGatewayV2::Api", 0); // web socket api
+    expect(stack).toCountResources("AWS::ApiGatewayV2::Stage", 0);
     expect(stack).toCountResources("AWS::DynamoDB::Table", 0);
     expect(stack).toCountResources("AWS::Lambda::Function", 3); //metadataHandler, client bucket deploy, bucket delete
 

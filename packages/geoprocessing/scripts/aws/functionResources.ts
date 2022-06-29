@@ -62,7 +62,7 @@ export const createSocketFunctions = (
     send: undefined,
   };
 
-  if (stack.hasAsyncFunctionMetas()) {
+  if (stack.hasAsyncFunctions()) {
     const subscribe = new Function(stack, "GpSubscribeHandler", {
       runtime: config.NODE_RUNTIME,
       code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),

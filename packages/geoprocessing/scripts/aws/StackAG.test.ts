@@ -33,10 +33,20 @@ describe("GeoprocessingStack - async geoprocessor only", () => {
     });
 
     // Check counts
+    expect(stack.hasClients()).toEqual(false);
+    expect(stack.hasSyncFunctions()).toEqual(false);
+    expect(stack.hasAsyncFunctions()).toEqual(true);
+    expect(stack.getSyncFunctionMetas().length).toBe(0);
+    expect(stack.getAsyncFunctionMetas().length).toBe(1);
+    expect(stack.getSyncFunctionsWithMeta().length).toBe(0);
+    expect(stack.getAsyncFunctionsWithMeta().length).toBe(1);
+
     expect(stack).toCountResources("AWS::CloudFront::Distribution", 0);
     expect(stack).toCountResources("AWS::S3::Bucket", 2);
     expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1);
     expect(stack).toCountResources("AWS::ApiGateway::Stage", 1);
+    expect(stack).toCountResources("AWS::ApiGatewayV2::Api", 1); // web socket api
+    expect(stack).toCountResources("AWS::ApiGatewayV2::Stage", 1);
     expect(stack).toCountResources("AWS::DynamoDB::Table", 3);
     expect(stack).toCountResources("AWS::Lambda::Function", 7);
 

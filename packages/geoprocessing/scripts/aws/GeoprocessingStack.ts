@@ -5,6 +5,11 @@ import {
   Manifest,
   GeoprocessingFunctionMetadata,
   ProcessingFunctionMetadata,
+  getSyncFunctionMetadata,
+  getAsyncFunctionMetadata,
+  hasClients,
+  isSyncFunctionMetadata,
+  isAsyncFunctionMetadata,
 } from "../manifest";
 import {
   createPublicBuckets,
@@ -31,7 +36,6 @@ import {
   SyncFunctionWithMeta,
   AsyncFunctionWithMeta,
 } from "./types";
-import { isAsyncFunctionWithMeta, isSyncFunctionWithMeta } from "./helpers";
 import { genOutputMeta } from "./outputMeta";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 
@@ -95,44 +99,62 @@ export class GeoprocessingStack extends Stack {
   }
 
   hasClients(): boolean {
-    return this.props.manifest.clients.length > 0;
+    return hasClients(this.props.manifest);
   }
 
+  /** Return metadata for all PreprocessingHandlers and sync GeoprocessingHandlers in manifest */
   getSyncFunctionMetas(): ProcessingFunctionMetadata[] {
-    return [
-      ...this.props.manifest.preprocessingFunctions,
-      ...this.props.manifest.geoprocessingFunctions.filter(
-        (func) => func.executionMode === "sync"
-      ),
-    ];
+    return getSyncFunctionMetadata(this.props.manifest);
   }
 
+  /** Return metadata for all async GeoprocessingHandlers in manifest */
   getAsyncFunctionMetas(): GeoprocessingFunctionMetadata[] {
-    return this.props.manifest.geoprocessingFunctions.filter(
-      (func) =>
-        func.executionMode === "async" && func.purpose !== "preprocessing"
-    );
+    return getAsyncFunctionMetadata(this.props.manifest);
   }
 
-  hasSyncFunctionMetas(): boolean {
+  /** Returns true if manifest has sync functions metadata for all PreprocessingHandlers and GeoprocessingHandlers in manifest */
+  hasSyncFunctions(): boolean {
     return this.getSyncFunctionMetas().length > 0;
   }
 
-  hasAsyncFunctionMetas(): boolean {
+  hasAsyncFunctions(): boolean {
     return this.getAsyncFunctionMetas().length > 0;
   }
 
   /** Given all gp lambda functions with meta for project, returns sync lambda function */
   getSyncFunctionsWithMeta(): SyncFunctionWithMeta[] {
     return this.functions.processingFunctions.filter<SyncFunctionWithMeta>(
-      isSyncFunctionWithMeta
+      this.isSyncFunctionWithMeta
     );
   }
 
   /** Given all gp lambda functions with meta for project, returns async lambda function */
   getAsyncFunctionsWithMeta(): AsyncFunctionWithMeta[] {
     return this.functions.processingFunctions.filter<AsyncFunctionWithMeta>(
-      isAsyncFunctionWithMeta
+      this.isAsyncFunctionWithMeta
+    );
+  }
+
+  /** Returns true if sync function with meta and narrows type */
+  isSyncFunctionWithMeta(
+    funcWithMeta: any
+  ): funcWithMeta is SyncFunctionWithMeta {
+    return (
+      funcWithMeta.hasOwnProperty("func") &&
+      funcWithMeta.hasOwnProperty("meta") &&
+      isSyncFunctionMetadata(funcWithMeta.meta)
+    );
+  }
+
+  /** Returns true if async function with meta and narrows type */
+  isAsyncFunctionWithMeta(
+    funcWithMeta: any
+  ): funcWithMeta is AsyncFunctionWithMeta {
+    return (
+      funcWithMeta.hasOwnProperty("startFunc") &&
+      funcWithMeta.hasOwnProperty("runFunc") &&
+      funcWithMeta.hasOwnProperty("meta") &&
+      isAsyncFunctionMetadata(funcWithMeta.meta)
     );
   }
 }

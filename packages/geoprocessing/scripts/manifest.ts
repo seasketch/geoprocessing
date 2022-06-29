@@ -49,6 +49,34 @@ export interface Manifest extends GeoprocessingProject {
   version: string;
 }
 
+//// Helpers ////
+
+/** Returns true if manifest contains clients */
+export const hasClients = (manifest: Manifest): boolean => {
+  return manifest.clients.length > 0;
+};
+
+export const getSyncFunctionMetadata = (
+  manifest: Manifest
+): ProcessingFunctionMetadata[] => {
+  return [
+    ...manifest.preprocessingFunctions,
+    ...manifest.geoprocessingFunctions.filter(
+      (func) => func.executionMode === "sync"
+    ),
+  ];
+};
+
+export const getAsyncFunctionMetadata = (
+  manifest: Manifest
+): GeoprocessingFunctionMetadata[] => {
+  return manifest.geoprocessingFunctions.filter(
+    (func) => func.executionMode === "async" && func.purpose !== "preprocessing"
+  );
+};
+
+//// Validators ////
+
 /** Returns true if metadata is for geoprocessing function and narrows type */
 export const isGeoprocessingFunctionMetadata = (
   meta: any
@@ -56,9 +84,9 @@ export const isGeoprocessingFunctionMetadata = (
   return (
     meta &&
     meta.hasOwnProperty("purpose") &&
-    meta.hasOwnProperty.purpose === "geoprocessing" &&
+    meta.purpose === "geoprocessing" &&
     meta.hasOwnProperty("executionMode") &&
-    (meta.executionMode === "async" || meta.executionmode === "sync")
+    (meta.executionMode === "async" || meta.executionMode === "sync")
   );
 };
 
@@ -69,7 +97,7 @@ export const isPreprocessingFunctionMetadata = (
   return (
     meta &&
     meta.hasOwnProperty("purpose") &&
-    meta.hasOwnProperty.purpose === "preprocessing" &&
+    meta.purpose === "preprocessing" &&
     !meta.hasOwnProperty("executionMode")
   );
 };

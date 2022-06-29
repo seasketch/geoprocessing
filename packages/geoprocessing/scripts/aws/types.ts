@@ -8,7 +8,7 @@ import { Function } from "aws-cdk-lib/aws-lambda";
 // and setting up fine-grained access controls
 
 /**
- * Lambda function for a sync gp function, paired with original user-defined metadata used to configure it
+ * Building blocks for a sync gp lambda function, handler paired with original user-defined metadata used to configure it
  */
 export interface SyncFunctionWithMeta {
   meta: ProcessingFunctionMetadata;
@@ -16,7 +16,7 @@ export interface SyncFunctionWithMeta {
 }
 
 /**
- * Lambda functions for an async gp function, paired with original user-defined metadata used to configure them
+ * Building blocks for an async gp lambda function, handler paired with original user-defined metadata used to configure them
  */
 export interface AsyncFunctionWithMeta {
   meta: ProcessingFunctionMetadata;

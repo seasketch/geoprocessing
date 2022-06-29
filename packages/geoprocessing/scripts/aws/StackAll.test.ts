@@ -45,6 +45,10 @@ describe("GeoprocessingStack - all components", () => {
     expect(stack).toCountResources("AWS::S3::Bucket", 3);
     expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1);
     expect(stack).toCountResources("AWS::ApiGateway::Stage", 1);
+    expect(stack).toCountResources("AWS::ApiGateway::Method", 10); // root (get, options), async (get, post, options), preprocessor (options, post), sync (get, post, options)
+    expect(stack).toCountResources("AWS::ApiGatewayV2::Api", 1); // web socket api
+    expect(stack).toCountResources("AWS::ApiGatewayV2::Stage", 1);
+    expect(stack).toCountResources("AWS::ApiGatewayV2::Route", 4);
     expect(stack).toCountResources("AWS::DynamoDB::Table", 3);
     expect(stack).toCountResources("AWS::Lambda::Function", 10);
 
@@ -71,6 +75,30 @@ describe("GeoprocessingStack - all components", () => {
     });
     expect(stack).toHaveResourceLike("AWS::DynamoDB::Table", {
       TableName: `gp-${projectName}-estimates`,
+    });
+
+    // Check shared async resources
+    expect(stack).toHaveResourceLike("AWS::ApiGatewayV2::Api", {
+      ProtocolType: "WEBSOCKET",
+      Name: `gp-${projectName}-socket`,
+    });
+    expect(stack).toHaveResourceLike("AWS::DynamoDB::Table", {
+      TableName: `gp-${projectName}-subscriptions`,
+    });
+    expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-subscribe`,
+      Handler: "connect.connectHandler",
+      Runtime: config.NODE_RUNTIME.name,
+    });
+    expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-unsubscribe`,
+      Handler: "disconnect.disconnectHandler",
+      Runtime: config.NODE_RUNTIME.name,
+    });
+    expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-send`,
+      Handler: "sendmessage.sendHandler",
+      Runtime: config.NODE_RUNTIME.name,
     });
 
     // Check client resources

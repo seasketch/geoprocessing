@@ -25,6 +25,23 @@ Object {
         ],
       },
     },
+    "clientBucketUrl": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://s3.us-west-1.",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "GpClientBucket52FF5CA3",
+            },
+          ],
+        ],
+      },
+    },
     "clientDistributionUrl": Object {
       "Value": Object {
         "Fn::GetAtt": Array [
@@ -365,12 +382,6 @@ Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "BucketName": "gp-all-client",
-        "PublicAccessBlockConfiguration": Object {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true,
-        },
         "Tags": Array [
           Object {
             "Key": "aws-cdk:auto-delete-objects",
@@ -414,6 +425,27 @@ Object {
         },
         "PolicyDocument": Object {
           "Statement": Array [
+            Object {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": "*",
+              },
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    Object {
+                      "Fn::GetAtt": Array [
+                        "GpClientBucket52FF5CA3",
+                        "Arn",
+                      ],
+                    },
+                    "/*",
+                  ],
+                ],
+              },
+            },
             Object {
               "Action": Array [
                 "s3:GetBucket*",

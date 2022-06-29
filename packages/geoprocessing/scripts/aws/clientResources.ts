@@ -26,7 +26,7 @@ export const createClientResources = (stack: GeoprocessingStack) => {
     clientBucket = new Bucket(stack, "GpClientBucket", {
       bucketName: `gp-${stack.props.projectName}-client`,
       websiteIndexDocument: "index.html",
-      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      publicReadAccess: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });

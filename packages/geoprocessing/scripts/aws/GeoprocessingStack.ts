@@ -33,6 +33,7 @@ import {
 } from "./types";
 import { isAsyncFunctionWithMeta, isSyncFunctionWithMeta } from "./helpers";
 import { genOutputMeta } from "./outputMeta";
+import { Bucket } from "aws-cdk-lib/aws-s3";
 
 /** StackProps extended with geoprocessing project metadata */
 export interface GeoprocessingStackProps extends StackProps {
@@ -61,6 +62,7 @@ export class GeoprocessingStack extends Stack {
   functions: GpProjectFunctions;
   restApi: RestApi;
   socketApi?: WebSocketApi;
+  clientBucket?: Bucket;
   clientDistribution?: CloudFrontWebDistribution;
 
   constructor(scope: Construct, id: string, props: GeoprocessingStackProps) {
@@ -74,6 +76,7 @@ export class GeoprocessingStack extends Stack {
 
     // Create client bundle with bucket deploymentand and Cloudfront distribution
     const { clientBucket, clientDistribution } = createClientResources(this);
+    this.clientBucket = clientBucket;
     this.clientDistribution = clientDistribution;
 
     this.tables = createTables(this);

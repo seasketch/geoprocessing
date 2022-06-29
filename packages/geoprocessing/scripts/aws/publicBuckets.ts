@@ -1,7 +1,7 @@
 import { GeoprocessingStack } from "./GeoprocessingStack";
 import { RemovalPolicy } from "aws-cdk-lib";
 import { Bucket, CorsRule } from "aws-cdk-lib/aws-s3";
-import { GpProjectFunctions, GpPublicBuckets } from "./types";
+import { GpPublicBuckets } from "./types";
 
 export const createPublicBuckets = (
   stack: GeoprocessingStack

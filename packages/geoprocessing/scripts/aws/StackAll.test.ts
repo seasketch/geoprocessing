@@ -2,7 +2,7 @@ import { App } from "aws-cdk-lib";
 import path from "path";
 import { SynthUtils } from "@aws-cdk/assert";
 import "@aws-cdk/assert/jest";
-import createTestProject from "../testing/createTestProject";
+import createTestProjectManifest from "../testing/createTestProjectManifest";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack";
 
@@ -18,7 +18,7 @@ describe("GeoprocessingStack - all components", () => {
     const projectPath = path.join(rootPath, projectName);
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProject(projectName, [
+    const manifest = await createTestProjectManifest(projectName, [
       "preprocessor",
       "syncGeoprocessor",
       "asyncGeoprocessor",

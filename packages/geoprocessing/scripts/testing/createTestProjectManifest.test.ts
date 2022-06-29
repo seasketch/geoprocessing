@@ -1,9 +1,9 @@
-import createTestProject from "./createTestProject";
+import createTestProjectManifest from "./createTestProjectManifest";
 
-describe("createTestProject", () => {
+describe("createTestProjectManifest", () => {
   const projectName = "test-project";
   it("should allow no components", async () => {
-    const manifest = await createTestProject(projectName, []);
+    const manifest = await createTestProjectManifest(projectName, []);
     expect(manifest).toBeTruthy();
     expect(manifest.preprocessingFunctions.length).toBe(0);
     expect(manifest.geoprocessingFunctions.length).toBe(0);
@@ -12,7 +12,7 @@ describe("createTestProject", () => {
   });
 
   it("should create a valid manifest", async () => {
-    const manifest = await createTestProject(projectName, [
+    const manifest = await createTestProjectManifest(projectName, [
       "preprocessor",
       "syncGeoprocessor",
       "asyncGeoprocessor",

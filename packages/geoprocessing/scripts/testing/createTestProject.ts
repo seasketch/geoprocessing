@@ -1,159 +1,111 @@
-import { generateManifest } from "../build/generateManifest";
-import { GeoprocessingJsonConfig } from "../../src/types/project";
-import { Feature, FeatureCollection, Point } from "../../src/types/geojson";
-import { PreprocessingHandler, GeoprocessingHandler } from "../../src";
-import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src";
-import { point } from "@turf/helpers";
-import { Package, PreprocessingBundle, GeoprocessingBundle } from "../types";
-import { Manifest } from "../manifest";
+import { createProject } from "../init/createProject";
+import {
+  makePreprocessingHandler,
+  makeGeoprocessingHandler,
+} from "../init/createFunction";
+import { makeClient } from "../init/createClient";
+import fs from "fs-extra";
 
-export type TestComponentTypes =
-  | "preprocessor"
-  | "syncGeoprocessor"
-  | "asyncGeoprocessor"
-  | "client";
+const PROJECT_PATH = process.env.PROJECT_PATH;
+const GP_VERSION = process.env.GP_VERSION || undefined;
 
-/**
- * Creates project core assets in-memory, with the components requested, and returns the resulting manifest
- * Useful for stubbing projects for testing purposes
- */
-export default async function createTestProject(
-  projectName: string,
-  /** test components to add */
-  components: TestComponentTypes[]
-): Promise<Manifest> {
-  // Create source package
-  const pkgGeo: Package = {
-    name: projectName,
-    version: "1.0.0",
-    description: `Test project with components ${components.join(", ")}`,
-    dependencies: {},
-    devDependencies: {},
-    author: "Test",
-    license: "UNLICENSED",
-  };
+if (!PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 
-  // Create project assets
-  let gpConfig: GeoprocessingJsonConfig = {
-    author: "Test <test@test.com>",
-    organization: "Test Org",
-    region: "us-west-1",
-    preprocessingFunctions: [],
-    geoprocessingFunctions: [],
-    clients: [],
-  };
-  let preprocessingBundles: PreprocessingBundle[] = [];
-  let geoprocessingBundles: GeoprocessingBundle[] = [];
-
-  interface TestResult {
-    result: number;
+(async () => {
+  const pathExists = await fs.pathExists(PROJECT_PATH);
+  if (pathExists) {
+    await fs.remove(PROJECT_PATH);
   }
-  const testPpFunction = async (feature: Feature<Point>) => {
-    return point([0, 0]);
-  };
-  const testGpFunction = async (
-    feature: Feature | FeatureCollection
-  ): Promise<TestResult> => {
-    return { result: 50 };
-  };
-  const testSources = [
+  await createProject(
     {
-      url: "https://testsource.com",
-      options: VECTOR_SOURCE_DEFAULTS,
+      name: "gp-integration-test",
+      description: "Project for integration testing",
+      author: "Test",
+      email: "test@test.com",
+      license: "UNLICENSED",
+      organization: "Test Org",
+      repositoryUrl: "https://github.com/seasketch/example-project",
+      region: "us-west-1",
+      templates: [],
+      gpVersion: GP_VERSION,
     },
-  ];
-
-  if (components.includes("preprocessor")) {
-    gpConfig = {
-      ...gpConfig,
-      preprocessingFunctions: ["src/functions/testPreprocessor.ts"],
-    };
-
-    const pHandler = new PreprocessingHandler(testPpFunction, {
-      title: "testPreprocessor",
-      description: "",
-      timeout: 1,
-      requiresProperties: [],
-      memory: 256, // test non-default value
-    });
-
-    preprocessingBundles = preprocessingBundles.concat({
-      handler: pHandler.lambdaHandler,
-      handlerFilename: "testPreprocessor.ts",
-      options: pHandler.options,
-      sources: testSources,
-    });
-  }
-
-  if (components.includes("syncGeoprocessor")) {
-    gpConfig = {
-      ...gpConfig,
-      geoprocessingFunctions: [
-        ...gpConfig.geoprocessingFunctions,
-        "src/functions/testSyncGeoprocessor.ts",
-      ],
-    };
-
-    const sgHandler = new GeoprocessingHandler<TestResult>(testGpFunction, {
-      title: "testSyncGeoprocessor",
-      description: "",
-      timeout: 2,
-      executionMode: "sync",
-      requiresProperties: [],
-    });
-
-    geoprocessingBundles = geoprocessingBundles.concat({
-      handler: sgHandler.lambdaHandler,
-      handlerFilename: "testSyncGeoprocessor.ts",
-      options: sgHandler.options,
-      sources: testSources,
-    });
-  }
-
-  if (components.includes("asyncGeoprocessor")) {
-    gpConfig = {
-      ...gpConfig,
-      geoprocessingFunctions: [
-        ...gpConfig.geoprocessingFunctions,
-        "src/functions/testAsyncGeoprocessor.ts",
-      ],
-    };
-
-    const agHandler = new GeoprocessingHandler<TestResult>(testGpFunction, {
-      title: "testAsyncGeoprocessor",
-      description: "",
-      timeout: 2,
-      executionMode: "async",
-      requiresProperties: [],
-    });
-
-    geoprocessingBundles = geoprocessingBundles.concat({
-      handler: agHandler.lambdaHandler,
-      handlerFilename: "testAsyncGeoprocessor.ts",
-      options: agHandler.options,
-      sources: testSources,
-    });
-  }
-
-  if (components.includes("client")) {
-    gpConfig = {
-      ...gpConfig,
-      clients: [
-        ...gpConfig.clients,
-        {
-          name: "TestClient",
-          description: "client description",
-          source: "src/clients/TestClient.tsx",
-        },
-      ],
-    };
-  }
-
-  return generateManifest(
-    gpConfig,
-    pkgGeo,
-    preprocessingBundles,
-    geoprocessingBundles,
-    pkgGeo.version
+    false,
+    PROJECT_PATH.split("/").slice(0, -1).join("/")
   );
-}
+
+  await makePreprocessingHandler(
+    {
+      title: "clipToBounds",
+      typescript: true,
+      description: "Clips sketch to bounding box",
+    },
+    false,
+    PROJECT_PATH + "/"
+  );
+
+  // sync geoprocessor
+  await makeGeoprocessingHandler(
+    {
+      title: "area",
+      typescript: true,
+      description: "Produces the area of the given sketch",
+      docker: false,
+      executionMode: "sync",
+    },
+    false,
+    PROJECT_PATH + "/"
+  );
+
+  // async geoprocessor
+  await makeGeoprocessingHandler(
+    {
+      title: "areaAsync",
+      typescript: true,
+      description: "Produces the area of the given sketch - async",
+      docker: false,
+      executionMode: "async",
+    },
+    false,
+    PROJECT_PATH + "/"
+  );
+
+  await fs.copyFile(
+    `${__dirname}/../../../templates/exampleProject.test.ts`,
+    PROJECT_PATH + "/src/exampleProject.test.ts"
+  );
+
+  await makeClient(
+    {
+      title: "AreaClient",
+      description: "area report via sync function",
+      typescript: true,
+      functionName: "area",
+    },
+    false,
+    PROJECT_PATH + "/"
+  );
+
+  await makeClient(
+    {
+      title: "AreaAsyncClient",
+      description: "area report via async function",
+      typescript: true,
+      functionName: "areaAsync",
+    },
+    false,
+    PROJECT_PATH + "/"
+  );
+
+  const pkg = JSON.parse(
+    fs.readFileSync(PROJECT_PATH + "/package.json").toString()
+  );
+  pkg.private = true;
+  const curGpVersion = JSON.parse(
+    fs.readFileSync(`${__dirname}/../../../package.json`).toString()
+  ).version;
+  pkg.devDependencies["@seasketch/geoprocessing"] = curGpVersion;
+  fs.writeFileSync(
+    PROJECT_PATH + "/package.json",
+    JSON.stringify(pkg, null, "  ")
+  );
+})();

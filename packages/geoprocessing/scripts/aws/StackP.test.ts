@@ -3,7 +3,7 @@ import path from "path";
 import "@aws-cdk/assert/jest";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack";
 import config from "./config";
-import createTestProject from "../testing/createTestProject";
+import createTestProjectManifest from "../testing/createTestProjectManifest";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 
 const rootPath = `${__dirname}/__test__`;
@@ -16,7 +16,9 @@ describe("GeoprocessingStack - preprocessor only", () => {
     const projectPath = path.join(rootPath, projectName);
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProject(projectName, ["preprocessor"]);
+    const manifest = await createTestProjectManifest(projectName, [
+      "preprocessor",
+    ]);
 
     expect(manifest.clients.length).toBe(0);
     expect(manifest.preprocessingFunctions.length).toBe(1);

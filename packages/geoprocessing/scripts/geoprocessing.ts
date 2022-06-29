@@ -65,6 +65,12 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
+    case "destroy":
+      spawn(`${__dirname}/../../scripts/deploy/destroy.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
     case "bootstrap":
       spawn(`${__dirname}/../../scripts/deploy/bootstrap.sh`, {
         cwd: process.cwd(),

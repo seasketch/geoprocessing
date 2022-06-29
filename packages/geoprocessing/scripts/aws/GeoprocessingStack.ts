@@ -1,6 +1,6 @@
 import { Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { Distribution } from "aws-cdk-lib/aws-cloudfront";
+import { CloudFrontWebDistribution } from "aws-cdk-lib/aws-cloudfront";
 import {
   Manifest,
   GeoprocessingFunctionMetadata,
@@ -61,7 +61,7 @@ export class GeoprocessingStack extends Stack {
   functions: GpProjectFunctions;
   restApi: RestApi;
   socketApi?: WebSocketApi;
-  clientDistribution?: Distribution;
+  clientDistribution?: CloudFrontWebDistribution;
 
   constructor(scope: Construct, id: string, props: GeoprocessingStackProps) {
     super(scope, id, props);

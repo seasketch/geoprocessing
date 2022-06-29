@@ -8,7 +8,7 @@ import {
   CacheControl,
 } from "aws-cdk-lib/aws-s3-deployment";
 import {
-  Distribution,
+  CloudFrontWebDistribution,
   OriginAccessIdentity,
   ViewerProtocolPolicy,
 } from "aws-cdk-lib/aws-cloudfront";
@@ -19,7 +19,7 @@ import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
  */
 export const createClientResources = (stack: GeoprocessingStack) => {
   let clientBucket: Bucket | undefined;
-  let clientDistribution: Distribution | undefined;
+  let clientDistribution: CloudFrontWebDistribution | undefined;
 
   if (stack.hasClients()) {
     /** Private client bucket. Public access is via Cloudfront */
@@ -38,23 +38,21 @@ export const createClientResources = (stack: GeoprocessingStack) => {
     );
     clientBucket.grantRead(originAccessIdentity);
 
-    clientDistribution = new Distribution(stack, "GpClientDistribution", {
-      comment: `gp-${stack.props.projectName}`,
-      defaultBehavior: {
-        origin: new S3Origin(clientBucket, {
-          originAccessIdentity,
-        }),
-        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      },
-      defaultRootObject: "index.html",
-      errorResponses: [
-        {
-          httpStatus: 404,
-          responseHttpStatus: 200,
-          responsePagePath: "/index.html",
-        },
-      ],
-    });
+    clientDistribution = new CloudFrontWebDistribution(
+      stack,
+      "GpClientDistribution",
+      {
+        comment: `gp-${stack.props.projectName}`,
+        originConfigs: [
+          {
+            s3OriginSource: {
+              s3BucketSource: clientBucket,
+            },
+            behaviors: [{ isDefaultBehavior: true }],
+          },
+        ],
+      }
+    );
 
     /**
      * Sync local client bundle to bucket. Deploys an additional Lambda to do it.

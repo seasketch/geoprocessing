@@ -28,7 +28,7 @@ Object {
     "clientDistributionUrl": Object {
       "Value": Object {
         "Fn::GetAtt": Array [
-          "GpClientDistributionB595F696",
+          "GpClientDistributionCFDistribution451DE9D6",
           "DomainName",
         ],
       },
@@ -71,7 +71,7 @@ Object {
           "Ref": "GpClientBucket52FF5CA3",
         },
         "DistributionId": Object {
-          "Ref": "GpClientDistributionB595F696",
+          "Ref": "GpClientDistributionCFDistribution451DE9D6",
         },
         "DistributionPaths": Array [
           "/*",
@@ -496,21 +496,27 @@ Object {
       },
       "Type": "AWS::S3::BucketPolicy",
     },
-    "GpClientDistributionB595F696": Object {
+    "GpClientDistributionCFDistribution451DE9D6": Object {
       "Properties": Object {
         "DistributionConfig": Object {
           "Comment": "gp-all",
-          "CustomErrorResponses": Array [
-            Object {
-              "ErrorCode": 404,
-              "ResponseCode": 200,
-              "ResponsePagePath": "/index.html",
-            },
-          ],
           "DefaultCacheBehavior": Object {
-            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+            "AllowedMethods": Array [
+              "GET",
+              "HEAD",
+            ],
+            "CachedMethods": Array [
+              "GET",
+              "HEAD",
+            ],
             "Compress": true,
-            "TargetOriginId": "allGpClientDistributionOrigin1D8692DA0",
+            "ForwardedValues": Object {
+              "Cookies": Object {
+                "Forward": "none",
+              },
+              "QueryString": false,
+            },
+            "TargetOriginId": "origin1",
             "ViewerProtocolPolicy": "redirect-to-https",
           },
           "DefaultRootObject": "index.html",
@@ -519,31 +525,22 @@ Object {
           "IPV6Enabled": true,
           "Origins": Array [
             Object {
-              "CustomOriginConfig": Object {
-                "OriginProtocolPolicy": "http-only",
-                "OriginSSLProtocols": Array [
-                  "TLSv1.2",
-                ],
-              },
+              "ConnectionAttempts": 3,
+              "ConnectionTimeout": 10,
               "DomainName": Object {
-                "Fn::Select": Array [
-                  2,
-                  Object {
-                    "Fn::Split": Array [
-                      "/",
-                      Object {
-                        "Fn::GetAtt": Array [
-                          "GpClientBucket52FF5CA3",
-                          "WebsiteURL",
-                        ],
-                      },
-                    ],
-                  },
+                "Fn::GetAtt": Array [
+                  "GpClientBucket52FF5CA3",
+                  "RegionalDomainName",
                 ],
               },
-              "Id": "allGpClientDistributionOrigin1D8692DA0",
+              "Id": "origin1",
+              "S3OriginConfig": Object {},
             },
           ],
+          "PriceClass": "PriceClass_100",
+          "ViewerCertificate": Object {
+            "CloudFrontDefaultCertificate": true,
+          },
         },
       },
       "Type": "AWS::CloudFront::Distribution",
@@ -1230,7 +1227,7 @@ Object {
           "Variables": Object {
             "clientDistributionUrl": Object {
               "Fn::GetAtt": Array [
-                "GpClientDistributionB595F696",
+                "GpClientDistributionCFDistribution451DE9D6",
                 "DomainName",
               ],
             },

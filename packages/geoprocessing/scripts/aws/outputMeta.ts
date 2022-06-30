@@ -2,8 +2,21 @@ import { CfnOutput } from "aws-cdk-lib";
 import { GeoprocessingStack } from "./GeoprocessingStack";
 
 export function genOutputMeta(stack: GeoprocessingStack) {
-  const publicDatasetBucketUrl = stack.publicBuckets.dataset.urlForObject();
   // Output notable values
+
+  if (stack.restApi) {
+    new CfnOutput(stack, "restApiUrl", {
+      value: stack.restApi.url,
+    });
+  }
+
+  if (stack.socketApi) {
+    new CfnOutput(stack, "socketApiUrl", {
+      value: stack.socketApi.apiEndpoint,
+    });
+  }
+
+  const publicDatasetBucketUrl = stack.publicBuckets.dataset.urlForObject();
   new CfnOutput(stack, "datasetBucketUrl", {
     value: publicDatasetBucketUrl,
   });

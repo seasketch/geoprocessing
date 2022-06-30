@@ -67,6 +67,36 @@ Object {
         ],
       },
     },
+    "restApiUrl": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "GpRestApi3C403820",
+            },
+            ".execute-api.us-west-1.",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "GpRestApiDeploymentStageprodFDC6A6D1",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+    "socketApiUrl": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "WebSocketApi34BCF99B",
+          "ApiEndpoint",
+        ],
+      },
+    },
   },
   "Resources": Object {
     "ClientBucketDeployAwsCliLayer500B9061": Object {

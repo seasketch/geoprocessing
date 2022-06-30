@@ -71,6 +71,7 @@ export const createWebSocketApi = (
   );
 
   // Allow the socket apigateway to call the socket lambdas.  Supposedly RestApi automatically creates this, but not WebSocketApi
+  // ToDo: this may not be needed?
   const apigatewayPolicy = new PolicyStatement({
     effect: Effect.ALLOW,
     principals: [new ServicePrincipal("apigateway.amazonaws.com")],

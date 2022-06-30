@@ -81,6 +81,7 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
       );
       stack.tables.estimates.grantReadWriteData(asyncFunctionWithMeta.runFunc);
     }
+
     addAsyncEnv(stack, asyncFunctionWithMeta.startFunc);
     addAsyncEnv(stack, asyncFunctionWithMeta.runFunc);
   });
@@ -108,5 +109,8 @@ const addAsyncEnv = (stack: GeoprocessingStack, func: Function) => {
   if (stack.tables.estimates)
     func.addEnvironment("ESTIMATES_TABLE", stack.tables.estimates.tableName);
   if (stack.tables.subscriptions)
-    func.addEnvironment("TASKS_TABLE", stack.tables.subscriptions.tableName);
+    func.addEnvironment(
+      "SUBSCRIPTIONS_TABLE",
+      stack.tables.subscriptions.tableName
+    );
 };

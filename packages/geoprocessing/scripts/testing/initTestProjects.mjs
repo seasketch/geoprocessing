@@ -28,6 +28,7 @@ await createProject({
   ...(gpVersion ? { gpVersion } : {}),
 });
 await cd("./gp-test-empty");
+await $`npm run install`;
 await $`npm run build`;
 await $`npm run destroy`; // just to make sure
 await $`npm run deploy`;

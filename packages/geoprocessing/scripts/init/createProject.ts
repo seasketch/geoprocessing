@@ -19,6 +19,7 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   gpVersion?: string;
 }
 
+/** Create project at basePath.  If should be created non-interactively then set interactive = false and provide all project creation metadata, otherwise will prompt for answers  */
 export async function createProject(
   metadata: CreateProjectMetadata,
   interactive = true,
@@ -123,9 +124,9 @@ export async function createProject(
   await fs.ensureDir(`${projectPath}/data/dist`);
 
   if (metadata.templates.length > 0) {
-    copyTemplates(metadata.templates, {
+    await copyTemplates(metadata.templates, {
       skipInstall: true,
-      projectPath: `./${metadata.name}`,
+      projectPath,
     });
   }
 

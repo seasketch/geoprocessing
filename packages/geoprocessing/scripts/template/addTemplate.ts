@@ -12,7 +12,22 @@ export interface TemplateMetadata {
 }
 
 function getTemplatesPath() {
-  return path.join(__dirname, "..", "..", "templates", "gp-templates");
+  // published bundle path exists if this is being run from the published geoprocessing package
+  // (e.g. via geoprocessing init or add:template)
+  const publishedBundlePath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "templates",
+    "gp-templates"
+  );
+  if (fs.existsSync(publishedBundlePath)) {
+    // Use bundled templates if user running published version, e.g. via geoprocessing init
+    return publishedBundlePath;
+  } else {
+    // Use src templates
+    return path.join(__dirname, "..", "..", "..");
+  }
 }
 
 export async function getTemplateQuestion() {

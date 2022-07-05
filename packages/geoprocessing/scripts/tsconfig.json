@@ -13,5 +13,5 @@
   "typeRoots": [
     "../node_modules/@types",
   ],
-  "exclude": ["templates/**/*", "node_modules", "dist"],
+  "exclude": ["templates/**/*", "node_modules", "dist", "testing/*.mjs"],
 }

@@ -10,3 +10,4 @@ packages/geoprocessing/docs/storybook
 .workspace.env
 packages/example-project/
 report.*
+test-projects

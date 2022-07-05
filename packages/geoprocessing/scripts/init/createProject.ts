@@ -87,6 +87,9 @@ export async function createProject(
         author,
         organization: organization || "",
         region,
+        clients: [],
+        preprocessingFunctions: [],
+        geoprocessingFunctions: [],
       },
       null,
       "  "

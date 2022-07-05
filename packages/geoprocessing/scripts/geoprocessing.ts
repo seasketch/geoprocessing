@@ -17,6 +17,12 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
+    case "init:testProjects":
+      spawn(`${__dirname}/../../scripts/testing/initTestProjects.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
     case "add:template":
       spawn("node", [`${__dirname}/template/addTemplate.js`], {
         cwd: process.cwd(),

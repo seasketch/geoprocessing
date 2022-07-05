@@ -29,5 +29,10 @@ await createProject({
 });
 await cd("./gp-test-empty");
 await $`npm run build`;
-await $`npm run destroy`;
+await $`npm run destroy`; // just to make sure
 await $`npm run deploy`;
+// insert api tests here
+await $`npm run destroy`; // all done with this stack
+await cd("..");
+
+// next stack up

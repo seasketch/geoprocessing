@@ -2744,8 +2744,11 @@ Object {
             "ESTIMATES_TABLE": Object {
               "Ref": "GpEstimatesTableBB595885",
             },
-            "TASKS_TABLE": Object {
+            "SUBSCRIPTIONS_TABLE": Object {
               "Ref": "GpSubscriptionsTable6D399C8E",
+            },
+            "TASKS_TABLE": Object {
+              "Ref": "GpTasksTable2F8F158E",
             },
             "WSS_REF": Object {
               "Ref": "WebSocketApi34BCF99B",
@@ -2936,8 +2939,11 @@ Object {
               "Ref": "GpEstimatesTableBB595885",
             },
             "RUN_HANDLER_FUNCTION_NAME": "gp-all-async-testAsyncGeoprocessor-run",
-            "TASKS_TABLE": Object {
+            "SUBSCRIPTIONS_TABLE": Object {
               "Ref": "GpSubscriptionsTable6D399C8E",
+            },
+            "TASKS_TABLE": Object {
+              "Ref": "GpTasksTable2F8F158E",
             },
             "WSS_REF": Object {
               "Ref": "WebSocketApi34BCF99B",

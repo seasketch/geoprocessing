@@ -48,7 +48,7 @@ const createRootFunction = (stack: GeoprocessingStack): Function => {
   return new Function(stack, "GpServiceRootFunction", {
     runtime: config.NODE_RUNTIME,
     code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
-    functionName: `gp-${stack.props.projectName}-metadata`,
+    functionName: `gp-${stack.props.projectName}-metadata-${Date.now()}`,
     handler: "serviceHandlers.projectMetadata",
   });
 };

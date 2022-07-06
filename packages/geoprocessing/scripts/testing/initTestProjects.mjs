@@ -14,26 +14,31 @@ await $`rm -rf test-projects`;
 await $`mkdir test-projects`;
 await cd("./test-projects");
 
-// Create empty project
-await createProject({
-  name: "gp-test-empty",
-  description: "Empty test project",
-  repositoryUrl: "",
-  author: "Test",
-  email: "test@test.com",
-  organization: "Tester",
-  license: "MIT",
-  region: "us-west-1",
-  templates: [],
-  ...(gpVersion ? { gpVersion } : {}),
-});
-await cd("./gp-test-empty");
-await $`npm run install`;
-await $`npm run build`;
-await $`npm run destroy`; // just to make sure
-await $`npm run deploy`;
-// insert api tests here
-await $`npm run destroy`; // all done with this stack
-await cd("..");
+try {
+  // Create empty project
+  await createProject({
+    name: "gp-test-empty",
+    description: "Empty test project",
+    repositoryUrl: "",
+    author: "Test",
+    email: "test@test.com",
+    organization: "Tester",
+    license: "MIT",
+    region: "us-west-1",
+    templates: [],
+    ...(gpVersion ? { gpVersion } : {}),
+  });
+  await cd("./gp-test-empty");
+  await $`npm install`;
+  await $`npm run build`;
+  await $`npm run destroy`; // just to make sure
+  await $`npm run deploy`;
+  // insert api tests here
+  await $`npm run destroy`; // all done with this stack
+  await cd("..");
+} catch (err) {
+  await $`npm run destroy`; // all done with this stack
+  await cd("..");
+}
 
 // next stack up

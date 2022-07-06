@@ -74,6 +74,19 @@ export async function createProject(
         }
       : {}),
   };
+
+  const gpPkgString = gpVersion
+    ? gpVersion
+    : `@seasketch/geoprocessing@${curGpVersion}`;
+
+  if (gpVersion) {
+    if (packageJSON.devDependencies) {
+      packageJSON.devDependencies["@seasketch/geoprocessing"] = gpPkgString;
+    } else {
+      packageJSON.devDependencies = { "@seasketch/geoprocessing": gpPkgString };
+    }
+  }
+
   await fs.writeFile(
     `${projectPath}/package.json`,
     JSON.stringify(packageJSON, null, "  ")
@@ -133,15 +146,9 @@ export async function createProject(
   // Install dependencies including adding GP.
   if (interactive) {
     spinner.start("installing dependencies with npm");
-    const gpPkgString = gpVersion
-      ? gpVersion
-      : `@seasketch/geoprocessing@${curGpVersion}`;
-    const { stderr, stdout, error } = await exec(
-      `npm install --save-dev --save-exact ${gpPkgString}`,
-      {
-        cwd: metadata.name,
-      }
-    );
+    const { stderr, stdout, error } = await exec(`npm install`, {
+      cwd: metadata.name,
+    });
     if (error) {
       console.log(error);
       process.exit();

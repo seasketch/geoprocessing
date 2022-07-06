@@ -47,9 +47,10 @@ export async function createProject(
   const projectTemplatePath = `${gpPath}/templates/project`;
 
   // Get version of geoprocessing currently running
-  const curGpVersion: Package = JSON.parse(
+  const curGpPackage: Package = JSON.parse(
     fs.readFileSync(`${gpPath}/package.json`).toString()
-  ).version;
+  );
+  const curGpVersion = curGpPackage.version;
 
   await fs.copy(projectTemplatePath, projectPath);
 
@@ -75,15 +76,11 @@ export async function createProject(
       : {}),
   };
 
-  const gpPkgString = gpVersion
-    ? gpVersion
-    : `@seasketch/geoprocessing@${curGpVersion}`;
-
   if (gpVersion) {
     if (packageJSON.devDependencies) {
-      packageJSON.devDependencies["@seasketch/geoprocessing"] = gpPkgString;
+      packageJSON.devDependencies["@seasketch/geoprocessing"] = curGpVersion;
     } else {
-      packageJSON.devDependencies = { "@seasketch/geoprocessing": gpPkgString };
+      packageJSON.devDependencies = { "@seasketch/geoprocessing": gpVersion };
     }
   }
 

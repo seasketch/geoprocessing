@@ -82,7 +82,7 @@ export async function createProject(
     } else {
       packageJSON.devDependencies = { "@seasketch/geoprocessing": gpVersion };
     }
-    spinner.succeed(`Installing user-provided GP version ${gpVersion}`);
+    spinner.succeed(`Installing user-defined GP version ${gpVersion}`);
   } else {
     if (packageJSON.devDependencies) {
       packageJSON.devDependencies["@seasketch/geoprocessing"] = curGpVersion;

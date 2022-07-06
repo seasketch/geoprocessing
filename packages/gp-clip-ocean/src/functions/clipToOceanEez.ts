@@ -15,7 +15,8 @@ import flatten from "@turf/flatten";
 import kinks from "@turf/kinks";
 import { clipMultiMerge } from "@seasketch/geoprocessing";
 
-const MAX_SIZE = 500000 * 1000 ** 2;
+const ENFORCE_MAX_SIZE = false;
+const MAX_SIZE_KM = 500000 * 1000 ** 2; // Default 500,000 KM
 
 type OsmLandFeature = Feature<Polygon, { gid: number }>;
 type EezLandUnion = Feature<Polygon, { gid: number; UNION: string }>;
@@ -64,9 +65,9 @@ export async function clipToOceanEez(
     throw new ValidationError("Input must be a polygon");
   }
 
-  if (area(feature) > MAX_SIZE) {
+  if (ENFORCE_MAX_SIZE && area(feature) > MAX_SIZE_KM) {
     throw new ValidationError(
-      "Please limit sketches to under 500,000 square km"
+      `Please limit sketches to under ${MAX_SIZE_KM} square km`
     );
   }
 

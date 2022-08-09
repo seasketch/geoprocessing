@@ -22,6 +22,7 @@ interface CogOptions {
  * windowBox is extended out to the nearest pixel edge to (in theory) avoid resampling. Assumes raster is in WGS84 degrees
  * */
 export const loadCogWindow = async (url: string, options: CogOptions) => {
+  console.log("loadCogWindow", url, JSON.stringify(options));
   const georaster = await parseGeoraster(url);
   // Default to meta parsed from raster
   const {

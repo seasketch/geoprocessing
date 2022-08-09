@@ -37,7 +37,10 @@ export function fgBoundingBox(box: BBox) {
  */
 export async function fgbFetchAll<T = GeometryTypes>(url: string, box?: BBox) {
   console.log("fgbFetchAll", `url: ${url}}`, `box: ${box}`);
-  return (await takeAsync(
+  const features = (await takeAsync(
     deserialize(url, box ? fgBoundingBox(box) : undefined) as AsyncGenerator
   )) as T[];
+  if (!Array.isArray(features))
+    throw new Error("Unexpected result from fgbFetchAll");
+  return;
 }

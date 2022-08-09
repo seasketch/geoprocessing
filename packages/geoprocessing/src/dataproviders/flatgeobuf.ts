@@ -42,5 +42,5 @@ export async function fgbFetchAll<T = GeometryTypes>(url: string, box?: BBox) {
   )) as T[];
   if (!Array.isArray(features))
     throw new Error("Unexpected result from fgbFetchAll");
-  return;
+  return features;
 }

@@ -17,6 +17,12 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
+    case "init:testProjects":
+      spawn(`${__dirname}/../../scripts/testing/initTestProjects.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
     case "add:template":
       spawn("node", [`${__dirname}/template/addTemplate.js`], {
         cwd: process.cwd(),
@@ -61,6 +67,12 @@ if (process.argv.length < 3) {
       break;
     case "deploy":
       spawn(`${__dirname}/../../scripts/deploy/deploy.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
+    case "destroy":
+      spawn(`${__dirname}/../../scripts/deploy/destroy.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });

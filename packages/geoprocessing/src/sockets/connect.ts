@@ -8,8 +8,8 @@ import { DocumentClient } from "aws-sdk/clients/dynamodb";
  */
 export const connectHandler = async (event) => {
   try {
-    if (!process.env.SOCKETS_TABLE)
-      throw new Error("SOCKETS_TABLE is undefined");
+    if (!process.env.SUBSCRIPTIONS_TABLE)
+      throw new Error("SUBSCRIPTIONS_TABLE is undefined");
 
     const ddb = new DocumentClient({
       apiVersion: "2012-08-10",
@@ -20,7 +20,7 @@ export const connectHandler = async (event) => {
     const cacheKey = event.queryStringParameters["cacheKey"];
 
     const putParams = {
-      TableName: process.env.SOCKETS_TABLE,
+      TableName: process.env.SUBSCRIPTIONS_TABLE,
       Item: {
         connectionId: event.requestContext.connectionId,
         cacheKey: cacheKey,
@@ -35,7 +35,7 @@ export const connectHandler = async (event) => {
         "Error with connect " +
         err +
         " ---> " +
-        process.env.SOCKETS_TABLE +
+        process.env.SUBSCRIPTIONS_TABLE +
         " ---> " +
         event.requestContext,
     };
@@ -44,7 +44,7 @@ export const connectHandler = async (event) => {
   return {
     statusCode: 200,
     body:
-      process.env.SOCKETS_TABLE +
+      process.env.SUBSCRIPTIONS_TABLE +
       " :: " +
       process.env.AWS_REGION +
       ":: " +

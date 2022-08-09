@@ -1,8 +1,8 @@
-import * as core from "@aws-cdk/core";
 import fs from "fs";
 import path from "path";
+import { App, Tags } from "aws-cdk-lib";
 import { Manifest } from "../manifest";
-import GeoprocessingCdkStack from "../aws/GeoprocessingStack";
+import { GeoprocessingStack } from "../aws/GeoprocessingStack";
 
 if (!process.env.PROJECT_PATH) {
   throw new Error("PROJECT_PATH env var not specified");
@@ -15,15 +15,15 @@ const manifest: Manifest = JSON.parse(
 );
 
 export async function createStack() {
-  const app = new core.App();
-  const stack = new GeoprocessingCdkStack(app, `gp-${manifest.title}`, {
+  const app = new App();
+  const stack = new GeoprocessingStack(app, `gp-${manifest.title}`, {
     env: { region: manifest.region },
     projectName: manifest.title,
     manifest,
     projectPath: PROJECT_PATH,
   });
-  core.Tags.of(stack).add("Author", manifest.author);
-  core.Tags.of(stack).add("Cost Center", "seasketch-geoprocessing");
-  core.Tags.of(stack).add("Geoprocessing Project", manifest.title);
+  Tags.of(stack).add("Author", manifest.author);
+  Tags.of(stack).add("Cost Center", "seasketch-geoprocessing");
+  Tags.of(stack).add("Geoprocessing Project", manifest.title);
 }
 createStack();

@@ -1,5 +1,5 @@
+import { S3 } from "aws-sdk";
 import fs from "fs";
-import AWS from "aws-sdk";
 import { Manifest } from "../manifest";
 import path from "path";
 
@@ -22,7 +22,7 @@ if (manifest.clients.length === 0) {
 }
 
 console.log(`Setting CacheControl for bucket ${bucket}`);
-const s3 = new AWS.S3({ region: manifest.region });
+const s3 = new S3({ region: manifest.region });
 s3.copyObject(
   {
     Bucket: bucket,

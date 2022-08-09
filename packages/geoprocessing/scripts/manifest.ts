@@ -39,9 +39,84 @@ export type ProcessingFunctionMetadata =
   | PreprocessingFunctionMetadata
   | GeoprocessingFunctionMetadata;
 
+export type SyncFunctionMetadata = ProcessingFunctionMetadata;
+export type AsyncFunctionMetadata = GeoprocessingFunctionMetadata;
+
 export interface Manifest extends GeoprocessingProject {
   preprocessingFunctions: PreprocessingFunctionMetadata[];
   geoprocessingFunctions: GeoprocessingFunctionMetadata[];
   region: string;
   version: string;
 }
+
+//// Helpers ////
+
+/** Returns true if manifest contains clients */
+export const hasClients = (manifest: Manifest): boolean => {
+  return manifest.clients.length > 0;
+};
+
+export const getSyncFunctionMetadata = (
+  manifest: Manifest
+): ProcessingFunctionMetadata[] => {
+  return [
+    ...manifest.preprocessingFunctions,
+    ...manifest.geoprocessingFunctions.filter(
+      (func) => func.executionMode === "sync"
+    ),
+  ];
+};
+
+export const getAsyncFunctionMetadata = (
+  manifest: Manifest
+): GeoprocessingFunctionMetadata[] => {
+  return manifest.geoprocessingFunctions.filter(
+    (func) => func.executionMode === "async" && func.purpose !== "preprocessing"
+  );
+};
+
+//// Validators ////
+
+/** Returns true if metadata is for geoprocessing function and narrows type */
+export const isGeoprocessingFunctionMetadata = (
+  meta: any
+): meta is GeoprocessingFunctionMetadata => {
+  return (
+    meta &&
+    meta.hasOwnProperty("purpose") &&
+    meta.purpose === "geoprocessing" &&
+    meta.hasOwnProperty("executionMode") &&
+    (meta.executionMode === "async" || meta.executionMode === "sync")
+  );
+};
+
+/** Returns true if metadata is for preprocessing function and narrows type */
+export const isPreprocessingFunctionMetadata = (
+  meta: any
+): meta is PreprocessingFunctionMetadata => {
+  return (
+    meta &&
+    meta.hasOwnProperty("purpose") &&
+    meta.purpose === "preprocessing" &&
+    !meta.hasOwnProperty("executionMode")
+  );
+};
+
+/** Returns true if metadata is for sync function and narrows type */
+export const isSyncFunctionMetadata = (
+  meta: any
+): meta is SyncFunctionMetadata => {
+  return (
+    isPreprocessingFunctionMetadata(meta) ||
+    (isGeoprocessingFunctionMetadata(meta) && meta.executionMode === "sync")
+  );
+};
+
+/** Returns true if metadata is for async function and narrows type */
+export const isAsyncFunctionMetadata = (
+  meta: any
+): meta is AsyncFunctionMetadata => {
+  return (
+    isGeoprocessingFunctionMetadata(meta) && meta.executionMode === "async"
+  );
+};

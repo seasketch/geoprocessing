@@ -145,7 +145,7 @@ module.exports = {
   },
 };
 
-const staticExternals = ["aws-sdk", "aws-cdk", "./manifest.json"];
+const staticExternals = ["aws-sdk", "aws-cdk-lib", "./manifest.json"];
 const projectNodeModules = Object.keys(
   JSON.parse(
     fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()

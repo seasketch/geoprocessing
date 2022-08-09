@@ -19,6 +19,7 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   gpVersion?: string;
 }
 
+/** Create project at basePath.  If should be created non-interactively then set interactive = false and provide all project creation metadata, otherwise will prompt for answers  */
 export async function createProject(
   metadata: CreateProjectMetadata,
   interactive = true,
@@ -46,9 +47,10 @@ export async function createProject(
   const projectTemplatePath = `${gpPath}/templates/project`;
 
   // Get version of geoprocessing currently running
-  const curGpVersion: Package = JSON.parse(
+  const curGpPackage: Package = JSON.parse(
     fs.readFileSync(`${gpPath}/package.json`).toString()
-  ).version;
+  );
+  const curGpVersion = curGpPackage.version;
 
   await fs.copy(projectTemplatePath, projectPath);
 
@@ -73,6 +75,24 @@ export async function createProject(
         }
       : {}),
   };
+
+  if (gpVersion) {
+    if (packageJSON.devDependencies) {
+      packageJSON.devDependencies["@seasketch/geoprocessing"] = gpVersion;
+    } else {
+      packageJSON.devDependencies = { "@seasketch/geoprocessing": gpVersion };
+    }
+    spinner.succeed(`Installing user-defined GP version ${gpVersion}`);
+  } else {
+    if (packageJSON.devDependencies) {
+      packageJSON.devDependencies["@seasketch/geoprocessing"] = curGpVersion;
+    } else {
+      packageJSON.devDependencies = {
+        "@seasketch/geoprocessing": curGpVersion,
+      };
+    }
+  }
+
   await fs.writeFile(
     `${projectPath}/package.json`,
     JSON.stringify(packageJSON, null, "  ")
@@ -87,6 +107,9 @@ export async function createProject(
         author,
         organization: organization || "",
         region,
+        clients: [],
+        preprocessingFunctions: [],
+        geoprocessingFunctions: [],
       },
       null,
       "  "
@@ -120,24 +143,18 @@ export async function createProject(
   await fs.ensureDir(`${projectPath}/data/dist`);
 
   if (metadata.templates.length > 0) {
-    copyTemplates(metadata.templates, {
+    await copyTemplates(metadata.templates, {
       skipInstall: true,
-      projectPath: `./${metadata.name}`,
+      projectPath,
     });
   }
 
   // Install dependencies including adding GP.
   if (interactive) {
     spinner.start("installing dependencies with npm");
-    const gpPkgString = gpVersion
-      ? gpVersion
-      : `@seasketch/geoprocessing@${curGpVersion}`;
-    const { stderr, stdout, error } = await exec(
-      `npm install --save-dev --save-exact ${gpPkgString}`,
-      {
-        cwd: metadata.name,
-      }
-    );
+    const { stderr, stdout, error } = await exec(`npm install`, {
+      cwd: metadata.name,
+    });
     if (error) {
       console.log(error);
       process.exit();

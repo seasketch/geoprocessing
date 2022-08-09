@@ -1,5 +1,4 @@
-// @ts-ignore
-import AWS from "aws-sdk";
+import { config } from "aws-sdk";
 jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
 const fetchMock = require("node-fetch");
 import { getDataSourceVersion } from "./aws";
@@ -7,7 +6,7 @@ import { getDataSourceVersion } from "./aws";
 const NAME = "dataset-name";
 const PKGNAME = "seasketchgeoprocessing-data-sources";
 const REGION = "us-west-2";
-AWS.config.update({
+config.update({
   region: REGION,
 });
 

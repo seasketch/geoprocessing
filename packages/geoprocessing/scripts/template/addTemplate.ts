@@ -12,7 +12,22 @@ export interface TemplateMetadata {
 }
 
 function getTemplatesPath() {
-  return path.join(__dirname, "..", "..", "templates", "gp-templates");
+  // published bundle path exists if this is being run from the published geoprocessing package
+  // (e.g. via geoprocessing init or add:template)
+  const publishedBundlePath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "templates",
+    "gp-templates"
+  );
+  if (fs.existsSync(publishedBundlePath)) {
+    // Use bundled templates if user running published version, e.g. via geoprocessing init
+    return publishedBundlePath;
+  } else {
+    // Use src templates
+    return path.join(__dirname, "..", "..", "..");
+  }
 }
 
 export async function getTemplateQuestion() {
@@ -138,6 +153,9 @@ export async function copyTemplates(
     const templatePackage: Package = JSON.parse(
       fs.readFileSync(`${templatePath}/package.json`).toString()
     );
+    // Remove the templates seasketch dependency, the version will not match if running from canary gp release, and don't want it to overwrite
+    if (templatePackage.devDependencies)
+      delete templatePackage.devDependencies["@seasketch/geoprocessing"];
     const projectPackage: Package = JSON.parse(
       fs.readFileSync(`${projectPath}/package.json`).toString()
     );

@@ -17,9 +17,9 @@ export const projectMetadata = async (
   const uri = `https://${event.headers["Host"]}/prod/`;
   const project: GeoprocessingProject = {
     ...projectInfo,
-    ...(process.env.clientUrl
+    ...(process.env.clientDistributionUrl
       ? {
-          clientSideBundle: `https://${process.env.clientUrl}?service=${uri}`,
+          clientSideBundle: `https://${process.env.clientDistributionUrl}?service=${uri}`,
         }
       : {}),
     uri,

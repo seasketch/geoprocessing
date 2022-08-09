@@ -1,13 +1,9 @@
-import * as core from "@aws-cdk/core";
-
+import { config } from "aws-sdk";
+import { DocumentClient, ScanInput } from "aws-sdk/clients/dynamodb";
+import { StackProps } from "aws-cdk-lib";
 import fs from "fs";
 import path from "path";
-import { Manifest } from "../manifest";
-import dynamodb = require("@aws-cdk/aws-dynamodb");
-import slugify from "slugify";
 import inquirer from "inquirer";
-import * as AWS from "aws-sdk";
-import { ScanInput } from "aws-sdk/clients/dynamodb";
 
 interface ClearCacheOptions {
   tableName: string;
@@ -143,11 +139,11 @@ export async function clearCachedResults(options: ClearCacheOptions) {
   let projectName = packageJson.name;
 
   let regionName = geoprocessingJson.region;
-  AWS.config.update({
+  config.update({
     region: regionName,
   });
 
-  let docClient = new AWS.DynamoDB.DocumentClient();
+  let docClient = new DocumentClient();
 
   //let tableName = "gp-fsm-next-reports-tasks";
   let tableName = buildProjectName(projectName);
@@ -169,7 +165,7 @@ export async function clearCachedResults(options: ClearCacheOptions) {
     doScan(err, data, serviceName, docClient, tableName);
   });
 }
-interface GeoprocessingStackProps extends core.StackProps {
+interface GeoprocessingStackProps extends StackProps {
   tableName: string;
 }
 clearResults();

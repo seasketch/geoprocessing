@@ -1,3 +1,4 @@
+import { config } from "aws-sdk";
 import bundleFeatures from "./bundleFeatures";
 import ora from "ora";
 import program from "commander";
@@ -17,7 +18,6 @@ import {
 import { BBox } from "@turf/helpers";
 import prettyBytes from "pretty-bytes";
 import { createIndexes } from "./indexes";
-import AWS from "aws-sdk";
 
 const DEFAULT_FLATBUSH_NODE_SIZE = 9;
 const DEFAULT_COMPOSITE_INDEX_SIZE_TARGET = 80_000;
@@ -80,7 +80,7 @@ program
               type: "confirm",
               name: "proceed",
               default: false,
-              message: `Existing version not found in ${AWS.config.region}. Would you like to create a new S3 bucket (${datasourceName}) and Cloudfront distro?`,
+              message: `Existing version not found in ${config.region}. Would you like to create a new S3 bucket (${datasourceName}) and Cloudfront distro?`,
             },
           ]);
           if (answers.proceed) {

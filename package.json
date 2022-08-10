@@ -3,8 +3,7 @@
   "private": true,
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "lerna": "^4.0.0",
-    "zx": "^4.3.0"
+    "lerna": "^4.0.0"
   },
   "engines": {
     "node": ">=16.0.0",

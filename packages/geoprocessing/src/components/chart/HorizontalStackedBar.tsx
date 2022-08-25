@@ -286,8 +286,8 @@ export const HorizontalStackedBar: React.FunctionComponent<HorizontalStackedBarP
 
     const rowRems = rowTotals.map((rowTotal) => {
       const rem = max - rowTotal;
-      if (rem < 0)
-        throw new Error(
+      if (rem < -0.001)
+        console.warn(
           `Row sum of ${rowTotal} is greater than max: ${max}. Check your input data`
         );
     });

@@ -1,4 +1,5 @@
 import { GeoprocessingServiceMetadata, PreprocessingService } from "./service";
+import { z } from "zod";
 
 export interface GeoprocessingProject {
   uri: string;
@@ -17,20 +18,26 @@ export interface GeoprocessingProject {
   published: string; //  ISO 8601 date
 }
 
-interface ClientJsonConfig {
-  name: string;
-  description: string;
-  source: string;
-}
+/** Represents a geoprocessing client object */
+export const clientJsonConfigSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  source: z.string(),
+});
+/** Represents a geoprocessing client object */
+export type ClientJsonConfig = z.infer<typeof clientJsonConfigSchema>;
 
-export interface GeoprocessingJsonConfig {
-  author: string;
-  organization?: string;
-  region: string;
-  geoprocessingFunctions: string[];
-  preprocessingFunctions: string[];
-  clients: ClientJsonConfig[];
-}
+/** Represents a single JS package */
+const geoprocessingConfigSchema = z.object({
+  author: z.string(),
+  organization: z.string().optional(),
+  region: z.string(),
+  geoprocessingFunctions: z.array(z.string()),
+  preprocessingFunctions: z.array(z.string()),
+  clients: z.array(clientJsonConfigSchema),
+});
+/** Represents a single JS package */
+export type GeoprocessingJsonConfig = z.infer<typeof geoprocessingConfigSchema>;
 
 interface ReportClient {
   title: string;

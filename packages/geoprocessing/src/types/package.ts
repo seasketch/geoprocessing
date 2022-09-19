@@ -1,20 +1,22 @@
+import { z } from "zod";
+
 /**
- * Represents parts of project package.json that are manifested and published
+ * Package metadata stored in top-level package.json.  Partial definition for pieces used by this library
  */
-export interface Package {
-  name: string;
-  version: string;
-  description: string;
-  author: string;
-  license: string;
-  homepage?: string;
-  bugs?: {
-    url: string;
-  };
-  repository?: {
-    type: "git";
-    url: string;
-  };
-  dependencies?: Record<string, string>;
-  devDependencies?: Record<string, string>;
-}
+export const packageSchema = z.object({
+  name: z.string(),
+  version: z.string(),
+  description: z.string(),
+  author: z.string(),
+  license: z.string(),
+  homepage: z.string(),
+  bugs: z.record(z.string()).optional(),
+  repository: z.record(z.string()).optional(),
+  dependencies: z.record(z.string()).optional(),
+  devDependencies: z.record(z.string()).optional(),
+});
+
+//// INFERRED TYPES ////
+
+/** Represents a single JS package */
+export type Package = z.infer<typeof packageSchema>;

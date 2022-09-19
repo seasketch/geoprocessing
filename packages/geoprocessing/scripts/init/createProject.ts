@@ -52,6 +52,7 @@ export async function createProject(
   );
   const curGpVersion = curGpPackage.version;
 
+  // Copy all files from base template
   await fs.copy(projectTemplatePath, projectPath);
 
   spinner.succeed("copied base files");

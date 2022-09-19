@@ -22,7 +22,6 @@ export const bboxSchema = box2dSchema.or(box3dSchema);
 
 export const projectSchema = z.object({
   bbox: bboxSchema,
-  areaSquareMeters: z.number(),
   noun: z.string(),
   nounPossessive: z.string(),
   externalLinks: z.record(z.string()),

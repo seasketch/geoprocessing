@@ -9,7 +9,7 @@ export const packageSchema = z.object({
   description: z.string(),
   author: z.string(),
   license: z.string(),
-  homepage: z.string(),
+  homepage: z.string().optional(),
   bugs: z.record(z.string()).optional(),
   repository: z.record(z.string()).optional(),
   dependencies: z.record(z.string()).optional(),

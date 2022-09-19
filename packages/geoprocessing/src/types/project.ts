@@ -28,7 +28,7 @@ export const clientJsonConfigSchema = z.object({
 export type ClientJsonConfig = z.infer<typeof clientJsonConfigSchema>;
 
 /** Represents a single JS package */
-const geoprocessingConfigSchema = z.object({
+export const geoprocessingConfigSchema = z.object({
   author: z.string(),
   organization: z.string().optional(),
   region: z.string(),

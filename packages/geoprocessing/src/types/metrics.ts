@@ -12,7 +12,8 @@ const MetricDimensions = [
 export type MetricDimension = typeof MetricDimensions[number] & keyof Metric;
 
 /**
- *  A single measurement of a metric, stratified by one or more dimensions
+ * Represents a single record of a metric with a value, stratified by one or more dimensions.
+ * The naming is a bit of a misnomer, you can think of it as a MetricValue
  */
 export interface Metric {
   /** Name of the metric this is a measurement for */

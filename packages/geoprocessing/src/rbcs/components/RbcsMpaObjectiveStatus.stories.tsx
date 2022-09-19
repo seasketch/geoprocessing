@@ -12,7 +12,7 @@ export default {
 };
 
 const objective: RbcsObjective = {
-  id: "eez",
+  objectiveId: "eez",
   shortDesc: "30% protected",
   target: 0.3,
   countsToward: {

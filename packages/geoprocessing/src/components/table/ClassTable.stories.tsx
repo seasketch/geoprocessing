@@ -5,9 +5,11 @@ import { ReportDecorator, CardDecorator } from "../storybook/";
 import { createMetric } from "../../metrics";
 import {
   simpleClassMetrics,
-  simpleGroup,
   simpleMetricGroup,
+  simpleObjectives,
   categoricalClassMetrics,
+  categoricalMultiObjective,
+  categoricalSingleObjective,
   categoricalClassMetricsMixedTarget,
   categoricalMetricGroup,
   categoricalMetricGroupMixedTarget,
@@ -53,7 +55,8 @@ export const simple = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={simpleClassMetrics}
-        dataGroup={simpleGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -73,7 +76,8 @@ export const number1digit = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={simpleClassMetrics}
-        dataGroup={simpleGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -94,7 +98,8 @@ export const number2digit = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={simpleClassMetrics}
-        dataGroup={simpleGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -118,7 +123,8 @@ export const numberThousands = () => {
           ...m,
           value: m.value * 10000000,
         }))}
-        dataGroup={simpleGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -142,7 +148,8 @@ export const integer = () => {
           ...m,
           value: m.value * 10,
         }))}
-        dataGroup={simpleGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -169,7 +176,8 @@ export const percent = () => {
             value: 0.12345,
           }),
         ]}
-        dataGroup={simpleMetricGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -197,7 +205,8 @@ export const percent1Digit = () => {
             value: 0.12345,
           }),
         ]}
-        dataGroup={simpleMetricGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -225,7 +234,8 @@ export const percent2Digit = () => {
             value: 0.12345,
           }),
         ]}
-        dataGroup={simpleMetricGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -253,7 +263,8 @@ export const percentThousands = () => {
             value: 10000.12345,
           }),
         ]}
-        dataGroup={simpleMetricGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -275,7 +286,8 @@ export const simpleLayerToggle = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={simpleClassMetrics}
-        dataGroup={simpleMetricGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -300,7 +312,8 @@ export const simpleGoal = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={simpleClassMetrics}
-        dataGroup={simpleMetricGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -326,7 +339,8 @@ export const simpleBoth = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={simpleClassMetrics}
-        dataGroup={simpleMetricGroup}
+        metricGroup={simpleMetricGroup}
+        objective={simpleObjectives}
         columnConfig={[
           {
             type: "class",
@@ -355,7 +369,8 @@ export const categoricalData = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={categoricalClassMetrics}
-        dataGroup={categoricalMetricGroup}
+        metricGroup={categoricalMetricGroup}
+        objective={categoricalSingleObjective}
         columnConfig={[
           {
             type: "class",
@@ -384,7 +399,8 @@ export const valueFormatAndLabel = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={categoricalClassMetrics}
-        dataGroup={categoricalMetricGroup}
+        metricGroup={categoricalMetricGroup}
+        objective={categoricalMultiObjective}
         columnConfig={[
           {
             type: "class",
@@ -407,7 +423,8 @@ export const chartWithSeparateSortableValueColumn = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={categoricalClassMetrics}
-        dataGroup={categoricalMetricGroup}
+        metricGroup={categoricalMetricGroup}
+        objective={categoricalSingleObjective}
         columnConfig={[
           {
             type: "class",
@@ -442,7 +459,8 @@ export const chartWithIntegratedValueAndTargetPass = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={categoricalClassMetrics}
-        dataGroup={categoricalMetricGroup}
+        metricGroup={categoricalMetricGroup}
+        objective={categoricalSingleObjective}
         columnConfig={[
           {
             type: "class",
@@ -469,11 +487,8 @@ export const chartWithObjective = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={categoricalClassMetrics}
-        dataGroup={{
-          ...categoricalMetricGroup,
-          // @ts-ignore
-          objective: { target: 0.3 },
-        }}
+        metricGroup={categoricalMetricGroup}
+        objective={categoricalSingleObjective}
         columnConfig={[
           {
             type: "class",
@@ -501,9 +516,8 @@ export const chartWithMixedTarget = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={categoricalClassMetricsMixedTarget}
-        dataGroup={{
-          ...categoricalMetricGroupMixedTarget,
-        }}
+        metricGroup={categoricalMetricGroupMixedTarget}
+        objective={categoricalSingleObjective}
         columnConfig={[
           {
             type: "class",
@@ -549,9 +563,8 @@ export const chartWithSeparateTargetColumn = () => {
     <ReportContext.Provider value={simpleContext}>
       <ClassTable
         rows={categoricalClassMetricsMixedTarget}
-        dataGroup={{
-          ...categoricalMetricGroupMixedTarget,
-        }}
+        metricGroup={categoricalMetricGroupMixedTarget}
+        objective={categoricalSingleObjective}
         columnConfig={[
           {
             type: "class",

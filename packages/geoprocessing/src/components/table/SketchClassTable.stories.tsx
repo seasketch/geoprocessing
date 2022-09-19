@@ -3,7 +3,7 @@ import { SketchClassTable } from "./SketchClassTable";
 import { ReportDecorator, CardDecorator } from "../storybook";
 import { ReportContext } from "../../context";
 import {
-  simpleGroup,
+  simpleMetricGroup,
   simpleSketchClassAggMetrics,
   simpleSketchClassAggMetricsPerc,
 } from "../../testing/fixtures/metrics";
@@ -47,7 +47,7 @@ export const simple = () => {
     <ReportContext.Provider value={simpleContext}>
       <SketchClassTable
         rows={simpleSketchClassAggMetrics}
-        dataGroup={simpleGroup}
+        metricGroup={simpleMetricGroup}
       />
     </ReportContext.Provider>
   );
@@ -58,7 +58,7 @@ export const simplePerc = () => {
     <ReportContext.Provider value={simpleContext}>
       <SketchClassTable
         rows={simpleSketchClassAggMetricsPerc}
-        dataGroup={simpleGroup}
+        metricGroup={simpleMetricGroup}
         formatPerc
       />
     </ReportContext.Provider>

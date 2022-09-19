@@ -1,6 +1,6 @@
 import React from "react";
 import { percentWithEdge } from "../../helpers";
-import { DataGroup } from "../../types";
+import { MetricGroup } from "../../types";
 import { Column, Table } from "./Table";
 
 import styled from "styled-components";
@@ -34,7 +34,7 @@ export interface SketchClassTableProps {
   /** Table rows, expected to have sketchName property and one property for each classId in classes */
   rows: Record<string, string | number>[];
   /** Data class definitions */
-  dataGroup: DataGroup;
+  metricGroup: MetricGroup;
   /** Whether to format values as percentages, defaults to false */
   formatPerc?: boolean;
 }
@@ -44,40 +44,39 @@ export interface SketchClassTableProps {
  * @param param0
  * @returns
  */
-export const SketchClassTable: React.FunctionComponent<
-  SketchClassTableProps
-> = ({ rows, dataGroup, formatPerc: usePerc = false }) => {
-  const classColumns: Column<Record<string, string | number>>[] =
-    dataGroup.classes.map((curClass) => ({
-      Header: curClass.display,
-      accessor: (row) => {
-        return usePerc
-          ? percentWithEdge(row[curClass.classId] as number)
-          : row[curClass.classId];
-      },
-    }));
+export const SketchClassTable: React.FunctionComponent<SketchClassTableProps> =
+  ({ rows, metricGroup: dataGroup, formatPerc: usePerc = false }) => {
+    const classColumns: Column<Record<string, string | number>>[] =
+      dataGroup.classes.map((curClass) => ({
+        Header: curClass.display,
+        accessor: (row) => {
+          return usePerc
+            ? percentWithEdge(row[curClass.classId] as number)
+            : row[curClass.classId];
+        },
+      }));
 
-  const columns: Column<Record<string, string | number>>[] = [
-    {
-      Header: "MPA",
-      accessor: (row) => {
-        return <div style={{ width: 120 }}>{row.sketchName}</div>;
+    const columns: Column<Record<string, string | number>>[] = [
+      {
+        Header: "MPA",
+        accessor: (row) => {
+          return <div style={{ width: 120 }}>{row.sketchName}</div>;
+        },
       },
-    },
-    ...classColumns,
-  ];
+      ...classColumns,
+    ];
 
-  return (
-    <SketchClassTableStyled>
-      <Table
-        className="styled"
-        columns={columns}
-        data={rows.sort((a, b) =>
-          (a.sketchName as string).localeCompare(b.sketchName as string)
-        )}
-      />
-    </SketchClassTableStyled>
-  );
-};
+    return (
+      <SketchClassTableStyled>
+        <Table
+          className="styled"
+          columns={columns}
+          data={rows.sort((a, b) =>
+            (a.sketchName as string).localeCompare(b.sketchName as string)
+          )}
+        />
+      </SketchClassTableStyled>
+    );
+  };
 
 export default SketchClassTable;

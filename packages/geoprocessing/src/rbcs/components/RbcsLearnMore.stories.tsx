@@ -9,9 +9,9 @@ export default {
   decorators: [CardDecorator, ReportDecorator],
 };
 
-const objectives: Record<string, RbcsObjective> = {
-  eez: {
-    id: "eez",
+const objectives: RbcsObjective[] = [
+  {
+    objectiveId: "eez",
     shortDesc: "30% of EEZ protected",
     target: 0.3,
     countsToward: {
@@ -22,8 +22,8 @@ const objectives: Record<string, RbcsObjective> = {
       "Unprotected Area": "no",
     },
   },
-  eezNoTake: {
-    id: "eezNoTake",
+  {
+    objectiveId: "eezNoTake",
     shortDesc: "15% of EEZ no-take protection",
     target: 0.15,
     countsToward: {
@@ -34,6 +34,6 @@ const objectives: Record<string, RbcsObjective> = {
       "Unprotected Area": "no",
     },
   },
-};
+];
 
 export const simple = () => <RbcsLearnMore objectives={objectives} />;

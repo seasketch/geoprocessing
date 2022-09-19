@@ -1,6 +1,6 @@
 import React from "react";
-import { ObjectiveGroup } from "../../types/objective";
-import { getMinYesCountMap, getKeys } from "../../helpers";
+import { Objective } from "../../types/objective";
+import { getMinYesCountMap, getKeys, keyBy } from "../../helpers";
 import {
   rbcsAnchoringActivities,
   rbcsAquacultureActivities,
@@ -8,7 +8,7 @@ import {
 } from "../rbcs";
 
 export interface RbcsLearnMoreProps {
-  objectives: ObjectiveGroup;
+  objectives: Objective[];
 }
 
 /**
@@ -17,6 +17,7 @@ export interface RbcsLearnMoreProps {
 export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
   objectives,
 }) => {
+  const objectiveMap = keyBy(objectives, (obj) => obj.objectiveId);
   const minYesCounts = getMinYesCountMap(objectives);
   return (
     <>
@@ -32,10 +33,10 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
           </tr>
         </thead>
         <tbody>
-          {getKeys(objectives).map((objectiveId, index) => {
+          {getKeys(objectiveMap).map((objectiveId, index) => {
             return (
               <tr key={index}>
-                <td>{objectives[objectiveId].shortDesc}</td>
+                <td>{objectiveMap[objectiveId].shortDesc}</td>
                 <td>{minYesCounts[objectiveId]}</td>
               </tr>
             );

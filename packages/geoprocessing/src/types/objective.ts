@@ -1,7 +1,12 @@
+import { z } from "zod";
+
 //// BASE CLASSIFICATION ////
 
 /** Unique string ID for classification given to sketches (e.g. zone classification, protection level) */
 export type ClassificationId = string;
+
+/** Unique name of objective */
+export type ObjectiveId = string;
 
 //// BASE OBJECTIVE ////
 
@@ -27,30 +32,41 @@ export const objectiveCountsAnswers = [
   OBJECTIVE_MAYBE,
 ] as const;
 
-/** Unique name of objective */
-export type ObjectiveId = string;
+//// SCHEMA ////
+
+const OBJECTIVE_COUNTS_ANSWERS = [
+  OBJECTIVE_YES,
+  OBJECTIVE_NO,
+  OBJECTIVE_MAYBE,
+] as const;
+export const objectiveAnswerSchema = z.enum(OBJECTIVE_COUNTS_ANSWERS);
+
+export const objectiveAnswerMapSchema = z.record(objectiveAnswerSchema);
+
+/** Base planning objective, extend as needed for specific classification system or ad-hoc */
+export const objectiveSchema = z.object({
+  /** Unique identifier for objective */
+  objectiveId: z.string(),
+  shortDesc: z.string(),
+  /** Value required for objective to be met */
+  target: z.number().nonnegative(),
+  /** Generic map of MPA protection levels to whether they count towards objective */
+  countsToward: objectiveAnswerMapSchema,
+});
+
+export const objectivesSchema = z.array(objectiveSchema);
+
+//// INFERRED TYPES ////
+
+export type ObjectiveAnswer = z.infer<typeof objectiveAnswerSchema>;
+export type Objective = z.infer<typeof objectiveSchema>;
+export type Objectives = z.infer<typeof objectivesSchema>;
 
 /** Range of possible answers for whether a classification counts towards or meets an objective */
-export type ObjectiveAnswer = typeof objectiveCountsAnswers[number];
+// export type ObjectiveAnswer = typeof objectiveCountsAnswers[number];
 
 /**
  * Generic type for mapping classification ID to whether it counds toward or meets an objective
  * Specific classification systems will extend this type with short list of allowed classification IDs
  */
 export type ObjectiveAnswerMap = Record<ClassificationId, ObjectiveAnswer>;
-
-/**
- * Generic type for group of objectives
- */
-export type ObjectiveGroup = Record<ObjectiveId, Objective>;
-
-/** Base planning objective, extend as needed for specific classification system or ad-hoc */
-export interface Objective {
-  /** Unique identifier for objective */
-  id: ObjectiveId;
-  shortDesc: string;
-  /** Value required for objective to be met */
-  target: number;
-  /** Generic map of MPA protection levels to whether they count towards objective */
-  countsToward: Record<string, ObjectiveAnswer>;
-}

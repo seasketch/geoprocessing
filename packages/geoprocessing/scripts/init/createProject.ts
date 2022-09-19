@@ -3,7 +3,7 @@ import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
 import { join } from "path";
-import { Package } from "../types";
+import { Package } from "../../src/types";
 import util from "util";
 const exec = util.promisify(require("child_process").exec);
 

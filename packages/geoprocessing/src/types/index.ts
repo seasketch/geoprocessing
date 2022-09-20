@@ -8,6 +8,7 @@ export * from "./geojson";
 export * from "./metrics";
 export * from "./objective";
 export * from "./project";
+export * from "./projectBasic";
 export * from "./reports";
 export * from "./sketch";
 export * from "./service";

@@ -32,4 +32,3 @@ export const projectSchema = z.object({
 //// INFERRED TYPES ////
 
 export type Project = z.infer<typeof projectSchema>;
-export type BBox = z.infer<typeof bboxSchema>;

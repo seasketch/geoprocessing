@@ -1,4 +1,4 @@
-export const formatDescriptions = {
+export const datasourceFormatDescriptions = {
   fgb: "FlatGeobuf",
   json: "GeoJSON",
   tif: "Cloud Optimized GeoTiff",

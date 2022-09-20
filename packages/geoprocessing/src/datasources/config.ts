@@ -12,7 +12,7 @@ const defaultDstPath = "data/dist";
 /** Default datasource file location, relative to project root */
 const defaultDatasourcesPath = "./project/datasources.json";
 
-export default {
+export const datasourceConfig = {
   vectorFormats,
   importSupportedVectorFormats,
   importDefaultVectorFormats,

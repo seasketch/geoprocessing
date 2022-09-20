@@ -1,12 +1,6 @@
 import path from "path";
 import fs from "fs-extra";
-import { Manifest } from "../manifest";
 import { createProject } from "./createProject";
-import {
-  makeGeoprocessingHandler,
-  makePreprocessingHandler,
-} from "./createFunction";
-import { makeClient } from "./createClient";
 import { GeoprocessingJsonConfig } from "../../src/types";
 
 const rootPath = `${__dirname}/__test__`;

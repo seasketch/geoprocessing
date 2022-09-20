@@ -41,6 +41,10 @@ export async function createProject(
   spinner.succeed(`created ${projectPath}/`);
   spinner.start("copying template");
 
+  // If running from project space, which runs gp code in dist build folder
+  // then set gpPath to top-level of dist folder (3 folders up), where the templates folder is
+  // else must be running gp code from src folder (like tests)
+  // and should set gpPath to top-level of src (2 folders up)
   const gpPath = /dist/.test(__dirname)
     ? `${__dirname}/../../..`
     : `${__dirname}/../..`;

@@ -3,9 +3,7 @@ import { z } from "zod";
 import { Package } from "./package";
 import { GeoprocessingJsonConfig } from "./project";
 
-// Migrated
-
-// SCHEMA //
+// Schema and types for representing datasources used in calculating metrics
 
 const GEO_TYPES = ["vector", "raster"] as const;
 export const geoTypesSchema = z.enum(GEO_TYPES);

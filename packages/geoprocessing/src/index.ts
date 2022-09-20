@@ -15,5 +15,6 @@ export * from "./testing";
 export * from "./toolbox";
 export * from "./types";
 export * from "./testing";
+export * from "./project";
 
 export { default as version } from "../package.json";

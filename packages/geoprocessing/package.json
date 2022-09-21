@@ -92,6 +92,7 @@
     "@turf/boolean-overlap": "6.5.0",
     "@turf/buffer": "6.5.0",
     "@turf/combine": "6.5.0",
+    "@turf/dissolve": "^6.5.0",
     "@turf/distance": "6.5.0",
     "@turf/explode": "6.5.0",
     "@turf/flatten": "6.5.0",

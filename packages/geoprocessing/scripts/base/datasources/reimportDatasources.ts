@@ -1,6 +1,7 @@
 import { createOrUpdateDatasource, readDatasources } from "./datasources";
 import { publishDatasource } from "./publishDatasource";
 import {
+  Datasources,
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
   ImportVectorDatasourceOptions,
@@ -41,7 +42,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   newDatasourcePath?: string,
   /** Alternative path to store transformed data. useful for testing */
   newDstPath?: string
-) {
+): Promise<Datasources> {
   // regular expression to match
   const matcher = process && process.argv ? process.argv[2] : null;
 
@@ -52,12 +53,13 @@ export async function reimportDatasources<C extends ProjectClientBase>(
 
   if (datasources.length === 0) {
     console.log("No datasources found");
-    return;
+    return [];
   }
 
   // Process one at a time
   let failed = 0;
   let updated = 0;
+  let finalDatasources: Datasources = [];
   for (const ds of datasources) {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       try {
@@ -87,9 +89,15 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           keyStats: classStatsByProperty,
         };
 
-        await createOrUpdateDatasource(newVectorD, newDatasourcePath);
+        // Datasource record with new or updated timestamp
+        const finalDs = await createOrUpdateDatasource(
+          newVectorD,
+          newDatasourcePath
+        );
+        finalDatasources.push(finalDs);
+
         console.log(`${ds.datasourceId} reimport complete`);
-        console.log();
+        console.log(" ");
         updated += 1;
       } catch (e: unknown) {
         if (e instanceof Error) {
@@ -108,7 +116,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         const options: ImportRasterDatasourceOptions =
           importRasterDatasourceOptionsSchema.parse(ds);
         // generate full config
-        const config = genRasterConfig(options, newDstPath);
+        const config = genRasterConfig(projectClient, options, newDstPath);
         await genCog(config);
 
         const tempPort = 8001;
@@ -144,7 +152,13 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           keyStats: classStatsByProperty,
         };
 
-        await createOrUpdateDatasource(newRasterD, newDatasourcePath);
+        // Datasource record with new or updated timestamp
+        const finalDs = await createOrUpdateDatasource(
+          newRasterD,
+          newDatasourcePath
+        );
+        finalDatasources.push(finalDs);
+
         console.log(`${ds.datasourceId} reimport complete`);
         console.log();
         updated += 1;
@@ -169,4 +183,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
       `${failed} datasources failed to reimported.  Fix them and try again`
     );
   }
+
+  return finalDatasources;
 }

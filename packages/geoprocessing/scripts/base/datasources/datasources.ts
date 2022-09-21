@@ -8,21 +8,21 @@ import {
 } from "../../../src/datasources";
 
 /**
- * Manages datasources for a geoprocessing project
+ * Manage datasources for a geoprocessing project
  */
 
 /** Creates or updates datasource record on disk */
 export async function createOrUpdateDatasource(
   inputDatasource: Datasource,
   newDatasourcePath?: string
-) {
+): Promise<Datasource> {
   let dSources = readDatasources(newDatasourcePath);
+  let finalDatasource: Datasource = inputDatasource;
 
   const dIndex = dSources.findIndex(
     (dSource) => dSource.datasourceId === inputDatasource.datasourceId
   );
   const dExists = dIndex > -1;
-  let finalDatasource: Datasource;
   if (dExists) {
     console.log(
       `Updating ${inputDatasource.datasourceId} record in datasource file`
@@ -32,11 +32,12 @@ export async function createOrUpdateDatasource(
       isInternalVectorDatasource(inputDatasource) ||
       isInternalRasterDatasource(inputDatasource)
     ) {
-      dSources[dIndex] = {
+      finalDatasource = {
         ...dSources[dIndex],
         ...inputDatasource,
         lastUpdated: new Date().toISOString(),
       };
+      dSources[dIndex] = finalDatasource;
     }
   } else {
     console.log(
@@ -47,6 +48,7 @@ export async function createOrUpdateDatasource(
   }
 
   writeDatasources(dSources, newDatasourcePath);
+  return finalDatasource;
 }
 
 /**

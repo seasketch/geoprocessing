@@ -4,41 +4,25 @@
  */
 
 import { importDatasource } from "./importDatasource";
-import { ProjectClientBase, vectorDatasourceSchema } from "../../../src";
+import {
+  ProjectClientBase,
+  internalVectorDatasourceSchema,
+  internalRasterDatasourceSchema,
+} from "../../../src";
 import configFixtures from "../../../src/testing/fixtures/projectConfig";
 import fs from "fs-extra";
 import path from "path";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
-const srcPath = "src/testing/data";
-const dstPath = "src/testing/output";
+const srcPath = "data/testing";
+const dstPath = "data/testing/output";
 
 // Switch to generating a geojson dataset
-describe("Import vector data", () => {
-  // test("importVectorDatasource single-file multi-class", async () => {
-  //   // TODO: switch to generating test vector dataset
-  //   const vectorD = await importDatasource(
-  //     projectClient,
-  //     {
-  //       geo_type: "vector",
-  //       src: "data/src/Data_Received/Layers_From_Kaituu/Revised Deepwater Bioregions.shp",
-  //       datasourceId: "deepwater_bioregions",
-  //       classKeys: ["Draft name"],
-  //       formats: [],
-  //       propertiesToKeep: [],
-  //     },
-  //     {
-  //       newDatasourcePath: "./test/datasources_test.json",
-  //       newDstPath: "./test/data",
-  //     }
-  //   );
-
-  //   // ensure folder and files exist with proper contents!
-  // }, 10000);
-
-  describe("importVectorDatasource - single file, multi-class", () => {
+describe("importVectorDatasource", () => {
+  describe("importVectorDatasource - single file, single class", () => {
     const dstConfigFilename = "datasources_test_1.json";
     const dstConfigFilePath = path.join(dstPath, dstConfigFilename);
+    const datasourceId = "eez";
 
     beforeEach(() => {
       // Ensure test data folder
@@ -46,13 +30,13 @@ describe("Import vector data", () => {
       // Start off with clean empty config file
       fs.writeJSONSync(dstConfigFilePath, []);
     });
-    test("importVectorDatasource should write file to dist and save config", async () => {
-      const eezDs = await importDatasource(
+    test("importVectorDatasource - single file, single class should write file to dist and save config", async () => {
+      const returnedDs = await importDatasource(
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, "eez.json"),
-          datasourceId: "eez",
+          src: path.join(srcPath, `${datasourceId}.json`),
+          datasourceId,
           classKeys: [],
           formats: [],
           propertiesToKeep: [],
@@ -64,42 +48,100 @@ describe("Import vector data", () => {
       );
       const savedDs = fs.readJSONSync(dstConfigFilePath);
       expect(Array.isArray(savedDs) && savedDs.length === 1).toBe(true);
-      const validDs = vectorDatasourceSchema.parse(savedDs[0]);
-      expect(validDs.layerName).toEqual("eez");
-      // expect(eezDs).toEqual(validDs);
-      expect(fs.existsSync(path.join(dstPath, "eez.json")));
-      expect(fs.existsSync(path.join(dstPath, "eez.fgb")));
+      const validDs = internalVectorDatasourceSchema.parse(savedDs[0]);
+      expect(returnedDs).toEqual(validDs);
+      expect(fs.existsSync(path.join(dstPath, `${datasourceId}.json`)));
+      expect(fs.existsSync(path.join(dstPath, `${datasourceId}.fgb`)));
     }, 10000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);
-      fs.removeSync(path.join(dstPath, "eez.fgb"));
-      fs.removeSync(path.join(dstPath, "eez.json"));
+      fs.removeSync(path.join(dstPath, `${datasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
+    });
+  });
+
+  describe("importVectorDatasource - single file, multi-class", () => {
+    const dstConfigFilename = "datasources_test_2.json";
+    const dstConfigFilePath = path.join(dstPath, dstConfigFilename);
+    const datasourceId = "deepwater_bioregions";
+
+    beforeEach(() => {
+      // Ensure test data folder
+      fs.mkdirsSync(dstPath);
+      // Start off with clean empty config file
+      fs.writeJSONSync(dstConfigFilePath, []);
+    });
+    test("importVectorDatasource - single file, multi-class should write file to dist and save config", async () => {
+      const returnedDs = await importDatasource(
+        projectClient,
+        {
+          geo_type: "vector",
+          src: path.join(srcPath, `${datasourceId}.json`),
+          datasourceId,
+          classKeys: ["Draft name"],
+          formats: [],
+          propertiesToKeep: [],
+        },
+        {
+          newDatasourcePath: dstConfigFilePath,
+          newDstPath: dstPath,
+        }
+      );
+      const savedDs = fs.readJSONSync(dstConfigFilePath);
+      expect(Array.isArray(savedDs) && savedDs.length === 1).toBe(true);
+      const validDs = internalVectorDatasourceSchema.parse(savedDs[0]);
+      expect(returnedDs).toEqual(validDs);
+      expect(fs.existsSync(path.join(dstPath, `${datasourceId}.json`)));
+      expect(fs.existsSync(path.join(dstPath, `${datasourceId}.fgb`)));
+    }, 10000);
+    afterEach(() => {
+      // Remove the output
+      fs.removeSync(dstConfigFilePath);
+      fs.removeSync(path.join(dstPath, `${datasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
+    });
+  });
+
+  describe("importRasterDatasource - single file, single class", () => {
+    const dstConfigFilename = "datasources_test_raster.json";
+    const dstConfigFilePath = path.join(dstPath, dstConfigFilename);
+    const datasourceId = "quad_10";
+
+    beforeEach(() => {
+      // Ensure test data folder
+      fs.mkdirsSync(dstPath);
+      // Start off with clean empty config file
+      fs.writeJSONSync(dstConfigFilePath, []);
+    });
+    test("importRasterDatasource - single file, single class should write file to dist and save config", async () => {
+      const returnedDs = await importDatasource(
+        projectClient,
+        {
+          geo_type: "raster",
+          src: path.join(srcPath, `${datasourceId}.tif`),
+          datasourceId,
+          classKeys: [],
+          formats: [],
+          noDataValue: 0,
+          band: 1,
+          measurementType: "quantitative",
+        },
+        {
+          newDatasourcePath: dstConfigFilePath,
+          newDstPath: dstPath,
+        }
+      );
+      const savedDs = fs.readJSONSync(dstConfigFilePath);
+      expect(Array.isArray(savedDs) && savedDs.length === 1).toBe(true);
+      const validDs = internalRasterDatasourceSchema.parse(savedDs[0]);
+      expect(returnedDs).toEqual(validDs);
+      expect(fs.existsSync(path.join(dstPath, `${datasourceId}.tif`)));
+    }, 10000);
+    afterEach(() => {
+      // Remove the output
+      fs.removeSync(dstConfigFilePath);
+      fs.removeSync(path.join(dstPath, `${datasourceId}.tif`));
     });
   });
 });
-
-// Switch to generating a geojson dataset
-// describe("Import raster data", () => {
-//   test("importRasterDatasource single class", async () => {
-//     // TODO: switch to generating test raster dataset
-//     const vectorD = await importDatasource(
-//       projectClient,
-//       {
-//         geo_type: "raster",
-//         src: "data/src/Data_Products/OUS/heatmaps/Commercial_Fishing.tif",
-//         datasourceId: "ous_commercial",
-//         formats: [],
-//         noDataValue: 0,
-//         band: 1,
-//         measurementType: "quantitative",
-//       },
-//       {
-//         newDatasourcePath: "./test/datasources_test.json",
-//         newDstPath: "./test/data",
-//       }
-//     );
-
-//     // ensure folder and files exist with proper contents!
-//   }, 10000);
-// });

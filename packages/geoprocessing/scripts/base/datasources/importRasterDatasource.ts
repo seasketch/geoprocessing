@@ -33,7 +33,7 @@ import LocalFileServer from "../util/localServer";
 import dissolve from "@turf/dissolve";
 
 export async function importRasterDatasource<C extends ProjectClientBase>(
-  project: C,
+  projectClient: C,
   options: ImportRasterDatasourceOptions,
   extraOptions: {
     newDatasourcePath?: string;
@@ -43,7 +43,7 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
   }
 ) {
   const { newDatasourcePath, newDstPath, doPublish = true } = extraOptions;
-  const config = await genRasterConfig(options, newDstPath);
+  const config = await genRasterConfig(projectClient, options, newDstPath);
 
   // Ensure dstPath is created
   fs.ensureDirSync(config.dstPath);
@@ -52,7 +52,7 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
 
   const tempPort = 8001;
   const server = new LocalFileServer({ path: config.dstPath, port: tempPort });
-  const url = `${project.dataBucketUrl(true, tempPort)}${getCogFilename(
+  const url = `${projectClient.dataBucketUrl(true, tempPort)}${getCogFilename(
     config.datasourceId
   )}`;
   console.log(
@@ -65,7 +65,7 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
     config,
     raster,
     config.filterDatasource
-      ? project.getDatasourceById(config.filterDatasource)
+      ? projectClient.getDatasourceById(config.filterDatasource)
       : undefined
   );
   console.log("Stats calculated");
@@ -105,7 +105,8 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
 }
 
 /** Takes import options and creates full import config */
-export function genRasterConfig(
+export function genRasterConfig<C extends ProjectClientBase>(
+  projectClient: C,
   options: ImportRasterDatasourceOptions,
   newDstPath?: string
 ): ImportRasterDatasourceConfig {
@@ -128,8 +129,8 @@ export function genRasterConfig(
     dstPath: newDstPath || datasourceConfig.defaultDstPath,
     band,
     datasourceId,
-    package: fs.readJsonSync(path.join(".", "package.json")),
-    gp: fs.readJsonSync(path.join(".", "geoprocessing.json")),
+    package: projectClient.package,
+    gp: projectClient.geoprocessing,
     formats,
     noDataValue,
     measurementType,
@@ -219,6 +220,7 @@ export async function genCog(config: ImportRasterDatasourceConfig) {
   await $`gdalwarp -t_srs "EPSG:4326" ${src} ${warpDst}`;
   await $`gdal_translate -b ${config.band} -r nearest -of COG -stats ${warpDst} ${dst}`;
   await $`rm ${warpDst}`;
+  await $`rm ${warpDst}.aux.xml`;
 }
 
 export function getCogPath(

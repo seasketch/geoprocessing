@@ -21,7 +21,7 @@
     "test:e2e": "start-server-and-test start-data 8080 'jest --runInBand --group=e2e'",
     "test:watch": "jest --watch",
     "test:scripts": "jest --group=-e2e --projects scripts",
-    "test:scripts:matching": "jest --runInBand --projects scripts --group -e2e -t",
+    "test:scripts:matching": "jest --runInBand --group=-e2e --projects scripts -t",
     "test:scripts:local": "start-server-and-test start-data 8080 'jest --runInBand --projects scripts'",
     "test:scripts:local:matching": "jest --runInBand --projects scripts -t",
     "test:scripts:e2e": "jest --group=e2e --projects scripts",

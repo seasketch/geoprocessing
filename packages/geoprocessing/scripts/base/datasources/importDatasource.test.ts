@@ -1,6 +1,6 @@
 /**
  * @jest-environment node
- * @group e2e
+ * @group unit
  */
 
 import { importDatasource } from "./importDatasource";

@@ -1,7 +1,5 @@
 import { createOrUpdateDatasource, readDatasources } from "./datasources";
 import { publishDatasource } from "./publishDatasource";
-import { $ } from "zx";
-import path from "path";
 import {
   Datasources,
   ImportRasterDatasourceOptions,
@@ -47,12 +45,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   /** string or regular expression to express with datasources to reimport, matching on datasourceId */
   matcher?: string
 ): Promise<Datasources> {
-  console.log("newDatasourcePath", newDatasourcePath);
-  const foo = await $`ls ${path.dirname(newDatasourcePath!)}`;
-  console.log(foo);
   const allDatasources = readDatasources(newDatasourcePath);
-  console.log("allDatasources", allDatasources);
-  console.log("matcher", matcher);
   const datasources = matcher
     ? allDatasources.filter((ds) => ds.datasourceId.match(matcher))
     : allDatasources;

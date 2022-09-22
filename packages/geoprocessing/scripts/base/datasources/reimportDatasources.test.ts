@@ -1,6 +1,6 @@
 /**
  * @jest-environment node
- * @group e2e
+ * @group unit
  */
 import { reimportDatasources } from "./reimportDatasources";
 import {
@@ -66,14 +66,12 @@ describe("Reimport datsources", () => {
         }
       );
 
-      console.log("dstConfigFilePath", dstConfigFilePath);
       const reimportDss = await reimportDatasources(
         projectClient,
         dstConfigFilePath,
         dstPath
       );
 
-      console.log("reimportDss", reimportDss);
       expect(reimportDss.length).toBe(2);
 
       const savedReimportDss = fs.readJSONSync(dstConfigFilePath);

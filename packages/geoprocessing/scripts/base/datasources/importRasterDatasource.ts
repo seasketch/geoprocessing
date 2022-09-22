@@ -21,7 +21,6 @@ import {
 } from "../../../src/datasources";
 import { isPolygonFeature } from "../../../src/helpers";
 import { loadCogWindow } from "../../../src/dataproviders/cog";
-import { publishDatasource } from "./publishDatasource";
 import { createOrUpdateDatasource } from "./datasources";
 
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
@@ -39,10 +38,9 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
     newDatasourcePath?: string;
     newDstPath?: string;
     srcUrl?: string;
-    doPublish?: boolean;
   }
 ) {
-  const { newDatasourcePath, newDstPath, doPublish = true } = extraOptions;
+  const { newDatasourcePath, newDstPath } = extraOptions;
   const config = await genRasterConfig(projectClient, options, newDstPath);
 
   // Ensure dstPath is created
@@ -69,21 +67,6 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
       : undefined
   );
   console.log("Stats calculated");
-
-  if (doPublish) {
-    await Promise.all(
-      config.formats.map((format) => {
-        return publishDatasource(
-          config.dstPath,
-          format,
-          config.datasourceId,
-          getDatasetBucketName(config)
-        );
-      })
-    );
-  } else {
-    console.log("Publish disabled");
-  }
 
   const timestamp = new Date().toISOString();
 

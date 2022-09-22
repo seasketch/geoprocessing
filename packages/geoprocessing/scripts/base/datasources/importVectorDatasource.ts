@@ -10,12 +10,8 @@ import {
   Stats,
   ImportVectorDatasourceConfig,
 } from "../../../src/types";
-import {
-  datasourceConfig,
-  getDatasetBucketName,
-} from "../../../src/datasources";
+import { datasourceConfig } from "../../../src/datasources";
 import { ProjectClientBase } from "../../../src";
-import { publishDatasource } from "./publishDatasource";
 import { createOrUpdateDatasource } from "./datasources";
 import area from "@turf/area";
 
@@ -26,10 +22,9 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
     newDatasourcePath?: string;
     newDstPath?: string;
     srcUrl?: string;
-    doPublish?: boolean;
   }
 ) {
-  const { newDatasourcePath, newDstPath, doPublish = true } = extraOptions;
+  const { newDatasourcePath, newDstPath } = extraOptions;
   const config = await genVectorConfig(projectClient, options, newDstPath);
 
   // Ensure dstPath is created
@@ -39,21 +34,6 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
   await genFlatgeobuf(config);
 
   const classStatsByProperty = genVectorKeyStats(config);
-
-  if (doPublish) {
-    await Promise.all(
-      config.formats.map((format) => {
-        return publishDatasource(
-          config.dstPath,
-          format,
-          config.datasourceId,
-          getDatasetBucketName(config)
-        );
-      })
-    );
-  } else {
-    console.log("Publish disabled");
-  }
 
   const timestamp = new Date().toISOString();
 

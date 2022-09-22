@@ -1,5 +1,4 @@
 import { createOrUpdateDatasource, readDatasources } from "./datasources";
-import { publishDatasource } from "./publishDatasource";
 import {
   Datasources,
   ImportRasterDatasourceOptions,
@@ -33,8 +32,7 @@ import ProjectClientBase from "../../../src/project/ProjectClientBase";
 /**
  * Import a dataset into the project.  Must be a src file that OGR or GDAL can read.
  * Importing means stripping unnecessary properties/layers,
- * converting to cloud optimized format, publishing to the datasets s3 bucket,
- * and adding as datasource.
+ * converting to cloud optimized format, and adding as datasource.
  */
 export async function reimportDatasources<C extends ProjectClientBase>(
   projectClient: C,
@@ -71,17 +69,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         await genGeojson(config);
         await genFlatgeobuf(config);
         const classStatsByProperty = genVectorKeyStats(config);
-
-        await Promise.all(
-          config.formats.map((format) => {
-            return publishDatasource(
-              config.dstPath,
-              format,
-              config.datasourceId,
-              getDatasetBucketName(config)
-            );
-          })
-        );
 
         const newVectorD: InternalVectorDatasource = {
           ...ds,
@@ -134,17 +121,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         server.close();
 
         const classStatsByProperty = await genRasterKeyStats(config, raster);
-
-        await Promise.all(
-          config.formats.map((format) => {
-            return publishDatasource(
-              config.dstPath,
-              format,
-              config.datasourceId,
-              getDatasetBucketName(config)
-            );
-          })
-        );
 
         const newRasterD: InternalRasterDatasource = {
           ...ds,

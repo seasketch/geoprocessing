@@ -1,5 +1,6 @@
 /**
- * @group unit
+ * @jest-environment node
+ * @group e2e
  */
 import { reimportDatasources } from "./reimportDatasources";
 import {
@@ -21,8 +22,8 @@ describe("Reimport datsources", () => {
   describe("reimportVectorDatasource - single file, single class", () => {
     const dstConfigFilename = "datasources_test_reimport.json";
     const dstConfigFilePath = path.join(dstPath, dstConfigFilename);
-    const vectorDatasourceId = "eez";
-    const rasterDatasourceId = "quad_10";
+    const vectorDatasourceId = "eez-reimport";
+    const rasterDatasourceId = "quad_10-reimport";
 
     beforeEach(() => {
       // Ensure test data folder
@@ -65,12 +66,14 @@ describe("Reimport datsources", () => {
         }
       );
 
+      console.log("dstConfigFilePath", dstConfigFilePath);
       const reimportDss = await reimportDatasources(
         projectClient,
         dstConfigFilePath,
         dstPath
       );
 
+      console.log("reimportDss", reimportDss);
       expect(reimportDss.length).toBe(2);
 
       const savedReimportDss = fs.readJSONSync(dstConfigFilePath);
@@ -115,10 +118,10 @@ describe("Reimport datsources", () => {
     }, 10000);
     afterEach(() => {
       // Remove the output
-      fs.removeSync(dstConfigFilePath);
-      fs.removeSync(path.join(dstPath, `${vectorDatasourceId}.fgb`));
-      fs.removeSync(path.join(dstPath, `${vectorDatasourceId}.json`));
-      fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
+      // fs.removeSync(dstConfigFilePath);
+      // fs.removeSync(path.join(dstPath, `${vectorDatasourceId}.fgb`));
+      // fs.removeSync(path.join(dstPath, `${vectorDatasourceId}.json`));
+      // fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
     });
   });
 });

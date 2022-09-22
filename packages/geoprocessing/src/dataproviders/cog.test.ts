@@ -228,10 +228,10 @@ describe("COG test", () => {
       noDataValue: -3.39999995214436425e38,
     });
 
-    const sum = geoblaze.sum(raster, feature);
-
     expect(raster.pixelHeight).toBe(0.07777950326934817);
     expect(raster.pixelWidth).toBe(0.07777950326934817);
-    expect(sum[0]).toBe(0); // feature should only overlap nodata cells, the 1 value should not get picked up
+    // feature should only overlap nodata cells, the 1 value should not get picked up
+    // geoblaze will throw if nothing is returned
+    expect(() => geoblaze.sum(raster, feature)).toThrow();
   });
 });

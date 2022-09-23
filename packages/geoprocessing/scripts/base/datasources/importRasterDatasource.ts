@@ -152,6 +152,8 @@ export async function genRasterKeyStats(
       return null;
     }
     console.log("start sum");
+    console.log("raster", raster);
+    console.log("filterPoly", filterPoly);
     return geoblaze.sum(raster, filterPoly)[0] as number;
   })();
 

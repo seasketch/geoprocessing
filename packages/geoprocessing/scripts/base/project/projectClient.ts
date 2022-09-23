@@ -14,7 +14,7 @@ export function getProjectClient(projectPath: string) {
     path.join(projectPath, "src", "project", "datasources.json")
   );
   const metrics = fs.readJsonSync(
-    path.join(projectPath, "src", "project", "metric.json")
+    path.join(projectPath, "src", "project", "metrics.json")
   );
   const objectives = fs.readJsonSync(
     path.join(projectPath, "src", "project", "objectives.json")

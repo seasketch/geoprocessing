@@ -38,6 +38,8 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     bufferWidthMultiple = 0.2,
   } = options;
 
+  console.log(`COG loaded with bbox ${windowBox}`);
+
   // Calculate window in geographic and image coordinates
   const { image: finalWindow, bbox: finalBox } = ((box: BBox) => {
     // Special case buffer window smaller than pixel

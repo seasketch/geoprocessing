@@ -99,7 +99,9 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
   };
   console.log("COG metadata");
   console.log(metadata);
-  return await parseGeoraster(values, metadata);
+  const raster = await parseGeoraster(values, metadata);
+  console.log(raster);
+  return raster;
 };
 
 /**

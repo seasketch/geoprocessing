@@ -35,16 +35,6 @@ const PROJECT_PATH = `packages/example-project`;
     PROJECT_PATH.split("/").slice(0, -1).join("/")
   );
 
-  await makePreprocessingHandler(
-    {
-      title: "clipToBounds",
-      typescript: true,
-      description: "Clips sketch to bounding box",
-    },
-    false,
-    PROJECT_PATH + "/"
-  );
-
   // sync geoprocessor
   await makeGeoprocessingHandler(
     {

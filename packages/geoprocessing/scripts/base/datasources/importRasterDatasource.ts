@@ -14,13 +14,11 @@ import {
 } from "../../../src/types";
 import {
   datasourceConfig,
-  getDatasetBucketName,
   getJsonFilename,
   getCogFilename,
   isInternalVectorDatasource,
 } from "../../../src/datasources";
 import { isPolygonFeature } from "../../../src/helpers";
-import { loadCogWindow } from "../../../src/dataproviders/cog";
 import { createOrUpdateDatasource } from "./datasources";
 
 import ProjectClientBase from "../../../src/project/ProjectClientBase";

@@ -30,7 +30,7 @@ if (process.argv.length < 3) {
       });
       break;
     case "import:data":
-      spawn(`${__dirname}/../../scripts/dataPrep/importData.sh`, {
+      spawn(`${__dirname}/../../scripts/dataPrep/import-data.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });

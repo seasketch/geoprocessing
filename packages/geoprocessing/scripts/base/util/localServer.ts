@@ -31,6 +31,12 @@ export default class LocalFileServer {
       serve(req, res, done as () => void);
     });
     this._server.listen(port);
+    this._server.setTimeout(5000, () => {
+      console.log("Timeout after 5 seconds");
+      this._server.close(() => {
+        console.log("Server is closed");
+      });
+    });
   }
 
   public close(): void {

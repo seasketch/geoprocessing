@@ -27,7 +27,6 @@ import ProjectClientBase from "../../../src/project/ProjectClientBase";
 
 // @ts-ignore
 import geoblaze from "geoblaze";
-import LocalFileServer from "../util/localServer";
 
 import dissolve from "@turf/dissolve";
 
@@ -49,7 +48,6 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
   await genCog(config);
 
   const tempPort = 8001;
-  const server = new LocalFileServer({ path: config.dstPath, port: tempPort });
   const url = `${projectClient.dataBucketUrl(true, tempPort)}${getCogFilename(
     config.datasourceId
   )}`;
@@ -57,7 +55,6 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
     `Fetching raster to calculate stats from temp file server ${url}`
   );
   const raster = await loadCogWindow(url, {});
-  server.close();
 
   const classStatsByProperty = await genRasterKeyStats(
     config,

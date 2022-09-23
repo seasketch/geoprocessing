@@ -12,12 +12,25 @@ import {
 import configFixtures from "../../../src/testing/fixtures/projectConfig";
 import fs from "fs-extra";
 import path from "path";
+const tempPort = 8001;
+import LocalFileServer from "../util/localServer";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/testing";
 const dstPath = "data/testing/output";
+let server: LocalFileServer;
 
-// Switch to generating a geojson dataset
+beforeAll(() => {
+  server = new LocalFileServer({
+    path: dstPath,
+    port: tempPort,
+  });
+});
+
+afterAll(() => {
+  server.close();
+});
+
 describe("importVectorDatasource", () => {
   describe("importVectorDatasource - single file, single class", () => {
     const dstConfigFilename = "datasources_test_1.json";

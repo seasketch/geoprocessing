@@ -106,10 +106,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         await genCog(config);
 
         const tempPort = 8001;
-        const server = new LocalFileServer({
-          path: config.dstPath,
-          port: tempPort,
-        });
         const url = `${projectClient.dataBucketUrl(
           true,
           tempPort
@@ -118,7 +114,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           `Fetching raster to calculate stats from temp file server ${url}`
         );
         const raster = await loadCogWindow(url, {});
-        server.close();
 
         const classStatsByProperty = await genRasterKeyStats(config, raster);
 

@@ -151,8 +151,11 @@ export async function genRasterKeyStats(
     if (options.measurementType !== "quantitative") {
       return null;
     }
+    console.log("start sum");
     return geoblaze.sum(raster, filterPoly)[0] as number;
   })();
+
+  console.log("sum", sum);
 
   // categorical - histogram, count by class
   const classStats: ClassStats = (() => {
@@ -178,6 +181,8 @@ export async function genRasterKeyStats(
     console.log("classStats", classStats);
     return classStats;
   })();
+
+  console.log("class stats", classStats);
 
   const totalStats = {
     sum,

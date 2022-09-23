@@ -75,7 +75,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     resampleMethod: "nearest",
   };
 
-  console.log("COG options");
+  console.log("COG image options");
   console.log(JSON.stringify(rasterOptions));
 
   if (!georaster.getValues)
@@ -100,7 +100,6 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
   console.log("COG metadata");
   console.log(metadata);
   const raster = await parseGeoraster(values, metadata);
-  console.log(raster);
   return raster;
 };
 

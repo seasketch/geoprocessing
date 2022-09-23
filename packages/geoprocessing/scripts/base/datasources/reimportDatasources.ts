@@ -114,9 +114,12 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           `Fetching raster to calculate stats from temp file server ${url}`
         );
         const raster = await loadCogWindow(url, {});
-        console.log("got here yo");
+
+        console.log("raster loaded");
 
         const classStatsByProperty = await genRasterKeyStats(config, raster);
+
+        console.log("raster key stats calculated");
 
         const newRasterD: InternalRasterDatasource = {
           ...ds,

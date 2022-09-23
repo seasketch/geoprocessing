@@ -9,7 +9,8 @@
     "./client-ui": "./dist/client-ui.js",
     "./client-core": "./dist/client-core.js",
     "./dataproviders": "./dist/dataproviders.js",
-    "./storybook": "./dist/storybook.js"
+    "./storybook": "./dist/storybook.js",
+    "./scripts": "./dist/scripts/index.js"
   },
   "readme": "https://github.com/seasketch/geoprocessing#readme",
   "scripts": {

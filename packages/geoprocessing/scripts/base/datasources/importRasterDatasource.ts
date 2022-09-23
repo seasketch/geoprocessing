@@ -54,7 +54,7 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
   console.log(
     `Fetching raster to calculate stats from temp file server ${url}`
   );
-  const raster = await loadCogWindow(url, {});
+  const raster = await geoblaze.load(url);
 
   const classStatsByProperty = await genRasterKeyStats(
     config,

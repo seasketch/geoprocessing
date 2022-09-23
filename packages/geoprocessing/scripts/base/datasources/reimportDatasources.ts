@@ -14,7 +14,7 @@ import {
   getCogFilename,
   getDatasetBucketName,
 } from "../../../src/datasources";
-import { loadCogWindow } from "../../../src/dataproviders";
+import geoblaze from "geoblaze";
 import {
   genVectorConfig,
   genGeojson,
@@ -113,7 +113,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         console.log(
           `Fetching raster to calculate stats from temp file server ${url}`
         );
-        const raster = await loadCogWindow(url, {});
+        const raster = await geoblaze.load(url);
 
         console.log("raster loaded");
 

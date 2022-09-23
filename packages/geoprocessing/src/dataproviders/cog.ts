@@ -75,6 +75,9 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     resampleMethod: "nearest",
   };
 
+  console.log("COG options");
+  console.log(JSON.stringify(rasterOptions));
+
   if (!georaster.getValues)
     throw new Error(
       "Missing getValues method, did you forget to load the raster via url?"
@@ -94,6 +97,8 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     pixelWidth,
     pixelHeight,
   };
+  console.log("COG metadata");
+  console.log(metadata);
   return await parseGeoraster(values, metadata);
 };
 

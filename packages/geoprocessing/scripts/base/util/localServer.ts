@@ -25,7 +25,9 @@ export default class LocalFileServer {
     const { path = "./", port = 8000 } = options;
     const serve = serveStatic(path);
     this._server = http.createServer(function (req, res) {
-      const done = finalhandler(req, res);
+      const done = finalhandler(req, res, {
+        onerror: LocalFileServer.logerror,
+      });
       serve(req, res, done as () => void);
     });
     this._server.listen(port);
@@ -33,5 +35,9 @@ export default class LocalFileServer {
 
   public close(): void {
     this._server.close();
+  }
+
+  static logerror(err) {
+    console.error(err.stack || err.toString());
   }
 }

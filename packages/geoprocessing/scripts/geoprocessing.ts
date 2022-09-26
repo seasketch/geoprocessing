@@ -37,11 +37,8 @@ if (process.argv.length < 3) {
       break;
     case "reimport:data":
       spawn(
-        "node",
-        [
-          `${__dirname}/../../scripts/dataPrep/reimport-data.sh`,
-          ...process.argv.slice(2),
-        ],
+        `${__dirname}/../../scripts/dataPrep/reimport-data.sh`,
+        process.argv.slice(2),
         {
           cwd: process.cwd(),
           stdio: "inherit",
@@ -50,11 +47,8 @@ if (process.argv.length < 3) {
       break;
     case "publish:data":
       spawn(
-        "node",
-        [
-          `${__dirname}/../../scripts/dataPrep/publish-data.sh`,
-          ...process.argv.slice(2),
-        ],
+        `${__dirname}/../../scripts/dataPrep/publish-data.sh`,
+        process.argv.slice(2),
         {
           cwd: process.cwd(),
           stdio: "inherit",

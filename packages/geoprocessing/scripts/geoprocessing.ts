@@ -41,6 +41,12 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
+    case "publish:data":
+      spawn(`${__dirname}/../../scripts/dataPrep/publish-data.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
     case "create:function":
       spawn("node", [`${__dirname}/init/createFunction.js`], {
         cwd: process.cwd(),

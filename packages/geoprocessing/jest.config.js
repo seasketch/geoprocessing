@@ -1,4 +1,6 @@
 module.exports = {
+  name: "core",
+  displayName: "GP Core",
   preset: "@shelf/jest-dynamodb",
   roots: ["src/"],
   testEnvironment: "jsdom",

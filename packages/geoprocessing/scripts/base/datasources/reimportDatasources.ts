@@ -12,7 +12,6 @@ import {
   isInternalRasterDatasource,
   isInternalVectorDatasource,
   getCogFilename,
-  getDatasetBucketName,
 } from "../../../src/datasources";
 import geoblaze from "geoblaze";
 import {

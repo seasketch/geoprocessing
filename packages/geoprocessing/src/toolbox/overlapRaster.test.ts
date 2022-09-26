@@ -2,12 +2,9 @@
  * @jest-environment node
  * @group unit
  */
-import { Feature, Polygon, Sketch } from "../types";
+import { Polygon, Sketch } from "../types";
 import { genSampleSketch } from "../helpers";
-// @ts-ignore
-import geoblaze from "geoblaze";
 import parseGeoraster from "georaster";
-import bbox from "@turf/bbox";
 import { overlapRaster } from "./overlapRaster";
 
 // bbox  - [xmin, ymin, xmax, ymax]

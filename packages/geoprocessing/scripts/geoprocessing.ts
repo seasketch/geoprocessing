@@ -36,16 +36,30 @@ if (process.argv.length < 3) {
       });
       break;
     case "reimport:data":
-      spawn(`${__dirname}/../../scripts/dataPrep/reimport-data.sh`, {
-        cwd: process.cwd(),
-        stdio: "inherit",
-      });
+      spawn(
+        "node",
+        [
+          `${__dirname}/../../scripts/dataPrep/reimport-data.sh`,
+          ...process.argv.slice(2),
+        ],
+        {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        }
+      );
       break;
     case "publish:data":
-      spawn(`${__dirname}/../../scripts/dataPrep/publish-data.sh`, {
-        cwd: process.cwd(),
-        stdio: "inherit",
-      });
+      spawn(
+        "node",
+        [
+          `${__dirname}/../../scripts/dataPrep/publish-data.sh`,
+          ...process.argv.slice(2),
+        ],
+        {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        }
+      );
       break;
     case "create:function":
       spawn("node", [`${__dirname}/init/createFunction.js`], {

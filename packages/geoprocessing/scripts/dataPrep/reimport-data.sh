@@ -3,7 +3,7 @@ set -e
 
 echo "PROJECT_PATH: $PROJECT_PATH"
 
-a# Default to assuming running from project, but check if running from within monorepo like example project
+# Default to assuming running from project, but check if running from within monorepo like example project
 GP_PATH="node_modules/@seasketch/geoprocessing"
 if test -f "$GP_PATH"; then
     GP_PATH="../geoprocessing"

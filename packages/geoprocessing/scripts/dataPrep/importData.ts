@@ -13,10 +13,8 @@ import path from "path";
 import { getProjectClient } from "../base/project/projectClient";
 
 const projectPath = process.argv[2];
-console.log("projectPath", projectPath);
 
 const projectClient = getProjectClient(projectPath);
-console.log("basic", projectClient.basic);
 
 interface ImportVectorDatasourceAnswers
   extends Pick<

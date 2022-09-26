@@ -12,6 +12,8 @@
     "test:smoke": "start-server-and-test start-data 8080 'npm run __test -- --runInBand --group=smoke --silent'",
     "test:smoke:matching": "npm run __test -- --runInBand --group=smoke -t",
     "add:template": "geoprocessing add:template",
+    "import:data": "npx ts-node scripts/importData.ts",
+    "reimport:data": "npx ts-node scripts/reimportData.ts",
     "create:function": "geoprocessing create:function",
     "create:client": "geoprocessing create:client",
     "start:client": "geoprocessing start:client",

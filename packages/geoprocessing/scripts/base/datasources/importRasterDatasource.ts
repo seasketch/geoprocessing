@@ -20,6 +20,7 @@ import {
 } from "../../../src/datasources";
 import { isPolygonFeature } from "../../../src/helpers";
 import { createOrUpdateDatasource } from "./datasources";
+import { loadCogWindow } from "../../../src/dataproviders/cog";
 
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 
@@ -52,7 +53,8 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
   console.log(
     `Fetching raster to calculate stats from temp file server ${url}`
   );
-  const raster = await geoblaze.load(url);
+  // const raster = await geoblaze.load(url);
+  const raster = await loadCogWindow(url, {});
 
   const classStatsByProperty = await genRasterKeyStats(
     config,

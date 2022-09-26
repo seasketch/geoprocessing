@@ -13,24 +13,10 @@ import configFixtures from "../../../src/testing/fixtures/projectConfig";
 import { importDatasource } from "./importDatasource";
 import path from "path";
 import fs from "fs-extra";
-import LocalFileServer from "../util/localServer";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/testing";
 const dstPath = "data/testing/output";
-const tempPort = 8001;
-let server: LocalFileServer;
-
-beforeAll(() => {
-  server = new LocalFileServer({
-    path: dstPath,
-    port: tempPort,
-  });
-});
-
-afterAll(() => {
-  server.close();
-});
 
 describe("Reimport datsources", () => {
   describe("reimportVectorDatasource - single file, single class", () => {

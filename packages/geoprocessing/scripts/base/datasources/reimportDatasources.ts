@@ -26,7 +26,6 @@ import {
   genRasterConfig,
   genRasterKeyStats,
 } from "./importRasterDatasource";
-import LocalFileServer from "../util/localServer";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 
 /**
@@ -43,7 +42,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   /** string or regular expression to express with datasources to reimport, matching on datasourceId */
   matcher?: string
 ): Promise<Datasources> {
-  const allDatasources = readDatasources(newDatasourcePath);
+  const allDatasources = await readDatasources(newDatasourcePath);
   const datasources = matcher
     ? allDatasources.filter((ds) => ds.datasourceId.match(matcher))
     : allDatasources;

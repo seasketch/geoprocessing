@@ -61,7 +61,7 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
       ? projectClient.getDatasourceById(config.filterDatasource)
       : undefined
   );
-  console.log("Stats calculated");
+  console.log("raster key stats calculated");
 
   const timestamp = new Date().toISOString();
 
@@ -144,27 +144,22 @@ export async function genRasterKeyStats(
     }
   })();
 
+  console.log(`measurementType: ${options.measurementType}`);
+  console.log(`Calculating keyStats, this may take a while...`);
+
   // continous - sum
   const sum = (() => {
     if (options.measurementType !== "quantitative") {
       return null;
     }
-    console.log("start sum");
-    console.log("raster", raster);
-    console.log("filterPoly", filterPoly);
     return geoblaze.sum(raster, filterPoly)[0] as number;
   })();
 
-  console.log("sum", sum);
-
   // categorical - histogram, count by class
   const classStats: ClassStats = (() => {
-    console.log("measurementType", options.measurementType);
     if (options.measurementType !== "categorical") return {};
 
     const histogram = geoblaze.histogram(raster) as Histogram;
-    console.log("histogram");
-    console.log(histogram);
     if (!histogram) throw new Error("Histogram not returned");
     // convert histogram to classStats
     const classStats = Object.keys(histogram).reduce<ClassStats>(
@@ -178,11 +173,8 @@ export async function genRasterKeyStats(
       },
       {}
     );
-    console.log("classStats", classStats);
     return classStats;
   })();
-
-  console.log("class stats", classStats);
 
   const totalStats = {
     sum,

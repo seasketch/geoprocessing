@@ -38,58 +38,53 @@ interface ImportRasterDatasourceAnswers
   > {}
 
 // Main function, wrapped in an IIFE to avoid top-level await
-if (typeof require !== "undefined" && require.main === module) {
-  void (async function () {
-    const datasources = readDatasources();
-    const geoTypeAnswer = await geoTypeQuestion(datasources);
 
-    const config = await (async () => {
-      if (geoTypeAnswer.geo_type === "vector") {
-        // vector
-        const inputAnswers = await inputQuestions(datasources);
-        const layerNameAnswer = await layerNameQuestion(
-          path.basename(
-            inputAnswers.src,
-            "." + path.basename(inputAnswers.src).split(".").pop()
-          )
-        );
-        const detailedVectorAnswers = await detailedVectorQuestions(
-          datasources
-        );
+void (async function () {
+  const datasources = readDatasources();
+  const geoTypeAnswer = await geoTypeQuestion(datasources);
 
-        const config = vectorMapper({
-          ...geoTypeAnswer,
-          ...inputAnswers,
-          ...layerNameAnswer,
-          ...detailedVectorAnswers,
-        });
-        return config;
-      } else {
-        // raster
-        const inputAnswers = await inputQuestions(datasources);
-        const rasterBandAnswer = await rasterBandQuestion(
-          inputAnswers.datasourceId
-        );
-        const detailedRasterAnswers = await detailedRasterQuestions(
-          datasources
-        );
+  const config = await (async () => {
+    if (geoTypeAnswer.geo_type === "vector") {
+      // vector
+      const inputAnswers = await inputQuestions(datasources);
+      const layerNameAnswer = await layerNameQuestion(
+        path.basename(
+          inputAnswers.src,
+          "." + path.basename(inputAnswers.src).split(".").pop()
+        )
+      );
+      const detailedVectorAnswers = await detailedVectorQuestions(datasources);
 
-        const config = rasterMapper({
-          ...geoTypeAnswer,
-          ...inputAnswers,
-          ...rasterBandAnswer,
-          ...detailedRasterAnswers,
-        });
-        return config;
-      }
-    })();
+      const config = vectorMapper({
+        ...geoTypeAnswer,
+        ...inputAnswers,
+        ...layerNameAnswer,
+        ...detailedVectorAnswers,
+      });
+      return config;
+    } else {
+      // raster
+      const inputAnswers = await inputQuestions(datasources);
+      const rasterBandAnswer = await rasterBandQuestion(
+        inputAnswers.datasourceId
+      );
+      const detailedRasterAnswers = await detailedRasterQuestions(datasources);
 
-    // @ts-ignore
-    await importDatasource(projectClient, config, {
-      srcUrl: projectClient.dataBucketUrl(),
-    });
+      const config = rasterMapper({
+        ...geoTypeAnswer,
+        ...inputAnswers,
+        ...rasterBandAnswer,
+        ...detailedRasterAnswers,
+      });
+      return config;
+    }
   })();
-}
+
+  // @ts-ignore
+  await importDatasource(projectClient, config, {
+    srcUrl: projectClient.dataBucketUrl(),
+  });
+})();
 
 /** Maps answers object to options */
 function vectorMapper(

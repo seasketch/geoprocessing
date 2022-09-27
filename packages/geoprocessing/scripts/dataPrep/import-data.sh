@@ -1,5 +1,6 @@
 export PROJECT_PATH=$(pwd)
 set -e
+PORT=8001
 
 echo "PROJECT_PATH: $PROJECT_PATH"
 

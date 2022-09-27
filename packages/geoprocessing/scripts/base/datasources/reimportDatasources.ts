@@ -13,7 +13,6 @@ import {
   isInternalVectorDatasource,
   getCogFilename,
 } from "../../../src/datasources";
-import geoblaze from "geoblaze";
 import {
   genVectorConfig,
   genGeojson,
@@ -25,6 +24,7 @@ import {
   genRasterConfig,
   genRasterKeyStats,
 } from "./importRasterDatasource";
+import { loadCogWindow } from "../../../src/dataproviders/cog";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 
 /**
@@ -111,7 +111,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         console.log(
           `Fetching raster to calculate stats from temp file server ${url}`
         );
-        const raster = await geoblaze.load(url);
+        const raster = await loadCogWindow(url, {});
 
         console.log("raster loaded");
 

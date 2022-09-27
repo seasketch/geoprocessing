@@ -18,14 +18,12 @@ import {
   getCogFilename,
   isInternalVectorDatasource,
 } from "../../../src/datasources";
+import { getSum, getHistogram } from "../../../src/toolbox";
 import { isPolygonFeature } from "../../../src/helpers";
 import { createOrUpdateDatasource } from "./datasources";
 import { loadCogWindow } from "../../../src/dataproviders/cog";
 
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
-
-// @ts-ignore
-import geoblaze from "geoblaze";
 
 import dissolve from "@turf/dissolve";
 
@@ -53,7 +51,6 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
   console.log(
     `Fetching raster to calculate stats from temp file server ${url}`
   );
-  // const raster = await geoblaze.load(url);
   const raster = await loadCogWindow(url, {});
 
   const classStatsByProperty = await genRasterKeyStats(
@@ -154,14 +151,14 @@ export async function genRasterKeyStats(
     if (options.measurementType !== "quantitative") {
       return null;
     }
-    return geoblaze.sum(raster, filterPoly)[0] as number;
+    return getSum(raster, filterPoly)[0] as number;
   })();
 
   // categorical - histogram, count by class
   const classStats: ClassStats = (() => {
     if (options.measurementType !== "categorical") return {};
 
-    const histogram = geoblaze.histogram(raster) as Histogram;
+    const histogram = getHistogram(raster) as Histogram;
     if (!histogram) throw new Error("Histogram not returned");
     // convert histogram to classStats
     const classStats = Object.keys(histogram).reduce<ClassStats>(

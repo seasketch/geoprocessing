@@ -55,6 +55,7 @@ export class ProjectClientBase {
     this._objectives = objectivesSchema.parse(config.objectives);
     this._package = packageSchema.parse(config.package);
     this._geoprocessing = geoprocessingConfigSchema.parse(config.geoprocessing);
+    console.log("ProjectClientBase constructed");
   }
 
   // ASSETS //

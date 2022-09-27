@@ -22,7 +22,7 @@ interface CogOptions {
  * windowBox is extended out to the nearest pixel edge to (in theory) avoid resampling. Assumes raster is in WGS84 degrees
  * */
 export const loadCogWindow = async (url: string, options: CogOptions) => {
-  console.log("loadCogWindow", url, JSON.stringify(options));
+  console.log("loadCogWindow", url, "options: ", JSON.stringify(options));
   const georaster = await parseGeoraster(url);
   // Default to meta parsed from raster
   const {
@@ -38,7 +38,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     bufferWidthMultiple = 0.2,
   } = options;
 
-  console.log(`COG loaded with bbox ${windowBox}`);
+  console.log(`using bbox ${windowBox}`);
 
   // Calculate window in geographic and image coordinates
   const { image: finalWindow, bbox: finalBox } = ((box: BBox) => {
@@ -75,8 +75,8 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     resampleMethod: "nearest",
   };
 
-  console.log("COG image options");
-  console.log(JSON.stringify(rasterOptions));
+  // console.log("COG image options");
+  // console.log(JSON.stringify(rasterOptions));
 
   if (!georaster.getValues)
     throw new Error(
@@ -97,8 +97,8 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     pixelWidth,
     pixelHeight,
   };
-  console.log("COG metadata");
-  console.log(metadata);
+  // console.log("COG metadata");
+  // console.log(metadata);
   const raster = await parseGeoraster(values, metadata);
   return raster;
 };

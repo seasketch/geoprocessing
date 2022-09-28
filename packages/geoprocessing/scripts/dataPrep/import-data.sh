@@ -11,7 +11,7 @@ if test -f "$GP_PATH"; then
 fi
 
 echo ""
-echo "Starting local data server for raster import..."
+echo "Starting local web server on port ${PORT} for fetching COG rasters..."
 echo ""
 
 # Run web server, then script, and kill both when done or if exit early

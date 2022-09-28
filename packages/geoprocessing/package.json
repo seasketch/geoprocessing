@@ -35,7 +35,7 @@
     "build-docs": "npm run build-typedoc && npm run build-storybook",
     "prepare": "npm run build:core && npm run _prepare && npm run build:scripts",
     "_prepare": "npx ts-node scripts/npm/prepare",
-    "start-data": "http-server data -c-1 --silent",
+    "start-data": "http-server data -c-1",
     "watch": "tsc --watch",
     "watch:scripts": "npx tsc --build scripts/tsconfig.json --watch"
   },

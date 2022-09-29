@@ -45,6 +45,7 @@ describe("Reimport datsources", () => {
         {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
+          doPublish: false,
         }
       );
 
@@ -63,14 +64,15 @@ describe("Reimport datsources", () => {
         {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
+          doPublish: false,
         }
       );
 
-      const reimportDss = await reimportDatasources(
-        projectClient,
-        dstConfigFilePath,
-        dstPath
-      );
+      const reimportDss = await reimportDatasources(projectClient, {
+        newDatasourcePath: dstConfigFilePath,
+        newDstPath: dstPath,
+        doPublish: false,
+      });
 
       expect(reimportDss.length).toBe(2);
 
@@ -116,10 +118,10 @@ describe("Reimport datsources", () => {
     }, 10000);
     afterEach(() => {
       // Remove the output
-      // fs.removeSync(dstConfigFilePath);
-      // fs.removeSync(path.join(dstPath, `${vectorDatasourceId}.fgb`));
-      // fs.removeSync(path.join(dstPath, `${vectorDatasourceId}.json`));
-      // fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
+      fs.removeSync(dstConfigFilePath);
+      fs.removeSync(path.join(dstPath, `${vectorDatasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${vectorDatasourceId}.json`));
+      fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
     });
   });
 });

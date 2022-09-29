@@ -43,6 +43,7 @@ describe("importVectorDatasource", () => {
         {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
+          doPublish: false,
         }
       );
       const savedDs = fs.readJSONSync(dstConfigFilePath);

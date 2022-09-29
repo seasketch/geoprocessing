@@ -10,7 +10,9 @@ const projectClient = getProjectClient(projectPath);
 
 // Wrap in an IIFE to avoid top-level await
 void (async function () {
-  const publishAnswers = await publishQuestion();
+  const publishAnswers = await publishQuestion(
+    "Do you want to publish datasources to S3 after re-import?"
+  );
 
   await reimportDatasources(projectClient, {
     matcher,

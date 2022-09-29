@@ -4,14 +4,16 @@ export interface PublishAnswers {
   publish: "yes" | "no";
 }
 
-export async function publishQuestion(): Promise<
-  Pick<PublishAnswers, "publish">
-> {
+export async function publishQuestion(
+  questionText?: string
+): Promise<Pick<PublishAnswers, "publish">> {
   return inquirer.prompt<Pick<PublishAnswers, "publish">>([
     {
       type: "list",
       name: "publish",
-      message: "Do you want to publish to S3 cloud storage now?",
+      message: questionText
+        ? questionText
+        : "Do you want to publish the datasource to S3 cloud storage now or wait?",
       default: "no",
       choices: [
         {

@@ -11,7 +11,9 @@ const projectClient = getProjectClient(projectPath);
 void (async function () {
   const publishAnswers = await publishQuestion();
 
-  await publishDatasources(projectClient, {
-    matcher,
-  });
+  if (publishAnswers.publish === "yes") {
+    await publishDatasources(projectClient, {
+      matcher,
+    });
+  }
 })();

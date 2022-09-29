@@ -10,7 +10,6 @@ export interface PublishAnswers {
 // This is a standalone script used as a CLI command with a top-level function
 
 const projectPath = process.argv[2];
-const matcher = process.argv[3];
 const projectClient = getProjectClient(projectPath);
 const numDs = projectClient.datasources.length;
 

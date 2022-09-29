@@ -309,7 +309,7 @@ export async function publishQuestion(): Promise<
       type: "list",
       name: "publish",
       message: "Do you want to publish to S3 cloud storage now?",
-      default: "",
+      default: "no",
       choices: [
         {
           value: "yes",

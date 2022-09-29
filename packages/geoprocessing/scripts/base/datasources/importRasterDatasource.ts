@@ -17,6 +17,7 @@ import {
   getJsonFilename,
   getCogFilename,
   isInternalVectorDatasource,
+  getDatasetBucketName,
 } from "../../../src/datasources";
 import { getSum, getHistogram } from "../../../src/toolbox";
 import { isPolygonFeature } from "../../../src/helpers";
@@ -26,17 +27,19 @@ import { loadCogWindow } from "../../../src/dataproviders/cog";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 
 import dissolve from "@turf/dissolve";
+import { publishDatasource } from "./publishDatasource";
 
 export async function importRasterDatasource<C extends ProjectClientBase>(
   projectClient: C,
   options: ImportRasterDatasourceOptions,
   extraOptions: {
+    doPublish?: boolean;
     newDatasourcePath?: string;
     newDstPath?: string;
-    srcUrl?: string;
+    srcBucketUrl?: string;
   }
 ) {
-  const { newDatasourcePath, newDstPath } = extraOptions;
+  const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genRasterConfig(projectClient, options, newDstPath);
 
   // Ensure dstPath is created
@@ -61,6 +64,19 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
       : undefined
   );
   console.log("raster key stats calculated");
+
+  if (doPublish) {
+    await Promise.all(
+      config.formats.map((format) => {
+        return publishDatasource(
+          config.dstPath,
+          format,
+          config.datasourceId,
+          getDatasetBucketName(config)
+        );
+      })
+    );
+  }
 
   const timestamp = new Date().toISOString();
 

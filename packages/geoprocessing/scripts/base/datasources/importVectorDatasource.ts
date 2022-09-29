@@ -10,21 +10,26 @@ import {
   Stats,
   ImportVectorDatasourceConfig,
 } from "../../../src/types";
-import { datasourceConfig } from "../../../src/datasources";
+import {
+  datasourceConfig,
+  getDatasetBucketName,
+} from "../../../src/datasources";
 import { ProjectClientBase } from "../../../src";
 import { createOrUpdateDatasource } from "./datasources";
 import area from "@turf/area";
+import { publishDatasource } from "./publishDatasource";
 
 export async function importVectorDatasource<C extends ProjectClientBase>(
   projectClient: C,
   options: ImportVectorDatasourceOptions,
   extraOptions: {
+    doPublish?: boolean;
     newDatasourcePath?: string;
     newDstPath?: string;
-    srcUrl?: string;
+    srcBucketUrl?: string;
   }
 ) {
-  const { newDatasourcePath, newDstPath } = extraOptions;
+  const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genVectorConfig(projectClient, options, newDstPath);
 
   // Ensure dstPath is created
@@ -34,6 +39,19 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
   await genFlatgeobuf(config);
 
   const classStatsByProperty = genVectorKeyStats(config);
+
+  if (doPublish) {
+    await Promise.all(
+      config.formats.map((format) => {
+        return publishDatasource(
+          config.dstPath,
+          format,
+          config.datasourceId,
+          getDatasetBucketName(config)
+        );
+      })
+    );
+  }
 
   const timestamp = new Date().toISOString();
 

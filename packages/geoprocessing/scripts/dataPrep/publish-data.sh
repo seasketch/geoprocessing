@@ -10,6 +10,4 @@ if test -f "$GP_PATH"; then
 fi
 
 echo ""
-
-echo "publishData: not yet implemented"
-# node "${GP_PATH}/dist/scripts/dataPrep/publishData.js" $PROJECT_PATH
+node "${GP_PATH}/dist/scripts/dataPrep/publishData.js" $PROJECT_PATH

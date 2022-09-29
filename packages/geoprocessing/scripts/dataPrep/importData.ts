@@ -16,6 +16,10 @@ const projectPath = process.argv[2];
 
 const projectClient = getProjectClient(projectPath);
 
+export interface PublishAnswers {
+  publish: "yes" | "no";
+}
+
 interface ImportVectorDatasourceAnswers
   extends Pick<
     ImportVectorDatasourceOptions,
@@ -38,7 +42,6 @@ interface ImportRasterDatasourceAnswers
   > {}
 
 // Main function, wrapped in an IIFE to avoid top-level await
-
 void (async function () {
   const datasources = readDatasources();
   const geoTypeAnswer = await geoTypeQuestion(datasources);
@@ -80,9 +83,10 @@ void (async function () {
     }
   })();
 
-  // @ts-ignore
+  const publishAnswers = await publishQuestion();
   await importDatasource(projectClient, config, {
-    srcUrl: projectClient.dataBucketUrl(),
+    doPublish: publishAnswers.publish === "yes" ? true : false,
+    srcBucketUrl: projectClient.dataBucketUrl(),
   });
 })();
 
@@ -293,6 +297,29 @@ async function detailedRasterQuestions(
       validate: (value) =>
         value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
+    },
+  ]);
+}
+
+export async function publishQuestion(): Promise<
+  Pick<PublishAnswers, "publish">
+> {
+  return inquirer.prompt<Pick<PublishAnswers, "publish">>([
+    {
+      type: "list",
+      name: "publish",
+      message: "Do you want to publish to S3 cloud storage now?",
+      default: "",
+      choices: [
+        {
+          value: "yes",
+          name: "Yes",
+        },
+        {
+          value: "no",
+          name: "No",
+        },
+      ],
     },
   ]);
 }

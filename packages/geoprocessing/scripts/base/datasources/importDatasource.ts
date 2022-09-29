@@ -19,9 +19,10 @@ export async function importDatasource<C extends ProjectClientBase>(
   projectClient: C,
   options: ImportVectorDatasourceOptions | ImportRasterDatasourceOptions,
   extraOptions: {
+    doPublish?: boolean;
     newDatasourcePath?: string;
     newDstPath?: string;
-    srcUrl?: string;
+    srcBucketUrl?: string;
   }
 ) {
   if (options.geo_type === "vector") {

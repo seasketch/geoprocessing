@@ -12,6 +12,7 @@ import {
   isInternalRasterDatasource,
   isInternalVectorDatasource,
   getCogFilename,
+  getDatasetBucketName,
 } from "../../../src/datasources";
 import {
   genVectorConfig,
@@ -26,6 +27,7 @@ import {
 } from "./importRasterDatasource";
 import { loadCogWindow } from "../../../src/dataproviders/cog";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
+import { publishDatasource } from "./publishDatasource";
 
 /**
  * Import a dataset into the project.  Must be a src file that OGR or GDAL can read.
@@ -34,13 +36,24 @@ import ProjectClientBase from "../../../src/project/ProjectClientBase";
  */
 export async function reimportDatasources<C extends ProjectClientBase>(
   projectClient: C,
-  /** Alternative path to look for datasources than default. useful for testing */
-  newDatasourcePath?: string,
-  /** Alternative path to store transformed data. useful for testing */
-  newDstPath?: string,
-  /** string or regular expression to express with datasources to reimport, matching on datasourceId */
-  matcher?: string
+  extraOptions: {
+    /** Whether or not to publish after reimport */
+    doPublish?: boolean;
+    /** Alternative path to look for datasources than default. useful for testing */
+    newDatasourcePath?: string;
+    /** Alternative path to store transformed data. useful for testing */
+    newDstPath?: string;
+    /** string or regular expression to express with datasources to reimport, matching on datasourceId */
+    matcher?: string;
+  }
 ): Promise<Datasources> {
+  const {
+    newDatasourcePath,
+    newDstPath,
+    matcher,
+    doPublish = false,
+  } = extraOptions;
+
   const allDatasources = await readDatasources(newDatasourcePath);
   const datasources = matcher
     ? allDatasources.filter((ds) => ds.datasourceId.match(matcher))
@@ -67,6 +80,19 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         await genGeojson(config);
         await genFlatgeobuf(config);
         const classStatsByProperty = genVectorKeyStats(config);
+
+        if (doPublish) {
+          await Promise.all(
+            config.formats.map((format) => {
+              return publishDatasource(
+                config.dstPath,
+                format,
+                config.datasourceId,
+                getDatasetBucketName(config)
+              );
+            })
+          );
+        }
 
         const newVectorD: InternalVectorDatasource = {
           ...ds,
@@ -118,6 +144,19 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         const classStatsByProperty = await genRasterKeyStats(config, raster);
 
         console.log("raster key stats calculated");
+
+        if (doPublish) {
+          await Promise.all(
+            config.formats.map((format) => {
+              return publishDatasource(
+                config.dstPath,
+                format,
+                config.datasourceId,
+                getDatasetBucketName(config)
+              );
+            })
+          );
+        }
 
         const newRasterD: InternalRasterDatasource = {
           ...ds,

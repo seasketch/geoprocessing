@@ -1,4 +1,5 @@
 export * from "./datasources";
 export * from "./importDatasource";
-export * from "./publishDatasource";
 export * from "./reimportDatasources";
+export * from "./publishDatasource";
+export * from "./publishDatasources";

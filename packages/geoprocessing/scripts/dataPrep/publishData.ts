@@ -1,4 +1,4 @@
-import { reimportDatasources } from "../base/datasources";
+import { publishDatasources } from "../base/datasources";
 import { getProjectClient } from "../base/project/projectClient";
 import { publishQuestion } from "./importData";
 
@@ -8,10 +8,7 @@ const projectClient = getProjectClient(projectPath);
 
 // Wrap in an IIFE to avoid top-level await
 void (async function () {
-  const publishAnswers = await publishQuestion();
-
-  await reimportDatasources(projectClient, {
+  await publishDatasources(projectClient, {
     matcher,
-    doPublish: publishAnswers.publish === "yes" ? true : false,
   });
 })();

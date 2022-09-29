@@ -28,7 +28,7 @@ export async function publishDatasources<C extends ProjectClientBase>(
     newDatasourcePath?: string;
     /** Alternative path to store transformed data. useful for testing */
     newDstPath?: string;
-    /** string or regular expression to express with datasources to reimport, matching on datasourceId */
+    /** string or regular expression to express with datasources to publish, matching on datasourceId */
     matcher?: string;
   }
 ): Promise<Datasources> {

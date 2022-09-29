@@ -35,26 +35,20 @@ export async function publishDatasources<C extends ProjectClientBase>(
   const { newDatasourcePath, newDstPath, matcher } = extraOptions;
 
   const allDatasources = await readDatasources(newDatasourcePath);
-  const filteredDatasources = (() => {
-    console.log("matcher", matcher);
+  const finalDatasources = (() => {
     if (!matcher) {
       return allDatasources;
     } else if (Array.isArray(matcher)) {
-      console.log(
-        "datasources",
-        allDatasources.map((ds) => ds.datasourceId)
-      );
       const filteredDs = allDatasources.filter((ds) =>
         matcher.includes(ds.datasourceId)
       );
-      console.log("filteredDs", filteredDs);
       return filteredDs;
     } else {
       return allDatasources.filter((ds) => ds.datasourceId.match(matcher));
     }
   })();
 
-  if (filteredDatasources.length === 0) {
+  if (finalDatasources.length === 0) {
     console.log("No datasources found");
     return [];
   }
@@ -62,7 +56,6 @@ export async function publishDatasources<C extends ProjectClientBase>(
   // Process one at a time
   let failed = 0;
   let updated = 0;
-  let finalDatasources: Datasources = [];
   for (const ds of finalDatasources) {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       try {

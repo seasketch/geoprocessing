@@ -54,7 +54,7 @@ export interface DatasourcesAnswers {
 export async function datasourcesQuestion(
   datasources: Datasources
 ): Promise<DatasourcesAnswers> {
-  const datasourcesQuestion = getDatasourcesQuestion(datasources);
+  const datasourcesQuestion = await getDatasourcesQuestion(datasources);
   const answer = await inquirer.prompt<DatasourcesAnswers>([
     datasourcesQuestion,
   ]);
@@ -79,7 +79,7 @@ export async function getDatasourcesQuestion(datasources: Datasources) {
     ...datasourceQuestion,
     choices: [
       ...datasourceQuestion.choices,
-      ...datasources.map((ds, index) => ({
+      ...datasources.map((ds) => ({
         value: ds.datasourceId,
         name: `${ds.datasourceId} - ${ds.geo_type}`,
       })),

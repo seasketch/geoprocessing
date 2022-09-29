@@ -28,18 +28,24 @@ export async function publishDatasources<C extends ProjectClientBase>(
     newDatasourcePath?: string;
     /** Alternative path to store transformed data. useful for testing */
     newDstPath?: string;
-    /** string or regular expression to express with datasources to publish, matching on datasourceId */
-    matcher?: string;
-  }
+    /** string/regular expression matching on datasourceID or array of datasource IDs */
+    matcher?: string | string[];
+  } = {}
 ): Promise<Datasources> {
   const { newDatasourcePath, newDstPath, matcher } = extraOptions;
 
   const allDatasources = await readDatasources(newDatasourcePath);
-  const datasources = matcher
-    ? allDatasources.filter((ds) => ds.datasourceId.match(matcher))
-    : allDatasources;
+  const filteredDatasources = (() => {
+    if (!matcher) {
+      return allDatasources;
+    } else if (Array.isArray(matcher)) {
+      return allDatasources.filter((ds) => matcher.includes(ds.datasourceId));
+    } else {
+      return allDatasources.filter((ds) => ds.datasourceId.match(matcher));
+    }
+  })();
 
-  if (datasources.length === 0) {
+  if (filteredDatasources.length === 0) {
     console.log("No datasources found");
     return [];
   }
@@ -48,7 +54,7 @@ export async function publishDatasources<C extends ProjectClientBase>(
   let failed = 0;
   let updated = 0;
   let finalDatasources: Datasources = [];
-  for (const ds of datasources) {
+  for (const ds of finalDatasources) {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       try {
         console.log(`${ds.datasourceId} vector publish started`);

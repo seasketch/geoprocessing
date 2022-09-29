@@ -13,7 +13,7 @@ export async function publishQuestion(
       name: "publish",
       message: questionText
         ? questionText
-        : "Do you want to publish the datasource to S3 cloud storage now or wait?",
+        : "Do you want to publish the datasource to S3 cloud storage?",
       default: "no",
       choices: [
         {

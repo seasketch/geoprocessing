@@ -11,14 +11,12 @@ import {
 } from "../../src";
 import path from "path";
 import { getProjectClient } from "../base/project/projectClient";
+import { publishQuestion } from "./publishQuestion";
+
+// This is a standalone script used as a CLI command with a top-level function
 
 const projectPath = process.argv[2];
-
 const projectClient = getProjectClient(projectPath);
-
-interface PublishAnswers {
-  publish: "yes" | "no";
-}
 
 interface ImportVectorDatasourceAnswers
   extends Pick<
@@ -297,27 +295,6 @@ async function detailedRasterQuestions(
       validate: (value) =>
         value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
-    },
-  ]);
-}
-
-async function publishQuestion(): Promise<Pick<PublishAnswers, "publish">> {
-  return inquirer.prompt<Pick<PublishAnswers, "publish">>([
-    {
-      type: "list",
-      name: "publish",
-      message: "Do you want to publish to S3 cloud storage now?",
-      default: "no",
-      choices: [
-        {
-          value: "yes",
-          name: "Yes",
-        },
-        {
-          value: "no",
-          name: "No",
-        },
-      ],
     },
   ]);
 }

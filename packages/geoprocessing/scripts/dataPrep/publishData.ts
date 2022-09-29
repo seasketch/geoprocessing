@@ -18,9 +18,10 @@ void (async function () {
   const publishAllAnswers = await publishAllQuestion(numDs);
 
   if (publishAllAnswers.publish === "yes") {
+    await publishDatasources(projectClient);
+  } else {
     const dsAnswers = await datasourcesQuestion(projectClient.datasources);
     await publishDatasources(projectClient, { matcher: dsAnswers.datasources });
-  } else {
   }
 })();
 

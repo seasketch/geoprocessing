@@ -36,10 +36,19 @@ export async function publishDatasources<C extends ProjectClientBase>(
 
   const allDatasources = await readDatasources(newDatasourcePath);
   const filteredDatasources = (() => {
+    console.log("matcher", matcher);
     if (!matcher) {
       return allDatasources;
     } else if (Array.isArray(matcher)) {
-      return allDatasources.filter((ds) => matcher.includes(ds.datasourceId));
+      console.log(
+        "datasources",
+        allDatasources.map((ds) => ds.datasourceId)
+      );
+      const filteredDs = allDatasources.filter((ds) =>
+        matcher.includes(ds.datasourceId)
+      );
+      console.log("filteredDs", filteredDs);
+      return filteredDs;
     } else {
       return allDatasources.filter((ds) => ds.datasourceId.match(matcher));
     }

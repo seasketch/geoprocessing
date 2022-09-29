@@ -16,7 +16,7 @@ const projectPath = process.argv[2];
 
 const projectClient = getProjectClient(projectPath);
 
-export interface PublishAnswers {
+interface PublishAnswers {
   publish: "yes" | "no";
 }
 
@@ -301,9 +301,7 @@ async function detailedRasterQuestions(
   ]);
 }
 
-export async function publishQuestion(): Promise<
-  Pick<PublishAnswers, "publish">
-> {
+async function publishQuestion(): Promise<Pick<PublishAnswers, "publish">> {
   return inquirer.prompt<Pick<PublishAnswers, "publish">>([
     {
       type: "list",

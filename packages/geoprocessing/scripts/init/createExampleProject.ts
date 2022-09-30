@@ -30,6 +30,9 @@ const PROJECT_PATH = `packages/example-project`;
       repositoryUrl: "https://github.com/seasketch/example-project",
       region: "us-west-1",
       templates: [],
+      bbox: "[0, 0, 0, 0]",
+      noun: "Samoa",
+      nounPossessive: "Samoan",
     },
     false,
     PROJECT_PATH.split("/").slice(0, -1).join("/")

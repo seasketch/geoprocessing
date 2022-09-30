@@ -23,6 +23,9 @@ it("should create empty project", async () => {
       repositoryUrl: "https://github.com/test/test-project",
       region: "us-west-1",
       templates: [],
+      bbox: "[0, 0, 0, 0]",
+      noun: "Samoa",
+      nounPossessive: "Samoan",
     },
     false,
     rootPath
@@ -63,6 +66,9 @@ it("should create project with template with preprocessor", async () => {
       repositoryUrl: "https://github.com/test/test-project",
       region: "us-west-1",
       templates: ["gp-clip-ocean"],
+      bbox: "[0, 0, 0, 0]",
+      noun: "Samoa",
+      nounPossessive: "Samoan",
     },
     false,
     rootPath
@@ -91,6 +97,9 @@ it("should create project with template with 1 of each", async () => {
       repositoryUrl: "https://github.com/test/test-project",
       region: "us-west-1",
       templates: ["gp-clip-ocean", "gp-raster-stats"],
+      bbox: "[0, 0, 0, 0]",
+      noun: "Samoa",
+      nounPossessive: "Samoan",
     },
     false,
     rootPath

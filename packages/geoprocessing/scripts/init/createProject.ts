@@ -3,7 +3,7 @@ import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
 import { join } from "path";
-import { Package } from "../../src/types";
+import { BBox, Package } from "../../src/types";
 import util from "util";
 const exec = util.promisify(require("child_process").exec);
 
@@ -17,7 +17,10 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   repositoryUrl: string;
   region: string;
   gpVersion?: string;
-  bbox: string;
+  bboxMinLng: number;
+  bboxMaxLng: number;
+  bboxMinLat: number;
+  bboxMaxLat: number;
   noun: string;
   nounPossessive: string;
 }
@@ -129,7 +132,12 @@ export async function createProject(
   const basic = fs.readJSONSync(`${projectPath}/project/basic.json`);
   await fs.writeJSONSync(`${projectPath}/project/basic.json`, {
     ...basic,
-    bbox: metadata.bbox,
+    bbox: [
+      metadata.bboxMinLng,
+      metadata.bboxMinLat,
+      metadata.bboxMaxLng,
+      metadata.bboxMaxLat,
+    ],
     noun: metadata.noun,
     nounPossessive: metadata.nounPossessive,
   });

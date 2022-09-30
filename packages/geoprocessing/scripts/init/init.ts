@@ -20,7 +20,7 @@ async function init(gpVersion?: string) {
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
   const templateQuestion = await getTemplateQuestion();
-  const packageAnswers = await inquirer.prompt<CreateProjectMetadata>([
+  const answers = await inquirer.prompt<CreateProjectMetadata>([
     /* Pass your questions in here */
     {
       type: "input",
@@ -103,12 +103,29 @@ async function init(gpVersion?: string) {
         }
       },
     },
+    {
+      type: "input",
+      name: "bbox",
+      message: "Project bounding box in form [minX, minY, maxX, maxY]",
+    },
+    {
+      type: "input",
+      name: "noun",
+      message:
+        "What is the name of the country/site/planning area? (e.g. Samoa)",
+    },
+    {
+      type: "input",
+      name: "nounPossessive",
+      message:
+        "Is there a possessive form of this name? (e.g. Samoan) Leave blank if not",
+    },
     templateQuestion,
   ]);
 
-  packageAnswers.gpVersion = gpVersion;
+  answers.gpVersion = gpVersion;
 
-  await createProject(packageAnswers);
+  await createProject(answers);
 }
 
 if (require.main === module) {

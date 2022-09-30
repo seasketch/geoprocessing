@@ -17,6 +17,9 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   repositoryUrl: string;
   region: string;
   gpVersion?: string;
+  bbox: string;
+  noun: string;
+  nounPossessive: string;
 }
 
 /** Create project at basePath.  If should be created non-interactively then set interactive = false and provide all project creation metadata, otherwise will prompt for answers  */
@@ -121,6 +124,16 @@ export async function createProject(
     )
   );
   spinner.succeed("created geoprocessing.json");
+
+  spinner.start("updating basic.json");
+  const basic = fs.readJSONSync(`${gpPath}/project/basic.json`).toString();
+  await fs.writeJSONSync(`${projectPath}/project/basic.json`, {
+    ...basic,
+    bbox: metadata.bbox,
+    noun: metadata.noun,
+    nounPossessive: metadata.nounPossessive,
+  });
+  spinner.succeed("updated basic.json");
 
   spinner.start("add .gitignore");
   try {

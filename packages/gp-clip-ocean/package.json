@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/gp-clip-ocean",
-  "version": "0.15.0",
+  "version": "1.0.0",
   "description": "preprocessor to clip feature within an ocean EEZ boundary",
   "author": "Tim Welch",
   "license": "BSD-3-Clause",
@@ -19,7 +19,7 @@
     "template"
   ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "^0.15.0",
+    "@seasketch/geoprocessing": "^1.0.0",
     "@turf/boolean-disjoint": "6.5.0",
     "@turf/boolean-valid": "6.5.0"
   },

@@ -126,7 +126,7 @@ export async function createProject(
   spinner.succeed("created geoprocessing.json");
 
   spinner.start("updating basic.json");
-  const basic = fs.readJSONSync(`${projectPath}/project/basic.json`).toString();
+  const basic = fs.readJSONSync(`${projectPath}/project/basic.json`);
   await fs.writeJSONSync(`${projectPath}/project/basic.json`, {
     ...basic,
     bbox: metadata.bbox,

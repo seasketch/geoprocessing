@@ -2,7 +2,7 @@
 
 #### :boom: Breaking Changes
 
-* Upgrade AWS Cloud Development Kit (CDK) and SDK to version 2.  If you haven't deployed a stack in your AWS Region, one your next deploy you will be asked to first run a `cdk bootstrap` command to upgrade.  If your stack fails to deploy properly you may need to destroy and recreate it.
+* Upgrade AWS Cloud Development Kit (CDK) and SDK to version 2.  If you haven't deployed a stack in your AWS Region, on your next deploy you will be asked to first run a `cdk bootstrap` command to upgrade.  If your stack fails to deploy properly you may need to destroy and recreate it.
 
 #### :rocket: New Feature / Improvement
 

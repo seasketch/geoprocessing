@@ -55,20 +55,18 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   } = extraOptions;
 
   const allDatasources = await readDatasources(newDatasourcePath);
-  const finalDatasources = (() => {
+  const filteredDatasources = (() => {
     if (!matcher) {
       return allDatasources;
-    } else if (Array.isArray(matcher)) {
+    } else {
       const filteredDs = allDatasources.filter((ds) =>
         matcher.includes(ds.datasourceId)
       );
       return filteredDs;
-    } else {
-      return allDatasources.filter((ds) => ds.datasourceId.match(matcher));
     }
   })();
 
-  if (finalDatasources.length === 0) {
+  if (filteredDatasources.length === 0) {
     console.log("No datasources found");
     return [];
   }
@@ -76,7 +74,8 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   // Process one at a time
   let failed = 0;
   let updated = 0;
-  for (const ds of finalDatasources) {
+  let finalDatasources: Datasources = [];
+  for (const ds of filteredDatasources) {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       try {
         console.log(`${ds.datasourceId} vector reimport started`);

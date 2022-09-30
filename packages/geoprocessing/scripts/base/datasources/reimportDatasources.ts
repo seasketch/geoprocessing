@@ -151,6 +151,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         const classStatsByProperty = await genRasterKeyStats(config, raster);
 
         console.log("raster key stats calculated");
+        console.log(JSON.stringify(classStatsByProperty));
 
         if (doPublish) {
           await Promise.all(

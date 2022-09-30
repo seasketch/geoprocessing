@@ -64,6 +64,7 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
       : undefined
   );
   console.log("raster key stats calculated");
+  console.log(JSON.stringify(classStatsByProperty));
 
   if (doPublish) {
     await Promise.all(
@@ -167,7 +168,7 @@ export async function genRasterKeyStats(
     if (options.measurementType !== "quantitative") {
       return null;
     }
-    return getSum(raster, filterPoly)[0] as number;
+    return getSum(raster, filterPoly);
   })();
 
   // categorical - histogram, count by class

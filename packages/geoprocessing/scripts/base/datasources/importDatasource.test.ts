@@ -136,6 +136,9 @@ describe("importVectorDatasource", () => {
       expect(Array.isArray(savedDs) && savedDs.length === 1).toBe(true);
       const validDs = internalRasterDatasourceSchema.parse(savedDs[0]);
       expect(returnedDs).toEqual(validDs);
+      expect(
+        returnedDs.keyStats && returnedDs.keyStats.total.total.sum === 4
+      ).toBe(true);
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.tif`)));
     }, 10000);
     afterEach(() => {

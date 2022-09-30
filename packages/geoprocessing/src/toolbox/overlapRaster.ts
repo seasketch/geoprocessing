@@ -101,7 +101,7 @@ export async function overlapRaster(
 export const getSum = (
   raster: Georaster,
   feat?: Feature<Polygon | MultiPolygon>
-) => {
+): number => {
   let sum = 0;
   try {
     sum = geoblaze.sum(raster, feat)[0];

@@ -1,3 +1,41 @@
+## :tada: v1.0.0 (2022-09-30) :tada:
+
+#### :boom: Breaking Changes
+
+* Upgrade AWS Cloud Development Kit (CDK) and SDK to version 2.  If you haven't deployed a stack in your AWS Region, one your next deploy you will be asked to first run a `cdk bootstrap` command to upgrade.  If your stack fails to deploy properly you may need to destroy and recreate it.
+
+#### :rocket: New Feature / Improvement
+
+* Add first-class support for project configuration (basic.json, datasources.json, metrics.json, objectives.json) with a new `ProjectClient` class for accessing everything in a central place.
+* Add new commands for importing, reimporting, and publishing both vector and raster datasources with integrated precalculation (`import:data`, `reimport:data`, `publish:data`)
+* Add schema validation for many types using `zod`, allowing JSON config files that are often manually edited to be validated.
+* Support deploying a barebones project with no assets, solving chicken/egg problem
+* Add stack destroy CLI command
+* Unsilence logging for webservers that run during CLI commands and tests for better comprehension/easier debugging
+* Add ToolbarCard component
+* Enhance LayerToggle component UX
+* Refactor DataDownload component
+* Extend ResultsCard to support a custom card layout
+* Increase default bar chart height from 10px to 12px
+* Export valueFormatter for project use
+* Add minimum node (>= 16) and npm (>= 8.5) requirements
+* Migrate lambdas to node 16
+* Publish API docs (https://seasketch.github.io/geoprocessing/api/)
+* Publish UI component library (https://seasketch.github.io/geoprocessing/storybook/?path=/story/components-card-card--simple)
+
+#### :bug: Bug Fix
+
+* Add workaround to run storybook in a vscode devcontainer
+* Change table row sum check error to warning within a certain range, to not block report renders.
+
+#### :house: Internal
+
+* Improve COG and Flatgeobuf logging for easier debugging of sources
+* Change some of the lambda environment variable names for clarity (e.g. SUBSCRIPTIONS_TABLE)
+* Add zx dependency for easier execution of shell commands (https://github.com/google/zx)
+* Add `local` variant of tests that includes e2e
+* Unsilence web servers used in CLI commands and testing for easier use
+
 ## v0.15.0 (2022-05-02)
 
 #### :boom: Breaking Changes

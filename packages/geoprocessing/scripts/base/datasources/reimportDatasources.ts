@@ -44,7 +44,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
     /** Alternative path to store transformed data. useful for testing */
     newDstPath?: string;
     /** string or regular expression to express with datasources to reimport, matching on datasourceId */
-    matcher?: string;
+    matcher?: string[];
   }
 ): Promise<Datasources> {
   const {
@@ -55,11 +55,20 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   } = extraOptions;
 
   const allDatasources = await readDatasources(newDatasourcePath);
-  const datasources = matcher
-    ? allDatasources.filter((ds) => ds.datasourceId.match(matcher))
-    : allDatasources;
+  const finalDatasources = (() => {
+    if (!matcher) {
+      return allDatasources;
+    } else if (Array.isArray(matcher)) {
+      const filteredDs = allDatasources.filter((ds) =>
+        matcher.includes(ds.datasourceId)
+      );
+      return filteredDs;
+    } else {
+      return allDatasources.filter((ds) => ds.datasourceId.match(matcher));
+    }
+  })();
 
-  if (datasources.length === 0) {
+  if (finalDatasources.length === 0) {
     console.log("No datasources found");
     return [];
   }
@@ -67,8 +76,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   // Process one at a time
   let failed = 0;
   let updated = 0;
-  let finalDatasources: Datasources = [];
-  for (const ds of datasources) {
+  for (const ds of finalDatasources) {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       try {
         console.log(`${ds.datasourceId} vector reimport started`);

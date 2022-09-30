@@ -12,9 +12,7 @@ export interface ReimportAnswers {
 
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
-const numDs = projectClient.datasources.filter((ds) =>
-  ds.formats.includes("subdivided")
-).length;
+const numDs = projectClient.datasources.length;
 
 // Wrap in an IIFE to avoid top-level await
 void (async function () {

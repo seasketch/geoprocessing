@@ -1,2 +1,2 @@
-import project from "./project";
+import project from "./projectClient";
 export default project;

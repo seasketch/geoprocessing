@@ -30,19 +30,15 @@ const PROJECT_PATH = `packages/example-project`;
       repositoryUrl: "https://github.com/seasketch/example-project",
       region: "us-west-1",
       templates: [],
+      bboxMaxLat: 0,
+      bboxMinLat: 0,
+      bboxMaxLng: 0,
+      bboxMinLng: 0,
+      noun: "Samoa",
+      nounPossessive: "Samoan",
     },
     false,
     PROJECT_PATH.split("/").slice(0, -1).join("/")
-  );
-
-  await makePreprocessingHandler(
-    {
-      title: "clipToBounds",
-      typescript: true,
-      description: "Clips sketch to bounding box",
-    },
-    false,
-    PROJECT_PATH + "/"
   );
 
   // sync geoprocessor

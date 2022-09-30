@@ -11,9 +11,9 @@ export * from "./helpers";
 export * from "./iucn";
 export * from "./metrics";
 export * from "./rbcs";
-export * from "./testing";
 export * from "./toolbox";
 export * from "./types";
 export * from "./testing";
+export * from "./project";
 
 export { default as version } from "../package.json";

@@ -20,7 +20,7 @@ async function init(gpVersion?: string) {
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
   const templateQuestion = await getTemplateQuestion();
-  const packageAnswers = await inquirer.prompt<CreateProjectMetadata>([
+  const answers = await inquirer.prompt<CreateProjectMetadata>([
     /* Pass your questions in here */
     {
       type: "input",
@@ -103,12 +103,60 @@ async function init(gpVersion?: string) {
         }
       },
     },
+    {
+      type: "input",
+      name: "bboxMinLat",
+      message:
+        "What is the projects minimum latitude in degrees (bottom)? (-180.0 to 180.0)",
+      validate: (value) =>
+        value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
+      filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
+    },
+    {
+      type: "input",
+      name: "bboxMaxLat",
+      message:
+        "What is the projects maximum latitude in degrees (top)? (-180.0 to 180.0)",
+      validate: (value) =>
+        value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
+      filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
+    },
+    {
+      type: "input",
+      name: "bboxMinLng",
+      message:
+        "What is the projects minimum longitude in degrees (left)? (-180.0 to 180.0)",
+      validate: (value) =>
+        value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
+      filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
+    },
+    {
+      type: "input",
+      name: "bboxMaxLng",
+      message:
+        "What is the projects minimum longitude in degrees (right)? (-180.0 to 180.0)",
+      validate: (value) =>
+        value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
+      filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
+    },
+    {
+      type: "input",
+      name: "noun",
+      message:
+        "What is the name of the country/site/planning area? (e.g. Samoa)",
+    },
+    {
+      type: "input",
+      name: "nounPossessive",
+      message:
+        "Is there a possessive form of this name? (e.g. Samoan) Leave blank if not",
+    },
     templateQuestion,
   ]);
 
-  packageAnswers.gpVersion = gpVersion;
+  answers.gpVersion = gpVersion;
 
-  await createProject(packageAnswers);
+  await createProject(answers);
 }
 
 if (require.main === module) {

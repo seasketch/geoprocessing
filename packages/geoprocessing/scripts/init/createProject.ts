@@ -3,7 +3,7 @@ import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
 import { join } from "path";
-import { Package } from "../types";
+import { BBox, Package } from "../../src/types";
 import util from "util";
 const exec = util.promisify(require("child_process").exec);
 
@@ -17,6 +17,12 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   repositoryUrl: string;
   region: string;
   gpVersion?: string;
+  bboxMinLng: number;
+  bboxMaxLng: number;
+  bboxMinLat: number;
+  bboxMaxLat: number;
+  noun: string;
+  nounPossessive: string;
 }
 
 /** Create project at basePath.  If should be created non-interactively then set interactive = false and provide all project creation metadata, otherwise will prompt for answers  */
@@ -41,6 +47,10 @@ export async function createProject(
   spinner.succeed(`created ${projectPath}/`);
   spinner.start("copying template");
 
+  // If running from project space, which runs gp code in dist build folder
+  // then set gpPath to top-level of dist folder (3 folders up), where the templates folder is
+  // else must be running gp code from src folder (like tests)
+  // and should set gpPath to top-level of src (2 folders up)
   const gpPath = /dist/.test(__dirname)
     ? `${__dirname}/../../..`
     : `${__dirname}/../..`;
@@ -52,6 +62,7 @@ export async function createProject(
   );
   const curGpVersion = curGpPackage.version;
 
+  // Copy all files from base template
   await fs.copy(projectTemplatePath, projectPath);
 
   spinner.succeed("copied base files");
@@ -116,6 +127,21 @@ export async function createProject(
     )
   );
   spinner.succeed("created geoprocessing.json");
+
+  spinner.start("updating basic.json");
+  const basic = fs.readJSONSync(`${projectPath}/project/basic.json`);
+  await fs.writeJSONSync(`${projectPath}/project/basic.json`, {
+    ...basic,
+    bbox: [
+      metadata.bboxMinLng,
+      metadata.bboxMinLat,
+      metadata.bboxMaxLng,
+      metadata.bboxMaxLat,
+    ],
+    noun: metadata.noun,
+    nounPossessive: metadata.nounPossessive,
+  });
+  spinner.succeed("updated basic.json");
 
   spinner.start("add .gitignore");
   try {

@@ -98,7 +98,10 @@ export async function overlapRaster(
 /**
  * Returns sum of value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
  */
-const getSum = (raster: Georaster, feat: Feature<Polygon | MultiPolygon>) => {
+export const getSum = (
+  raster: Georaster,
+  feat?: Feature<Polygon | MultiPolygon>
+): number => {
   let sum = 0;
   try {
     sum = geoblaze.sum(raster, feat)[0];
@@ -108,4 +111,22 @@ const getSum = (raster: Georaster, feat: Feature<Polygon | MultiPolygon>) => {
     );
   }
   return sum;
+};
+
+/**
+ * Returns histogram of value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
+ */
+export const getHistogram = (
+  raster: Georaster,
+  feat?: Feature<Polygon | MultiPolygon>
+) => {
+  let histogram = {};
+  try {
+    histogram = geoblaze.histogram(raster, feat)[0];
+  } catch (err) {
+    console.log(
+      "overlapRaster raster histogram threw, must not be any overlapping cells with value"
+    );
+  }
+  return histogram;
 };

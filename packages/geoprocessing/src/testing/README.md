@@ -1,0 +1,1 @@
+The `geoprocessing/src/testing` directory gets bundled with the geoprocessing library via its index file.  This makes the testing bits available for import and use in project space.  Do not export large items from within here, use the top-level `geoprocessing/data` directory for those.

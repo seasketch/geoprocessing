@@ -1,7 +1,12 @@
 import React from "react";
 import { nestMetrics } from "../../metrics/helpers";
-import { percentWithEdge, PercentEdgeOptions, keyBy } from "../../helpers";
-import { DataGroup, Metric } from "../../types";
+import {
+  percentWithEdge,
+  PercentEdgeOptions,
+  keyBy,
+  getObjectiveById,
+} from "../../helpers";
+import { MetricGroup, Metric, Objective } from "../../types";
 import { Table, Column } from "../table/Table";
 import { LayerToggle } from "../LayerToggle";
 import { CheckCircleFill } from "@styled-icons/bootstrap";
@@ -13,6 +18,7 @@ import { ValueFormatter, valueFormatter } from "../../helpers/valueFormatter";
 
 import { ReportTableStyled } from "../table/ReportTableStyled";
 import styled from "styled-components";
+import { getMetricGroupObjectiveId } from "../../helpers/metricGroup";
 
 export const ClassTableStyled = styled(ReportTableStyled)`
   .styled {
@@ -38,7 +44,7 @@ export type TargetFormatter = (
 export interface ClassTableColumnConfig {
   /** column display type */
   type: "class" | "metricValue" | "metricChart" | "metricGoal" | "layerToggle";
-  /** metricId to use for column - metricGoal will access its values via the dataGroup  */
+  /** metricId to use for column - metricGoal will access its values via the metricGroup  */
   metricId?: string;
   /** column header label */
   columnLabel?: string;
@@ -61,8 +67,10 @@ export interface ClassTableColumnConfig {
 export interface ClassTableProps {
   /** Table row objects, each expected to have a classId and value. */
   rows: Metric[];
-  /** Data class definitions. if group has layerId at top-level, will display one toggle for whole group */
-  dataGroup: DataGroup;
+  /** Source for metric class definitions. if group has layerId at top-level, will display one toggle for whole group */
+  metricGroup: MetricGroup;
+  /** Optional objective for metric */
+  objective?: Objective | Objective[];
   /** configuration of one or more columns to display */
   columnConfig: ClassTableColumnConfig[];
 }
@@ -73,10 +81,11 @@ export interface ClassTableProps {
 export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   rows,
   columnConfig,
-  dataGroup,
+  metricGroup,
+  objective,
 }) => {
   const classesByName = keyBy(
-    dataGroup.classes,
+    metricGroup.classes,
     (curClass) => curClass.classId
   );
 
@@ -133,24 +142,32 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
               throw new Error("Missing metricId in column config");
             const value =
               metricsByClassByMetric[row.classId][colConfig.metricId][0].value;
+            const target = (() => {
+              if (!objective) return 0;
+              if (Array.isArray(objective)) {
+                // Multi-objective - need to find by class ID
+                const objectiveId = getMetricGroupObjectiveId(
+                  metricGroup,
+                  row.classId
+                );
+                const theObj = Array.isArray(objective)
+                  ? getObjectiveById(objectiveId, objective)
+                  : objective;
 
-            const goalValue =
-              classesByName[row.classId] && classesByName[row.classId].goalValue
-                ? classesByName[row.classId].goalValue! * 100
-                : 0;
-            let target = 0;
-            // @ts-ignore: need to add objective to type
-            if (dataGroup.objective) {
-              if (colConfig.valueFormatter === "percent") {
-                // @ts-ignore: need to add objective to type
-                target = dataGroup.objective.target * 100;
+                if (colConfig.valueFormatter === "percent") {
+                  return theObj.target * 100;
+                } else {
+                  return theObj.target;
+                }
               } else {
-                // @ts-ignore: need to add objective to type
-                target = dataGroup.objective.target;
+                // single objective, just grab the target
+                if (colConfig.valueFormatter === "percent") {
+                  return objective.target * 100;
+                } else {
+                  return objective.target;
+                }
               }
-            } else if (goalValue > 0) {
-              target = goalValue;
-            }
+            })();
 
             const chartProps = {
               ...(colConfig.chartOptions ? colConfig.chartOptions : {}),
@@ -228,14 +245,21 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
           Header: colConfig.columnLabel || "Goal",
           style,
           accessor: (row) => {
-            const value = dataGroup.classes.find(
-              (curClass) => curClass.classId === row.classId
-            )?.goalValue;
-            if (!value)
-              throw new Error(`Goal value not found for ${row.classId}`);
+            const objectiveId = getMetricGroupObjectiveId(
+              metricGroup,
+              row.classId
+            );
+            const theObj = Array.isArray(objective)
+              ? getObjectiveById(objectiveId, objective)
+              : objective;
+            if (!theObj)
+              throw new Error(
+                `Missing objective for objectiveId ${objectiveId}`
+              );
+
             return colConfig.valueFormatter
-              ? valueFormatter(value, colConfig.valueFormatter)
-              : `${value}${
+              ? valueFormatter(theObj.target, colConfig.valueFormatter)
+              : `${theObj.target}${
                   colConfig.valueLabel ? ` ${colConfig.valueLabel}` : ""
                 }`;
           },
@@ -245,9 +269,9 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
           Header: colConfig.columnLabel || "Map",
           style: { textAlign: "center", ...style },
           accessor: (row, index) => {
-            const isSimpleGroup = dataGroup.layerId ? false : true;
+            const isSimpleGroup = metricGroup.layerId ? false : true;
             const layerId =
-              dataGroup.layerId || classesByName[row.classId!].layerId;
+              metricGroup.layerId || classesByName[row.classId!].layerId;
             if (isSimpleGroup && layerId) {
               return (
                 <LayerToggle

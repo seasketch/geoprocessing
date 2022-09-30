@@ -1,7 +1,3 @@
-// module.exports = {
-//   tables: [],
-//   port: 8001
-// };
 module.exports = {
   tables: [
     {

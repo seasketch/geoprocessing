@@ -1,17 +1,5 @@
 import { Nullable, JSONValue } from "./base";
 import { MetricProperties } from "../metrics/helpers";
-import { Objective } from "./objective";
-import { DataGroup } from "./datasource";
-
-/** Represents a single metric, having one DataGroup */
-export interface MetricGroup extends DataGroup {
-  /** Unique identifier for metric */
-  metricId: string;
-  objective?: Objective;
-}
-
-export type MetricIdTypes = string | number;
-export type MetricProperty = typeof MetricProperties[number] & keyof Metric;
 
 /** Dimensions used in Metric */
 const MetricDimensions = [
@@ -24,10 +12,11 @@ const MetricDimensions = [
 export type MetricDimension = typeof MetricDimensions[number] & keyof Metric;
 
 /**
- * Flexible domain model for a metric - a single measurement stratified by one or more dimensions
+ * Represents a single record of a metric with a value, stratified by one or more dimensions.
+ * The naming is a bit of a misnomer, you can think of it as a MetricValue
  */
 export interface Metric {
-  /** Name of the metric */
+  /** Name of the metric this is a measurement for */
   metricId: string;
   /** The metric value */
   value: number;
@@ -67,3 +56,6 @@ export type GroupMetricAgg = {
 export type GroupMetricSketchAgg = GroupMetricAgg & {
   sketchId: string;
 };
+
+export type MetricIdTypes = string | number;
+export type MetricProperty = typeof MetricProperties[number] & keyof Metric;

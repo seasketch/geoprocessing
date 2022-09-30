@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import runTests from "./testing/runner";
-import { init } from "./init/init";
-import { spawn, exec } from "child_process";
+import { spawn } from "child_process";
 
 if (process.argv.length < 3) {
   throw new Error("Missing command");
@@ -28,6 +27,32 @@ if (process.argv.length < 3) {
         cwd: process.cwd(),
         stdio: "inherit",
       });
+      break;
+    case "import:data":
+      spawn(`${__dirname}/../../scripts/dataPrep/import-data.sh`, {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
+    case "reimport:data":
+      spawn(
+        `${__dirname}/../../scripts/dataPrep/reimport-data.sh`,
+        process.argv.slice(2),
+        {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        }
+      );
+      break;
+    case "publish:data":
+      spawn(
+        `${__dirname}/../../scripts/dataPrep/publish-data.sh`,
+        process.argv.slice(2),
+        {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        }
+      );
       break;
     case "create:function":
       spawn("node", [`${__dirname}/init/createFunction.js`], {

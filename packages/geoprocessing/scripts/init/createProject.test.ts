@@ -1,12 +1,6 @@
 import path from "path";
 import fs from "fs-extra";
-import { Manifest } from "../manifest";
 import { createProject } from "./createProject";
-import {
-  makeGeoprocessingHandler,
-  makePreprocessingHandler,
-} from "./createFunction";
-import { makeClient } from "./createClient";
 import { GeoprocessingJsonConfig } from "../../src/types";
 
 const rootPath = `${__dirname}/__test__`;
@@ -29,6 +23,12 @@ it("should create empty project", async () => {
       repositoryUrl: "https://github.com/test/test-project",
       region: "us-west-1",
       templates: [],
+      bboxMaxLat: 0,
+      bboxMinLat: 0,
+      bboxMaxLng: 0,
+      bboxMinLng: 0,
+      noun: "Samoa",
+      nounPossessive: "Samoan",
     },
     false,
     rootPath
@@ -69,6 +69,12 @@ it("should create project with template with preprocessor", async () => {
       repositoryUrl: "https://github.com/test/test-project",
       region: "us-west-1",
       templates: ["gp-clip-ocean"],
+      bboxMaxLat: 0,
+      bboxMinLat: 0,
+      bboxMaxLng: 0,
+      bboxMinLng: 0,
+      noun: "Samoa",
+      nounPossessive: "Samoan",
     },
     false,
     rootPath
@@ -97,6 +103,12 @@ it("should create project with template with 1 of each", async () => {
       repositoryUrl: "https://github.com/test/test-project",
       region: "us-west-1",
       templates: ["gp-clip-ocean", "gp-raster-stats"],
+      bboxMaxLat: 0,
+      bboxMinLat: 0,
+      bboxMaxLng: 0,
+      bboxMinLng: 0,
+      noun: "Samoa",
+      nounPossessive: "Samoan",
     },
     false,
     rootPath

@@ -213,7 +213,11 @@ export async function genCog(config: ImportRasterDatasourceConfig) {
   await $`gdalwarp -t_srs "EPSG:4326" ${src} ${warpDst}`;
   await $`gdal_translate -b ${config.band} -r nearest -of COG -stats ${warpDst} ${dst}`;
   await $`rm ${warpDst}`;
-  await $`rm ${warpDst}.aux.xml`;
+  try {
+    await $`rm ${warpDst}.aux.xml`;
+  } catch (err: unknown) {
+    console.log(`${warpDst}.aux.xml not found, skipping`);
+  }
 }
 
 export function getCogPath(

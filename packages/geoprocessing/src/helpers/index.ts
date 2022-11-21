@@ -6,6 +6,7 @@ export * from "./feature";
 export * from "./geo";
 export * from "./groupBy";
 export * from "./keyBy";
+export * from "./metricGroup";
 export * from "./native";
 export * from "./number";
 export * from "./objective";

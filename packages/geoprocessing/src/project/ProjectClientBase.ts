@@ -10,6 +10,7 @@ import {
   getInternalVectorDatasourceById,
   getClipDatasource,
   getObjectiveById,
+  getMetricGroupObjectiveIds,
   MetricGroup,
   MetricGroups,
   metricGroupsSchema,
@@ -159,6 +160,14 @@ export class ProjectClientBase {
     if (!mg) throw new Error(`Missing MetricGroup ${metricId} in metrics.json`);
 
     return mg;
+  }
+
+  /** Returns all Objectives for MetricGroup */
+  public getMetricGroupObjectives(metricGroup: MetricGroup): Objective[] {
+    const objectives = getMetricGroupObjectiveIds(metricGroup).map(
+      (objectiveId) => this.getObjectiveById(objectiveId)
+    );
+    return objectives;
   }
 
   /** Returns Metrics for given MetricGroup stat precalcuated on import (keyStats) */

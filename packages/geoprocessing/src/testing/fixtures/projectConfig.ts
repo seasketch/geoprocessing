@@ -42,7 +42,16 @@ const basicConfig: ProjectClientConfig = {
       ],
     },
   ],
-  objectives: [],
+  objectives: [
+    {
+      objectiveId: "eez",
+      shortDesc: "EEZ Objective",
+      target: 0.2,
+      countsToward: {
+        "Fully Protected Area": "yes",
+      },
+    },
+  ],
   package: {
     name: "test",
     version: "1.0.0",

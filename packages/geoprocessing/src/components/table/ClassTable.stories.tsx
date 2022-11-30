@@ -4,6 +4,7 @@ import { ReportContext } from "../../context";
 import { ReportDecorator, CardDecorator } from "../storybook/";
 import { createMetric } from "../../metrics";
 import {
+  longClassMetrics,
   simpleClassMetrics,
   simpleMetricGroup,
   simpleObjectives,
@@ -521,7 +522,7 @@ export const chartWithMixedTarget = () => {
         columnConfig={[
           {
             type: "class",
-            width: 30,
+            width: 45,
           },
           {
             type: "metricChart",
@@ -533,7 +534,7 @@ export const chartWithMixedTarget = () => {
               targetLabelPosition: "bottom",
               targetLabelStyle: "tight",
             },
-            width: 55,
+            width: 40,
             targetValueFormatter: (
               value: number,
               row: number,
@@ -590,6 +591,36 @@ export const chartWithSeparateTargetColumn = () => {
             width: 15,
             colStyle: { textAlign: "right" },
             columnLabel: "Target",
+          },
+        ]}
+      />
+    </ReportContext.Provider>
+  );
+};
+
+export const chartWithWideTitle = () => {
+  return (
+    <ReportContext.Provider value={simpleContext}>
+      <ClassTable
+        rows={longClassMetrics}
+        metricGroup={categoricalMetricGroup}
+        objective={categoricalSingleObjective}
+        columnConfig={[
+          {
+            type: "class",
+            width: 30,
+          },
+          {
+            type: "metricChart",
+            metricId: simpleMetricGroup.metricId,
+            valueFormatter: "percent",
+            columnLabel: "Found Within Plan",
+            chartOptions: {
+              showTitle: true,
+              titleWidth: 50,
+              targetLabelStyle: "tight",
+            },
+            width: 55,
           },
         ]}
       />

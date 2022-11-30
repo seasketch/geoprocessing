@@ -242,6 +242,19 @@ export const categoricalClassMetrics: Metric[] = createMetrics([
   },
 ]);
 
+export const longClassMetrics: Metric[] = createMetrics([
+  {
+    classId: "Bays and Coast",
+    value: 0.133456532,
+    metricId: categoricalMetricGroup.metricId,
+  },
+  {
+    classId: "Madracis Reef",
+    value: 0.45532444,
+    metricId: categoricalMetricGroup.metricId,
+  },
+]);
+
 // CATEGORICAL - MIXED TARGET
 
 export const categoricalMultiObjective: Objective[] = [
@@ -319,7 +332,7 @@ export const categoricalClassMetricsMixedTarget: Metric[] = createMetrics([
   },
   {
     classId: "Montastraea Reef",
-    value: 0.89,
+    value: 0.896,
     metricId: categoricalMetricGroupMixedTarget.metricId,
   },
   {

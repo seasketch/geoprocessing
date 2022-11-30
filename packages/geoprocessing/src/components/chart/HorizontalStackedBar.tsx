@@ -7,12 +7,14 @@ export interface StyledHorizontalStackedBarProps {
   showTitle: boolean;
   target?: number;
   barHeight?: number;
+  titleWidth?: number;
   targetLabelPosition?: "top" | "bottom";
   targetLabelStyle?: "normal" | "tight";
 }
 
 const defaults = {
   barHeight: 30,
+  titleWidth: 35,
 };
 
 const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
@@ -46,7 +48,8 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
 
   .title {
     font-size: 0.9em;
-    width: 30%;
+    width: ${(props) =>
+      props.titleWidth ? props.titleWidth : defaults.titleWidth}%;
     padding-right: 5px;
     text-align: right;
     color: #666;
@@ -60,7 +63,12 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
       width: 0%;
     }
     to {
-      width: ${(props) => (props.showTitle ? 70 : 92)}%;
+      width: ${(props) =>
+        props.showTitle
+          ? props.titleWidth
+            ? props.titleWidth
+            : defaults.titleWidth
+          : 92}%;
     }
   }
   @media screen and (min-width: 768px) {
@@ -69,7 +77,12 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
         width: 0%;
       }
       to {
-        width: ${(props) => (props.showTitle ? 70 : 92)}%;
+        width: ${(props) =>
+          props.showTitle
+            ? props.titleWidth
+              ? props.titleWidth
+              : defaults.titleWidth
+            : 92}%;
       }
     }
   }
@@ -237,6 +250,7 @@ export interface HorizontalStackedBarProps {
   /** Style for each block group */
   blockGroupStyles?: React.CSSProperties[];
   barHeight?: number;
+  titleWidth?: number;
   target?: number;
   showTargetLabel?: boolean;
   showTitle?: boolean;
@@ -257,7 +271,8 @@ export const HorizontalStackedBar: React.FunctionComponent<HorizontalStackedBarP
     rows,
     rowConfigs,
     max = 100,
-    barHeight = 30,
+    barHeight,
+    titleWidth,
     showLegend = true,
     showTitle = true,
     showTotalLabel = true,
@@ -298,6 +313,7 @@ export const HorizontalStackedBar: React.FunctionComponent<HorizontalStackedBarP
         target={target}
         barHeight={barHeight}
         showTitle={showTitle}
+        titleWidth={titleWidth}
         blockGroupColors={blockGroupStyles
           .map((style) => style.backgroundColor)
           .slice(0, numBlockGroups)}

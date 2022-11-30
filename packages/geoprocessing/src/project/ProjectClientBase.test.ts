@@ -3,20 +3,20 @@ import configFixtures from "../../src/testing/fixtures/projectConfig";
 
 describe("ProjectClientBase", () => {
   test("ProjectClientBase should accept and return config", async () => {
-    const client = new ProjectClientBase(configFixtures.simple);
-    expect(client.basic).toEqual(configFixtures.simple.basic);
-    expect(client.datasources).toEqual(configFixtures.simple.datasources);
-    expect(client.geoprocessing).toEqual(configFixtures.simple.geoprocessing);
-    expect(client.metricGroups).toEqual(configFixtures.simple.metricGroups);
-    expect(client.objectives).toEqual(configFixtures.simple.objectives);
+    const project = new ProjectClientBase(configFixtures.simple);
+    expect(project.basic).toEqual(configFixtures.simple.basic);
+    expect(project.datasources).toEqual(configFixtures.simple.datasources);
+    expect(project.geoprocessing).toEqual(configFixtures.simple.geoprocessing);
+    expect(project.metricGroups).toEqual(configFixtures.simple.metricGroups);
+    expect(project.objectives).toEqual(configFixtures.simple.objectives);
 
-    const metricGroup = client.getMetricGroup("boundaryAreaOverlap");
+    const metricGroup = project.getMetricGroup("boundaryAreaOverlap");
     expect(metricGroup.metricId).toEqual("boundaryAreaOverlap");
 
-    const objective = client.getObjectiveById("eez");
-    expect(objective.objectiveId).toEqual("eez");
+    const objective = project.getObjectiveById("eez_objective");
+    expect(objective.objectiveId).toEqual("eez_objective");
 
-    const objectives = client.getMetricGroupObjectives(metricGroup);
+    const objectives = project.getMetricGroupObjectives(metricGroup);
     expect(objectives.length).toBe(1);
     expect(objectives[0].objectiveId).toEqual(objective.objectiveId);
   });

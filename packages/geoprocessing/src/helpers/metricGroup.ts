@@ -21,18 +21,25 @@ export const getMetricGroupObjectiveId = (
   throw new Error(`Expected objectiveId for metricGroup or class ${classId}`);
 };
 
-/** Returns array of all objective IDs configured for the given MetricGroup */
+/** Returns array of all objective IDs configured for the given MetricGroup.
+ * If a class does not have an objectiveId assigned, then it gets the top-level
+ * objectiveId
+ */
 export const getMetricGroupObjectiveIds = (metricGroup: MetricGroup) => {
   const classIds = metricGroup.classes.reduce<string[]>(
     (idsSoFar, curClass) => {
-      return curClass.datasourceId
-        ? idsSoFar.concat(curClass.datasourceId)
+      return curClass.objectiveId
+        ? idsSoFar.concat(curClass.objectiveId)
         : idsSoFar;
     },
     []
   );
 
-  return metricGroup.objectiveId
+  // add top-level objective if also defined
+  const finalIds = metricGroup.objectiveId
     ? [metricGroup.objectiveId, ...classIds]
     : classIds;
+
+  // deduplicate
+  return [...new Set(finalIds)];
 };

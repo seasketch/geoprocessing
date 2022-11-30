@@ -36,7 +36,7 @@ const basicConfig: ProjectClientConfig = {
           classId: "eez",
           display: "EEZ",
           datasourceId: "eez",
-          objectiveId: "eez",
+          objectiveId: "eez_objective",
           layerId: "",
         },
       ],
@@ -44,7 +44,7 @@ const basicConfig: ProjectClientConfig = {
   ],
   objectives: [
     {
-      objectiveId: "eez",
+      objectiveId: "eez_objective",
       shortDesc: "EEZ Objective",
       target: 0.2,
       countsToward: {

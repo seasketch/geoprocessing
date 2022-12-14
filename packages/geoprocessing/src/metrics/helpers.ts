@@ -96,6 +96,33 @@ export const sortMetrics = (
 };
 
 /**
+ * Sorts metrics by ID given a user-defined metric dimension (sortId) and array of ID
+ * values in the order they should be sorted
+ * Useful for applying a "display order" to metrics
+ * Example - sortId = classId, displayOrder = ['sand','gravel','coral']
+ * @param metrics
+ * @param sortId
+ * @param displayOrder
+ * @returns new array of sorted metrics
+ */
+export const sortMetricsDisplayOrder = (
+  metrics: Metric[],
+  sortId: MetricDimension = "classId",
+  displayOrder: string[]
+) => {
+  return metrics.sort((a, b) => {
+    const aVal = a[sortId];
+    const bVal = b[sortId];
+    if (!aVal || !bVal) return 0;
+
+    const aOrder = displayOrder.indexOf(aVal);
+    const bOrder = displayOrder.indexOf(bVal);
+    if (aOrder >= 0 && bOrder >= 0) return aOrder - bOrder;
+    return 0;
+  });
+};
+
+/**
  * Returns new sketchMetrics array with first sketchMetric matched set with new value.
  * If no match, returns copy of sketchMetrics.  Does not mutate array in place.
  */

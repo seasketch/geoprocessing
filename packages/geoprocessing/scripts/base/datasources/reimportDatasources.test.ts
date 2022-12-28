@@ -1,6 +1,6 @@
 /**
  * @jest-environment node
- * @group e2e
+ * @group scripts/e2e
  */
 import { reimportDatasources } from "./reimportDatasources";
 import {

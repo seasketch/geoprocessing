@@ -1,3 +1,7 @@
+/**
+ * @group scripts/cdk
+ */
+
 import { config } from "aws-sdk";
 jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
 const fetchMock = require("node-fetch");

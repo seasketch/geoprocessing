@@ -1,3 +1,7 @@
+/**
+ * @group scripts/project
+ */
+
 import path from "path";
 import fs from "fs-extra";
 import { createProject } from "./createProject";

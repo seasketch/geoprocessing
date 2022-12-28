@@ -1,3 +1,7 @@
+/**
+ * @group scripts/cdk
+ */
+
 import { App } from "aws-cdk-lib";
 import path from "path";
 import "@aws-cdk/assert/jest";

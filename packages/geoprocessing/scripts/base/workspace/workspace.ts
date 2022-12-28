@@ -1,5 +1,4 @@
 import { $ } from "zx";
-import Docker from "dockerode";
 
 /** Checks that docker is installed and runnable, throws error if not */
 export async function verifyWorkspace() {

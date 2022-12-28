@@ -18,6 +18,7 @@ import { ProjectClientBase } from "../../../src";
 import { createOrUpdateDatasource } from "./datasources";
 import area from "@turf/area";
 import { publishDatasource } from "./publishDatasource";
+import { verifyWorkspace } from "../workspace";
 
 export async function importVectorDatasource<C extends ProjectClientBase>(
   projectClient: C,
@@ -29,6 +30,8 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
     srcBucketUrl?: string;
   }
 ) {
+  await verifyWorkspace();
+
   const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genVectorConfig(projectClient, options, newDstPath);
 

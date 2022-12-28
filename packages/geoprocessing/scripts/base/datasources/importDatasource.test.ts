@@ -17,7 +17,7 @@ const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/testing";
 const dstPath = "data/testing/output";
 
-describe("importVectorDatasource", () => {
+describe("importDatasource", () => {
   describe("importVectorDatasource - single file, single class", () => {
     const dstConfigFilename = "datasources_test_1.json";
     const dstConfigFilePath = path.join(dstPath, dstConfigFilename);

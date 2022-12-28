@@ -18,9 +18,9 @@ export async function genCog(
   outPath: string,
   /** path to scripts used by .  Mounted as volume and accessible as /data/bin in container by cmd */
   binPath: string,
-  /** raster filename to import, should be in inPath */
+  /** raster filename to import from inPath */
   inFile: string,
-  /** raster filename to output, will be in outPath */
+  /** raster filename to output to outPath */
   outFile: string,
   /** raster band number to import */
   band: number

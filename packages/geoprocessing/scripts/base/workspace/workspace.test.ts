@@ -30,13 +30,13 @@ describe("Docker", () => {
     test("genCog - can generate and output cog raster", async () => {
       const result = await genCog(
         {
-          geo_type: "vector",
-          src: path.join(srcPath, `${datasourceId}.json`),
+          geo_type: "raster",
+          src: path.join(srcPath, `${datasourceId}.tif`),
           datasourceId,
-          layerName: "deepwater_bioregions",
-          classKeys: [],
           formats: [],
-          propertiesToKeep: [],
+          noDataValue: 0,
+          band: 1,
+          measurementType: "quantitative",
         },
         binPath,
         dstPath,

@@ -13,11 +13,11 @@ DATASOURCE_ID=$3
 SQL_QUERY=$4
 OPTIONS=$5
 
-echo "SRC_PATH: $1"
-echo "DST_PATH: $2"
-echo "DATASOURCE_ID: $3"
-echo "SQL_QUERY: $4"
-echo "OPTIONS: $5"
+# echo "SRC_PATH: $1"
+# echo "DST_PATH: $2"
+# echo "DATASOURCE_ID: $3"
+# echo "SQL_QUERY: $4"
+# echo "OPTIONS: $5"
 
 # Print each command before executing
 set -o xtrace

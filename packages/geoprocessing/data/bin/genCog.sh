@@ -12,10 +12,10 @@ DST_PATH=$2
 DATASOURCE_ID=$3
 BAND=$4
 
-echo "SRC_PATH: $1"
-echo "DST_PATH: $2"
-echo "DATASOURCE_ID: $3"
-echo "BAND: $4"
+# echo "SRC_PATH: $1"
+# echo "DST_PATH: $2"
+# echo "DATASOURCE_ID: $3"
+# echo "BAND: $4"
 
 # Print each command before executing
 set -o xtrace

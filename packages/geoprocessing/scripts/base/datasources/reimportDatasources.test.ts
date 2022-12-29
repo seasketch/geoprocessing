@@ -115,7 +115,7 @@ describe("Reimport datsources", () => {
       expect(reimportDss).toEqual(validReimportDss);
       expect(fs.existsSync(path.join(dstPath, `${vectorDatasourceId}.json`)));
       expect(fs.existsSync(path.join(dstPath, `${vectorDatasourceId}.fgb`)));
-    }, 30000);
+    }, 50000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);

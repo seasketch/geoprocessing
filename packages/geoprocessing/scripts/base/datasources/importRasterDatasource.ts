@@ -213,11 +213,9 @@ export async function genRasterKeyStats(
 export async function genCog(config: ImportRasterDatasourceConfig) {
   const { src } = config;
   await wsGenCog(
-    path.dirname(src),
-    config.dstPath,
+    config,
     datasourceConfig.defaultBinPath,
-    path.basename(src),
-    config.datasourceId,
+    config.dstPath,
     config.band
   );
 }

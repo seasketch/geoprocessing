@@ -52,7 +52,7 @@ describe("importDatasource", () => {
       expect(returnedDs).toEqual(validDs);
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.json`)));
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.fgb`)));
-    }, 10000);
+    }, 20000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);
@@ -94,7 +94,7 @@ describe("importDatasource", () => {
       expect(returnedDs).toEqual(validDs);
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.json`)));
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.fgb`)));
-    }, 10000);
+    }, 20000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);

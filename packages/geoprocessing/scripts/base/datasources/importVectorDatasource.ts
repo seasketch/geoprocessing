@@ -18,7 +18,11 @@ import { ProjectClientBase } from "../../../src";
 import { createOrUpdateDatasource } from "./datasources";
 import area from "@turf/area";
 import { publishDatasource } from "./publishDatasource";
-import { verifyWorkspace } from "../workspace";
+import {
+  verifyWorkspace,
+  genFgb as wsGenFgb,
+  genGeojson as wsGenGeojson,
+} from "../workspace";
 
 export async function importVectorDatasource<C extends ProjectClientBase>(
   projectClient: C,
@@ -191,36 +195,12 @@ export function genVectorKeyStats(
 
 /** Convert vector datasource to GeoJSON */
 export async function genGeojson(config: ImportVectorDatasourceConfig) {
-  let { src, propertiesToKeep, layerName } = config;
-  const dst = getJsonPath(config.dstPath, config.datasourceId);
-  const query = `SELECT "${
-    propertiesToKeep.length > 0 ? propertiesToKeep.join(",") : "*"
-  }" FROM "${layerName}"`;
-  const explodeOption =
-    config.explodeMulti === undefined
-      ? "-explodecollections"
-      : config.explodeMulti === true
-      ? "-explodecollections"
-      : "";
-  fs.removeSync(dst);
-  await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON  ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  await wsGenGeojson(config, datasourceConfig.defaultBinPath, config.dstPath);
 }
 
 /** Convert vector datasource to FlatGeobuf */
 export async function genFlatgeobuf(config: ImportVectorDatasourceConfig) {
-  const { src, propertiesToKeep, layerName } = config;
-  const dst = getFlatGeobufPath(config.dstPath, config.datasourceId);
-  const query = `SELECT "${
-    propertiesToKeep.length > 0 ? propertiesToKeep.join(",") : "*"
-  }" FROM "${layerName}"`;
-  const explodeOption =
-    config.explodeMulti === undefined
-      ? "-explodecollections"
-      : config.explodeMulti === true
-      ? "-explodecollections"
-      : "";
-  fs.removeSync(dst);
-  await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  await wsGenFgb(config, datasourceConfig.defaultBinPath, config.dstPath);
 }
 
 function getJsonPath(dstPath: string, datasourceId: string) {

@@ -3,7 +3,7 @@
  * @group scripts/e2e
  */
 
-import { verifyWorkspace, genCog } from "./workspace";
+import { verifyWorkspace, genCog, genFgb, genGeojson } from "./workspace";
 import fs from "fs-extra";
 import path from "path";
 
@@ -19,7 +19,7 @@ describe("Docker", () => {
   }, 10000);
   afterEach(() => {});
 
-  describe("Generate cloud-optimized datasets", () => {
+  describe("Generate cloud-optimized raster datasets", () => {
     const datasourceId = "quad_10";
     const outId = "workspace_genCog_quad_10";
 
@@ -29,11 +29,17 @@ describe("Docker", () => {
     });
     test("genCog - can generate and output cog raster", async () => {
       const result = await genCog(
-        srcPath,
-        dstPath,
+        {
+          geo_type: "vector",
+          src: path.join(srcPath, `${datasourceId}.json`),
+          datasourceId,
+          layerName: "deepwater_bioregions",
+          classKeys: [],
+          formats: [],
+          propertiesToKeep: [],
+        },
         binPath,
-        `${datasourceId}.tif`,
-        outId,
+        dstPath,
         1
       );
       expect(result).toBe(true);
@@ -41,6 +47,54 @@ describe("Docker", () => {
     }, 10000);
     afterEach(() => {
       fs.removeSync(path.join(dstPath, `${outId}.tif`));
+    });
+  });
+
+  describe("Generate cloud-optimized vector datasets", () => {
+    const datasourceId = "deepwater_bioregions";
+    const outId = "workspace_genFgb_bioregions";
+
+    beforeEach(() => {
+      // Ensure out folder
+      fs.mkdirsSync(dstPath);
+    });
+    test("genFgb - can generate and output flatgeobuf file", async () => {
+      const result = await genFgb(
+        {
+          geo_type: "vector",
+          src: path.join(srcPath, `${datasourceId}.json`),
+          datasourceId,
+          layerName: "deepwater_bioregions",
+          classKeys: [],
+          formats: [],
+          propertiesToKeep: [],
+        },
+        binPath,
+        dstPath
+      );
+      expect(result).toBe(true);
+      expect(fs.existsSync(path.join(dstPath, `${outId}.fgb`)));
+    }, 10000);
+
+    test("genGeojson - can generate and output geojson file", async () => {
+      const result = await genGeojson(
+        {
+          geo_type: "vector",
+          src: path.join(srcPath, `${datasourceId}.json`),
+          datasourceId,
+          layerName: "deepwater_bioregions",
+          classKeys: [],
+          formats: [],
+          propertiesToKeep: [],
+        },
+        binPath,
+        dstPath
+      );
+      expect(result).toBe(true);
+      expect(fs.existsSync(path.join(dstPath, `${outId}.json`)));
+    }, 10000);
+    afterEach(() => {
+      fs.removeSync(path.join(dstPath, `${outId}.fgb`));
     });
   });
 });

@@ -28,6 +28,7 @@
     "test:scripts:e2e": "jest --projects scripts",
     "test:scripts:watch": "jest --projects scripts --watch",
     "test:scripts:update": "npm run test:scripts -- --updateSnapshot",
+    "workspace:shell": "docker run -it -v \"$(data/bin/readlink.sh data/testing)\":/data/in -v \"$(data/bin/readlink.sh data/testing/output)\":/data/out -v \"$(data/bin/readlink.sh data/bin)\":/data/bin seasketch/geoprocessing-workspace",
     "start-storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook -o ./docs/storybook",
     "start-typedoc": "npx typedoc --watch --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none",

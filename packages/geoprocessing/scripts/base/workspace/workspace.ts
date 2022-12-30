@@ -44,7 +44,7 @@ export async function genCog(
 
   // Uses readlink script to resolve symlinks, because docker can't mount a symlink path
   try {
-    await $`docker run --rm -v "$(${binPath}/readlink.sh ${inPath})":/data/in -v "$(${binPath}/readlink.sh ${outPath})":/data/out -v "$(${binPath}/readlink.sh ${binPath})":/data/bin seasketch/geoprocessing-base /data/bin/genCog.sh /data/in/${inFile} /data/out ${outFile} ${band}`;
+    await $`docker run --rm -v "$(${binPath}/readlink.sh ${inPath})":/data/in -v "$(${binPath}/readlink.sh ${outPath})":/data/out -v "$(${binPath}/readlink.sh ${binPath})":/data/bin seasketch/geoprocessing-workspace /data/bin/genCog.sh /data/in/${inFile} /data/out ${outFile} ${band}`;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.log("Workspace genCog failed");
@@ -93,7 +93,7 @@ export async function genFgb(
 
   try {
     // Uses readlink script to resolve symlinks, because docker can't mount a symlink path
-    await $`docker run --rm -v "$(${binPath}/readlink.sh ${inPath})":/data/in -v "$(${binPath}/readlink.sh ${outPath})":/data/out -v "$(${binPath}/readlink.sh ${binPath})":/data/bin seasketch/geoprocessing-base /data/bin/genFgb.sh /data/in/${inFile} /data/out ${outFile} ${query} ${explodeOption}`;
+    await $`docker run --rm -v "$(${binPath}/readlink.sh ${inPath})":/data/in -v "$(${binPath}/readlink.sh ${outPath})":/data/out -v "$(${binPath}/readlink.sh ${binPath})":/data/bin seasketch/geoprocessing-workspace /data/bin/genFgb.sh /data/in/${inFile} /data/out ${outFile} ${query} ${explodeOption}`;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.log("Workspace genFgb failed");
@@ -142,7 +142,7 @@ export async function genGeojson(
 
   try {
     // Uses readlink script to resolve symlinks, because docker can't mount a symlink path
-    await $`docker run --rm -v "$(${binPath}/readlink.sh ${inPath})":/data/in -v "$(${binPath}/readlink.sh ${outPath})":/data/out -v "$(${binPath}/readlink.sh ${binPath})":/data/bin seasketch/geoprocessing-base /data/bin/genGeojson.sh /data/in/${inFile} /data/out ${outFile} ${query} ${explodeOption}`;
+    await $`docker run --rm -v "$(${binPath}/readlink.sh ${inPath})":/data/in -v "$(${binPath}/readlink.sh ${outPath})":/data/out -v "$(${binPath}/readlink.sh ${binPath})":/data/bin seasketch/geoprocessing-workspace /data/bin/genGeojson.sh /data/in/${inFile} /data/out ${outFile} ${query} ${explodeOption}`;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.log("Workspace genGeojson failed");

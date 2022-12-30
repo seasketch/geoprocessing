@@ -12,7 +12,7 @@ services:
       - "54320:5432"
   workspace:
     container_name: workspace-project-name
-    image: seasketch/geoprocessing-base
+    image: seasketch/geoprocessing-workspace
     # These env vars make it easy to connect to the database service
     # Use `psql` without arguments to connect from within the workspace
     environment:

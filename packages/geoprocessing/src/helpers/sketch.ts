@@ -35,22 +35,28 @@ import { ReportContextValue } from "../context";
  * easier to use with typescript.
  */
 export function getUserAttribute<T>(
-  sketchOrProps: Sketch | SketchProperties,
+  sketchOrProps: Sketch | SketchCollection | SketchProperties,
   exportid: string
 ): T | undefined;
 export function getUserAttribute<T>(
-  sketchOrProps: Sketch | SketchProperties,
+  sketchOrProps: Sketch | SketchCollection | SketchProperties,
   exportid: string,
   defaultValue: T
 ): T;
 export function getUserAttribute<T>(
-  sketchOrProps: Sketch | SketchProperties,
+  sketchOrProps: Sketch | SketchCollection | SketchProperties,
   exportid: string,
   defaultValue?: T
 ) {
-  const props: SketchProperties = isSketch(sketchOrProps)
-    ? sketchOrProps.properties
-    : sketchOrProps;
+  const props = (() => {
+    if (isSketch(sketchOrProps)) {
+      return sketchOrProps.properties;
+    } else if (isSketchCollection(sketchOrProps)) {
+      return sketchOrProps.properties;
+    } else {
+      return sketchOrProps;
+    }
+  })();
   let found = props.userAttributes.find((a) => a.exportId === exportid);
   return found?.value || defaultValue;
 }
@@ -323,7 +329,7 @@ export const genSampleSketchCollection = <G = Polygon | LineString | String>(
     properties: {
       id: name || uuid(),
       isCollection: true,
-      userAttributes: [],
+      userAttributes: genSampleUserAttributes(),
       sketchClassId: uuid(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -349,7 +355,7 @@ export const genSampleNullSketchCollection = (
     properties: {
       id: name || uuid(),
       isCollection: true,
-      userAttributes: [],
+      userAttributes: genSampleUserAttributes(),
       sketchClassId: name || uuid(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

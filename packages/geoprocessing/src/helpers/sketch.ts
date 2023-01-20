@@ -58,7 +58,9 @@ export function getUserAttribute<T>(
     }
   })();
   let found = props.userAttributes.find((a) => a.exportId === exportid);
-  return found?.value || defaultValue;
+  return found && found.value !== undefined && found.value !== null
+    ? found.value
+    : defaultValue;
 }
 
 export function getJsonUserAttribute<T>(
@@ -269,6 +271,12 @@ export const genSampleUserAttributes = (): UserAttribute[] => {
       exportId: "MULTISTRING",
       value: JSON.stringify(["one", "two"]),
     },
+    {
+      label: "boolean",
+      value: false,
+      exportId: "BOOLEAN",
+      fieldType: "YesNo",
+    },
   ];
 };
 
@@ -384,6 +392,12 @@ export const genSampleSketchContext = (): ReportContextValue => ({
         fieldType: "TextArea",
         label: "Comments",
         value: "This is my MPA and it is going to be the greatest. Amazing.",
+      },
+      {
+        label: "Include this?",
+        value: false,
+        exportId: "include_false",
+        fieldType: "YesNo",
       },
     ],
   },

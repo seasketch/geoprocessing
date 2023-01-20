@@ -31,6 +31,13 @@ describe("getUserAttribute - single", () => {
   expect(getUserAttribute(polySketch.properties, "SINGLE")).toBe("single");
 });
 
+describe("getUserAttribute - boolean YesNo", () => {
+  // sketch
+  expect(getUserAttribute(polySketch, "BOOLEAN")).toBe(false);
+  // properties
+  expect(getUserAttribute(polySketch.properties, "BOOLEAN")).toBe(false);
+});
+
 describe("getUserAttribute - single collection", () => {
   // sketch
   expect(getUserAttribute(polySketchCollection, "SINGLE")).toBe("single");

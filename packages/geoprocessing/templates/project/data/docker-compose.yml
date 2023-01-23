@@ -23,9 +23,9 @@ services:
     # The contents of the project directory in the host will be mirrored
     # within the workspace. 
     volumes:
-      - "..:/project"
+      - "..:/data"
     # Switch to the data directory on startup
-    working_dir: /project/data
+    working_dir: /data
     depends_on:
       - "db"
     command: ["bash"]

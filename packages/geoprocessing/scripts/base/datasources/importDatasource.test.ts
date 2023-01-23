@@ -1,6 +1,6 @@
 /**
  * @jest-environment node
- * @group e2e
+ * @group scripts/e2e
  */
 
 import { importDatasource } from "./importDatasource";
@@ -17,7 +17,7 @@ const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/testing";
 const dstPath = "data/testing/output";
 
-describe("importVectorDatasource", () => {
+describe("importDatasource", () => {
   describe("importVectorDatasource - single file, single class", () => {
     const dstConfigFilename = "datasources_test_1.json";
     const dstConfigFilePath = path.join(dstPath, dstConfigFilename);
@@ -52,7 +52,7 @@ describe("importVectorDatasource", () => {
       expect(returnedDs).toEqual(validDs);
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.json`)));
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.fgb`)));
-    }, 10000);
+    }, 20000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);
@@ -94,7 +94,7 @@ describe("importVectorDatasource", () => {
       expect(returnedDs).toEqual(validDs);
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.json`)));
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.fgb`)));
-    }, 10000);
+    }, 20000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);

@@ -165,6 +165,8 @@ export async function createProject(
     `${gpPath}/templates/exampleSketch.json`,
     projectPath + "/examples/sketches/sketch.json"
   );
+  // recursively copy entire data/bin directory to project space
+  await fs.copy(`${gpPath}/data/bin`, projectPath + "/data/bin");
   await fs.ensureDir(`${projectPath}/data/src`);
   await fs.ensureDir(`${projectPath}/data/dist`);
 

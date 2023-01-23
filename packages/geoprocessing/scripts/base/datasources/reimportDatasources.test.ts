@@ -1,6 +1,6 @@
 /**
  * @jest-environment node
- * @group e2e
+ * @group scripts/e2e
  */
 import { reimportDatasources } from "./reimportDatasources";
 import {
@@ -115,7 +115,7 @@ describe("Reimport datsources", () => {
       expect(reimportDss).toEqual(validReimportDss);
       expect(fs.existsSync(path.join(dstPath, `${vectorDatasourceId}.json`)));
       expect(fs.existsSync(path.join(dstPath, `${vectorDatasourceId}.fgb`)));
-    }, 10000);
+    }, 50000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);

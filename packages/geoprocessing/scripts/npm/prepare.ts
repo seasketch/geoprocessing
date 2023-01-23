@@ -13,7 +13,7 @@ const distTemplatesPath = path.join(distPath, "templates", "gp-templates");
 // console.log("distTemplatesPath", distTemplatesPath);
 
 /**
- * Copy assets for project use. e.g. project start-storybook looks for img assets in dist
+ * Copy assets to dist for project use. e.g. project start-storybook looks for img assets in dist
  */
 async function bundleAssets() {
   const assetsPath = path.join(__dirname, "..", "..", "src", "assets");
@@ -37,7 +37,28 @@ async function bundleAssets() {
 }
 
 /**
- * Copy templates from their standalone package into geoprocessing distribution
+ * Copy data bin to dist for project use. e.g. workspace mounts them
+ */
+async function bundleData() {
+  const dataBinPath = path.join(__dirname, "..", "..", "data", "bin");
+  const distDataBinPath = path.join(distPath, "data", "bin");
+
+  // Delete old data bin if they exist
+  if (fs.existsSync(path.join(distDataBinPath))) {
+    fs.rmdirSync(distDataBinPath, { recursive: true });
+  }
+
+  if (!fs.existsSync(path.join(distDataBinPath))) {
+    fs.mkdirsSync(path.join(distDataBinPath));
+  }
+
+  if (fs.existsSync(dataBinPath)) {
+    await fs.copySync(dataBinPath, distDataBinPath);
+  }
+}
+
+/**
+ * Copy templates from their standalone package to dist
  * Templates are then installed via gp commands.  This could be improved to publish template bundles
  * outside of the gp library
  */
@@ -177,6 +198,10 @@ async function bundleTemplates() {
 
 bundleAssets().then(() => {
   console.log("finished bundling assets");
+});
+
+bundleData().then(() => {
+  console.log("finished bundling data");
 });
 
 bundleTemplates().then(() => {

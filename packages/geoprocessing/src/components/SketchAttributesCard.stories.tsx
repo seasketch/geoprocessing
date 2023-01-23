@@ -69,6 +69,18 @@ export const simple = () => (
             label: "Roman number",
             value: "II",
           },
+          {
+            label: "Include this?",
+            value: false,
+            exportId: "BOOLEAN",
+            fieldType: "YesNo",
+          },
+          {
+            label: "Include this other thing?",
+            value: true,
+            exportId: "BOOLEANTWO",
+            fieldType: "YesNo",
+          },
         ],
       },
       geometryUri: "",

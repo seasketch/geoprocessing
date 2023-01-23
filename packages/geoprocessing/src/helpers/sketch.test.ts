@@ -30,6 +30,23 @@ describe("getUserAttribute - single", () => {
   // properties
   expect(getUserAttribute(polySketch.properties, "SINGLE")).toBe("single");
 });
+
+describe("getUserAttribute - boolean YesNo", () => {
+  // sketch
+  expect(getUserAttribute(polySketch, "BOOLEAN")).toBe(false);
+  // properties
+  expect(getUserAttribute(polySketch.properties, "BOOLEAN")).toBe(false);
+});
+
+describe("getUserAttribute - single collection", () => {
+  // sketch
+  expect(getUserAttribute(polySketchCollection, "SINGLE")).toBe("single");
+  // properties
+  expect(getUserAttribute(polySketchCollection.properties, "SINGLE")).toBe(
+    "single"
+  );
+});
+
 describe("getUserAttribute - multi array", () => {
   // sketch
   const arr = getUserAttribute(polySketch, "MULTI");
@@ -45,6 +62,7 @@ describe("getUserAttribute - multi array", () => {
     expect(arr2.length).toBe(2);
   }
 });
+
 describe("getUserAttribute - multi JSON string", () => {
   // sketch
   const val = getUserAttribute(polySketch, "MULTISTRING");

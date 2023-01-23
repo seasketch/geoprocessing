@@ -6,4 +6,5 @@ module.exports = {
   testEnvironment: "node",
   globalSetup: "./jest.setup.ts",
   globalTeardown: "./jest.teardown.ts",
+  runner: "groups",
 };

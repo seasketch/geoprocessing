@@ -1,3 +1,7 @@
+/**
+ * @group scripts/project
+ */
+
 import {
   isGeoprocessingFunctionMetadata,
   isPreprocessingFunctionMetadata,

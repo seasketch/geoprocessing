@@ -28,6 +28,7 @@ import ProjectClientBase from "../../../src/project/ProjectClientBase";
 
 import dissolve from "@turf/dissolve";
 import { publishDatasource } from "./publishDatasource";
+import { verifyWorkspace, genCog as wsGenCog } from "../workspace";
 
 export async function importRasterDatasource<C extends ProjectClientBase>(
   projectClient: C,
@@ -39,6 +40,8 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
     srcBucketUrl?: string;
   }
 ) {
+  await verifyWorkspace();
+
   const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genRasterConfig(projectClient, options, newDstPath);
 
@@ -206,20 +209,18 @@ export async function genRasterKeyStats(
   };
 }
 
+/** Generates a cloud-optimized geotiff from source raster for given raster datasource config  */
 export async function genCog(config: ImportRasterDatasourceConfig) {
   const { src } = config;
-  const warpDst = getCogPath(config.dstPath, config.datasourceId, "_4326");
-  const dst = getCogPath(config.dstPath, config.datasourceId);
-  await $`gdalwarp -t_srs "EPSG:4326" ${src} ${warpDst}`;
-  await $`gdal_translate -b ${config.band} -r nearest -of COG -stats ${warpDst} ${dst}`;
-  await $`rm ${warpDst}`;
-  try {
-    await $`rm ${warpDst}.aux.xml`;
-  } catch (err: unknown) {
-    console.log(`${warpDst}.aux.xml not found, skipping`);
-  }
+  await wsGenCog(
+    config,
+    datasourceConfig.defaultBinPath,
+    config.dstPath,
+    config.band
+  );
 }
 
+/** Returns a full pathname to a COG given dst path, datasourceID, and optional postfix name */
 export function getCogPath(
   dstPath: string,
   datasourceId: string,

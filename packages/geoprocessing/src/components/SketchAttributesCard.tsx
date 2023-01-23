@@ -31,7 +31,10 @@ export const SketchAttributesCard = ({
         <table style={{ width: "100%" }}>
           <tbody>
             {properties.userAttributes.map((attr) => {
-              const value = attr.value || "";
+              const value =
+                attr && attr.value !== undefined && attr.value !== null
+                  ? attr.value
+                  : "";
               let valueDisplay = value;
               if (
                 mappings &&
@@ -53,6 +56,7 @@ export const SketchAttributesCard = ({
                 // array no mapping
                 valueDisplay = value.map((v) => v.toString()).join(", ");
               } else {
+                console.log("valuez", value);
                 valueDisplay = value.toString();
               }
 

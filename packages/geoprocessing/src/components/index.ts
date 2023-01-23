@@ -31,6 +31,7 @@ export * from "./Skeleton";
 export * from "./SketchAttributesCard";
 export * from "./Toolbar";
 export * from "./ToolbarCard";
+export * from "./VerticalSpacer";
 
 /** Other Modules */
 export * from "../rbcs/components";

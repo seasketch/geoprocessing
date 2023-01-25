@@ -56,7 +56,6 @@ export const SketchAttributesCard = ({
                 // array no mapping
                 valueDisplay = value.map((v) => v.toString()).join(", ");
               } else {
-                console.log("valuez", value);
                 valueDisplay = value.toString();
               }
 

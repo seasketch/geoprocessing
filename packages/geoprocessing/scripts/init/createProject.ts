@@ -155,12 +155,6 @@ export async function createProject(
     console.error(error);
   }
 
-  const dataReadmePath = `${projectPath}/data/README.md`;
-  const dataReadmeContents = await fs.readFile(dataReadmePath);
-  await fs.writeFile(
-    dataReadmePath,
-    dataReadmeContents.toString().replace(/replace-me/g, metadata.name)
-  );
   await fs.copyFile(
     `${gpPath}/templates/exampleSketch.json`,
     projectPath + "/examples/sketches/sketch.json"

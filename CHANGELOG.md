@@ -1,3 +1,33 @@
+## v1.1.0 (2023-02-01)
+
+#### :rocket: New Feature / Improvement
+
+* Add metric group objective helpers - getMetricGroup, getMetricObjectives, getMetricGroupObjectiveIds
+* HorizontalStackedBar: increase default title width and allow override
+* sortMetrics - add support for sorting by displayOrder property
+* SketchAttributesCard and getUserAttribute: add boolean attribute support
+* getUserAttribute: add support for collections
+* add workspace:shell command matching volume mount of cli use
+
+#### :bug: Bug Fix
+
+* Hard error if optional raster metadata file not created as part of transform
+* Export VerticalSpacer component
+
+#### :house: Internal
+
+* Use new [gp-workspace](https://github.com/seasketch/docker-gp-workspace) built on Ubuntu
+* Migrate GDAL commands during import and publish to use docker exec.
+* Add husky pre-commit hook to run full local tests which include e2e as part of commit
+* Remove scripts/e2e tests from CI (gdal calls) since now run in docker container.  Limit to locally run tests only for now.
+* Add markdown linter
+* Remove extensions no longer used
+
+#### :memo: Documentation
+
+* Update gp landing readme
+* Update default README.md and link to tutorials
+
 ## :tada: v1.0.0 (2022-09-30) :tada:
 
 #### :boom: Breaking Changes

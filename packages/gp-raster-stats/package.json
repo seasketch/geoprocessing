@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/gp-raster-stats",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "calculate basic raster statistics",
   "author": "Tim Welch",
   "license": "BSD-3-Clause",
@@ -25,6 +25,6 @@
     "tiny-worker": "^2.3.0"
   },
   "devDependencies": {
-    "@seasketch/geoprocessing": "^1.0.0"
+    "@seasketch/geoprocessing": "^1.1.0"
   }
 }

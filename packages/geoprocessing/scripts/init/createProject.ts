@@ -188,15 +188,9 @@ export async function createProject(
       chalk.blue(`\nYour geoprocessing project has been initialized!`)
     );
     console.log(`\nNext Steps:
-  * Look at README.md for some tips on working with this project
   * ${chalk.yellow(
-    `npm run create:function`
-  )} to create your first geoprocessing function
-  * ${chalk.yellow(`npm run create:client`)} to add a new report client
-`);
-    console.log(`Tips:
-  * Create examples in SeaSketch, then export them as GeoJSON to ./examples/sketches for use in test cases and when designing reports
-  * The data/ directory is where you can store scripts for generating data products you'll use in geoprocessing functions. It's already setup with some useful Docker containers.
+    `Tutorials`
+  )} are availableto create your first geoprocessing function and report client at https://github.com/seasketch/geoprocessing/wiki/Tutorials
 `);
   }
 }

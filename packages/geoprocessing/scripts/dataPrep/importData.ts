@@ -238,7 +238,7 @@ async function detailedVectorQuestions(
       type: "checkbox",
       name: "formats",
       message:
-        "What formats would you like published to S3?  Suggested formats already selected",
+        "What formats would you like to publish?  Suggested formats already selected",
       choices: datasourceConfig.importSupportedVectorFormats.map((name) => ({
         value: name,
         name: `${name} - ${datasourceFormatDescriptions[name]}`,
@@ -269,11 +269,11 @@ async function detailedRasterQuestions(
       choices: [
         {
           value: "quantitative",
-          name: "Quantitative (cells assigned a float value as a single measurement",
+          name: "Quantitative - values represent amounts, measurement of single thing",
         },
         {
           value: "categorical",
-          name: "Categorical (cells assigned one ID value given list of unique class IDs",
+          name: "Categorical - values represent groups",
         },
       ],
     },
@@ -281,7 +281,7 @@ async function detailedRasterQuestions(
       type: "checkbox",
       name: "formats",
       message:
-        "What formats would you like published to S3?  Suggested formats already selected",
+        "What formats would you like to publish?  Suggested formats already selected",
       choices: datasourceConfig.importSupportedRasterFormats.map((name) => ({
         value: name,
         name: `${name} - ${datasourceFormatDescriptions[name]}`,

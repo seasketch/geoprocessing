@@ -3,7 +3,14 @@ import { z } from "zod";
 
 //// METRIC GROUP SCHEMA ////
 
-const METRIC_TYPES = ["areaOverlap", "countOverlap", "valueOverlap"] as const;
+const METRIC_TYPES = [
+  "areaOverlap",
+  "areaOverlapPerc",
+  "countOverlap",
+  "countOverlapPerc",
+  "valueOverlap",
+  "valueOverlapPerc",
+] as const;
 export const metricTypesSchema = z.enum(METRIC_TYPES);
 
 /**

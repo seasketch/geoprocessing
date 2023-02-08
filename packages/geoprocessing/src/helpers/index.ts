@@ -5,6 +5,7 @@ export * from "./fs";
 export * from "./feature";
 export * from "./geo";
 export * from "./groupBy";
+export * from "./includeVirtualSketch";
 export * from "./keyBy";
 export * from "./metricGroup";
 export * from "./native";

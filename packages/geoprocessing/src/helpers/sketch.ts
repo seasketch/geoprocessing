@@ -308,7 +308,7 @@ export const genSketch = <G = SketchGeometryTypes>(
         [1, 0],
         [0, 0],
       ],
-    ]) as Feature<G>,
+    ]) as unknown as Feature<G>,
     name = `sketch-${uuid()}`,
     id = uuid(),
     userAttributes = [],

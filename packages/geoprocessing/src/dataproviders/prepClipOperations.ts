@@ -6,7 +6,7 @@ import {
   isInternalVectorDatasource,
 } from "../datasources";
 import { isPolygonFeatureArray } from "../helpers";
-import { ProjectClientBase } from "../project";
+import { ProjectClientInterface } from "../project";
 import { ClipOperation, ClipOperations } from "../toolbox";
 import { getFeatures } from "./getFeatures";
 
@@ -19,8 +19,8 @@ export interface DatasourceClipOperation {
  * Given feature to clip and parameters for clip operations using datasources, this function
  * fetches the features for each operation and returns a ClipOperation array
  */
-export const prepClipOperations = (
-  project: ProjectClientBase,
+export const prepClipOperations = <P extends ProjectClientInterface>(
+  project: P,
   feature: Feature<Polygon | MultiPolygon>,
   operations: DatasourceClipOperation[]
 ): Promise<ClipOperation[]> => {

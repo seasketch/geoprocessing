@@ -38,10 +38,15 @@ export interface ProjectClientConfig {
   geoprocessing: any;
 }
 
+export interface ProjectClientInterface {
+  getDatasourceById(datasourceId: string): Datasource;
+  dataBucketUrl(local?: boolean, port?: number): string;
+}
+
 /**
  * Client for reading project configuration/metadata.
  */
-export class ProjectClientBase {
+export class ProjectClientBase implements ProjectClientInterface {
   private _project: Project;
   private _datasources: Datasources;
   private _metricGroups: MetricGroups;

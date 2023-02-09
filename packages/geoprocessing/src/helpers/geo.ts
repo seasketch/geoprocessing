@@ -32,10 +32,24 @@ export function isFeature(feature: any): feature is Feature {
 }
 
 /**
- * Check if object is a Polygon.  Any code inside a block guarded by a conditional call to this function will have type narrowed
+ * Check if object is a Polygon feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
 export function isPolygonFeature(feature: any): feature is Feature<Polygon> {
   return isFeature(feature) && feature.geometry.type === "Polygon";
+}
+
+/**
+ * Check if object is an array of Polygon features.  Any code inside a block guarded by a conditional call to this function will have type narrowed
+ */
+export function isPolygonFeatureArray(
+  featureArray: any
+): featureArray is Feature<Polygon>[] {
+  return (
+    Array.isArray(featureArray) &&
+    featureArray.reduce<boolean>((last, feat) => {
+      return last && isFeature(feat);
+    }, true)
+  );
 }
 
 /**

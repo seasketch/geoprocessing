@@ -17,9 +17,9 @@ export async function getFeatures(
   options: {
     bbox?: BBox;
     /** Filters features to those having one or more properties with one or more specific values. */
-    propertyFilters: VectorPropertyFilter[];
+    propertyFilters?: VectorPropertyFilter[];
     /** Used for subdivided datasources to rebuild features again */
-    unionProperty: string;
+    unionProperty?: string;
   }
 ): Promise<Feature[]> {
   let features: Feature[];

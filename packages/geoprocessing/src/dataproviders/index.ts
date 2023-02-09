@@ -2,3 +2,4 @@
 export * from "./cog";
 export * from "./flatgeobuf";
 export * from "./getFeatures";
+export * from "./prepClipOperations";

@@ -45,7 +45,7 @@ export const genClipToPolygonPreprocessor = (
   ) => Promise<FeatureClipOperation[]>,
   options: ClipOptions = {}
 ) => {
-  const func = async (feature: Feature): Promise<Feature | null> => {
+  const func = async (feature: Feature): Promise<Feature> => {
     return clipToPolygonFeatures(feature, opsLoad, options);
   };
   return func;

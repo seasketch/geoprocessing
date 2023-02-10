@@ -7,7 +7,6 @@ import area from "@turf/area";
 import { featureCollection as fc } from "@turf/helpers";
 import flatten from "@turf/flatten";
 import kinks from "@turf/kinks";
-import { ProjectClientBase } from "..";
 
 /** Supported clip operations */
 export type ClipOperations = "intersect";
@@ -35,13 +34,11 @@ export interface ClipOptions {
 }
 
 /**
- * Returns an preprocessor function that clips a given
- * sketch against polygon/multipolygon features using one or more clipOperations.
+ * Returns an preprocessor function that uses opsLoad to fetch features
+ * for clip operations, then clips input feature against polygon/multipolygon features using one or more clipOperations.
  * @throws if clipped features is larger than maxSize, defaults to 500K km
  */
-export const genClipToPolygonPreprocessor = <P extends ProjectClientBase>(
-  /** Clip operation parameters */
-  dsClipOperations: DatasourceClipOperation[],
+export const genClipToPolygonPreprocessor = (
   /** Loads clip operations with clipFeatures using feature to clip as filter */
   opsLoad: (
     feature: Feature<Polygon | MultiPolygon>
@@ -49,7 +46,7 @@ export const genClipToPolygonPreprocessor = <P extends ProjectClientBase>(
   options: ClipOptions = {}
 ) => {
   const func = async (feature: Feature): Promise<Feature | null> => {
-    return clipToPolygonFeatures(feature, dsClipOperations, opsLoad, options);
+    return clipToPolygonFeatures(feature, opsLoad, options);
   };
   return func;
 };
@@ -62,14 +59,12 @@ export const genClipToPolygonPreprocessor = <P extends ProjectClientBase>(
 export async function clipToPolygonFeatures(
   /** List of clip operations to run on feature in sequential order against given datasource  */
   feature: Feature,
-  /** Clip operation parameters */
-  dsClipOperations: DatasourceClipOperation[],
   /** Loads clip operations with clipFeatures using feature to clip as filter */
   opsLoad: (
     feature: Feature<Polygon | MultiPolygon>
   ) => Promise<FeatureClipOperation[]>,
   options: ClipOptions = {}
-): Promise<Feature<Polygon | MultiPolygon> | null> {
+): Promise<Feature<Polygon | MultiPolygon>> {
   const {
     maxSize = 500000,
     enforceMaxSize = false,

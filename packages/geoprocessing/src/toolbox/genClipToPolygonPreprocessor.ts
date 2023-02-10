@@ -1,7 +1,6 @@
 import { isPolygonFeature } from "../helpers";
-import { Feature, Polygon, MultiPolygon } from "geojson";
 import { clipMultiMerge } from "../helpers";
-import { ValidationError } from "../types";
+import { ValidationError, Feature, Polygon, MultiPolygon } from "../types";
 
 import area from "@turf/area";
 import { featureCollection as fc } from "@turf/helpers";

@@ -1,5 +1,5 @@
 import bbox from "@turf/bbox";
-import { Feature, MultiPolygon, Polygon } from "geojson";
+import { Feature, MultiPolygon, Polygon } from "../types";
 import {
   getFlatGeobufFilename,
   isExternalVectorDatasource,
@@ -7,13 +7,8 @@ import {
 } from "../datasources";
 import { isPolygonFeatureArray } from "../helpers";
 import { ProjectClientInterface } from "../project";
-import { FeatureClipOperation, ClipOperations } from "../toolbox";
+import { DatasourceClipOperation } from "../toolbox";
 import { getFeatures } from "./getFeatures";
-
-export interface DatasourceClipOperation {
-  datasourceId: string;
-  operation: ClipOperations;
-}
 
 /**
  * Given DatasourceClipOperation's

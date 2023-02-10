@@ -1,7 +1,11 @@
-import { Feature, BBox } from "geojson";
-import { isInternalVectorDatasource, VectorDataSource } from "../datasources";
+import { isInternalVectorDatasource } from "../datasources";
 import { fgbFetchAll } from "./flatgeobuf";
-import { ExternalVectorDatasource, InternalVectorDatasource } from "../types";
+import {
+  ExternalVectorDatasource,
+  InternalVectorDatasource,
+  Feature,
+  BBox,
+} from "../types";
 
 interface VectorPropertyFilter {
   property: string;

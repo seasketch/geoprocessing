@@ -7,13 +7,21 @@ import area from "@turf/area";
 import { featureCollection as fc } from "@turf/helpers";
 import flatten from "@turf/flatten";
 import kinks from "@turf/kinks";
+import { ProjectClientBase } from "..";
 
-/** Parameters for single preprocessor clip operation */
+/** Supported clip operations */
 export type ClipOperations = "intersect";
-export interface ClipOperation {
+
+/** Parameters for clip operation using polygon features */
+export interface FeatureClipOperation {
   clipFeatures: Feature<Polygon>[];
-  /** Supported clip operations */
-  operation: "intersect";
+  operation: ClipOperations;
+}
+
+/** Parameters for clip operation using a datasource */
+export interface DatasourceClipOperation {
+  datasourceId: string;
+  operation: ClipOperations;
 }
 
 /** Optional parameters for preprocessor function */
@@ -31,12 +39,18 @@ export interface ClipOptions {
  * sketch against polygon/multipolygon features using one or more clipOperations.
  * @throws if clipped features is larger than maxSize, defaults to 500K km
  */
-export const genClipToPolygonPreprocessor = (
-  clipOperations: Array<ClipOperation>,
+export const genClipToPolygonPreprocessor = <P extends ProjectClientBase>(
+  /** Clip operation parameters */
+  dsClipOperations: DatasourceClipOperation[],
+  /** Loads clip operations with clipFeatures using feature to clip as filter */
+  opsLoad: (
+    feature: Feature<Polygon | MultiPolygon>
+  ) => Promise<FeatureClipOperation[]>,
   options: ClipOptions = {}
 ) => {
-  const func = (feature: Feature): Promise<Feature | null> =>
-    clipToPolygonFeatures(clipOperations, feature, options);
+  const func = async (feature: Feature): Promise<Feature | null> => {
+    return clipToPolygonFeatures(feature, dsClipOperations, opsLoad, options);
+  };
   return func;
 };
 
@@ -47,8 +61,13 @@ export const genClipToPolygonPreprocessor = (
  */
 export async function clipToPolygonFeatures(
   /** List of clip operations to run on feature in sequential order against given datasource  */
-  clipOperations: Array<ClipOperation>,
   feature: Feature,
+  /** Clip operation parameters */
+  dsClipOperations: DatasourceClipOperation[],
+  /** Loads clip operations with clipFeatures using feature to clip as filter */
+  opsLoad: (
+    feature: Feature<Polygon | MultiPolygon>
+  ) => Promise<FeatureClipOperation[]>,
   options: ClipOptions = {}
 ): Promise<Feature<Polygon | MultiPolygon> | null> {
   const {
@@ -79,6 +98,8 @@ export async function clipToPolygonFeatures(
   let clipped: Feature<Polygon | MultiPolygon> | null = feature; // Start with whole feature
 
   //// CLIP OPERATIONS ////
+
+  const clipOperations = await opsLoad(feature);
 
   // Sequentially run clip operations in order.  If operation returns null at some point, don't do any more ops
   for (const clipOp of clipOperations) {

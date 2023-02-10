@@ -7,7 +7,7 @@ import {
 } from "../datasources";
 import { isPolygonFeatureArray } from "../helpers";
 import { ProjectClientInterface } from "../project";
-import { ClipOperation, ClipOperations } from "../toolbox";
+import { FeatureClipOperation, ClipOperations } from "../toolbox";
 import { getFeatures } from "./getFeatures";
 
 export interface DatasourceClipOperation {
@@ -23,7 +23,7 @@ export const prepClipOperations = <P extends ProjectClientInterface>(
   project: P,
   feature: Feature<Polygon | MultiPolygon>,
   operations: DatasourceClipOperation[]
-): Promise<ClipOperation[]> => {
+): Promise<FeatureClipOperation[]> => {
   return Promise.all(
     operations.map(async (o) => {
       const ds = project.getDatasourceById(o.datasourceId);

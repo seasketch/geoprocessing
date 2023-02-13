@@ -7,8 +7,8 @@ import {
 } from "../datasources";
 import { isPolygonFeatureArray } from "../helpers";
 import { ProjectClientInterface } from "../project";
-import { DatasourceClipOperation } from "../toolbox";
 import { getFeatures } from "./getFeatures";
+import { DatasourceClipOperation } from "../types/dataProcessor";
 
 /**
  * Given DatasourceClipOperation's
@@ -39,7 +39,10 @@ export const genClipOperationLoader = <P extends ProjectClientInterface>(
         })();
 
         const featureBox = bbox(feature);
-        const clipFeatures = await getFeatures(ds, url, { bbox: featureBox });
+        const clipFeatures = await getFeatures(ds, url, {
+          ...o.options,
+          bbox: featureBox,
+        });
         if (!isPolygonFeatureArray(clipFeatures)) {
           throw new Error("Expected array of Polygon features");
         }

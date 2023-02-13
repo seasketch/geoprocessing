@@ -8,13 +8,8 @@ import {
   ExternalVectorDatasource,
   InternalVectorDatasource,
   Feature,
-  BBox,
 } from "../types";
-
-interface VectorPropertyFilter {
-  property: string;
-  values: (string | number)[];
-}
+import { DatasourceClipOperation } from "../types/dataProcessor";
 
 /**
  * Returns features for a variety of vector datasources and formats, with additional filter options
@@ -24,14 +19,7 @@ export async function getFeatures(
   datasource: InternalVectorDatasource | ExternalVectorDatasource,
   /** url of datasource */
   url: string,
-  options: {
-    /** Fetches features overlapping with bounding box */
-    bbox?: BBox;
-    /** Filter features by property having one or more specific values */
-    propertyFilter?: VectorPropertyFilter;
-    /** Provide if you have subdivided dataset and want to rebuild (union) subdivided polygons based on having same value for this property name */
-    unionProperty?: string;
-  }
+  options: DatasourceClipOperation["options"] = {}
 ): Promise<Feature[]> {
   let features: Feature[] = [];
   if (isInternalVectorDatasource(datasource)) {

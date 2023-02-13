@@ -1,4 +1,4 @@
-import { isPolygonFeature } from "../helpers";
+import { clip, isPolygonFeature } from "../helpers";
 import { clipMultiMerge } from "../helpers";
 import { ValidationError, Feature, Polygon, MultiPolygon } from "../types";
 
@@ -73,12 +73,16 @@ export async function clipToPolygonFeatures(
 
   // Sequentially run clip operations in order.  If operation returns null at some point, don't do any more ops
   for (const clipOp of clipOperations) {
-    if (clipped !== null && clipOp.operation === "intersect") {
-      clipped = clipMultiMerge(
-        feature,
-        fc(clipOp.clipFeatures),
-        "intersection"
-      );
+    if (clipped !== null) {
+      if (clipOp.operation === "intersection") {
+        clipped = clipMultiMerge(
+          feature,
+          fc(clipOp.clipFeatures),
+          "intersection"
+        );
+      } else if (clipOp.operation === "difference") {
+        clipped = clip(fc([feature, ...clipOp.clipFeatures]), "difference");
+      }
     }
   }
 

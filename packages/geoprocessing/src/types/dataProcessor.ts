@@ -15,7 +15,7 @@ export interface VectorPropertyFilter {
 }
 
 /** Supported clip operations */
-export type ClipOperations = "intersect";
+export type ClipOperations = "intersection" | "difference";
 
 /** Parameters for clip operation using polygon features */
 export interface FeatureClipOperation {

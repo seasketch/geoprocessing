@@ -8,6 +8,7 @@ import {
   getDatasourceById,
   getInternalRasterDatasourceById,
   getInternalVectorDatasourceById,
+  getExternalVectorDatasourceById,
   getClipDatasource,
   getObjectiveById,
   getMetricGroupObjectiveIds,
@@ -27,6 +28,10 @@ import {
   projectSchema,
   Objective,
   Objectives,
+  isInternalVectorDatasource,
+  getFlatGeobufFilename,
+  ExternalVectorDatasource,
+  isExternalVectorDatasource,
 } from "..";
 
 export interface ProjectClientConfig {
@@ -38,10 +43,18 @@ export interface ProjectClientConfig {
   geoprocessing: any;
 }
 
+export interface ProjectClientInterface {
+  getDatasourceById(datasourceId: string): Datasource;
+  dataBucketUrl(local?: boolean, port?: number): string;
+  getVectorDatasourceUrl(
+    ds: InternalVectorDatasource | ExternalVectorDatasource
+  );
+}
+
 /**
  * Client for reading project configuration/metadata.
  */
-export class ProjectClientBase {
+export class ProjectClientBase implements ProjectClientInterface {
   private _project: Project;
   private _datasources: Datasources;
   private _metricGroups: MetricGroups;
@@ -100,6 +113,19 @@ export class ProjectClientBase {
       : `https://gp-${this._package.name}-datasets.s3.${this._geoprocessing.region}.amazonaws.com/`;
   }
 
+  public getVectorDatasourceUrl(
+    ds: InternalVectorDatasource | ExternalVectorDatasource
+  ) {
+    if (isInternalVectorDatasource(ds) && ds.formats.includes("fgb")) {
+      return `${this.dataBucketUrl()}${getFlatGeobufFilename(ds)}`;
+    } else if (isExternalVectorDatasource(ds)) {
+      return ds.url;
+    }
+    throw new Error(
+      `getVectorDatasourceUrl: cannot generate url for datasource ${ds.datasourceId}`
+    );
+  }
+
   // HELPERS //
 
   /** Returns Datasource given datasourceId */
@@ -112,6 +138,13 @@ export class ProjectClientBase {
     datasourceId: string
   ): InternalVectorDatasource {
     return getInternalVectorDatasourceById(datasourceId, this._datasources);
+  }
+
+  /** Returns ExternalVectorDatasource given datasourceId, throws if not found */
+  public getExternalVectorDatasourceById(
+    datasourceId: string
+  ): ExternalVectorDatasource {
+    return getExternalVectorDatasourceById(datasourceId, this._datasources);
   }
 
   /** Returns InternalRasterDatasource given datasourceId, throws if not found */

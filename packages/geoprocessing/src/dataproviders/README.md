@@ -1,0 +1,1 @@
+Everything in dataproviders is exported as its own standalone module separate from the top-level geoprocessing module.  This is because the COG module in particular does not import properly when bundled at the top-level.

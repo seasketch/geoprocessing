@@ -62,10 +62,17 @@ export async function createProject(
   );
   const curGpVersion = curGpPackage.version;
 
-  // Copy all files from base template
+  // Copy all files from base project template
   await fs.copy(projectTemplatePath, projectPath);
-
   spinner.succeed("copied base files");
+
+  // Copy default project configuration
+  await fs.copy(
+    `${gpPath}/defaultProjectConfig/project`,
+    projectPath + "/project"
+  );
+  spinner.succeed("copied default project configuration");
+
   spinner.start("updating package.json with provided details");
   const packageJSON: Package = {
     ...JSON.parse(

@@ -96,6 +96,7 @@
     "@turf/bbox-polygon": "6.5.0",
     "@turf/boolean-equal": "6.5.0",
     "@turf/boolean-overlap": "6.5.0",
+    "@turf/boolean-valid": "^6.5.0",
     "@turf/buffer": "6.5.0",
     "@turf/combine": "6.5.0",
     "@turf/dissolve": "^6.5.0",

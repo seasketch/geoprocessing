@@ -54,3 +54,17 @@ export interface NullSketchCollection
   bbox?: BBox;
   features: NullSketch[];
 }
+
+/**
+ * A simple map of sketches and/or sketch collections keyed by their name
+ */
+export interface SketchMap {
+  [name: string]: Sketch | SketchCollection;
+}
+
+/**
+ * A simple map of features keyed by their name
+ */
+export interface FeatureMap {
+  [name: string]: Feature;
+}

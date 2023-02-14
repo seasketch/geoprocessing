@@ -76,12 +76,12 @@ export async function clipToPolygonFeatures(
     if (clipped !== null) {
       if (clipOp.operation === "intersection") {
         clipped = clipMultiMerge(
-          feature,
+          clipped,
           fc(clipOp.clipFeatures),
           "intersection"
         );
       } else if (clipOp.operation === "difference") {
-        clipped = clip(fc([feature, ...clipOp.clipFeatures]), "difference");
+        clipped = clip(fc([clipped, ...clipOp.clipFeatures]), "difference");
       }
     }
   }

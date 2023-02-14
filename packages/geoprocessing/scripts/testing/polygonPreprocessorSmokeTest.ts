@@ -12,12 +12,13 @@ export const polygonPreprocessorSmokeTest = (
   /**  */
   preprocessorName: string,
   options: {
-    testName?: string | undefined;
+    /** Partial name of example polygon sketch to load */
+    partialName?: string | undefined;
     /** timeout for test run in milliseconds, defaults to 10000 */
     timeout?: number;
   } = {}
 ) => {
-  const { testName = undefined, timeout = 10000 } = options;
+  const { partialName: testName = undefined, timeout = 10000 } = options;
 
   describe("Basic smoke tests", () => {
     test("handler function is present", () => {

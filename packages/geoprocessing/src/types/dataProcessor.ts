@@ -1,10 +1,4 @@
-import {
-  ValidationError,
-  Feature,
-  Polygon,
-  MultiPolygon,
-  BBox,
-} from "../types";
+import { Feature, Polygon, BBox } from "../types";
 
 // Where datasources meet data providers meet preprocessors/geoprocessors
 

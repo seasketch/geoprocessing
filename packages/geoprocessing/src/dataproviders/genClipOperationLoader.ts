@@ -31,12 +31,7 @@ export const genClipOperationLoader = <P extends ProjectClientInterface>(
           throw new Error(`Expected vector datasource for ${ds.datasourceId}`);
         }
 
-        const url = (() => {
-          if (isInternalVectorDatasource(ds)) {
-            return `${project.dataBucketUrl()}${getFlatGeobufFilename(ds)}`;
-          }
-          return ds.url;
-        })();
+        const url = project.getVectorDatasourceUrl(ds);
 
         const featureBox = bbox(feature);
         const clipFeatures = await getFeatures(ds, url, {

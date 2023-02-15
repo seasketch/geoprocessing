@@ -227,6 +227,7 @@ export async function makePreprocessingHandler(
   if (!fs.existsSync(path.join(basePath, "src", "functions"))) {
     fs.mkdirSync(path.join(basePath, "src", "functions"));
   }
+  // add optional eez clip, unquoting the json string before insertion
   await fs.writeFile(
     `${fpath}/${options.title}.ts`,
     handlerCode
@@ -249,7 +250,7 @@ export async function makePreprocessingHandler(
               },
               null,
               2
-            )
+            ).replace(/"([^"]+)":/g, "$1:")
           : ""
       )
   );

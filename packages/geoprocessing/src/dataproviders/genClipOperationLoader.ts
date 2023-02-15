@@ -1,7 +1,6 @@
 import bbox from "@turf/bbox";
 import { Feature, MultiPolygon, Polygon } from "../types";
 import {
-  getFlatGeobufFilename,
   isExternalVectorDatasource,
   isInternalVectorDatasource,
 } from "../datasources";

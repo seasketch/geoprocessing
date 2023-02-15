@@ -234,16 +234,20 @@ export async function makePreprocessingHandler(
       .replace(
         "EEZ_CLIP_OPERATION",
         options.eez !== "no"
-          ? JSON.stringify({
-              datasourceId: "global-clipping-eez-land-union",
-              operation: "intersection",
-              options: {
-                propertyFilter: {
-                  property: "UNION",
-                  values: [options.eez],
+          ? JSON.stringify(
+              {
+                datasourceId: "global-clipping-eez-land-union",
+                operation: "intersection",
+                options: {
+                  propertyFilter: {
+                    property: "UNION",
+                    values: [options.eez],
+                  },
                 },
               },
-            })
+              null,
+              2
+            )
           : ""
       )
   );

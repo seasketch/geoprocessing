@@ -54,6 +54,8 @@ async function createFunction() {
       type: "input",
       name: "title",
       message: "Title for this function, in camelCase",
+      default: (answers) =>
+        answers.type === "preprocessing" ? "clipToOceanEez" : "area",
       validate: (value) =>
         /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
       transformer: (value) => camelcase(value),

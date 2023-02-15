@@ -137,17 +137,21 @@ export async function createProject(
 
   spinner.start("updating basic.json");
   const basic = fs.readJSONSync(`${projectPath}/project/basic.json`);
-  await fs.writeJSONSync(`${projectPath}/project/basic.json`, {
-    ...basic,
-    bbox: [
-      metadata.bboxMinLng,
-      metadata.bboxMinLat,
-      metadata.bboxMaxLng,
-      metadata.bboxMaxLat,
-    ],
-    noun: metadata.noun,
-    nounPossessive: metadata.nounPossessive,
-  });
+  await fs.writeJSONSync(
+    `${projectPath}/project/basic.json`,
+    {
+      ...basic,
+      bbox: [
+        metadata.bboxMinLng,
+        metadata.bboxMinLat,
+        metadata.bboxMaxLng,
+        metadata.bboxMaxLat,
+      ],
+      noun: metadata.noun,
+      nounPossessive: metadata.nounPossessive,
+    },
+    { spaces: 2 }
+  );
   spinner.succeed("updated basic.json");
 
   spinner.start("add .gitignore");

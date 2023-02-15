@@ -252,7 +252,7 @@ export async function makePreprocessingHandler(
       )
   );
   await fs.writeFile(
-    `${fpath}/${options.title}.test.ts`,
+    `${fpath}/${options.title}Smoke.test.ts`,
     testCode.toString().replace(/clipToOceanEez/g, options.title)
   );
   const geoprocessingJson = JSON.parse(

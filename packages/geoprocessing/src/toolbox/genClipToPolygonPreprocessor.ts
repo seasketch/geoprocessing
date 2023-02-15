@@ -73,7 +73,7 @@ export async function clipToPolygonFeatures(
 
   // Sequentially run clip operations in order.  If operation returns null at some point, don't do any more ops
   for (const clipOp of clipOperations) {
-    if (clipped !== null) {
+    if (clipped !== null && clipOp.clipFeatures.length > 0) {
       if (clipOp.operation === "intersection") {
         clipped = clipMultiMerge(
           clipped,

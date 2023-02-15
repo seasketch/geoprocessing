@@ -216,7 +216,7 @@ export async function makePreprocessingHandler(
     `${functionTemplatePath}/clipToOceanEez.ts`
   );
   const testCode = await fs.readFile(
-    `${functionTemplatePath}/clipToOceanEez.test.ts`
+    `${functionTemplatePath}/clipToOceanEezSmoke.test.ts`
   );
 
   if (!fs.existsSync(path.join(basePath, "src"))) {

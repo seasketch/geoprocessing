@@ -507,7 +507,7 @@ export const genSampleSketchContext = (): ReportContextValue => ({
 });
 
 /**
- * Given single or collection of sketches, returns array of sketch features, ignoring sketch collections.  Assumes collection objects can root or leaf
+ * Given sketch or sketch collection, returns just the individual sketch features inside.
  * @param sketch
  */
 export function getSketchFeatures(
@@ -523,3 +523,42 @@ export function getSketchFeatures(
     throw new Error("Not a valid sketch");
   }
 }
+
+/**
+ * Converts FeatureCollection to SketchCollection with reasonable defaults given for sketch properties if not provided
+ */
+export const featureToSketchCollection = (
+  fc: FeatureCollection,
+  name: string = "sketches",
+  sketchProperties: Partial<SketchProperties> = {}
+) => {
+  const sketchFeatures = fc.features.map((feat, idx) => {
+    const idValue = feat.properties?.id || idx + 1;
+    const featureName = (() => {
+      if (name) {
+        if (feat.properties && feat.properties[name]) {
+          return feat.properties[name];
+        } else {
+          return `${name}-${idValue}`;
+        }
+      } else {
+        return `Area-${idValue}`;
+      }
+    })();
+
+    const sk = genSketch({
+      feature: feat,
+      name: featureName,
+      ...feat.properties,
+      ...sketchProperties,
+      id: `${idValue}`,
+    });
+    sk.properties.userAttributes = [];
+    return sk;
+  });
+
+  const sc = genSketchCollection(sketchFeatures, {
+    name,
+  });
+  sc.properties.userAttributes = [];
+};

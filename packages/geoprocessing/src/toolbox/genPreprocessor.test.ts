@@ -17,7 +17,7 @@ describe("genPreprocessor", () => {
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const opsLoader = genClipLoader(project, [
+    const clipLoader = genClipLoader(project, [
       {
         datasourceId: "global-clipping-osm-land",
         // subtract out land from sketch
@@ -42,7 +42,7 @@ describe("genPreprocessor", () => {
       },
     ]);
 
-    const preprocessor = genPreprocessor(opsLoader);
+    const preprocessor = genPreprocessor(clipLoader);
     const result = await preprocessor({
       type: "Feature",
       properties: {
@@ -75,7 +75,7 @@ describe("genPreprocessor", () => {
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const opsLoader = genClipLoader(project, [
+    const clipLoader = genClipLoader(project, [
       {
         datasourceId: "global-clipping-osm-land",
         // subtract out land from sketch
@@ -87,7 +87,7 @@ describe("genPreprocessor", () => {
       },
     ]);
 
-    const preprocessor = genPreprocessor(opsLoader);
+    const preprocessor = genPreprocessor(clipLoader);
 
     const theSketch: Sketch = {
       type: "Feature",

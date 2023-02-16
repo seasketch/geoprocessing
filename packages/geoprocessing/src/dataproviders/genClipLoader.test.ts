@@ -14,7 +14,7 @@ describe("genClipLoader", () => {
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const clipOpsLoader = genClipLoader(project, [
+    const clipLoader = genClipLoader(project, [
       {
         datasourceId: "global-clipping-osm-land",
         // subtract out land from sketch
@@ -38,7 +38,7 @@ describe("genClipLoader", () => {
         },
       },
     ]);
-    const clipOperations = await clipOpsLoader({
+    const clipOperations = await clipLoader({
       type: "Feature",
       properties: {
         name: "fsm-east-west",

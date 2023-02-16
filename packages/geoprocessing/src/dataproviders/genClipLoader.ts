@@ -10,8 +10,9 @@ import { getFeatures } from "./getFeatures";
 import { DatasourceClipOperation } from "../types/dataProcessor";
 
 /**
- * Given a project client and 1 or more clip operations, returns a function that when called with a sketch, loads the datasources
- * for these clip operations.  Pass this function to genPreprocessor() and it will take care of the rest
+ * Given a project client and 1 or more clip operations, returns a function that when called
+ * loads clip features from their datasources that overlap with the feature polygon to clip.
+ * Pass this function to genPreprocessor() and it will take care of the rest.
  */
 export const genClipLoader = <P extends ProjectClientInterface>(
   project: P,

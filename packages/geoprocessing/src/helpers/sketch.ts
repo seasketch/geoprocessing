@@ -561,4 +561,5 @@ export const featureToSketchCollection = (
     name,
   });
   sc.properties.userAttributes = [];
+  return sc;
 };

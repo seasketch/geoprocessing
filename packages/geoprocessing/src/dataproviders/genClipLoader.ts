@@ -10,12 +10,10 @@ import { getFeatures } from "./getFeatures";
 import { DatasourceClipOperation } from "../types/dataProcessor";
 
 /**
- * Given DatasourceClipOperation's
- * returns a function that given a feature to clip, fetches the features for
- * each datasource that overlap with the bbox of the input feature, and returns
- * fully prepared FeatureClipOperation objects
+ * Given a project client and 1 or more clip operations, returns a function that when called with a sketch, loads the datasources
+ * for these clip operations.  Pass this function to genPreprocessor() and it will take care of the rest
  */
-export const genClipOperationLoader = <P extends ProjectClientInterface>(
+export const genClipLoader = <P extends ProjectClientInterface>(
   project: P,
   operations: DatasourceClipOperation[]
 ) => {

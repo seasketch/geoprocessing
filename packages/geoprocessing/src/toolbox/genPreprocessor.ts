@@ -13,7 +13,7 @@ import { ClipOptions, FeatureClipOperation } from "../types/dataProcessor";
  * for clip operations, then clips input feature against polygon/multipolygon features using one or more clipOperations.
  * @throws if clipped features is larger than maxSize, defaults to 500K km
  */
-export const genClipToPolygonPreprocessor = (
+export const genPreprocessor = (
   /** Loads clip operations with clipFeatures using feature to clip as filter */
   opsLoad: (
     feature: Feature<Polygon | MultiPolygon>

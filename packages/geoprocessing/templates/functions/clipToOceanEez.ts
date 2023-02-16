@@ -1,11 +1,11 @@
 import {
   PreprocessingHandler,
-  genClipToPolygonPreprocessor,
+  genPreprocessor,
 } from "@seasketch/geoprocessing";
 import project from "../../project";
-import { genClipOperationLoader } from "@seasketch/geoprocessing/dataproviders";
+import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
 
-const clipOperationLoader = genClipOperationLoader(project, [
+const clipLoader = genClipLoader(project, [
   {
     datasourceId: "global-clipping-osm-land",
     operation: "difference",
@@ -16,7 +16,7 @@ const clipOperationLoader = genClipOperationLoader(project, [
   EEZ_CLIP_OPERATION,
 ]);
 
-export const clipToOceanEez = genClipToPolygonPreprocessor(clipOperationLoader);
+export const clipToOceanEez = genPreprocessor(clipLoader);
 
 export default new PreprocessingHandler(clipToOceanEez, {
   title: "clipToOceanEez",

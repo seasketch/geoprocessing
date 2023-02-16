@@ -5,19 +5,19 @@
 
 import area from "@turf/area";
 import project from "../../defaultProjectConfig";
-import { genClipOperationLoader } from "../dataproviders";
+import { genClipLoader } from "../dataproviders";
 import { Sketch } from "../types";
-import { genClipToPolygonPreprocessor } from "./genClipToPolygonPreprocessor";
+import { genPreprocessor } from "./genPreprocessor";
 
 // import micronesia eez from global subdivided
-describe("genClipToPolygonPreprocessor", () => {
+describe("genPreprocessor", () => {
   test("should successfully generate and run preprocessor", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const opsLoader = genClipOperationLoader(project, [
+    const opsLoader = genClipLoader(project, [
       {
         datasourceId: "global-clipping-osm-land",
         // subtract out land from sketch
@@ -42,7 +42,7 @@ describe("genClipToPolygonPreprocessor", () => {
       },
     ]);
 
-    const preprocessor = genClipToPolygonPreprocessor(opsLoader);
+    const preprocessor = genPreprocessor(opsLoader);
     const result = await preprocessor({
       type: "Feature",
       properties: {
@@ -75,7 +75,7 @@ describe("genClipToPolygonPreprocessor", () => {
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const opsLoader = genClipOperationLoader(project, [
+    const opsLoader = genClipLoader(project, [
       {
         datasourceId: "global-clipping-osm-land",
         // subtract out land from sketch
@@ -87,7 +87,7 @@ describe("genClipToPolygonPreprocessor", () => {
       },
     ]);
 
-    const preprocessor = genClipToPolygonPreprocessor(opsLoader);
+    const preprocessor = genPreprocessor(opsLoader);
 
     const theSketch: Sketch = {
       type: "Feature",

@@ -6,4 +6,4 @@ export * from "./overlapRaster";
 export * from "./overlapRasterClass";
 export * from "./overlapGroupMetrics";
 export * from "./booleanOverlap";
-export * from "./genClipToPolygonPreprocessor";
+export * from "./genPreprocessor";

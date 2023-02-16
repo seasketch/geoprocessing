@@ -197,7 +197,7 @@ export async function createProject(
     console.log(`\nNext Steps:
   * ${chalk.yellow(
     `Tutorials`
-  )} are availableto create your first geoprocessing function and report client at https://github.com/seasketch/geoprocessing/wiki/Tutorials
+  )} are available to create your first geoprocessing function and report client at https://github.com/seasketch/geoprocessing/wiki/Tutorials
 `);
   }
 }

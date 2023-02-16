@@ -81,18 +81,11 @@ async function createFunction() {
       ],
     },
     {
-      when: (answers) => answers.type === "geoprocessing",
-      type: "confirm",
-      name: "docker",
-      default: false,
-      message: "Is this a Dockerfile-based analysis?",
-    },
-    {
       type: "list",
       name: "executionMode",
       message: "Choose an execution mode",
       default: 0,
-      when: (answers) => !answers.docker && answers.type === "geoprocessing",
+      when: (answers) => answers.type === "geoprocessing",
       choices: [
         {
           value: "sync",
@@ -105,9 +98,6 @@ async function createFunction() {
       ],
     },
   ]);
-  if (answers.docker) {
-    answers.executionMode = "async";
-  }
   answers.title = camelcase(answers.title);
   if (answers.type === "geoprocessing") {
     await makeGeoprocessingHandler(answers, true, "");
@@ -125,10 +115,6 @@ export async function makeGeoprocessingHandler(
   interactive = true,
   basePath = "./"
 ) {
-  if (options.docker) {
-    throw new Error("Docker container handlers are not yet supported");
-  }
-
   const spinner = interactive
     ? ora("Creating new geoprocessing handler").start()
     : { start: () => false, stop: () => false, succeed: () => false };
@@ -293,7 +279,6 @@ export { createFunction };
 
 interface GPOptions {
   title: string;
-  docker: boolean;
   executionMode: ExecutionMode;
   description: string;
 }

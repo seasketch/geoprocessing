@@ -46,7 +46,6 @@ const PROJECT_PATH = `packages/example-project`;
     {
       title: "area",
       description: "Produces the area of the given sketch",
-      docker: false,
       executionMode: "sync",
     },
     false,
@@ -58,7 +57,6 @@ const PROJECT_PATH = `packages/example-project`;
     {
       title: "areaAsync",
       description: "Produces the area of the given sketch - async",
-      docker: false,
       executionMode: "async",
     },
     false,

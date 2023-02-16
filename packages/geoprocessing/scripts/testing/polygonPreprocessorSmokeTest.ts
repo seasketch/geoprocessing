@@ -18,7 +18,7 @@ export const polygonPreprocessorSmokeTest = (
     timeout?: number;
   } = {}
 ) => {
-  const { partialName: testName = undefined, timeout = 10000 } = options;
+  const { partialName = undefined, timeout = 10000 } = options;
 
   describe("Basic smoke tests", () => {
     test("handler function is present", () => {
@@ -28,7 +28,18 @@ export const polygonPreprocessorSmokeTest = (
     test(
       `${preprocessorName}Smoke`,
       async () => {
-        const examples = await getExamplePolygonSketches(testName);
+        const examples = await getExamplePolygonSketches(partialName);
+        if (examples.length === 0) {
+          throw new Error(
+            `No example sketches found.  Have you put any Sketch Polygon JSON files in your examples/sketches directory? ${
+              partialName && partialName.length > 0
+                ? "Does your partialName " +
+                  partialName +
+                  " not match the name of any example polygon sketches?"
+                : ""
+            }`
+          );
+        }
         for (const example of examples) {
           try {
             const result = await preprocessorFunc(example);

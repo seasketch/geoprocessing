@@ -9,19 +9,18 @@ import kinks from "@turf/kinks";
 import { ClipOptions, FeatureClipOperation } from "../types/dataProcessor";
 
 /**
- * Returns an preprocessor function that uses opsLoad to fetch features
- * for clip operations, then clips input feature against polygon/multipolygon features using one or more clipOperations.
- * @throws if clipped features is larger than maxSize, defaults to 500K km
+ * Returns a preprocessor function given clipLoader function
+ * @throws if clipped feature is larger than maxSize, defaults to 500K km
  */
-export const genClipToPolygonPreprocessor = (
-  /** Loads clip operations with clipFeatures using feature to clip as filter */
-  opsLoad: (
+export const genPreprocessor = (
+  /** Clip loader function */
+  clipLoader: (
     feature: Feature<Polygon | MultiPolygon>
   ) => Promise<FeatureClipOperation[]>,
   options: ClipOptions = {}
 ) => {
   const func = async (feature: Feature): Promise<Feature> => {
-    return clipToPolygonFeatures(feature, opsLoad, options);
+    return clipToPolygonFeatures(feature, clipLoader, options);
   };
   return func;
 };
@@ -29,13 +28,13 @@ export const genClipToPolygonPreprocessor = (
 /**
  * Takes a Polygon feature and returns the portion remaining after performing clipOperations
  * If results in multiple polygons then returns the largest
- * @throws if clipped features is larger than maxSize, defaults to 500K km
+ * @throws if input feature to clip is not a polygon or if enforceMaxSize is true and clipped feature is larger than maxSize, defaults to 500K km
  */
 export async function clipToPolygonFeatures(
-  /** List of clip operations to run on feature in sequential order against given datasource  */
+  /** feature to clip  */
   feature: Feature,
-  /** Loads clip operations with clipFeatures using feature to clip as filter */
-  opsLoad: (
+  /** Load clip features from datasources for clip operations */
+  clipLoader: (
     feature: Feature<Polygon | MultiPolygon>
   ) => Promise<FeatureClipOperation[]>,
   options: ClipOptions = {}
@@ -69,11 +68,11 @@ export async function clipToPolygonFeatures(
 
   //// CLIP OPERATIONS ////
 
-  const clipOperations = await opsLoad(feature);
+  const clipOperations = await clipLoader(feature);
 
   // Sequentially run clip operations in order.  If operation returns null at some point, don't do any more ops
   for (const clipOp of clipOperations) {
-    if (clipped !== null) {
+    if (clipped !== null && clipOp.clipFeatures.length > 0) {
       if (clipOp.operation === "intersection") {
         clipped = clipMultiMerge(
           clipped,

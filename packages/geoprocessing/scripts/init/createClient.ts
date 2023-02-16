@@ -28,11 +28,6 @@ async function createClient() {
       name: "description",
       message: "Describe what this client is for",
     },
-    {
-      type: "confirm",
-      name: "typescript",
-      message: "Use typescript? (Recommended)",
-    },
   ]);
   answers.title = pascalcase(answers.title);
   await makeClient(answers, true, "");
@@ -97,7 +92,7 @@ export async function makeClient(
     `${fpath}/${options.title}.stories.tsx`,
     testCode.toString().replace(/Client/g, options.title)
   );
-  // TODO: make typescript optional
+
   spinner.succeed(`created ${options.title} client in ${fpath}/`);
   if (interactive) {
     console.log(chalk.blue(`\nGeoprocessing client initialized`));
@@ -111,7 +106,6 @@ export { createClient };
 
 interface ClientOptions {
   title: string;
-  typescript: boolean;
   description: string;
   /** The geoprocessing function to run for this Client */
   functionName?: string;

@@ -4,17 +4,17 @@
  */
 
 import project from "../../defaultProjectConfig";
-import { genClipOperationLoader } from "./genClipOperationLoader";
+import { genClipLoader } from "./genClipLoader";
 
 // import micronesia eez from global subdivided
-describe("genClipOperationLoader", () => {
+describe("genClipLoader", () => {
   test("should successfully fetch datasources and return ClipOperations", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const clipOpsLoader = genClipOperationLoader(project, [
+    const clipLoader = genClipLoader(project, [
       {
         datasourceId: "global-clipping-osm-land",
         // subtract out land from sketch
@@ -38,7 +38,7 @@ describe("genClipOperationLoader", () => {
         },
       },
     ]);
-    const clipOperations = await clipOpsLoader({
+    const clipOperations = await clipLoader({
       type: "Feature",
       properties: {
         name: "fsm-east-west",

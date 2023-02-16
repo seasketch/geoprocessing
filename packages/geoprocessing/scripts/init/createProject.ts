@@ -137,17 +137,21 @@ export async function createProject(
 
   spinner.start("updating basic.json");
   const basic = fs.readJSONSync(`${projectPath}/project/basic.json`);
-  await fs.writeJSONSync(`${projectPath}/project/basic.json`, {
-    ...basic,
-    bbox: [
-      metadata.bboxMinLng,
-      metadata.bboxMinLat,
-      metadata.bboxMaxLng,
-      metadata.bboxMaxLat,
-    ],
-    noun: metadata.noun,
-    nounPossessive: metadata.nounPossessive,
-  });
+  await fs.writeJSONSync(
+    `${projectPath}/project/basic.json`,
+    {
+      ...basic,
+      bbox: [
+        metadata.bboxMinLng,
+        metadata.bboxMinLat,
+        metadata.bboxMaxLng,
+        metadata.bboxMaxLat,
+      ],
+      noun: metadata.noun,
+      nounPossessive: metadata.nounPossessive,
+    },
+    { spaces: 2 }
+  );
   spinner.succeed("updated basic.json");
 
   spinner.start("add .gitignore");
@@ -162,10 +166,6 @@ export async function createProject(
     console.error(error);
   }
 
-  await fs.copyFile(
-    `${gpPath}/templates/exampleSketch.json`,
-    projectPath + "/examples/sketches/sketch.json"
-  );
   // recursively copy entire data/bin directory to project space
   await fs.copy(`${gpPath}/data/bin`, projectPath + "/data/bin");
   await fs.ensureDir(`${projectPath}/data/src`);
@@ -197,7 +197,7 @@ export async function createProject(
     console.log(`\nNext Steps:
   * ${chalk.yellow(
     `Tutorials`
-  )} are availableto create your first geoprocessing function and report client at https://github.com/seasketch/geoprocessing/wiki/Tutorials
+  )} are available to create your first geoprocessing function and report client at https://github.com/seasketch/geoprocessing/wiki/Tutorials
 `);
   }
 }

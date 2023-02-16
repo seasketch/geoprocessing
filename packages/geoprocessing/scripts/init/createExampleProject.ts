@@ -45,7 +45,6 @@ const PROJECT_PATH = `packages/example-project`;
   await makeGeoprocessingHandler(
     {
       title: "area",
-      typescript: true,
       description: "Produces the area of the given sketch",
       docker: false,
       executionMode: "sync",
@@ -58,7 +57,6 @@ const PROJECT_PATH = `packages/example-project`;
   await makeGeoprocessingHandler(
     {
       title: "areaAsync",
-      typescript: true,
       description: "Produces the area of the given sketch - async",
       docker: false,
       executionMode: "async",
@@ -76,7 +74,6 @@ const PROJECT_PATH = `packages/example-project`;
     {
       title: "AreaClient",
       description: "area report via sync function",
-      typescript: true,
       functionName: "area",
     },
     false,
@@ -87,7 +84,6 @@ const PROJECT_PATH = `packages/example-project`;
     {
       title: "AreaAsyncClient",
       description: "area report via async function",
-      typescript: true,
       functionName: "areaAsync",
     },
     false,

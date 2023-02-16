@@ -5,19 +5,19 @@
 
 import area from "@turf/area";
 import project from "../../defaultProjectConfig";
-import { genClipOperationLoader } from "../dataproviders";
-import { toJsonFile } from "../helpers";
-import { genClipToPolygonPreprocessor } from "./genClipToPolygonPreprocessor";
+import { genClipLoader } from "../dataproviders";
+import { Sketch } from "../types";
+import { genPreprocessor } from "./genPreprocessor";
 
 // import micronesia eez from global subdivided
-describe("genClipToPolygonPreprocessor", () => {
+describe("genPreprocessor", () => {
   test("should successfully generate and run preprocessor", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const opsLoader = genClipOperationLoader(project, [
+    const clipLoader = genClipLoader(project, [
       {
         datasourceId: "global-clipping-osm-land",
         // subtract out land from sketch
@@ -42,7 +42,7 @@ describe("genClipToPolygonPreprocessor", () => {
       },
     ]);
 
-    const preprocessor = genClipToPolygonPreprocessor(opsLoader);
+    const preprocessor = genPreprocessor(clipLoader);
     const result = await preprocessor({
       type: "Feature",
       properties: {
@@ -67,5 +67,56 @@ describe("genClipToPolygonPreprocessor", () => {
 
     expect(result).toBeTruthy();
     expect(area(result)).toBe(75066892447.21024);
+  });
+
+  test("sketch outside of datasource should not clip at all", async () => {
+    const eezDatasource = project.getExternalVectorDatasourceById(
+      "global-clipping-eez-land-union"
+    );
+    if (!eezDatasource)
+      throw new Error("missing global eez land union datasource");
+    const clipLoader = genClipLoader(project, [
+      {
+        datasourceId: "global-clipping-osm-land",
+        // subtract out land from sketch
+        operation: "difference",
+        // reconstruct subdivided land polygons
+        options: {
+          unionProperty: "gid",
+        },
+      },
+    ]);
+
+    const preprocessor = genPreprocessor(clipLoader);
+
+    const theSketch: Sketch = {
+      type: "Feature",
+      properties: {
+        name: "fsm-east-west",
+        updatedAt: "2022-11-17T10:02:53.645Z",
+        createdAt: "2022-11-17T10:02:53.645Z",
+        sketchClassId: "123abc",
+        id: "abc123",
+        isCollection: false,
+        userAttributes: [],
+      },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-120.18218994140626, 34.136815058265334],
+            [-119.83337402343749, 34.136815058265334],
+            [-119.83337402343749, 34.35477416538757],
+            [-120.18218994140626, 34.35477416538757],
+            [-120.18218994140626, 34.136815058265334],
+          ],
+        ],
+      },
+    };
+    const origArea = area(theSketch);
+    const result = await preprocessor(theSketch);
+
+    expect(result).toBeTruthy();
+    expect(area(result)).toEqual(origArea);
   });
 });

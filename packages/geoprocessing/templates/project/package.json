@@ -19,6 +19,8 @@
     "publish:data": "geoprocessing publish:data",
     "install:data:bin": "mkdir -p data/bin && cp -r node_modules/@seasketch/geoprocessing/dist/data/bin/* data/bin",
     "reinstall:data:bin": "rm -rf data/bin && mkdir -p data/bin && cp -r node_modules/@seasketch/geoprocessing/dist/data/bin/* data/bin",
+    "install:data:scripts": "mkdir -p data/scripts && cp -r node_modules/@seasketch/geoprocessing/dist/data/scripts/* data/scripts",
+    "reinstall:data:scripts": "rm -rf data/scripts && mkdir -p data/scripts && cp -r node_modules/@seasketch/geoprocessing/dist/data/scripts/* data/scripts",
     "workspace:shell": "docker-compose -f data/docker-compose.yml  run --rm -v \"$(data/bin/readlink.sh data/src)\":/data/src -v \"$(data/bin/readlink.sh data/dist)\":/data/dist -v \"$(data/bin/readlink.sh data/bin)\":/data/bin workspace",
     "create:function": "geoprocessing create:function",
     "create:client": "geoprocessing create:client",

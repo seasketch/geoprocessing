@@ -1,3 +1,4 @@
+import fs from "fs-extra";
 import bbox from "@turf/bbox";
 import { getTemplateDatasourcePath } from "../../scripts/init/util";
 import { FeatureCollection, Polygon } from "../../src/types";

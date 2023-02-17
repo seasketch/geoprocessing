@@ -8,7 +8,7 @@ import awsRegions from "aws-regions";
 import util from "util";
 import { getTemplateQuestion } from "../template/addTemplate";
 import { createProject, CreateProjectMetadata } from "./createProject";
-import { EezCountryFC } from "../../templates/datasources/eez_land_union_v3";
+import { EezCountryFC } from "../datasources/eez_land_union_v3";
 import { getTemplateDatasourcePath } from "./util";
 
 const exec = util.promisify(require("child_process").exec);

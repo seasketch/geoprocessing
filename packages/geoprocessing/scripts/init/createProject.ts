@@ -10,7 +10,7 @@ import {
   getGeoprocessingPath,
   getTemplateProjectPath,
 } from "./util";
-import { getEezCountryBbox } from "../../templates/datasources/eez_land_union_v3";
+import { getEezCountryBbox } from "../datasources/eez_land_union_v3";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -26,10 +26,10 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   gpVersion?: string;
   planningArea: string;
   bbox?: BBox;
-  bboxMinLng: number;
-  bboxMaxLng: number;
-  bboxMinLat: number;
-  bboxMaxLat: number;
+  bboxMinLng?: number;
+  bboxMaxLng?: number;
+  bboxMinLat?: number;
+  bboxMaxLat?: number;
   noun: string;
   nounPossessive: string;
 }
@@ -152,6 +152,14 @@ export async function createProject(
         throw new Error(`Bounding box not for EEZ named ${metadata.name}`);
       return bbox;
     } else {
+      if (
+        metadata.bboxMinLng === undefined ||
+        metadata.bboxMinLat === undefined ||
+        metadata.bboxMaxLng === undefined ||
+        metadata.bboxMaxLat === undefined
+      ) {
+        throw new Error("Incomplete bounding box provided by user");
+      }
       return [
         metadata.bboxMinLng,
         metadata.bboxMinLat,

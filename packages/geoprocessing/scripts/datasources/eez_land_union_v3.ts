@@ -1,13 +1,13 @@
 import fs from "fs-extra";
 import bbox from "@turf/bbox";
-import { getTemplateDatasourcePath } from "../../scripts/init/util";
+import { getTemplateDatasourcePath } from "../init/util";
 import { FeatureCollection, Polygon } from "../../src/types";
 
 export type EezCountryFC = FeatureCollection<Polygon, { UNION: string }>;
 
 export const getEezCountries = async () => {
   const eezCountries = (await fs.readJSON(
-    `${getTemplateDatasourcePath}/eez_land_union_v3.json`
+    `${getTemplateDatasourcePath()}/eez_land_union_v3.json`
   )) as EezCountryFC;
 
   return eezCountries;

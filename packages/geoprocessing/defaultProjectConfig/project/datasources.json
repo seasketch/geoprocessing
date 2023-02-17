@@ -6,6 +6,7 @@
       "subdivided"
     ],
     "classKeys": [],
+    "propertiesToKeep": ["gid"],
     "url": "https://d3p1dsef9f0gjr.cloudfront.net/"
   },
   {
@@ -15,6 +16,7 @@
       "subdivided"
     ],
     "classKeys": [],
+    "propertiesToKeep": ["UNION"],
     "url": "https://d3muy0hbwp5qkl.cloudfront.net"
   }
 ]

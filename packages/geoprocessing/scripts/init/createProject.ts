@@ -63,7 +63,6 @@ export async function createProject(
   spinner.start("copying template");
 
   const projectTemplatePath = getTemplateProjectPath();
-  console.log("PROJECT_TEMPLATE_PATH", projectTemplatePath);
 
   // Get version of geoprocessing currently running
   const curGpPackage: Package = JSON.parse(

@@ -30,6 +30,7 @@ const PROJECT_PATH = `packages/example-project`;
       repositoryUrl: "https://github.com/seasketch/example-project",
       region: "us-west-1",
       templates: [],
+      planningArea: "other",
       bboxMaxLat: 0,
       bboxMinLat: 0,
       bboxMaxLng: 0,
@@ -46,7 +47,6 @@ const PROJECT_PATH = `packages/example-project`;
     {
       title: "area",
       description: "Produces the area of the given sketch",
-      docker: false,
       executionMode: "sync",
     },
     false,
@@ -58,7 +58,6 @@ const PROJECT_PATH = `packages/example-project`;
     {
       title: "areaAsync",
       description: "Produces the area of the given sketch - async",
-      docker: false,
       executionMode: "async",
     },
     false,

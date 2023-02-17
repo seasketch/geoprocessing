@@ -1,3 +1,4 @@
+import fs from "fs-extra";
 import inquirer from "inquirer";
 // @ts-ignore
 import licenses from "spdx-license-ids";
@@ -7,6 +8,9 @@ import awsRegions from "aws-regions";
 import util from "util";
 import { getTemplateQuestion } from "../template/addTemplate";
 import { createProject, CreateProjectMetadata } from "./createProject";
+import { EezCountryFC } from "../datasources/eez_land_union_v3";
+import { getTemplateDatasourcePath } from "./util";
+
 const exec = util.promisify(require("child_process").exec);
 
 const regions = awsRegions.list({ public: true }).map((v) => v.code);
@@ -19,6 +23,16 @@ async function init(gpVersion?: string) {
   const userMeta = require("user-meta");
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
+
+  const datasourceTemplatePath = getTemplateDatasourcePath();
+  const eezCountries = (await fs.readJSON(
+    `${datasourceTemplatePath}/eez_land_union_v3.json`
+  )) as EezCountryFC;
+  const countryChoices = eezCountries.features.map((eez) => ({
+    value: eez.properties.UNION,
+    name: eez.properties.UNION,
+  }));
+
   const templateQuestion = await getTemplateQuestion();
   const answers = await inquirer.prompt<CreateProjectMetadata>([
     /* Pass your questions in here */
@@ -104,6 +118,27 @@ async function init(gpVersion?: string) {
       },
     },
     {
+      type: "list",
+      name: "planningArea",
+      message: "What type of planning area does your project have?",
+      default: "eez",
+      choices: [
+        {
+          value: "eez",
+          name: "Exclusive Economic Zone (EEZ)",
+        },
+        { value: "other", name: "Other" },
+      ],
+    },
+    {
+      when: (answers) => answers.planningArea === "eez",
+      type: "list",
+      name: "noun",
+      message: "Choose a country",
+      choices: countryChoices,
+    },
+    {
+      when: (answers) => answers.planningArea === "other",
       type: "input",
       name: "bboxMinLat",
       message:
@@ -113,6 +148,7 @@ async function init(gpVersion?: string) {
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
+      when: (answers) => answers.planningArea === "other",
       type: "input",
       name: "bboxMaxLat",
       message:
@@ -122,6 +158,7 @@ async function init(gpVersion?: string) {
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
+      when: (answers) => answers.planningArea === "other",
       type: "input",
       name: "bboxMinLng",
       message:
@@ -131,6 +168,7 @@ async function init(gpVersion?: string) {
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
+      when: (answers) => answers.planningArea === "other",
       type: "input",
       name: "bboxMaxLng",
       message:
@@ -140,6 +178,7 @@ async function init(gpVersion?: string) {
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
+      when: (answers) => answers.planningArea === "other",
       type: "input",
       name: "noun",
       message:
@@ -148,8 +187,9 @@ async function init(gpVersion?: string) {
     {
       type: "input",
       name: "nounPossessive",
-      message:
-        "Is there a possessive form of this name? (e.g. Samoan) Leave blank if not",
+      default: (answers) => `${answers.noun}an`,
+      message: (answers) =>
+        `Your planning area name is ${answers.noun}. Is there a possessive name for this place? (e.g. Samoa -> Samoan) Leave blank if not`,
     },
     templateQuestion,
   ]);

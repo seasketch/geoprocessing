@@ -27,6 +27,7 @@ it("should create empty project", async () => {
       repositoryUrl: "https://github.com/test/test-project",
       region: "us-west-1",
       templates: [],
+      planningArea: "other",
       bboxMaxLat: 0,
       bboxMinLat: 0,
       bboxMaxLng: 0,
@@ -59,6 +60,38 @@ it("should create empty project", async () => {
   expect(gpConfig.clients.length).toBe(0);
 });
 
+it("should create project using eez selection", async () => {
+  const projectName = "test-project-empty";
+  const projectPath = path.join(rootPath, projectName);
+  await createProject(
+    {
+      name: projectName,
+      description: "Test project",
+      author: "Test",
+      email: "test@test.com",
+      license: "UNLICENSED",
+      organization: "Test Org",
+      repositoryUrl: "https://github.com/test/test-project",
+      region: "us-west-1",
+      templates: [],
+      planningArea: "eez",
+      noun: "Micronesia",
+      nounPossessive: "Micronesian",
+    },
+    false,
+    rootPath
+  );
+
+  const basicJson = JSON.parse(
+    fs.readFileSync(path.join(projectPath, "project", "basic.json")).toString()
+  );
+
+  expect(basicJson.bbox).toEqual([
+    135.31244183762126, -1.173110965298591, 165.67652822599732,
+    13.445432925389298,
+  ]);
+});
+
 it("should create project with template with preprocessor", async () => {
   const projectName = "test-project-preprocessor";
   const projectPath = path.join(rootPath, projectName);
@@ -73,6 +106,7 @@ it("should create project with template with preprocessor", async () => {
       repositoryUrl: "https://github.com/test/test-project",
       region: "us-west-1",
       templates: ["gp-clip-ocean"],
+      planningArea: "other",
       bboxMaxLat: 0,
       bboxMinLat: 0,
       bboxMaxLng: 0,
@@ -107,6 +141,7 @@ it("should create project with template with 1 of each", async () => {
       repositoryUrl: "https://github.com/test/test-project",
       region: "us-west-1",
       templates: ["gp-clip-ocean", "gp-raster-stats"],
+      planningArea: "other",
       bboxMaxLat: 0,
       bboxMinLat: 0,
       bboxMaxLng: 0,

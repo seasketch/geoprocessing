@@ -1,4 +1,3 @@
 # Command to produce eez_union_countries.json
-# Output is used to prepopulate create:function geoprocessor eez question
 
 ogr2ogr -f GeoJSON /vsistdout/ -dialect sqlite -sql "SELECT DISTINCT \"UNION\" FROM EEZ_Land_v3_202030 ORDER BY \"UNION\"" ./EEZ_Land_v3_202030.shp | ogr2ogr -f "GeoJSON" /vsistdout/ /vsistdin/ > eez_land_union_v3.json

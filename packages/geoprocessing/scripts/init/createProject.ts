@@ -5,6 +5,13 @@ import chalk from "chalk";
 import { join } from "path";
 import { BBox, Package } from "../../src/types";
 import util from "util";
+import {
+  getDefaultProjectConfigPath,
+  getGeoprocessingPath,
+  getTemplateProjectPath,
+} from "./util";
+import { getEezCountryBbox } from "../datasources/eez_land_union_v3";
+
 const exec = util.promisify(require("child_process").exec);
 
 export interface CreateProjectMetadata extends TemplateMetadata {
@@ -17,10 +24,12 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   repositoryUrl: string;
   region: string;
   gpVersion?: string;
-  bboxMinLng: number;
-  bboxMaxLng: number;
-  bboxMinLat: number;
-  bboxMaxLat: number;
+  planningArea: string;
+  bbox?: BBox;
+  bboxMinLng?: number;
+  bboxMaxLng?: number;
+  bboxMinLat?: number;
+  bboxMaxLat?: number;
   noun: string;
   nounPossessive: string;
 }
@@ -33,6 +42,12 @@ export async function createProject(
 ) {
   const { organization, region, email, gpVersion, ...packageJSONOptions } =
     metadata;
+
+  // Installation path for new project
+  const projectPath = `${basePath ? basePath + "/" : ""}${metadata.name}`;
+  // Installation path for project config
+  const projectConfigPath = projectPath + "/project";
+
   const spinner = interactive
     ? ora("Creating new project").start()
     : {
@@ -41,24 +56,17 @@ export async function createProject(
         succeed: () => false,
         fail: () => false,
       };
-  const projectPath = `${basePath ? basePath + "/" : ""}${metadata.name}`;
+
   spinner.start(`creating ${projectPath}`);
   await fs.ensureDir(projectPath);
   spinner.succeed(`created ${projectPath}/`);
   spinner.start("copying template");
 
-  // If running from project space, which runs gp code in dist build folder
-  // then set gpPath to top-level of dist folder (3 folders up), where the templates folder is
-  // else must be running gp code from src folder (like tests)
-  // and should set gpPath to top-level of src (2 folders up)
-  const gpPath = /dist/.test(__dirname)
-    ? `${__dirname}/../../..`
-    : `${__dirname}/../..`;
-  const projectTemplatePath = `${gpPath}/templates/project`;
+  const projectTemplatePath = getTemplateProjectPath();
 
   // Get version of geoprocessing currently running
   const curGpPackage: Package = JSON.parse(
-    fs.readFileSync(`${gpPath}/package.json`).toString()
+    fs.readFileSync(`${getGeoprocessingPath()}/package.json`).toString()
   );
   const curGpVersion = curGpPackage.version;
 
@@ -67,10 +75,7 @@ export async function createProject(
   spinner.succeed("copied base files");
 
   // Copy default project configuration
-  await fs.copy(
-    `${gpPath}/defaultProjectConfig/project`,
-    projectPath + "/project"
-  );
+  await fs.copy(`${getDefaultProjectConfigPath()}`, projectConfigPath);
   spinner.succeed("copied default project configuration");
 
   spinner.start("updating package.json with provided details");
@@ -137,16 +142,37 @@ export async function createProject(
 
   spinner.start("updating basic.json");
   const basic = fs.readJSONSync(`${projectPath}/project/basic.json`);
-  await fs.writeJSONSync(
-    `${projectPath}/project/basic.json`,
-    {
-      ...basic,
-      bbox: [
+
+  // Either lookup bbox of planning area by name or construct from user-provided
+  const bbox: BBox = await (async () => {
+    if (metadata.planningArea && metadata.planningArea === "eez") {
+      const bbox = await getEezCountryBbox(metadata.noun);
+      if (!bbox)
+        throw new Error(`Bounding box not for EEZ named ${metadata.name}`);
+      return bbox;
+    } else {
+      if (
+        metadata.bboxMinLng === undefined ||
+        metadata.bboxMinLat === undefined ||
+        metadata.bboxMaxLng === undefined ||
+        metadata.bboxMaxLat === undefined
+      ) {
+        throw new Error("Incomplete bounding box provided by user");
+      }
+      return [
         metadata.bboxMinLng,
         metadata.bboxMinLat,
         metadata.bboxMaxLng,
         metadata.bboxMaxLat,
-      ],
+      ];
+    }
+  })();
+
+  await fs.writeJSONSync(
+    `${projectPath}/project/basic.json`,
+    {
+      ...basic,
+      bbox,
       noun: metadata.noun,
       nounPossessive: metadata.nounPossessive,
     },
@@ -167,7 +193,10 @@ export async function createProject(
   }
 
   // recursively copy entire data/bin directory to project space
-  await fs.copy(`${gpPath}/data/bin`, projectPath + "/data/bin");
+  await fs.copy(
+    `${getGeoprocessingPath()}/data/bin`,
+    projectPath + "/data/bin"
+  );
   await fs.ensureDir(`${projectPath}/data/src`);
   await fs.ensureDir(`${projectPath}/data/dist`);
 

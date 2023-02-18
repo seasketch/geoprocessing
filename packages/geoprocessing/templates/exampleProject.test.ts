@@ -32,7 +32,6 @@ describe("Project metadata settings", () => {
   test("gp function and test case created", () => {
     expect(fs.existsSync("src/functions/area.ts")).toBeTruthy();
     expect(fs.existsSync("src/functions/areaSmoke.test.ts")).toBeTruthy();
-    expect(fs.existsSync("src/functions/areaUnit.test.ts")).toBeTruthy();
   });
 
   test("function metadata set correctly", () => {

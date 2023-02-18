@@ -119,7 +119,7 @@ async function init(gpVersion?: string) {
     },
     {
       type: "list",
-      name: "planningArea",
+      name: "planningAreaType",
       message: "What type of planning area does your project have?",
       default: "eez",
       choices: [

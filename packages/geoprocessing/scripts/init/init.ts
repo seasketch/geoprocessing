@@ -187,7 +187,6 @@ async function init(gpVersion?: string) {
     {
       type: "input",
       name: "nounPossessive",
-      default: (answers) => `${answers.noun}an`,
       message: (answers) =>
         `Your planning area name is ${answers.noun}. Is there a possessive name for this place? (e.g. Samoa -> Samoan) Leave blank if not`,
     },

@@ -93,15 +93,14 @@ async function createFunction() {
     },
   ]);
   answers.title = camelcase(answers.title);
+  if (answers.type === "preprocessing" && answers.clipToEez === "yes") {
+    answers.eez = basic.noun;
+  }
+
   if (answers.type === "geoprocessing") {
     await makeGeoprocessingHandler(answers, true, "");
   } else {
     await makePreprocessingHandler(answers, true, "");
-  }
-  console.log("check answers", answers);
-  if (answers.type === "preprocessing" && answers.clipToEez === "yes") {
-    console.log("got here", basic);
-    answers.eez = basic.noun;
   }
 }
 

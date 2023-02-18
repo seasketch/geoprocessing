@@ -125,9 +125,6 @@ export async function makeGeoprocessingHandler(
   const testSmokeCode = await fs.readFile(
     `${functionTemplatePath}/areaSmoke.test.ts`
   );
-  const testUnitCode = await fs.readFile(
-    `${functionTemplatePath}/areaUnit.test.ts`
-  );
   if (!fs.existsSync(path.join(basePath, "src"))) {
     fs.mkdirSync(path.join(basePath, "src"));
   }
@@ -150,13 +147,6 @@ export async function makeGeoprocessingHandler(
   await fs.writeFile(
     `${projectFunctionPath}/${options.title}Smoke.test.ts`,
     testSmokeCode
-      .toString()
-      .replace(/calculateArea/g, options.title)
-      .replace("./area", `./${options.title}`)
-  );
-  await fs.writeFile(
-    `${projectFunctionPath}/${options.title}Unit.test.ts`,
-    testUnitCode
       .toString()
       .replace(/calculateArea/g, options.title)
       .replace("./area", `./${options.title}`)

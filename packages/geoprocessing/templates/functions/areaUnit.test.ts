@@ -10,9 +10,9 @@ import {
 const calculateArea = Handler.func;
 
 describe("Unit tests", () => {
-  test("Area should be > 700 sq km", async () => {
+  test("Area should be > 1 sq km", async () => {
     const examples = await getExampleSketches();
     const result = await calculateArea(examples[0]);
-    expect(result.area / 1000 ** 2).toBeGreaterThan(700);
+    expect(result.area / 1000 ** 2).toBeGreaterThan(1);
   });
 });

@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import bbox from "@turf/bbox";
-import { getTemplateDatasourcePath } from "../init/util";
+import { getTemplateDatasourcePath } from "../util/getPaths";
 import { FeatureCollection, Polygon } from "../../src/types";
 
 export type EezCountryFC = FeatureCollection<Polygon, { UNION: string }>;

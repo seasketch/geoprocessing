@@ -9,7 +9,7 @@ import util from "util";
 import { getTemplateQuestion } from "../template/addTemplate";
 import { createProject, CreateProjectMetadata } from "./createProject";
 import { EezCountryFC } from "../datasources/eez_land_union_v3";
-import { getTemplateDatasourcePath } from "./util";
+import { getTemplateDatasourcePath } from "../util/getPaths";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -131,14 +131,14 @@ async function init(gpVersion?: string) {
       ],
     },
     {
-      when: (answers) => answers.planningArea === "eez",
+      when: (answers) => answers.planningAreaType === "eez",
       type: "list",
       name: "noun",
       message: "Choose a country",
       choices: countryChoices,
     },
     {
-      when: (answers) => answers.planningArea === "other",
+      when: (answers) => answers.planningAreaType === "other",
       type: "input",
       name: "bboxMinLat",
       message:
@@ -148,7 +148,7 @@ async function init(gpVersion?: string) {
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
-      when: (answers) => answers.planningArea === "other",
+      when: (answers) => answers.planningAreaType === "other",
       type: "input",
       name: "bboxMaxLat",
       message:
@@ -158,7 +158,7 @@ async function init(gpVersion?: string) {
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
-      when: (answers) => answers.planningArea === "other",
+      when: (answers) => answers.planningAreaType === "other",
       type: "input",
       name: "bboxMinLng",
       message:
@@ -168,7 +168,7 @@ async function init(gpVersion?: string) {
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
-      when: (answers) => answers.planningArea === "other",
+      when: (answers) => answers.planningAreaType === "other",
       type: "input",
       name: "bboxMaxLng",
       message:
@@ -178,7 +178,7 @@ async function init(gpVersion?: string) {
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
-      when: (answers) => answers.planningArea === "other",
+      when: (answers) => answers.planningAreaType === "other",
       type: "input",
       name: "noun",
       message:

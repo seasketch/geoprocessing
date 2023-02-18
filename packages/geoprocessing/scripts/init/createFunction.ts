@@ -221,7 +221,7 @@ export async function makePreprocessingHandler(
       .replace(/clipToOceanEez/g, options.title)
       .replace("Example-description", options.description)
       .replace(
-        "EEZ_CLIP_OPERATION",
+        "EEZ_CLIP_OPERATION,",
         options.clipToEez !== "no"
           ? JSON.stringify(
               {

@@ -3,36 +3,27 @@ import ora from "ora";
 import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
-import { ExecutionMode, FeatureCollection } from "../../src/types";
+import {
+  ExecutionMode,
+  FeatureCollection,
+  projectSchema,
+} from "../../src/types";
 import camelcase from "camelcase";
 import { GeoprocessingJsonConfig } from "../../src/types";
 import { Polygon } from "polygon-clipping";
-
-type EezCountryFC = FeatureCollection<Polygon, { UNION: string }>;
-
-function getDatasourceTemplatePath() {
-  const gpPath = /dist/.test(__dirname)
-    ? `${__dirname}/../../..`
-    : `${__dirname}/../..`;
-  return `${gpPath}/templates/datasources`;
-}
-
-function getFunctionTemplatePath() {
-  const gpPath = /dist/.test(__dirname)
-    ? `${__dirname}/../../..`
-    : `${__dirname}/../..`;
-  return `${gpPath}/templates/functions`;
-}
+import {
+  getTemplateDatasourcePath,
+  getTemplateFunctionPath,
+  getProjectFunctionPath,
+  getProjectConfigPath,
+} from "../util/getPaths";
 
 async function createFunction() {
-  const datasourceTemplatePath = getDatasourceTemplatePath();
-  const eezCountries = (await fs.readJSON(
-    `${datasourceTemplatePath}/eez_land_union_v3.json`
-  )) as EezCountryFC;
-  const countryChoices = eezCountries.features.map((eez) => ({
-    value: eez.properties.UNION,
-    name: eez.properties.UNION,
-  }));
+  const datasourceTemplatePath = getTemplateDatasourcePath();
+
+  const rawBasic = fs.readJSONSync(`${getProjectConfigPath("")}/basic.json`);
+  console.log("basic", JSON.stringify(rawBasic));
+  const basic = projectSchema.parse(rawBasic);
 
   const answers = await inquirer.prompt([
     {
@@ -66,18 +57,21 @@ async function createFunction() {
       message: "Describe what this function does",
     },
     {
-      when: (answers) => answers.type === "preprocessing",
+      when: (answers) =>
+        answers.type === "preprocessing" && basic.planningAreaType === "eez",
       type: "list",
-      name: "eez",
-      message:
-        "Should this clip sketches to be within an Exclusive Economic Zone boundary? If yes, choose a country",
-      default: "no",
+      name: "clipToEez",
+      message: `Should this clip sketches to the ${basic.noun} EEZ boundary?`,
+      default: "yes",
       choices: [
+        {
+          value: "yes",
+          name: "Yes",
+        },
         {
           value: "no",
           name: "No",
         },
-        ...countryChoices,
       ],
     },
     {
@@ -99,6 +93,10 @@ async function createFunction() {
     },
   ]);
   answers.title = camelcase(answers.title);
+  if (answers.type === "preprocessing" && answers.clipToEez === "yes") {
+    answers.eez = basic.noun;
+  }
+
   if (answers.type === "geoprocessing") {
     await makeGeoprocessingHandler(answers, true, "");
   } else {
@@ -120,15 +118,12 @@ export async function makeGeoprocessingHandler(
     : { start: () => false, stop: () => false, succeed: () => false };
   spinner.start(`creating handler from templates`);
   // copy geoprocessing function template
-  const fpath = basePath + "src/functions";
   // rename metadata in function definition
-  const functionTemplatePath = getFunctionTemplatePath();
+  const projectFunctionPath = getProjectFunctionPath(basePath);
+  const functionTemplatePath = getTemplateFunctionPath();
   const handlerCode = await fs.readFile(`${functionTemplatePath}/area.ts`);
   const testSmokeCode = await fs.readFile(
     `${functionTemplatePath}/areaSmoke.test.ts`
-  );
-  const testUnitCode = await fs.readFile(
-    `${functionTemplatePath}/areaUnit.test.ts`
   );
   if (!fs.existsSync(path.join(basePath, "src"))) {
     fs.mkdirSync(path.join(basePath, "src"));
@@ -137,7 +132,7 @@ export async function makeGeoprocessingHandler(
     fs.mkdirSync(path.join(basePath, "src", "functions"));
   }
   await fs.writeFile(
-    `${fpath}/${options.title}.ts`,
+    `${projectFunctionPath}/${options.title}.ts`,
     handlerCode
       .toString()
       .replace(/calculateArea/g, options.title)
@@ -150,15 +145,8 @@ export async function makeGeoprocessingHandler(
       .replace("Function description", options.description)
   );
   await fs.writeFile(
-    `${fpath}/${options.title}Smoke.test.ts`,
+    `${projectFunctionPath}/${options.title}Smoke.test.ts`,
     testSmokeCode
-      .toString()
-      .replace(/calculateArea/g, options.title)
-      .replace("./area", `./${options.title}`)
-  );
-  await fs.writeFile(
-    `${fpath}/${options.title}Unit.test.ts`,
-    testUnitCode
       .toString()
       .replace(/calculateArea/g, options.title)
       .replace("./area", `./${options.title}`)
@@ -176,12 +164,14 @@ export async function makeGeoprocessingHandler(
     JSON.stringify(geoprocessingJson, null, "  ")
   );
 
-  spinner.succeed(`created ${options.title} function in ${fpath}/`);
+  spinner.succeed(
+    `created ${options.title} function in ${projectFunctionPath}/`
+  );
   if (interactive) {
     console.log(chalk.blue(`\nGeoprocessing function initialized`));
     console.log(`\nNext Steps:
-    * Update your function definition in ${`${fpath}/${options.title}.ts`}
-    * Test cases go in ${`${fpath}/${options.title}.test.ts`}
+    * Update your function definition in ${`${projectFunctionPath}/${options.title}.ts`}
+    * Test cases go in ${`${projectFunctionPath}/${options.title}.test.ts`}
     * Populate examples/sketches
   `);
   }
@@ -197,14 +187,14 @@ export async function makePreprocessingHandler(
     : { start: () => false, stop: () => false, succeed: () => false };
   spinner.start(`creating handler from templates`);
   // copy preprocessing function template
-  const fpath = basePath + "src/functions";
+  const projectFunctionPath = getProjectFunctionPath(basePath);
   // rename metadata in function definition
-  const functionTemplatePath = getFunctionTemplatePath();
+  const templateFunctionPath = getTemplateFunctionPath();
   const handlerCode = await fs.readFile(
-    `${functionTemplatePath}/clipToOceanEez.ts`
+    `${templateFunctionPath}/clipToOceanEez.ts`
   );
   const testCode = await fs.readFile(
-    `${functionTemplatePath}/clipToOceanEezSmoke.test.ts`
+    `${templateFunctionPath}/clipToOceanEezSmoke.test.ts`
   );
 
   if (!fs.existsSync(path.join(basePath, "src"))) {
@@ -215,14 +205,14 @@ export async function makePreprocessingHandler(
   }
   // add optional eez clip, unquoting the json string before insertion
   await fs.writeFile(
-    `${fpath}/${options.title}.ts`,
+    `${projectFunctionPath}/${options.title}.ts`,
     handlerCode
       .toString()
       .replace(/clipToOceanEez/g, options.title)
       .replace("Example-description", options.description)
       .replace(
-        "EEZ_CLIP_OPERATION",
-        options.eez !== "no"
+        "EEZ_CLIP_OPERATION,",
+        options.clipToEez !== "no"
           ? JSON.stringify(
               {
                 datasourceId: "global-clipping-eez-land-union",
@@ -241,7 +231,7 @@ export async function makePreprocessingHandler(
       )
   );
   await fs.writeFile(
-    `${fpath}/${options.title}Smoke.test.ts`,
+    `${projectFunctionPath}/${options.title}Smoke.test.ts`,
     testCode.toString().replace(/clipToOceanEez/g, options.title)
   );
   const geoprocessingJson = JSON.parse(
@@ -259,17 +249,19 @@ export async function makePreprocessingHandler(
   if (!fs.existsSync(path.join(basePath, "examples/features"))) {
     fs.mkdirSync(path.join(basePath, "examples/features"));
     fs.copyFileSync(
-      path.join(functionTemplatePath, "../", "exampleFeature.json"),
+      path.join(templateFunctionPath, "../", "exampleFeature.json"),
       path.join(basePath, "examples/features/exampleFeature.json")
     );
   }
 
-  spinner.succeed(`created ${options.title} function in ${fpath}/`);
+  spinner.succeed(
+    `created ${options.title} function in ${projectFunctionPath}/`
+  );
   if (interactive) {
     console.log(chalk.blue(`\nPreprocessing function initialized`));
     console.log(`\nNext Steps:
-    * Update your function definition in ${`${fpath}/${options.title}.ts`}
-    * Test cases go in ${`${fpath}/${options.title}.test.ts`}
+    * Update your function definition in ${`${projectFunctionPath}/${options.title}.ts`}
+    * Test cases go in ${`${projectFunctionPath}/${options.title}.test.ts`}
     * Populate examples/functions
   `);
   }
@@ -286,5 +278,6 @@ interface GPOptions {
 interface PreprocessingOptions {
   title: string;
   description: string;
+  clipToEez: "yes" | "no";
   eez: string;
 }

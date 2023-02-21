@@ -3,13 +3,13 @@ import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
 import { join } from "path";
-import { BBox, Package } from "../../src/types";
+import { BBox, Package, projectSchema } from "../../src/types";
 import util from "util";
 import {
   getDefaultProjectConfigPath,
   getGeoprocessingPath,
   getTemplateProjectPath,
-} from "./util";
+} from "../util/getPaths";
 import { getEezCountryBbox } from "../datasources/eez_land_union_v3";
 
 const exec = util.promisify(require("child_process").exec);
@@ -24,7 +24,7 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   repositoryUrl: string;
   region: string;
   gpVersion?: string;
-  planningArea: string;
+  planningAreaType: string;
   bbox?: BBox;
   bboxMinLng?: number;
   bboxMaxLng?: number;
@@ -145,7 +145,7 @@ export async function createProject(
 
   // Either lookup bbox of planning area by name or construct from user-provided
   const bbox: BBox = await (async () => {
-    if (metadata.planningArea && metadata.planningArea === "eez") {
+    if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
       const bbox = await getEezCountryBbox(metadata.noun);
       if (!bbox)
         throw new Error(`Bounding box not for EEZ named ${metadata.name}`);
@@ -168,16 +168,17 @@ export async function createProject(
     }
   })();
 
-  await fs.writeJSONSync(
-    `${projectPath}/project/basic.json`,
-    {
-      ...basic,
-      bbox,
-      noun: metadata.noun,
-      nounPossessive: metadata.nounPossessive,
-    },
-    { spaces: 2 }
-  );
+  const validBasic = projectSchema.parse({
+    ...basic,
+    bbox,
+    planningAreaType: metadata.planningAreaType,
+    noun: metadata.noun,
+    nounPossessive: metadata.nounPossessive,
+  });
+
+  await fs.writeJSONSync(`${projectPath}/project/basic.json`, validBasic, {
+    spaces: 2,
+  });
   spinner.succeed("updated basic.json");
 
   spinner.start("add .gitignore");

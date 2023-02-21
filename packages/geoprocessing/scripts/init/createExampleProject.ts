@@ -30,7 +30,7 @@ const PROJECT_PATH = `packages/example-project`;
       repositoryUrl: "https://github.com/seasketch/example-project",
       region: "us-west-1",
       templates: [],
-      planningArea: "other",
+      planningAreaType: "other",
       bboxMaxLat: 0,
       bboxMinLat: 0,
       bboxMaxLng: 0,

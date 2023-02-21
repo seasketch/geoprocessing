@@ -5,7 +5,7 @@ import {
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import { AllGeoJSON, BBox } from "@turf/helpers";
-import area from "@turf/area";
+import turfArea from "@turf/area";
 
 export interface CalculateAreaResults {
   /** area of the sketch in square meters */
@@ -17,7 +17,7 @@ async function calculateArea(
   sketch: Sketch | SketchCollection
 ): Promise<CalculateAreaResults> {
   return {
-    area: area(sketch),
+    area: turfArea(sketch),
     bbox: bbox(sketch as AllGeoJSON),
   };
 }

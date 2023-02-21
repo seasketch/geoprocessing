@@ -20,8 +20,12 @@ export const box3dSchema = z.tuple([
 
 export const bboxSchema = box2dSchema.or(box3dSchema);
 
+export const PLANNING_AREA_TYPES = ["eez", "other"] as const;
+export const planningAreaTypesSchema = z.enum(PLANNING_AREA_TYPES);
+
 export const projectSchema = z.object({
   bbox: bboxSchema,
+  planningAreaType: planningAreaTypesSchema,
   noun: z.string(),
   nounPossessive: z.string(),
   externalLinks: z.record(z.string()),

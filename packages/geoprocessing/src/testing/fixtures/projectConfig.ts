@@ -5,6 +5,7 @@ const basicConfig: ProjectClientConfig = {
     bbox: [0, 0, 1, 1],
     noun: "undefined",
     nounPossessive: "undefined",
+    planningAreaType: "eez",
     externalLinks: {},
     clipDatasources: {
       land: "global-clipping-osm-land",

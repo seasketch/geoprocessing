@@ -63,6 +63,7 @@ it("should create empty project", async () => {
 it("should create project using eez selection", async () => {
   const projectName = "test-project-empty";
   const projectPath = path.join(rootPath, projectName);
+  console.log("EEZ_PROJECT_PATH", projectPath, projectName);
   await createProject(
     {
       name: projectName,
@@ -82,6 +83,8 @@ it("should create project using eez selection", async () => {
     rootPath
   );
 
+  console.log("GOT HERE 1");
+
   const basicJson = JSON.parse(
     fs.readFileSync(path.join(projectPath, "project", "basic.json")).toString()
   );
@@ -90,7 +93,7 @@ it("should create project using eez selection", async () => {
     135.31244183762126, -1.173110965298591, 165.67652822599732,
     13.445432925389298,
   ]);
-});
+}, 60000);
 
 it("should create project with template with preprocessor", async () => {
   const projectName = "test-project-preprocessor";

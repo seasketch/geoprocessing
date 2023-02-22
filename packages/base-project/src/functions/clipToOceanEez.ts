@@ -13,7 +13,16 @@ const clipLoader = genClipLoader(project, [
       unionProperty: "gid",
     },
   },
-  EEZ_CLIP_OPERATION,
+  {
+    datasourceId: "global-clipping-eez-land-union",
+    operation: "intersection",
+    options: {
+      propertyFilter: {
+        property: "UNION",
+        values: ["Micronesia"],
+      },
+    },
+  },
 ]);
 
 export const clipToOceanEez = genPreprocessor(clipLoader);

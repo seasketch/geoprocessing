@@ -1,7 +1,23 @@
 import { PreprocessingHandler } from "./PreprocessingHandler";
 import { ValidationError } from "../types";
-import feature from "../../templates/exampleFeature.json";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
+
+const feature = {
+  type: "Feature",
+  properties: {},
+  geometry: {
+    type: "Polygon",
+    coordinates: [
+      [
+        [-119.87817764282225, 34.377870792354564],
+        [-119.84384536743164, 34.377870792354564],
+        [-119.84384536743164, 34.41229136345307],
+        [-119.87817764282225, 34.41229136345307],
+        [-119.87817764282225, 34.377870792354564],
+      ],
+    ],
+  },
+};
 
 const simpleHandler = new PreprocessingHandler(
   async (feature) => {

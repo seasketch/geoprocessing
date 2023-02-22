@@ -64,6 +64,6 @@
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
     "resolveJsonModule": true
   },
-  "exclude": ["docs", "./templates/**/*", "./defaultProjectConfig/project/**/*", "node_modules", 
+  "exclude": ["docs", "./templates/**/*", "node_modules", 
               "dist", "scripts", "cdk.out"],
 }

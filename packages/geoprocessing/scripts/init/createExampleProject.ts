@@ -1,8 +1,5 @@
 import { createProject } from "./createProject";
-import {
-  makePreprocessingHandler,
-  makeGeoprocessingHandler,
-} from "./createFunction";
+import { makeGeoprocessingHandler } from "./createFunction";
 import { makeClient } from "./createClient";
 import fs from "fs-extra";
 

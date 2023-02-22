@@ -5,12 +5,9 @@ import chalk from "chalk";
 import { join } from "path";
 import { BBox, Package, projectSchema } from "../../src/types";
 import util from "util";
-import {
-  getDefaultProjectConfigPath,
-  getGeoprocessingPath,
-  getTemplateProjectPath,
-} from "../util/getPaths";
+import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths";
 import { getEezCountryBbox } from "../datasources/eez_land_union_v3";
+import { $ } from "zx";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -45,8 +42,6 @@ export async function createProject(
 
   // Installation path for new project
   const projectPath = `${basePath ? basePath + "/" : ""}${metadata.name}`;
-  // Installation path for project config
-  const projectConfigPath = projectPath + "/project";
 
   const spinner = interactive
     ? ora("Creating new project").start()
@@ -62,7 +57,7 @@ export async function createProject(
   spinner.succeed(`created ${projectPath}/`);
   spinner.start("copying template");
 
-  const projectTemplatePath = getTemplateProjectPath();
+  const baseProjectPath = getBaseProjectPath();
 
   // Get version of geoprocessing currently running
   const curGpPackage: Package = JSON.parse(
@@ -71,17 +66,22 @@ export async function createProject(
   const curGpVersion = curGpPackage.version;
 
   // Copy all files from base project template
-  await fs.copy(projectTemplatePath, projectPath);
+  try {
+    await fs.ensureDir(projectPath);
+    await $`pwd`;
+    await $`cp -r ${baseProjectPath}/* ${projectPath}`;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.log("Base project copy failed");
+      throw err;
+    }
+  }
   spinner.succeed("copied base files");
-
-  // Copy default project configuration
-  await fs.copy(`${getDefaultProjectConfigPath()}`, projectConfigPath);
-  spinner.succeed("copied default project configuration");
 
   spinner.start("updating package.json with provided details");
   const packageJSON: Package = {
     ...JSON.parse(
-      fs.readFileSync(`${projectTemplatePath}/package.json`).toString()
+      fs.readFileSync(`${baseProjectPath}/package.json`).toString()
     ),
     ...packageJSONOptions,
     // TODO: other repo types

@@ -1,10 +1,9 @@
 {
-  "name": "example-project-template",
+  "name": "base-project",
   "version": "1.0.0",
-  "description": "Example project for testing @seaketch/geoprocessing framework",
+  "description": "initial user-installed project",
   "main": "src/index.js",
   "scripts": {
-    "ts-node": "ts-node --transpile-only --compiler-options '{\"esModuleInterop\":true, \"module\":\"commonjs\"}'",
     "start-data": "http-server data/dist -c-1",
     "__test": "geoprocessing test",
     "test": "npm run test:unit && npm run test:smoke",
@@ -42,10 +41,16 @@
     "@seasketch/geoprocessing"
   ],
   "dependencies": {
-    "@turf/area": "6.5.0",
-    "@turf/bbox-clip": "6.5.0"
+    "@turf/area": "^6.5.0",
+    "@turf/bbox": "^6.5.0",
+    "@turf/bbox-clip": "^6.5.0",
+    "@turf/boolean-valid": "^6.5.0"
   },
   "devDependencies": {
-    "@seasketch/geoprocessing": "^0.7.0"
-  }
+    "start-server-and-test": "^1.15.4",
+    "@seasketch/geoprocessing": "^1.1.0"
+  },
+  "repositoryUrl": "https://github.com/seasketch/fsm-reports.git",
+  "author": "Tim Welch",
+  "license": "MIT"
 }

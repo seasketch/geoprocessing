@@ -1,11 +1,16 @@
 {
-  "bbox": [ 0, 0, 0, 0 ],
+  "bbox": [
+      135.312441837621,
+      -1.17311096529859,
+      165.676528225997,
+      13.4454329253893
+  ],
   "planningAreaType": "eez",
-  "noun": "undefined",
-  "nounPossessive": "undefined",
+  "noun": "Micronesia",
+  "nounPossessive": "Micronesian",
   "externalLinks": {},
   "clipDatasources": {
-    "land": "global-clipping-osm-land",
-    "eez": "global-clipping-eez-land-union"
+      "land": "global-clipping-osm-land",
+      "eez": "global-clipping-eez-land-union"
   }
 }

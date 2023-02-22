@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "initial user-installed project",
   "main": "src/index.js",
+  "private": true,
   "scripts": {
     "start-data": "http-server data/dist -c-1",
     "__test": "geoprocessing test",
@@ -47,10 +48,9 @@
     "@turf/boolean-valid": "^6.5.0"
   },
   "devDependencies": {
-    "start-server-and-test": "^1.15.4",
     "@seasketch/geoprocessing": "^1.1.0"
   },
   "repositoryUrl": "https://github.com/seasketch/fsm-reports.git",
   "author": "Tim Welch",
-  "license": "MIT"
+  "license": "BSD-3-Clause"
 }

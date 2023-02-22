@@ -70,6 +70,7 @@ export async function createProject(
     await fs.ensureDir(projectPath);
     await $`pwd`;
     await $`cp -r ${baseProjectPath}/* ${projectPath}`;
+    await $`cp -r ${baseProjectPath}/. ${projectPath}`;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.log("Base project copy failed");
@@ -183,10 +184,9 @@ export async function createProject(
 
   spinner.start("add .gitignore");
   try {
-    await fs.move(
-      join(projectPath, "_gitignore"),
-      join(projectPath, ".gitignore")
-    ); // Move _gitignore to .gitignore
+    if (fs.existsSync(`${projectPath}/_gitignore`)) {
+      fs.move(`${projectPath}/_gitignore`, `${projectPath}/.gitignore`);
+    }
     spinner.succeed("added .gitignore");
   } catch (error) {
     spinner.fail(".gitignore add failed");

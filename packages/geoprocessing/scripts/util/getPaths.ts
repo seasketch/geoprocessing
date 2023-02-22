@@ -6,7 +6,7 @@
 /**
  * If running geoprocessing CLI command from a project
  * the geoprocessing path is the top-level of dist folder (3 folders up),
- * If running tests in the geoprocessing library, then the
+ * If running tests ian the geoprocessing library, then the
  * geoprocessing path is the top-levl of src folder (2 folders up)
  */
 export function getGeoprocessingPath() {
@@ -29,7 +29,7 @@ export function getBaseProjectPath() {
 }
 
 export function getBaseFunctionPath() {
-  return `${getBaseFunctionPath()}/src/functions`;
+  return `${getBaseProjectPath()}/src/functions`;
 }
 
 //// PROJECT PATHS ////

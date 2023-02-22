@@ -90,7 +90,7 @@ async function init(gpVersion?: string) {
       type: "autocomplete",
       name: "license",
       message: "Choose a license.",
-      default: "MIT",
+      default: "BSD-3-Clause",
       source: async (answersSoFar: any, value: string) => {
         if (value) {
           return fuzzy.filter(value, allLicenseOptions).map((v) => v.original);

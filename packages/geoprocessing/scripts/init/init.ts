@@ -1,4 +1,3 @@
-import fs from "fs-extra";
 import inquirer from "inquirer";
 // @ts-ignore
 import licenses from "spdx-license-ids";

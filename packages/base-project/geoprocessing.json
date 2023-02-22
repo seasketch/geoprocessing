@@ -2,7 +2,15 @@
   "author": "Tim Welch <tim.j.welch@gmail.com>",
   "organization": "Seasketch",
   "region": "us-west-2",
-  "clients": [],
-  "preprocessingFunctions": [],
-  "geoprocessingFunctions": []
+  "clients": [{
+    "name": "BaseReportClient",
+    "description":  "Base report client",
+    "source": "src/clients/BaseReportClient.tsx"
+  }],
+  "preprocessingFunctions": [
+    "src/functions/clipToOceanEez.ts"
+  ],
+  "geoprocessingFunctions": [
+    "src/functions/area.ts"
+  ]
 }

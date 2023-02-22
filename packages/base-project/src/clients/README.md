@@ -1,3 +1,3 @@
 # Clients
 
-Clients are registered with SeaSketch and contain Report building blocks capable of taking a Sketch or SketchCollection, calling geoprocessing functions and displaying the results organized by tab and section.
+Report clients are React UI components that can be registered with SeaSketch and when given a sketch URL as input, are able to run the appropriate geoprocessing functions and display a complete report.  This can include multiple report pages with tabbed navigation.

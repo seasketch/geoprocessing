@@ -1,6 +1,7 @@
 const fs = require("fs-extra");
 const path = require("path");
 import { $ } from "zx";
+$.verbose = false;
 
 const packagesPath = path.join(__dirname, "..", "..", "..");
 const distPath = path.join(__dirname, "..", "..", "dist");
@@ -68,12 +69,8 @@ async function bundleBaseProject() {
 
   try {
     await fs.ensureDir(distBaseProjectPath);
-    await $`pwd`;
     await $`cp -r ${baseProjectPath}/* ${distBaseProjectPath}`;
     await $`cp -r ${baseProjectPath}/. ${distBaseProjectPath}`;
-    // await $`rm ${distBaseProjectPath}/package-lock.json`;
-    // await $`rm ${distBaseProjectPath}/geoprocessing.json`;
-    // await $`rm ${distBaseProjectPath}/src/functions/*.ts`;
     await $`mv ${distBaseProjectPath}/.gitignore ${distBaseProjectPath}/_gitignore`;
   } catch (err: unknown) {
     if (err instanceof Error) {

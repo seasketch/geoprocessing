@@ -63,7 +63,6 @@ it("should create empty project", async () => {
 it("should create project using eez selection", async () => {
   const projectName = "test-project-empty";
   const projectPath = path.join(rootPath, projectName);
-  console.log("EEZ_PROJECT_PATH", projectPath, projectName);
   await createProject(
     {
       name: projectName,
@@ -82,8 +81,6 @@ it("should create project using eez selection", async () => {
     false,
     rootPath
   );
-
-  console.log("GOT HERE 1");
 
   const basicJson = JSON.parse(
     fs.readFileSync(path.join(projectPath, "project", "basic.json")).toString()

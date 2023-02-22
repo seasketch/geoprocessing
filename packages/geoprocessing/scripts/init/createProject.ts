@@ -9,6 +9,8 @@ import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths";
 import { getEezCountryBbox } from "../datasources/eez_land_union_v3";
 import { $ } from "zx";
 
+$.verbose = false;
+
 const exec = util.promisify(require("child_process").exec);
 
 export interface CreateProjectMetadata extends TemplateMetadata {

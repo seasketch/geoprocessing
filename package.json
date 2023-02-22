@@ -21,7 +21,6 @@
     "publish:beta:canary": "CI=1 lerna publish --force-publish --canary --preid beta --dist-tag=beta",
     "publish:alpha:canary": "CI=1 lerna publish --force-publish --canary --preid alpha --dist-tag=alpha",
     "publish:experimental:canary": "CI=1 lerna publish --force-publish --canary --preid experimental-${EXPERIMENT_ID} --dist-tag=experimental-${EXPERIMENT_ID}",
-    "create_example": "node packages/geoprocessing/dist/scripts/init/createExampleProject.js",
     "e2e_test": "./packages/geoprocessing/scripts/testing/initTestProjects.mjs",
     "prepare": "husky install"
   },

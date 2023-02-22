@@ -16,7 +16,7 @@ export function getGeoprocessingPath() {
 }
 
 /**
- * If running geoprocessing CLI command from a project or via create_example then execution is from
+ * If running geoprocessing CLI command from a project then execution is from
  * your_project/node_modules/@seasketch/geoprocessing/dist/script
  * and base project is located relative to this up at top-level of dist.
  * If running internal geoprocessing tests then point to base project

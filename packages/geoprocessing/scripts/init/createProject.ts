@@ -55,7 +55,7 @@ export async function createProject(
   spinner.start(`creating ${projectPath}`);
   await fs.ensureDir(projectPath);
   spinner.succeed(`created ${projectPath}/`);
-  spinner.start("copying template");
+  spinner.start("copying base project");
 
   const baseProjectPath = getBaseProjectPath();
 
@@ -102,6 +102,7 @@ export async function createProject(
           },
         }
       : {}),
+    ...{ private: false },
   };
 
   if (gpVersion) {

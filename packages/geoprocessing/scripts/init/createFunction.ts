@@ -14,7 +14,6 @@ import {
 
 async function createFunction() {
   const rawBasic = fs.readJSONSync(`${getProjectConfigPath("")}/basic.json`);
-  console.log("basic", JSON.stringify(rawBasic));
   const basic = projectSchema.parse(rawBasic);
 
   const answers = await inquirer.prompt([

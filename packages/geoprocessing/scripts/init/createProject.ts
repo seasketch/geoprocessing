@@ -107,22 +107,6 @@ export async function createProject(
     ...{ private: false },
   };
 
-  // Add smoke tests to default run
-
-  console.log("process.env.NODE_ENV", process.env.NODE_ENV);
-  if (process.env.NODE_ENV !== "test") {
-    const packageJson = fs
-      .readFileSync(`${baseProjectPath}/package.json`)
-      .toString();
-    console.log("packageJson", packageJSON);
-    const afterJson = packageJson.replace(
-      "npm run test:unit",
-      "npm run test:unit && npm run test:smoke"
-    );
-    console.log("afterJson", afterJson);
-    await fs.writeFile(`${baseProjectPath}/package.json`, afterJson);
-  }
-
   if (gpVersion) {
     if (packageJSON.devDependencies) {
       packageJSON.devDependencies["@seasketch/geoprocessing"] = gpVersion;
@@ -144,6 +128,17 @@ export async function createProject(
     `${projectPath}/package.json`,
     JSON.stringify(packageJSON, null, "  ")
   );
+
+  // Add smoke tests to default run
+  if (process.env.NODE_ENV !== "test") {
+    await fs.writeFile(
+      `${projectPath}/package.json`,
+      fs
+        .readFileSync(`${projectPath}/package.json`)
+        .toString()
+        .replace("npm run test:unit", "npm run test:unit && npm run test:smoke")
+    );
+  }
   spinner.succeed("updated package.json");
   spinner.start("creating geoprocessing.json");
   const author = email ? `${metadata.author} <${email}>` : metadata.author;

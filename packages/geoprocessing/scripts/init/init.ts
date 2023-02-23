@@ -88,7 +88,7 @@ async function init(gpVersion?: string) {
     {
       type: "autocomplete",
       name: "license",
-      message: "Choose a license.",
+      message: "What software license would you like to use?",
       default: "BSD-3-Clause",
       source: async (answersSoFar: any, value: string) => {
         if (value) {
@@ -128,8 +128,21 @@ async function init(gpVersion?: string) {
       when: (answers) => answers.planningAreaType === "eez",
       type: "list",
       name: "noun",
-      message: "Choose a country",
+      message: "What countries EEZ is this for?",
       choices: countryChoices,
+    },
+    {
+      when: (answers) => answers.planningAreaType === "other",
+      type: "input",
+      name: "noun",
+      message:
+        "What is the name of the country/site/planning area? (e.g. Samoa)",
+    },
+    {
+      type: "input",
+      name: "nounPossessive",
+      message: (answers) =>
+        `Your planning area name is ${answers.noun}. Is there a possessive name for this place? (e.g. possessive form of Samoa is Samoan) Leave blank if not`,
     },
     {
       when: (answers) => answers.planningAreaType === "other",
@@ -170,19 +183,6 @@ async function init(gpVersion?: string) {
       validate: (value) =>
         value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
-    },
-    {
-      when: (answers) => answers.planningAreaType === "other",
-      type: "input",
-      name: "noun",
-      message:
-        "What is the name of the country/site/planning area? (e.g. Samoa)",
-    },
-    {
-      type: "input",
-      name: "nounPossessive",
-      message: (answers) =>
-        `Your planning area name is ${answers.noun}. Is there a possessive name for this place? (e.g. Samoa -> Samoan) Leave blank if not`,
     },
     templateQuestion,
   ]);

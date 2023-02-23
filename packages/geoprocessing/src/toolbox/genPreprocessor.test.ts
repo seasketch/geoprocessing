@@ -4,7 +4,7 @@
  */
 
 import area from "@turf/area";
-import project from "../../defaultProjectConfig";
+import project from "../testing/project";
 import { genClipLoader } from "../dataproviders";
 import { Sketch } from "../types";
 import { genPreprocessor } from "./genPreprocessor";

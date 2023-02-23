@@ -3,26 +3,17 @@ import ora from "ora";
 import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
-import {
-  ExecutionMode,
-  FeatureCollection,
-  projectSchema,
-} from "../../src/types";
+import { ExecutionMode, projectSchema } from "../../src/types";
 import camelcase from "camelcase";
 import { GeoprocessingJsonConfig } from "../../src/types";
-import { Polygon } from "polygon-clipping";
 import {
-  getTemplateDatasourcePath,
-  getTemplateFunctionPath,
+  getBaseFunctionPath,
   getProjectFunctionPath,
   getProjectConfigPath,
 } from "../util/getPaths";
 
 async function createFunction() {
-  const datasourceTemplatePath = getTemplateDatasourcePath();
-
   const rawBasic = fs.readJSONSync(`${getProjectConfigPath("")}/basic.json`);
-  console.log("basic", JSON.stringify(rawBasic));
   const basic = projectSchema.parse(rawBasic);
 
   const answers = await inquirer.prompt([
@@ -120,7 +111,7 @@ export async function makeGeoprocessingHandler(
   // copy geoprocessing function template
   // rename metadata in function definition
   const projectFunctionPath = getProjectFunctionPath(basePath);
-  const functionTemplatePath = getTemplateFunctionPath();
+  const functionTemplatePath = `${getBaseFunctionPath()}`;
   const handlerCode = await fs.readFile(`${functionTemplatePath}/area.ts`);
   const testSmokeCode = await fs.readFile(
     `${functionTemplatePath}/areaSmoke.test.ts`
@@ -189,12 +180,12 @@ export async function makePreprocessingHandler(
   // copy preprocessing function template
   const projectFunctionPath = getProjectFunctionPath(basePath);
   // rename metadata in function definition
-  const templateFunctionPath = getTemplateFunctionPath();
+  const baseFunctionPath = getBaseFunctionPath();
   const handlerCode = await fs.readFile(
-    `${templateFunctionPath}/clipToOceanEez.ts`
+    `${baseFunctionPath}/clipToOceanEez.ts`
   );
   const testCode = await fs.readFile(
-    `${templateFunctionPath}/clipToOceanEezSmoke.test.ts`
+    `${baseFunctionPath}/clipToOceanEezSmoke.test.ts`
   );
 
   if (!fs.existsSync(path.join(basePath, "src"))) {
@@ -246,13 +237,6 @@ export async function makePreprocessingHandler(
     path.join(basePath, "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")
   );
-  if (!fs.existsSync(path.join(basePath, "examples/features"))) {
-    fs.mkdirSync(path.join(basePath, "examples/features"));
-    fs.copyFileSync(
-      path.join(templateFunctionPath, "../", "exampleFeature.json"),
-      path.join(basePath, "examples/features/exampleFeature.json")
-    );
-  }
 
   spinner.succeed(
     `created ${options.title} function in ${projectFunctionPath}/`

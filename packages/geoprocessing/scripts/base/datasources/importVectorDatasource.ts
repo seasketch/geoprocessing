@@ -1,6 +1,5 @@
 import path from "path";
 import { FeatureCollection, Polygon } from "../../../src/types";
-import { $ } from "zx";
 import fs from "fs-extra";
 import {
   ClassStats,

@@ -3,7 +3,7 @@
  * @group unit
  */
 
-import project from "../../defaultProjectConfig";
+import project from "../testing/project";
 import { genClipLoader } from "./genClipLoader";
 
 // import micronesia eez from global subdivided

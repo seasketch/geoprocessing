@@ -23,7 +23,7 @@
 //     author: "Test",
 //     email: "test@test.com",
 //     organization: "Tester",
-//     license: "MIT",
+//     license: "BSD-3-Clause",
 //     region: "us-west-1",
 //     templates: [],
 //     ...(gpVersion ? { gpVersion } : {}),

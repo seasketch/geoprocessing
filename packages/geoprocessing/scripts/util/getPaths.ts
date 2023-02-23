@@ -4,35 +4,32 @@
 // the geoprocessing library.
 
 /**
- * If running geoprocessing command from your project
+ * If running geoprocessing CLI command from a project
  * the geoprocessing path is the top-level of dist folder (3 folders up),
- * If running tests in the geoprocessing library, then the
+ * If running tests ian the geoprocessing library, then the
  * geoprocessing path is the top-levl of src folder (2 folders up)
  */
 export function getGeoprocessingPath() {
-  const gpPath = /dist/.test(__dirname)
+  return /dist/.test(__dirname)
     ? `${__dirname}/../../..`
     : `${__dirname}/../..`;
-  return gpPath;
 }
 
-/** Returns path to project template */
-export function getTemplateProjectPath() {
-  return `${getGeoprocessingPath()}/templates/project`;
+/**
+ * If running geoprocessing CLI command from a project then execution is from
+ * your_project/node_modules/@seasketch/geoprocessing/dist/script
+ * and base project is located relative to this up at top-level of dist.
+ * If running internal geoprocessing tests then point to base project
+ * package
+ */
+export function getBaseProjectPath() {
+  return /dist/.test(__dirname)
+    ? `${__dirname}/../../base-project`
+    : `${__dirname}/../../../base-project`;
 }
 
-/** Returns path to datasource template files */
-export function getTemplateDatasourcePath() {
-  return `${getGeoprocessingPath()}/templates/datasources`;
-}
-
-export function getTemplateFunctionPath() {
-  return `${getGeoprocessingPath()}/templates/functions`;
-}
-
-/** Returns path to default project client and config */
-export function getDefaultProjectConfigPath() {
-  return `${getGeoprocessingPath()}/defaultProjectConfig/project`;
+export function getBaseFunctionPath() {
+  return `${getBaseProjectPath()}/src/functions`;
 }
 
 //// PROJECT PATHS ////

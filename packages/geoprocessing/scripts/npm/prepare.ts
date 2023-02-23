@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 const path = require("path");
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
+import { $ } from "zx";
+$.verbose = false;
 
 const packagesPath = path.join(__dirname, "..", "..", "..");
 const distPath = path.join(__dirname, "..", "..", "dist");
@@ -29,9 +29,6 @@ async function bundleAssets() {
   }
 
   if (fs.existsSync(assetsPath)) {
-    // if (!fs.existsSync(distAssetsPath)) {
-    //   fs.mkdirSync(distAssetsPath, "src", "functions"));
-    // }
     await fs.copySync(assetsPath, distAssetsPath);
   }
 }
@@ -58,8 +55,34 @@ async function bundleData() {
 }
 
 /**
+ * Copy base project from its standalone package to dist
+ * Base project can then be installed via gp commands.
+ */
+async function bundleBaseProject() {
+  const distBaseProjectPath = `${distPath}/base-project`;
+  const baseProjectPath = `${__dirname}/../../../base-project`;
+
+  // Delete old template bundles if they exist
+  if (fs.existsSync(path.join(distBaseProjectPath))) {
+    fs.rmdirSync(distBaseProjectPath, { recursive: true });
+  }
+
+  try {
+    await fs.ensureDir(distBaseProjectPath);
+    await $`cp -r ${baseProjectPath}/* ${distBaseProjectPath}`;
+    await $`cp -r ${baseProjectPath}/. ${distBaseProjectPath}`;
+    await $`mv ${distBaseProjectPath}/.gitignore ${distBaseProjectPath}/_gitignore`;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.log("Base project copy failed");
+      throw err;
+    }
+  }
+}
+
+/**
  * Copy templates from their standalone package to dist
- * Templates are then installed via gp commands.  This could be improved to publish template bundles
+ * Templates can then be installed via gp commands.  This could be improved to publish template bundles
  * outside of the gp library
  */
 async function bundleTemplates() {
@@ -206,4 +229,8 @@ bundleData().then(() => {
 
 bundleTemplates().then(() => {
   console.log("finished bundling templates");
+});
+
+bundleBaseProject().then(() => {
+  console.log("finished bundling base project");
 });

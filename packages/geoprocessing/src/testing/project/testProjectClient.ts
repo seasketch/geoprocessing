@@ -1,9 +1,9 @@
-import datasources from "./project/datasources.json";
-import metrics from "./project/metrics.json";
-import objectives from "./project/objectives.json";
-import basic from "./project/basic.json";
+import datasources from "./datasources.json";
+import metrics from "./metrics.json";
+import objectives from "./objectives.json";
+import basic from "./basic.json";
 
-import { ProjectClientBase, GeoprocessingJsonConfig, Package } from "../src";
+import { ProjectClientBase, GeoprocessingJsonConfig, Package } from "../../";
 
 const projectPackage: Package = {
   name: "test-project",

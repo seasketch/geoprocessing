@@ -5,12 +5,11 @@ import chalk from "chalk";
 import { join } from "path";
 import { BBox, Package, projectSchema } from "../../src/types";
 import util from "util";
-import {
-  getDefaultProjectConfigPath,
-  getGeoprocessingPath,
-  getTemplateProjectPath,
-} from "../util/getPaths";
+import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths";
 import { getEezCountryBbox } from "../datasources/eez_land_union_v3";
+import { $ } from "zx";
+
+$.verbose = false;
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -45,8 +44,6 @@ export async function createProject(
 
   // Installation path for new project
   const projectPath = `${basePath ? basePath + "/" : ""}${metadata.name}`;
-  // Installation path for project config
-  const projectConfigPath = projectPath + "/project";
 
   const spinner = interactive
     ? ora("Creating new project").start()
@@ -60,9 +57,9 @@ export async function createProject(
   spinner.start(`creating ${projectPath}`);
   await fs.ensureDir(projectPath);
   spinner.succeed(`created ${projectPath}/`);
-  spinner.start("copying template");
+  spinner.start("copying base project");
 
-  const projectTemplatePath = getTemplateProjectPath();
+  const baseProjectPath = getBaseProjectPath();
 
   // Get version of geoprocessing currently running
   const curGpPackage: Package = JSON.parse(
@@ -71,17 +68,27 @@ export async function createProject(
   const curGpVersion = curGpPackage.version;
 
   // Copy all files from base project template
-  await fs.copy(projectTemplatePath, projectPath);
+  try {
+    await fs.ensureDir(projectPath);
+    await $`cp -r ${baseProjectPath}/* ${projectPath}`;
+    await $`cp -r ${baseProjectPath}/. ${projectPath}`;
+    await $`rm ${projectPath}/package-lock.json`;
+    await $`rm ${projectPath}/geoprocessing.json`;
+    await $`rm ${projectPath}/examples/sketches/*.json`;
+    await $`rm -rf ${projectPath}/examples/output`;
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.log("Base project copy failed");
+      throw err;
+    }
+  }
   spinner.succeed("copied base files");
 
-  // Copy default project configuration
-  await fs.copy(`${getDefaultProjectConfigPath()}`, projectConfigPath);
-  spinner.succeed("copied default project configuration");
-
   spinner.start("updating package.json with provided details");
+
   const packageJSON: Package = {
     ...JSON.parse(
-      fs.readFileSync(`${projectTemplatePath}/package.json`).toString()
+      fs.readFileSync(`${baseProjectPath}/package.json`).toString()
     ),
     ...packageJSONOptions,
     // TODO: other repo types
@@ -97,6 +104,7 @@ export async function createProject(
           },
         }
       : {}),
+    ...{ private: false },
   };
 
   if (gpVersion) {
@@ -120,6 +128,17 @@ export async function createProject(
     `${projectPath}/package.json`,
     JSON.stringify(packageJSON, null, "  ")
   );
+
+  // Add smoke tests to default run
+  if (process.env.NODE_ENV !== "test") {
+    await fs.writeFile(
+      `${projectPath}/package.json`,
+      fs
+        .readFileSync(`${projectPath}/package.json`)
+        .toString()
+        .replace("npm run test:unit", "npm run test:unit && npm run test:smoke")
+    );
+  }
   spinner.succeed("updated package.json");
   spinner.start("creating geoprocessing.json");
   const author = email ? `${metadata.author} <${email}>` : metadata.author;
@@ -183,10 +202,9 @@ export async function createProject(
 
   spinner.start("add .gitignore");
   try {
-    await fs.move(
-      join(projectPath, "_gitignore"),
-      join(projectPath, ".gitignore")
-    ); // Move _gitignore to .gitignore
+    if (fs.existsSync(`${projectPath}/_gitignore`)) {
+      fs.move(`${projectPath}/_gitignore`, `${projectPath}/.gitignore`);
+    }
     spinner.succeed("added .gitignore");
   } catch (error) {
     spinner.fail(".gitignore add failed");

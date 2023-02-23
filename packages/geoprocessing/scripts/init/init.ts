@@ -1,4 +1,3 @@
-import fs from "fs-extra";
 import inquirer from "inquirer";
 // @ts-ignore
 import licenses from "spdx-license-ids";
@@ -8,8 +7,7 @@ import awsRegions from "aws-regions";
 import util from "util";
 import { getTemplateQuestion } from "../template/addTemplate";
 import { createProject, CreateProjectMetadata } from "./createProject";
-import { EezCountryFC } from "../datasources/eez_land_union_v3";
-import { getTemplateDatasourcePath } from "../util/getPaths";
+import { eezCountries } from "../datasources/eez_land_union_v3";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -24,10 +22,6 @@ async function init(gpVersion?: string) {
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
 
-  const datasourceTemplatePath = getTemplateDatasourcePath();
-  const eezCountries = (await fs.readJSON(
-    `${datasourceTemplatePath}/eez_land_union_v3.json`
-  )) as EezCountryFC;
   const countryChoices = eezCountries.features.map((eez) => ({
     value: eez.properties.UNION,
     name: eez.properties.UNION,
@@ -95,7 +89,7 @@ async function init(gpVersion?: string) {
       type: "autocomplete",
       name: "license",
       message: "Choose a license.",
-      default: "MIT",
+      default: "BSD-3-Clause",
       source: async (answersSoFar: any, value: string) => {
         if (value) {
           return fuzzy.filter(value, allLicenseOptions).map((v) => v.original);

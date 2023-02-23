@@ -108,14 +108,19 @@ export async function createProject(
   };
 
   // Add smoke tests to default run
+
+  console.log("process.env.NODE_ENV", process.env.NODE_ENV);
   if (process.env.NODE_ENV !== "test") {
-    await fs.writeFile(
-      `${baseProjectPath}/package.json`,
-      fs
-        .readFileSync(`${baseProjectPath}/package.json`)
-        .toString()
-        .replace("npm run test:unit", "npm run test:unit && npm run test:smoke")
+    const packageJson = fs
+      .readFileSync(`${baseProjectPath}/package.json`)
+      .toString();
+    console.log("packageJson", packageJSON);
+    const afterJson = packageJson.replace(
+      "npm run test:unit",
+      "npm run test:unit && npm run test:smoke"
     );
+    console.log("afterJson", afterJson);
+    await fs.writeFile(`${baseProjectPath}/package.json`, afterJson);
   }
 
   if (gpVersion) {

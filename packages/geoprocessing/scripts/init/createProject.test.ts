@@ -32,8 +32,8 @@ it("should create empty project", async () => {
       bboxMinLat: 0,
       bboxMaxLng: 0,
       bboxMinLng: 0,
-      noun: "Samoa",
-      nounPossessive: "Samoan",
+      planningAreaName: "Samoa",
+      planningAreaPossessive: "Samoan",
     },
     false,
     rootPath
@@ -75,8 +75,8 @@ it("should create project using eez selection", async () => {
       region: "us-west-1",
       templates: [],
       planningAreaType: "eez",
-      noun: "Micronesia",
-      nounPossessive: "Micronesian",
+      planningAreaName: "Micronesia",
+      planningAreaPossessive: "Micronesian",
     },
     false,
     rootPath
@@ -111,8 +111,8 @@ it("should create project with template with preprocessor", async () => {
       bboxMinLat: 0,
       bboxMaxLng: 0,
       bboxMinLng: 0,
-      noun: "Samoa",
-      nounPossessive: "Samoan",
+      planningAreaName: "Samoa",
+      planningAreaPossessive: "Samoan",
     },
     false,
     rootPath
@@ -146,8 +146,8 @@ it("should create project with template with 1 of each", async () => {
       bboxMinLat: 0,
       bboxMaxLng: 0,
       bboxMinLng: 0,
-      noun: "Samoa",
-      nounPossessive: "Samoan",
+      planningAreaName: "Samoa",
+      planningAreaPossessive: "Samoan",
     },
     false,
     rootPath

@@ -29,8 +29,8 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   bboxMaxLng?: number;
   bboxMinLat?: number;
   bboxMaxLat?: number;
-  noun: string;
-  nounPossessive: string;
+  planningAreaName: string;
+  planningAreaPossessive: string;
 }
 
 /** Create project at basePath.  If should be created non-interactively then set interactive = false and provide all project creation metadata, otherwise will prompt for answers  */
@@ -165,7 +165,7 @@ export async function createProject(
   // Either lookup bbox of planning area by name or construct from user-provided
   const bbox: BBox = await (async () => {
     if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
-      const bbox = await getEezCountryBbox(metadata.noun);
+      const bbox = await getEezCountryBbox(metadata.planningAreaName);
       if (!bbox)
         throw new Error(`Bounding box not for EEZ named ${metadata.name}`);
       return bbox;
@@ -191,8 +191,8 @@ export async function createProject(
     ...basic,
     bbox,
     planningAreaType: metadata.planningAreaType,
-    noun: metadata.noun,
-    nounPossessive: metadata.nounPossessive,
+    planningAreaName: metadata.planningAreaName,
+    planningAreaPossessive: metadata.planningAreaPossessive,
   });
 
   await fs.writeJSONSync(`${projectPath}/project/basic.json`, validBasic, {

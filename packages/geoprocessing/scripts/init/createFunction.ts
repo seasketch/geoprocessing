@@ -52,7 +52,7 @@ async function createFunction() {
         answers.type === "preprocessing" && basic.planningAreaType === "eez",
       type: "list",
       name: "clipToEez",
-      message: `Should this clip sketches to the ${basic.noun} EEZ boundary?`,
+      message: `Should this clip sketches to the ${basic.planningAreaName} EEZ boundary?`,
       default: "yes",
       choices: [
         {
@@ -85,7 +85,7 @@ async function createFunction() {
   ]);
   answers.title = camelcase(answers.title);
   if (answers.type === "preprocessing" && answers.clipToEez === "yes") {
-    answers.eez = basic.noun;
+    answers.eez = basic.planningAreaName;
   }
 
   if (answers.type === "geoprocessing") {

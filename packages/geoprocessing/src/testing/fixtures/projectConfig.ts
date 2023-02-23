@@ -3,8 +3,8 @@ import { ProjectClientConfig } from "../../project";
 const basicConfig: ProjectClientConfig = {
   basic: {
     bbox: [0, 0, 1, 1],
-    noun: "undefined",
-    nounPossessive: "undefined",
+    planningAreaName: "undefined",
+    planningAreaPossessive: "undefined",
     planningAreaType: "eez",
     externalLinks: {},
   },

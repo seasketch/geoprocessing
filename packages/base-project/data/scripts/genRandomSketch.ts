@@ -19,9 +19,16 @@ import {
   const numPolygons = parseInt(process.argv[2]) || 1;
   if (!numPolygons || numPolygons <= 0) throw new Error(usage);
 
-  const name = process.argv[3]
-    ? `${process.argv[3]}.json`
-    : "randomSketch.json";
+  const name = (() => {
+    const argName = process.argv[3];
+    if (argName) {
+      return `${process.argv[3]}.json`;
+    } else if (numPolygons > 1) {
+      return "randomSketchCollection.json";
+    } else {
+      return "randomSketch.json";
+    }
+  })();
 
   const outdir = process.argv[4] || `${__dirname}/../../examples/sketches/`;
 

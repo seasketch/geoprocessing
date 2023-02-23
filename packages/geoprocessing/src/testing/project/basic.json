@@ -3,9 +3,5 @@
   "planningAreaType": "eez",
   "noun": "undefined",
   "nounPossessive": "undefined",
-  "externalLinks": {},
-  "clipDatasources": {
-    "land": "global-clipping-osm-land",
-    "eez": "global-clipping-eez-land-union"
-  }
+  "externalLinks": {}
 }

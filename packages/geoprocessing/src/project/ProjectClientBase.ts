@@ -9,7 +9,6 @@ import {
   getInternalRasterDatasourceById,
   getInternalVectorDatasourceById,
   getExternalVectorDatasourceById,
-  getClipDatasource,
   getObjectiveById,
   getMetricGroupObjectiveIds,
   MetricGroup,
@@ -167,16 +166,6 @@ export class ProjectClientBase implements ProjectClientInterface {
   /** Returns global eez VectorDatasource */
   public getGlobalEezVectorDatasource() {
     return getGlobalEezVectorDatasource(this._datasources);
-  }
-
-  /** Returns Datasource given clipBoundary name */
-  public getClipDatasource(clipBoundary: string): Datasource {
-    const clipDatasourceId = this._project.clipDatasources[clipBoundary];
-    if (!clipDatasourceId)
-      throw new Error(
-        `Missing clipDatasource for boundary name ${clipBoundary}`
-      );
-    return getClipDatasource(clipDatasourceId, this._datasources);
   }
 
   // OBJECTIVES //

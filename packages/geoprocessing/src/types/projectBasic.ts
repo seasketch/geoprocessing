@@ -29,8 +29,6 @@ export const projectSchema = z.object({
   noun: z.string(),
   nounPossessive: z.string(),
   externalLinks: z.record(z.string()),
-  /** Datasources for clipping sketches keyed by boundary name */
-  clipDatasources: z.record(z.string()),
 });
 
 //// INFERRED TYPES ////

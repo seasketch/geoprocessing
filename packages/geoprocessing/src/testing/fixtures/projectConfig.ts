@@ -7,10 +7,6 @@ const basicConfig: ProjectClientConfig = {
     nounPossessive: "undefined",
     planningAreaType: "eez",
     externalLinks: {},
-    clipDatasources: {
-      land: "global-clipping-osm-land",
-      eez: "global-clipping-eez-land-union",
-    },
   },
   datasources: [
     {

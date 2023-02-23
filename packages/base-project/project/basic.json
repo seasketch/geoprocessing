@@ -8,9 +8,5 @@
   "planningAreaType": "eez",
   "noun": "Micronesia",
   "nounPossessive": "Micronesian",
-  "externalLinks": {},
-  "clipDatasources": {
-      "land": "global-clipping-osm-land",
-      "eez": "global-clipping-eez-land-union"
-  }
+  "externalLinks": {}
 }

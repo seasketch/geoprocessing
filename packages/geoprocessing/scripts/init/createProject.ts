@@ -85,6 +85,7 @@ export async function createProject(
   spinner.succeed("copied base files");
 
   spinner.start("updating package.json with provided details");
+
   const packageJSON: Package = {
     ...JSON.parse(
       fs.readFileSync(`${baseProjectPath}/package.json`).toString()
@@ -105,6 +106,17 @@ export async function createProject(
       : {}),
     ...{ private: false },
   };
+
+  // Add smoke tests to default run
+  if (process.env.NODE_ENV !== "test") {
+    await fs.writeFile(
+      `${baseProjectPath}/package.json`,
+      fs
+        .readFileSync(`${baseProjectPath}/package.json`)
+        .toString()
+        .replace("npm run test:unit", "npm run test:unit && npm run test:smoke")
+    );
+  }
 
   if (gpVersion) {
     if (packageJSON.devDependencies) {

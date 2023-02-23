@@ -1,5 +1,5 @@
 {
-  "name": "base-project",
+  "name": "@seasketch/base-project",
   "version": "1.0.0",
   "description": "initial user-installed project",
   "main": "src/index.js",
@@ -8,7 +8,7 @@
     "ts-node": "ts-node --transpile-only --compiler-options '{\"esModuleInterop\":true, \"module\":\"commonjs\"}'",
     "start-data": "http-server data/dist -c-1",
     "__test": "geoprocessing test",
-    "test": "npm run test:unit && npm run test:smoke",
+    "test": "npm run test:unit",
     "test:unit": "npm run __test -- --group=unit",
     "test:unit:matching": "npm run __test -- --runInBand --group=unit -t",
     "test:smoke": "start-server-and-test start-data 8080 'npm run __test -- --runInBand --group=smoke --silent'",

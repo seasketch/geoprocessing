@@ -1,0 +1,16 @@
+{
+  "author": "Test <test@test.com>",
+  "organization": "Test Org",
+  "region": "us-west-1",
+  "clients": [{
+    "name": "MpaReportClient",
+    "description":  "Ocean MPA planning within EEZ",
+    "source": "src/clients/MpaReportClient.tsx"
+  }],
+  "preprocessingFunctions": [
+    "src/functions/clipToOceanEez.ts"
+  ],
+  "geoprocessingFunctions": [
+
+  ]
+}

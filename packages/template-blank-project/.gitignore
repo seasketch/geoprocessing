@@ -1,0 +1,5 @@
+.DS_Store
+node_modules
+### Do no edit above this line
+data/src/**
+data/dist/**

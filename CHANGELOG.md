@@ -238,7 +238,7 @@
 
 * Clean up osm-land pre script
 * Remove unneeded memory settings in gp handlers now that there is sane default
-* gp-clip-ocean - improve error checking
+* template-ocean-eez - improve error checking
 * Remove prep-data.sh stub file leaving to templates and docs
 * Migrate to prefixed example filenames for distinguishing templates and user projects
 * Add `data` and `src` to default gitignore.
@@ -257,7 +257,7 @@
 
 #### :rocket: New Feature
 
-* Add support for project templates with 4 nascent templates included - gp-area, gp-clip-ocean, gp-clip-bbox, gp-raster-stats (https://github.com/seasketch/geoprocessing/issues/41)
+* Add support for project templates with 4 nascent templates included - gp-area, template-ocean-eez, gp-clip-bbox, gp-raster-stats (https://github.com/seasketch/geoprocessing/issues/41)
 * Add Node 14.x support
 * Added `start:client` CLI command.  Serves the project Client bundle locally using Webpack dev server, allowing user to load and test the project reports using Message interface, just as SeaSketch platform does.
 

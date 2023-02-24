@@ -33,7 +33,7 @@ export const polygonPreprocessorSmokeTest = (
       async () => {
         const examples = await getExamplePolygonSketches(partialName);
         if (examples.length === 0) {
-          throw new Error(
+          console.log(
             `No example sketches found.  Have you put any Sketch Polygon JSON files in your examples/sketches directory? ${
               partialName && partialName.length > 0
                 ? "Does your partialName " +

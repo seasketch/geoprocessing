@@ -229,16 +229,6 @@ export async function copyTemplates(
         }
       }
 
-      if (fs.existsSync(path.join(templatePath, "data"))) {
-        if (!fs.existsSync(path.join(projectPath, "data"))) {
-          fs.mkdirSync(path.join(projectPath, "data"));
-        }
-        await fs.copy(
-          path.join(templatePath, "data"),
-          path.join(projectPath, "data")
-        );
-      }
-
       // Merge .gitignore, starting with line 4
       if (fs.existsSync(path.join(templatePath, "_gitignore"))) {
         // Convert to array of lines
@@ -292,7 +282,7 @@ export async function copyTemplates(
       JSON.stringify(geoprocessingJSON, null, "  ")
     );
 
-    spinner.succeed(`added template ${templateName}`);
+    spinner.succeed(`added ${templateName}`);
   }
 
   // Install new dependencies

@@ -11,6 +11,6 @@
     "src/functions/clipToOceanEez.ts"
   ],
   "geoprocessingFunctions": [
-
+    "src/functions/area.ts"
   ]
 }

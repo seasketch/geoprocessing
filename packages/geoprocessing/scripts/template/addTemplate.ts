@@ -65,7 +65,7 @@ export async function getTemplateQuestion(templateType: TemplateType) {
 
   // Allow selection of one starter template or multiple add-on templates
   const templateQuestion = {
-    type: templateType === "add-on-template" ? "checkbox" : "radio",
+    type: templateType === "add-on-template" ? "checkbox" : "list",
     name: "templates",
     message: `What ${templateType}s would you like to install?`,
     choices: templateNames.map((name, index) => ({

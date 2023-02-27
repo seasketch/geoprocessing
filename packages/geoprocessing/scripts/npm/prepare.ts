@@ -1,11 +1,11 @@
 const fs = require("fs-extra");
 const path = require("path");
 import { $ } from "zx";
+import { TemplateType } from "../template";
 $.verbose = false;
 
 const packagesPath = path.join(__dirname, "..", "..", "..");
 const distPath = path.join(__dirname, "..", "..", "dist");
-const distTemplatesPath = path.join(distPath, "templates", "gp-templates");
 
 // console.log("you are here:", process.cwd());
 // console.log("src template path:", templatesPath);
@@ -81,11 +81,12 @@ async function bundleBaseProject() {
 }
 
 /**
- * Copy templates from their standalone package to dist
- * Templates can then be installed via gp commands.  This could be improved to publish template bundles
- * outside of the gp library
+ * Copy template type from their standalone package to dist
  */
-async function bundleTemplates() {
+async function bundleTemplates(templateType: TemplateType) {
+  const distDirName = `${templateType}s`;
+  const distTemplatesPath = path.join(distPath, "templates", distDirName);
+
   // Delete old template bundles if they exist
   if (fs.existsSync(path.join(distTemplatesPath))) {
     fs.rmdirSync(distTemplatesPath, { recursive: true });
@@ -107,7 +108,7 @@ async function bundleTemplates() {
         );
         return JSON.parse(
           fs.readFileSync(templatePackageMetaPath).toString()
-        )?.keywords?.includes("template");
+        )?.keywords?.includes(templateType);
       } catch (error) {
         console.error(
           `Missing package.json or its description for template ${dirName}`
@@ -227,8 +228,11 @@ bundleData().then(() => {
   console.log("finished bundling data");
 });
 
-bundleTemplates().then(() => {
-  console.log("finished bundling templates");
+bundleTemplates("starter-template").then(() => {
+  console.log("finished bundling starter templates");
+});
+bundleTemplates("add-on-template").then(() => {
+  console.log("finished bundling add-on templates");
 });
 
 bundleBaseProject().then(() => {

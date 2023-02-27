@@ -10,7 +10,10 @@ export interface TemplateMetadata {
   templates: string[];
 }
 
-function getTemplatesPath() {
+const TemplateTypes = ["add-on-template", "starter-template"] as const;
+export type TemplateType = typeof TemplateTypes[number];
+
+function getTemplatesPath(templateType: TemplateType): string {
   // published bundle path exists if this is being run from the published geoprocessing package
   // (e.g. via geoprocessing init or add:template)
   const publishedBundlePath = path.join(
@@ -18,7 +21,7 @@ function getTemplatesPath() {
     "..",
     "..",
     "templates",
-    "gp-templates"
+    `${templateType}s`
   );
   if (fs.existsSync(publishedBundlePath)) {
     // Use bundled templates if user running published version, e.g. via geoprocessing init
@@ -29,8 +32,8 @@ function getTemplatesPath() {
   }
 }
 
-export async function getTemplateQuestion() {
-  const templatesPath = getTemplatesPath();
+export async function getTemplateQuestion(templateType: TemplateType) {
+  const templatesPath = getTemplatesPath(templateType);
   // Extract list of template names and descriptions from bundles
   const templateNames = await fs.readdir(templatesPath);
 
@@ -60,34 +63,33 @@ export async function getTemplateQuestion() {
     }
   });
 
+  // Allow selection of one starter template or multiple add-on templates
   const templateQuestion = {
-    type: "checkbox",
+    type: templateType === "add-on-template" ? "checkbox" : "radio",
     name: "templates",
-    message:
-      "What templates would you like to install? (you can always add them later)",
-    choices: [],
+    message: `What ${templateType}s would you like to install?`,
+    choices: templateNames.map((name, index) => ({
+      value: name,
+      name: `${name} - ${templateDescriptions[index]}`,
+    })),
   };
 
-  return {
-    ...templateQuestion,
-    choices: [
-      ...templateQuestion.choices,
-      ...templateNames.map((name, index) => ({
-        value: name,
-        name: `${name} - ${templateDescriptions[index]}`,
-      })),
-    ],
-  };
+  return templateQuestion;
 }
 
+/**
+ * Asks template questions and invokes copy of templates to projectPath.  Invoked via CLI so assume 'add-on-template' type
+ */
 async function addTemplate(projectPath?: string) {
-  const templateQuestion = await getTemplateQuestion();
+  // Assume invoked via CLI so we are installing add-on-templates
+  const templateType = "add-on-template";
+  const templateQuestion = await getTemplateQuestion(templateType);
   const answers = await inquirer.prompt<TemplateMetadata>([templateQuestion]);
 
   if (answers.templates) {
     try {
       if (answers.templates.length > 0) {
-        await copyTemplates(answers.templates);
+        await copyTemplates(templateType, answers.templates);
       } else {
         return;
       }
@@ -102,8 +104,10 @@ if (require.main === module) {
   addTemplate();
 }
 
+/** Copies templates by name to gp project */
 export async function copyTemplates(
-  names: string[],
+  templateType: TemplateType,
+  templateNames: string[],
   options?: {
     interactive?: boolean;
     /** path to the user project */
@@ -125,7 +129,7 @@ export async function copyTemplates(
         fail: () => false,
       };
 
-  if (!names || names.length === 0) {
+  if (!templateNames || templateNames.length === 0) {
     spinner.succeed("No templates selected, skipping");
     return;
   }
@@ -137,8 +141,8 @@ export async function copyTemplates(
     process.exit();
   }
 
-  const templatesPath = getTemplatesPath();
-  for (const templateName of names) {
+  const templatesPath = getTemplatesPath(templateType);
+  for (const templateName of templateNames) {
     // Find template
     const templatePath = path.join(templatesPath, templateName);
 

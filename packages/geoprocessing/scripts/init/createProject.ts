@@ -218,7 +218,8 @@ export async function createProject(
   await fs.ensureDir(`${projectPath}/data/dist`);
 
   if (metadata.templates.length > 0) {
-    await copyTemplates(metadata.templates, {
+    // We are adding a starter template
+    await copyTemplates("starter-template", metadata.templates, {
       skipInstall: true,
       projectPath,
     });

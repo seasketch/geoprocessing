@@ -27,7 +27,7 @@ async function init(gpVersion?: string) {
     name: eez.properties.UNION,
   }));
 
-  const templateQuestion = await getTemplateQuestion();
+  const templateQuestion = await getTemplateQuestion("starter-template");
   const answers = await inquirer.prompt<CreateProjectMetadata>([
     /* Pass your questions in here */
     {

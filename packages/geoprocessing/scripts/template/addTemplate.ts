@@ -7,7 +7,7 @@ import { GeoprocessingJsonConfig, Package } from "../../src/types";
 const exec = util.promisify(require("child_process").exec);
 
 export interface TemplateMetadata {
-  templates: string[];
+  templates: string | string[];
 }
 
 const TemplateTypes = ["add-on-template", "starter-template"] as const;
@@ -88,8 +88,11 @@ async function addTemplate(projectPath?: string) {
 
   if (answers.templates) {
     try {
+      const templateList = Array.isArray(answers.templates)
+        ? answers.templates
+        : [answers.templates];
       if (answers.templates.length > 0) {
-        await copyTemplates(templateType, answers.templates);
+        await copyTemplates(templateType, templateList);
       } else {
         return;
       }

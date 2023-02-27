@@ -179,10 +179,6 @@ async function bundleTemplates(templateType: TemplateType) {
         ) {
           fs.mkdirSync(path.join(distTemplatePath, "examples", "features"));
         }
-        await fs.copy(
-          path.join(templatePath, "examples", "features"),
-          path.join(distTemplatePath, "examples", "features")
-        );
       }
 
       if (fs.existsSync(path.join(templatePath, "examples", "sketches"))) {
@@ -191,10 +187,6 @@ async function bundleTemplates(templateType: TemplateType) {
         ) {
           fs.mkdirSync(path.join(distTemplatePath, "examples", "sketches"));
         }
-        await fs.copy(
-          path.join(templatePath, "examples", "sketches"),
-          path.join(distTemplatePath, "examples", "sketches")
-        );
       }
 
       // data, copy everything except .env, docker-compose.yml

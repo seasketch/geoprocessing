@@ -221,20 +221,12 @@ export async function copyTemplates(
           if (!fs.existsSync(path.join(projectPath, "examples", "sketches"))) {
             fs.mkdirSync(path.join(projectPath, "examples", "sketches"));
           }
-          await fs.copy(
-            path.join(templatePath, "examples", "sketches"),
-            path.join(projectPath, "examples", "sketches")
-          );
         }
 
         if (fs.existsSync(path.join(templatePath, "examples", "features"))) {
           if (!fs.existsSync(path.join(projectPath, "examples", "features"))) {
             fs.mkdirSync(path.join(projectPath, "examples", "features"));
           }
-          await fs.copy(
-            path.join(templatePath, "examples", "features"),
-            path.join(projectPath, "examples", "features")
-          );
         }
       }
 

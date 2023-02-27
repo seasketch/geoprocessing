@@ -92,6 +92,8 @@ async function bundleTemplates(templateType: TemplateType) {
   if (fs.existsSync(path.join(distTemplatesPath))) {
     fs.rmdirSync(distTemplatesPath, { recursive: true });
   }
+  // Stub out template dir
+  fs.ensureDir(distTemplatesPath);
 
   if (!fs.existsSync(path.join(distPath, "templates"))) {
     fs.mkdirSync(path.join(distPath, "templates"));

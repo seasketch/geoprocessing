@@ -38,10 +38,10 @@ export async function getTemplateQuestion(templateType: TemplateType) {
   const templateNames = await fs.readdir(templatesPath);
 
   if (templateNames.length === 0) {
-    console.error("No templates found, exiting");
-    console.log("__dirname", __dirname);
-    console.log("cwd", process.cwd());
+    console.error(`No add-on templates currently available`);
     console.log("template path:", templatesPath);
+    console.log("add:template running from:", __dirname);
+    console.log("CLI running from:", process.cwd());
     process.exit();
   }
 

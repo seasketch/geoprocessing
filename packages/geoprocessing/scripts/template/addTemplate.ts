@@ -67,7 +67,9 @@ export async function getTemplateQuestion(templateType: TemplateType) {
   const templateQuestion = {
     type: templateType === "add-on-template" ? "checkbox" : "list",
     name: "templates",
-    message: `What ${templateType}s would you like to install?`,
+    message: `What ${templateType}${
+      templateType === "add-on-template" ? "s" : ""
+    } would you like to install?`,
     choices: templateNames.map((name, index) => ({
       value: name,
       name: `${name} - ${templateDescriptions[index]}`,

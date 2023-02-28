@@ -201,6 +201,26 @@ export async function copyTemplates(
         );
       }
 
+      if (fs.existsSync(path.join(templatePath, "src", "components"))) {
+        if (!fs.existsSync(path.join(projectPath, "src", "components"))) {
+          fs.mkdirSync(path.join(projectPath, "src", "components"));
+        }
+        await fs.copy(
+          path.join(templatePath, "src", "components"),
+          path.join(projectPath, "src", "components")
+        );
+      }
+
+      if (fs.existsSync(path.join(templatePath, "src", "assets"))) {
+        if (!fs.existsSync(path.join(projectPath, "src", "assets"))) {
+          fs.mkdirSync(path.join(projectPath, "src", "assets"));
+        }
+        await fs.copy(
+          path.join(templatePath, "src", "assets"),
+          path.join(projectPath, "src", "assets")
+        );
+      }
+
       if (fs.existsSync(path.join(templatePath, "src", "clients"))) {
         if (!fs.existsSync(path.join(projectPath, "src", "clients"))) {
           fs.mkdirSync(path.join(projectPath, "src", "clients"));

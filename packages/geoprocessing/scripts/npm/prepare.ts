@@ -158,6 +158,26 @@ async function bundleTemplates(templateType: TemplateType) {
       );
     }
 
+    if (fs.existsSync(path.join(templatePath, "src", "components"))) {
+      if (!fs.existsSync(path.join(distTemplatePath, "src", "components"))) {
+        fs.mkdirSync(path.join(distTemplatePath, "src", "components"));
+      }
+      await fs.copy(
+        path.join(templatePath, "src", "components"),
+        path.join(distTemplatePath, "src", "components")
+      );
+    }
+
+    if (fs.existsSync(path.join(templatePath, "src", "assets"))) {
+      if (!fs.existsSync(path.join(distTemplatePath, "src", "assets"))) {
+        fs.mkdirSync(path.join(distTemplatePath, "src", "assets"));
+      }
+      await fs.copy(
+        path.join(templatePath, "src", "assets"),
+        path.join(distTemplatePath, "src", "assets")
+      );
+    }
+
     if (fs.existsSync(path.join(templatePath, "src", "clients"))) {
       if (!fs.existsSync(path.join(distTemplatePath, "src", "clients"))) {
         fs.mkdirSync(path.join(distTemplatePath, "src", "clients"));

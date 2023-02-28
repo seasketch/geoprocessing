@@ -1,4 +1,4 @@
-import { getExamplePolygonSketches, writeResultOutput } from ".";
+import { getExampleFeatures, writeResultOutput } from ".";
 import { Feature } from "@turf/helpers";
 import { ValidationError } from "../../src";
 import booleanValid from "@turf/boolean-valid";
@@ -28,7 +28,7 @@ export const polygonPreprocessorSmokeTest = (
     test(
       `${preprocessorName}Smoke`,
       async () => {
-        const examples = await getExamplePolygonSketches(partialName);
+        const examples = await getExampleFeatures(partialName);
         if (examples.length === 0) {
           console.log(
             `No example sketches found.  Have you put any Sketch Polygon JSON files in your examples/sketches directory? ${

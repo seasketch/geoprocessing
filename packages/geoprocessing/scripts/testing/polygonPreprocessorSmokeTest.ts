@@ -16,9 +16,10 @@ export const polygonPreprocessorSmokeTest = (
     partialName?: string | undefined;
     /** timeout for test run in milliseconds, defaults to 10000 */
     timeout?: number;
+    debug?: boolean;
   } = {}
 ) => {
-  const { partialName = undefined, timeout = 10000 } = options;
+  const { partialName = undefined, timeout = 10000, debug = false } = options;
 
   describe("Basic smoke tests", () => {
     test("handler function is present", () => {
@@ -41,6 +42,9 @@ export const polygonPreprocessorSmokeTest = (
           );
         }
         for (const example of examples) {
+          if (debug) {
+            console.log("Example:", example.properties?.name);
+          }
           try {
             const result = await preprocessorFunc(example);
             expect(result).toBeTruthy();

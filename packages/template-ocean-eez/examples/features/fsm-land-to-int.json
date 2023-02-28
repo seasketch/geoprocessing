@@ -1,9 +1,7 @@
 {
   "type": "Feature",
   "properties": {
-    "name": "fsm-land-to-international",
-    "updatedAt": "2022-11-17T10:02:53.645Z",
-    "sketchClassId": "123abc",
+    "name": "fsm-land-to-int",
     "id": "abc123"
   },
   "geometry": {

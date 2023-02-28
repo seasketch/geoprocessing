@@ -9,6 +9,7 @@ import {
   Point,
   SketchMap,
   FeatureMap,
+  SketchGeometryTypes,
 } from "../../src/types";
 import path from "path";
 import {
@@ -268,7 +269,7 @@ export async function getExampleSketchesByName(
  * Optionally filters out those that don't match partialName
  */
 export async function getExampleFeaturesAll(partialName?: string) {
-  let features: Feature[] = [];
+  let features: Feature<SketchGeometryTypes>[] = [];
   if (fs.existsSync("examples/features")) {
     let filenames = await fs.readdir("examples/features");
     await Promise.all(
@@ -277,7 +278,7 @@ export async function getExampleFeaturesAll(partialName?: string) {
         .map(async (f) => {
           const feature = await fs.readJSON(`examples/features/${f}`);
           feature.properties = feature.properties || {};
-          feature.properties.name = path.basename(f);
+          feature.properties.name = feature.properties.name || path.basename(f);
           features.push(feature);
         })
     );

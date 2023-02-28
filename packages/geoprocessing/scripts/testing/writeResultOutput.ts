@@ -6,12 +6,12 @@ import fs from "fs-extra";
 export async function writeResultOutput(
   results: any,
   functionName: string,
-  sketchName: string
+  name: string
 ) {
   if (!fs.existsSync("examples/output")) {
     await fs.mkdir("examples/output");
   }
-  const folder = "examples/output/" + sketchName;
+  const folder = "examples/output/" + name;
   if (!fs.existsSync(folder)) {
     await fs.mkdir(folder);
   }

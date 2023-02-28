@@ -34,8 +34,13 @@ export function clip<P = Properties>(
   const clipped = polygonClipping[operation](coords[0], ...coords.slice(1));
 
   if (clipped.length === 0) return null;
-  if (clipped.length === 1) return polygon(clipped[0], options.properties);
-  return multiPolygon(clipped, options.properties);
+  if (clipped.length === 1)
+    return polygon(clipped[0], options.properties) as Feature<
+      Polygon | MultiPolygon
+    >;
+  return multiPolygon(clipped, options.properties) as Feature<
+    Polygon | MultiPolygon
+  >;
 }
 
 /**
@@ -68,6 +73,11 @@ export function clipMultiMerge<P = Properties>(
     coords2 as any
   );
   if (result.length === 0) return null;
-  if (result.length === 1) return polygon(result[0], options.properties);
-  return multiPolygon(result, options.properties);
+  if (result.length === 1)
+    return polygon(result[0], options.properties) as Feature<
+      Polygon | MultiPolygon
+    >;
+  return multiPolygon(result, options.properties) as Feature<
+    Polygon | MultiPolygon
+  >;
 }

@@ -7,4 +7,5 @@ import { polygonPreprocessorSmokeTest } from "@seasketch/geoprocessing/scripts/t
 
 polygonPreprocessorSmokeTest(clipToOceanEez, handler.options.title, {
   timeout: 20000,
+  debug: true,
 });

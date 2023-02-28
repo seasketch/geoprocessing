@@ -1,9 +1,0 @@
-{
-  "author": "Test <test@test.com>",
-  "organization": "Test Org",
-  "region": "us-west-1",
-  "preprocessingFunctions": [
-    "src/functions/clipToBounds.ts"
-  ],
-  "clients": []
-}

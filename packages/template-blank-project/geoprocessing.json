@@ -1,0 +1,14 @@
+{
+  "author": "Test <test@test.com>",
+  "organization": "Test Org",
+  "region": "us-west-1",
+  "clients": [{
+    "name": "BaseReportClient",
+    "description":  "Base planning report",
+    "source": "src/clients/BaseReportClient.tsx"
+  }],
+  "preprocessingFunctions": [],
+  "geoprocessingFunctions": [
+    "src/functions/area.ts"
+  ]
+}

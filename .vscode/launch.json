@@ -92,52 +92,13 @@
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
     }, {
-      "name": "example-project - debug tests",
+      "name": "template-ocean-eez - debug tests",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}/packages/example-project",
+      "cwd": "${workspaceFolder}/packages/template-ocean-eez",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/example-project/node_modules/.bin/geoprocessing",
-        "test"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229        
-    }, {
-      "name": "gp-clip-ocean - debug tests",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/packages/gp-clip-ocean",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/packages/gp-clip-ocean/node_modules/.bin/geoprocessing",
-          "test"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229        
-    }, {
-      "name": "gp-raster-stats - debug tests",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/packages/gp-raster-stats",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/packages/gp-raster-stats/node_modules/.bin/geoprocessing",
-          "test"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229        
-    }, {
-      "name": "gp-clip - debug tests",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/packages/gp-clip",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/packages/gp-clip/node_modules/.bin/geoprocessing",
+        "${workspaceRoot}/packages/template-ocean-eez/node_modules/.bin/geoprocessing",
           "test"
       ],
       "console": "integratedTerminal",

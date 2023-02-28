@@ -3,7 +3,10 @@ import fs from "fs-extra";
 import project from "../../project/projectClient";
 import {
   featureToSketchCollection,
+  featureToSketch,
   genRandomPolygons,
+  FeatureCollection,
+  Polygon,
 } from "@seasketch/geoprocessing";
 
 /**
@@ -14,7 +17,7 @@ import {
  */
 
 (async () => {
-  const usage = "Usage: gen_random_sketch [numSketches] [name] [outdir]";
+  const usage = "Usage: genRandomSketch [numSketches] [name] [outdir]";
   console.log(process.argv);
   const numPolygons = parseInt(process.argv[2]) || 1;
   if (!numPolygons || numPolygons <= 0) throw new Error(usage);
@@ -24,26 +27,28 @@ import {
     if (argName) {
       return `${process.argv[3]}.json`;
     } else if (numPolygons > 1) {
-      return "randomSketchCollection.json";
+      return "randomSketchCollection";
     } else {
-      return "randomSketch.json";
+      return "randomSketch";
     }
   })();
 
   const outdir = process.argv[4] || `${__dirname}/../../examples/sketches/`;
 
-  const outfile = `${outdir}${name}`;
+  const outfile = `${outdir}${name}.json`;
 
   const bounds = project.basic.bbox;
   if (!bounds) throw new Error("Missing bounds in basic.json");
 
-  const fc = genRandomPolygons({ numPolygons, bounds });
-  const sc = featureToSketchCollection(fc);
-
   const sketches = (() => {
+    const fc = genRandomPolygons({
+      numPolygons,
+      bounds,
+    }) as FeatureCollection<Polygon>;
     if (numPolygons === 1) {
-      return sc.features[0];
+      return featureToSketch(fc.features[0], name);
     } else {
+      const sc = featureToSketchCollection(fc, name);
       return sc;
     }
   })();

@@ -74,8 +74,9 @@ export async function createProject(
     await $`cp -r ${baseProjectPath}/. ${projectPath}`;
     await $`rm ${projectPath}/package-lock.json`;
     await $`rm ${projectPath}/geoprocessing.json`;
-    await $`rm ${projectPath}/examples/sketches/*.json`;
-    await $`rm -rf ${projectPath}/examples/output`;
+    await $`rm -rf ${projectPath}/examples/outputs/*.*`;
+    await $`rm -rf ${projectPath}/examples/features/*.*`;
+    await $`rm -rf ${projectPath}/examples/sketches/*/*`;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.log("Base project copy failed");
@@ -220,7 +221,12 @@ export async function createProject(
   await fs.ensureDir(`${projectPath}/data/dist`);
 
   if (metadata.templates.length > 0) {
-    await copyTemplates(metadata.templates, {
+    // Should always be a single name if single select question used
+    const templateNames = Array.isArray(metadata.templates)
+      ? metadata.templates
+      : [metadata.templates];
+    // We are adding a starter template
+    await copyTemplates("starter-template", templateNames, {
       skipInstall: true,
       projectPath,
     });

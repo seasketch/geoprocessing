@@ -1,0 +1,16 @@
+version: '3'
+services:
+  db:
+    extends:
+      file: ../../base-project/data/docker-compose.yml
+      service: db
+    container_name: gp-clip-db
+  workspace:
+    extends:
+      file: ../../base-project/data/docker-compose.yml
+      service: workspace
+    volumes:
+      - "..:/data"
+    container_name: template-ocean-eez-workspace
+    depends_on:
+      - "db"

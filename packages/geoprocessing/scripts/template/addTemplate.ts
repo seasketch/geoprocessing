@@ -7,10 +7,13 @@ import { GeoprocessingJsonConfig, Package } from "../../src/types";
 const exec = util.promisify(require("child_process").exec);
 
 export interface TemplateMetadata {
-  templates: string[];
+  templates: string | string[];
 }
 
-function getTemplatesPath() {
+const TemplateTypes = ["add-on-template", "starter-template"] as const;
+export type TemplateType = typeof TemplateTypes[number];
+
+function getTemplatesPath(templateType: TemplateType): string {
   // published bundle path exists if this is being run from the published geoprocessing package
   // (e.g. via geoprocessing init or add:template)
   const publishedBundlePath = path.join(
@@ -18,7 +21,7 @@ function getTemplatesPath() {
     "..",
     "..",
     "templates",
-    "gp-templates"
+    `${templateType}s`
   );
   if (fs.existsSync(publishedBundlePath)) {
     // Use bundled templates if user running published version, e.g. via geoprocessing init
@@ -29,16 +32,16 @@ function getTemplatesPath() {
   }
 }
 
-export async function getTemplateQuestion() {
-  const templatesPath = getTemplatesPath();
+export async function getTemplateQuestion(templateType: TemplateType) {
+  const templatesPath = getTemplatesPath(templateType);
   // Extract list of template names and descriptions from bundles
   const templateNames = await fs.readdir(templatesPath);
 
   if (templateNames.length === 0) {
-    console.error("No templates found, exiting");
-    console.log("__dirname", __dirname);
-    console.log("cwd", process.cwd());
+    console.error(`No add-on templates currently available`);
     console.log("template path:", templatesPath);
+    console.log("add:template running from:", __dirname);
+    console.log("CLI running from:", process.cwd());
     process.exit();
   }
 
@@ -60,34 +63,38 @@ export async function getTemplateQuestion() {
     }
   });
 
+  // Allow selection of one starter template or multiple add-on templates
   const templateQuestion = {
-    type: "checkbox",
+    type: templateType === "add-on-template" ? "checkbox" : "list",
     name: "templates",
-    message:
-      "What templates would you like to install? (you can always add them later)",
-    choices: [],
+    message: `What ${templateType}${
+      templateType === "add-on-template" ? "s" : ""
+    } would you like to install?`,
+    choices: templateNames.map((name, index) => ({
+      value: name,
+      name: `${name} - ${templateDescriptions[index]}`,
+    })),
   };
 
-  return {
-    ...templateQuestion,
-    choices: [
-      ...templateQuestion.choices,
-      ...templateNames.map((name, index) => ({
-        value: name,
-        name: `${name} - ${templateDescriptions[index]}`,
-      })),
-    ],
-  };
+  return templateQuestion;
 }
 
+/**
+ * Asks template questions and invokes copy of templates to projectPath.  Invoked via CLI so assume 'add-on-template' type
+ */
 async function addTemplate(projectPath?: string) {
-  const templateQuestion = await getTemplateQuestion();
+  // Assume invoked via CLI so we are installing add-on-templates
+  const templateType = "add-on-template";
+  const templateQuestion = await getTemplateQuestion(templateType);
   const answers = await inquirer.prompt<TemplateMetadata>([templateQuestion]);
 
   if (answers.templates) {
     try {
+      const templateList = Array.isArray(answers.templates)
+        ? answers.templates
+        : [answers.templates];
       if (answers.templates.length > 0) {
-        await copyTemplates(answers.templates);
+        await copyTemplates(templateType, templateList);
       } else {
         return;
       }
@@ -102,8 +109,10 @@ if (require.main === module) {
   addTemplate();
 }
 
+/** Copies templates by name to gp project */
 export async function copyTemplates(
-  names: string[],
+  templateType: TemplateType,
+  templateNames: string[],
   options?: {
     interactive?: boolean;
     /** path to the user project */
@@ -125,7 +134,7 @@ export async function copyTemplates(
         fail: () => false,
       };
 
-  if (!names || names.length === 0) {
+  if (!templateNames || templateNames.length === 0) {
     spinner.succeed("No templates selected, skipping");
     return;
   }
@@ -137,8 +146,8 @@ export async function copyTemplates(
     process.exit();
   }
 
-  const templatesPath = getTemplatesPath();
-  for (const templateName of names) {
+  const templatesPath = getTemplatesPath(templateType);
+  for (const templateName of templateNames) {
     // Find template
     const templatePath = path.join(templatesPath, templateName);
 
@@ -192,6 +201,26 @@ export async function copyTemplates(
         );
       }
 
+      if (fs.existsSync(path.join(templatePath, "src", "components"))) {
+        if (!fs.existsSync(path.join(projectPath, "src", "components"))) {
+          fs.mkdirSync(path.join(projectPath, "src", "components"));
+        }
+        await fs.copy(
+          path.join(templatePath, "src", "components"),
+          path.join(projectPath, "src", "components")
+        );
+      }
+
+      if (fs.existsSync(path.join(templatePath, "src", "assets"))) {
+        if (!fs.existsSync(path.join(projectPath, "src", "assets"))) {
+          fs.mkdirSync(path.join(projectPath, "src", "assets"));
+        }
+        await fs.copy(
+          path.join(templatePath, "src", "assets"),
+          path.join(projectPath, "src", "assets")
+        );
+      }
+
       if (fs.existsSync(path.join(templatePath, "src", "clients"))) {
         if (!fs.existsSync(path.join(projectPath, "src", "clients"))) {
           fs.mkdirSync(path.join(projectPath, "src", "clients"));
@@ -212,31 +241,13 @@ export async function copyTemplates(
           if (!fs.existsSync(path.join(projectPath, "examples", "sketches"))) {
             fs.mkdirSync(path.join(projectPath, "examples", "sketches"));
           }
-          await fs.copy(
-            path.join(templatePath, "examples", "sketches"),
-            path.join(projectPath, "examples", "sketches")
-          );
         }
 
         if (fs.existsSync(path.join(templatePath, "examples", "features"))) {
           if (!fs.existsSync(path.join(projectPath, "examples", "features"))) {
             fs.mkdirSync(path.join(projectPath, "examples", "features"));
           }
-          await fs.copy(
-            path.join(templatePath, "examples", "features"),
-            path.join(projectPath, "examples", "features")
-          );
         }
-      }
-
-      if (fs.existsSync(path.join(templatePath, "data"))) {
-        if (!fs.existsSync(path.join(projectPath, "data"))) {
-          fs.mkdirSync(path.join(projectPath, "data"));
-        }
-        await fs.copy(
-          path.join(templatePath, "data"),
-          path.join(projectPath, "data")
-        );
       }
 
       // Merge .gitignore, starting with line 4
@@ -292,7 +303,7 @@ export async function copyTemplates(
       JSON.stringify(geoprocessingJSON, null, "  ")
     );
 
-    spinner.succeed(`added template ${templateName}`);
+    spinner.succeed(`added ${templateName}`);
   }
 
   // Install new dependencies

@@ -46,7 +46,7 @@ export async function overlapRaster(
     // If there was overlap, use the union for accumulating sumValue
     isOverlap = sketchUnionArea < sketchArea;
     if (isOverlap) {
-      featureEach(sketchUnion, (feat) => {
+      featureEach(sketchUnion as Feature<Polygon>, (feat) => {
         sumValue += getSum(raster, feat);
       });
     }

@@ -9,6 +9,7 @@ import {
   Point,
   SketchMap,
   FeatureMap,
+  SketchGeometryTypes,
 } from "../../src/types";
 import path from "path";
 import {
@@ -24,6 +25,7 @@ import {
   isPolygonAllSketchCollection,
   isLineStringSketchCollection,
   isPointSketchCollection,
+  isFeature,
 } from "../../src/helpers";
 
 /**
@@ -263,11 +265,11 @@ export async function getExampleSketchesByName(
 }
 
 /**
- * Reads features from examples/features for testing. Run from project root
+ * Reads features and featurecollections from examples/features for testing. Run from project root
  * Optionally filters out those that don't match partialName
  */
-export async function getExampleFeatures(partialName?: string) {
-  let features: Feature[] = [];
+export async function getExampleFeaturesAll(partialName?: string) {
+  let features: Feature<SketchGeometryTypes>[] = [];
   if (fs.existsSync("examples/features")) {
     let filenames = await fs.readdir("examples/features");
     await Promise.all(
@@ -276,7 +278,7 @@ export async function getExampleFeatures(partialName?: string) {
         .map(async (f) => {
           const feature = await fs.readJSON(`examples/features/${f}`);
           feature.properties = feature.properties || {};
-          feature.properties.name = path.basename(f);
+          feature.properties.name = feature.properties.name || path.basename(f);
           features.push(feature);
         })
     );
@@ -285,6 +287,26 @@ export async function getExampleFeatures(partialName?: string) {
     partialName ? f.properties?.name.includes(partialName) : f
   );
   return filtered;
+}
+
+/**
+ * Reads features of all types from examples/features for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ */
+export async function getExampleFeatures(partialName?: string) {
+  return (await getExampleFeaturesAll(partialName)).filter(
+    isFeature
+  ) as Feature[];
+}
+
+/**
+ * Reads features of all types from examples/features for testing. Run from project root
+ * Optionally filters out those that don't match partialName
+ */
+export async function getExamplePolygonFeatures(partialName?: string) {
+  return (await getExampleFeaturesAll(partialName)).filter(
+    isPolygonFeature
+  ) as Feature<Polygon>[];
 }
 
 /**

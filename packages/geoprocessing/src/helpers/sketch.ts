@@ -31,6 +31,7 @@ import {
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
 import { ReportContextValue } from "../context";
+import { SkipEndDimensions } from "@styled-icons/bootstrap/SkipEnd";
 
 /**
  * UserAttributes are those filled in via the attributes form specified as
@@ -318,6 +319,7 @@ export const genSketch = <G = SketchGeometryTypes>(
   } = options;
   return {
     ...feature,
+    id,
     properties: {
       id,
       isCollection: false,
@@ -335,7 +337,7 @@ export const genSketch = <G = SketchGeometryTypes>(
  * Given array of sketches, return a sketch collection with given properties.
  * Generates reasonable default values for any properties not passed in
  * The geometry type of the returned collection will match the one passed in
- * @param geometry
+ * Properties of sketches are retained
  */
 export const genSketchCollection = <G = SketchGeometryTypes>(
   sketches: Sketch<G>[],
@@ -348,9 +350,10 @@ export const genSketchCollection = <G = SketchGeometryTypes>(
     updatedAt?: string;
   } = {}
 ): SketchCollection<G> => {
+  const collId = options.id || uuid();
   const {
-    name = `sketch-${uuid()}`,
-    id = uuid(),
+    name = `sketch-${collId}`,
+    id = collId,
     userAttributes = [],
     sketchClassId = uuid(),
     createdAt = new Date().toISOString(),
@@ -359,7 +362,18 @@ export const genSketchCollection = <G = SketchGeometryTypes>(
 
   return {
     type: "FeatureCollection",
-    features: sketches,
+    features: sketches.map((sk, index) => {
+      const skId = uuid();
+      return {
+        ...sk,
+        id: skId,
+        properties: {
+          ...sk.properties,
+          id: skId,
+          name: sk.properties.name || `${name}-${index}`,
+        },
+      };
+    }),
     properties: {
       id,
       isCollection: true,
@@ -525,10 +539,29 @@ export function getSketchFeatures(
 }
 
 /**
+ * Converts Feature to Sketch with reasonable defaults given for sketch properties if not provided
+ */
+export const featureToSketch = <G extends SketchGeometryTypes>(
+  feat: Feature<G>,
+  name: string = "sketches",
+  sketchProperties: Partial<SketchProperties> = {}
+) => {
+  const sk = genSketch({
+    feature: feat,
+    name,
+    ...feat.properties,
+    ...sketchProperties,
+    id: uuid(),
+  });
+  sk.properties.userAttributes = [];
+  return sk;
+};
+
+/**
  * Converts FeatureCollection to SketchCollection with reasonable defaults given for sketch properties if not provided
  */
-export const featureToSketchCollection = (
-  fc: FeatureCollection,
+export const featureToSketchCollection = <G extends SketchGeometryTypes>(
+  fc: FeatureCollection<G>,
   name: string = "sketches",
   sketchProperties: Partial<SketchProperties> = {}
 ) => {

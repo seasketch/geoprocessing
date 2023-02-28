@@ -1,7 +1,13 @@
 #!/usr/bin/env ts-node
 import fs from "fs-extra";
 import project from "../../project/projectClient";
-import { genRandomPolygons } from "@seasketch/geoprocessing";
+import {
+  FeatureCollection,
+  genFeature,
+  genFeatureCollection,
+  genRandomPolygons,
+  Polygon,
+} from "@seasketch/geoprocessing";
 
 /**
  * genRandomFeature script - generates random feature within the bounding box of the project.  Not guaranteed to be within the EEZ boundary
@@ -19,28 +25,31 @@ import { genRandomPolygons } from "@seasketch/geoprocessing";
   const name = (() => {
     const argName = process.argv[3];
     if (argName) {
-      return `${process.argv[3]}.json`;
+      return `${process.argv[3]}`;
     } else if (numPolygons > 1) {
-      return "randomfeatureCollection.json";
+      return "randomFeatureCollection";
     } else {
-      return "randomfeature.json";
+      return "randomFeature";
     }
   })();
 
   const outdir = process.argv[4] || `${__dirname}/../../examples/features/`;
 
-  const outfile = `${outdir}${name}`;
+  const outfile = `${outdir}${name}.json`;
 
   const bounds = project.basic.bbox;
   if (!bounds) throw new Error("Missing bounds in basic.json");
 
-  const fc = genRandomPolygons({ numPolygons, bounds });
-
   const features = (() => {
+    const fc = genRandomPolygons({
+      numPolygons,
+      bounds,
+    }) as FeatureCollection<Polygon>;
     if (numPolygons === 1) {
-      return fc.features[0];
+      return genFeature({ feature: fc.features[0], name });
     } else {
-      return fc;
+      const feats = genFeatureCollection(fc.features, { name });
+      return feats;
     }
   })();
 

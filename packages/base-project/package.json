@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/base-project",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "initial user-installed project",
   "main": "src/index.js",
   "private": true,
@@ -49,7 +49,7 @@
     "@turf/boolean-valid": "^6.5.0"
   },
   "devDependencies": {
-    "@seasketch/geoprocessing": "^1.1.0"
+    "@seasketch/geoprocessing": "^2.0.0"
   },
   "repositoryUrl": "https://github.com/seasketch/fsm-reports.git",
   "author": "Tim Welch",

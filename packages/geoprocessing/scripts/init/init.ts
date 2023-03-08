@@ -149,7 +149,7 @@ async function init(gpVersion?: string) {
       type: "input",
       name: "bboxMinLng",
       message:
-        "What is the projects minimum longitude in degrees (left)? (-180.0 to 180.0)",
+        "What is the projects minimum longitude (left) in degrees (-180.0 to 180.0)?",
       validate: (value) =>
         value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
@@ -159,7 +159,7 @@ async function init(gpVersion?: string) {
       type: "input",
       name: "bboxMinLat",
       message:
-        "What is the projects minimum latitude in degrees (bottom)? (-180.0 to 180.0)",
+        "What is the projects minimum latitude (bottom) in degrees (-180.0 to 180.0)?",
       validate: (value) =>
         value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
@@ -169,7 +169,7 @@ async function init(gpVersion?: string) {
       type: "input",
       name: "bboxMaxLng",
       message:
-        "What is the projects minimum longitude in degrees (right)? (-180.0 to 180.0)",
+        "What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)?",
       validate: (value) =>
         value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
@@ -179,7 +179,7 @@ async function init(gpVersion?: string) {
       type: "input",
       name: "bboxMaxLat",
       message:
-        "What is the projects maximum latitude in degrees (top)? (-180.0 to 180.0)",
+        "What is the projects maximum latitude (top) in degrees (-180.0 to 180.0)?",
       validate: (value) =>
         value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),

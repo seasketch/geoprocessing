@@ -160,7 +160,7 @@ To test with projects other than `example-project` on your local machine, npm li
 
 # Publishing
 
-To publish a new release of the framework, make sure you are in the `master` branch with no outstanding code changes. Then run the following:
+To publish a new release of the framework, make sure you are in the `main` branch with no outstanding code changes. Then run the following:
 
 ```sh
 npm run publish:stable

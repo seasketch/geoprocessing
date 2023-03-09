@@ -4,7 +4,7 @@ name: Publish wiki docs
 on:
   push:
     branches:    
-      - migrate-doc
+      - main
 
 jobs:
   build:

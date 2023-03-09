@@ -160,11 +160,13 @@ To test with projects other than `example-project` on your local machine, npm li
 
 # Publishing
 
-To publish a new release of the framework, make sure you are in the `main` branch with no outstanding code changes. Then run the following:
+New stable releases of the framework are published from the `main` branch.  To do this:
 
-```sh
-npm run publish:stable
-```
+- Make sure the `main` branch has the latest code. Open a pull request from the `dev` branch if needed.
+- Update Changelog.md - using the commit log as a guide.  If breaking changes, then you'll need to release a new major version. (e.g. 2.0.0 -> 3.0.0), otherwise a new minor version is typically fine. See [semantic versioning conventions](https://semver.org/).
+- Publish
+  - `npm run publish:stable`
+  - Choose the version number that matches what you put into the Changelog.
 
 By default, a stable release will be tagged as `latest` so that users installing from npm will get it by default.
 

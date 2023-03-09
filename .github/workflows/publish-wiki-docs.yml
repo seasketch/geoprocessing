@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Upload Documentation to Wiki
-        uses: seasketch/github-wiki-publish-action@v2
+        uses: seasketch/github-wiki-publish-action@v3
         with:
           path: packages/wiki-docs/
         env:

@@ -24,7 +24,7 @@ const SizeCard = () => {
         {(data: AreaResults) => (
           <p>
             📐
-            <Trans ns="gp" i18nKey="SizeCardArea">
+            <Trans ns="gp" i18nKey="SizeCardAreaMsg">
               This feature is"{" "}
               <b>{Number.format(Math.round(data.area * 1e-6))}</b> square
               kilometers".

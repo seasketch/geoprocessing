@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { nestMetrics } from "../../metrics/helpers";
 import {
   percentWithEdge,
@@ -84,6 +85,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   metricGroup,
   objective,
 }) => {
+  const { t } = useTranslation("gp");
   const classesByName = keyBy(
     metricGroup.classes,
     (curClass) => curClass.classId
@@ -104,6 +106,11 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   ): ClassTableColumn[] => {
     const defaultWidth = 100 / colConfigs.length;
 
+    const defaultClassLabel = t("Class", "Class");
+    const defaultMapLabel = t("Map", "Map");
+    const defaultTargetLabel = t("Target", "Target");
+    const defaultGoalLabel = t("Goal", "Goal");
+
     // Transform column configs into Columns
     const colz: ClassTableColumn[] = colConfigs.map((colConfig) => {
       const style = {
@@ -112,7 +119,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
       };
       if (colConfig.type === "class") {
         return {
-          Header: colConfig.columnLabel || "Class",
+          Header: colConfig.columnLabel || defaultClassLabel,
           accessor: (row) =>
             classesByName[row.classId || "missing"]?.display || "missing",
           style,
@@ -212,7 +219,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
             } else {
               targetValueFormatter = (targetValue) =>
                 rowIndex === tableRows.length - 1
-                  ? `Target - ${valueFormatter(
+                  ? `${defaultTargetLabel} - ${valueFormatter(
                       targetValue / 100,
                       "percent0dig"
                     )}`
@@ -242,7 +249,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
         };
       } else if (colConfig.type === "metricGoal") {
         return {
-          Header: colConfig.columnLabel || "Goal",
+          Header: colConfig.columnLabel || defaultGoalLabel,
           style,
           accessor: (row) => {
             const objectiveId = getMetricGroupObjectiveId(
@@ -266,7 +273,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
         };
       } else if (colConfig.type === "layerToggle") {
         return {
-          Header: colConfig.columnLabel || "Map",
+          Header: colConfig.columnLabel || defaultMapLabel,
           style: { textAlign: "center", ...style },
           accessor: (row, index) => {
             const isSimpleGroup = metricGroup.layerId ? false : true;

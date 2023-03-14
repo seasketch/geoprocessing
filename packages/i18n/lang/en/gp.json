@@ -1,5 +1,9 @@
 {
-  "SizeCardArea": "This feature is\" <2></2> square kilometers\".",
+  "Class": "Class",
+  "Goal": "Goal",
+  "Map": "Map",
+  "SizeCardAreaMsg": "This feature is\" <2></2> square kilometers\".",
   "SizeCardTitle": "Zone Size",
-  "SketchAttributesCardAlternateTitle": "Attributes"
+  "SketchAttributesCardAlternateTitle": "Attributes",
+  "Target": "Target"
 }

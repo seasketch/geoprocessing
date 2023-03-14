@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 import {
   ResultsCard,
   SketchAttributesCard,
@@ -11,19 +12,23 @@ import { AreaResults } from "../functions/area";
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
 const SizeCard = () => {
+  const { t } = useTranslation("gp");
   return (
     <>
       <SketchAttributesCard autoHide={true} />
       <ResultsCard
-        title="Zone Size"
+        title={t("SizeCardTitle", "Zone Size")}
         functionName="calculateArea"
         skeleton={<LoadingSkeleton />}
       >
         {(data: AreaResults) => (
           <p>
-            📐This feature is{" "}
-            <b>{Number.format(Math.round(data.area * 1e-6))}</b> square
-            kilometers.
+            📐
+            <Trans ns="gp" i18nKey="SizeCardArea">
+              This feature is"{" "}
+              <b>{Number.format(Math.round(data.area * 1e-6))}</b> square
+              kilometers".
+            </Trans>
           </p>
         )}
       </ResultsCard>

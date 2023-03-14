@@ -1,5 +1,6 @@
 import React from "react";
 import useSketchProperties from "../hooks/useSketchProperties";
+import { Trans, useTranslation } from "react-i18next";
 import Card from "./Card";
 
 export interface SketchAttributesCardProps {
@@ -22,12 +23,16 @@ export const SketchAttributesCard = ({
   };
 
   const [properties] = useSketchProperties();
+  const { t } = useTranslation("gp");
   if (autoHide === true && properties.userAttributes.length === 0) {
     return null;
   }
   if (properties) {
     return (
-      <Card titleStyle={titleStyle} title={title || "Attributes"}>
+      <Card
+        titleStyle={titleStyle}
+        title={title || t("SketchAttributesCardAlternateTitle", "Attributes")}
+      >
         <table style={{ width: "100%" }}>
           <tbody>
             {properties.userAttributes.map((attr) => {

@@ -204,3 +204,71 @@ npx @seasketch/geoprocessing@0.15.1-beta.1 init 0.15.1-beta.1
 # Wiki
 
 Diagrams are maintained in internal SeaSketch [drive share](https://drive.google.com/drive/folders/1JL7BkOf2mP2VaXQKlM2kkENqHW9LtCbm?usp=sharing)
+
+# i18n
+
+Localization is managed using [i18next](https://react.i18next.com/). Wrap _all_ strings displayed in report client UIs in appropriate tags so they can be translated into multiple languages. ESLint rules will flag missing tags.
+
+We're using a [public POEditor project](https://poeditor.com/join/project?hash=juloLqMZDP) to manage translations. Local npm scripts exist to publish new terms to this project and extract translations into the `packages/i18n` directory. Run `npm run translation:sync` to perform these operations. It is important to do this regularly. The CI system will build a newly updated clients, but will only include new translations if this step is performed and changes are checked in.
+
+## i18n namespaces
+
+Terms are organized into [namespaces](https://react.i18next.com/guides/multiple-translation-files), each with their own translation file.
+
+To add new namespaces as new features are launched, edit `packages/i18n/namespaces.json`.
+
+## Adding new languages
+
+To add new supported languages, add required metadata to `packages/i18n/supported.ts`. You will also need to add a matching entry to the POEditor project using their GUI.
+
+## Architecture
+
+translation:extract - extract translations from code to `packages/i18n/lang/en` using babel and i18next-extract plugin
+translation:publish - publish term namespaces to poeditor, updating existing terms and adding new terms
+translation:import - download poeditor translated terms to local cache in `packages/i18n/lang`
+
+translation:sync - runs both extract/publish and import to sync local with poeditor
+
+POEDITOR_PROJECT and POEDITOR_API_TOKEN environment variables must be pre-loaded in your shell environment to publish and import from poeditor.com.
+
+## Creating core translations
+
+
+babel - with babelrc, uses i18n-extract to bundle translations, which can be served to the client.
+
+Namespaces is `core` and combines:
+- geoprocessing (src/components, src/rbcs/components, src/iucn/)
+- template-blank-project
+- template-ocean-eez
+- template-addon-* (future packages)
+
+## Creating gp project translations
+
+
+
+## Loading project translations
+
+i18n.ts is used to detect the current language and load the translations from teh backend
+
+Load core translations
+Load project translations
+Merge them?
+
+##
+
+Questions
+
+- Should we use SeaSketch Next project for gp and gp project translations?  Yes I think so in order to have centrally managed translator access
+
+- Should translation machinery be kept in a monorepo package that works across all packages to pull together and merge translations?
+
+- how does translation loading work on client side?
+
+- what does CI system do involving translations?  What does GP or GP project therefore need to do?
+"The CI system will build a newly updated clients, but will only include new translations if this step is performed and changes are checked in."
+
+
+Answers
+
+- what to do with big chunks of text with html sprinkled in? such as used in learn more section of reports?
+  - it looks like you can wrap text that includes html tags into <Trans/> component

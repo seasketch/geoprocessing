@@ -3,9 +3,15 @@
   "private": true,
   "license": "BSD-3-Clause",
   "devDependencies": {
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.3",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.21.0",
     "@types/fs-extra": "^11.0.1",
     "@types/react": "^16.14.0",
     "@types/styled-components": "^5.1.7",
+    "babel-plugin-i18next-extract": "^0.9.0",
     "fs-extra": "^11.1.0",
     "http-server": "^14.1.1",
     "husky": "^8.0.0",
@@ -29,7 +35,11 @@
     "publish:alpha:canary": "CI=1 lerna publish --force-publish --canary --preid alpha --dist-tag=alpha",
     "publish:experimental:canary": "BRANCH_NAME=`git rev-parse --symbolic-full-name --abbrev-ref HEAD`; if [ $BRANCH_NAME != \"dev\" -a $BRANCH_NAME != \"main\" ] ; then CI=1 lerna publish --force-publish --canary --preid experimental-${BRANCH_NAME} --dist-tag=experimental-${BRANCH_NAME} ; fi",
     "e2e_test": "./packages/geoprocessing/scripts/testing/initTestProjects.mjs",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "translation:publish": "npm run ts-node bin/publishLocalizationTerms.js",
+    "translation:import": "npm run ts-node bin/importTranslations.js",
+    "translation:sync": "npm run translation:extract && npm run translation:publish && npm run translation:import",
+    "translation:extract": "rm -rf packages/i18n/lang/en && NODE_ENV=development npx babel 'packages/geoprocessing/src/**/*.{ts,tsx}' 'packages/template-blank-project/src/**/*.{ts,tsx}' 'packages/template-ocean-eez/src/**/*.{ts,tsx}' > /dev/null && mv extractedTranslations/en packages/i18n/lang/en && rm -rf extractedTranslations && echo 'Translations extracted to packages/i18n/lang/en'"
   },
   "repository": {
     "type": "git",

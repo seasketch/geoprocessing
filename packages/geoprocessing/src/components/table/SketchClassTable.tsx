@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { percentWithEdge } from "../../helpers";
 import { MetricGroup } from "../../types";
 import { Column, Table } from "./Table";
@@ -46,6 +47,10 @@ export interface SketchClassTableProps {
  */
 export const SketchClassTable: React.FunctionComponent<SketchClassTableProps> =
   ({ rows, metricGroup: dataGroup, formatPerc: usePerc = false }) => {
+    const { t } = useTranslation("gp");
+
+    const mpaLabel = t("MPA");
+
     const classColumns: Column<Record<string, string | number>>[] =
       dataGroup.classes.map((curClass) => ({
         Header: curClass.display,
@@ -58,7 +63,7 @@ export const SketchClassTable: React.FunctionComponent<SketchClassTableProps> =
 
     const columns: Column<Record<string, string | number>>[] = [
       {
-        Header: "MPA",
+        Header: mpaLabel,
         accessor: (row) => {
           return <div style={{ width: 120 }}>{row.sketchName}</div>;
         },

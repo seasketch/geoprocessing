@@ -1,7 +1,9 @@
 {
   "Class": "Class",
   "Goal": "Goal",
+  "MPA": "MPA",
   "Map": "Map",
+  "ResultsCardNoResultsMsg": "Report run completed, but no results returned",
   "SizeCardAreaMsg": "This feature is\" <2></2> square kilometers\".",
   "SizeCardTitle": "Zone Size",
   "SketchAttributesCardAlternateTitle": "Attributes",

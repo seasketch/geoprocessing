@@ -1,14 +1,15 @@
-#!/usr/bin/env node
 /* eslint-disable i18next/no-literal-string */
 import * as request from "request";
 import * as fs from "fs";
 import * as path from "path";
-const util = require("util");
-const namespaces = require("../src/lang/namespaces.json");
+import { promisify } from "util";
+import namespaces from "../namespaces.json";
 
-const post = util.promisify(request.post);
+const post = promisify(request.post);
+
 (async () => {
-  const res = await post(`https://api.poeditor.com/v2/terms/list`, {
+  const res = await post({
+    url: "https://api.poeditor.com/v2/terms/list",
     form: {
       api_token: process.env.POEDITOR_API_TOKEN,
       id: process.env.POEDITOR_PROJECT,
@@ -19,7 +20,7 @@ const post = util.promisify(request.post);
   if (data.response.status !== "success") {
     throw new Error(`API response was ${data.response.status}`);
   }
-  const terms: {
+  const publishedTerms: {
     term: string;
     context: string;
     plural: string;
@@ -41,52 +42,63 @@ const post = util.promisify(request.post);
   const termsToUpdate: { term: string; tags: string[] }[] = [];
 
   for (const namespace of namespaces.include) {
-    const data = JSON.parse(
+    // Read terms for current namespace from English translation file
+    const localTerms = JSON.parse(
       fs
         .readFileSync(
-          path.join(
-            __dirname,
-            `../src/lang/en/${namespace.replace(":", "/")}.json`
-          )
+          path.join(__dirname, `../lang/en/${namespace.replace(":", "/")}.json`)
         )
         .toString()
     ) as {
       [key: string]: string;
     };
-    for (const key in data) {
-      const existing = terms.find((t) => t.term === key);
-      if (existing) {
-        existing.obsolete = false;
-        if (existing.tags.indexOf(namespace) === -1) {
-          existing.tags.push(namespace);
-          termsToUpdate.push(existing);
+
+    // Loop through local terms and see if each already exists in published terms
+    for (const localTermKey in localTerms) {
+      const existingTerm = publishedTerms.find((t) => t.term === localTermKey);
+      // console.log("localTermKey", localTermKey);
+      // console.log(
+      //   "existingTerm",
+      //   existingTerm ? existingTerm.term : existingTerm
+      // );
+      if (existingTerm) {
+        // update this term
+        existingTerm.obsolete = false;
+        if (existingTerm.tags.includes(namespace)) {
+          existingTerm.tags.push(namespace);
+          // console.log("update me!");
+          termsToUpdate.push(existingTerm);
         }
       } else {
+        // add this term
+        // console.log("add me!", localTermKey);
         termsToAdd.push({
-          term: key,
-          english: data[key],
+          term: localTermKey,
+          english: localTerms[localTermKey],
           tags: [namespace],
         });
       }
     }
   }
 
-  for (const term of terms) {
-    if (term.obsolete !== false) {
-      term.tags.push("obsolete");
-      termsToUpdate.push(term);
+  // Tag obsolete terms making them easy to filter out, and remove obsolete tag if it's no longer obsolete
+  for (const publishedTerm of publishedTerms) {
+    if (publishedTerm.obsolete === true) {
+      publishedTerm.tags.push("obsolete");
+      termsToUpdate.push(publishedTerm);
     } else if (
-      term.obsolete === false &&
-      term.tags.indexOf("obsolete") !== -1
+      publishedTerm.obsolete === false &&
+      publishedTerm.tags.indexOf("obsolete") !== -1
     ) {
-      term.tags = term.tags.filter((t) => t !== "obsolete");
-      termsToUpdate.push(term);
+      publishedTerm.tags = publishedTerm.tags.filter((t) => t !== "obsolete");
+      termsToUpdate.push(publishedTerm);
     }
   }
 
-  // update existing terms
+  // update terms
   if (termsToUpdate.length) {
-    const updated = await post(`https://api.poeditor.com/v2/terms/update`, {
+    const updated = await post({
+      url: `https://api.poeditor.com/v2/terms/update`,
       form: {
         api_token: process.env.POEDITOR_API_TOKEN,
         id: process.env.POEDITOR_PROJECT,
@@ -97,22 +109,20 @@ const post = util.promisify(request.post);
     if (data.response.status !== "success") {
       throw new Error(`API response was ${data.response.status}`);
     } else {
-      console.log(`updated ${data.result.terms.updated} terms`);
+      console.log(`updated ${termsToUpdate.length} terms`);
     }
   }
 
-  // add missing terms
+  // add new terms
   if (termsToAdd.length) {
-    const { statusCode, body } = await post(
-      `https://api.poeditor.com/v2/terms/add`,
-      {
-        form: {
-          api_token: process.env.POEDITOR_API_TOKEN,
-          id: process.env.POEDITOR_PROJECT,
-          data: JSON.stringify(termsToAdd),
-        },
-      }
-    );
+    const { statusCode, body } = await post({
+      url: `https://api.poeditor.com/v2/terms/add`,
+      form: {
+        api_token: process.env.POEDITOR_API_TOKEN,
+        id: process.env.POEDITOR_PROJECT,
+        data: JSON.stringify(termsToAdd),
+      },
+    });
     let data = JSON.parse(body);
     if (data.response.status !== "success") {
       throw new Error(`API response was ${data.response.status}`);
@@ -120,26 +130,24 @@ const post = util.promisify(request.post);
       console.log(`added ${data.result.terms.added} terms`);
     }
 
-    const translations = await post(
-      `https://api.poeditor.com/v2/translations/add`,
-      {
-        form: {
-          api_token: process.env.POEDITOR_API_TOKEN,
-          id: process.env.POEDITOR_PROJECT,
-          language: "en",
-          data: JSON.stringify(
-            termsToAdd
-              .filter((t) => t.english?.length)
-              .map((t) => ({
-                term: t.term,
-                translation: {
-                  content: t.english,
-                },
-              }))
-          ),
-        },
-      }
-    );
+    const translations = await post({
+      url: `https://api.poeditor.com/v2/translations/add`,
+      form: {
+        api_token: process.env.POEDITOR_API_TOKEN,
+        id: process.env.POEDITOR_PROJECT,
+        language: "en",
+        data: JSON.stringify(
+          termsToAdd
+            .filter((t) => t.english?.length)
+            .map((t) => ({
+              term: t.term,
+              translation: {
+                content: t.english,
+              },
+            }))
+        ),
+      },
+    });
     data = JSON.parse(translations.body);
 
     if (data.response.status !== "success") {

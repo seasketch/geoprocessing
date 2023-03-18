@@ -18,7 +18,10 @@ export const simple = () => {
         <SegmentControl
           value={tab}
           onClick={(segment) => setTab(segment)}
-          segments={["Page 1", "Page 2"]}
+          segments={[
+            { id: "page1", label: "Page 1" },
+            { id: "page2", label: "Page 2" },
+          ]}
         />
       </div>
       <ReportPage hidden={!enableAllTabs && tab !== "Page 1"}>

@@ -49,7 +49,7 @@
       "url": "http://json.schemastore.org/geojson"
     }
   ],
-  "i18n-ally.localesPaths": "packages/i18n/lang",
+  "i18n-ally.localesPaths": "packages/geoprocessing/src/i18n/lang",
   "i18n-ally.enabledFrameworks": [
     "react",
     "i18next",

@@ -24,15 +24,15 @@ export const SketchAttributesCard = ({
 
   const [properties] = useSketchProperties();
   const { t } = useTranslation("gp");
+
+  const attributesLabel = t("SketchAttributesCardAlternateTitle", "Attributes");
+
   if (autoHide === true && properties.userAttributes.length === 0) {
     return null;
   }
   if (properties) {
     return (
-      <Card
-        titleStyle={titleStyle}
-        title={title || t("SketchAttributesCardAlternateTitle", "Attributes")}
-      >
+      <Card titleStyle={titleStyle} title={title || attributesLabel}>
         <table style={{ width: "100%" }}>
           <tbody>
             {properties.userAttributes.map((attr) => {
@@ -97,7 +97,7 @@ export const SketchAttributesCard = ({
     );
   } else {
     return (
-      <Card titleStyle={titleStyle} title={title || "Attributes"}>
+      <Card titleStyle={titleStyle} title={title || attributesLabel}>
         <p>No attributes found</p>
       </Card>
     );

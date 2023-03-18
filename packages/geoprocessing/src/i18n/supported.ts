@@ -5,6 +5,9 @@ export interface LangDetails {
   rtl?: boolean;
 }
 
+/**
+ * List of languages that can be loaded.  Translations may exist for more than this.
+ */
 const languages: LangDetails[] = [
   { name: "English", localName: "English", code: "EN" },
   {

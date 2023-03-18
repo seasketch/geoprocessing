@@ -46,7 +46,9 @@
     "@turf/area": "^6.5.0",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-clip": "^6.5.0",
-    "@turf/boolean-valid": "^6.5.0"
+    "@turf/boolean-valid": "^6.5.0",
+    "i18next-browser-languagedetector": "^7.0.1",
+    "react-i18next": "^12.2.0"
   },
   "devDependencies": {
     "@seasketch/geoprocessing": "^2.0.0"

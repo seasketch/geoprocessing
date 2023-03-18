@@ -3,9 +3,11 @@
   "Goal": "Goal",
   "MPA": "MPA",
   "Map": "Map",
+  "Representation": "Representation",
   "ResultsCardNoResultsMsg": "Report run completed, but no results returned",
-  "SizeCardAreaMsg": "This feature is\" <2></2> square kilometers\".",
+  "SizeCardAreaMsg": "This feature is <2></2> square kilometers.",
   "SizeCardTitle": "Zone Size",
   "SketchAttributesCardAlternateTitle": "Attributes",
-  "Target": "Target"
+  "Target": "Target",
+  "Viability": "Viability"
 }

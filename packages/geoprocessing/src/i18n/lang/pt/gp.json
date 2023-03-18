@@ -1,0 +1,9 @@
+{
+  "Map": "Mapa",
+  "Viability": "Viabilidade",
+  "SizeCardTitle": "Tamanho da zona",
+  "SketchAttributesCardAlternateTitle": "Atributos",
+  "SizeCardAreaMsg": "Este recurso tem <2></2> quilômetros quadrados.",
+  "Representation": "Representação",
+  "ResultsCardNoResultsMsg": "A execução do relatório foi concluída, mas nenhum resultado foi retornado"
+}

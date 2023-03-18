@@ -10,16 +10,24 @@ export default {
 
 export const tabOne = () => (
   <SegmentControl
-    value={"One"}
+    value={"one"}
     onClick={(segment) => console.log("clicked " + segment)}
-    segments={["One", "Two", "Three"]}
+    segments={[
+      { id: "one", label: "One" },
+      { id: "two", label: "Two" },
+      { id: "three", label: "Three" },
+    ]}
   />
 );
 
 export const tabTwo = () => (
   <SegmentControl
-    value={"Two"}
+    value={"two"}
     onClick={(segment) => console.log("clicked " + segment)}
-    segments={["One", "Two", "Three"]}
+    segments={[
+      { id: "one", label: "One" },
+      { id: "two", label: "Two" },
+      { id: "three", label: "Three" },
+    ]}
   />
 );

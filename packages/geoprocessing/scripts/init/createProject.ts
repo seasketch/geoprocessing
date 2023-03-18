@@ -184,7 +184,7 @@ export async function createProject(
         metadata.bboxMinLat,
         metadata.bboxMaxLng,
         metadata.bboxMaxLat,
-      ];
+      ] as BBox;
     }
   })();
 

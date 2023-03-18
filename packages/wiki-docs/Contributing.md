@@ -231,6 +231,33 @@ translation:sync - runs both extract/publish and import to sync local with poedi
 
 POEDITOR_PROJECT and POEDITOR_API_TOKEN environment variables must be pre-loaded in your shell environment to publish and import from poeditor.com.
 
+OPTION 1 - packages/i18n
+
+- publish it as @seasketch/geoprocessing-i18n
+- translations are stored within the published package
+- on project init, translations are copied from i18n directory to project space
+- project report client imports i18n.ts file from i18n lib
+- geoprocessing and template packages can import the sibling i18n package and import i18n.ts the same way.
+
+pros
+
+- sibling packages import from @seasketch/geoprocessing-i18n
+- i18n package is independent of geoprocessing package on npm and could potentially be upgraded independently by a project.
+- translation:upgrade - bump the i18n package version and `translation:upgrade` bin script in project space will merge the updates.  A function could be provided within i18n
+
+cons
+
+- have to transpile and publish a separate package from geoprocessing.  But that opens the door to breaking down the gp monolith.  Opportunity to use esm module?
+
+OPTION 2 - geoprocessing/src/i18n
+
+- store translations and related code in geoprocessing package
+- monorepo root calls 
+- bundle lang json files just like templates into build
+- projects and sibling template packages will import i18n init from @seasketch/geoprocessing/i18n entry point (similar to dataproviders)
+on project init, generate i18n directory in project space, copy the lang assets out.
+- each project/template will have its own translate CLI commands.
+
 ## Creating core translations
 
 
@@ -254,21 +281,26 @@ Load core translations
 Load project translations
 Merge them?
 
-##
-
-Questions
+## Questions
 
 - Should we use SeaSketch Next project for gp and gp project translations?  Yes I think so in order to have centrally managed translator access
+
+Yes
 
 - Should translation machinery be kept in a monorepo package that works across all packages to pull together and merge translations?
 
 - how does translation loading work on client side?
 
-- what does CI system do involving translations?  What does GP or GP project therefore need to do?
-"The CI system will build a newly updated clients, but will only include new translations if this step is performed and changes are checked in."
+load should happen in top level of report client, so that it can load project specific translations, which may override core translations.
 
+Report developer should not have to deal with this.  Perhaps move ReportPage out of client-ui as   Should be built-in or part of template-blank-project report client, and create:function client.
 
 Answers
 
 - what to do with big chunks of text with html sprinkled in? such as used in learn more section of reports?
   - it looks like you can wrap text that includes html tags into <Trans/> component
+
+## Problems
+
+each report client is loading i18n.ts on startup in storybook causing collision
+Similar issue and suggestion to use createInstance - https://github.com/i18next/react-i18next/issues/1234

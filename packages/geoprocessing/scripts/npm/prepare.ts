@@ -235,8 +235,26 @@ async function bundleTemplates(templateType: TemplateType) {
   }
 }
 
+/**
+ * Copy i18n language translations to dist to be installed into project on init
+ */
+async function bundleLang() {
+  const distLangPath = `${distPath}/src/i18n/lang`;
+  const langPath = `${__dirname}/../../src/i18n/lang`;
+
+  // Delete old lang folder
+  if (fs.existsSync(path.join(distLangPath))) {
+    fs.rmdirSync(distLangPath, { recursive: true });
+  }
+  await fs.copy(langPath, distLangPath);
+}
+
 bundleAssets().then(() => {
   console.log("finished bundling assets");
+});
+
+bundleLang().then(() => {
+  console.log("finished bundling language translations");
 });
 
 bundleData().then(() => {

@@ -2,7 +2,7 @@ import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
 import plurals from "./plurals.json";
 
-const defaultLang = "pt";
+const defaultLang = "en";
 
 /**
  * Returns an instance of i18n that lazy loads translations using dynamic

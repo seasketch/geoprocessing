@@ -6,7 +6,7 @@ import plurals from "./plurals.json";
 import en from "./lang/en/gp.json";
 import pt from "./lang/pt/gp.json";
 
-const defaultLang = "pt";
+const defaultLang = "en";
 
 /**
  * Returns an instance of i18n with directly imported translations.

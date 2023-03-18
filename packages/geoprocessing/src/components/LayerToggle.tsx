@@ -1,6 +1,6 @@
 import React from "react";
 import useVisibleLayers from "../hooks/useVisibleLayers";
-import { Layer } from "@styled-icons/boxicons-solid/Layer";
+import { Layer } from "@styled-icons/boxicons-solid/Layer/Layer";
 
 export function LayerToggle({
   layerId,

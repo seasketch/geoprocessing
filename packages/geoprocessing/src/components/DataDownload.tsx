@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Parser, transforms } from "json2csv";
 import useSketchProperties from "../hooks/useSketchProperties";
 import { CloudDownload } from "@styled-icons/boxicons-solid";
-import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical";
+import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical/ThreeDotsVertical";
 
 // Strictly limit format and data types accepted
 const SUPPORTED_FORMATS = ["json", "csv"] as const;

@@ -3,3 +3,4 @@ node_modules
 ### Do no edit above this line
 data/src/**
 data/dist/**
+src/i18n

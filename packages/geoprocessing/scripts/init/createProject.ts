@@ -213,12 +213,34 @@ export async function createProject(
   }
 
   // recursively copy entire data/bin directory to project space
-  await fs.copy(
-    `${getGeoprocessingPath()}/data/bin`,
-    projectPath + "/data/bin"
-  );
+  spinner.start("add data directory");
+  try {
+    await fs.copy(
+      `${getGeoprocessingPath()}/data/bin`,
+      projectPath + "/data/bin"
+    );
+  } catch (error) {
+    spinner.fail("data bin directory copy failed");
+    console.error(error);
+  }
   await fs.ensureDir(`${projectPath}/data/src`);
   await fs.ensureDir(`${projectPath}/data/dist`);
+  spinner.succeed("added data directory");
+
+  // recursively copy entire i18n directory to project space
+  spinner.start("add i18n directory");
+  try {
+    await fs.copy(
+      `${getGeoprocessingPath()}/src/i18n`,
+      projectPath + "/src/i18n"
+    );
+  } catch (error) {
+    spinner.fail("i18n directory copy failed");
+    console.error(error);
+  }
+  await fs.ensureDir(`${projectPath}/data/src`);
+  await fs.ensureDir(`${projectPath}/data/dist`);
+  spinner.succeed("added i18n directory");
 
   if (metadata.templates.length > 0) {
     // Should always be a single name if single select question used

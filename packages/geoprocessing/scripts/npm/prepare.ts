@@ -62,6 +62,9 @@ async function bundleBaseProject() {
   const distBaseProjectPath = `${distPath}/base-project`;
   const baseProjectPath = `${__dirname}/../../../base-project`;
 
+  const distI18nPath = `${distPath}/base-project/src/i18n`;
+  const srcI18nPath = `${__dirname}/../../src/i18n`;
+
   // Delete old template bundles if they exist
   if (fs.existsSync(path.join(distBaseProjectPath))) {
     fs.rmdirSync(distBaseProjectPath, { recursive: true });
@@ -73,6 +76,7 @@ async function bundleBaseProject() {
     await $`cp -r ${baseProjectPath}/. ${distBaseProjectPath}`;
     await $`mv ${distBaseProjectPath}/.gitignore ${distBaseProjectPath}/_gitignore`;
     await $`rm -rf ${distBaseProjectPath}/node_modules`;
+    await $`cp -r ${srcI18nPath}/. ${distI18nPath}`;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.log("Base project copy failed");
@@ -235,26 +239,8 @@ async function bundleTemplates(templateType: TemplateType) {
   }
 }
 
-/**
- * Copy i18n language translations to dist to be installed into project on init
- */
-async function bundleLang() {
-  const distLangPath = `${distPath}/src/i18n/lang`;
-  const langPath = `${__dirname}/../../src/i18n/lang`;
-
-  // Delete old lang folder
-  if (fs.existsSync(path.join(distLangPath))) {
-    fs.rmdirSync(distLangPath, { recursive: true });
-  }
-  await fs.copy(langPath, distLangPath);
-}
-
 bundleAssets().then(() => {
   console.log("finished bundling assets");
-});
-
-bundleLang().then(() => {
-  console.log("finished bundling language translations");
 });
 
 bundleData().then(() => {

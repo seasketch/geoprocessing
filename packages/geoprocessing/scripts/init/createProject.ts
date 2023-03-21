@@ -130,6 +130,24 @@ export async function createProject(
     JSON.stringify(packageJSON, null, "  ")
   );
 
+  // Add i18n project namespace
+  spinner.start("Adding project namespace to i18n");
+  const namespacePath = `${projectPath}/src/i18n/namespaces.json`;
+  try {
+    const namespaceConfig = JSON.parse(
+      await fs.readJSON(namespacePath).toString()
+    );
+    namespaceConfig.publish = [`gp-${packageJSON.name}`];
+    await fs.writeJSON(namespacePath, namespaceConfig);
+  } catch (error) {
+    console.error(
+      `Failed to add project namespace to namespaces.json in ${namespacePath}`
+    );
+    console.error(error);
+    process.exit();
+  }
+  spinner.succeed("added project namespace to i18n");
+
   // Add smoke tests to default run
   if (process.env.NODE_ENV !== "test") {
     await fs.writeFile(
@@ -141,6 +159,7 @@ export async function createProject(
     );
   }
   spinner.succeed("updated package.json");
+
   spinner.start("creating geoprocessing.json");
   const author = email ? `${metadata.author} <${email}>` : metadata.author;
   await fs.writeFile(

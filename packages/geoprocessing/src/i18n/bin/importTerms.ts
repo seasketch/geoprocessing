@@ -11,6 +11,10 @@ const get = promisify(request.get);
 
 const INCLUDE_EMPTY_TERMS = false;
 
+/**
+ * Pulls all terms for all languages from POEditor and writes them to the local translation files.
+ * This will overwrite any existing translations.
+ */
 (async () => {
   const res = await post({
     url: `https://api.poeditor.com/v2/terms/list`,
@@ -41,7 +45,7 @@ const INCLUDE_EMPTY_TERMS = false;
     obsolete?: boolean;
   }[] = data.result.terms;
   terms.sort((a, b) => a.term.localeCompare(b.term));
-  console.log(`Importing namespaces ${namespaces.include.join(", ")}`);
+  console.log(`Importing namespaces ${namespaces.source.join(", ")}`);
   const { statusCode, body } = await post({
     url: `https://api.poeditor.com/v2/languages/list`,
     form: {
@@ -87,7 +91,7 @@ const INCLUDE_EMPTY_TERMS = false;
       const translated = JSON.parse(translations.body);
 
       fs.mkdirSync(localePath);
-      for (const namespace of namespaces.include) {
+      for (const namespace of namespaces.source) {
         const translatedTerms: { [term: string]: string } = {};
         for (const term of terms) {
           if (

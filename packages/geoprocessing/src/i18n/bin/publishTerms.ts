@@ -7,6 +7,11 @@ import namespaces from "../namespaces.json";
 
 const post = promisify(request.post);
 
+/**
+ * Pushes all terms for english language to POEditor, updating any existing translations.
+ * If you make local changes to the translation files, make sure you run this after importTerms.ts
+ * so that POEditor is the source of truth.
+ */
 (async () => {
   const res = await post({
     url: "https://api.poeditor.com/v2/terms/list",
@@ -36,12 +41,12 @@ const post = promisify(request.post);
     comment: string;
     obsolete?: boolean;
   }[] = data.result.terms;
-  console.log(`Publishing namespaces ${namespaces.include.join(", ")}`);
+  console.log(`Publishing namespaces ${namespaces.publish.join(", ")}`);
 
   const termsToAdd: { term: string; tags: string[]; english: string }[] = [];
   const termsToUpdate: { term: string; tags: string[] }[] = [];
 
-  for (const namespace of namespaces.include) {
+  for (const namespace of namespaces.publish) {
     // Read terms for current namespace from English translation file
     const localTerms = JSON.parse(
       fs

@@ -130,24 +130,6 @@ export async function createProject(
     JSON.stringify(packageJSON, null, "  ")
   );
 
-  // Add i18n project namespace
-  spinner.start("Adding project namespace to i18n");
-  const namespacePath = `${projectPath}/src/i18n/namespaces.json`;
-  try {
-    const namespaceConfig = JSON.parse(
-      await fs.readJSON(namespacePath).toString()
-    );
-    namespaceConfig.publish = [`gp-${packageJSON.name}`];
-    await fs.writeJSON(namespacePath, namespaceConfig);
-  } catch (error) {
-    console.error(
-      `Failed to add project namespace to namespaces.json in ${namespacePath}`
-    );
-    console.error(error);
-    process.exit();
-  }
-  spinner.succeed("added project namespace to i18n");
-
   // Add smoke tests to default run
   if (process.env.NODE_ENV !== "test") {
     await fs.writeFile(
@@ -257,8 +239,11 @@ export async function createProject(
     spinner.fail("i18n directory copy failed");
     console.error(error);
   }
-  await fs.ensureDir(`${projectPath}/data/src`);
-  await fs.ensureDir(`${projectPath}/data/dist`);
+  // Add i18n project namespace
+  const namespacePath = `${projectPath}/src/i18n/namespaces.json`;
+  const namespaceConfig = await fs.readJSON(namespacePath);
+  namespaceConfig.publish = [`gp-${packageJSON.name}`];
+  await fs.writeJSON(namespacePath, namespaceConfig);
   spinner.succeed("added i18n directory");
 
   if (metadata.templates.length > 0) {

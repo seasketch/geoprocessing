@@ -5,8 +5,8 @@ import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
 const ReportPage = () => {
   return (
     <>
-      <SketchAttributesCard autoHide />
       <SizeCard />
+      <SketchAttributesCard autoHide />
     </>
   );
 };

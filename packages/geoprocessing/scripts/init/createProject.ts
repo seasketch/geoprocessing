@@ -234,7 +234,7 @@ export async function createProject(
   const namespacePath = `${projectPath}/src/i18n/namespaces.json`;
   const namespaceConfig = await fs.readJSON(namespacePath);
   namespaceConfig.publish = [`gp-${packageJSON.name}`];
-  await fs.writeJSON(namespacePath, namespaceConfig);
+  await fs.writeJSON(namespacePath, namespaceConfig, { spaces: 2 });
   spinner.succeed("added i18n directory");
 
   if (metadata.templates.length > 0) {

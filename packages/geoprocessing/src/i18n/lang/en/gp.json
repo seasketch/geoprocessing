@@ -5,7 +5,7 @@
   "Map": "Map",
   "Representation": "Representation",
   "ResultsCardNoResultsMsg": "Report run completed, but no results returned",
-  "SizeCardAreaMsg": "This feature is <2></2> square kilometers.",
+  "SizeCardAreaMsg": "This sketch is <2>{{area}}</2> square kilometers",
   "SizeCardTitle": "Zone Size",
   "SketchAttributesCardAlternateTitle": "Attributes",
   "Target": "Target",

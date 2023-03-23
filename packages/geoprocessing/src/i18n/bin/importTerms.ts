@@ -45,7 +45,7 @@ const INCLUDE_EMPTY_TERMS = false;
     obsolete?: boolean;
   }[] = data.result.terms;
   terms.sort((a, b) => a.term.localeCompare(b.term));
-  console.log(`Importing namespaces ${namespaces.source.join(", ")}`);
+  console.log(`Importing namespaces ${namespaces.import.join(", ")}`);
   const { statusCode, body } = await post({
     url: `https://api.poeditor.com/v2/languages/list`,
     form: {
@@ -91,7 +91,7 @@ const INCLUDE_EMPTY_TERMS = false;
       const translated = JSON.parse(translations.body);
 
       fs.mkdirSync(localePath);
-      for (const namespace of namespaces.source) {
+      for (const namespace of namespaces.import) {
         const translatedTerms: { [term: string]: string } = {};
         for (const term of terms) {
           if (

@@ -1,4 +1,4 @@
 {
-  "source": ["gp"],
+  "import": ["gp"],
   "publish": ["gp"]
 }

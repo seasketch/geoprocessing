@@ -7,7 +7,7 @@ import { Translator } from "../components/Translator";
 
 const enableAllTabs = false;
 const MpaReportClient = () => {
-  const { t } = useTranslation("gp");
+  const { t } = useTranslation();
   const viabilityId = "viability";
   const representationId = "representation";
   const segments = [

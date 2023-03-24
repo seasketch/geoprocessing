@@ -8,7 +8,7 @@ import { AreaResults } from "../functions/area";
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
 const SizeCard = () => {
-  const { t } = useTranslation("gp");
+  const { t } = useTranslation();
   return (
     <>
       <ResultsCard
@@ -20,7 +20,7 @@ const SizeCard = () => {
           return (
             <p>
               📐
-              <Trans ns="gp" i18nKey="SizeCardAreaMsg">
+              <Trans i18nKey="SizeCardAreaMsg">
                 This sketch is{" "}
                 <b>{{ area: Number.format(Math.round(data.area * 1e-6)) }}</b>{" "}
                 square kilometers

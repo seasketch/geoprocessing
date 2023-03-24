@@ -47,7 +47,7 @@ export interface SketchClassTableProps {
  */
 export const SketchClassTable: React.FunctionComponent<SketchClassTableProps> =
   ({ rows, metricGroup: dataGroup, formatPerc: usePerc = false }) => {
-    const { t } = useTranslation("gp");
+    const { t } = useTranslation();
 
     const mpaLabel = t("MPA");
 

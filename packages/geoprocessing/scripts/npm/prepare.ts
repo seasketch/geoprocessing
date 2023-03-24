@@ -77,6 +77,8 @@ async function bundleBaseProject() {
     await $`mv ${distBaseProjectPath}/.gitignore ${distBaseProjectPath}/_gitignore`;
     await $`rm -rf ${distBaseProjectPath}/node_modules`;
     await $`cp -r ${srcI18nPath}/. ${distI18nPath}`;
+    await $`mkdir ${distI18nPath}/baseLang`;
+    await $`mv ${distI18nPath}/lang/* ${distI18nPath}/baseLang`;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.log("Base project copy failed");

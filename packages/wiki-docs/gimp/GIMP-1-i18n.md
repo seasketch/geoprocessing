@@ -1,5 +1,33 @@
 # GIMP 1: i18n Localization
 
+* Setup independent geoprocessing poeditor project, separate from SSN.
+* Remove namespaces from all translated strings in the geoprocessing library whether core UI components or templates to be installed into project space.
+* All translations will go into the default "translated" namespace, aka translated.json (I think).
+* The import/export scripts will add a tag to every term added to POEditor, depending on the environment.
+  * internal gp lib - on publish - push to gp tag
+  * internal gp lib - on import - import from gp tag
+  * gp project - on publish - push to gp-{project-name} tag
+  * gp project - on import - import from gp-{project-name} tag
+* This scheme will allow for core translations as well as multiple gp projects to be managed within a single POEditor project without colliding.
+* Translators, when asked to review strings will be told which tags to translate for the language(s) they are responsible for. `gp-azores-reports` strings for example won't need to get translated for all languages, just the languages needed in azores, but all `gp` tagged strings within the geoprocessing library will get translated for all languages (core UI and template components).
+* when a report developer adds/edits components installed to their project from a template, they now don't have to think about what namespace to use, or whether to switch namespaces within `t()` and `Trans` calls.
+* when report developer publishes for the first time to POEditor it will be to a new project-specific tag, and that will include all strings, including core terms + template terms + new project-specific terms.
+* when report developer upgrades their version of geoprocessing library, they will get the new core translations automatically, they get merged with the project translations at runtime by the i18n loader.  If there is a core translation that has the same key as a project translation, then the project translation will "win" on the merge.
+
+## Project Management
+
+* A `geoprocessing` POEditor project will be created.
+  * It will store terms and their translations for all components/report clients maintained within the geoprocessing library, including templates.
+  * It will also store terms and their translations for all geoprocessing projects created by a report developer on the SeaSketch team.
+
+* Non-seasketch report developer will have the option to create their own POEditor project.  It will be completely separate from the `geoprocessing` POEditor project.
+* Non-seasketch report developers will also have the option to manage translations entirely within the code repo.
+
+* Translators will be invited to a POEditor project to review and make translations.
+  (but what if there are projects that a translator doesn't need to translate for?  They should be able to )
+ (core components and user-installed templates).
+ (untranslated strings) and their translations for all UI components published by `gp-ui` module, template report clients and components published by `template-*` 
+
 ## Languages supported
 
 * The geoprocessing library will target supporting all SeaSketch Next languages.
@@ -43,8 +71,8 @@ Notice that the namespaces to be imported can be separately configured from the 
 
 * i18n directory is installed as part of base-project.
 * `extract`, `import`, `publish`, and `sync` cli commands are included in package.json
-* An `i18n:install` command is provided to copy `node_modules/@seasketch/geoprocessing/dist/base-project/i18n` for if you are upgrading to a new version of geoprocessing library and installing translations for the first time, or upgrading to the latest.
-* `createProject()` updates namespaces.json to a new project-specific namespace, `gp-{project_name}`.  The `gp` namespace is not present now because initial core translations are already installed and because in the most common use case we don't want projects publishing terms for the `gp` namespace.  That is left to be managed within the monorepo.  More on this later.
+* An `translation:install` command is provided upgrade base translations in the geoprocessing project.  It will replace the contents of project folder `src/i18n/baseLang` with the latest base translations in `node_modules/@seasketch/geoprocessing/dist/base-project/i18n`.
+* `createProject()` updates namespaces.json to a new project-specific namespace, `gp-{project_name}`.  The `gp` namespace is not present now because initial core translations are already installed to the project and because in the most common use case we don't want projects publishing terms for the `gp` namespace.  That is left to be managed within the monorepo.  More on this later.
 
 ```json
 {
@@ -76,19 +104,19 @@ Notice that the namespaces to be imported can be separately configured from the 
 
 ## For all report development use cases
 
-* the core gp translations will be installed on init or via `i18n:install` cli command and they will be ready to start.
+* the core gp translations will be installed on init or via `translation:install` cli command and they will be ready to start.
 * `translation:extract` will extract all translations for all namespaces, `gp` and `gp-testo` in this case, for the English language.
 * `translation:import`, `translation:publish` and namespaces.json will only be relevant/used if POEDITOR is being used.  Other languages can be translated locally (and publish will send them to POEDITOR), or translations will be done in POEDITOR and import will bring them back.
 * All report clients will get wrapped in a Translator components, just as is done in report clients installed by default.
 * As developer creates new reports, they will wrap all strings destined to be displayed in the UI in translate functions using react-i18n such as `t()`, `<Trans>` etc.  They should assign the new strings to their project namespaces (e.g. `gp-testo`), not the `gp` namespace.
-* If the user is upgrading their version of the geoprocessing library, and want the latest translations, or there is breaking changes to the i18n folder, they should move aside their current i18n directory, then run the `i18n:install` command.  Their may be breaking changes to the folder structure here, see the Changelog for more info.  Then they would need to manually merge any of their changes to the core translations, and their project specific namespace files for each language.
+* When the user upgrades their version of the geoprocessing library, it should upgrade the baseLang translations as well by running the equivalent of the `translation:install` command.
 * Translators will need to translate all core `gp` strings for all seasketch languages.  But they will only need to translate strings in the project namespace (e.g. `gp-testo`) for the languages needed for the project.  If the user happens to select a language in seasketch next not supported by the reports, then they will fallback to English.
 
 ## Report development use cases
 
 ### 1. Reports developed by SeaSketch Team using POEDITOR
 
-* The project will use the one big SSN POEDITOR project.  This is so that translators only have to go to one project to translate strings for all languages.
+* The project will use the one big geoprocessing SSN POEDITOR project.  This is so that translators only have to go to one project to translate strings for all languages.
 * Developer will configure POEDITOR project ID and Key environment variables.
 * Developer will use all translation CLI commands (extract, import, publish, sync)
 * namespaces.json `import` will be set to `['gp', 'gp-testo']` namespaces. This will ensure non-en languages get imported on every import or sync for both core and project-specific translations.

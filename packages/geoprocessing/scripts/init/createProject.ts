@@ -229,12 +229,12 @@ export async function createProject(
     `${getGeoprocessingPath()}/src/i18n`,
     projectPath + "/src/i18n"
   );
-  // Add project namespace to i18n config
-  const namespacePath = `${projectPath}/src/i18n/namespaces.json`;
-  const namespaceConfig = await fs.readJSON(namespacePath);
-  namespaceConfig.import.push(`gp-${packageJSON.name}`);
-  namespaceConfig.publish = [`gp-${packageJSON.name}`];
-  await fs.writeJSON(namespacePath, namespaceConfig, { spaces: 2 });
+  // Update config.json with project-specific namespace and tag
+  const configPath = `${projectPath}/src/i18n/config.json`;
+  const config = await fs.readJSON(configPath);
+  config.localNamespace = `${packageJSON.name}`;
+  config.remoteTag = `${packageJSON.name}`;
+  await fs.writeJSON(configPath, config, { spaces: 2 });
   spinner.succeed("added i18n directory");
 
   if (metadata.templates.length > 0) {

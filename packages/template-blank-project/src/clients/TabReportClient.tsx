@@ -6,7 +6,7 @@ import Translator from "../components/Translator";
 
 const enableAllTabs = false;
 const TabReportClient = () => {
-  const { t } = useTranslation("gp");
+  const { t } = useTranslation();
   const viabilityId = "viability";
   const segments = [{ id: viabilityId, label: t("Viability") }];
   const [tab, setTab] = useState<string>(viabilityId);

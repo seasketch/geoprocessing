@@ -71,7 +71,7 @@ export function ResultsCard<T>({
     throw new Error("No function specified for ResultsCard");
   }
 
-  const { t } = useTranslation("gp");
+  const { t } = useTranslation();
 
   const resultsCardNoResultMsg = t(
     "ResultsCardNoResultsMsg",

@@ -85,7 +85,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   metricGroup,
   objective,
 }) => {
-  const { t } = useTranslation("gp");
+  const { t } = useTranslation();
   const classesByName = keyBy(
     metricGroup.classes,
     (curClass) => curClass.classId

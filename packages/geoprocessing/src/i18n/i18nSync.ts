@@ -3,8 +3,8 @@ import { initReactI18next } from "react-i18next";
 import plurals from "./plurals.json";
 
 // If this instance load
-import en from "./lang/en/gp.json";
-import pt from "./lang/pt/gp.json";
+import en from "./lang/en/translation.json";
+import pt from "./lang/pt/translation.json";
 
 const defaultLang = "en";
 
@@ -22,7 +22,7 @@ const defaultLang = "en";
  * but this allows for the possibility of multiple.  Note that i18nProvider
  * must be used with createInstance to load translations.
  */
-export function getI18nInstance() {
+export function createI18nInstance() {
   const instance = createInstance({
     resources: {},
     ns: ["gp"],

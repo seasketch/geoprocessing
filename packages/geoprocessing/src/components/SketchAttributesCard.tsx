@@ -23,7 +23,7 @@ export const SketchAttributesCard = ({
   };
 
   const [properties] = useSketchProperties();
-  const { t } = useTranslation("gp");
+  const { t } = useTranslation();
 
   const attributesLabel = t("SketchAttributesCardAlternateTitle", "Attributes");
 

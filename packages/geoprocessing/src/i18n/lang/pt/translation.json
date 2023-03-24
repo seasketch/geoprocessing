@@ -5,8 +5,8 @@
   "MPA": "MPA",
   "Representation": "Representação",
   "ResultsCardNoResultsMsg": "A execução do relatório foi concluída, mas nenhum resultado foi retornado",
-  "SizeCardAreaMsg": "Este esboço tem <2>{{area}}</2> quilômetros quadrados",
-  "SizeCardTitle": "Tamanho da zona",
+  "SizeCardAreaMsg": "Este esboço tem 2 quilômetros quadrados",
+  "SizeCardTitle": "Tamanho da Zona",
   "SketchAttributesCardAlternateTitle": "Atributos",
   "Target": "Alvo",
   "Viability": "Viabilidade"

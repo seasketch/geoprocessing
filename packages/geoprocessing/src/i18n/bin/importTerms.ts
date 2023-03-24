@@ -4,7 +4,7 @@ import * as request from "request";
 import * as fs from "fs";
 import * as path from "path";
 import { promisify } from "util";
-import namespaces from "../namespaces.json";
+import config from "../config.json";
 
 const post = promisify(request.post);
 const get = promisify(request.get);
@@ -45,7 +45,9 @@ const INCLUDE_EMPTY_TERMS = false;
     obsolete?: boolean;
   }[] = data.result.terms;
   terms.sort((a, b) => a.term.localeCompare(b.term));
-  console.log(`Importing namespaces ${namespaces.import.join(", ")}`);
+  console.log(
+    `Importing strings with tag '${config.remoteTag}' to namespace '${config.localNamespace}'`
+  );
   const { statusCode, body } = await post({
     url: `https://api.poeditor.com/v2/languages/list`,
     form: {
@@ -91,22 +93,24 @@ const INCLUDE_EMPTY_TERMS = false;
       const translated = JSON.parse(translations.body);
 
       fs.mkdirSync(localePath);
-      for (const namespace of namespaces.import) {
-        const translatedTerms: { [term: string]: string } = {};
-        for (const term of terms) {
-          if (
-            (translated[term.term] || INCLUDE_EMPTY_TERMS) &&
-            term.tags.indexOf(namespace) !== -1
-          ) {
-            translatedTerms[term.term] = translated[term.term] || "";
-          }
+
+      const translatedTerms: { [term: string]: string } = {};
+      for (const term of terms) {
+        if (
+          (translated[term.term] || INCLUDE_EMPTY_TERMS) &&
+          term.tags.indexOf(config.remoteTag) !== -1
+        ) {
+          translatedTerms[term.term] = translated[term.term] || "";
         }
-        if (Object.keys(translatedTerms).length) {
-          fs.writeFileSync(
-            path.join(localePath, `${namespace.replace(":", "/")}.json`),
-            JSON.stringify(translatedTerms, null, "  ")
-          );
-        }
+      }
+      if (Object.keys(translatedTerms).length) {
+        fs.writeFileSync(
+          path.join(
+            localePath,
+            `${config.localNamespace.replace(":", "/")}.json`
+          ),
+          JSON.stringify(translatedTerms, null, "  ")
+        );
       }
     }
   }

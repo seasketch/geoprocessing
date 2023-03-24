@@ -3,7 +3,7 @@ import * as request from "request";
 import * as fs from "fs";
 import * as path from "path";
 import { promisify } from "util";
-import namespaces from "../namespaces.json";
+import config from "../config.json";
 
 const post = promisify(request.post);
 
@@ -41,12 +41,14 @@ const post = promisify(request.post);
     comment: string;
     obsolete?: boolean;
   }[] = data.result.terms;
-  console.log(`Publishing namespaces ${namespaces.publish.join(", ")}`);
+  console.log(
+    `Publishing '${config.localNamespace}' namespace strings with '${config.remoteTag}' tag`
+  );
 
   const termsToAdd: { term: string; tags: string[]; english: string }[] = [];
   const termsToUpdate: { term: string; tags: string[] }[] = [];
 
-  for (const namespace of namespaces.publish) {
+  for (const namespace of [config.localNamespace]) {
     // Read terms for current namespace from English translation file
     const localTerms = JSON.parse(
       fs
@@ -69,18 +71,16 @@ const post = promisify(request.post);
       if (existingTerm) {
         // update this term
         existingTerm.obsolete = false;
-        if (existingTerm.tags.includes(namespace)) {
-          existingTerm.tags.push(namespace);
-          // console.log("update me!");
+        if (existingTerm.tags.includes(config.remoteTag)) {
+          existingTerm.tags.push(config.remoteTag);
           termsToUpdate.push(existingTerm);
         }
       } else {
         // add this term
-        // console.log("add me!", localTermKey);
         termsToAdd.push({
           term: localTermKey,
           english: localTerms[localTermKey],
-          tags: [namespace],
+          tags: [config.remoteTag],
         });
       }
     }

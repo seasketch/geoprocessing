@@ -2,7 +2,7 @@ import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
 import plurals from "./plurals.json";
 
-const defaultLang = "en";
+const defaultLang = "pt";
 
 /**
  * Returns an instance of i18n that lazy loads translations using dynamic
@@ -18,10 +18,18 @@ const defaultLang = "en";
  * production there will typically be only one report client loaded at one time
  * but this allows for the possibility of multiple.  Note that i18nProvider
  * must be used with createInstance to load translations.
- * @param langPath - relative path to language translations from this file
  * @returns i18n instance
  */
-export function getI18nInstance(langPath: string = "./lang") {
+export function createI18nInstance(
+  /** i18n language paths relative to this directory */
+  options: {
+    /** path to main language translations.  If baseLangPath present, then will merge with and override base resources */
+    langPath?: string;
+    /** path to extra base language translations (for gp projects), which langPath strings merge with and override */
+    baseLangPath?: string;
+  } = {}
+) {
+  const { langPath = "./lang", baseLangPath = "./baseLang" } = options;
   const instance = createInstance();
   instance
     .use({
@@ -31,22 +39,47 @@ export function getI18nInstance(langPath: string = "./lang") {
         namespace: string,
         callback: (errorValue: unknown, translations: null | any) => void
       ) {
-        import(
-          /* webpackChunkName: "lang" */ `${langPath}/${defaultLang}/${namespace}.json`
-        )
-          .then((resources) => {
-            if (defaultLang) {
-              callback(null, {
-                ...resources,
-                ...plurals,
-              });
-            } else {
-              callback(null, resources);
-            }
-          })
-          .catch((error) => {
-            callback(error, null);
-          });
+        const isDefault =
+          language.toLowerCase() === "pt" || /pt-/i.test(language);
+        (async () => {
+          // Load translations
+          let baseLangResources = {};
+          try {
+            baseLangResources = await import(
+              /* webpackChunkName: "lang1" */ `${baseLangPath}/${
+                isDefault ? defaultLang : language
+              }/${namespace}.json`
+            );
+          } catch (error: unknown) {
+            console.log(`failed to load lang resource `);
+          }
+          console.log("baseLangResources", baseLangResources);
+
+          let langResources = {};
+          if (langPath !== undefined) {
+            langResources = await import(
+              /* webpackChunkName: "lang2" */ `${langPath}/${
+                isDefault ? defaultLang : language
+              }/${namespace}.json`
+            );
+          }
+          console.log("langResources", langResources);
+
+          // Return merged translations
+          if (defaultLang) {
+            // merge in plurals if english, because extractor leaves them blank, so they are managed specially
+            callback(null, {
+              ...baseLangResources,
+              ...langResources,
+              ...plurals,
+            });
+          } else {
+            callback(null, {
+              ...baseLangResources,
+              ...langResources,
+            });
+          }
+        })();
       },
     })
     .use(initReactI18next) // passes i18n down to react-i18next

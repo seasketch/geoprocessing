@@ -232,7 +232,6 @@ export async function createProject(
   // Update config.json with project-specific namespace and tag
   const configPath = `${projectPath}/src/i18n/config.json`;
   const config = await fs.readJSON(configPath);
-  config.localNamespace = `${packageJSON.name}`;
   config.remoteTag = `${packageJSON.name}`;
   await fs.writeJSON(configPath, config, { spaces: 2 });
   spinner.succeed("added i18n directory");

@@ -22,6 +22,7 @@ const INCLUDE_EMPTY_TERMS = false;
       api_token: process.env.POEDITOR_API_TOKEN,
       id: process.env.POEDITOR_PROJECT,
       language: "en",
+      context: config.remoteContext,
     },
   });
   let data = JSON.parse(res.body);
@@ -46,7 +47,7 @@ const INCLUDE_EMPTY_TERMS = false;
   }[] = data.result.terms;
   terms.sort((a, b) => a.term.localeCompare(b.term));
   console.log(
-    `Importing strings with tag '${config.remoteTag}' to namespace '${config.localNamespace}'`
+    `Importing strings with context '${config.remoteContext}' to namespace '${config.localNamespace}'`
   );
   const { statusCode, body } = await post({
     url: `https://api.poeditor.com/v2/languages/list`,
@@ -65,7 +66,7 @@ const INCLUDE_EMPTY_TERMS = false;
     percentage: number;
   }[];
 
-  for (const lang of languages.filter((l) => l.code !== "en")) {
+  for (const lang of languages.filter((curLang) => curLang.code !== "en")) {
     if (lang.percentage === 0) {
       console.log(`Skipping ${lang.name} (${lang.percentage}% translated)`);
     } else {
@@ -97,13 +98,16 @@ const INCLUDE_EMPTY_TERMS = false;
       const translatedTerms: { [term: string]: string } = {};
       for (const term of terms) {
         if (
-          (translated[term.term] || INCLUDE_EMPTY_TERMS) &&
-          term.tags.indexOf(config.remoteTag) !== -1
+          (translated[config.remoteContext][term.term] ||
+            INCLUDE_EMPTY_TERMS) &&
+          term.context === config.remoteContext
         ) {
-          translatedTerms[term.term] = translated[term.term] || "";
+          translatedTerms[term.term] =
+            translated[config.remoteContext][term.term] || "";
         }
       }
       if (Object.keys(translatedTerms).length) {
+        // console.log("translated terms", translatedTerms);
         fs.writeFileSync(
           path.join(
             localePath,

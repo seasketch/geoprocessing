@@ -1,7 +1,7 @@
 import React from "react";
 import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
 import SizeCard from "../components/SizeCard";
-import Translator from "../components/Translator";
+import Translator from "../components/TranslatorAsync";
 
 const ReportClient = () => {
   return (

@@ -2,7 +2,6 @@ import { TemplateMetadata, copyTemplates } from "../template/addTemplate";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
-import { join } from "path";
 import { BBox, Package, projectSchema } from "../../src/types";
 import util from "util";
 import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths";
@@ -232,7 +231,7 @@ export async function createProject(
   // Update config.json with project-specific namespace and tag
   const configPath = `${projectPath}/src/i18n/config.json`;
   const config = await fs.readJSON(configPath);
-  config.remoteTag = `${packageJSON.name}`;
+  config.remoteContext = `${packageJSON.name}`;
   await fs.writeJSON(configPath, config, { spaces: 2 });
   spinner.succeed("added i18n directory");
 

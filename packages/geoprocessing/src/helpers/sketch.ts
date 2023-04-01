@@ -516,6 +516,7 @@ export const genSampleSketchContext = (): ReportContextValue => ({
     },
   ],
   visibleLayers: [],
+  language: "en",
 });
 
 /**

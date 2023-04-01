@@ -8,7 +8,7 @@ import { SketchProperties, GeoprocessingProject } from "../types";
 export interface ReportContextValue {
   /** Geoprocessing project metadata with details on functions, clients, uris */
   projectUrl: string;
-  /** uri where a geobuf representation of the sketch can be fetched */
+  /** uri where the sketch can be fetched */
   geometryUri: string;
   sketchProperties: SketchProperties;
   // only in testing
@@ -17,6 +17,8 @@ export interface ReportContextValue {
   simulateError?: string;
   visibleLayers: string[];
   toggleLayerVisibility?: (layerId: string) => void;
+  language: string;
+  changeLanguage?: (language: string) => void;
 }
 
 export interface TestExampleOutput {
@@ -28,7 +30,7 @@ export interface TestExampleOutput {
 export const ReportContext =
   React.createContext<ReportContextValue | null>(null);
 
-export const defaultReportContextValue: ReportContextValue = {
+export const defaultReportContext: ReportContextValue = {
   sketchProperties: {
     name: "My Sketch",
     id: "abc123",
@@ -53,7 +55,9 @@ export const defaultReportContextValue: ReportContextValue = {
   },
   geometryUri: "",
   projectUrl: "https://example.com/project",
-  visibleLayers: [],
+  visibleLayers: ["a"],
+  // Default to english language
+  language: "en",
 };
 
 /**
@@ -63,7 +67,7 @@ export const sampleSketchReportContextValue = (
   overrides?: Partial<ReportContextValue>
 ): ReportContextValue => {
   return {
-    ...(defaultReportContextValue || {}),
+    ...(defaultReportContext || {}),
     ...overrides,
   };
 };

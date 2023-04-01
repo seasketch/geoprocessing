@@ -5,6 +5,7 @@ import plurals from "./plurals.json";
 // If this instance load
 import en from "./lang/en/translation.json";
 import pt from "./lang/pt/translation.json";
+import dv from "./lang/dv/translation.json";
 
 const defaultLang = "en";
 
@@ -22,11 +23,9 @@ const defaultLang = "en";
  * but this allows for the possibility of multiple.  Note that i18nProvider
  * must be used with createInstance to load translations.
  */
-export function createI18nInstance() {
+export function createI18nSyncInstance() {
   const instance = createInstance({
     resources: {},
-    ns: ["gp"],
-    defaultNS: "gp",
     debug: true,
     fallbackLng: defaultLang,
     interpolation: {
@@ -39,9 +38,9 @@ export function createI18nInstance() {
   });
 
   instance.use(initReactI18next).init();
-  console.log(instance);
-  instance.addResources("en", "gp", en);
-  instance.addResources("pt", "gp", pt);
+  instance.addResources("en", "translation", en);
+  instance.addResources("pt", "translation", pt);
+  instance.addResources("dv", "translation", dv);
 
   return instance;
 }

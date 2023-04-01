@@ -35,6 +35,7 @@ const ContextWrapper: React.FunctionComponent<{
         },
         projectUrl: "https://example.com/project",
         visibleLayers: [],
+        language: "en",
       }}
     >
       {children}

@@ -86,6 +86,7 @@ export const simple = () => (
       geometryUri: "",
       projectUrl: "https://example.com/project",
       visibleLayers: [],
+      language: "en",
     }}
   >
     <SketchAttributesCard title="Attributes" mappings={mappings} />

@@ -1,4 +1,32 @@
+import React from "react";
 import SizeCard from "./SizeCard";
-import { registerExampleStories } from "@seasketch/geoprocessing/storybook";
+import {
+  createReportStoryLayout,
+  sampleSketchReportContextValue,
+} from "@seasketch/geoprocessing/client-ui";
+import Translator from "./TranslatorAsync";
 
-registerExampleStories("Reports/SizeCard", SizeCard);
+const contextValue = sampleSketchReportContextValue({
+  visibleLayers: [],
+  exampleOutputs: [
+    {
+      functionName: "calculateArea",
+      sketchName: "My Sketch",
+      results: {
+        area: 19384872,
+      },
+    },
+  ],
+});
+
+export const basic = () => (
+  <Translator>
+    <SizeCard />
+  </Translator>
+);
+
+export default {
+  component: SizeCard,
+  title: "Project/Components/SizeCard",
+  decorators: [createReportStoryLayout(contextValue)],
+};

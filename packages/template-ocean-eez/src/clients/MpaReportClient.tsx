@@ -3,7 +3,7 @@ import { SegmentControl, ReportPage } from "@seasketch/geoprocessing/client-ui";
 import ViabilityPage from "../components/ViabilityPage";
 import RepresentationPage from "../components/RepresentationPage";
 import { useTranslation } from "react-i18next";
-import { Translator } from "../components/Translator";
+import { Translator } from "../components/TranslatorAsync";
 
 const enableAllTabs = false;
 const MpaReportClient = () => {

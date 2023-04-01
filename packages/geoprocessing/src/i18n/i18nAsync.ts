@@ -2,7 +2,7 @@ import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
 import plurals from "./plurals.json";
 
-const defaultLang = "pt";
+const defaultLang = "en";
 
 /**
  * Returns an instance of i18n that lazy loads translations using dynamic
@@ -20,7 +20,7 @@ const defaultLang = "pt";
  * must be used with createInstance to load translations.
  * @returns i18n instance
  */
-export function createI18nInstance(
+export function createI18nAsyncInstance(
   /** i18n language paths relative to this directory */
   options: {
     /** path to main language translations.  If baseLangPath present, then will merge with and override base resources */
@@ -40,25 +40,25 @@ export function createI18nInstance(
         callback: (errorValue: unknown, translations: null | any) => void
       ) {
         const isDefault =
-          language.toLowerCase() === "pt" || /pt-/i.test(language);
+          language.toLowerCase() === "en" || /en-/i.test(language);
         (async () => {
           // Load translations
           let baseLangResources = {};
           try {
             baseLangResources = await import(
-              /* webpackChunkName: "lang1" */ `${baseLangPath}/${
+              /* webpackChunkName: "baseLange" */ `${baseLangPath}/${
                 isDefault ? defaultLang : language
               }/${namespace}.json`
             );
           } catch (error: unknown) {
-            console.log(`failed to load lang resource `);
+            console.log(`failed to load base lang resource `);
           }
           console.log("baseLangResources", baseLangResources);
 
           let langResources = {};
           if (langPath !== undefined) {
             langResources = await import(
-              /* webpackChunkName: "lang2" */ `${langPath}/${
+              /* webpackChunkName: "localLang" */ `${langPath}/${
                 isDefault ? defaultLang : language
               }/${namespace}.json`
             );
@@ -84,7 +84,6 @@ export function createI18nInstance(
     })
     .use(initReactI18next) // passes i18n down to react-i18next
     .init({
-      ns: ["gp"],
       debug: true,
       lng: defaultLang,
       fallbackLng: defaultLang,

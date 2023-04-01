@@ -40,13 +40,26 @@ const post = promisify(request.post);
     tags: string[];
     comment: string;
     obsolete?: boolean;
-  }[] = data.result.terms;
+  }[] = data.result.terms.filter((t) => t.context === config.remoteContext);
   console.log(
-    `Publishing '${config.localNamespace}' namespace strings with '${config.remoteTag}' tag`
+    `Publishing '${config.localNamespace}' namespace strings with context '${config.remoteContext}'`
+  );
+  console.log(
+    "publishedTerms",
+    publishedTerms.map((pt) => pt.term)
   );
 
-  const termsToAdd: { term: string; tags: string[]; english: string }[] = [];
-  const termsToUpdate: { term: string; tags: string[] }[] = [];
+  const termsToAdd: {
+    term: string;
+    context: string;
+    english: string;
+  }[] = [];
+  const termsToUpdate: { term: string; context: string }[] = [];
+  const enTranslationsToUpdate: {
+    term: string;
+    english: string;
+    context: string;
+  }[] = [];
 
   for (const namespace of [config.localNamespace]) {
     // Read terms for current namespace from English translation file
@@ -60,27 +73,30 @@ const post = promisify(request.post);
       [key: string]: string;
     };
 
-    // Loop through local terms and see if each already exists in published terms
+    // Compare local term to published term and track what needs to be updated
     for (const localTermKey in localTerms) {
-      const existingTerm = publishedTerms.find((t) => t.term === localTermKey);
-      // console.log("localTermKey", localTermKey);
-      // console.log(
-      //   "existingTerm",
-      //   existingTerm ? existingTerm.term : existingTerm
-      // );
-      if (existingTerm) {
+      // Find matching published term
+      const publishedTerm = publishedTerms.find((t) => t.term === localTermKey);
+      if (publishedTerm) {
         // update this term
-        existingTerm.obsolete = false;
-        if (existingTerm.tags.includes(config.remoteTag)) {
-          existingTerm.tags.push(config.remoteTag);
-          termsToUpdate.push(existingTerm);
+        publishedTerm.obsolete = false;
+        if (publishedTerm.context === config.remoteContext) {
+          termsToUpdate.push(publishedTerm);
+          // and if english translation changed, update that also
+          if (publishedTerm.translation.content !== localTerms[localTermKey]) {
+            enTranslationsToUpdate.push({
+              term: localTermKey,
+              english: localTerms[localTermKey],
+              context: config.remoteContext,
+            });
+          }
         }
       } else {
         // add this term
         termsToAdd.push({
           term: localTermKey,
           english: localTerms[localTermKey],
-          tags: [config.remoteTag],
+          context: config.remoteContext,
         });
       }
     }
@@ -100,6 +116,19 @@ const post = promisify(request.post);
     }
   }
 
+  console.log(
+    "termsToUpdate",
+    termsToUpdate.map((t) => t.term)
+  );
+  console.log(
+    "enTranslationsToUpdate",
+    enTranslationsToUpdate.map((t) => t.term)
+  );
+  console.log(
+    "termsToAdd",
+    termsToAdd.map((t) => t.term)
+  );
+
   // update terms
   if (termsToUpdate.length) {
     const updated = await post({
@@ -115,6 +144,39 @@ const post = promisify(request.post);
       throw new Error(`API response was ${data.response.status}`);
     } else {
       console.log(`updated ${termsToUpdate.length} terms`);
+    }
+
+    // Update their english translations
+    if (enTranslationsToUpdate.length > 0) {
+      const updatedTranslations = await post({
+        url: `https://api.poeditor.com/v2/translations/update`,
+        form: {
+          api_token: process.env.POEDITOR_API_TOKEN,
+          id: process.env.POEDITOR_PROJECT,
+          language: "en",
+          data: JSON.stringify(
+            enTranslationsToUpdate
+              .filter((t) => t.english?.length)
+              .map((t) => ({
+                term: t.term,
+                context: t.context,
+                translation: {
+                  content: t.english,
+                },
+              }))
+          ),
+        },
+      });
+      const updatedTranslationData = JSON.parse(updatedTranslations.body);
+      if (updatedTranslationData.response.status !== "success") {
+        throw new Error(
+          `API response was ${updatedTranslationData.response.status}`
+        );
+      } else {
+        console.log(
+          `updated en translations for ${updatedTranslationData.result.translations.updated} terms`
+        );
+      }
     }
   }
 
@@ -135,7 +197,8 @@ const post = promisify(request.post);
       console.log(`added ${data.result.terms.added} terms`);
     }
 
-    const translations = await post({
+    // Add their english translations
+    const addedTranslations = await post({
       url: `https://api.poeditor.com/v2/translations/add`,
       form: {
         api_token: process.env.POEDITOR_API_TOKEN,
@@ -146,6 +209,7 @@ const post = promisify(request.post);
             .filter((t) => t.english?.length)
             .map((t) => ({
               term: t.term,
+              context: t.context,
               translation: {
                 content: t.english,
               },
@@ -153,13 +217,13 @@ const post = promisify(request.post);
         ),
       },
     });
-    data = JSON.parse(translations.body);
+    data = JSON.parse(addedTranslations.body);
 
     if (data.response.status !== "success") {
       throw new Error(`API response was ${data.response.status}`);
     } else {
       console.log(
-        `added default en translations for ${data.result.translations.added} terms`
+        `added en translations for ${data.result.translations.added} terms`
       );
     }
   }

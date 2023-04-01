@@ -1,3 +1,3 @@
 export * from "./ReportDecorator";
 export * from "./CardDecorator";
-export * from "./StoryLayout";
+export * from "./ReportStoryLayout";

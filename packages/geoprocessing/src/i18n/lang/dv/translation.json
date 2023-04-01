@@ -1,0 +1,13 @@
+{
+  "Class": "ބައިތައް",
+  "Goal": "ލަނޑުދަނޑި",
+  "Map": "ޗާޓު",
+  "MPA": "ހިމާޔަތް ކުރެވިފައިވާ ކަނޑުގެ ސަރަހައްދު",
+  "Representation": "ރަމްޒުކޮށްދޭ ބައިތައް",
+  "ResultsCardNoResultsMsg": "ރިޕޯރޓް ރަން ފުރިހަމަވެފައި، ނަމަވެސް ނަތީޖާ ނުނެރެވޭ",
+  "SizeCardAreaMsg": "މި ކުރެހުމުގެ ބޮޑުމިނަކީ <2>{{area}}</2> އަކަ ކިލޯމީޓަރު",
+  "SizeCardTitle": "ޒޯން ސައިޒް",
+  "SketchAttributesCardAlternateTitle": "ސިފަތައް",
+  "Target": "އަމާޒު",
+  "Viability": "އެކަށޭނަކަން"
+}

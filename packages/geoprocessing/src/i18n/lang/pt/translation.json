@@ -1,13 +1,13 @@
 {
-  "Class": "Aula",
-  "Goal": "Meta",
+  "Class": "Classe",
+  "Goal": "Metas",
   "Map": "Mapa",
-  "MPA": "MPA",
+  "MPA": "AMP",
   "Representation": "Representação",
-  "ResultsCardNoResultsMsg": "A execução do relatório foi concluída, mas nenhum resultado foi retornado",
-  "SizeCardAreaMsg": "Este esboço tem 2 quilômetros quadrados",
+  "ResultsCardNoResultsMsg": "O relatório foi finalizado, mas não retornou resultados",
+  "SizeCardAreaMsg": "Esta área tem  <2>{{area}}</2>  quilômetros quadrados",
   "SizeCardTitle": "Tamanho da Zona",
   "SketchAttributesCardAlternateTitle": "Atributos",
-  "Target": "Alvo",
+  "Target": "Objetivo",
   "Viability": "Viabilidade"
 }

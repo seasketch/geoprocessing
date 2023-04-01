@@ -8,7 +8,7 @@
     "source": "src/clients/TabReport.tsx"
   },{
     "name": "SizeReport",
-    "description":  "Size report",
+    "description":  "Sketch size report",
     "source": "src/clients/SizeReport.tsx"
   }],
   "preprocessingFunctions": [],

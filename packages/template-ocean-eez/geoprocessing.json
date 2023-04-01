@@ -8,7 +8,7 @@
     "source": "src/clients/MpaTabReport.tsx"
   },{
     "name": "SizeReport",
-    "description":  "Size within EEZ",
+    "description":  "Size overlap with planning boundaries",
     "source": "src/clients/SizeReport.tsx"
   }],
   "preprocessingFunctions": [

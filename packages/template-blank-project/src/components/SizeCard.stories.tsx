@@ -1,10 +1,10 @@
 import React from "react";
-import SizeCard from "./SizeCard";
+import { SizeCard } from "./SizeCard";
 import {
   createReportStoryLayout,
   sampleSketchReportContextValue,
 } from "@seasketch/geoprocessing/client-ui";
-import Translator from "./TranslatorAsync";
+import Translator from "../components/TranslatorAsync";
 
 const contextValue = sampleSketchReportContextValue({
   visibleLayers: [],
@@ -19,6 +19,7 @@ const contextValue = sampleSketchReportContextValue({
   ],
 });
 
+// Wrap in Translator to allow translations to work in storybook without report client
 export const basic = () => (
   <Translator>
     <SizeCard />

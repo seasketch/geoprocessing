@@ -3,13 +3,13 @@
   "organization": "Test Org",
   "region": "us-west-1",
   "clients": [{
-    "name": "ReportClient",
-    "description":  "Basic report",
-    "source": "src/clients/ReportClient.tsx"
+    "name": "TabReport",
+    "description":  "All reports with tabs",
+    "source": "src/clients/TabReport.tsx"
   },{
-    "name": "TabReportClient",
-    "description":  "Tabbed report",
-    "source": "src/clients/TabReportClient.tsx"
+    "name": "SizeReport",
+    "description":  "Size report",
+    "source": "src/clients/SizeReport.tsx"
   }],
   "preprocessingFunctions": [],
   "geoprocessingFunctions": [

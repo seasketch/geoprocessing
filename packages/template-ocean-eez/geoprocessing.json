@@ -3,9 +3,13 @@
   "organization": "Test Org",
   "region": "us-west-1",
   "clients": [{
-    "name": "MpaReportClient",
+    "name": "MpaTabReport",
     "description":  "Ocean MPA planning within EEZ",
-    "source": "src/clients/MpaReportClient.tsx"
+    "source": "src/clients/MpaTabReport.tsx"
+  },{
+    "name": "SizeReport",
+    "description":  "Size within EEZ",
+    "source": "src/clients/SizeReport.tsx"
   }],
   "preprocessingFunctions": [
     "src/functions/clipToOceanEez.ts"

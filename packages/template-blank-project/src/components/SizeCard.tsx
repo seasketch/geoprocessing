@@ -4,17 +4,20 @@ import { ResultsCard, Skeleton } from "@seasketch/geoprocessing/client-ui";
 // Import the results type definition from your functions to type-check your
 // component render functions
 import { AreaResults } from "../functions/area";
+import Translator from "../components/TranslatorAsync";
 
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
-const SizeCard = () => {
+/**
+ * SizeCard component
+ */
+export const SizeCard = () => {
   const { t } = useTranslation();
   return (
     <>
       <ResultsCard
         title={t("SizeCardTitle", "Zone Size")}
         functionName="calculateArea"
-        skeleton={<LoadingSkeleton />}
       >
         {(data: AreaResults) => (
           <p>
@@ -31,10 +34,13 @@ const SizeCard = () => {
   );
 };
 
-const LoadingSkeleton = () => (
-  <p>
-    <Skeleton style={{}}>&nbsp;</Skeleton>
-  </p>
-);
-
-export default SizeCard;
+/**
+ * SizeCard as a top-level report client
+ */
+export const SizeCardReportClient = () => {
+  return (
+    <Translator>
+      <SizeCard />
+    </Translator>
+  );
+};

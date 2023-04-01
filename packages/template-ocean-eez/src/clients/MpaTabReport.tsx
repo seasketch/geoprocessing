@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import { Translator } from "../components/TranslatorAsync";
 
 const enableAllTabs = false;
-const MpaReportClient = () => {
+
+const MpaTabReport = () => {
   const { t } = useTranslation();
   const viabilityId = "viability";
   const representationId = "representation";
@@ -38,7 +39,7 @@ export default function () {
   // Translator must be in parent FunctionComponent in order for ReportClient to use useTranslate hook
   return (
     <Translator>
-      <MpaReportClient />
+      <MpaTabReport />
     </Translator>
   );
 }

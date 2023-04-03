@@ -257,7 +257,16 @@ export async function createProject(
       console.log(error);
       process.exit();
     }
-    spinner.succeed("installed dependencies!");
+    spinner.succeed("installed dependencies");
+    spinner.start("Extracting translations");
+    const { extractError } = await exec(`npm run translation:extract`, {
+      cwd: metadata.name,
+    });
+    if (extractError) {
+      console.log(extractError);
+      process.exit();
+    }
+    spinner.succeed("Extracted initial translations");
   }
   if (interactive) {
     console.log(

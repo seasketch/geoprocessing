@@ -160,7 +160,11 @@ const App = () => {
     const Report = REPORTS[reportContext.clientName];
     if (!Report)
       throw new Error(
-        `Report ${reportContext.clientName} not found in client bundle.  Did you forget to add it to geoprocessing.json?`
+        `Report client ${
+          reportContext.clientName
+        } not found in bundle.  Did you forget to add it to geoprocessing.json? Options are ${REPORTS.keys().join(
+          ", "
+        )}`
       );
     return (
       <ReportContext.Provider

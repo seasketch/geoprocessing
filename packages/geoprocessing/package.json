@@ -211,8 +211,8 @@
     "web-streams-polyfill": "^3.1.0",
     "webpack": "4.46.0",
     "webpack-bundle-analyzer": "4.4.2",
-    "webpack-cli": "4.9.2",
-    "webpack-dev-server": "4.8.1",
+    "webpack-cli": "4.10.0",
+    "webpack-dev-server": "4.13.2",
     "ws": "^7.3.0",
     "zod": "^3.19.1",
     "zx": "^4.3.0"

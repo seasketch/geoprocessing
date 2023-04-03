@@ -4,11 +4,11 @@
   "region": "us-west-1",
   "clients": [{
     "name": "MpaTabReport",
-    "description":  "Ocean MPA planning within EEZ",
+    "description":  "Report suite for MPA planning within EEZ with tab navigation",
     "source": "src/clients/MpaTabReport.tsx"
   },{
     "name": "SizeReport",
-    "description":  "Size overlap with planning boundaries",
+    "description":  "Sketch size and % overlap with planning boundaries",
     "source": "src/clients/SizeReport.tsx"
   }],
   "preprocessingFunctions": [

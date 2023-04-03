@@ -4,11 +4,11 @@
   "region": "us-west-1",
   "clients": [{
     "name": "TabReport",
-    "description":  "All reports with tabs",
+    "description":  "Report suite with tab navigation",
     "source": "src/clients/TabReport.tsx"
   },{
     "name": "SizeReport",
-    "description":  "Sketch size report",
+    "description":  "Sketch size",
     "source": "src/clients/SizeReport.tsx"
   }],
   "preprocessingFunctions": [],

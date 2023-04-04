@@ -162,9 +162,9 @@ const App = () => {
       throw new Error(
         `Report client ${
           reportContext.clientName
-        } not found in bundle.  Did you forget to add it to geoprocessing.json? Options are ${REPORTS.keys().join(
-          ", "
-        )}`
+        } not found in bundle.  Did you forget to add it to geoprocessing.json? Options are ${Object.keys(
+          REPORTS
+        ).join(", ")}`
       );
     return (
       <ReportContext.Provider

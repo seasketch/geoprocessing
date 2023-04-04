@@ -51,9 +51,11 @@ export function createI18nAsyncInstance(
               }/${namespace}.json`
             );
           } catch (error: unknown) {
-            console.log(`failed to load base lang resource `);
+            console.info(
+              `Warning: failed to find base lang resource.  If this is not a gp project, then this is expected.`
+            );
           }
-          console.log("baseLangResources", baseLangResources);
+          //console.log("baseLangResources", baseLangResources);
 
           let langResources = {};
           if (langPath !== undefined) {
@@ -63,7 +65,7 @@ export function createI18nAsyncInstance(
               }/${namespace}.json`
             );
           }
-          console.log("langResources", langResources);
+          //console.log("langResources", langResources);
 
           // Return merged translations
           if (defaultLang) {
@@ -84,7 +86,7 @@ export function createI18nAsyncInstance(
     })
     .use(initReactI18next) // passes i18n down to react-i18next
     .init({
-      debug: true,
+      debug: false,
       lng: defaultLang,
       fallbackLng: defaultLang,
       cleanCode: true,

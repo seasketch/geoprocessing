@@ -26,7 +26,7 @@ const defaultLang = "en";
 export function createI18nSyncInstance() {
   const instance = createInstance({
     resources: {},
-    debug: true,
+    debug: false,
     fallbackLng: defaultLang,
     interpolation: {
       escapeValue: false, // react is already safe from xss

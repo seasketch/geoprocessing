@@ -154,7 +154,7 @@ const App = () => {
       window.removeEventListener("message", onMessage);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [initialized]);
+  }, [initialized, reportContext]);
 
   if (reportContext) {
     const Report = REPORTS[reportContext.clientName];

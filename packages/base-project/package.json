@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "private": true,
   "scripts": {
+    "prepare": "npm run translation:install",
     "start-data": "http-server data/dist -c-1",
     "__test": "geoprocessing test",
     "test": "npm run test:unit",
@@ -19,7 +20,7 @@
     "reimport:data_": "geoprocessing reimport:data",
     "publish:data": "geoprocessing publish:data",
     "install:data": "mkdir -p data/bin && cp -r node_modules/@seasketch/geoprocessing/dist/data/bin/* data/bin && mkdir -p data/scripts && cp -r node_modules/@seasketch/geoprocessing/dist/data/scripts/* data/scripts",
-    "translation:install": "mkdir -p src/i18n/baseLang && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/src/i18n/baseLang src/i18n/baseLang",
+    "translation:install": "rm -rf src/i18n/baseLang && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/src/i18n/baseLang src/i18n",
     "translation:extract": "rm -rf src/i18n/lang/en && NODE_ENV=development npx babel 'src/**/*.{ts,tsx}' > /dev/null && mv extractedTranslations/en src/i18n/lang/en && rm -rf extractedTranslations && echo 'Translations extracted to src/lang/en'",
     "translation:publish": "npx ts-node src/i18n/bin/publishTerms.ts",
     "translation:import": "npx ts-node src/i18n/bin/importTerms.ts",
@@ -57,7 +58,7 @@
     "babel-plugin-i18next-extract": "^0.9.0",
     "request": "^2.88.2"
   },
-  "repositoryUrl": "https://github.com/seasketch/fsm-reports.git",
-  "author": "Tim Welch",
-  "license": "BSD-3-Clause"
+  "repositoryUrl": "",
+  "author": "",
+  "license": ""
 }

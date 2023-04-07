@@ -107,6 +107,13 @@ export async function createProject(
     ...{ private: false },
   };
 
+  // Add auto-install of base translations
+  if (packageJSON.scripts) {
+    packageJSON.scripts.prepare = "npm run translation:install";
+  } else {
+    packageJSON.scripts = { prepare: "npm run translation:install" };
+  }
+
   if (gpVersion) {
     if (packageJSON.devDependencies) {
       packageJSON.devDependencies["@seasketch/geoprocessing"] = gpVersion;

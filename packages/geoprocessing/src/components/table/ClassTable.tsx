@@ -106,10 +106,11 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   ): ClassTableColumn[] => {
     const defaultWidth = 100 / colConfigs.length;
 
-    const defaultClassLabel = t("Class", "Class");
-    const defaultMapLabel = t("Map", "Map");
-    const defaultTargetLabel = t("Target", "Target");
-    const defaultGoalLabel = t("Goal", "Goal");
+    const defaultClassLabel = t("Class");
+    const defaultMapLabel = t("Map");
+    const defaultTargetLabel = t("Target");
+    const defaultGoalLabel = t("Goal");
+    const defaultValueLabel = t("Value");
 
     // Transform column configs into Columns
     const colz: ClassTableColumn[] = colConfigs.map((colConfig) => {
@@ -126,7 +127,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
         };
       } else if (colConfig.type === "metricValue") {
         return {
-          Header: colConfig.columnLabel || "Value",
+          Header: colConfig.columnLabel || defaultValueLabel,
           accessor: (row) => {
             if (!colConfig.metricId)
               throw new Error("Missing metricId in column config");

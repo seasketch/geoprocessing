@@ -296,7 +296,6 @@ export const simpleGoal = () => {
             type: "metricValue",
             metricId: simpleMetricGroup.metricId,
             valueFormatter: "percent",
-            columnLabel: "% Value",
           },
           {
             type: "metricGoal",

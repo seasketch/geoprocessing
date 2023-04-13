@@ -12,7 +12,7 @@ module.exports = {
     [
       "i18next-extract",
       {
-        nsSeparator: ":",
+        nsSeparator: null,
         keySeparator: false,
         keyAsDefaultValue: ["en"],
         useI18nextDefaultValue: true,

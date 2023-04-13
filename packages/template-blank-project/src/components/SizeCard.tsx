@@ -16,13 +16,13 @@ export const SizeCard = () => {
   return (
     <>
       <ResultsCard
-        title={t("SizeCardTitle", "Zone Size")}
+        title={t("SizeCard title", "Zone Size")}
         functionName="calculateArea"
       >
         {(data: AreaResults) => (
           <p>
             📐
-            <Trans i18nKey="SizeCardAreaMsg">
+            <Trans i18nKey="SizeCard sketch size message">
               This sketch is{" "}
               <b>{{ area: Number.format(Math.round(data.area * 1e-6)) }}</b>{" "}
               square kilometers

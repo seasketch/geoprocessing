@@ -25,7 +25,7 @@ export const SketchAttributesCard = ({
   const [properties] = useSketchProperties();
   const { t } = useTranslation();
 
-  const attributesLabel = t("SketchAttributesCardAlternateTitle", "Attributes");
+  const attributesLabel = t("Attributes");
 
   if (autoHide === true && properties.userAttributes.length === 0) {
     return null;

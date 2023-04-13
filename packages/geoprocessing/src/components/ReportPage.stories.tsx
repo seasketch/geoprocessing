@@ -10,7 +10,7 @@ export default {
 };
 
 export const simple = () => {
-  const [tab, setTab] = useState<string>("Page 1");
+  const [tab, setTab] = useState<string>("page1");
   const enableAllTabs = false;
   return (
     <>
@@ -24,10 +24,10 @@ export const simple = () => {
           ]}
         />
       </div>
-      <ReportPage hidden={!enableAllTabs && tab !== "Page 1"}>
+      <ReportPage hidden={!enableAllTabs && tab !== "page1"}>
         <div>One</div>
       </ReportPage>
-      <ReportPage hidden={!enableAllTabs && tab !== "Page 2"}>
+      <ReportPage hidden={!enableAllTabs && tab !== "page2"}>
         <div>Two</div>
       </ReportPage>
     </>

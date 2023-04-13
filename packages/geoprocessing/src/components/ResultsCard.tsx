@@ -74,7 +74,7 @@ export function ResultsCard<T>({
   const { t } = useTranslation();
 
   const resultsCardNoResultMsg = t(
-    "ResultsCardNoResultsMsg",
+    "ResultsCard - no result message",
     "Report run completed, but no results returned"
   );
 

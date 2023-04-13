@@ -5,7 +5,6 @@ import plurals from "./plurals.json";
 // If this instance load
 import en from "./lang/en/translation.json";
 import pt from "./lang/pt/translation.json";
-import dv from "./lang/dv/translation.json";
 
 const defaultLang = "en";
 
@@ -40,7 +39,7 @@ export function createI18nSyncInstance() {
   instance.use(initReactI18next).init();
   instance.addResources("en", "translation", en);
   instance.addResources("pt", "translation", pt);
-  instance.addResources("dv", "translation", dv);
+  // instance.addResources("dv", "translation", dv);
 
   return instance;
 }

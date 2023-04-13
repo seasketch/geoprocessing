@@ -91,7 +91,7 @@ export function createI18nAsyncInstance(
       fallbackLng: defaultLang,
       cleanCode: true,
       keySeparator: false,
-      nsSeparator: ":",
+      nsSeparator: false,
       interpolation: {
         escapeValue: false,
       },

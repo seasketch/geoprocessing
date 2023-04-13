@@ -22,9 +22,9 @@ Term - A unique string to be translated.  Typically it will be the exact string 
 Geoprocessing projects:
 
 * Geoprocessing projects will install and use the `base` translations from the geoprocessing library for all core UI components and templates used in reports.
-* Geoprocessing projects will manage all other terms and translations for custom reports, using the same workflow as the geoprocessing library.
 * `base` terms/translations will be kept separate from project terms/translations in POEditor, as well as in the project.  This will ensure that base translations can be upgraded, without affecting project translations.  It will also allow project-specific translations to be customized, without losing the base translations.
 * `base` and project terms/translations should be merged at runtime to provide all of the terms/translations needed for the reports, which will be a mix of core and custom components.  If a term exists in both the `base` and `project` translation bundle, the project translation will win.
+* Geoprocessing projects will manage all other terms and translations for custom reports, using the same workflow as the geoprocessing library.
 
 * Geoprocessing project report developers, who are independent of the SeaSketch team, should be able to manage translations in their own POEditor project, just by changing their access credentials.
 * Report developers independent of the SeaSketch team should also have the option to manage translations entirely within the code repo, without using a translation service like POEditor.
@@ -36,13 +36,6 @@ Geoprocessing projects:
 * At runtime, reports will default to english language.
 * The SeaSketch platform (via iFrame postMessage) will dictate which language is loaded initially, and be able to change the language.
 * If a language is provided that the geoprocessing library or project does not support then it should fallback to English.
-
-## Potential Issues
-
-* When terms used in a report based on a template, that are pre-translated, get published for a project under a new project-specific context, all previous `base` translations won't get picked up.
-  * Option 1 - don't deal with it.  Translators will have more to translate, but that's fine.
-  * Option 2 - if a translation doesn't already exist in POEditor for non-english, then push the local translation.  And if there's no local translation, but there is a base translation, then push that.  This will ensure that POEditor gets seeded from local translations the first time, but not after that.
-* The first time strings to translate are extracted from a project
 
 ## Implementation
 
@@ -97,11 +90,11 @@ config.json for geoprocessing project called `fsm-reports`:
 
 For geoprocessing library:
 
-* On build of the geoprocessing library, the i18n directory will be copied into the dist folder as part of the base-project, with all `gp` namespace translations.
+* On build of the geoprocessing library, the i18n directory will be copied into the dist folder as part of the base-project.
 * CLI commands will live at the root of the monorepo and work on all translatable strings in the `geoprocessing` package, as well as all `template-*` packages.
 * Translations will be maintained in `packages/geoprocessing/src/i18n`
+* On publish, always push all local English translations.  For all non-english langauges, push translations if it doesn't already exist in POEditor.
 * Prior to every release of the library, UI text string (terms) will need to get updated in POEditor and translated for all languages.
-
 
 For geoprocessing projects:
 
@@ -110,6 +103,7 @@ For geoprocessing projects:
 * Report developers working on a geoprocessing project should not need to make sure that they keep their base translations up to date.  They should automatically upgrade on every run of `npm install` using the `prepare` command.
 * Project translations are managed alongside base translations under `src/i18n/lang`.  These can be edited but typically will be done via CLI commands (see use cases below).
 * When initially created, each geoprocessing project will have `base` translations installed.
+* On publish, always push all local English translations.  For all non-english langauges, push translations if it doesn't already exist in POEditor.  Additionally, for all languages, if there is no local project translation, fallback to base translation if it exists.
 * Prior to a reports being used for planning, UI text strings( terms) will need to get published to POEditor, translated for the relevant subset of languages, then imported back into the library.
 
 ### Translations Within Library Templates
@@ -158,5 +152,6 @@ For geoprocessing projects:
 
 ### 3. Reports developed by external developer not using POEDITOR but in local repo
 
-* Developer will use `translation:extract` but `translation:import` and `translation:publish` will not.
-* Translator will need a workflow for translating the strings.  They could use vscode and `i18n-ally` extension directly.  A separate translation service could also be integrated other than POEditor.
+* Developer will use `translation:extract` but not `translation:import` and `translation:publish`.
+* Developer uses `i18n-ally` (which vscode settings are established for) to translate strings.
+* A separate translation service could also be integrated other than POEditor.

@@ -126,6 +126,21 @@
     "args": [
         "${workspaceRoot}/packages/geoprocessing/src/i18n/bin/publishTerms.ts"
     ]
+}, {
+  "name": "geoprocessing template - debug tests scripts with pattern",
+  "type": "node",
+  "request": "launch",
+  "cwd": "${workspaceFolder}/packages/${input:templateName}",
+  "runtimeArgs": [
+    "--inspect-brk",
+    "${workspaceRoot}/packages/${input:templateName}/node_modules/.bin/geoprocessing",
+    "test",
+    "-t",
+    "${input:testNamePattern}"
+  ],
+  "console": "integratedTerminal",
+  "internalConsoleOptions": "neverOpen",
+  "port": 9229        
 }
   ],
   "inputs": [
@@ -134,6 +149,12 @@
       "id": "testNamePattern",
       "description": "jest -t 'regex pattern to select tests'",
       "default": "name of my test"
+    },
+    {
+      "type": "promptString",
+      "id": "templateName",
+      "description": "package name of template to test",
+      "default": "template-ocean-eez"
     }
   ]
 }

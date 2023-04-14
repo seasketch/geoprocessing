@@ -13,7 +13,29 @@ const contextValue = sampleSketchReportContextValue({
       functionName: "calculateArea",
       sketchName: "My Sketch",
       results: {
-        area: 19384872,
+        metrics: [
+          {
+            metricId: "boundaryAreaOverlap",
+            sketchId: "abc123",
+            classId: "eez",
+            groupId: null,
+            geographyId: null,
+            value: 75066892447.21024,
+            extra: {
+              sketchName: "fsm-east-west-sketch",
+            },
+          },
+        ],
+        sketch: {
+          type: "Feature",
+          properties: {
+            name: "fsm-east-west-sketch",
+            updatedAt: "2022-11-17T10:02:53.645Z",
+            sketchClassId: "123abc",
+            id: "abc123",
+          },
+          geometry: null,
+        },
       },
     },
   ],

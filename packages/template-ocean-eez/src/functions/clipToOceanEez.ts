@@ -19,7 +19,7 @@ const clipLoader = genClipLoader(project, [
     options: {
       propertyFilter: {
         property: "UNION",
-        values: ["Micronesia"],
+        values: [project.basic.planningAreaName],
       },
     },
   },

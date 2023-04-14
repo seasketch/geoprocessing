@@ -106,31 +106,40 @@ export const IucnMatrix = () => {
   const activityRanks: Record<IucnActivityRankId, IucnActivityRank> = {
     no: {
       id: "no",
-      desc: t("No"),
-      display: t("Shorthand label for no", "N"),
+      desc: t("IUCN rank - no description", "No"),
+      display: t("IUCN rank - shorthand label for no", "N"),
     },
     nobut: {
       id: "nobut",
       desc: t(
+        "IUCN rank - special no description",
         "Generally no, a strong prerogative against unless special circumstances apply"
       ),
-      display: `${t("Shorthand label for no, with extra meaning", "N*")}`,
+      display: `${t(
+        "IUCN rank - shorthand label for no, with extra meaning",
+        "N*"
+      )}`,
     },
     yes: {
       id: "yes",
-      desc: t("Yes"),
-      display: t("Shorthand label for yes", "Y"),
+      desc: t("IUCN rank - yes description", "Yes"),
+      display: t("IUCN rank - shorthand label for yes", "Y"),
     },
     yesbut: {
       id: "yesbut",
       desc: t(
+        "IUCN rank - special yes description",
         "Yes because no alternative exists, but special approval is essential"
       ),
-      display: `${t("Shorthand label for yes, with extra meaning", "Y*")}`,
+      display: `${t(
+        "IUCN rank - shorthand label for yes, with extra meaning",
+        "Y*"
+      )}`,
     },
     variable: {
       id: "variable",
       desc: t(
+        "IUCN rank - special 'variable' description",
         "Variable; depends on whether this activity can be managed in such a way that it is compatible with the MPA’s objectives"
       ),
       display: "*",

@@ -55,11 +55,11 @@ export const IucnDesignationTable = () => {
     },
     {
       Header: protectionLevelLabel,
-      accessor: (row) => (
-        <IucnLevelPill level={row.level}>
-          {t(transLevels[row.level])}
-        </IucnLevelPill>
-      ),
+      accessor: (row) => {
+        /* i18next-extract-disable-next-line */
+        const levelName = t(transLevels[row.level]);
+        return <IucnLevelPill level={row.level}>{levelName}</IucnLevelPill>;
+      },
     },
   ];
 

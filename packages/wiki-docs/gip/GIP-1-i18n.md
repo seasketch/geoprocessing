@@ -47,11 +47,13 @@ CLI commands will be the main way developers work with translations.
 * `translation:extract`
   * extracts all translations using babel and [babel-plugin-i18next-extract](https://github.com/gilbsgilbs/babel-plugin-i18next-extract).
 * `translation:publish`
-  * posts translations for all languages to POEDITOR with the context value specified by `remoteContext` property in config.json.
-  * All english translations are published, overwriting any in POEditor, since the code is their source of truth. POEditor, when used, is the source of truth for all other languages, so their translations are only published if one does not already exist in POEditor.
-  * If a translation is not defined in the project translation bundle or in POEditor for a given term, then a base translation will be used to seed POEditor the first time.  It will then populate the local project translation on the next `translation:import`/
+  * Posts translations for all languages to POEDITOR
+  * Behavior is configured via `src/i18n/config.ts`.  Translations with namespace specified by `localNamespace` are written to POEditor with context value specified by `remoteContext`.
+  * All english translations are published, overwriting any in POEditor, since the code is their source of truth.
+  * For non-english languages, POEditor is the source of truth, so if a translation is not defined in POEditor, then a local project translation is published if available, to seed it the first time.
+  * For GP projects, if a project translation is not available, then a base translation will be published as fallback if available.  Running `translation:import` after that will then import those base translations back and seed the local project translations.
 * `translation:import`
-  * fetches translations from POEdistor for all non-english languages with context value specified by `remotextContex` property in `src/i18n/config.son`.  They are saved to the namespace specified by the `localNamespace` property in `src/i18n/config.json`
+  * fetches translations from POEditor for all non-english languages having context value specified by `remotextContex` property in `src/i18n/config.son`. Any existing translation values will be overwritten. Translations are saved to the namespace specified by the `localNamespace` property in `src/i18n/config.json`.
 * `translation:sync`
   * runs in succession `extract`, `publish`, then `import`.
 * `translation:install` (available in gp project only)

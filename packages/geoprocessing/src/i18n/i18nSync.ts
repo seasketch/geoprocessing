@@ -1,6 +1,6 @@
 import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
-import plurals from "./plurals.json";
+import extraTerms from "./extraTerms.json";
 
 // If this instance load
 import en from "./lang/en/translation.json";

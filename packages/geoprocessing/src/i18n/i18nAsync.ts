@@ -1,6 +1,6 @@
 import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
-import plurals from "./plurals.json";
+import extraTerms from "./extraTerms.json";
 
 const defaultLang = "en";
 
@@ -73,7 +73,7 @@ export function createI18nAsyncInstance(
             callback(null, {
               ...baseLangResources,
               ...langResources,
-              ...plurals,
+              ...extraTerms,
             });
           } else {
             callback(null, {

@@ -91,6 +91,13 @@ describe("createProject", () => {
       135.31244183762126, -1.173110965298591, 165.67652822599732,
       13.445432925389298,
     ]);
+
+    const extraTerms = JSON.parse(
+      fs.readFileSync(projectPath + "/src/i18n/extraTerms.json").toString()
+    ) as Record<string, string>;
+    console.log("extraTerms", JSON.stringify(extraTerms));
+
+    expect(extraTerms["Micronesia"]).toBe("Micronesia");
   }, 60000);
 
   it("should create project with template", async () => {

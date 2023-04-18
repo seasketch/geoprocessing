@@ -5,6 +5,7 @@ import * as path from "path";
 import { promisify } from "util";
 import config from "../config.json";
 import languages from "../supported";
+import * as extraTerms from "../extraTerms.json";
 
 const post = promisify(request.post);
 
@@ -70,16 +71,21 @@ async function publishEnglish() {
   }[] = [];
 
   // Read terms for current namespace from English translation file
-  const localTerms = JSON.parse(
-    fs
-      .readFileSync(
-        path.join(
-          __dirname,
-          `../lang/en/${config.localNamespace.replace(":", "/")}.json`
+  // Also merge in extraTerms (terms that are not extracted from source code)
+  const localTerms = {
+    ...(JSON.parse(
+      fs
+        .readFileSync(
+          path.join(
+            __dirname,
+            `../lang/en/${config.localNamespace.replace(":", "/")}.json`
+          )
         )
-      )
-      .toString()
-  ) as Translations;
+        .toString()
+    ) as Translations),
+    ...extraTerms,
+  };
+
   // Compare local term to published term and track what needs to be updated
   for (const localTermKey in localTerms) {
     // Find matching published term

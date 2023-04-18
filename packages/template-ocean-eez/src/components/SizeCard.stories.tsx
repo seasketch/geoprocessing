@@ -10,7 +10,7 @@ const contextValue = sampleSketchReportContextValue({
   visibleLayers: [],
   exampleOutputs: [
     {
-      functionName: "calculateArea",
+      functionName: "boundaryAreaOverlap",
       sketchName: "My Sketch",
       results: {
         metrics: [

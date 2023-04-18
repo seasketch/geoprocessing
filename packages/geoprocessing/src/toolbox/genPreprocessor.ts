@@ -86,7 +86,7 @@ export async function clipToPolygonFeatures(
   }
 
   if (!clipped || area(clipped) === 0) {
-    throw new ValidationError("Sketch is outside of boundary");
+    throw new ValidationError("Feature is outside of boundary");
   } else {
     if (ensurePolygon && clipped.geometry.type === "MultiPolygon") {
       // If multipolygon, keep only the biggest piece

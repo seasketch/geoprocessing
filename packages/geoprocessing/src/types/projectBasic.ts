@@ -27,7 +27,6 @@ export const projectSchema = z.object({
   bbox: bboxSchema,
   planningAreaType: planningAreaTypesSchema,
   planningAreaName: z.string(),
-  planningAreaPossessive: z.string(),
   externalLinks: z.record(z.string()),
 });
 

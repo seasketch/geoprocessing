@@ -29,7 +29,6 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   bboxMinLat?: number;
   bboxMaxLat?: number;
   planningAreaName: string;
-  planningAreaPossessive: string;
 }
 
 /** Create project at basePath.  If should be created non-interactively then set interactive = false and provide all project creation metadata, otherwise will prompt for answers  */
@@ -200,7 +199,6 @@ export async function createProject(
     bbox,
     planningAreaType: metadata.planningAreaType,
     planningAreaName: metadata.planningAreaName,
-    planningAreaPossessive: metadata.planningAreaPossessive,
   });
 
   await fs.writeJSONSync(`${projectPath}/project/basic.json`, validBasic, {
@@ -265,7 +263,7 @@ export async function createProject(
       process.exit();
     }
     spinner.succeed("installed dependencies");
-    spinner.start("Extracting translations");
+    spinner.start("extracting translations");
     const { extractError } = await exec(`npm run translation:extract`, {
       cwd: metadata.name,
     });
@@ -273,7 +271,7 @@ export async function createProject(
       console.log(extractError);
       process.exit();
     }
-    spinner.succeed("Extracted initial translations");
+    spinner.succeed("extracted initial translations");
   }
   if (interactive) {
     console.log(

@@ -139,12 +139,6 @@ async function init(gpVersion?: string) {
         "What is the name of the country/site/planning area? (e.g. Samoa)",
     },
     {
-      type: "input",
-      name: "planningAreaPossessive",
-      message: (answers) =>
-        `Your planning area name is ${answers.planningAreaName}. Is there a possessive name for this place? (e.g. possessive form of Samoa is Samoan) Leave blank if not`,
-    },
-    {
       when: (answers) => answers.planningAreaType === "other",
       type: "input",
       name: "bboxMinLng",

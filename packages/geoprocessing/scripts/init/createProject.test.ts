@@ -34,7 +34,6 @@ describe("createProject", () => {
         bboxMaxLng: 0,
         bboxMinLng: 0,
         planningAreaName: "Samoa",
-        planningAreaPossessive: "Samoan",
       },
       false,
       rootPath
@@ -77,7 +76,6 @@ describe("createProject", () => {
         templates: [],
         planningAreaType: "eez",
         planningAreaName: "Micronesia",
-        planningAreaPossessive: "Micronesian",
       },
       false,
       rootPath
@@ -115,7 +113,6 @@ describe("createProject", () => {
         bboxMaxLng: 0,
         bboxMinLng: 0,
         planningAreaName: "Samoa",
-        planningAreaPossessive: "Samoan",
       },
       false,
       rootPath

@@ -210,12 +210,6 @@ If you answered `Other` to type of planning area it will now ask you for the nam
 ? What is the name of the country/site/planning area? (e.g. Samoa) Micronesia
 ```
 
-You will then be asked for a possessive form of this name, which should be an established term used to define this place and possibly its inhabitants and those that associate with it.
-
-```text
-?  Your planning area name is Alhucemas Islands. Is there a possessive name for this place? (e.g. possessive form of Samoa is Samoan) Leave blank if not
-```
-
 Finally, you will be asked to choose a starter template.  Choose `template-ocean-eez`. It will come with some features out of the box that are designed for EEZ planning.  `template-blank-project` is a barebones template and let's you start almost from scratch.
 
 ```text
@@ -275,7 +269,6 @@ The full country list, should you want to change the name our the bounding box e
     * `planningAreaType`: eez or other
     * bbox - the bounding box of the project as [bottom, top, left, right].  This generally represents the area that users will draw shapes.  It can be used as a boundary for clipping, to generate examples sketches, and as a window for fetching from global datasources.
     * `planningAreaName` - the name of the planning region (e.g. Micronesia)
-    * `planningAreaPossessive` - the name of the planning region as a form of membership (e.g. Micronesian)
     * `externalLinks` - central store of links that you want to populate in your reports.
   * `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided.  Global datasources can be manually added/edited in this file, but local datasources should use the [import](#import-datasource) process.
   * `metrics.json` - contains an array of one or more metric groups.  Each group defines a metric to calculate, with one or more data classes, derived from one or more datasources, measuring progress towards a planning objective.  An initial boundaryAreaOverlap metric group is included in the file by default that uses the global eez datasource.

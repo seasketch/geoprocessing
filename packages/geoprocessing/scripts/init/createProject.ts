@@ -274,6 +274,28 @@ export async function createProject(
       process.exit();
     }
     spinner.succeed("Extracted initial translations");
+
+    spinner.succeed("installed dependencies");
+    spinner.start("Publishing initial translations to POEditor");
+    // If POEditor credentials are set, publish then import to finish the sync
+    const { publishError } = await exec(
+      `[[ -n POEDITOR_PROJECT ]] && [[ -n POEDITOR_API_TOKEN ]] && npm run translation:publish && npm run translation:import`,
+      {
+        cwd: metadata.name,
+      }
+    );
+    // If POEditor credentials are not set, tell the user what to do to complete it
+    await exec(
+      `[[ -z POEDITOR_PROJECT ]] && [[ -z POEDITOR_API_TOKEN ]] && echo "Set POEDITOR_PROJECT and POEDITOR_API_TOKEN in your shell environment to publish translations to POEditor, then run 'npm run translation:sync'"`,
+      {
+        cwd: metadata.name,
+      }
+    );
+    if (publishError) {
+      console.log(publishError);
+      process.exit();
+    }
+    spinner.succeed("Published initial translations to POEditor");
   }
   if (interactive) {
     console.log(

@@ -62,7 +62,7 @@
   "ResultsCard - no result message": "Report run completed, but no results returned",
   "Show by MPA": "Show by MPA",
   "Size": "Size",
-  "SizeCard - introduction": "National waters extend from the shoreline out to 200 nautical miles, known as the Exclusive Economic Zone (EEZ). This report summarizes offshore plan overlap with the EEZ and other boundaries within it, measuring progress towards achieving % targets for each boundary.",
+  "SizeCard - introduction": "national waters extend from the shoreline out to 200 nautical miles, known as the Exclusive Economic Zone (EEZ). This report summarizes offshore plan overlap with the EEZ and other boundaries within it, measuring progress towards achieving % targets for each boundary.",
   "SizeCard - learn more": "<0> This report summarizes the size and proportion of this plan within these boundaries.</0><p>If MPA boundaries overlap with each other, the overlap is only counted once.</p>",
   "SizeCard - learn more source": "Source: Wikipedia - Territorial Waters",
   "SizeCard sketch size message": "This sketch is <2>{{area}}</2> square kilometers",

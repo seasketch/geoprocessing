@@ -4,6 +4,7 @@ const basicConfig: ProjectClientConfig = {
   basic: {
     bbox: [0, 0, 1, 1],
     planningAreaName: "undefined",
+    planningAreaId: "undefined",
     planningAreaType: "eez",
     externalLinks: {},
   },

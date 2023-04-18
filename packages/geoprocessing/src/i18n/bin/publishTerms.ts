@@ -5,7 +5,7 @@ import * as path from "path";
 import { promisify } from "util";
 import config from "../config.json";
 import languages from "../supported";
-import * as extraTerms from "../extraTerms.json";
+import extraTerms from "../extraTerms.json";
 
 const post = promisify(request.post);
 
@@ -168,6 +168,7 @@ async function publishEnglish() {
       });
       const updatedTranslationData = JSON.parse(updatedTranslations.body);
       if (updatedTranslationData.response.status !== "success") {
+        console.log(JSON.stringify(updatedTranslationData.response));
         throw new Error(
           `API response was ${updatedTranslationData.response.status}`
         );

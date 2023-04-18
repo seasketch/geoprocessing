@@ -82,6 +82,9 @@ const TableStyled = styled(ReportTableStyled)`
 export const SizeCard = () => {
   const [{ isCollection }] = useSketchProperties();
   const { t } = useTranslation();
+
+  /* i18next-extract-disable-next-line */
+  const planningUnitName = t(project.basic.planningAreaName);
   return (
     <ResultsCard
       title={t("Size")}
@@ -108,8 +111,9 @@ export const SizeCard = () => {
               }
             >
               <p>
+                {planningUnitName}{" "}
                 <Trans i18nKey="SizeCard - introduction">
-                  National waters extend from the shoreline out to 200 nautical
+                  national waters extend from the shoreline out to 200 nautical
                   miles, known as the Exclusive Economic Zone (EEZ). This report
                   summarizes offshore plan overlap with the EEZ and other
                   boundaries within it, measuring progress towards achieving %

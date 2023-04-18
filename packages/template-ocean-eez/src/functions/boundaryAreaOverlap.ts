@@ -49,7 +49,7 @@ export async function boundaryAreaOverlap(
         const polys = await getFeatures(ds, url, {
           propertyFilter: {
             property: "UNION",
-            values: [project.basic.planningAreaName],
+            values: [project.basic.planningAreaId],
           },
           bbox: sketchBox,
         });

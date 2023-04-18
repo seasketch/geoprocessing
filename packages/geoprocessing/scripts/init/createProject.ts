@@ -28,7 +28,9 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   bboxMaxLng?: number;
   bboxMinLat?: number;
   bboxMaxLat?: number;
+  planningAreaId: string;
   planningAreaName: string;
+  planningAreaNameQuestion: string;
 }
 
 /** Create project at basePath.  If should be created non-interactively then set interactive = false and provide all project creation metadata, otherwise will prompt for answers  */
@@ -172,7 +174,7 @@ export async function createProject(
   // Either lookup bbox of planning area by name or construct from user-provided
   const bbox: BBox = await (async () => {
     if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
-      const bbox = await getEezCountryBbox(metadata.planningAreaName);
+      const bbox = await getEezCountryBbox(metadata.planningAreaId);
       if (!bbox)
         throw new Error(`Bounding box not for EEZ named ${metadata.name}`);
       return bbox;
@@ -198,7 +200,10 @@ export async function createProject(
     ...basic,
     bbox,
     planningAreaType: metadata.planningAreaType,
-    planningAreaName: metadata.planningAreaName,
+    planningAreaId: metadata.planningAreaId,
+    planningAreaName: metadata.planningAreaName
+      ? metadata.planningAreaName
+      : metadata.planningAreaId,
   });
 
   await fs.writeJSONSync(`${projectPath}/project/basic.json`, validBasic, {
@@ -242,6 +247,7 @@ export async function createProject(
   // Update extraTerms.json with planning unit name
   const extraPath = `${projectPath}/src/i18n/extraTerms.json`;
   const extraTerms = await fs.readJSON(extraPath);
+  extraTerms[metadata.planningAreaId] = metadata.planningAreaId;
   extraTerms[metadata.planningAreaName] = metadata.planningAreaName;
   await fs.writeJSON(extraPath, extraTerms, { spaces: 2 });
 

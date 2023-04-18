@@ -127,16 +127,34 @@ async function init(gpVersion?: string) {
     {
       when: (answers) => answers.planningAreaType === "eez",
       type: "list",
-      name: "planningAreaName",
+      name: "planningAreaId",
       message: "What countries EEZ is this for?",
       choices: countryChoices,
     },
     {
-      when: (answers) => answers.planningAreaType === "other",
+      when: (answers) => answers.planningAreaType === "eez",
+      type: "list",
+      name: "planningAreaNameQuestion",
+      message: (answers) =>
+        `Is there a more common name for this planning area to use in reports than ${answers.planningAreaId}?`,
+      choices: [
+        { value: "yes", name: "Yes" },
+        { value: "no", name: "No" },
+      ],
+      default: "yes",
+    },
+    {
+      when: (answers) => answers.planningAreaNameQuestion === "yes",
       type: "input",
       name: "planningAreaName",
+      message: `That is the common name for this planning area?`,
+    },
+    {
+      when: (answers) => answers.planningAreaType === "other",
+      type: "input",
+      name: "planningAreaId",
       message:
-        "What is the name of the country/site/planning area? (e.g. Samoa)",
+        "What is the name of the planning area as it should be displayed in reports? (e.g. Samoa)",
     },
     {
       when: (answers) => answers.planningAreaType === "other",

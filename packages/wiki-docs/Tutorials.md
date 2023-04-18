@@ -268,6 +268,7 @@ The full country list, should you want to change the name our the bounding box e
   * `basic.json` - contains basic project configuration.
     * `planningAreaType`: eez or other
     * bbox - the bounding box of the project as [bottom, top, left, right].  This generally represents the area that users will draw shapes.  It can be used as a boundary for clipping, to generate examples sketches, and as a window for fetching from global datasources.
+    * `planningAreaId` - the unique identifier of the planning region used by the boundary dataset
     * `planningAreaName` - the name of the planning region (e.g. Micronesia)
     * `externalLinks` - central store of links that you want to populate in your reports.
   * `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided.  Global datasources can be manually added/edited in this file, but local datasources should use the [import](#import-datasource) process.

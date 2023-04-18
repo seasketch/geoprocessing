@@ -158,7 +158,7 @@ async function publishEnglish() {
     if (data.response.status !== "success") {
       throw new Error(`API response was ${data.response.status}`);
     } else {
-      console.log(`en: updated ${termsToUpdate.length} terms`);
+      console.log(`en: updated ${termsToUpdate.length} terms in POEditor`);
     }
 
     // Update their english translations
@@ -430,11 +430,11 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         );
       } else {
         console.log(
-          `${curLang.code}: added translations for ${transData.result.translations.added} terms`
+          `${curLang.code}: added translations for ${transData.result.translations.added} terms to POEditor`
         );
       }
     } else {
-      console.log(`${curLang.code}: no new translations to add`);
+      console.log(`${curLang.code}: no new translations to add to POEditor`);
     }
   }
 }

@@ -1,8 +1,8 @@
 import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
-import extraTerms from "./extraTerms.json";
 
-// If this instance load
+/** This is primarily used for debugging because it doesn't yet support merging base translations or extraTerms */
+
 import en from "./lang/en/translation.json";
 import pt from "./lang/pt/translation.json";
 
@@ -39,7 +39,6 @@ export function createI18nSyncInstance() {
   instance.use(initReactI18next).init();
   instance.addResources("en", "translation", en);
   instance.addResources("pt", "translation", pt);
-  // instance.addResources("dv", "translation", dv);
 
   return instance;
 }

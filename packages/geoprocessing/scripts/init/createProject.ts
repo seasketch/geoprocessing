@@ -274,28 +274,6 @@ export async function createProject(
       process.exit();
     }
     spinner.succeed("Extracted initial translations");
-
-    spinner.succeed("installed dependencies");
-    spinner.start("Publishing initial translations to POEditor");
-    // If POEditor credentials are set, publish then import to finish the sync
-    const { publishError } = await exec(
-      `[[ -n POEDITOR_PROJECT ]] && [[ -n POEDITOR_API_TOKEN ]] && npm run translation:publish && npm run translation:import`,
-      {
-        cwd: metadata.name,
-      }
-    );
-    // If POEditor credentials are not set, tell the user what to do to complete it
-    await exec(
-      `[[ -z POEDITOR_PROJECT ]] && [[ -z POEDITOR_API_TOKEN ]] && echo "Set POEDITOR_PROJECT and POEDITOR_API_TOKEN in your shell environment to publish translations to POEditor, then run 'npm run translation:sync'"`,
-      {
-        cwd: metadata.name,
-      }
-    );
-    if (publishError) {
-      console.log(publishError);
-      process.exit();
-    }
-    spinner.succeed("Published initial translations to POEditor");
   }
   if (interactive) {
     console.log(
@@ -305,6 +283,9 @@ export async function createProject(
   * ${chalk.yellow(
     `Tutorials`
   )} are available to create your first geoprocessing function and report client at https://github.com/seasketch/geoprocessing/wiki/Tutorials
+  * ${chalk.yellow(
+    `Translations`
+  )} need to be synced if you are using POEditor.  Make sure POEDITOR_PROJECT and POEDITOR_API_TOKEN environemnt variables are set in your shell environment and then run 'npm run translation:sync'.  See tutorials for more information
 `);
   }
 }

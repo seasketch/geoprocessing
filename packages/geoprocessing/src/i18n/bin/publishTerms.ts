@@ -58,13 +58,6 @@ async function publishEnglish() {
     comment: string;
     obsolete?: boolean;
   }[] = data.result.terms.filter((t) => t.context === config.remoteContext);
-  // console.log(
-  //   `Publishing '${config.localNamespace}' namespace strings with context '${config.remoteContext}'`
-  // );
-  // console.log(
-  //   "publishedTerms",
-  //   publishedTerms.map((pt) => pt.term)
-  // );
 
   const termsToAdd: {
     term: string;
@@ -130,19 +123,6 @@ async function publishEnglish() {
       termsToUpdate.push(publishedTerm);
     }
   }
-
-  // console.log(
-  //   "termsToUpdate",
-  //   termsToUpdate.map((t) => t.term)
-  // );
-  // console.log(
-  //   "enTranslationsToUpdate",
-  //   enTranslationsToUpdate.map((t) => t.term)
-  // );
-  // console.log(
-  //   "termsToAdd",
-  //   termsToAdd.map((t) => t.term)
-  // );
 
   // update terms
   if (termsToUpdate.length) {
@@ -316,11 +296,6 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       console.log(`${curLang.code}: no translation file found, skipping`);
       continue;
     }
-    // console.log(
-    //   `${curLang.code}: publishing strings from namespace '${config.localNamespace}' with context '${config.remoteContext}'`
-    // );
-    //console.log("localTerms");
-    //console.log(JSON.stringify(localTerms));
 
     const localBaseTerms = (() => {
       if (
@@ -353,9 +328,6 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         return {};
       }
     })();
-
-    //console.log("localBaseTerms");
-    //console.log(JSON.stringify(localBaseTerms));
 
     // For every english term, find translations that need to be added (don't already exist in POEditor), or updated (are empty in POEditor and were probably cleared).
 
@@ -398,8 +370,6 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         });
       }
     }
-
-    // console.log("translationsToAdd", JSON.stringify(translationsToAdd));
 
     // Add translations for current language
     if (translationsToAdd.length > 0) {

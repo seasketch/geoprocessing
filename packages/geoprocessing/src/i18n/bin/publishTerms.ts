@@ -26,8 +26,6 @@ type Translations = Record<string, string>;
  * The local i18n repository (and the code that extracts to it) is the source of truth for English and will always overwrite POEditor.
  * If base translations are present (gp project), then base translation will be used if a
  * local translation is not present for a given term.
- *
- * TODO
  */
 async function publishEnglish() {
   const res = await post({
@@ -274,7 +272,6 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
     }[] = data.result.terms.filter((t) => t.context === config.remoteContext);
 
     // Read terms for current namespace from English translation file
-
     const localTerms = (() => {
       const localTermPath = path.join(
         __dirname,
@@ -329,8 +326,8 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       }
     })();
 
-    // For every english term, find translations that need to be added (don't already exist in POEditor), or updated (are empty in POEditor and were probably cleared).
-
+    // For every english term, find translations that need to be added (don't already exist in POEditor),
+    // or updated (are empty in POEditor and were probably cleared).
     const translationsToAdd: {
       term: string;
       translation: string;

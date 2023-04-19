@@ -403,11 +403,13 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         );
       } else {
         console.log(
-          `${curLang.code}: added translations for ${transData.result.translations.added} terms to POEditor`
+          `${curLang.code}: publishing ${transData.result.translations.added} ${curLang.name} translations to POEditor`
         );
       }
     } else {
-      console.log(`${curLang.code}: no new translations to add to POEditor`);
+      console.log(
+        `${curLang.code}: no new ${curLang.name} translations to add to POEditor`
+      );
     }
   }
 }

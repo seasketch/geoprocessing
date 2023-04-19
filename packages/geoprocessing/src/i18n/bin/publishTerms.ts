@@ -1,6 +1,6 @@
 /* eslint-disable i18next/no-literal-string */
 import * as request from "request";
-import * as fs from "fs";
+import fs from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
 import config from "../config.json";
@@ -9,7 +9,7 @@ import extraTerms from "../extraTerms.json";
 
 const post = promisify(request.post);
 
-type Translations = Record<string, string>;
+export type Translations = Record<string, string>;
 
 /**
  * Pushes all terms for english language to POEditor, updating any existing translations.
@@ -278,7 +278,8 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       obsolete?: boolean;
     }[] = data.result.terms.filter((t) => t.context === config.remoteContext);
 
-    // Read terms for current namespace from English translation file
+    // Read terms for current namespace from current language translation file.
+    // If file doesn't exist, then stub it out
     const localTerms = (() => {
       const localTermPath = path.join(
         __dirname,
@@ -288,16 +289,18 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         )}.json`
       );
       if (fs.existsSync(localTermPath)) {
-        return JSON.parse(fs.readFileSync(localTermPath).toString()) as {
-          Translations;
-        };
+        return fs.readJsonSync(localTermPath).toString() as Translations;
       } else {
+        if (fs.existsSync(path.dirname(localTermPath)) === false) {
+          fs.mkdirSync(path.dirname(localTermPath));
+        }
+        fs.writeJsonSync(localTermPath, {});
         return {};
       }
     })();
 
     if (Object.keys(localTerms).length === 0) {
-      console.log(`${curLang.code}: no translation file found, skipping`);
+      console.log(`${curLang.code}: no translations found`);
       continue;
     }
 
@@ -313,21 +316,17 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
           )
         )
       ) {
-        return JSON.parse(
-          fs
-            .readFileSync(
-              path.join(
-                __dirname,
-                `../baseLang/${curLang.code}/${config.localNamespace.replace(
-                  ":",
-                  "/"
-                )}.json`
-              )
+        return fs
+          .readJsonSync(
+            path.join(
+              __dirname,
+              `../baseLang/${curLang.code}/${config.localNamespace.replace(
+                ":",
+                "/"
+              )}.json`
             )
-            .toString()
-        ) as {
-          Translations;
-        };
+          )
+          .toString() as Translations;
       } else {
         return {};
       }

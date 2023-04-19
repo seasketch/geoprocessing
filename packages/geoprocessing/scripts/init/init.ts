@@ -147,7 +147,7 @@ async function init(gpVersion?: string) {
       when: (answers) => answers.planningAreaNameQuestion === "yes",
       type: "input",
       name: "planningAreaName",
-      message: `That is the common name for this planning area?`,
+      message: `What is the common name for this planning area?`,
     },
     {
       when: (answers) => answers.planningAreaType === "other",

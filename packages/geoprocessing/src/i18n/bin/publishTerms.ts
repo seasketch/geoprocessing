@@ -365,7 +365,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         });
       } else if (localBaseTerm) {
         console.log(
-          `${curLang.code}: falling back to base translation for ${enTermKey}}`
+          `${curLang.code}: using base translation for term ${enTermKey}`
         );
         translationsToAdd.push({
           term: enTermKey,

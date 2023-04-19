@@ -73,18 +73,16 @@ async function publishEnglish() {
   // Read terms for current namespace from English translation file
   // Also merge in extraTerms (terms that are not extracted from source code)
   const localTerms = {
-    ...(JSON.parse(
-      fs
-        .readFileSync(
-          path.join(
-            __dirname,
-            `../lang/en/${config.localNamespace.replace(":", "/")}.json`
-          )
+    ...fs
+      .readJsonSync(
+        path.join(
+          __dirname,
+          `../lang/en/${config.localNamespace.replace(":", "/")}.json`
         )
-        .toString()
-    ) as Translations),
+      )
+      .toString(),
     ...extraTerms,
-  };
+  } as Translations;
 
   // Compare local term to published term and track what needs to be updated
   for (const localTermKey in localTerms) {

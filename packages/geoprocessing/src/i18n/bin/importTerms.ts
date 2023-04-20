@@ -101,6 +101,9 @@ const get = promisify(request.get);
         const transTerms = fs.readJsonSync(localTranslationsPath);
         return transTerms;
       } else {
+        if (fs.existsSync(path.dirname(localTranslationsPath)) === false) {
+          fs.mkdirSync(path.dirname(localTranslationsPath));
+        }
         fs.writeJsonSync(localTranslationsPath, {});
         return {};
       }

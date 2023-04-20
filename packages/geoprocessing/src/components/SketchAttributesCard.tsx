@@ -75,7 +75,7 @@ export const SketchAttributesCard = ({
                       paddingTop: 6,
                     }}
                   >
-                    {attr.label}
+                    {t(attr.label) /* i18next-extract-disable-line */}
                   </td>
                   <td
                     style={{
@@ -85,7 +85,7 @@ export const SketchAttributesCard = ({
                       paddingLeft: 6,
                     }}
                   >
-                    {valueDisplay}
+                    {t(valueDisplay) /* i18next-extract-disable-line */}
                   </td>
                   {/* <span>{attr.label}</span>=<span>{attr.value}</span> */}
                 </tr>
@@ -98,7 +98,7 @@ export const SketchAttributesCard = ({
   } else {
     return (
       <Card titleStyle={titleStyle} title={title || attributesLabel}>
-        <p>No attributes found</p>
+        <p>t("No attributes found")</p>
       </Card>
     );
   }

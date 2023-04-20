@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-
+import { useLanguage } from "../hooks/useLanguage";
 export interface SegmentControlProps {
   segments: { id: string; label: string }[];
   value: string;
@@ -8,6 +8,7 @@ export interface SegmentControlProps {
 }
 
 export const SegmentControl = (props: SegmentControlProps) => {
+  const [language, changeLanguage, isRtl] = useLanguage();
   const index = props.segments.findIndex((seg) => seg.id === props.value);
   const [segmentSizes, setSegmentSizes] = useState<number[]>();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,6 +45,7 @@ export const SegmentControl = (props: SegmentControlProps) => {
   return (
     <div
       style={{
+        flexDirection: isRtl ? "row-reverse" : "row",
         fontFamily: "sans-serif",
         background: "rgba(229, 231, 235, 1)",
         display: "flex",

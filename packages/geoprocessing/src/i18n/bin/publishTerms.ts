@@ -73,14 +73,12 @@ async function publishEnglish() {
   // Read terms for current namespace from English translation file
   // Also merge in extraTerms (terms that are not extracted from source code)
   const localTerms = {
-    ...fs
-      .readJsonSync(
-        path.join(
-          __dirname,
-          `../lang/en/${config.localNamespace.replace(":", "/")}.json`
-        )
+    ...fs.readJsonSync(
+      path.join(
+        __dirname,
+        `../lang/en/${config.localNamespace.replace(":", "/")}.json`
       )
-      .toString(),
+    ),
     ...extraTerms,
   } as Translations;
 
@@ -287,7 +285,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         )}.json`
       );
       if (fs.existsSync(localTermPath)) {
-        return fs.readJsonSync(localTermPath).toString() as Translations;
+        return fs.readJsonSync(localTermPath) as Translations;
       } else {
         if (fs.existsSync(path.dirname(localTermPath)) === false) {
           fs.mkdirSync(path.dirname(localTermPath));
@@ -314,17 +312,15 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
           )
         )
       ) {
-        return fs
-          .readJsonSync(
-            path.join(
-              __dirname,
-              `../baseLang/${curLang.code}/${config.localNamespace.replace(
-                ":",
-                "/"
-              )}.json`
-            )
+        return fs.readJsonSync(
+          path.join(
+            __dirname,
+            `../baseLang/${curLang.code}/${config.localNamespace.replace(
+              ":",
+              "/"
+            )}.json`
           )
-          .toString() as Translations;
+        ) as Translations;
       } else {
         return {};
       }
@@ -401,7 +397,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         );
       } else {
         console.log(
-          `${curLang.code}: publishing ${transData.result.translations.added} ${curLang.name} translations to POEditor`
+          `${curLang.code}: published ${transData.result.translations.added} ${curLang.name} translations to POEditor`
         );
       }
     } else {

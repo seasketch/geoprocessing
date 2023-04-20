@@ -1,8 +1,12 @@
 import { useContext } from "react";
 import { ReportContext } from "../context";
+import languages, { LangDetails } from "../i18n/supported";
 
-/** Hook that returns current language from report context, and provides function to change the language */
-export function useLanguage(): [string, (language: string) => void] {
+/**
+ * Hook that returns current language from report context, and provides function to change the language
+ * Also include language text direction as third parameter
+ */
+export function useLanguage(): [string, (language: string) => void, boolean] {
   const context = useContext(ReportContext);
   if (!context) {
     throw new Error("ReportContext could not be found.");
@@ -13,5 +17,8 @@ export function useLanguage(): [string, (language: string) => void] {
       context.changeLanguage(language);
     }
   }
-  return [context.language, changeLanguage];
+  const curLang =
+    languages.find((l) => l.code === context.language) || languages[0];
+
+  return [curLang.code, changeLanguage, curLang.rtl || false];
 }

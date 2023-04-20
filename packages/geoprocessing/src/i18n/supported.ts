@@ -38,7 +38,7 @@ const languages: LangDetails[] = [
     {
       name: "Chuukese",
       localName: "Chuukese",
-      code: "chk",
+      code: "CHK",
     },
     {
       name: "Fijian",

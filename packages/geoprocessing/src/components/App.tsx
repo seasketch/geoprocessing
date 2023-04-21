@@ -14,6 +14,7 @@ import {
   seaSketchReportingVisibleLayersChangeEvent,
   seaSketchReportingLanguageChangeEvent,
 } from "../helpers/service";
+import { ReportTextDirection } from "./i18n/ReportTextDirection";
 
 const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);
@@ -173,7 +174,9 @@ const App = () => {
           projectUrl: service,
         }}
       >
-        <Report />
+        <ReportTextDirection>
+          <Report />
+        </ReportTextDirection>
       </ReportContext.Provider>
     );
   } else {

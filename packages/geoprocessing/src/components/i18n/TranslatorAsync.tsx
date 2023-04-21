@@ -13,7 +13,7 @@ const i18nInstance = createI18nAsyncInstance();
 export const Translator: React.FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [language, changeLanguage, isRtl] = useLanguage();
+  const [language, changeLanguage] = useLanguage();
 
   // useEffect used to avoid react warning about changing state during render
   // https://github.com/i18next/react-i18next/issues/1124
@@ -21,11 +21,7 @@ export const Translator: React.FunctionComponent<{ children: ReactNode }> = ({
     i18nInstance.language !== language && i18nInstance.changeLanguage(language);
   }, [language]);
 
-  return (
-    <I18nextProvider i18n={i18nInstance}>
-      <div dir={isRtl ? "rtl" : "ltr"}>{children}</div>
-    </I18nextProvider>
-  );
+  return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
 };
 
 export default Translator;

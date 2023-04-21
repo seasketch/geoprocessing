@@ -1,6 +1,8 @@
 import React from "react";
 import ResultsCard from "./ResultsCard";
-import ReportDecorator from "./storybook/ReportDecorator";
+import ReportDecorator, {
+  createReportStoryLayout,
+} from "./storybook/ReportDecorator";
 import { ReportContext, sampleSketchReportContextValue } from "../context";
 import Skeleton from "./Skeleton";
 import { LayerToggle } from "../../client-ui";
@@ -9,17 +11,8 @@ import fixtures from "../testing/fixtures";
 import DataDownload from "./DataDownload";
 import ToolbarCard from "./ToolbarCard";
 
-export default {
-  component: ResultsCard,
-  title: "Components/Card/ResultsCard",
-  decorators: [ReportDecorator],
-};
-
-const sampleContextValue = sampleSketchReportContextValue({
+const contextValue = sampleSketchReportContextValue({
   visibleLayers: [],
-});
-const finishedContextValue = {
-  ...sampleContextValue,
   exampleOutputs: [
     {
       functionName: "area",
@@ -29,32 +22,25 @@ const finishedContextValue = {
       },
     },
   ],
-};
+});
 
 export const basic = () => (
-  <ReportContext.Provider
-    value={{
-      ...finishedContextValue,
-      visibleLayers: ["5e80c8a8cd44abca6e5268af"],
-    }}
-  >
-    <ResultsCard title="Card Title" functionName="area">
-      {(data: any) => (
-        <p>
-          This zone is {data.area} sq km. Lorem ipsum dolor sit amet consectetur
-          adipisicing elit. Ut nisi beatae, officiis perferendis quis inventore
-          quisquam? Provident doloremque inventore, natus beatae quam nisi eius
-          quidem deserunt, aperiam aliquid corrupti eveniet.
-        </p>
-      )}
-    </ResultsCard>
-  </ReportContext.Provider>
+  <ResultsCard title="Card Title" functionName="area">
+    {(data: any) => (
+      <p>
+        This zone is {data.area} sq km. Lorem ipsum dolor sit amet consectetur
+        adipisicing elit. Ut nisi beatae, officiis perferendis quis inventore
+        quisquam? Provident doloremque inventore, natus beatae quam nisi eius
+        quidem deserunt, aperiam aliquid corrupti eveniet.
+      </p>
+    )}
+  </ResultsCard>
 );
 
 export const loadingState = () => (
   <ReportContext.Provider
     value={{
-      ...finishedContextValue,
+      ...contextValue,
       simulateLoading: true,
     }}
   >
@@ -74,7 +60,7 @@ export const loadingState = () => (
 export const customSkeleton = () => (
   <ReportContext.Provider
     value={{
-      ...finishedContextValue,
+      ...contextValue,
       simulateLoading: true,
     }}
   >
@@ -107,7 +93,7 @@ const DefaultSkeleton = () => (
 export const errorState = () => (
   <ReportContext.Provider
     value={{
-      ...finishedContextValue,
+      ...contextValue,
       simulateError: "Internal server error",
     }}
   >
@@ -120,7 +106,7 @@ export const errorState = () => (
 export const noDataState = () => (
   <ReportContext.Provider
     value={{
-      ...sampleContextValue,
+      ...contextValue,
       exampleOutputs: [
         {
           functionName: "area",
@@ -144,7 +130,7 @@ const ThrowComponent = () => {
 export const errorBoundary = () => (
   <ReportContext.Provider
     value={{
-      ...finishedContextValue,
+      ...contextValue,
     }}
   >
     <ResultsCard title="Card Title" functionName="area">
@@ -174,7 +160,7 @@ const loadedRightItems = (
 export const customCard = () => (
   <ReportContext.Provider
     value={{
-      ...finishedContextValue,
+      ...contextValue,
     }}
   >
     <ResultsCard title="Card Title" functionName="area" useChildCard>
@@ -202,7 +188,7 @@ export const customCard = () => (
 export const customCardToggled = () => (
   <ReportContext.Provider
     value={{
-      ...finishedContextValue,
+      ...contextValue,
       visibleLayers: ["5e80c8a8cd44abca6e5268af"],
     }}
   >
@@ -227,3 +213,9 @@ export const customCardToggled = () => (
     </ResultsCard>
   </ReportContext.Provider>
 );
+
+export default {
+  component: ResultsCard,
+  title: "Components/Card/ResultsCard",
+  decorators: [createReportStoryLayout(contextValue)],
+};

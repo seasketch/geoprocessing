@@ -5,6 +5,7 @@ import {
   sampleSketchReportContextValue,
 } from "../../context";
 import { LanguageSwitcher } from "../i18n/LanguageSwitcher";
+import { ReportTextDirection } from "../i18n/ReportTextDirection";
 
 const containerStyle = {
   height: "auto",
@@ -40,7 +41,8 @@ export interface ReportStoryLayoutProps {
 
 /**
  * Wraps a story to look and behave like a sketch report
- * Specifically wraps it in a default ReportContext, just like App.tsx does
+ * It also replicates much of the functionality of App.tx like setting text
+ * direction and loading ReportContext.
  * The context value can be added to or overridden by passing a value prop
  * Layout includes a language switcher (connected to the report context)
  * and a report width selector
@@ -73,7 +75,9 @@ export const ReportStoryLayout: React.FunctionComponent<ReportStoryLayoutProps> 
           <div style={headerStyle}>
             <h1 style={{ fontSize: 18, fontWeight: 500 }}>Sketch Name</h1>
           </div>
-          <div style={{ ...styles, width }}>{children}</div>
+          <ReportTextDirection style={{ ...styles, width }}>
+            {children}
+          </ReportTextDirection>
           <div
             className="storyControls"
             style={{

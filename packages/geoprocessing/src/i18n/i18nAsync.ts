@@ -1,6 +1,7 @@
 import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
 import extraTerms from "./extraTerms.json";
+import languages from "./supported";
 
 const defaultLang = "en";
 
@@ -39,6 +40,15 @@ export function createI18nAsyncInstance(
         namespace: string,
         callback: (errorValue: unknown, translations: null | any) => void
       ) {
+        const curLanguage = ((language: string) => {
+          // language switcher sends zh when zh-Hans is selected, but we need zh-Hans
+          if (language === "zh") return "zh-Hans";
+
+          return languages.find(
+            (curLang) => curLang.code.toLowerCase() === language.toLowerCase()
+          )?.code;
+        })(language);
+
         const isDefault =
           language.toLowerCase() === "en" || /en-/i.test(language);
         (async () => {
@@ -46,8 +56,8 @@ export function createI18nAsyncInstance(
           let baseLangResources = {};
           try {
             baseLangResources = await import(
-              /* webpackChunkName: "baseLange" */ `${baseLangPath}/${
-                isDefault ? defaultLang : language
+              /* webpackChunkName: "baseLang" */ `${baseLangPath}/${
+                isDefault ? defaultLang : curLanguage
               }/${namespace}.json`
             );
           } catch (error: unknown) {
@@ -61,7 +71,7 @@ export function createI18nAsyncInstance(
           if (langPath !== undefined) {
             langResources = await import(
               /* webpackChunkName: "localLang" */ `${langPath}/${
-                isDefault ? defaultLang : language
+                isDefault ? defaultLang : curLanguage
               }/${namespace}.json`
             );
           }

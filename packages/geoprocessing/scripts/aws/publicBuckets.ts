@@ -1,6 +1,6 @@
 import { GeoprocessingStack } from "./GeoprocessingStack";
 import { RemovalPolicy } from "aws-cdk-lib";
-import { Bucket, CorsRule } from "aws-cdk-lib/aws-s3";
+import { BlockPublicAccess, Bucket, CorsRule } from "aws-cdk-lib/aws-s3";
 import { GpPublicBuckets } from "./types";
 
 export const createPublicBuckets = (
@@ -11,6 +11,12 @@ export const createPublicBuckets = (
     dataset: new Bucket(stack, `GpDatasetBucket`, {
       bucketName: `gp-${stack.props.projectName}-datasets`,
       versioned: false,
+      blockPublicAccess: new BlockPublicAccess({
+        blockPublicPolicy: false,
+        blockPublicAcls: false,
+        restrictPublicBuckets: false,
+        ignorePublicAcls: false,
+      }),
       publicReadAccess: true,
       cors: [
         {

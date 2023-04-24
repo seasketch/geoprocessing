@@ -412,6 +412,12 @@ Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "BucketName": "gp-all-client",
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": false,
+          "BlockPublicPolicy": false,
+          "IgnorePublicAcls": false,
+          "RestrictPublicBuckets": false,
+        },
         "Tags": Array [
           Object {
             "Key": "aws-cdk:auto-delete-objects",
@@ -647,6 +653,12 @@ Object {
               "MaxAge": 3600,
             },
           ],
+        },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": false,
+          "BlockPublicPolicy": false,
+          "IgnorePublicAcls": false,
+          "RestrictPublicBuckets": false,
         },
         "Tags": Array [
           Object {

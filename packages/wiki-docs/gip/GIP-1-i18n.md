@@ -2,7 +2,8 @@
 
 ## Need
 
-* Over half of SeaSketch projects would benefit from offering additional languages in reports.
+* SeaSketch Next supports language translation.
+* Over half of SeaSketch projects would benefit from supporting additional languages in reports.
 * Of those, the number of languages to be translated for a given project can be 2-3, but never all.
 * This means that core UI components should be 100% translated for all languages
 * Project reports only will need translations for up to a few languages, but should get the base translations where already defined.

@@ -18,13 +18,19 @@ At some point you may need to extend the framework to meet your needs, build new
 * [Create a new geoprocessing project](#create-a-new-geoprocessing-project)
 * [Link project data](#link-project-data)
 * [Import datasource](#import-datasource)
-* [First build and deploy](#first-build-and-deploy)
+* [Deploy your project](#deploy-your-project)
 * [Publish a datasource](#publish-a-datasource)
-* [Create SeaSketch project and generate test sketches](#create-seasketch-project-and-generate-test-sketches)
+* [Create SeaSketch project and export test sketches](#create-seasketch-project-and-export-test-sketches)
 * [Create a preprocessing function](#create-a-preprocessing-function)
 * [Create a geoprocessing function](#create-a-geoprocessing-function)
 * [Create a report UI client](#create-a-report-ui-client)
-* [Integration with SeaSketch](#integration-with-seasketch)
+* [Build your project](#build-your-project)
+* [Link projet data](#link-project-data)
+* [Import datasource](#import-datasource)
+* [Deploy your project](#deploy-your-project)
+* [Publish a datasource](#publish-a-datasource)
+* [Integrate with seasketch project](#integrate-with-seasketch-project)
+
 * [Setup an existing geoprocessing project](#setup-an-exising-geoprocessing-project)
 
 # Assumptions
@@ -207,7 +213,14 @@ Since you selected EEZ, it will now ask what countries EEZ to use.  Choose Micro
 If you answered `Other` to type of planning area it will now ask you for the name of this planning area.
 
 ```text
-? What is the name of the country/site/planning area? (e.g. Samoa) Micronesia
+?  Is there a more common name for this planning area to use in reports than Micronesia? (Use arrow keys)
+❯ Yes
+  No
+```
+
+Answer `No`.  If you answered yes it would ask you:
+```text
+What is the common name for this planning area?
 ```
 
 Finally, you will be asked to choose a starter template.  Choose `template-ocean-eez`. It will come with some features out of the box that are designed for EEZ planning.  `template-blank-project` is a barebones template and let's you start almost from scratch.
@@ -243,7 +256,7 @@ The reason you will need to define a bounding box is so that any preprocessing o
 
 # Re-open as workspace and save your work
 
-To take full advantage of VSCode you will need to open your new project and establish it as a workspace.
+Next, to take full advantage of VSCode you will need to open your new project and establish it as a workspace.
 
 Type `Command-O` on MacOS or `Ctrl-O` on Windows or just click `File`->`Open` and select your project under `[your_username]/src/fsm-reports-test`
 
@@ -251,31 +264,29 @@ VSCode will re-open and you should see all your project files in the left hand f
 
 * Type `Command-J` (MacOS) or `Ctrl-J` (Windows) to reopen your terminal.  Make this a habit to have open.
 
-# Project Structure
+## Project Structure
 
-Now let's learn more about the structure of your new project
+Next, take a minute to learn more about the structure of your new project.  You can revisit this section as you get deeper into things.
 
-## Configuration Files
+### Configuration Files and Scripts
 
 There are a variety of project configuration files.  Many have been pre-populated usings your answers to the initial questions.  You can hand edit most of these files later to change them, with some noted exceptions.
-
-The full country list, should you want to change the name our the bounding box extent, are located in Github
 
 * `package.json` - Javascript [package](https://docs.npmjs.com/cli/v9/configuring-npm/package-json) configuration that defines things like the project name, author, and third-party dependencies.  The [npm](https://docs.npmjs.com/cli/v6/commands) command is typically used to add, upgrade, or remove dependencies using `npm install`, otherwise it can be hand-edited.
 * `geoprocessing.json` - file used to register assets to be bundled for deployment.  If they aren't registered here, then they won't be included in the bundle.
 * `tsconfig.json` - contains configuration for the [Typescript](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) compiler
 * `project/` - contains project configuration files.  
   * `basic.json` - contains basic project configuration.
-    * `planningAreaType`: eez or other
+    * `planningAreaType`: `eez` or `other`
     * bbox - the bounding box of the project as [bottom, top, left, right].  This generally represents the area that users will draw shapes.  It can be used as a boundary for clipping, to generate examples sketches, and as a window for fetching from global datasources.
-    * `planningAreaId` - the unique identifier of the planning region used by the boundary dataset
+    * `planningAreaId` - the unique identifier of the planning region used by the boundary dataset.  If your planningAreaType is `eez` and you want to change it, you'll find the full list [in github](#https://raw.githubusercontent.com/seasketch/geoprocessing/dev/packages/geoprocessing/scripts/global/datasources/eez_land_union_v3.json), just look at the UNION property for the id to use
     * `planningAreaName` - the name of the planning region (e.g. Micronesia)
     * `externalLinks` - central store of links that you want to populate in your reports.
   * `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided.  Global datasources can be manually added/edited in this file, but local datasources should use the [import](#import-datasource) process.
   * `metrics.json` - contains an array of one or more metric groups.  Each group defines a metric to calculate, with one or more data classes, derived from one or more datasources, measuring progress towards a planning objective.  An initial boundaryAreaOverlap metric group is included in the file by default that uses the global eez datasource.
   * `objectives.json` - contains an array of one or more objectives for your planning process.  A default objective is included for protection of `20%` of the EEZ.
 
-The JSON objects in these files all follow strict naming and structure (schema) that must be maintained or you will get validation errors when running commands.  Adding additional undocumented properties may be possible, but is not tested.  The schemas are defined here:
+The object structure in many of the JSON files, particularly the `project` folder, follow strict naming and structure (schema) that must be maintained or you will get validation errors when running commands.  Adding additional undocumented properties may be possible, but is not tested.  The schemas are defined here:
 
 * [Basic](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/projectBasic.ts)
 * [Datasources](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/datasource.ts)
@@ -283,16 +294,25 @@ The JSON objects in these files all follow strict naming and structure (schema) 
   * [DataClass](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/dataclass.ts)
 * [Objective](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/objective.ts)
 
-## Project Assets
+### Project Assets
 
 * `src/` - contains all source code
   * `clients/` - report clients are React UI components that can be registered with SeaSketch and when given a sketch URL as input, are able to run the appropriate geoprocessing functions and display a complete report.  This can include multiple report pages with tabbed navigation.
   * `components/` - components are the UI building blocks of report clients.  They are small and often reusable UI elements.  They can be top-level ReportPage components, ResultCard components within a page that invoke geoprocessing functions and display the results, or much lower level components like custom Table or Chart components.  You choose how to build them up into sweet report goodness.
   * `functions/` - contains preprocessor and geoprocessor functions that take input (typicall sketch features) and return output (typically metrics).  They get bundled into AWS Lambda functions and run on-demand.
+  * `i18n/` - contains building blocks for localization aka language translation in reports.
+    * `scripts/` - contains scripts for working with translations
+    * `lang/` - contains english terms auto-extracted from this projects report clients and their translations in one or more languages.
+    * `baseLang/` - contains english terms and their translations for all UI components and report client templates available through the geoprocessing library.  Used to seed the `lang` folder and as a fallback.
+    * `config.json` - configuration for integration with POEditor localization service.
+    * `extraTerms.json` - contains extra translations. Some are auto-generated from configuration on project init, and you can add more such as plural form of terms.
+    * `i18nAsync.ts` - creates an i18next instance that lazy loads language translations on demand.
+    * `i18nSync.ts` - creates an i18nnext instance that synchronously imports all language translations ahead of time.  This is not quite functional, more for research.
+    * `supported.ts` - defines all of the supported languages.
 
-A [ProjectClient](https://seasketch.github.io/geoprocessing/api/classes/geoprocessing.ProjectClientBase.html) class is available in `project/projectClients.ts` that, on import by your code, validates and provides quick access to all project configuration including methods that ease working with them.  It is often the first thing you'll see in functions and UI clients and is the bridge that connects your configuration with your code.
+A [ProjectClient](https://seasketch.github.io/geoprocessing/api/classes/geoprocessing.ProjectClientBase.html) class is available in `project/projectClients.ts` that you can use in project code to get quick access to all project configuration including methods that ease working with them. This is the bridge that connects project configuration with your code so look for it and use it.
 
-### Other
+### Other Files
 
 * `node_modules` - contains all of the npm installed third-party code dependencies defined in package.json
 * `README.md` - default readme file that becomes the published front page of your repo on github.com.  Edit this with information to help your users understand your project.  It could include information or sources on metric calculations and more.
@@ -301,95 +321,50 @@ A [ProjectClient](https://seasketch.github.io/geoprocessing/api/classes/geoproce
 
 To learn more, check out the [Architecture](/Architecture.md) page
 
-## Templates
-
-Templates are bite-sized bundles that can be installed into your project to get you going quickly.  Depending on their purpose they may include data prep scripts, geoprocessing functions, and report clients.
-
-Choose the templates you would like to install during `init` or you can add them later at any time by running:
-
-```bash
-npm run add:template
-```
-
-This will copy template files directly into your project.  If there happens to be a naming collision, for example if you attempt to install a template twice, then you will get an error and the installation will stop.
-
-
 # Create Examples
 
-## Using genRandomSketch
+In order to create and test out the functions and report clients installed with `template-ocean-eez`, we need sample data that is relevant to our planning area.  Scripts are available that make this easy.
 
-A `genRandomSketch` script is available that will generate random Sketch polygons within the extent of your planning area.  This is useful for quickly generating sample data you can test your functions and clients with.
-
-Now run it without any arguments to generate a single Sketch polygon in the `examples/sketches` directory of your project.  Run it with an argument of `10` and it will generate a SketchCollection with 10 random Sketch polygons.
+`genRandomSketch` - generates a random Sketch polygon within the extent of your planning area, which are most commonly used as input to geoprocessing functions.  Run it without any arguments to generate a single Sketch polygon in the `examples/sketches` directory of your project.  Run it with an argument of `10` and it will generate a SketchCollection with 10 random Sketch polygons.
 
 ```bash
-npm run ts-node data/scripts/genRandomSketch.ts
-npm run ts-node data/scripts/genRandomSketch.ts 10
+npx ts-node data/scripts/genRandomSketch.ts
+npx ts-node data/scripts/genRandomSketch.ts 10
 ```
 
-Look closely at this sample data. Sketch and sketch collection's are just GeoJSON Feature and FeatureCollection's with some extra attributes.  Sketch collections are not technically valid GeoJSON but they are often passable as such in most tools.
-
-## Using SeaSketch export
-
-After setting up a SeaSketch project for your country, you can draw sketches and then export them by selecting a sketch and then selecting `Edig -> Export as GeoJSON`.  You can save this to the `examples/sketches` directory in your geoprocessing project and rename the file to match your sketch name, e.g. MySketch.json.
-
-You can read these sketches and use them to test your preprocessing and geoprocessing functions using utilities available [outside of the main geoprocessing library](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/testing/getExamples.ts):
-
-```javascript
-import {
-getExamplePolygonSketches,
-getExamplePolygonSketchCollections,
-getExamplePolygonSketchAll,
-} from "@seasketch/geoprocessing/scripts/testing";
-
-const sketches = getExamplePolygonSketches()
-const sketchCollections = getExamplePolygonSketchCollections()
-const sketchesAndCollections = getExamplePolygonSketchAll()
-```
-## Using genRandomFeature
-
-There are scenarios where you will want to work with plain GeoJSON objects instead of Sketch objects.  Preprocessing functions for example take a GeoJSON Feature as input and return another as output.  You can usually pass a sketch instead, but the 
-
-A `genRandomFeature` script is available that will generate random Feature Polygons within the extent of your planning area.  This is useful for quickly generating sample data you can test your functions and clients with.
-
-Now run it without any arguments to generate a single Sketch polygon in the `examples/sketches` directory of your project.  Run it with an argument of `10` and it will generate a SketchCollection with 10 random Sketch polygons.
+`genRandomFeature` - generates random Feature Polygons within the extent of your planning area, which are most commonly used as input to preprocessing functions. Run it without any arguments to generate a single Sketch polygon in the `examples/features` directory of your project.
 
 ```bash
-npm run ts-node data/scripts/genRandomSketch.ts
-npm run ts-node data/scripts/genRandomSketch.ts 10
+npx ts-node data/scripts/genRandomFeature.ts
 ```
 
-To do this you can populate the `examples/features` directory usingusing the `data/scripts/genRandomFeature` script, your GIS tool of choice, or draw your own polygons using [geojson.io](https://geojson.io)
+## Differences
 
-You can read these features and use them in your tests using:
+Look closely at the difference between the example features and sketches and sketch collections. Sketch and sketch collection's are just GeoJSON Feature and FeatureCollection's with some extra attributes.  Sketches and sketch collections are technically not compliant with the GeoJSON spec but they are often passable as such in most tools.
 
-```javascript
-import {
-  getExampleFeatures,
-  getExampleFeaturesByName,
-} from "@seasketch/geoprocessing/scripts/testing";
+## Create Custom Sketches
 
-getExampleFeatures()
-getExampleFeaturesByName()
+In addition to these scripts, you can create features and sketches using your GIS tool of choice, or draw your own polygons using [geojson.io](https://geojson.io)
+
+# Test your project
+
+Now that you have sample sketches and features, you can run the test suite.
+
+```bash
+npm run test
 ```
 
-# Your first Preprocessing function
+## Smoke Tests
 
-Your new project comes with a `clipToOceanEez` preprocessor
+Preprocessing function smoke tests (in this case `src/functions/clipToOceanEezSmoke.test.ts`) will run against every feature in `examples/features` and output the results to `examples/output`.
 
-First learn [what is a preprocessor](Concepts/#preprocessing-functions)? [What is a datasource](Concepts/#datasources)?
+All geoprocessing function smoke tests (in this case `src/functions/boundaryAreaOverlapSmoke.test.ts`) will run against every feature in `examples/sketches` and output the results to `examples/output`.
 
-# Create a geoprocessing function
+Convince yourself that the smoke tests are outputting the right results.  You will commit the output for smoke tests to the code repository as a source of truth, and if the results change in the future (due to a code change or an input data change or a dependency upgrade) then you can convince yourself again that it's as expected, or something is wrong and needs investigation.  All changes to smoke test output are for a reason and should not be glossed over.
 
-Geoprocessing projects have a number of npm scripts available. Run `npm run create:function`, and choose "Geoprocessing" for the function type. After following the prompts a template function implementation and unit test file will appear under `src/functions`, as well as a new entry in `geoprocessing.json`. Run `npm test` to run these new unit tests against your examples and verify the initialization of the project if you'd like.
+## Unit Tests
 
-To implement the geoprocessing function, modify the template to incoporate new spatial operations or data. The framework expects your function to accept a Sketch or Sketch Collection (GeoJSON will certain required properties), and it can return any json-serializable object. It can be very helpful to implement a Typescript interface definition to help debug your function and aid the development of the report client ui, and the template includes such a definition to start with.
-
-# Create a report UI client
-
-Client report UI's are React components that run in iframes within SeaSketch. To generate a new report, run `npm run create:client`. This will create a template under `src/clients/` along with a simple unit test and entry in `geoprocessing.json`. 
-
-The framework uses [Storybook](https://storybook.js.org/) to provide a environment to test your client using the results of your geoprocessing functions run on `examples/sketches`. To start, run `npm run storybook`. Be sure to run `npm test` to generate or update test outputs before using the storybook.
+...ToDo
 
 # Build your project
 
@@ -399,8 +374,6 @@ A `build` of your application packages it for deployment so you don't have to bu
 * Transpiles all Typescript to Javascript
 * Bundles UI report clients into the `.build-web` directory
 * Bundles geoprocessing and preprocessing functions into the `.build` directory.
-
-Before you build, you should `npm run test` and make sure all tests are passing and the output of smoke tests hasn't changed unexpectedly.
 
 To build your application run the following:
 
@@ -839,49 +812,25 @@ Once complete, you will need to `build` and `deploy` again.
 
 # Publish a datasource
 
-# Create SeaSketch project and generate test sketches
+# Integrate with SeaSketch Project
 
-...
+## Create SeaSketch project
 
-# Running smoke tests
+## Create Sketch Class
 
-When generating geoprocessing function templates using npm scripts, two test files will also be created (e.g. `functions/myFunctionSmoke.test.ts` and `functions/myFunctionUnit.test.ts` ). The smoke tests have 2 objectives: make sure your function exists and write out the results of the runs with the example sketches. The unit tests execute the functions and can be used to test correct output values. All unit tests can be run using `npm test`. This template by default will run your function against all sketches in `examples/sketches` and save the output to `examples/output`, which will be used when debugging the geoprocessing clients. 
+## Configure Geoprocessing
 
-Be default, each smoke test will be added to the @smoke group, and unit tests will be added to the @unit group. (Groups are specified in the docstring at the top of the file). To pass flags from npm to jest during tests, separate the npm test command from the jest flags using '--'. For example, to run just the smoke or unit test groups, you can send the --group flag to jest:
-
-```bash
-npm test -- --group=smoke #run only the smoke tests in a project
-```
-
-You can also run a target test by using the -t option, for example, running just a test called 'areaTest':
-
-```bash
-npm test -- -t=areaTest #run target test 'areaTest'
-```
-
-## Using SeaSketch
-
-## From GeoJSON
-
-# Integration with SeaSketch
-
-To integrate with SeaSketch, you should really have at least one `preprocessing` function, one `geoprocessing` function, and one report client.
+To integrate with SeaSketch, your project really needs just one `geoprocessing` function, and one report `client`.
 
 all you need is your Rest API URL from your [deploy step](#deploy-your-project).
 
 Now go to this URL in your browser.  You should see JSON output listing out all of your published assets.
 
-[ToDo, SeaSketch steps]
+![sketch class admin screenshot](https://user-images.githubusercontent.com/511063/79162748-a7ac370#0-7d92-11ea-9f30-2272fea15299.png)
 
-![sketch class admin screenshot](https://user-images.githubusercontent.com/511063/79162748-a7ac3700-7d92-11ea-9f30-2272fea15299.png)
+## Export Sketches for smoke tests
 
-# Debugging unit tests
-
-Each project you create includes a debug launcher which is useful for debugging your function.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of your tests or in one of your functions, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
-
-# Populating the project with SeaSketch example inputs
-
-Before working on any code your first step should be populating the project with example sketches. When added, your unit tests will automatically be run against these shapes and the client authoring environment will show them while working on ui outputs. These examples should be encoded as GeoJSON and can be downloaded from SeaSketch by using the *Export GeoJSON* context menu action.
+After creating a SeaSketch project your first step should be populating the project with example sketches. When added, your unit tests will automatically be run against these shapes and the client authoring environment will show them while working on ui outputs. These examples should be encoded as GeoJSON and can be downloaded from SeaSketch by using the *Export GeoJSON* context menu action.
 
 ```bash
   /examples/
@@ -891,6 +840,12 @@ Before working on any code your first step should be populating the project with
 
 It's easy to generate these examples using SeaSketch, so be sure to make lots of examples that cover all edge cases. Will your function work with both Sketches and Sketch Collections? Then include both types. Maybe even include Sketches outside the project bounds to make sure error conditions are handled appropriately.
 
+# Debugging
+
+## Debugging Unit Tests
+
+Each project you create includes a debug launcher which is useful for debugging your function.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of your tests or in one of your functions, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
+
 # Upgrading
 
 When you create a geoprocessing project, it will be pinned to a specific version of the geoprocessing library in package.json.  You can update to the latest by running:
@@ -898,10 +853,6 @@ When you create a geoprocessing project, it will be pinned to a specific version
 ```bash
 npm update @seasketch/geoprocessing@latest
 ```
-
-You should then run `npm test` and `npm build` to see if anything is broken.  As long as this project is below version 1.0 then there could be breaking changes at any time but it should be limited to minor release increments (0.x) and not point releases (0.x.y).  Consults the [CHANGELOG](CHANGELOG.md) for tips on where to look, and what new features you can now take advantage of.
-
-# Extending your project
 
 # Setup an exising geoprocessing project
 

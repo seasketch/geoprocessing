@@ -36,6 +36,12 @@ export const createPublicBuckets = (
     const result = new Bucket(stack, `GpResultBucket`, {
       bucketName: `gp-${stack.props.projectName}-results`,
       versioned: false,
+      blockPublicAccess: new BlockPublicAccess({
+        blockPublicPolicy: false,
+        blockPublicAcls: false,
+        restrictPublicBuckets: false,
+        ignorePublicAcls: false,
+      }),
       publicReadAccess: true,
       cors: [
         {

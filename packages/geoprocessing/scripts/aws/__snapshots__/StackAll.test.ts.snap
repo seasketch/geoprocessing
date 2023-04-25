@@ -1765,6 +1765,12 @@ Object {
             },
           ],
         },
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": false,
+          "BlockPublicPolicy": false,
+          "IgnorePublicAcls": false,
+          "RestrictPublicBuckets": false,
+        },
         "Tags": Array [
           Object {
             "Key": "aws-cdk:auto-delete-objects",

@@ -5,5 +5,5 @@ cdk-outputs.json
 .build
 .build-web
 .workspace.env
-data/src/**
+data/src
 data/dist/**

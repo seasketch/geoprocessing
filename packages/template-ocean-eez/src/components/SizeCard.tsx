@@ -148,8 +148,8 @@ export const SizeCard = () => {
                     within these boundaries.
                   </p>
                   <p>
-                    If MPA boundaries overlap with each other, the overlap is
-                    only counted once.
+                    If sketch boundaries within a planoverlap with each other,
+                    the overlap is only counted once.
                   </p>
                 </Trans>
               </Collapse>

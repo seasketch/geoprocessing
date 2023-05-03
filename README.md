@@ -16,4 +16,4 @@ This framework is primarily designed for people that want to create and host the
 * [Serverless](https://aws.amazon.com/lambda/serverless-architectures-learn-more/) architecture that scales up to meet high demand, then scales down to near zero cost when not in use.
 * First-class [Typescript](https://www.typescriptlang.org/) development experience.
 * Utilize cloud-optimized data formats including [Flatgeobuf](https://flatgeobuf.org/) and [Cloud-optimized GeoTIFFs (COGs)](https://www.cogeo.org/)
-* Open source license
+* Open source BSD license

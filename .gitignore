@@ -12,3 +12,6 @@ packages/geoprocessing/data/testing/output
 packages/example-project/
 report.*
 test-projects
+
+**/.env
+packages/*/src/i18n

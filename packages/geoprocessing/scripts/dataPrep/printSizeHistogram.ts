@@ -1,15 +1,15 @@
 import Table from "cli-table";
-import { DatabasePoolConnectionType, sql } from "slonik";
+import { DatabasePoolConnection, sql } from "slonik";
 import bytes from "bytes";
 // @ts-ignore
 import { raw } from "slonik-sql-tag-raw";
 
 export default async (
   statsTable: string,
-  connection: DatabasePoolConnectionType
+  connection: DatabasePoolConnection
 ) => {
   const statsRawTable = raw(statsTable);
-  const histogram = await connection.many(sql`
+  const histogram = await connection.many(sql.unsafe`
       with byte_stats as (
         select min(bytes) as min,
               max(bytes) as max

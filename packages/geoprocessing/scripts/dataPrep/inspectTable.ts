@@ -1,4 +1,5 @@
-import { DatabasePoolConnectionType } from "slonik";
+import { DatabasePoolConnection } from "slonik";
+import { z } from "zod";
 
 const { sql } = require("slonik");
 const { raw } = require("slonik-sql-tag-raw");
@@ -40,7 +41,13 @@ WHERE  i.indrelid = ${tableName}::regclass
 AND    i.indisprimary
 `;
 
-const geometryColumnsQuery = (tableName: string) => sql`
+const recordObject = z.object({
+  column: z.string(),
+  srid: z.number(),
+  type: z.string(),
+});
+
+const geometryColumnsQuery = (tableName: string) => sql.type(recordObject)`
   SELECT 
     f_geometry_column AS column, 
     srid, 
@@ -50,7 +57,7 @@ const geometryColumnsQuery = (tableName: string) => sql`
 `;
 
 const inspectTable = async (
-  connection: DatabasePoolConnectionType,
+  connection: DatabasePoolConnection,
   tableName: string,
   pointsLimit: number
 ) => {
@@ -64,12 +71,13 @@ const inspectTable = async (
     );
   }
 
-  let indexes = await connection.query<{
-    isPrimary: boolean;
-    index_type: string;
-    column: string;
-  }>(
-    sql`
+  const indexRecord = z.object({
+    isPrimary: z.boolean(),
+    index_type: z.string(),
+    column: z.string(),
+  });
+  let indexes = await connection.query(
+    sql.type(indexRecord)`
       SELECT 
         is_primary, 
         index_type, 
@@ -103,11 +111,9 @@ const inspectTable = async (
     throw new Error(`Could not find index for pk "${pkColumn}"`);
   }
   // Verify geometry field with srid = 4326
-  const geometryColumns = await connection.query<{
-    column: string;
-    srid: number;
-    type: string;
-  }>(geometryColumnsQuery(tableName));
+  const geometryColumns = await connection.query(
+    geometryColumnsQuery(tableName)
+  );
   if (geometryColumns.rows.length === 0) {
     throw new Error("Could not find a geometry column");
   } else if (geometryColumns.rows.length > 1) {

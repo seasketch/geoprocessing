@@ -122,7 +122,7 @@ program
           }
         }
       );
-      const pool = createPool(options.connection, {});
+      const pool = await createPool(options.connection, {});
       await pool.connect(async (connection) => {
         await printSizeHistogram(statsTableName, connection);
       });

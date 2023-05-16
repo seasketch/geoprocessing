@@ -83,6 +83,8 @@ export const SizeCard = () => {
   const [{ isCollection }] = useSketchProperties();
   const { t } = useTranslation();
 
+  const notFoundString = t("Results not found");
+
   /* i18next-extract-disable-next-line */
   const planningUnitName = t(project.basic.planningAreaName);
   return (
@@ -92,8 +94,7 @@ export const SizeCard = () => {
       useChildCard
     >
       {(data: ReportResult) => {
-        if (Object.keys(data).length === 0)
-          throw new Error("Protection results not found");
+        if (Object.keys(data).length === 0) throw new Error(notFoundString);
 
         return (
           <>

@@ -328,14 +328,14 @@ In order to create and test out the functions and report clients installed with 
 `genRandomSketch` - generates a random Sketch polygon within the extent of your planning area, which are most commonly used as input to geoprocessing functions.  Run it without any arguments to generate a single Sketch polygon in the `examples/sketches` directory of your project.  Run it with an argument of `10` and it will generate a SketchCollection with 10 random Sketch polygons.
 
 ```bash
-npx ts-node data/scripts/genRandomSketch.ts
-npx ts-node data/scripts/genRandomSketch.ts 10
+npx ts-node scripts/genRandomSketch.ts
+npx ts-node scripts/genRandomSketch.ts 10
 ```
 
 `genRandomFeature` - generates random Feature Polygons within the extent of your planning area, which are most commonly used as input to preprocessing functions. Run it without any arguments to generate a single Sketch polygon in the `examples/features` directory of your project.
 
 ```bash
-npx ts-node data/scripts/genRandomFeature.ts
+npx ts-node scripts/genRandomFeature.ts
 ```
 
 ## Differences

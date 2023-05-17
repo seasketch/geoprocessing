@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 import fs from "fs-extra";
-import project from "../../project/projectClient";
+import project from "../project";
 import {
   FeatureCollection,
   genFeature,
@@ -33,7 +33,7 @@ import {
     }
   })();
 
-  const outdir = process.argv[4] || `${__dirname}/../../examples/features/`;
+  const outdir = process.argv[4] || `${__dirname}/../examples/features/`;
 
   const outfile = `${outdir}${name}.json`;
 

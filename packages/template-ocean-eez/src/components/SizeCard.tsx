@@ -9,6 +9,7 @@ import {
   toPercentMetric,
   sortMetricsDisplayOrder,
   isSketchCollection,
+  MetricGroup,
 } from "@seasketch/geoprocessing/client-core";
 import {
   ClassTable,
@@ -27,7 +28,6 @@ import { Metric, squareMeterToKilometer } from "@seasketch/geoprocessing";
 import Translator from "../components/TranslatorAsync";
 import { Trans, useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
-const boundaryMetricGroup = project.getMetricGroup("boundaryAreaOverlap");
 
 // Hard code total area of eez
 const boundaryTotalMetrics: Metric[] = [
@@ -40,9 +40,6 @@ const boundaryTotalMetrics: Metric[] = [
     value: 3032525677797.563,
   },
 ];
-
-const METRIC_ID = boundaryMetricGroup.metricId;
-const PERC_METRIC_ID = `${boundaryMetricGroup.metricId}Perc`;
 
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
@@ -82,6 +79,7 @@ const TableStyled = styled(ReportTableStyled)`
 export const SizeCard = () => {
   const [{ isCollection }] = useSketchProperties();
   const { t } = useTranslation();
+  const metricGroup = project.getMetricGroup("boundaryAreaOverlap", t);
 
   const notFoundString = t("Results not found");
 
@@ -121,10 +119,10 @@ export const SizeCard = () => {
                   targets for each boundary.
                 </Trans>
               </p>
-              {genSingleSizeTable(data, t)}
+              {genSingleSizeTable(data, metricGroup, t)}
               {isCollection && (
                 <Collapse title={t("Show by MPA")}>
-                  {genNetworkSizeTable(data, t)}
+                  {genNetworkSizeTable(data, metricGroup, t)}
                 </Collapse>
               )}
               <Collapse title={t("Learn more")}>
@@ -149,7 +147,7 @@ export const SizeCard = () => {
                     within these boundaries.
                   </p>
                   <p>
-                    If sketch boundaries within a planoverlap with each other,
+                    If sketch boundaries within a plan overlap with each other,
                     the overlap is only counted once.
                   </p>
                 </Trans>
@@ -162,14 +160,19 @@ export const SizeCard = () => {
   );
 };
 
-const genSingleSizeTable = (data: ReportResult, t: TFunction) => {
+const genSingleSizeTable = (
+  data: ReportResult,
+  mg: MetricGroup,
+  t: TFunction
+) => {
   const boundaryLabel = t("Boundary");
   const foundWithinLabel = t("Found Within Plan");
   const areaWithinLabel = t("Area Within Plan");
+  const areaPercWithinLabel = t("% Within Plan");
   const mapLabel = t("Map");
   const sqKmLabel = t("km²");
 
-  const classesById = keyBy(boundaryMetricGroup.classes, (c) => c.classId);
+  const classesById = keyBy(mg.classes, (c) => c.classId);
   let singleMetrics = data.metrics.filter(
     (m) => m.sketchId === data.sketch.properties.id
   );
@@ -177,7 +180,11 @@ const genSingleSizeTable = (data: ReportResult, t: TFunction) => {
   const finalMetrics = sortMetricsDisplayOrder(
     [
       ...singleMetrics,
-      ...toPercentMetric(singleMetrics, boundaryTotalMetrics, PERC_METRIC_ID),
+      ...toPercentMetric(
+        singleMetrics,
+        boundaryTotalMetrics,
+        project.getMetricGroupPercId(mg)
+      ),
     ],
     "classId",
     ["eez", "offshore", "contiguous"]
@@ -196,7 +203,7 @@ const genSingleSizeTable = (data: ReportResult, t: TFunction) => {
     {
       Header: areaWithinLabel,
       accessor: (row) => {
-        const value = aggMetrics[row.classId][METRIC_ID][0].value;
+        const value = aggMetrics[row.classId][mg.metricId][0].value;
         return (
           Number.format(Math.round(squareMeterToKilometer(value))) +
           " " +
@@ -205,9 +212,10 @@ const genSingleSizeTable = (data: ReportResult, t: TFunction) => {
       },
     },
     {
-      Header: "% Within Plan",
+      Header: areaPercWithinLabel,
       accessor: (row) => {
-        const value = aggMetrics[row.classId][PERC_METRIC_ID][0].value;
+        const value =
+          aggMetrics[row.classId][project.getMetricGroupPercId(mg)][0].value;
         return percentWithEdge(value);
       },
     },
@@ -217,8 +225,8 @@ const genSingleSizeTable = (data: ReportResult, t: TFunction) => {
     <>
       <ClassTable
         rows={finalMetrics}
-        metricGroup={boundaryMetricGroup}
-        objective={project.getMetricGroupObjectives(boundaryMetricGroup)}
+        metricGroup={mg}
+        objective={project.getMetricGroupObjectives(mg, t)}
         columnConfig={[
           {
             columnLabel: boundaryLabel,
@@ -228,7 +236,7 @@ const genSingleSizeTable = (data: ReportResult, t: TFunction) => {
           {
             columnLabel: foundWithinLabel,
             type: "metricValue",
-            metricId: METRIC_ID,
+            metricId: mg.metricId,
             valueFormatter: (val: string | number) =>
               Number.format(
                 Math.round(
@@ -243,7 +251,7 @@ const genSingleSizeTable = (data: ReportResult, t: TFunction) => {
           {
             columnLabel: " ",
             type: "metricChart",
-            metricId: PERC_METRIC_ID,
+            metricId: project.getMetricGroupPercId(mg),
             valueFormatter: "percent",
             chartOptions: {
               showTitle: true,
@@ -280,7 +288,11 @@ const genSingleSizeTable = (data: ReportResult, t: TFunction) => {
   );
 };
 
-const genNetworkSizeTable = (data: ReportResult, t: TFunction) => {
+const genNetworkSizeTable = (
+  data: ReportResult,
+  mg: MetricGroup,
+  t: TFunction
+) => {
   const sketches = toNullSketchArray(data.sketch);
   const sketchesById = keyBy(sketches, (sk) => sk.properties.id);
   const sketchIds = sketches.map((sk) => sk.properties.id);
@@ -289,7 +301,11 @@ const genNetworkSizeTable = (data: ReportResult, t: TFunction) => {
   );
   const finalMetrics = [
     ...sketchMetrics,
-    ...toPercentMetric(sketchMetrics, boundaryTotalMetrics, PERC_METRIC_ID),
+    ...toPercentMetric(
+      sketchMetrics,
+      boundaryTotalMetrics,
+      project.getMetricGroupPercId(mg)
+    ),
   ];
 
   const aggMetrics = nestMetrics(finalMetrics, [
@@ -302,8 +318,8 @@ const genNetworkSizeTable = (data: ReportResult, t: TFunction) => {
     sketchId,
   }));
 
-  const classColumns: Column<{ sketchId: string }>[] =
-    boundaryMetricGroup.classes.map((curClass, index) => ({
+  const classColumns: Column<{ sketchId: string }>[] = mg.classes.map(
+    (curClass, index) => ({
       Header: curClass.display,
       style: { color: "#777" },
       columns: [
@@ -311,8 +327,9 @@ const genNetworkSizeTable = (data: ReportResult, t: TFunction) => {
           Header: t("Area") + " ".repeat(index),
           accessor: (row) => {
             const value =
-              aggMetrics[row.sketchId][curClass.classId as string][METRIC_ID][0]
-                .value;
+              aggMetrics[row.sketchId][curClass.classId as string][
+                mg.metricId
+              ][0].value;
             return (
               Number.format(Math.round(squareMeterToKilometer(value))) +
               " " +
@@ -325,13 +342,14 @@ const genNetworkSizeTable = (data: ReportResult, t: TFunction) => {
           accessor: (row) => {
             const value =
               aggMetrics[row.sketchId][curClass.classId as string][
-                PERC_METRIC_ID
+                project.getMetricGroupPercId(mg)
               ][0].value;
             return percentWithEdge(value);
           },
         },
       ],
-    }));
+    })
+  );
 
   const columns: Column<any>[] = [
     {

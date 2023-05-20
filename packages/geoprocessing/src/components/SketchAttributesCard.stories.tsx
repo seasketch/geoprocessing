@@ -21,10 +21,32 @@ const contextValue = sampleSketchReportContextValue({
   sketchProperties: {
     userAttributes: [
       {
-        exportId: "DESIGNATION",
-        fieldType: "ChoiceField",
         label: "Designation",
-        value: "Marine Reserve",
+        value: "FULLY_PROTECTED",
+        exportId: "designation",
+        fieldType: "ComboBox",
+        valueLabel: "Fully Protected",
+        formElementId: 2987,
+        alternateLanguages: {
+          pt: {
+            label: "Designação",
+            valueLabel: "Totalmente Protegido",
+          },
+        },
+      },
+      {
+        label: "Island",
+        value: ["FLORES"],
+        exportId: "island",
+        fieldType: "MultipleChoice",
+        valueLabel: ["Flores"],
+        formElementId: 2990,
+        alternateLanguages: {
+          pt: {
+            label: "Ilha",
+            valueLabel: ["Floresita"],
+          },
+        },
       },
       {
         exportId: "COMMENTS",

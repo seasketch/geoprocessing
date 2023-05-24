@@ -2,6 +2,7 @@ Table of Contents
 
 * [Concepts](Concepts)
 * [Tutorials](Tutorials)
+* [Command Line Interface](CLI)
 * [Tips and Tricks](Tipsandtricks)
 * [Extending](Extending)
 * [Architecture](Architecture)

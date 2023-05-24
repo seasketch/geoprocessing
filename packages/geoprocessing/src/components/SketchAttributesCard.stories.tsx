@@ -1,8 +1,7 @@
 import React from "react";
 import SketchAttributesCard from "./SketchAttributesCard";
-import ReportDecorator from "./storybook/ReportDecorator";
 import { createReportStoryLayout } from "./storybook";
-import { ReportContext, sampleSketchReportContextValue } from "../context";
+import { sampleSketchReportContextValue } from "../context";
 import Translator from "./i18n/TranslatorAsync";
 
 const mappings = {

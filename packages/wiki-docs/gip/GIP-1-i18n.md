@@ -2,11 +2,8 @@
 
 ## Need
 
-* SeaSketch Next supports language translation.
-* Over half of SeaSketch projects would benefit from supporting additional languages in reports.
-* Of those, the number of languages to be translated for a given project can be 2-3, but never all.
-* This means that core UI components should be 100% translated for all languages
-* Project reports only will need translations for up to a few languages, but should get the base translations where already defined.
+* SeaSketch Next supports language translation and there is an opportunity for reports to offer language translation in sync (current active language and language switch events).
+* Over half of SeaSketch projects would benefit from supporting additional languages in reports, users may want to choose from 2-3 different languages.
 
 ## Glossary
 
@@ -14,7 +11,18 @@ Term - A unique string to be translated.  Typically it will be the exact string 
 
 ## Requirements
 
-* The geoprocessing libary will support all languages supported by SeaSketch Next.
+Overall:
+
+* Should support all languages supported by SeaSketch Next including right-to-left (RTL) languages.
+* Both the core geoprocessing library, and individual geoprocessing projects that use it should support translation.
+* Geoprocessing projects should be able to build on base translations provided for library UI components, but still be managed independently.
+* At runtime, reports will default to english language.
+* The SeaSketch platform (via iFrame postMessage) will dictate which language is loaded initially, and be able to change the language.
+* If a language is provided that the geoprocessing library or project does not support then it should fallback to English.
+
+Geoprocessing library:
+
+* Core UI components should be 100% translated for all languages.
 * The source code will be the source of truth for all terms to be translated, and their English translations, with the exception of specially handled plural terms.
 * Terms, and their English translation will mostly be extracted from the source code in an automated process.  A manual process may be used for special cases like handling plural terms.
 * The geoprocessing library will manage translations for non-english languages for its core UI components and templates using the [POEditor](https://poeditor.com) platform.  POEditor will be the source of truth for these translations.
@@ -26,17 +34,9 @@ Geoprocessing projects:
 * `base` terms/translations will be kept separate from project terms/translations in POEditor, as well as in the project.  This will ensure that base translations can be upgraded, without affecting project translations.  It will also allow project-specific translations to be customized, without losing the base translations.
 * `base` and project terms/translations should be merged at runtime to provide all of the terms/translations needed for the reports, which will be a mix of core and custom components.  If a term exists in both the `base` and `project` translation bundle, the project translation will win.
 * Geoprocessing projects will manage all other terms and translations for custom reports, using the same workflow as the geoprocessing library.
-
 * Geoprocessing project report developers, who are independent of the SeaSketch team, should be able to manage translations in their own POEditor project, just by changing their access credentials.
 * Report developers independent of the SeaSketch team should also have the option to manage translations entirely within the code repo, without using a translation service like POEditor.
 * Translators will be invited to the appropriate POEditor project to review and update any and all translations for their language(s) of expertise.
-
-## Languages supported
-
-* The geoprocessing library and projects will target all SeaSketch Next supported languages.  This will require coordination to keep them at parity.
-* At runtime, reports will default to english language.
-* The SeaSketch platform (via iFrame postMessage) will dictate which language is loaded initially, and be able to change the language.
-* If a language is provided that the geoprocessing library or project does not support then it should fallback to English.
 
 ## Implementation
 

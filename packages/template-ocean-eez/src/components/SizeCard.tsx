@@ -83,8 +83,6 @@ export const SizeCard = () => {
 
   const notFoundString = t("Results not found");
 
-  const notFoundString = t("Results not found");
-
   /* i18next-extract-disable-next-line */
   const planningUnitName = t(project.basic.planningAreaName);
   return (

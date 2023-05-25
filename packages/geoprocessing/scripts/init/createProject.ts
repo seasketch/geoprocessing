@@ -39,8 +39,17 @@ export async function createProject(
   interactive = true,
   basePath = ""
 ) {
-  const { organization, region, email, gpVersion, ...packageJSONOptions } =
-    metadata;
+  const {
+    organization,
+    region,
+    email,
+    gpVersion,
+    name,
+    description,
+    author,
+    license,
+    repositoryUrl,
+  } = metadata;
 
   // Installation path for new project
   const projectPath = `${basePath ? basePath + "/" : ""}${metadata.name}`;
@@ -91,7 +100,11 @@ export async function createProject(
     ...JSON.parse(
       fs.readFileSync(`${baseProjectPath}/package.json`).toString()
     ),
-    ...packageJSONOptions,
+    name,
+    description,
+    author,
+    license,
+    repositoryUrl,
     // TODO: other repo types
     ...(/github/.test(metadata.repositoryUrl)
       ? {
@@ -150,12 +163,12 @@ export async function createProject(
   spinner.succeed("updated package.json");
 
   spinner.start("creating geoprocessing.json");
-  const author = email ? `${metadata.author} <${email}>` : metadata.author;
+  const geoAuthor = email ? `${metadata.author} <${email}>` : metadata.author;
   await fs.writeFile(
     `${projectPath}/geoprocessing.json`,
     JSON.stringify(
       {
-        author,
+        author: geoAuthor,
         organization: organization || "",
         region,
         clients: [],

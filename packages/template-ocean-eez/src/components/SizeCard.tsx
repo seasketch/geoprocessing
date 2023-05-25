@@ -190,11 +190,6 @@ const genSingleSizeTable = (
     ["eez", "offshore", "contiguous"]
   );
 
-  const aggMetrics = nestMetrics(finalMetrics, ["classId", "metricId"]);
-
-  // Use sketch ID for each table row, index into aggMetrics
-  const rows = Object.keys(aggMetrics).map((classId) => ({ classId }));
-
   return (
     <>
       <ClassTable

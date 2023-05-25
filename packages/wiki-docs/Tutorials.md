@@ -757,7 +757,9 @@ If the import fails, try again double checking everything.  It is most likely on
 
 # Setup Language Translation
 
-The geoprocessign framework implements the [GIP-1](./gip/GIP-1-i18n.md) proposal for language translation, and uses POEditor as its third-party service for translators to provide translations.
+The geoprocessign framework implements the [GIP-1](./gip/GIP-1-i18n.md) proposal for language translation, and uses POEditor as its third-party service, allowing translators to more easily provide translations.
+
+This is more formally known as `internationalization` or `i18n` for short which is a reference to the word internationalization being the letter `i` followed by 18 letters, then the letter `n`.
 
 You do not need to complete this step unless you want to support language translation.
 

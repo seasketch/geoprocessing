@@ -234,7 +234,7 @@ async function publishEnglish() {
 /**
  * Publishes non-english translations to POEditor, if they don't already exist.
  * POEditor, when used, is considered the source of truth for non-english and won't be overwritten
- * If base translations are present (gp project), then base translation will be used if both
+ * If base translations are present (gp project only), then base translation will be used if both
  * POEditor and local translation are not present for a given term.
  */
 async function publishNonEnglish(localEnglishTerms?: Translations) {

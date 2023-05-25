@@ -195,32 +195,6 @@ const genSingleSizeTable = (
   // Use sketch ID for each table row, index into aggMetrics
   const rows = Object.keys(aggMetrics).map((classId) => ({ classId }));
 
-  const areaColumns: Column<{ classId: string }>[] = [
-    {
-      Header: " ",
-      accessor: (row) => <b>{classesById[row.classId || "missing"].display}</b>,
-    },
-    {
-      Header: areaWithinLabel,
-      accessor: (row) => {
-        const value = aggMetrics[row.classId][mg.metricId][0].value;
-        return (
-          Number.format(Math.round(squareMeterToKilometer(value))) +
-          " " +
-          t("km²")
-        );
-      },
-    },
-    {
-      Header: areaPercWithinLabel,
-      accessor: (row) => {
-        const value =
-          aggMetrics[row.classId][project.getMetricGroupPercId(mg)][0].value;
-        return percentWithEdge(value);
-      },
-    },
-  ];
-
   return (
     <>
       <ClassTable
@@ -319,36 +293,40 @@ const genNetworkSizeTable = (
   }));
 
   const classColumns: Column<{ sketchId: string }>[] = mg.classes.map(
-    (curClass, index) => ({
-      Header: curClass.display,
-      style: { color: "#777" },
-      columns: [
-        {
-          Header: t("Area") + " ".repeat(index),
-          accessor: (row) => {
-            const value =
-              aggMetrics[row.sketchId][curClass.classId as string][
-                mg.metricId
-              ][0].value;
-            return (
-              Number.format(Math.round(squareMeterToKilometer(value))) +
-              " " +
-              t("km²")
-            );
+    (curClass, index) => {
+      /* i18next-extract-disable-next-line */
+      const transString = t(curClass.display);
+      return {
+        Header: transString,
+        style: { color: "#777" },
+        columns: [
+          {
+            Header: t("Area") + " ".repeat(index),
+            accessor: (row) => {
+              const value =
+                aggMetrics[row.sketchId][curClass.classId as string][
+                  mg.metricId
+                ][0].value;
+              return (
+                Number.format(Math.round(squareMeterToKilometer(value))) +
+                " " +
+                t("km²")
+              );
+            },
           },
-        },
-        {
-          Header: t("% Area") + " ".repeat(index),
-          accessor: (row) => {
-            const value =
-              aggMetrics[row.sketchId][curClass.classId as string][
-                project.getMetricGroupPercId(mg)
-              ][0].value;
-            return percentWithEdge(value);
+          {
+            Header: t("% Area") + " ".repeat(index),
+            accessor: (row) => {
+              const value =
+                aggMetrics[row.sketchId][curClass.classId as string][
+                  project.getMetricGroupPercId(mg)
+                ][0].value;
+              return percentWithEdge(value);
+            },
           },
-        },
-      ],
-    })
+        ],
+      };
+    }
   );
 
   const columns: Column<any>[] = [

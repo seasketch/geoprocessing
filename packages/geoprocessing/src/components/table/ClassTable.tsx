@@ -121,8 +121,13 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
       if (colConfig.type === "class") {
         return {
           Header: colConfig.columnLabel || defaultClassLabel,
-          accessor: (row) =>
-            classesByName[row.classId || "missing"]?.display || "missing",
+          accessor: (row) => {
+            /* i18next-extract-disable-next-line */
+            const transString = t(
+              classesByName[row.classId || "missing"]?.display
+            );
+            return transString || "missing";
+          },
           style,
         };
       } else if (colConfig.type === "metricValue") {

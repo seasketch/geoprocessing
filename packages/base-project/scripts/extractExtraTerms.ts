@@ -6,7 +6,11 @@ import fs from "fs-extra";
   console.log("extracting extra terms from project config");
   const extraTerms = fs.readJSONSync(`src/i18n/extraTerms.json`);
 
-  // Add terms for metric display
+  // basic
+  extraTerms[project.basic.planningAreaId] = project.basic.planningAreaId;
+  extraTerms[project.basic.planningAreaName] = project.basic.planningAreaName;
+
+  // metrics: add terms for metric display
   project.metricGroups.forEach((metric) => {
     metric.classes.forEach((metricClass) => {
       if (metricClass.display) {
@@ -15,7 +19,7 @@ import fs from "fs-extra";
     });
   });
 
-  // Update terms for objective display
+  // objectives: update terms for objective display
   project.objectives.forEach((objective) => {
     extraTerms[objective.shortDesc] = objective.shortDesc;
     Object.keys(objective.countsToward).forEach((level) => {

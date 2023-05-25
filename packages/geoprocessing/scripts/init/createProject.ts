@@ -244,13 +244,6 @@ export async function createProject(
   config.remoteContext = `${packageJSON.name}`;
   await fs.writeJSON(configPath, config, { spaces: 2 });
 
-  // Update extraTerms.json with planning unit name
-  const extraPath = `${projectPath}/src/i18n/extraTerms.json`;
-  const extraTerms = await fs.readJSON(extraPath);
-  extraTerms[metadata.planningAreaId] = metadata.planningAreaId;
-  extraTerms[metadata.planningAreaName] = metadata.planningAreaName;
-  await fs.writeJSON(extraPath, extraTerms, { spaces: 2 });
-
   spinner.succeed("added i18n directory");
 
   if (metadata.templates.length > 0) {

@@ -1,3 +1,4 @@
+import { TFunction } from "i18next";
 import {
   Datasources,
   Datasource,
@@ -177,19 +178,37 @@ export class ProjectClientBase implements ProjectClientInterface {
 
   // METRICS //
 
-  public getMetricGroup(metricId: string): MetricGroup {
+  public getMetricGroup(metricId: string, t?: TFunction): MetricGroup {
     const mg = this._metricGroups.find((m) => m.metricId === metricId);
     if (!mg) throw new Error(`Missing MetricGroup ${metricId} in metrics.json`);
 
-    return mg;
+    if (!t) return mg;
+    return {
+      ...mg,
+      classes: mg.classes.map((curClass) => ({
+        ...curClass,
+        display: t(curClass.display) /* i18next-extract-disable-line */,
+      })),
+    };
   }
 
-  /** Returns all Objectives for MetricGroup */
-  public getMetricGroupObjectives(metricGroup: MetricGroup): Objective[] {
+  public getMetricGroupPercId(mg: MetricGroup): string {
+    return `${mg.metricId}Perc`;
+  }
+
+  /** Returns all Objectives for MetricGroup, optionally translating display strings using t function */
+  public getMetricGroupObjectives(
+    metricGroup: MetricGroup,
+    t?: TFunction
+  ): Objective[] {
     const objectives = getMetricGroupObjectiveIds(metricGroup).map(
       (objectiveId) => this.getObjectiveById(objectiveId)
     );
-    return objectives;
+    if (!t) return objectives;
+    return objectives.map((objective) => ({
+      ...objective,
+      shortDesc: t(objective.shortDesc) /* i18next-extract-disable-line */,
+    }));
   }
 
   /** Returns Metrics for given MetricGroup stat precalcuated on import (keyStats) */

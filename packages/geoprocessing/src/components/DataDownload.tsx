@@ -5,7 +5,8 @@ import styled from "styled-components";
 import { Parser, transforms } from "json2csv";
 import useSketchProperties from "../hooks/useSketchProperties";
 import { CloudDownload } from "@styled-icons/boxicons-solid";
-import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical";
+import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical/ThreeDotsVertical";
+import { useTranslation } from "react-i18next";
 
 // Strictly limit format and data types accepted
 const SUPPORTED_FORMATS = ["json", "csv"] as const;
@@ -47,21 +48,6 @@ const DownloadButtonStyled = styled(SimpleButtonStyled)`
   font-size: 12px;
 `;
 
-const formatConfigs: DownloadOption[] = [
-  {
-    label: "Export CSV",
-    extension: "csv",
-    contentType: "application/csv",
-    url: "",
-  },
-  {
-    label: "Export JSON",
-    extension: "json",
-    contentType: "application/json",
-    url: "",
-  },
-];
-
 /**
  * Dropdown menu for transforming data to CSV/JSON format and initiating a browser download
  * Defaults to CSV and JSON, and filename will include sketch name from ReportContext (if available)
@@ -75,6 +61,22 @@ export const DataDownload = ({
   addTimestamp = true,
   ...dropdownProps
 }: DataDownloadProps) => {
+  const { t } = useTranslation();
+  const formatConfigs: DownloadOption[] = [
+    {
+      label: t("DataDownload - export CSV format label", "Export CSV"),
+      extension: "csv",
+      contentType: "application/csv",
+      url: "",
+    },
+    {
+      label: t("DataDownload - export JSON format label", "Export JSON"),
+      extension: "json",
+      contentType: "application/json",
+      url: "",
+    },
+  ];
+
   const defaultState: DownloadOption[] = formatConfigs.filter((c) =>
     formats.includes(c.extension)
   );

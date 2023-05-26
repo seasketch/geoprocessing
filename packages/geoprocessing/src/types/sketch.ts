@@ -11,7 +11,8 @@ import {
 
 export type SketchGeometryTypes = Polygon | MultiPolygon | LineString | Point;
 
-export interface SketchProperties {
+/** Properties of a Sketch, defines known keys as well as unknown for extensiblity */
+export type SketchProperties = Record<string, any> & {
   id: string;
   /** Name specified by the author of the sketch */
   name: string;
@@ -20,14 +21,27 @@ export interface SketchProperties {
   sketchClassId: string;
   isCollection: boolean;
   userAttributes: UserAttribute[];
-}
+};
 
-export interface UserAttribute {
+/** User-defined attributes with values for Sketch.  Defines known keys as well as unknown for extensiblity */
+export type UserAttribute = Record<string, any> & {
   exportId: string;
+  /** String to display for sketch attribute name */
   label: string;
+  /** String to display for sketch attribute value */
+  valueLabel?: string | string[] | null;
+  /** Sketch attribute value */
   value: any;
   fieldType: string;
-}
+  /** Alternative strings to display for sketch attribute by language code */
+  alternateLanguages?: Record<
+    string,
+    {
+      label: string;
+      valueLabel: any;
+    }
+  >;
+};
 
 // By omitting we can re-define new properties with narrower but compatible typing
 export interface Sketch<G = SketchGeometryTypes>

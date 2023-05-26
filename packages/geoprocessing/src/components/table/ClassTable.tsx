@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { nestMetrics } from "../../metrics/helpers";
 import {
   percentWithEdge,
@@ -84,6 +85,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   metricGroup,
   objective,
 }) => {
+  const { t } = useTranslation();
   const classesByName = keyBy(
     metricGroup.classes,
     (curClass) => curClass.classId
@@ -104,6 +106,12 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   ): ClassTableColumn[] => {
     const defaultWidth = 100 / colConfigs.length;
 
+    const defaultClassLabel = t("Class");
+    const defaultMapLabel = t("Map");
+    const defaultTargetLabel = t("Target");
+    const defaultGoalLabel = t("Goal");
+    const defaultValueLabel = t("Value");
+
     // Transform column configs into Columns
     const colz: ClassTableColumn[] = colConfigs.map((colConfig) => {
       const style = {
@@ -112,14 +120,19 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
       };
       if (colConfig.type === "class") {
         return {
-          Header: colConfig.columnLabel || "Class",
-          accessor: (row) =>
-            classesByName[row.classId || "missing"]?.display || "missing",
+          Header: colConfig.columnLabel || defaultClassLabel,
+          accessor: (row) => {
+            /* i18next-extract-disable-next-line */
+            const transString = t(
+              classesByName[row.classId || "missing"]?.display
+            );
+            return transString || "missing";
+          },
           style,
         };
       } else if (colConfig.type === "metricValue") {
         return {
-          Header: colConfig.columnLabel || "Value",
+          Header: colConfig.columnLabel || defaultValueLabel,
           accessor: (row) => {
             if (!colConfig.metricId)
               throw new Error("Missing metricId in column config");
@@ -212,7 +225,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
             } else {
               targetValueFormatter = (targetValue) =>
                 rowIndex === tableRows.length - 1
-                  ? `Target - ${valueFormatter(
+                  ? `${defaultTargetLabel} - ${valueFormatter(
                       targetValue / 100,
                       "percent0dig"
                     )}`
@@ -242,7 +255,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
         };
       } else if (colConfig.type === "metricGoal") {
         return {
-          Header: colConfig.columnLabel || "Goal",
+          Header: colConfig.columnLabel || defaultGoalLabel,
           style,
           accessor: (row) => {
             const objectiveId = getMetricGroupObjectiveId(
@@ -266,7 +279,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
         };
       } else if (colConfig.type === "layerToggle") {
         return {
-          Header: colConfig.columnLabel || "Map",
+          Header: colConfig.columnLabel || defaultMapLabel,
           style: { textAlign: "center", ...style },
           accessor: (row, index) => {
             const isSimpleGroup = metricGroup.layerId ? false : true;

@@ -8,7 +8,7 @@ import { SketchProperties, GeoprocessingProject } from "../types";
 export interface ReportContextValue {
   /** Geoprocessing project metadata with details on functions, clients, uris */
   projectUrl: string;
-  /** uri where a geobuf representation of the sketch can be fetched */
+  /** uri where the sketch can be fetched */
   geometryUri: string;
   sketchProperties: SketchProperties;
   // only in testing
@@ -17,7 +17,25 @@ export interface ReportContextValue {
   simulateError?: string;
   visibleLayers: string[];
   toggleLayerVisibility?: (layerId: string) => void;
+  language: string;
+  changeLanguage?: (language: string) => void;
 }
+
+export type PartialReportContextValue = Partial<{
+  /** Geoprocessing project metadata with details on functions, clients, uris */
+  projectUrl: string;
+  /** uri where the sketch can be fetched */
+  geometryUri: string;
+  sketchProperties: Partial<SketchProperties>;
+  // only in testing
+  exampleOutputs?: TestExampleOutput[];
+  simulateLoading?: boolean;
+  simulateError?: string;
+  visibleLayers: string[];
+  toggleLayerVisibility?: (layerId: string) => void;
+  language: string;
+  changeLanguage?: (language: string) => void;
+}>;
 
 export interface TestExampleOutput {
   sketchName: string;
@@ -28,7 +46,7 @@ export interface TestExampleOutput {
 export const ReportContext =
   React.createContext<ReportContextValue | null>(null);
 
-export const defaultReportContextValue: ReportContextValue = {
+export const defaultReportContext: ReportContextValue = {
   sketchProperties: {
     name: "My Sketch",
     id: "abc123",
@@ -53,17 +71,23 @@ export const defaultReportContextValue: ReportContextValue = {
   },
   geometryUri: "",
   projectUrl: "https://example.com/project",
-  visibleLayers: [],
+  visibleLayers: ["a"],
+  // Default to english language
+  language: "en",
 };
 
 /**
  * Creates a ReportContextValue object for a Sketch with sample values.  overrides will be merged in, replacing default values
  */
 export const sampleSketchReportContextValue = (
-  overrides?: Partial<ReportContextValue>
+  overrides?: PartialReportContextValue
 ): ReportContextValue => {
   return {
-    ...(defaultReportContextValue || {}),
+    ...(defaultReportContext || {}),
     ...overrides,
+    sketchProperties: {
+      ...defaultReportContext.sketchProperties,
+      ...(overrides?.sketchProperties || {}),
+    },
   };
 };

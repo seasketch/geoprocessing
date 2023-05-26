@@ -7,6 +7,7 @@
   "private": true,
   "main": "src/index.js",
   "scripts": {
+    "prepare": "rm -f src/i18n && ln -s ../../geoprocessing/src/i18n src/i18n",
     "test": "geoprocessing test",
     "start:client": "geoprocessing start:client",
     "build": "geoprocessing build:lambda && geoprocessing build:client",
@@ -30,6 +31,8 @@
     "@turf/flatten": "^6.5.0",
     "@turf/invariant": "^6.5.0",
     "@turf/kinks": "^6.5.0",
+    "i18next-browser-languagedetector": "^7.0.1",
+    "react-i18next": "^12.2.0",
     "union-subdivided-polygons": "^0.9.1"
   }
 }

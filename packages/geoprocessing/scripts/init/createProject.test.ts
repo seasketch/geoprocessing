@@ -33,8 +33,9 @@ describe("createProject", () => {
         bboxMinLat: 0,
         bboxMaxLng: 0,
         bboxMinLng: 0,
+        planningAreaId: "American Samoa",
         planningAreaName: "Samoa",
-        planningAreaPossessive: "Samoan",
+        planningAreaNameQuestion: "yes",
       },
       false,
       rootPath
@@ -76,8 +77,9 @@ describe("createProject", () => {
         region: "us-west-1",
         templates: [],
         planningAreaType: "eez",
+        planningAreaId: "Micronesia",
         planningAreaName: "Micronesia",
-        planningAreaPossessive: "Micronesian",
+        planningAreaNameQuestion: "yes",
       },
       false,
       rootPath
@@ -114,8 +116,9 @@ describe("createProject", () => {
         bboxMinLat: 0,
         bboxMaxLng: 0,
         bboxMinLng: 0,
+        planningAreaId: "American Samoa",
+        planningAreaNameQuestion: "yes",
         planningAreaName: "Samoa",
-        planningAreaPossessive: "Samoan",
       },
       false,
       rootPath

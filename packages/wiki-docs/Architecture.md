@@ -332,6 +332,8 @@ export interface AreaResults {
 
 The most common type of data that a geoprocessing function returns is a [ReportResult](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/reports.ts#L21) which is simply an array of Metric values, and the original sketch with null geometry.
 
+The ResultsCard uses a `render callback` pattern called `Function as Child Component` or `FaCC`.
+
 ### 5. useFunction Hook
 
 `useFunction` is a [React hook](https://reactjs.org/docs/hooks-intro.html) that calls out to a given geoprocessing function given its name, and passes the results back to the caller.

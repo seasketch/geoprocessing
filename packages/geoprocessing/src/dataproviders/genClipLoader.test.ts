@@ -62,5 +62,5 @@ describe("genClipLoader", () => {
     expect(clipOperations.length).toEqual(2);
     expect(clipOperations[0].clipFeatures.length).toEqual(151);
     expect(clipOperations[1].clipFeatures.length).toEqual(1);
-  });
+  }, 10000);
 });

@@ -1,6 +1,7 @@
 import React from "react";
 import Card from "./Card";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 // styled-components are needed here to use the ::before pseudo selector
 const ErrorIndicator = styled.div`
@@ -23,13 +24,22 @@ const ErrorIndicator = styled.div`
 `;
 
 const ErrorCard = () => {
+  const { t } = useTranslation();
   return (
     <Card>
       <div role="alert">
         <ErrorIndicator />
-        Something went wrong. Please close this report and try again.
+        {t(
+          "ReportError - message part 1",
+          "Something went wrong. Please close this report and try again."
+        )}
       </div>
-      <p>If it persists, press the "help" button above to report the issue.</p>
+      <p>
+        {t(
+          "ReportError - message part 2",
+          "If the error persists, please report it."
+        )}
+      </p>
     </Card>
   );
 };

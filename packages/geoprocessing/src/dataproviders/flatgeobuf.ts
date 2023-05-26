@@ -1,3 +1,4 @@
+// @ts-ignore
 import { ReadableStream } from "web-streams-polyfill/ponyfill";
 import { takeAsync } from "flatgeobuf/lib/cjs/streams/utils";
 import { BBox, GeometryTypes } from "../types";

@@ -114,6 +114,7 @@ export interface SeaSketchReportingMessageEvent {
   type: "SeaSketchReportingMessageEventType";
   /* List of ids for layers which are visible in the table of contents */
   visibleLayers?: string[];
+  language?: string;
 }
 
 export interface SeaSketchReportingVisibleLayersChangeEvent {
@@ -125,6 +126,12 @@ export interface SeaSketchReportingToggleLayerVisibilityEvent {
   layerId: string;
   on: boolean;
   type: "SeaSketchReportingToggleLayerVisibilityEvent";
+}
+
+export interface SeaSketchReportingToggleLanguageEvent {
+  language: string;
+  on: boolean;
+  type: "SeaSketchReportingToggleLanguageEvent";
 }
 
 export interface PreprocessingRequest {

@@ -40,6 +40,7 @@ const simpleContext = {
   geometryUri: "",
   projectUrl: "https://example.com/project",
   visibleLayers: ["a"],
+  language: "en",
 };
 
 export const simple = () => {

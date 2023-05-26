@@ -47,7 +47,7 @@ export const SketchAttributesCard = ({
                 const value =
                   attr && attr.value !== undefined && attr.value !== null
                     ? attr.value
-                    : "";
+                    : t("(Not answered)");
                 valueLabel = value;
                 if (
                   mappings &&

@@ -1,6 +1,6 @@
 import React from "react";
 import { SegmentControl } from "./SegmentControl";
-import { createReportStoryLayout } from "./storybook/ReportDecorator";
+import { createReportDecorator } from "./storybook/ReportDecorator";
 import Translator from "./i18n/TranslatorAsync";
 
 export const tabOne = () => (
@@ -34,5 +34,5 @@ export const tabTwo = () => (
 export default {
   component: SegmentControl,
   title: "Components/SegmentControl",
-  decorators: [createReportStoryLayout()],
+  decorators: [createReportDecorator()],
 };

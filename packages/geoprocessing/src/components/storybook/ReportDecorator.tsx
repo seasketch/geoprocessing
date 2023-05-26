@@ -14,7 +14,7 @@ export default ReportDecorator;
  * Think of this as a ReportDecorator generator, that allows you to pass in context and override the default
  * The only reason to use this instead of ReportDecorator directly is to pass context
  */
-export const createReportStoryLayout =
+export const createReportDecorator =
   (reportContext?: Partial<ReportContextValue>) =>
   (storyFn): JSX.Element => {
     return (

@@ -69,59 +69,26 @@ const legacyContextValue = sampleSketchReportContextValue({
         exportId: "BOOLEANTWO",
         fieldType: "YesNo",
       },
-    ],
-  },
-});
-
-const nextContextValue = sampleSketchReportContextValue({
-  sketchProperties: {
-    userAttributes: [
       {
-        label: "Designation",
-        value: "FULLY_PROTECTED",
-        exportId: "designation",
-        fieldType: "ComboBox",
-        valueLabel: "Fully Protected",
-        formElementId: 2987,
-        alternateLanguages: {
-          pt: {
-            label: "Designação",
-            valueLabel: "Totalmente Protegido",
-          },
-        },
-      },
-      {
-        label: "Island",
-        value: ["FLORES"],
-        exportId: "island",
-        fieldType: "MultipleChoice",
-        valueLabel: ["Flores"],
-        formElementId: 2990,
-        alternateLanguages: {
-          pt: {
-            label: "Ilha",
-            valueLabel: ["Floresita"],
-          },
-        },
+        label: "Empty field",
+        value: null,
+        exportId: "Foo",
+        fieldType: "TextArea",
       },
     ],
   },
 });
 
 export const legacy = () => (
-  <Translator>
-    <SketchAttributesCard title="Attributes Legacy" mappings={mappings} />
-  </Translator>
-);
-
-export const next = () => (
-  <Translator>
-    <SketchAttributesCard title="Attributes Next" />
-  </Translator>
+  <ReportContext.Provider value={legacyContextValue}>
+    <Translator>
+      <SketchAttributesCard title="Attributes Legacy" mappings={mappings} />
+    </Translator>
+  </ReportContext.Provider>
 );
 
 export default {
   component: SketchAttributesCard,
   title: "Components/Card/SketchAttributesCard",
-  decorators: [createReportDecorator(nextContextValue)],
+  decorators: [ReportDecorator],
 };

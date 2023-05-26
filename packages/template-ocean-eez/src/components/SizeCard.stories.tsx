@@ -1,7 +1,7 @@
 import React from "react";
 import { SizeCard } from "./SizeCard";
 import {
-  createReportStoryLayout,
+  createReportDecorator,
   sampleSketchReportContextValue,
 } from "@seasketch/geoprocessing/client-ui";
 import Translator from "../components/TranslatorAsync";
@@ -51,5 +51,5 @@ export const basic = () => (
 export default {
   component: SizeCard,
   title: "Project/Components/SizeCard",
-  decorators: [createReportStoryLayout(contextValue)],
+  decorators: [createReportDecorator(contextValue)],
 };

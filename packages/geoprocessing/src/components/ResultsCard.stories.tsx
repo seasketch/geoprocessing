@@ -1,7 +1,7 @@
 import React from "react";
 import ResultsCard from "./ResultsCard";
 import ReportDecorator, {
-  createReportStoryLayout,
+  createReportDecorator,
 } from "./storybook/ReportDecorator";
 import { ReportContext, sampleSketchReportContextValue } from "../context";
 import Skeleton from "./Skeleton";
@@ -217,5 +217,5 @@ export const customCardToggled = () => (
 export default {
   component: ResultsCard,
   title: "Components/Card/ResultsCard",
-  decorators: [createReportStoryLayout(contextValue)],
+  decorators: [createReportDecorator(contextValue)],
 };

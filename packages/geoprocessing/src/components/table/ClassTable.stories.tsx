@@ -1,7 +1,7 @@
 import React from "react";
 import { ClassTable } from "./ClassTable";
 import { defaultReportContext } from "../../context";
-import { CardDecorator, createReportStoryLayout } from "../storybook/";
+import { CardDecorator, createReportDecorator } from "../storybook/";
 import { createMetric } from "../../metrics";
 import {
   longClassMetrics,
@@ -21,7 +21,7 @@ import Translator from "../i18n/TranslatorAsync";
 export default {
   component: ClassTable,
   title: "Components/Table/ClassTable",
-  decorators: [CardDecorator, createReportStoryLayout(defaultReportContext)],
+  decorators: [CardDecorator, createReportDecorator(defaultReportContext)],
 };
 
 export const simple = () => {

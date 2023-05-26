@@ -1,6 +1,5 @@
 import React from "react";
 import SketchAttributesCard from "./SketchAttributesCard";
-import { createReportDecorator } from "./storybook";
 import { sampleSketchReportContextValue } from "../context";
 import Translator from "./i18n/TranslatorAsync";
 import ReportDecorator from "./storybook/ReportDecorator";

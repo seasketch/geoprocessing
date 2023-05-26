@@ -3,8 +3,6 @@ import SketchAttributesCard from "./SketchAttributesCard";
 import { createReportDecorator } from "./storybook";
 import { sampleSketchReportContextValue } from "../context";
 import Translator from "./i18n/TranslatorAsync";
-import ReportDecorator from "./storybook/ReportDecorator";
-import { ReportContext } from "../context/ReportContext";
 
 const nextContextValue = sampleSketchReportContextValue({
   sketchProperties: {

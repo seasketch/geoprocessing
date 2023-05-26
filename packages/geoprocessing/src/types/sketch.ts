@@ -29,7 +29,7 @@ export type UserAttribute = Record<string, any> & {
   /** String to display for sketch attribute name */
   label: string;
   /** String to display for sketch attribute value */
-  valueLabel?: string | string[];
+  valueLabel?: string | string[] | null;
   /** Sketch attribute value */
   value: any;
   fieldType: string;

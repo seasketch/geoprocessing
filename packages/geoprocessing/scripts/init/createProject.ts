@@ -2,7 +2,6 @@ import { TemplateMetadata, copyTemplates } from "../template/addTemplate";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
-import { join } from "path";
 import { BBox, Package, projectSchema } from "../../src/types";
 import util from "util";
 import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths";
@@ -29,8 +28,9 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   bboxMaxLng?: number;
   bboxMinLat?: number;
   bboxMaxLat?: number;
+  planningAreaId: string;
   planningAreaName: string;
-  planningAreaPossessive: string;
+  planningAreaNameQuestion: string;
 }
 
 /** Create project at basePath.  If should be created non-interactively then set interactive = false and provide all project creation metadata, otherwise will prompt for answers  */
@@ -39,8 +39,17 @@ export async function createProject(
   interactive = true,
   basePath = ""
 ) {
-  const { organization, region, email, gpVersion, ...packageJSONOptions } =
-    metadata;
+  const {
+    organization,
+    region,
+    email,
+    gpVersion,
+    name,
+    description,
+    author,
+    license,
+    repositoryUrl,
+  } = metadata;
 
   // Installation path for new project
   const projectPath = `${basePath ? basePath + "/" : ""}${metadata.name}`;
@@ -91,7 +100,11 @@ export async function createProject(
     ...JSON.parse(
       fs.readFileSync(`${baseProjectPath}/package.json`).toString()
     ),
-    ...packageJSONOptions,
+    name,
+    description,
+    author,
+    license,
+    repositoryUrl,
     // TODO: other repo types
     ...(/github/.test(metadata.repositoryUrl)
       ? {
@@ -107,6 +120,13 @@ export async function createProject(
       : {}),
     ...{ private: false },
   };
+
+  // Add auto-install of base translations
+  if (packageJSON.scripts) {
+    packageJSON.scripts.prepare = "npm run translation:install";
+  } else {
+    packageJSON.scripts = { prepare: "npm run translation:install" };
+  }
 
   if (gpVersion) {
     if (packageJSON.devDependencies) {
@@ -141,13 +161,14 @@ export async function createProject(
     );
   }
   spinner.succeed("updated package.json");
+
   spinner.start("creating geoprocessing.json");
-  const author = email ? `${metadata.author} <${email}>` : metadata.author;
+  const geoAuthor = email ? `${metadata.author} <${email}>` : metadata.author;
   await fs.writeFile(
     `${projectPath}/geoprocessing.json`,
     JSON.stringify(
       {
-        author,
+        author: geoAuthor,
         organization: organization || "",
         region,
         clients: [],
@@ -166,7 +187,7 @@ export async function createProject(
   // Either lookup bbox of planning area by name or construct from user-provided
   const bbox: BBox = await (async () => {
     if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
-      const bbox = await getEezCountryBbox(metadata.planningAreaName);
+      const bbox = await getEezCountryBbox(metadata.planningAreaId);
       if (!bbox)
         throw new Error(`Bounding box not for EEZ named ${metadata.name}`);
       return bbox;
@@ -184,7 +205,7 @@ export async function createProject(
         metadata.bboxMinLat,
         metadata.bboxMaxLng,
         metadata.bboxMaxLat,
-      ];
+      ] as BBox;
     }
   })();
 
@@ -192,8 +213,10 @@ export async function createProject(
     ...basic,
     bbox,
     planningAreaType: metadata.planningAreaType,
-    planningAreaName: metadata.planningAreaName,
-    planningAreaPossessive: metadata.planningAreaPossessive,
+    planningAreaId: metadata.planningAreaId,
+    planningAreaName: metadata.planningAreaName
+      ? metadata.planningAreaName
+      : metadata.planningAreaId,
   });
 
   await fs.writeJSONSync(`${projectPath}/project/basic.json`, validBasic, {
@@ -213,12 +236,28 @@ export async function createProject(
   }
 
   // recursively copy entire data/bin directory to project space
+  spinner.start("add data directory");
   await fs.copy(
     `${getGeoprocessingPath()}/data/bin`,
     projectPath + "/data/bin"
   );
   await fs.ensureDir(`${projectPath}/data/src`);
   await fs.ensureDir(`${projectPath}/data/dist`);
+  spinner.succeed("added data directory");
+
+  // recursively copy entire i18n directory to project space
+  spinner.start("add i18n directory");
+  await fs.copy(
+    `${getGeoprocessingPath()}/src/i18n`,
+    projectPath + "/src/i18n"
+  );
+  // Update config.json with project-specific namespace and tag
+  const configPath = `${projectPath}/src/i18n/config.json`;
+  const config = await fs.readJSON(configPath);
+  config.remoteContext = `${packageJSON.name}`;
+  await fs.writeJSON(configPath, config, { spaces: 2 });
+
+  spinner.succeed("added i18n directory");
 
   if (metadata.templates.length > 0) {
     // Should always be a single name if single select question used
@@ -242,7 +281,16 @@ export async function createProject(
       console.log(error);
       process.exit();
     }
-    spinner.succeed("installed dependencies!");
+    spinner.succeed("installed dependencies");
+    spinner.start("extracting translations");
+    const { extractError } = await exec(`npm run translation:extract`, {
+      cwd: metadata.name,
+    });
+    if (extractError) {
+      console.log(extractError);
+      process.exit();
+    }
+    spinner.succeed("extracted initial translations");
   }
   if (interactive) {
     console.log(
@@ -252,6 +300,9 @@ export async function createProject(
   * ${chalk.yellow(
     `Tutorials`
   )} are available to create your first geoprocessing function and report client at https://github.com/seasketch/geoprocessing/wiki/Tutorials
+  * ${chalk.yellow(
+    `Translations`
+  )} need to be synced if you are using POEditor.  Make sure POEDITOR_PROJECT and POEDITOR_API_TOKEN environemnt variables are set in your shell environment and then run 'npm run translation:sync'.  See tutorials for more information
 `);
   }
 }

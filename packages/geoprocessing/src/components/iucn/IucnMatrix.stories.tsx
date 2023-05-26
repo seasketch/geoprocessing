@@ -2,6 +2,7 @@ import React from "react";
 import { IucnMatrix } from "./IucnMatrix";
 import { Card } from "../Card";
 import { ReportDecorator } from "../storybook/ReportDecorator";
+import Translator from "../i18n/TranslatorAsync";
 
 export default {
   component: IucnMatrix,
@@ -10,7 +11,9 @@ export default {
 };
 
 export const simple = () => (
-  <Card>
-    <IucnMatrix />
-  </Card>
+  <Translator>
+    <Card>
+      <IucnMatrix />
+    </Card>
+  </Translator>
 );

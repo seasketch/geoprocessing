@@ -6,6 +6,7 @@
   "recommendations": [
     "ms-vscode.vscode-typescript-tslint-plugin",
     "esbenp.prettier-vscode",
-    "DavidAnson.vscode-markdownlint"
+    "DavidAnson.vscode-markdownlint",
+    "Lokalise.i18n-ally"
   ]
 }

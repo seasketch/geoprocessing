@@ -181,7 +181,7 @@ export const iucnCategoriesMap: Record<string, IucnCategoryCombined> = {
   // },
   // "3": {
   //   category: "3",
-  //   name: "Natural Monument/Feature",
+  //   name: "Natural Monument or Feature",
   //   allowedActivities: [
   //     "RESEARCH_NE",
   //     "TRAD_USE_NE",
@@ -289,7 +289,7 @@ export const iucnCategoriesMap: Record<string, IucnCategoryCombined> = {
   },
   // "6": {
   //   category: "6",
-  //   name: "Protected area with sustainable use of natural resources",
+  //   name: "Protected area with sustainable use",
   //   allowedActivities: [
   //     "RESEARCH_NE",
   //     "TRAD_USE_NE",

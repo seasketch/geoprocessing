@@ -356,7 +356,9 @@ const getReducedGroupAreaOverlap = async (options: {
       []
     );
   const otherRemSketches = genSampleSketchCollection(
-    featureCollection(flatten(featureCollection(otherOverlap)).features)
+    featureCollection<Polygon>(
+      flatten(featureCollection(otherOverlap)).features
+    )
   ).features;
 
   const finalFC = featureCollection(

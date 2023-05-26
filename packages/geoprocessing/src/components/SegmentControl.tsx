@@ -1,18 +1,21 @@
 import React, { useRef, useState, useEffect } from "react";
-
 export interface SegmentControlProps {
-  segments: string[];
+  segments: { id: string; label: string }[];
   value: string;
   onClick?: (segment: string) => void;
   // disabled?: boolean;
 }
 
 export const SegmentControl = (props: SegmentControlProps) => {
-  const index = props.segments.indexOf(props.value);
+  const index = props.segments.findIndex((seg) => seg.id === props.value);
   const [segmentSizes, setSegmentSizes] = useState<number[]>();
   const containerRef = useRef<HTMLDivElement>(null);
   if (index === -1) {
-    throw new Error("Unknown SegmentControl value " + props.value);
+    throw new Error(
+      `Unknown SegmentControl id ${props.value} for segments ${JSON.stringify(
+        props.segments
+      )}`
+    );
   }
   let position = "0px";
   // let position = `${(index / props.segments.length) * 100}%`;
@@ -57,7 +60,7 @@ export const SegmentControl = (props: SegmentControlProps) => {
           transitionProperty: "all",
           transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           transitionDuration: "75ms",
-          left: position,
+          insetInlineStart: position,
           width: `${segmentSizes ? segmentSizes[index] : 0}px`,
           fontSize: "0.875rem",
           lineHeight: "1.25rem",
@@ -81,10 +84,10 @@ export const SegmentControl = (props: SegmentControlProps) => {
         <span
           onClick={(e) => {
             if (props.onClick) {
-              props.onClick(segment);
+              props.onClick(segment.id);
             }
           }}
-          key={segment}
+          key={segment.id}
           style={{
             color: "rgba(31, 41, 55, 1)",
             userSelect: "none",
@@ -104,7 +107,7 @@ export const SegmentControl = (props: SegmentControlProps) => {
           }}
           className="text-gray-800 select-none text-sm flex-1 text-center cursor-pointer rounded-md p-0.5 z-10"
         >
-          {segment}
+          {segment.label}
         </span>
       ))}
     </div>

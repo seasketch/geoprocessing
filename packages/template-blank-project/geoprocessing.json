@@ -3,9 +3,13 @@
   "organization": "Test Org",
   "region": "us-west-1",
   "clients": [{
-    "name": "BaseReportClient",
-    "description":  "Base planning report",
-    "source": "src/clients/BaseReportClient.tsx"
+    "name": "TabReport",
+    "description":  "Report suite with tab navigation",
+    "source": "src/clients/TabReport.tsx"
+  },{
+    "name": "SizeReport",
+    "description":  "Sketch size",
+    "source": "src/clients/SizeReport.tsx"
   }],
   "preprocessingFunctions": [],
   "geoprocessingFunctions": [

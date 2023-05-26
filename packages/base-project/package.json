@@ -5,7 +5,6 @@
   "main": "src/index.js",
   "private": true,
   "scripts": {
-    "ts-node": "ts-node --transpile-only --compiler-options '{\"esModuleInterop\":true, \"module\":\"commonjs\"}'",
     "start-data": "http-server data/dist -c-1",
     "__test": "geoprocessing test",
     "test": "npm run test:unit",
@@ -19,10 +18,12 @@
     "reimport:data": "start-server-and-test 'http-server data/dist -c-1 -p 8001' http://localhost:8001 reimport:data_",
     "reimport:data_": "geoprocessing reimport:data",
     "publish:data": "geoprocessing publish:data",
-    "install:data:bin": "mkdir -p data/bin && cp -r node_modules/@seasketch/geoprocessing/dist/data/bin/* data/bin",
-    "reinstall:data:bin": "rm -rf data/bin && mkdir -p data/bin && cp -r node_modules/@seasketch/geoprocessing/dist/data/bin/* data/bin",
-    "install:data:scripts": "mkdir -p data/scripts && cp -r node_modules/@seasketch/geoprocessing/dist/data/scripts/* data/scripts",
-    "reinstall:data:scripts": "rm -rf data/scripts && mkdir -p data/scripts && cp -r node_modules/@seasketch/geoprocessing/dist/data/scripts/* data/scripts",
+    "install:scripts": "mkdir -p data/bin && cp -r node_modules/@seasketch/geoprocessing/dist/data/bin/* data/bin && mkdir -p scripts && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/scripts/* scripts",
+    "translation:install": "rm -rf src/i18n/baseLang && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/src/i18n/baseLang src/i18n",
+    "translation:extract": "rm -rf src/i18n/lang/en && NODE_ENV=development npx babel 'src/**/*.{ts,tsx}' > /dev/null && mv extractedTranslations/en src/i18n/lang/en && rm -rf extractedTranslations && npx ts-node scripts/extractExtraTerms.ts && echo 'Translations extracted to src/lang/en and src/i18n/extraTerms.json'",
+    "translation:publish": "npx ts-node src/i18n/bin/publishTerms.ts",
+    "translation:import": "npx ts-node src/i18n/bin/importTerms.ts",
+    "translation:sync": "npm run translation:extract && npm run translation:publish && npm run translation:import",
     "workspace:shell": "docker-compose -f data/docker-compose.yml  run --rm -v \"$(data/bin/readlink.sh data/src)\":/data/src -v \"$(data/bin/readlink.sh data/dist)\":/data/dist -v \"$(data/bin/readlink.sh data/bin)\":/data/bin workspace",
     "create:function": "geoprocessing create:function",
     "create:client": "geoprocessing create:client",
@@ -46,12 +47,17 @@
     "@turf/area": "^6.5.0",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-clip": "^6.5.0",
-    "@turf/boolean-valid": "^6.5.0"
+    "@turf/boolean-valid": "^6.5.0",
+    "react-i18next": "^12.2.0"
   },
   "devDependencies": {
-    "@seasketch/geoprocessing": "^2.0.0"
+    "@babel/cli": "^7.21.0",
+    "@seasketch/geoprocessing": "^2.0.0",
+    "@types/request": "^2.48.8",
+    "babel-plugin-i18next-extract": "^0.9.0",
+    "request": "^2.88.2"
   },
-  "repositoryUrl": "https://github.com/seasketch/fsm-reports.git",
-  "author": "Tim Welch",
-  "license": "BSD-3-Clause"
+  "repositoryUrl": "",
+  "author": "",
+  "license": ""
 }

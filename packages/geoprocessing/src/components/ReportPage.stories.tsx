@@ -10,7 +10,7 @@ export default {
 };
 
 export const simple = () => {
-  const [tab, setTab] = useState<string>("Page 1");
+  const [tab, setTab] = useState<string>("page1");
   const enableAllTabs = false;
   return (
     <>
@@ -18,13 +18,16 @@ export const simple = () => {
         <SegmentControl
           value={tab}
           onClick={(segment) => setTab(segment)}
-          segments={["Page 1", "Page 2"]}
+          segments={[
+            { id: "page1", label: "Page 1" },
+            { id: "page2", label: "Page 2" },
+          ]}
         />
       </div>
-      <ReportPage hidden={!enableAllTabs && tab !== "Page 1"}>
+      <ReportPage hidden={!enableAllTabs && tab !== "page1"}>
         <div>One</div>
       </ReportPage>
-      <ReportPage hidden={!enableAllTabs && tab !== "Page 2"}>
+      <ReportPage hidden={!enableAllTabs && tab !== "page2"}>
         <div>Two</div>
       </ReportPage>
     </>

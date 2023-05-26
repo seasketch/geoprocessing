@@ -1,7 +1,7 @@
 {
   "bbox": [ 0, 0, 0, 0 ],
   "planningAreaType": "eez",
+  "planningAreaId": "undefined",
   "planningAreaName": "undefined",
-  "planningAreaPossessive": "undefined",
   "externalLinks": {}
 }

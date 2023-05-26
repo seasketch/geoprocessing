@@ -1,5 +1,6 @@
 import React from "react";
 import useSketchProperties from "../hooks/useSketchProperties";
+import { Trans, useTranslation } from "react-i18next";
 import Card from "./Card";
 
 export interface SketchAttributesCardProps {
@@ -22,41 +23,74 @@ export const SketchAttributesCard = ({
   };
 
   const [properties] = useSketchProperties();
+  const { t, i18n } = useTranslation();
+
+  const attributesLabel = t("Attributes");
+
   if (autoHide === true && properties.userAttributes.length === 0) {
     return null;
   }
   if (properties) {
     return (
-      <Card titleStyle={titleStyle} title={title || "Attributes"}>
+      <Card titleStyle={titleStyle} title={title || attributesLabel}>
         <table style={{ width: "100%" }}>
           <tbody>
             {properties.userAttributes.map((attr) => {
-              const value =
-                attr && attr.value !== undefined && attr.value !== null
-                  ? attr.value
-                  : "";
-              let valueDisplay = value;
-              if (
-                mappings &&
-                mappings[attr.exportId] &&
-                typeof value === "string"
-              ) {
-                if (value[0] === "[") {
-                  const listValues = JSON.parse(value);
-                  const displayValues = listValues.map(
-                    (listValue) => mappings[attr.exportId][listValue]
-                  );
-                  valueDisplay = displayValues
-                    .map((v) => v.toString())
-                    .join(", ");
+              let label; // label: "Designation"
+              let valueLabel; // valueLabel: "Fully Protected",
+
+              // seasketch legacy - has no valueLabel, need to generate it
+              if (!attr.valueLabel) {
+                // Use label directly
+                label = attr.label;
+                // there is valueLabel provided, it is just the attribute value unless there's a caller provided mapping
+                const value =
+                  attr && attr.value !== undefined && attr.value !== null
+                    ? attr.value
+                    : t("(Not answered)");
+                valueLabel = value;
+                if (
+                  mappings &&
+                  mappings[attr.exportId] &&
+                  typeof value === "string"
+                ) {
+                  if (value[0] === "[") {
+                    const listValues = JSON.parse(value);
+                    const displayValues = listValues.map(
+                      (listValue) => mappings[attr.exportId][listValue]
+                    );
+                    valueLabel = displayValues
+                      .map((v) => v.toString())
+                      .join(", ");
+                  } else {
+                    valueLabel = mappings[attr.exportId][value];
+                  }
+                } else if (Array.isArray(value)) {
+                  // array no mapping
+                  valueLabel = value.map((v) => v.toString()).join(", ");
                 } else {
-                  valueDisplay = mappings[attr.exportId][value];
+                  valueLabel = value.toString();
                 }
-              } else if (Array.isArray(value)) {
-                // array no mapping
-                valueDisplay = value.map((v) => v.toString()).join(", ");
-              } else {
-                valueDisplay = value.toString();
+              }
+
+              // seasketch next - has valueLabel and optional translation
+              if (attr.valueLabel) {
+                // Use label and valueLabel directly
+                label = attr.label;
+                valueLabel = attr.valueLabel;
+
+                // If language not english, override with translation if available
+                if (i18n.language === "en") {
+                  label = attr.label;
+                } else if (
+                  attr.alternateLanguages &&
+                  Object.keys(attr.alternateLanguages).includes(i18n.language)
+                ) {
+                  // Swap in translation
+                  label = attr.alternateLanguages[i18n.language].label;
+                  valueLabel =
+                    attr.alternateLanguages[i18n.language].valueLabel;
+                }
               }
 
               return (
@@ -70,7 +104,7 @@ export const SketchAttributesCard = ({
                       paddingTop: 6,
                     }}
                   >
-                    {attr.label}
+                    {label}
                   </td>
                   <td
                     style={{
@@ -80,7 +114,7 @@ export const SketchAttributesCard = ({
                       paddingLeft: 6,
                     }}
                   >
-                    {valueDisplay}
+                    {t(valueLabel) /* i18next-extract-disable-line */}
                   </td>
                   {/* <span>{attr.label}</span>=<span>{attr.value}</span> */}
                 </tr>
@@ -92,8 +126,8 @@ export const SketchAttributesCard = ({
     );
   } else {
     return (
-      <Card titleStyle={titleStyle} title={title || "Attributes"}>
-        <p>No attributes found</p>
+      <Card titleStyle={titleStyle} title={title || attributesLabel}>
+        <p>t("No attributes found")</p>
       </Card>
     );
   }

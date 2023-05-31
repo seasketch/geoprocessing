@@ -5,7 +5,6 @@ import { maxWidth } from "../toolbox";
 import buffer from "@turf/buffer";
 import bboxPolygon from "@turf/bbox-polygon";
 import bbox from "@turf/bbox";
-import { featureCollection } from "@turf/helpers";
 
 interface CogOptions {
   noDataValue?: number;

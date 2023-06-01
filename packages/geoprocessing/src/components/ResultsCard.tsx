@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import Card, { CardProps } from "./Card";
 import { useFunction } from "../hooks/useFunction";
 import styled from "styled-components";
@@ -70,6 +71,13 @@ export function ResultsCard<T>({
     throw new Error("No function specified for ResultsCard");
   }
 
+  const { t } = useTranslation();
+
+  const resultsCardNoResultMsg = t(
+    "ResultsCard - no result message",
+    "Report run completed, but no results returned"
+  );
+
   const cardProps = {
     style,
     title,
@@ -90,7 +98,7 @@ export function ResultsCard<T>({
     if (task.error) {
       error = task.error;
     } else {
-      error = "Report run completed, but no results returned";
+      error = resultsCardNoResultMsg;
     }
   }
 

@@ -34,6 +34,7 @@ const ContextWrapper: React.FunctionComponent<{
         projectUrl: "https://example.com/project",
         ...(props.value || {}),
         visibleLayers: [],
+        language: "en",
       }}
     >
       {props.children}
@@ -183,6 +184,7 @@ const TestContainer: React.FunctionComponent = (props) => {
         geometryUri: `https://example.com/geometry/${sketchId}`,
         projectUrl: "https://example.com/project",
         visibleLayers: [],
+        language: "en",
       }}
     >
       <button onClick={() => setSketchId(sketchId + 1)}>

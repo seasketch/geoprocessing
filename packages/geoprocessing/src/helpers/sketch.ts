@@ -31,8 +31,6 @@ import {
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
 import { ReportContextValue } from "../context";
-import { SkipEndDimensions } from "@styled-icons/bootstrap/SkipEnd";
-
 /**
  * UserAttributes are those filled in via the attributes form specified as
  * part of a SketchClass. This getter function is easier to use than searching
@@ -518,6 +516,7 @@ export const genSampleSketchContext = (): ReportContextValue => ({
     },
   ],
   visibleLayers: [],
+  language: "en",
 });
 
 /**

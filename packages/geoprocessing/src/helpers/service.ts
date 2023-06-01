@@ -3,3 +3,6 @@ export const seaSketchReportingMessageEventType =
 
 export const seaSketchReportingVisibleLayersChangeEvent =
   "SeaSketchReportingVisibleLayersChangeEvent";
+
+export const seaSketchReportingLanguageChangeEvent =
+  "SeaSketchReportingLanguageChangeEvent";

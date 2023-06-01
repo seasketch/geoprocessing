@@ -1,7 +1,7 @@
 import React from "react";
 import { ClassTable } from "./ClassTable";
-import { ReportContext } from "../../context";
-import { ReportDecorator, CardDecorator } from "../storybook/";
+import { defaultReportContext } from "../../context";
+import { CardDecorator, createReportDecorator } from "../storybook/";
 import { createMetric } from "../../metrics";
 import {
   longClassMetrics,
@@ -16,44 +16,17 @@ import {
   categoricalMetricGroupMixedTarget,
 } from "../../testing/fixtures/metrics";
 import { valueFormatter } from "../../helpers/valueFormatter";
+import Translator from "../i18n/TranslatorAsync";
 
 export default {
   component: ClassTable,
   title: "Components/Table/ClassTable",
-  decorators: [CardDecorator, ReportDecorator],
-};
-
-const simpleContext = {
-  sketchProperties: {
-    name: "My Sketch",
-    id: "abc123",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    sketchClassId: "efg345",
-    isCollection: false,
-    userAttributes: [
-      {
-        exportId: "DESIGNATION",
-        fieldType: "ChoiceField",
-        label: "Designation",
-        value: "Marine Reserve",
-      },
-      {
-        exportId: "COMMENTS",
-        fieldType: "TextArea",
-        label: "Comments",
-        value: "This is my MPA and it is going to be the greatest. Amazing.",
-      },
-    ],
-  },
-  geometryUri: "",
-  projectUrl: "https://example.com/project",
-  visibleLayers: ["a"],
+  decorators: [CardDecorator, createReportDecorator(defaultReportContext)],
 };
 
 export const simple = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={simpleClassMetrics}
         metricGroup={simpleMetricGroup}
@@ -68,13 +41,13 @@ export const simple = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const number1digit = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={simpleClassMetrics}
         metricGroup={simpleMetricGroup}
@@ -90,13 +63,13 @@ export const number1digit = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const number2digit = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={simpleClassMetrics}
         metricGroup={simpleMetricGroup}
@@ -112,13 +85,13 @@ export const number2digit = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const numberThousands = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={simpleClassMetrics.map((m) => ({
           ...m,
@@ -137,13 +110,13 @@ export const numberThousands = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const integer = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={simpleClassMetrics.map((m) => ({
           ...m,
@@ -162,13 +135,13 @@ export const integer = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const percent = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={[
           createMetric({
@@ -191,13 +164,13 @@ export const percent = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const percent1Digit = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={[
           createMetric({
@@ -220,13 +193,13 @@ export const percent1Digit = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const percent2Digit = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={[
           createMetric({
@@ -249,13 +222,13 @@ export const percent2Digit = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const percentThousands = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={[
           createMetric({
@@ -278,13 +251,13 @@ export const percentThousands = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const simpleLayerToggle = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={simpleClassMetrics}
         metricGroup={simpleMetricGroup}
@@ -304,13 +277,13 @@ export const simpleLayerToggle = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const simpleGoal = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={simpleClassMetrics}
         metricGroup={simpleMetricGroup}
@@ -323,7 +296,6 @@ export const simpleGoal = () => {
             type: "metricValue",
             metricId: simpleMetricGroup.metricId,
             valueFormatter: "percent",
-            columnLabel: "% Value",
           },
           {
             type: "metricGoal",
@@ -331,13 +303,13 @@ export const simpleGoal = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const simpleBoth = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={simpleClassMetrics}
         metricGroup={simpleMetricGroup}
@@ -361,13 +333,13 @@ export const simpleBoth = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const categoricalData = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={categoricalClassMetrics}
         metricGroup={categoricalMetricGroup}
@@ -391,13 +363,13 @@ export const categoricalData = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const valueFormatAndLabel = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={categoricalClassMetrics}
         metricGroup={categoricalMetricGroup}
@@ -415,13 +387,13 @@ export const valueFormatAndLabel = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const chartWithSeparateSortableValueColumn = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={categoricalClassMetrics}
         metricGroup={categoricalMetricGroup}
@@ -451,13 +423,13 @@ export const chartWithSeparateSortableValueColumn = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const chartWithIntegratedValueAndTargetPass = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={categoricalClassMetrics}
         metricGroup={categoricalMetricGroup}
@@ -479,13 +451,13 @@ export const chartWithIntegratedValueAndTargetPass = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const chartWithObjective = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={categoricalClassMetrics}
         metricGroup={categoricalMetricGroup}
@@ -508,13 +480,13 @@ export const chartWithObjective = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const chartWithMixedTarget = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={categoricalClassMetricsMixedTarget}
         metricGroup={categoricalMetricGroupMixedTarget}
@@ -555,13 +527,13 @@ export const chartWithMixedTarget = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const chartWithSeparateTargetColumn = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={categoricalClassMetricsMixedTarget}
         metricGroup={categoricalMetricGroupMixedTarget}
@@ -594,13 +566,13 @@ export const chartWithSeparateTargetColumn = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };
 
 export const chartWithWideTitle = () => {
   return (
-    <ReportContext.Provider value={simpleContext}>
+    <Translator>
       <ClassTable
         rows={longClassMetrics}
         metricGroup={categoricalMetricGroup}
@@ -624,6 +596,6 @@ export const chartWithWideTitle = () => {
           },
         ]}
       />
-    </ReportContext.Provider>
+    </Translator>
   );
 };

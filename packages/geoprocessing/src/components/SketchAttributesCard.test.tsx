@@ -32,6 +32,7 @@ test("SketchAttributesCard renders all userAttributes", () => {
         },
         projectUrl: "https://example.com/project",
         visibleLayers: [],
+        language: "en",
       }}
     >
       <SketchAttributesCard />
@@ -70,6 +71,7 @@ test("Can deal with null values", () => {
         },
         projectUrl: "https://example.com/project",
         visibleLayers: [],
+        language: "en",
       }}
     >
       <SketchAttributesCard />
@@ -95,6 +97,7 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
         },
         projectUrl: "https://example.com/project",
         visibleLayers: [],
+        language: "en",
       }}
     >
       <SketchAttributesCard autoHide={true} />
@@ -116,6 +119,7 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
         },
         projectUrl: "https://example.com/project",
         visibleLayers: [],
+        language: "en",
       }}
     >
       <SketchAttributesCard autoHide={false} />
@@ -150,6 +154,7 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
         },
         projectUrl: "https://example.com/project",
         visibleLayers: [],
+        language: "en",
       }}
     >
       <SketchAttributesCard autoHide={true} />

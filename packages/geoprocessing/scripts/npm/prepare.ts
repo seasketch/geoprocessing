@@ -62,6 +62,9 @@ async function bundleBaseProject() {
   const distBaseProjectPath = `${distPath}/base-project`;
   const baseProjectPath = `${__dirname}/../../../base-project`;
 
+  const distI18nPath = `${distPath}/base-project/src/i18n`;
+  const srcI18nPath = `${__dirname}/../../src/i18n`;
+
   // Delete old template bundles if they exist
   if (fs.existsSync(path.join(distBaseProjectPath))) {
     fs.rmdirSync(distBaseProjectPath, { recursive: true });
@@ -73,6 +76,9 @@ async function bundleBaseProject() {
     await $`cp -r ${baseProjectPath}/. ${distBaseProjectPath}`;
     await $`mv ${distBaseProjectPath}/.gitignore ${distBaseProjectPath}/_gitignore`;
     await $`rm -rf ${distBaseProjectPath}/node_modules`;
+    await $`cp -r ${srcI18nPath}/. ${distI18nPath}`;
+    await $`mkdir ${distI18nPath}/baseLang`;
+    await $`mv ${distI18nPath}/lang/* ${distI18nPath}/baseLang`;
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.log("Base project copy failed");

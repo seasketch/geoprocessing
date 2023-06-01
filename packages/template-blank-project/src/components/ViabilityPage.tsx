@@ -1,14 +1,12 @@
 import React from "react";
-import SizeCard from "./SizeCard";
+import { SizeCard } from "./SizeCard";
 import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
 
-const ReportPage = () => {
+export const ViabilityPage = () => {
   return (
     <>
-      <SketchAttributesCard autoHide />
       <SizeCard />
+      <SketchAttributesCard autoHide />
     </>
   );
 };
-
-export default ReportPage;

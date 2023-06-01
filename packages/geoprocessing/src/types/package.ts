@@ -14,6 +14,7 @@ export const packageSchema = z.object({
   repository: z.record(z.string()).optional(),
   dependencies: z.record(z.string()).optional(),
   devDependencies: z.record(z.string()).optional(),
+  scripts: z.record(z.string()).optional(),
 });
 
 //// INFERRED TYPES ////

@@ -1,6 +1,8 @@
 import { BBox } from "../types";
 // @ts-ignore
 import parseGeoraster from "georaster";
+// @ts-ignore
+import geoblaze from "geoblaze";
 import { maxWidth } from "../toolbox";
 import buffer from "@turf/buffer";
 import bboxPolygon from "@turf/bbox-polygon";
@@ -17,8 +19,21 @@ interface CogOptions {
 }
 
 /**
+ * Returns cog-aware georaster at given url.  Will not fetch raster values
+ * until subsequent geoblaze calls are made with a geometry and it will
+ * calculate the window to load based on the geometry.  The subsequent
+ * geoblaze calls (e.g. sum) must be called async to allow the raster to load.
+ */
+export const loadCog = async (url: string) => {
+  console.log("loadCog", url);
+  return geoblaze.parse(url);
+};
+
+/**
  * Returns georaster window (image subset) defined by options.windowBox, otherwise loads the whole raster
  * windowBox is extended out to the nearest pixel edge to (in theory) avoid resampling. Assumes raster is in WGS84 degrees
+ * This function front loads the raster values, so subsequent geoblaze calls (e.g. sum) can be called sync
+ * @deprecated
  * */
 export const loadCogWindow = async (url: string, options: CogOptions) => {
   console.log("loadCogWindow", url, "options: ", JSON.stringify(options));

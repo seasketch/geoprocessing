@@ -18,8 +18,8 @@ const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/testing";
 const dstPath = "data/testing/output";
 
-describe("Reimport datsources", () => {
-  describe("reimportVectorDatasource - single file, single class", () => {
+describe("Reimport datasources", () => {
+  describe("reimport - single file, single class", () => {
     const dstConfigFilename = "datasources_test_reimport.json";
     const dstConfigFilePath = path.join(dstPath, dstConfigFilename);
     const vectorDatasourceId = "eez-reimport";
@@ -31,7 +31,7 @@ describe("Reimport datsources", () => {
       // Start off with clean empty config file
       fs.writeJSONSync(dstConfigFilePath, []);
     });
-    test("reimportVectorDatasource - should import and then reimport two datasources", async () => {
+    test("reimport - should import and then reimport two datasources", async () => {
       const importVectorDs = await importDatasource(
         projectClient,
         {

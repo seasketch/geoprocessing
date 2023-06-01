@@ -45,33 +45,46 @@ export async function overlapRaster(
     const sketchUnionArea = area(sketchUnion);
     // If there was overlap, use the union for accumulating sumValue
     isOverlap = sketchUnionArea < sketchArea;
+    const sumPromises: Promise<number>[] = [];
     if (isOverlap) {
       featureEach(sketchUnion as Feature<Polygon>, (feat) => {
-        sumValue += getSum(raster, feat);
+        // accumulate geoblaze sum promises
+        sumPromises.push(getSum(raster, feat));
       });
     }
+    // await promises and accumulate sumValue
+    (await Promise.all(sumPromises)).forEach((curSum) => {
+      sumValue += curSum;
+    });
   }
 
   // Get raster sum for each feature
   // If there was no overlap found above, accumulate collection sumValue here instead
-  let sketchMetrics: Metric[] = [];
-  featureEach(sketch, (feat) => {
+  const sumPromises: Promise<number>[] = [];
+  const sumFeatures: Sketch[] = [];
+  featureEach(sketch, async (feat) => {
     const remSketch = options.removeSketchHoles
       ? removeSketchPolygonHoles(feat)
       : feat;
 
-    const sketchValue = getSum(raster, remSketch);
+    // accumulate geoblaze sum promises and features so we can create metrics later
+    sumPromises.push(getSum(raster, remSketch));
+    sumFeatures.push(feat);
+  });
 
+  // await promises and create metrics, also accumulate sumValue if no overlap
+  let sketchMetrics: Metric[] = [];
+  (await Promise.all(sumPromises)).forEach((curSum, index) => {
     if (!isOverlap) {
-      sumValue += sketchValue;
+      sumValue += curSum;
     }
     sketchMetrics.push(
       createMetric({
         metricId,
-        sketchId: feat.properties.id,
-        value: sketchValue,
+        sketchId: sumFeatures[index].properties.id,
+        value: curSum,
         extra: {
-          sketchName: feat.properties.name,
+          sketchName: sumFeatures[index].properties.name,
         },
       })
     );
@@ -98,16 +111,17 @@ export async function overlapRaster(
 /**
  * Returns sum of value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
  */
-export const getSum = (
+export const getSum = async (
   raster: Georaster,
   feat?: Feature<Polygon | MultiPolygon>
-): number => {
+) => {
   let sum = 0;
   try {
-    sum = geoblaze.sum(raster, feat)[0];
+    const result = await geoblaze.sum(raster, feat);
+    sum = result[0];
   } catch (err) {
     console.log(
-      "overlapRaster raster sum threw, must not be any overlapping cells with value"
+      "overlapRaster geoblaze.sum threw, there must not be any cells with value overlapping the geometry"
     );
   }
   return sum;
@@ -116,16 +130,16 @@ export const getSum = (
 /**
  * Returns histogram of value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
  */
-export const getHistogram = (
+export const getHistogram = async (
   raster: Georaster,
   feat?: Feature<Polygon | MultiPolygon>
 ) => {
   let histogram = {};
   try {
-    histogram = geoblaze.histogram(raster, feat)[0];
+    histogram = await geoblaze.histogram(raster, feat)[0];
   } catch (err) {
     console.log(
-      "overlapRaster raster histogram threw, must not be any overlapping cells with value"
+      "overlapRaster geoblaze.histogram threw, there must not be any cells with value overlapping the geometry"
     );
   }
   return histogram;

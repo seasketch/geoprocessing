@@ -1,6 +1,6 @@
 /**
  * @jest-environment node
- * @group unit
+ * @group e2e
  */
 import { Polygon, Sketch, Feature } from "../types";
 import { genSampleSketch } from "../helpers";
@@ -9,6 +9,7 @@ import dufour_peyton_intersection from "dufour-peyton-intersection";
 
 // @ts-ignore
 import geoblaze from "geoblaze";
+import { loadCogWindow } from "./cog";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]
@@ -139,7 +140,7 @@ describe("geoblaze cog test", () => {
     const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
 
     const raster = await geoblaze.parse(url);
-    // Create polygon smaller than one pixel
+    // Create polygon covering much but not all of the value in the raster with nodata inside it
     expect(raster).toBeTruthy();
     const feature: Feature<Polygon> = {
       type: "Feature",

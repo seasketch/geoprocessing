@@ -115,4 +115,8 @@ describe("overlapRaster test", () => {
     expect(metrics.length).toBe(1);
     expect(metrics[0].value).toBe(5);
   });
+
+  // Test sketch collection with overlapping polygons
+
+  // Test polygon with hole
 });

@@ -2,18 +2,23 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { WatersBackgroundSimple } from "./WatersBackgroundSimple";
 
-/** Type accepted by WatersDiagram to set translatable text labels  */
+/** Label type accepted by WatersDiagram to set translatable text labels  */
 interface Label {
+  /** Unique string id, used to update defaults or add new */
   key: string;
+  /** Displayed text in diagram */
   labelText?: string;
+  /** X offset from top left in pixels */
   x?: string | number;
+  /** Y offset from top left in pixels */
   y?: string | number;
+  /** CSS style properties for text. Defaults to 12pt Helvetica */
   style?: React.CSSProperties;
 }
 
 /** Array of Labels to be inserted into the waters diagram */
 export interface LabelProps {
-  /** overrides default labels with same key id, otherwise adds as new label */
+  /** Array of Label, overrides default labels with same key id, otherwise adds as new label */
   labels?: Label[];
 }
 

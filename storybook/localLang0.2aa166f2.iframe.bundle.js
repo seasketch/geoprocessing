@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{"./src/i18n/config.json":function(module){module.exports=JSON.parse('{"localNamespace":"translation","remoteContext":"base"}')}}]);

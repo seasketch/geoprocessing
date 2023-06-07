@@ -1,8 +1,8 @@
 import {
   createPool,
   sql,
-  DatabasePoolConnectionType,
-  IdentifierSqlTokenType,
+  DatabasePoolConnection,
+  IdentifierSqlToken,
 } from "slonik";
 import { raw } from "slonik-sql-tag-raw";
 import ora from "ora";
@@ -17,6 +17,7 @@ import geobuf from "geobuf";
 import humanizeDuration from "humanize-duration";
 import prettyBytes from "pretty-bytes";
 import expandBBox from "./expand";
+import z from "zod";
 
 // Warn users if index is over 500kb
 const INDEX_THRESHOLD_SIZE = 500000;
@@ -53,7 +54,7 @@ const bundleFeatures = async (
   callback?: (id: number, geobuf: Uint8Array, bbox: BBox) => Promise<any>
 ): Promise<string> => {
   const options = { ...DEFAULTS, ..._options };
-  const pool = createPool(options.connection, {});
+  const pool = await createPool(options.connection, {});
   const outstandingPromises: Promise<any>[] = [];
   const statsTableName = `${options.tableName}_bundles`;
   await pool.connect(async (connection) => {
@@ -70,7 +71,7 @@ const bundleFeatures = async (
 
     // Create table to store output stats (bbox, bytes, feature count, etc)
     spinner.start(`Creating output stats table ${statsTableName}`);
-    await connection.query(sql`
+    await connection.query(sql.typeAlias("void")`
       begin;
       drop table if exists ${sql.identifier([statsTableName])};
       create table ${sql.identifier([statsTableName])} ( 
@@ -94,11 +95,13 @@ const bundleFeatures = async (
 
     // Fetch the bbox, id, and size (st_npoints) of all features to organizing
     // features into bundles
-    const records = await connection.many<{
-      id: number;
-      npoints: number;
-      bbox: BBox;
-    }>(sql`
+    const recordObject = z.object({
+      id: z.number(),
+      npoints: z.number(),
+      bbox: z.number().array().length(4).or(z.number().array().length(6)),
+    });
+
+    const records = await connection.many(sql.type(recordObject)`
       select 
         ${i.pk} as id, 
         st_npoints(${i.geom}) as npoints, 
@@ -121,7 +124,7 @@ const bundleFeatures = async (
     let processedCount = 0;
     for (const feature of records) {
       sumNPoints += feature.npoints;
-      extent = expandBBox(extent, feature.bbox);
+      extent = expandBBox(extent, feature.bbox as BBox);
       const diagonal = lineString([
         [extent[0], extent[1]],
         [extent[2], extent[3]],
@@ -147,7 +150,7 @@ const bundleFeatures = async (
         }
         sumNPoints = ids.length === 0 ? 0 : feature.npoints;
         ids = ids.length === 0 ? [] : [feature.id];
-        extent = ids.length === 0 ? null : feature.bbox;
+        extent = ids.length === 0 ? null : (feature.bbox as BBox);
       } else {
         // Haven't yet reached npoints or envelope size limits, so keep adding
         // feature ids to the bundle
@@ -167,21 +170,24 @@ const bundleFeatures = async (
 
 async function createGeobuf(
   ids: number[],
-  connection: DatabasePoolConnectionType,
-  table: IdentifierSqlTokenType,
-  geom: IdentifierSqlTokenType,
-  pk: IdentifierSqlTokenType,
-  statsTable: IdentifierSqlTokenType
+  connection: DatabasePoolConnection,
+  table: IdentifierSqlToken,
+  geom: IdentifierSqlToken,
+  pk: IdentifierSqlToken,
+  statsTable: IdentifierSqlToken
 ) {
   if (ids.length === 0) {
     throw new Error("createGeobuf called without any ids");
   }
   // Get all features with matching ids as a single feature collection, as well
   // as the combined bbox of those features
-  const { collection, extent } = await connection.one<{
-    collection: any;
-    extent: string;
-  }>(sql`
+  const collectionObject = z.object({
+    collection: z.any(),
+    extent: z.string(),
+  });
+  const { collection, extent } = await connection.one(sql.type(
+    collectionObject
+  )`
     select json_build_object(
       'type', 'FeatureCollection',
       'features', json_agg(ST_AsGeoJSON(t.*, 'ccw', 6)::json)
@@ -193,7 +199,7 @@ async function createGeobuf(
         ST_ForcePolygonCCW(${geom}) as ccw,
         ${st_asbbox(geom)} as b_box 
       from ${table} 
-      where ${pk} in (${sql.join(ids, sql`, `)})
+      where ${pk} in (${sql.join(ids, sql.unsafe`, `)})
     ) as t
   `);
   const fc = collection as FeatureCollection<Geometry>;
@@ -219,13 +225,16 @@ async function createGeobuf(
       }
     }
   }
+
+  const sizeObject = z.object({
+    id: z.number(),
+    bytes: z.number(),
+    count: z.number(),
+  });
+
   // geobuf types are incompatible so cast to geojson fc it expects
   const buffer = geobuf.encode(fc as geobufFC, new Pbf());
-  const { id, bytes, count } = await connection.one<{
-    id: number;
-    bytes: number;
-    count: number;
-  }>(sql`
+  const { id, bytes, count } = await connection.one(sql.type(sizeObject)`
     insert into ${statsTable} (
       size, 
       bytes,
@@ -250,8 +259,8 @@ async function createGeobuf(
   };
 }
 
-function st_asbbox(geom: IdentifierSqlTokenType) {
-  return sql`array[
+function st_asbbox(geom: IdentifierSqlToken) {
+  return sql.unsafe`array[
     st_xmin(${geom}),
     st_ymin(${geom}),
     st_xmax(${geom}),

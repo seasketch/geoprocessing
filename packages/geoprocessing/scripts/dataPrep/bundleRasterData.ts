@@ -1,7 +1,6 @@
 import { config } from "aws-sdk";
 import ora from "ora";
 import program, { version } from "commander";
-import { createPool } from "slonik";
 
 import inquirer from "inquirer";
 import {
@@ -14,10 +13,6 @@ import {
   CloudfrontDistributionDetails,
   scheduleObjectsForDeletion,
 } from "./aws";
-
-const DEFAULT_FLATBUSH_NODE_SIZE = 9;
-const DEFAULT_COMPOSITE_INDEX_SIZE_TARGET = 80_000;
-const DEFAULT_MIN_COMPOSITE_INDEXES = 3;
 
 program
   .command("bundle-rasters <datasource-name>")

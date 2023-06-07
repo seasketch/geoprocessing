@@ -1,5 +1,52 @@
 # Changelog
 
+## v3.0.0 (2023-06-05)
+
+### :boom: Breaking Changes
+
+* Switch `createReportStoryLayout` function to `createReportDecorator`
+
+### :rocket: New Feature / Improvement
+
+* Add internationalization (i18n) aka language translation support to core framework and geoprocessing projects, as proposed in [GIP-1](packages/wiki-docs/gip/GIP-1-i18n.md)
+  * Utilizing this feature in existing projects requires running `translation:install`, then wrapping existing report clients in `Translator` components (see stories), setup POEditor project access. Then use translation CLI commands to extract, publish, translate and then reimport translations. See tutorial for more information.
+* Add WatersDiagram SVG component with built-in labels that can be user edited or overrided.
+* Add SizeCard and boundaryAreaOverlap to template-ocean-eez, add debug for template packages
+* Add planningAreaId to basic.json to distinguish from planningAreaName as the common name for reports, fix extraTerms import for publish.  template-ocean-eez uses this, such that when you select an EEZ, it uses the unique ID string from the "UNION" attribute for this value.  This is then used by the clipToOceanEEZ preprocessor function in template-ocean-eez
+
+```typescript
+{
+    datasourceId: "global-clipping-eez-land-union",
+    operation: "intersection",
+    options: {
+      propertyFilter: {
+        property: "UNION",
+        values: [project.basic.planningAreaId],
+      },
+    },
+  },
+```
+
+### :bug: Bug Fix
+
+* Update slonik to 2.0 and fix symlink follow endless loop bug in macos
+* Stop appending project init metadata to package.json on project creation.  Projects created using `template-ocean-eez` will have these that can be safely deleted (e.g. `planningUnitId`, `planningUnitName`)
+
+### :house: Internal
+
+* Update SegmentControl component to support RTL languages (tab order reverses)
+* Stub out `data/src` and `data/dist` folders on project init
+* Upgrade webpack cli and improve client error message
+* Explicitly make `client` and `datasets` buckets public as now required by AWS.
+* Drop acl setting from cache control script to make top-level service manifest (index.html) public read.  It's no longer needed as bucket is already public.
+
+### :memo: Documentation
+
+* Move wiki docs into monorepo, with Github action publishing on merge to main after release
+* Switch to CCSA-4.0 license for wiki docs allowing them to be copied, extended and presented.
+* Add translation tutorial
+* Add advanced storybook tutorial
+
 ## v2.0.0 (2023-03-08)
 
 ### :boom: Breaking Changes

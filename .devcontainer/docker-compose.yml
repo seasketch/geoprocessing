@@ -14,7 +14,7 @@ services:
     # The contents of the project directory in the host will be mirrored
     # within the workspace. 
     volumes:
-      - ..:/workspace:cached
+      - ..:/workspace/geoprocessing:cached
       # - "..:/data"
     network_mode: service:db
     # Switch to the data directory on startup

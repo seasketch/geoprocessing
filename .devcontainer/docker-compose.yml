@@ -1,9 +1,7 @@
 version: '3'
 services:
   workspace:
-    build: 
-        context: .
-        dockerfile: Dockerfile
+    image: seasketch/geoprocessing-workspace
     # These env vars make it easy to connect to the database service
     # Use `psql` without arguments to connect from within the workspace
     environment:

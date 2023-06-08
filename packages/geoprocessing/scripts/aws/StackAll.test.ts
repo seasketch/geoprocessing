@@ -12,7 +12,7 @@ import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack";
 
 import config from "./config";
 
-const rootPath = `${__dirname}/__test__`;
+const rootPath = `${__dirname}/../__test__`;
 const projectName = "all";
 const projectPath = path.join(rootPath, projectName);
 

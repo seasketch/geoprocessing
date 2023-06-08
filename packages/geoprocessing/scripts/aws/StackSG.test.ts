@@ -10,7 +10,7 @@ import config from "./config";
 import createTestProjectManifest from "../testing/createTestProjectManifest";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 
-const rootPath = `${__dirname}/__test__`;
+const rootPath = `${__dirname}/../__test__`;
 const projectName = "sync-geoprocessor-only";
 const projectPath = path.join(rootPath, projectName);
 

@@ -1,6 +1,7 @@
 import path from "path";
 import { FeatureCollection, Polygon } from "../../../src/types";
 import fs from "fs-extra";
+import { $ } from "zx";
 import {
   ClassStats,
   KeyStats,
@@ -17,11 +18,6 @@ import { ProjectClientBase } from "../../../src";
 import { createOrUpdateDatasource } from "./datasources";
 import area from "@turf/area";
 import { publishDatasource } from "./publishDatasource";
-import {
-  verifyWorkspace,
-  genFgb as wsGenFgb,
-  genGeojson as wsGenGeojson,
-} from "../workspace";
 
 export async function importVectorDatasource<C extends ProjectClientBase>(
   projectClient: C,
@@ -33,7 +29,6 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
     srcBucketUrl?: string;
   }
 ) {
-  await verifyWorkspace();
 
   const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genVectorConfig(projectClient, options, newDstPath);
@@ -194,12 +189,36 @@ export function genVectorKeyStats(
 
 /** Convert vector datasource to GeoJSON */
 export async function genGeojson(config: ImportVectorDatasourceConfig) {
-  await wsGenGeojson(config, datasourceConfig.defaultBinPath, config.dstPath);
+  let { src, propertiesToKeep, layerName } = config;
+  const dst = getJsonPath(config.dstPath, config.datasourceId);
+  const query = `SELECT "${
+    propertiesToKeep.length > 0 ? propertiesToKeep.join(",") : "*"
+  }" FROM "${layerName}"`;
+  const explodeOption =
+    config.explodeMulti === undefined
+      ? "-explodecollections"
+      : config.explodeMulti === true
+      ? "-explodecollections"
+      : "";
+  fs.removeSync(dst);
+  await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON  ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
 }
 
 /** Convert vector datasource to FlatGeobuf */
 export async function genFlatgeobuf(config: ImportVectorDatasourceConfig) {
-  await wsGenFgb(config, datasourceConfig.defaultBinPath, config.dstPath);
+  const { src, propertiesToKeep, layerName } = config;
+  const dst = getFlatGeobufPath(config.dstPath, config.datasourceId);
+  const query = `SELECT "${
+    propertiesToKeep.length > 0 ? propertiesToKeep.join(",") : "*"
+  }" FROM "${layerName}"`;
+  const explodeOption =
+    config.explodeMulti === undefined
+      ? "-explodecollections"
+      : config.explodeMulti === true
+      ? "-explodecollections"
+      : "";
+  fs.removeSync(dst);
+  await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
 }
 
 function getJsonPath(dstPath: string, datasourceId: string) {

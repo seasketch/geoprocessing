@@ -1204,7 +1204,7 @@ The magic comes in being able to request polygons from this bundle in our geopro
 
 Here is an example of use end-to-end.  Note this is quite a manual process.  Future framework versions may try to automate it.
 
-* [data prep script](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union-prep.sh) which can be run from the docker workspace using `npm run workspace:shell`, which includes postgis, and mounts your local files in the data directory into the container.
+* [data prep script](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union-prep.sh).
 * [sql subdivide script](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union.sql) run by the data prep script
 * [publish script](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union-publish.sh) brings the subdivided polygons out of postgis, encodes them in geobuf format, builds the index, and publishes it all to a standalone S3 bucket that is independent of your project.  The url of the S3 bucket will be provided once complete.  You can ``--dry-run` the command to see how many bundles it will create and how big they'll be.  The sweet spot is bundles about ~25KB in size.  Once you've found that sweet spot you can do the actual run.
 * [use of VectorDataSource in gp function](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/src/functions/clipToOceanEez.ts#L32)
@@ -1212,17 +1212,6 @@ Here is an example of use end-to-end.  Note this is quite a manual process.  Fut
 This is the method that is used for the global `land` and `eez` datasources. Here is a full example of subdividing OpenStreetMap land polygons for the entire world.  This is what is used for the `clipToOceanEez` script that comes with the `ocean-eez` starter template.
 
 * [publish vector data source](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union-publish.sh)
-
-# Use docker geoprocessing workspace
-
-To open a command in the geoprocessing workspace:
-
-```bash
-npm run workspace:shell
-```
-
-This will start the `gp-workspace` Docker container and open a terminal window that you can interact with.
-It will also start a PostgreSQL database container. You can access this database using the `psql` command (no args) within the workspace, or from the host computer (such as using QGIS) on port 54320 using the credentials found in `data/docker-compose.yml`.
 
 # Advanced storybook usage
 

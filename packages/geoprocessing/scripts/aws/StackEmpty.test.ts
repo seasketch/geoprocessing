@@ -11,13 +11,13 @@ import createTestProjectManifest from "../testing/createTestProjectManifest";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 
 const rootPath = `${__dirname}/__test__`;
+const projectName = "empty";
+const projectPath = path.join(rootPath, projectName);
 
 describe("GeoprocessingStack - empty", () => {
-  afterAll(() => cleanupBuildDirs(rootPath));
+  afterAll(() => cleanupBuildDirs(projectPath));
 
   it.only("should create a valid stack", async () => {
-    const projectName = "empty";
-    const projectPath = path.join(rootPath, projectName);
     await setupBuildDirs(projectPath);
 
     const manifest = await createTestProjectManifest(projectName, []);

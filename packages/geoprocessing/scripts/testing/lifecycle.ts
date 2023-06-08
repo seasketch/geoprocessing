@@ -7,6 +7,6 @@ export async function setupBuildDirs(projectPath: string) {
   await fs.ensureDir(path.join(projectPath, ".build-web"));
 }
 
-export async function cleanupBuildDirs(rootPath: string) {
-  await fs.remove(rootPath); // Cleanup build dirs
+export async function cleanupBuildDirs(path: string) {
+  await fs.remove(path); // Cleanup build dirs
 }

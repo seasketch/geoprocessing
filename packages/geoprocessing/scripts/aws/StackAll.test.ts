@@ -13,13 +13,13 @@ import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack";
 import config from "./config";
 
 const rootPath = `${__dirname}/__test__`;
+const projectName = "all";
+const projectPath = path.join(rootPath, projectName);
 
 describe("GeoprocessingStack - all components", () => {
-  afterAll(() => cleanupBuildDirs(rootPath));
+  afterAll(() => cleanupBuildDirs(projectPath));
 
   it("should create a valid stack", async () => {
-    const projectName = "all";
-    const projectPath = path.join(rootPath, projectName);
     await setupBuildDirs(projectPath);
 
     const manifest = await createTestProjectManifest(projectName, [

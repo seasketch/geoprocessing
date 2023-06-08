@@ -11,7 +11,7 @@ const rootPath = `${__dirname}/__test__`;
 
 describe("createProject", () => {
   afterAll(async () => {
-    await fs.remove(rootPath); // Cleanup
+    await fs.emptyDirSync(rootPath); // Cleanup
   });
 
   it("should create empty project", async () => {

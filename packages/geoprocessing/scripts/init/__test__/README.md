@@ -1,0 +1,1 @@
+This folder is used for temporary files during test runs

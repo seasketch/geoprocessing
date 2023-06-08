@@ -13,12 +13,7 @@ services:
 
     # Named volums of targeted paths for faster disk performance
     volumes:
-      - ..:/workspaces/geoprocessing:cached
-      - testdata_volume:/workspaces/geoprocessing/packages/geoprocessing/scripts/__test__
-      - root_nm_volume:/workspaces/geoprocessing/node_modules
-      - gp_nm_volume:/workspaces/geoprocessing/packages/geoprocessing/node_modules
-      - toe_nm_volume:/workspaces/geoprocessing/packages/template-ocean-eez/node_modules
-      - tbp__nm_volume:/workspaces/geoprocessing/packages/template-blank-project/node_modules
+      - code_volume:/workspaces
       
 
     # network_mode: service:db
@@ -35,9 +30,4 @@ services:
   #     - "54320:5432"
 
 volumes:
-  testdata_volume:
-  root_nm_volume:
-  gp_nm_volume:
-  toe_nm_volume:
-  tbp__nm_volume:
-
+  code_volume:

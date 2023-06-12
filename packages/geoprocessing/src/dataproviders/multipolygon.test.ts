@@ -627,4 +627,120 @@ describe("geoblaze multipolygon tests", () => {
       wholeSum[0] === 4 && singlepart[0] === 4 && multipart[0] === 4
     ).toBeTruthy();
   });
+
+  test("simple in-memory raster unit overlap test", async () => {
+    //  Raster   whole   2polygon & multipolygon
+    //           _____            ____
+    //  [1,1]   |     |          |    | (two overlapping)
+    //  [1,1]   |_____|          |____|
+    //
+
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 1],
+          [1, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+
+    const whole = {
+      type: "Polygon",
+      coordinates: [
+        [
+          [1, 1],
+          [1, 19],
+          [19, 19],
+          [19, 1],
+          [1, 1],
+        ],
+      ],
+    };
+
+    const collection = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            coordinates: [
+              [
+                [
+                  [1, 1],
+                  [1, 19],
+                  [19, 19],
+                  [19, 1],
+                  [1, 1],
+                ],
+              ],
+            ],
+            type: "Polygon",
+          },
+        },
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            coordinates: [
+              [
+                [
+                  [1, 1],
+                  [1, 19],
+                  [19, 19],
+                  [19, 1],
+                  [1, 1],
+                ],
+              ],
+            ],
+            type: "Polygon",
+          },
+        },
+      ],
+    };
+
+    const multipolygon = {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "MultiPolygon",
+        coordinates: [
+          [
+            [
+              [1, 1],
+              [1, 19],
+              [19, 19],
+              [19, 1],
+              [1, 1],
+            ],
+          ],
+          [
+            [
+              [1, 1],
+              [1, 19],
+              [19, 19],
+              [19, 1],
+              [1, 1],
+            ],
+          ],
+        ],
+      },
+    };
+
+    const wholeSum = await geoblaze.sum(raster, whole);
+    const singlepart = await geoblaze.sum(raster, collection);
+    const multipart = await geoblaze.sum(raster, multipolygon);
+
+    expect(
+      wholeSum[0] === 4 && singlepart[0] === 4 && multipart[0] === 4
+    ).toBeTruthy();
+  });
 });

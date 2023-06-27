@@ -81,8 +81,8 @@ export async function createProject(
     await fs.ensureDir(projectPath);
     await $`cp -r ${baseProjectPath}/* ${projectPath}`;
     await $`cp -r ${baseProjectPath}/. ${projectPath}`;
-    await $`rm ${projectPath}/package-lock.json`;
-    await $`rm ${projectPath}/geoprocessing.json`;
+    await $`rm -f ${projectPath}/package-lock.json`;
+    await $`rm -f ${projectPath}/geoprocessing.json`;
     await $`rm -rf ${projectPath}/examples/outputs/*.*`;
     await $`rm -rf ${projectPath}/examples/features/*.*`;
     await $`rm -rf ${projectPath}/examples/sketches/*/*`;

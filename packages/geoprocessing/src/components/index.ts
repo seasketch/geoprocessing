@@ -6,6 +6,7 @@ export * from "./storybook/ReportStoryLayout";
 /* Core Components */
 export * from "./buttons";
 export * from "./chart";
+export * from "./diagram";
 export * from "./iucn";
 export * from "./table";
 

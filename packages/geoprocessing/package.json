@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/geoprocessing",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -192,6 +192,7 @@
     "react-table": "^7.7.0",
     "react-test-renderer": "^16.14.0",
     "read-pkg-up": "^7.0.1",
+    "request": "^2.88.2",
     "serve-static": "^1.15.0",
     "slonik": "33.3.1",
     "slonik-sql-tag-raw": "2.0.0",

@@ -1,4 +1,4 @@
-# Options for running geoprocessing projects
+# Geoprocessing development container options
 
 1. Develop in a Docker container
     * Pros - All dependencies are installed already for you and known to work together.  Workspace is persisted in a volume.
@@ -10,11 +10,13 @@
     * Pros - fastest processing speeds
     * Cons - Difficult to provide stable support for all operating systems and processors (amd64, arm64). You are responsible for installing all dependencies (particularly GDAL/OGR), with versions known to work properly together, and configuring them.
 
+## 1. Develop in a Docker Container
+
 Here is the recommended setup for each operating system:
 
-## MacOS / Linux
+### MacOS / Linux
 
-Suggestion - run devcontainer
+Suggestion - run `geoprocessing-workspace` docker image in devcontainer
 
 ```
 git clone https://github.com/seasketch/geoprocessing-devcontainer
@@ -48,8 +50,71 @@ git clone https://github.com/seasketch/geoprocessing-devcontainer
   * You can delete your devcontainers and volumes to start over while your devcontainer is not running from the Remote Explorer.
   * You can also see and delete them from the Docker Desktop app but less information on what you are looking at will be available to be able to carefully delete certain devcontainers but not others.
 
-## Windows
+### Windows
 
-Suggestion -  run WSL2 distribution.
+Suggestion -  Import `geoprocessing-workspace` docker image as  WSL2 distribution
 
-A WSL2 distribution is similar to using a devcontainer, in that a docker environment is setup.  What a WSL2 distribution adds is full access to all of your Windows drives including the ability to mount networks drives like Box from your Windows environment into the running docker container.  This simply hasn't been found to be possible using a devcontainer directly and binding the box folder to a volume using the docker compose config file.  If you don't use Box or similar network drive solutions, then the devcontainer approach will work just fine and you can bind to any regular drive such as the C Drive.
+A WSL2 distribution is similar to using a devcontainer, in that it runs a docker image, but uses a faster Linux kernel built into Windows.  It also adds better access between the Windows filesystem and the container including the ability to mount networks drives like Box or Google Drive into the docker container for a synced experience using somethign called `drivefs`.  Network Drive access hasn't been found to be possible using a devcontainer directly and binding the box folder to a volume using the docker compose config file.  If you don't use Box or similar network drive solutions, then the devcontainer approach will work just fine and you can bind to any regular drive such as the C Drive.
+
+* From the existing windows setup tutorial, you should already have Docker Desktop, WSL2, and Git for Windows installed.
+* The docker container will already come with nvm, npm, node 16, java client, gdal/ogr dependencies.
+
+Instructions based on https://learn.microsoft.com/en-us/windows/wsl/use-custom-distro
+
+#### Install distro
+* backup your existing Geoprocessing if needed
+  * `wsl --export Geoprocessing <filename.tar>`
+* Delete your old distribution
+  * `wsl --unregister Geoprocessing`
+* Install latest Geoprocessing distribution
+  * `mkdir C:\WslDistributions\Geoprocessing`
+  * Download tar from folder with latest timestamp at https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i to this folder
+  * `wsl --import Geoprocessing C:\WslDistributions\Geoprocessing\ C:\tmp\geoprocessing-workspace_20230627\geoprocessing-workspace_20230627_65bd30ba63a3.tar`
+* Start and setup distro
+  * With powershell or another terminal open click Setting gear on right side
+  * Profiles -> Add new profile
+  * Duplicate ubuntu profile
+  * Change name to Geoprocessing
+  * Change Terminal command
+    * `C:\WINDOWS\system32\wsl.exe -d Ubuntu` becomes `C:\WINDOWS\system32\wsl.exe -u vscode -d Geoprocessing
+Setup`
+* Configure user account to use on startup
+  * `nano vi /etc/wsl.config`
+  * Paste these two lines
+
+```
+[user]
+default = vscode
+```
+
+* Stop and restart the WSL distro
+  * `wsl --terminate <distroname>`
+  * Go to Terminal app in Windows, open new Geoprocessing tab
+  * You should now be logged in as vscode user
+* Final setup
+
+```bash
+sudo mkdir /workspaces
+sudo chmod 777 /workspaces
+cd /workspaces
+git clone https://github.com/seasketch/geoprocessing.git
+cd geoprocessing
+code .
+Ctrl-J to open terminal (should open as vscode user)
+npm install
+npm test
+```
+Follow regular tutorial instructions for git credential/config setup
+Run script to clone to /workspaces/geoprocessing, npm install, and code .
+
+* Mount box directory from host OS
+
+```bash
+sudo mkdir /mnt/box
+sudo mount -t drvfs 'C:\Users/twelch.SWISH\box' /mnt/box
+```
+
+## 2. Develop in Github Codespace
+
+* Browse to https://github.com/seasketch/geoprocessing-devcontainer
+* Click `Use this template` button and then `Open in codespace`

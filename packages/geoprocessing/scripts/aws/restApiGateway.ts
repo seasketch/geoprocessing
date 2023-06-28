@@ -1,5 +1,6 @@
 import { RestApi, Cors, LambdaIntegration } from "aws-cdk-lib/aws-apigateway";
 import { GeoprocessingStack } from "./GeoprocessingStack";
+import { RemovalPolicy } from "aws-cdk-lib";
 
 /**
  * Create REST API for all gp project endpoints
@@ -9,6 +10,8 @@ export const createRestApi = (stack: GeoprocessingStack) => {
   const restApi = new RestApi(stack, `GpRestApi`, {
     restApiName: `gp-${stack.props.projectName}`,
     description: `Serves API requests for ${stack.props.projectName}.`,
+    retainDeployments: false,
+    
     defaultCorsPreflightOptions: {
       allowOrigins: Cors.ALL_ORIGINS,
       allowMethods: Cors.ALL_METHODS,
@@ -18,6 +21,7 @@ export const createRestApi = (stack: GeoprocessingStack) => {
       throttlingRateLimit: 40,
     },
   });
+  restApi.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
   // Add route to return project metadata
   const metadataIntegration = new LambdaIntegration(

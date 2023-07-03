@@ -5,7 +5,6 @@
 import { Polygon, Sketch, Feature } from "../types";
 import { genSampleSketch } from "../helpers";
 import parseGeoraster from "georaster";
-import dufour_peyton_intersection from "dufour-peyton-intersection";
 
 // @ts-ignore
 import geoblaze from "geoblaze";
@@ -195,6 +194,30 @@ describe("geoblaze hole test", () => {
       },
       bbox: [0, 0, 20, 20],
     };
+    const polyWithSquareHole = {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [0, 0],
+            [20, 0],
+            [20, 20],
+            [0, 20],
+            [0, 0],
+          ],
+          [
+            [4, 4],
+            [4, 16],
+            [16, 16],
+            [16, 4],
+            [4, 4],
+          ],
+        ],
+      },
+      bbox: [0, 0, 20, 20],
+    };
     const raster = await parseGeoraster(
       [
         [
@@ -214,19 +237,10 @@ describe("geoblaze hole test", () => {
       }
     );
 
-    // const result = geoblaze.sum(raster, polyWithHole);
-    // expect(result).toBeTruthy();
-    // expect(result[0]).toBe(12);
-
-    const result = dufour_peyton_intersection.calculate({
-      raster_bbox: [0, 0, 20, 20],
-      raster_height: 4,
-      raster_width: 4,
-      pixel_height: 5,
-      pixel_width: 5,
-      geometry: polyWithHole,
-    });
-    const expected = `{"rows":[[[0,3]],[[0,0],[3,3]],[[0,0],[3,3]],[[0,3]]]}`;
-    expect(JSON.stringify(result)).toEqual(expected);
+    const result = geoblaze.sum(raster, polyWithHole);
+    const squareResult = geoblaze.sum(raster, polyWithSquareHole);
+    expect(result).toBeTruthy();
+    expect(result[0]).toBe(12);
+    expect(squareResult[0]).toBe(12);
   });
 });

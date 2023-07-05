@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const ThreadsPlugin = require("threads-plugin");
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 const GP_ROOT = path.join(__dirname, "../../");
@@ -110,7 +111,9 @@ module.exports = {
       path.join(PROJECT_PATH, "node_modules"),
     ],
   },
-  plugins: process.env.ANALYZE_FUNCTIONS ? [new BundleAnalyzerPlugin()] : [],
+  plugins: [new ThreadsPlugin()].concat(
+    process.env.ANALYZE_FUNCTIONS ? [new BundleAnalyzerPlugin()] : [] // conditionally include bundle analyzer
+  ),
   performance: {
     maxAssetSize: 500000,
     maxEntrypointSize: 500000,

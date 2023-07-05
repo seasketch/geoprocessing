@@ -201,6 +201,7 @@
     "spdx-license-ids": "^3.0.5",
     "start-server-and-test": "^1.12.5",
     "styled-components": "^5.2.3",
+    "threads-plugin": "^1.4.0",
     "ts-loader": "^8.2.0",
     "ts-node": "^10.9.1",
     "type-fest": "^3.8.0",

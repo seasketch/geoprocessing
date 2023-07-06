@@ -6,7 +6,7 @@
 // @ts-ignore
 import geoblaze from "geoblaze";
 
-// Testing using ESRI:54012 Eckert IV equal-area projection in geoblaze
+// Testing using EPSG:6933 NSIDC EASE-Grid 2.0 Global equal-area projection in geoblaze
 
 describe("geoblaze equal-area tests", () => {
   test("discrete raster, no geometry", async () => {

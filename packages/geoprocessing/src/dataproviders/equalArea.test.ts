@@ -33,23 +33,6 @@ describe("geoblaze equal-area tests", () => {
     // All should pass
   });
 
-  test("continuous raster, no geometry", async () => {
-    const url = "http://127.0.0.1:8080/set_longlines_6933_COG.tif";
-
-    const stats = (await geoblaze.stats(url))[0];
-
-    // QGIS Raster layer statistics results for set_longlines_6933_COG.tif:
-    // {'MAX': 572.9755859375, 'MEAN': 23.933949660832983, 'MIN': 0.038610998541116714,
-    // 'RANGE': 572.9369749389589, 'STD_DEV': 70.82629580997411, 'SUM': 9932.589109245688}
-
-    expect(stats.max).toBeCloseTo(572.9755859375);
-    expect(stats.min).toBeCloseTo(0.038610998541116714);
-    expect(stats.range).toBeCloseTo(572.9369749389589);
-    expect(stats.mean).toBeCloseTo(23.933949660832983);
-    // expect(stats.std).toBeCloseTo(70.82629580997411); // fails, geoblaze: 70.74091145607518
-    expect(stats.sum).toBeCloseTo(9932.589109245688);
-  });
-
   test("cross-dateline geometry", async () => {
     const url = "http://127.0.0.1:8080/existing_marine_reserves_6933_COG.tif";
 

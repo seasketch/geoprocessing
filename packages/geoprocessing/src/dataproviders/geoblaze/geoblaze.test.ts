@@ -2,13 +2,12 @@
  * @jest-environment node
  * @group e2e
  */
-import { Polygon, Sketch, Feature } from "../types";
-import { genSampleSketch } from "../helpers";
+import { Polygon, Sketch, Feature } from "../../types";
+import { genSampleSketch } from "../../helpers";
 import parseGeoraster from "georaster";
 
 // @ts-ignore
 import geoblaze from "geoblaze";
-import { loadCogWindow } from "./cog";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]

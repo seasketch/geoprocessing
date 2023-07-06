@@ -170,7 +170,6 @@ describe("overlapRasterClass test", () => {
       classIdMapping(classes),
       "groupId"
     );
-    console.log(metrics);
     expect(metrics.length).toBe(2);
     expect(metrics[0].sketchId).toBe(null);
     expect(metrics[0].groupId).toBe("1");

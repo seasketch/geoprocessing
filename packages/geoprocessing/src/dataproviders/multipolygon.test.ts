@@ -384,16 +384,61 @@ describe("geoblaze multipolygon tests", () => {
       },
     };
 
+    const mixedColl = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            coordinates: [
+              [
+                [-66.40706491136844, 34.283527126524476],
+                [-66.40706491136844, 33.573959204981506],
+                [-64.00596222328186, 33.58309357612872],
+                [-64.038854040927, 34.34691666832026],
+                [-66.40706491136844, 34.283527126524476],
+              ],
+            ],
+
+            type: "Polygon",
+          },
+        },
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            coordinates: [
+              [
+                [
+                  [-66.40706491136844, 34.283527126524476],
+                  [-66.40706491136844, 33.573959204981506],
+                  [-64.00596222328186, 33.58309357612872],
+                  [-64.038854040927, 34.34691666832026],
+                  [-66.40706491136844, 34.283527126524476],
+                ],
+              ],
+            ],
+
+            type: "MultiPolygon",
+          },
+        },
+      ],
+    };
+
     const wholeSum = await geoblaze.sum(raster, whole);
-    const singlepart = await geoblaze.sum(raster, featureCollection);
+    const singleColl = await geoblaze.sum(raster, featureCollection);
     const multipart = await geoblaze.sum(raster, multipolygon);
+    const mixedCollSum = await geoblaze.sum(raster, mixedColl);
 
     // Expect the sum of the whole feature to be the same as the sum of
     // two fully overlapping polygons (the overlap should not be counted twice)
     // and the sum of a multipolygon with two parts which fully overlap
     // (the overlap should not be counted twice)
     expect(
-      wholeSum[0] === singlepart[0] && singlepart[0] === multipart[0]
+      wholeSum[0] === singleColl[0] &&
+        singleColl[0] === multipart[0] &&
+        multipart[0] === mixedCollSum[0]
     ).toBeTruthy();
   });
 

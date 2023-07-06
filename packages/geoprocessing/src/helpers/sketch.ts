@@ -457,6 +457,34 @@ export const genSampleSketchCollection = <G = Polygon | LineString | String>(
  * The geometry type of the returned collection will match the one passed in
  * @param geometry
  */
+export const genSampleSketchCollectionFromSketches = <
+  G = Polygon | LineString | String
+>(
+  sketches: Sketch<G>[],
+  name?: string
+): SketchCollection<G> => {
+  // Rebuild into sketch collection
+  return {
+    type: "FeatureCollection",
+    features: sketches,
+    properties: {
+      id: name || uuid(),
+      isCollection: true,
+      userAttributes: genSampleUserAttributes(),
+      sketchClassId: uuid(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      name: name || `genSampleSketchCollection_${uuid()}`,
+    },
+    bbox: bbox(featureCollection(sketches)),
+  };
+};
+
+/**
+ * Given feature collection, return a sketch collection with reasonable random props.
+ * The geometry type of the returned collection will match the one passed in
+ * @param geometry
+ */
 export const genSampleNullSketchCollection = (
   sketches: NullSketch[],
   name?: string

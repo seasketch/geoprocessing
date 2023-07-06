@@ -1,4 +1,9 @@
 module.exports = {
+  // https://github.com/shelfio/jest-dynamodb/issues/212
+  installerConfig: {
+    downloadUrl:
+      "https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/dynamodb_local_2023-06-09.tar.gz",
+  },
   tables: [
     {
       TableName: `tasks-core`,

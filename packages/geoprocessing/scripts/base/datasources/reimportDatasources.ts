@@ -25,7 +25,7 @@ import {
   genRasterConfig,
   genRasterKeyStats,
 } from "./importRasterDatasource";
-import { loadCogWindow } from "../../../src/dataproviders/cog";
+import { loadCog } from "../../../src/dataproviders/cog";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 import { publishDatasource } from "./publishDatasource";
 
@@ -144,7 +144,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         console.log(
           `Fetching raster to calculate stats from temp file server ${url}`
         );
-        const raster = await loadCogWindow(url, {});
+        const raster = await loadCog(url);
 
         console.log("raster loaded");
 

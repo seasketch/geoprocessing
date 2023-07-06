@@ -1,5 +1,4 @@
 import path from "path";
-import { $ } from "zx";
 import fs from "fs-extra";
 import {
   Histogram,
@@ -22,7 +21,7 @@ import {
 import { getSum, getHistogram } from "../../../src/toolbox";
 import { isPolygonFeature } from "../../../src/helpers";
 import { createOrUpdateDatasource } from "./datasources";
-import { loadCogWindow } from "../../../src/dataproviders/cog";
+import { loadCog } from "../../../src/dataproviders/cog";
 
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 
@@ -57,7 +56,7 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
   console.log(
     `Fetching raster to calculate stats from temp file server ${url}`
   );
-  const raster = await loadCogWindow(url, {});
+  const raster = await loadCog(url);
 
   const classStatsByProperty = await genRasterKeyStats(
     config,
@@ -167,18 +166,18 @@ export async function genRasterKeyStats(
   console.log(`Calculating keyStats, this may take a while...`);
 
   // continous - sum
-  const sum = (() => {
+  const sum = await (async () => {
     if (options.measurementType !== "quantitative") {
       return null;
     }
-    return getSum(raster, filterPoly);
+    return await getSum(raster, filterPoly);
   })();
 
   // categorical - histogram, count by class
-  const classStats: ClassStats = (() => {
+  const classStats: ClassStats = await (async () => {
     if (options.measurementType !== "categorical") return {};
 
-    const histogram = getHistogram(raster) as Histogram;
+    const histogram = (await getHistogram(raster)) as Histogram;
     if (!histogram) throw new Error("Histogram not returned");
     // convert histogram to classStats
     const classStats = Object.keys(histogram).reduce<ClassStats>(

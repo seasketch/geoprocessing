@@ -1,19 +1,20 @@
 import { Polygon, Sketch, SketchCollection, Georaster, Metric } from "../types";
 import { isSketchCollection } from "../helpers";
 import { createMetric } from "../metrics";
-import { Feature, featureCollection, MultiPolygon } from "@turf/helpers";
+import { MultiPolygon } from "@turf/helpers";
 import { Histogram } from "../types/georaster";
-import { getHistogram } from "./overlapRaster";
+import { getHistogram } from "./geoblaze";
 import { featureEach } from "@turf/meta";
 
 /**
- * Calculates sum of overlap between sketches and feature classes in raster
- * Includes overall and per sketch for each class
- * TODO: make id user-definable and default to
+ * Calculates sum of overlap between sketches and raster feature classes
+ * If sketch collection, then calculate overlap for all child sketches also
+ * TODO: make id user-definable and default to classId
  */
 export async function overlapRasterClass(
+  /** metricId value to assign to each measurement */
   metricId: string,
-  /** raster to search */
+  /** Cloud-optimized geotiffto, loaded via geoblaze.parse(), representing categorical data (multiple classes) */
   raster: Georaster,
   /**
    * single sketch or collection.  If undefined will return sum by feature class for the whole raster.
@@ -23,12 +24,8 @@ export async function overlapRasterClass(
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>
     | undefined,
-  /** Object mapping numeric class IDs to their string counterpart */
-  classIdMapping: Record<string, string>,
-  options: {
-    /** Whether to remove holes from sketch polygons. Geoblaze can overcount with them. Default to true */
-    removeSketchHoles?: boolean;
-  } = { removeSketchHoles: true }
+  /** Object mapping numeric (categorical) class IDs (as strings e.g. "1") in the raster to their string names for display e.g. "Coral Reef" */
+  classIdMapping: Record<string, string>
 ): Promise<Metric[]> {
   if (!classIdMapping) throw new Error("Missing classIdMapping");
 

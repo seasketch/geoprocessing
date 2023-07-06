@@ -7,3 +7,4 @@ export * from "./overlapRasterClass";
 export * from "./overlapGroupMetrics";
 export * from "./booleanOverlap";
 export * from "./genPreprocessor";
+export * from "./geoblaze";

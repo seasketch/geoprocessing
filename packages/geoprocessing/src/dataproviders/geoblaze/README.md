@@ -1,1 +1,0 @@
-The tests in this folder verify that geoblaze works as expected for a variety of use cases.  They demonstrate how to use the library, and are a source for test cases for higher-level use in the geoprocessing library such as raster toolbox functions.

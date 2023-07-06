@@ -146,6 +146,37 @@ describe("overlapRasterClass test", () => {
     expect(metrics[1].value).toBe(1);
   });
 
+  test("overlapRasterClass - can assign categories to alternate metric dimension", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [0, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await overlapRasterClass(
+      "test",
+      raster,
+      undefined,
+      classIdMapping(classes),
+      "groupId"
+    );
+    console.log(metrics);
+    expect(metrics.length).toBe(2);
+    expect(metrics[0].sketchId).toBe(null);
+    expect(metrics[0].groupId).toBe("1");
+    expect(metrics[0].value).toBe(2);
+  });
+
   test("overlapRasterClass - single polygon sketch bottom left", async () => {
     const raster = await parseGeoraster(
       [

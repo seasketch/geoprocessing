@@ -1,4 +1,11 @@
-import { Polygon, Sketch, SketchCollection, Georaster, Metric } from "../types";
+import {
+  Polygon,
+  Sketch,
+  SketchCollection,
+  Georaster,
+  Metric,
+  MetricDimension,
+} from "../types";
 import { isSketchCollection } from "../helpers";
 import { createMetric } from "../metrics";
 import { MultiPolygon } from "@turf/helpers";
@@ -7,14 +14,13 @@ import { getHistogram } from "./geoblaze";
 import { featureEach } from "@turf/meta";
 
 /**
- * Calculates sum of overlap between sketches and raster feature classes
+ * Calculates sum of overlap between sketches and a categorical raster with numeric values representing feature classes
  * If sketch collection, then calculate overlap for all child sketches also
- * TODO: make id user-definable and default to classId
  */
 export async function overlapRasterClass(
   /** metricId value to assign to each measurement */
   metricId: string,
-  /** Cloud-optimized geotiffto, loaded via geoblaze.parse(), representing categorical data (multiple classes) */
+  /** Cloud-optimized geotiff, loaded via geoblaze.parse(), representing categorical data (multiple classes) */
   raster: Georaster,
   /**
    * single sketch or collection.  If undefined will return sum by feature class for the whole raster.
@@ -24,10 +30,12 @@ export async function overlapRasterClass(
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>
     | undefined,
-  /** Object mapping numeric (categorical) class IDs (as strings e.g. "1") in the raster to their string names for display e.g. "Coral Reef" */
-  classIdMapping: Record<string, string>
+  /** Object mapping numeric category IDs (as strings e.g. "1") in the raster to their string names for display e.g. "Coral Reef" */
+  mapping: Record<string, string>,
+  /** Dimension to assign category name when creating metrics, defaults to classId */
+  metricCategoryDimension: MetricDimension = "classId"
 ): Promise<Metric[]> {
-  if (!classIdMapping) throw new Error("Missing classIdMapping");
+  if (!mapping) throw new Error("Missing category mapping");
 
   // Get histogram for each feature, whether sketch or sketch collection
   const histoPromises: Promise<Histogram>[] = [];
@@ -47,7 +55,7 @@ export async function overlapRasterClass(
         metricId,
         histoFeatures[index],
         curHisto,
-        classIdMapping
+        mapping
       );
       sketchMetrics.push(...histoMetrics);
     });
@@ -60,7 +68,8 @@ export async function overlapRasterClass(
       metricId,
       sketch,
       overallHisto,
-      classIdMapping
+      mapping,
+      metricCategoryDimension
     );
     sketchMetrics.push(...overallHistoMetrics);
   }
@@ -73,31 +82,33 @@ const histoToMetrics = (
   metricId: string,
   sketch: Sketch | SketchCollection | undefined,
   histo: Histogram,
-  /** Object mapping numeric class IDs to their string counterpart */
-  classIdMapping: Record<string, string>
+  /** Object mapping numeric category IDs to their string counterpart */
+  mapping: Record<string, string>,
+  /** Dimension to assign category name when creating metrics, defaults to classId */
+  metricCategoryDimension: MetricDimension = "classId"
 ): Metric[] => {
   const metrics: Metric[] = [];
-  const numericClassIds = Object.keys(classIdMapping);
+  const categoryIds = Object.keys(mapping);
   // Initialize complete histogram with zeros
-  const finalHisto = Object.keys(classIdMapping).reduce(
-    (histoSoFar, curClassId) => ({ ...histoSoFar, [curClassId]: 0 }),
+  const finalHisto = Object.keys(mapping).reduce(
+    (histoSoFar, curCategory) => ({ ...histoSoFar, [curCategory]: 0 }),
     {}
   );
   // Merge in calculated histogram which will only include non-zero
   if (histo) {
-    Object.keys(histo).forEach((classId) => {
-      finalHisto[classId] = histo[classId];
+    Object.keys(histo).forEach((categoryId) => {
+      finalHisto[categoryId] = histo[categoryId];
     });
   }
 
   // Create one metric record per class
-  numericClassIds.forEach((numericClassId) => {
+  categoryIds.forEach((categoryId) => {
     metrics.push(
       createMetric({
         metricId,
-        classId: classIdMapping[numericClassId],
+        [metricCategoryDimension]: mapping[categoryId], // resolve category name and assign to metric
         sketchId: sketch ? sketch.properties.id : null,
-        value: histo[numericClassId] || 0, // should never be undefined but default to 0 anyway
+        value: histo[categoryId] || 0, // should never be undefined but default to 0 anyway
         extra: sketch
           ? {
               sketchName: sketch.properties.name,

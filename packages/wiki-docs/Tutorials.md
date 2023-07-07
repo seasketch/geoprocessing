@@ -61,10 +61,106 @@ Web browser:
 
 * Chrome is the most common but Firefox, Safari, Edge can also work.  Their developer tools will all be a little different.
 
-## MacOS
+## Install Options
+
+You have 3 options for how to develop geoprocessing projects
+
+1. Github Codespace
+    * Github provides a server running Ubuntu Linux, pre-configured to develop your geoprocessing project.  Your local VSCode editor connects to it.
+    * Best for: beginners trying things out
+    * Pros
+      * Easiest to get started.  The codespace is managed by Github and connection to VSCode running locally is seamless.
+    * Cons
+      * Because the docker environment is completely in "the cloud", there are different limitations for bringing datasets into your environment.  Syncing with network drives like Box and Google Drive is not yet solved but may be possible.  Best-suited for projects utilizing external datasources, or reasonably sized files that can be kept directly in the repository.
+2. Local Docker environment
+    * Docker provides a sandboxed Ubuntu Linux environment on your local computer, setup specifically for geoprocessing projects.
+    * Best for: intermediate to power users doing development every day
+    * Pros
+      * Provides a fully configured environment, with installation of many of the third-party dependencies already take care of.
+      * Docker workspace is isolated from your host operating system.  You can remove or recreate these environment as needed.
+      * You can work completely offline once you are setup.
+    * Cons
+      * You will need to get comfortable with Docker Desktop software.
+      * Docker is slower than running directly on your system (maybe 30%)
+      * Syncing data from network drives like Box into the Docker container is more challenging.
+3. MacOS Bare Metal / Windows WSL
+    * All geoprocessing dependencies are installed and maintained directly by you on your local computer operating system.  For MacOS this means no virtualization is done.  For Windows, this means running Ubuntu via WSL2 aka the Windows Subsystem for Linux.
+    * Best for - power user.
+    * Pros - fastest speeds because you are running without virtualization (aka bare metal)
+    * Cons - prone to instability and issues due to progression of dependency versions or operating system changes. Difficult to test and ensure stable support for all operating systems and processors (amd64, arm64).
+
+Choose an option and follow the instructions below to get started.  You can try out different options over time.
+
+## Option #1 - Github Codespace
+
+* Install [VS Code](https://code.visualstudio.com)
+* Setup or log in to your [Github account](https://github.com/)
+* Browse to `https://github.com/seasketch/geoprocessing-devcontainer`
+* Click the green `Code` button, then the `Codespaces` tab, then `New with options...`
+
+![Add Codespace](img/AddCodespace.jpg "Add Codespace")
+
+* Accept all defaults, except choose a Machine type of `4-core` which provides the minimum 8GB of ram needed.  This codespace can be run for 30 hours per month for free, and will cost $0.36 per hour after that.  See [Github codespace pricing](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces) for more information.
+
+![Configure Codespace](img/ConfigCodespace.jpg "Configure Codespace")
+
+* It will automatically attempt to open your local VSCode editor and connect it to the codespace.  You will be prompted to allow this to happen.
+
+## Option #2 - Local Docker Environment
 
 * Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for either Apple chip or Intel chip as appropriate to your system and make sure it's running.
   * If you don't know which you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`
+* Install [VS Code](https://code.visualstudio.com) and open it
+* Clone the geoprocessing devcontainer repository to your system
+
+```bash
+git clone https://github.com/seasketch/geoprocessing-devcontainer
+```
+
+* Open the geoprocessing-devcontainer folder in VSCode
+  * `File` -> `Open Folder` -> geoprocessing-devcontainer folder
+
+* If you are prompted to install suggested extensions, then do so, otherwise go to the Extension panel and install the following:
+  * Remote Development
+  * Dev Containers
+  * Docker
+  * Remote Explorer
+* Once you have DevContainer support, you should be prompted to ”Reopen folder to develop in a container”.  <b>*Do not do this yet.*</b>
+* Under the `.devcontainer/local-dev` folder, make a copy of the `.env.template` file and rename it to `.env`.
+  * Fill in your POEditor API token for you account, which you can find here - https://poeditor.com/account/api.  If you don't have one, then follow the instructions to [create your own](#setup-poeditor-as-an-independent-developer).
+* If you have a data folder to mount into the docker container from your host operating system, edit the docker-compose.yml file and uncomment the volume below this comment
+  * `# Bound host volume for Box data folder`
+  * The volume is preset to bind to your Box Sync folder in you home directory but you can change it to any path in your operating system where your data resides for all your projects.
+* To start the devcontainer at any time
+  * `Cmd-Shift-P` to open command palette
+  * type “Reopen in container” and select the Dev Container command to do so.
+  * VSCode will reload, pull the latest `geoprocessing-workspace` docker image, run it, and start a remote code experience inside the container.  
+* Once container starts
+  * It will automatically clone the geoprocessing repository into your environment under `/workspaces/geoprocessing`, and then run `npm install` to install all dependencies.  Wait for this process to finish which can take up to 3-4 minutes the first time.
+  * `Ctrl-J` will open a terminal inside the container.
+  * Navigate to geoprocessing and verify tests run successfully.
+    * `cd /workspaces/geoprocessing`
+    * `npm run test`
+
+If success, then you're now ready to create a new geoprocessing project in your devcontainer environment.
+
+* To stop devcontainer at any time
+  * `Cmd-Shift-P` to open command palette and type `“Reopen locally”` to find command and hit Enter.
+* To restart
+* To see and manage your devcontainers
+  * Make sure you stop your active VSCODE devcontainer sessions and `"Reopen locally"` first.
+  * Open the Remote Explorer panel in the left sidebar.
+  * You can delete any existing devcontainers and volumes to start over.
+  * You can also see and delete them from the Docker Desktop app, but it might not be obvious which containers and volumes are which.
+
+![Manage Devcontainers](img/ManageDevcontainers.jpg "Manage Devcontainers")
+
+## Option #3 - MacOS Bare Metal / Windows WSL
+
+### MacOS
+
+* Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+  * For MacOS, choose either Apple chip or Intel chip as appropriate to your system and make sure it's running.  If you don't know which you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`.
 * Install [Node JS](https://nodejs.org/en/download/) >= v16.0.0
   * [nvm](https://github.com/nvm-sh/nvm) is great for this, then `nvm install v16`.  May ask you to first install XCode developer tools as well which is available through the App Store or follow the instructions provided when you try to install nvm.
   * Then open your Terminal app of choice and run `node -v` to check your node version
@@ -80,9 +176,9 @@ Web browser:
 * Create a free Github account if you don't have one already
   * Set your git username
 
-## Windows
+### Windows
 
-For Windows, your `geoprocessing` project and the underlying code run in a Docker container running Ubuntu Linux.  This is done using the Windows Subsystem for Linux (WSL2) so performance is actually quite good.  Docker Desktop and VSCode both know how to work seamlessly with WSL2.  Some of the building blocks you will install in Windows (Git, AWSCLI) and link them into the Ubuntu Docker container.  The rest will be installed directly in the Ubuntu Docker container.
+For Windows, you won't actually be running bare metal.  your `geoprocessing` project and the underlying code run in a Docker container running Ubuntu Linux.  This is done using the Windows Subsystem for Linux (WSL2) so performance is actually quite good.  Docker Desktop and VSCode both know how to work seamlessly with WSL2.  Some of the building blocks you will install in Windows (Git, AWSCLI) and link them into the Ubuntu Docker container.  The rest will be installed directly in the Ubuntu Docker container.
 
 In Windows:
 
@@ -106,9 +202,9 @@ In Ubuntu:
 
 ## Final Steps
 
-If you haven't already, establish the [username](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git?platform=mac) and email address git should associate with your commits
+Whichever option you chose, if you haven't already, establish the [username](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git?platform=mac) and email address git should associate with your commits.
 
-You can set these per repository, or set them globall on your system for all repositories and override them as needed.  Here's the commands to set globally
+You can set these per repository, or set them globall on your system for all repositories and override them as needed.  Here's the commands to set globally for your environment.
 
 ```bash
 git config --global user.name "Your Name"

@@ -1,4 +1,4 @@
-These tutorials will teach you the fundamentals of creating and deploying a `geoprocessing` project. They expect you have a basic working knowledge of your computer, command line interfaces, and web application development.  There is also a limit to what the framework can do out of the box and at some point you will likely need to extend it to create custom reports.  What follows is a short list of resources to help you:
+These tutorials will teach you the fundamentals of creating and deploying a seasketch `geoprocessing` project. They expect you have a basic working knowledge of your computer, command line interfaces, and web application development.  There is also a limit to what the framework can do out of the box and at some point you will likely need to extend it to create custom reports.  What follows is a short list of resources to help you:
 
 * [Git and Github](https://www.youtube.com/watch?v=RGOj5yH7evk)
 * [Node JS](https://www.freecodecamp.org/news/what-is-node-js/) development

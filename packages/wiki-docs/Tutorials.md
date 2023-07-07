@@ -91,10 +91,35 @@ You have 3 options for how to develop geoprocessing projects
 
 Choose an option and follow the instructions below to get started.  You can try out different options over time.
 
-## Option #1 - Github Codespace
+## If Install Option #1 - Github Codespace
 
 * Install [VS Code](https://code.visualstudio.com)
 * Setup or log in to your [Github account](https://github.com/)
+
+If you are a developer on the SeaSketch team:
+
+* You will work directly with this [devcontainer repository](`https://github.com/seasketch/geoprocessing-devcontainer`)
+
+If you are a developer independent of seasketch:
+
+* You will need to create your own devcontainer repository in your own Github user account, or your own organization.
+* Go to this [devcontainer repository](https://github.com/seasketch/geoprocessing-devcontainer-tpl).
+* Click the green `Use this template` button and `Create a new repository`.
+
+![Create from template](img/CreateFromTemplate.jpg "Create from template")
+
+* You can call this repository `geoprocessing-devcontainer`.  And if you create it under a Github organization, then everyone in the organization will be able to utilize it.
+
+Now you're ready to setup codespaces for this devcontainer:
+
+* Configure Github secrets for all environment variables your codespace will need for accessing POEditor and Amazon Web Services.
+  * Go to your [Github codespace settings](https://github.com/settings/codespaces)
+  * Define each of the following Codespaces secrets found in the screenshot.
+  * your POEditor API token you can find here - https://poeditor.com/account/api.  If you don't have one, then follow the instructions to [create your own](#setup-poeditor-as-an-independent-developer)
+  * You can leave your AWS credentials blank until you set them up in a later tutorial when you want to deploy your project.
+
+![Add Secrets](img/AddSecrets.jpg "Add Secrets")
+
 * Browse to `https://github.com/seasketch/geoprocessing-devcontainer`
 * Click the green `Code` button, then the `Codespaces` tab, then `New with options...`
 
@@ -106,7 +131,7 @@ Choose an option and follow the instructions below to get started.  You can try 
 
 * It will automatically attempt to open your local VSCode editor and connect it to the codespace.  You will be prompted to allow this to happen.
 
-## Option #2 - Local Docker Environment
+## If Install Option #2 - Local Docker Environment
 
 * Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for either Apple chip or Intel chip as appropriate to your system and make sure it's running.
   * If you don't know which you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`
@@ -233,13 +258,13 @@ This use case is where a geoprocessing project already exists, but it was develo
 
 * Option 1, you're good to go, the data should already be in `data/src` and src paths in `project/datasources.json` should have relative paths pointing into it.
 * Option 2, Look at `project/datasources.json` for the existing datasource paths and if your data file paths and operating system match you may be good to go.  Try re-importing your data as below, and if it fails consider migrating to Option 1 or 3.
-* Option 3, you'll just need to symlink the `data/src` project directory to your data.  Make sure you point it to the right level of your data folder.  Check the src paths in `project/datasources.json`.  If for example the source paths start with `data/src/Data_Received/...` and your data directory is at `/Users/alex/Library/CloudStorage/Box-Box/ProjectX/Data_Received`, you want to create your symlink as such
+* Option 3, if you're running a devcontainer you'll need to have made your data available in workspace by mounting it from the host operating system via docker-compose.yml (see installation tutorial) or have somehow synced or downloaded it directly to your container.  Either way, you then just need to symlink the `data/src` directory in your project to your data.  Make sure you point it to the right level of your data folder.  Check the src paths in `project/datasources.json`.  If for example the source paths start with `data/src/Data_Received/...` and your data directory is at `/Users/alex/Library/CloudStorage/Box-Box/ProjectX/Data_Received`, you want to create your symlink as such
 
 ```bash
 ln -s /Users/alex/Library/CloudStorage/Box-Box/ProjectX data/src
 ```
 
-Assuming `data/src` is now populated, you need to ensure everything is in order
+Assuming `data/src` is now populated, you need to ensure everything is in order.
 
 2.Reimport your data
 
@@ -257,8 +282,8 @@ If all is well, you should see no error, and `data/dist` should be populated wit
 
 But what if git changes show a lot of red and green?
 
-* You should look closer at what's happening.  If parts of the file are being re-ordered, that may just be because Javascript is being a little bit different in how it generates JSON files from the other computer.
-* If you are seeing changes to your keyStats values however (area, sum, count), then your datasources may be different from the last person that ran it.  You will want to make sure you aren't using an outdated older version.  If you are using an updated more recent version, then convince yourself the changes are what you expect, for example total area increases or decreases.
+* You should look closer at what's happening.  If parts of the smoke test output (examples directory JSON files) are being re-ordered, that may just be because Javascript is being a little bit different in how it generates JSON files from another computer that previously ran the tests.
+* If you are seeing changes to your keyStats values in datasources.json (area, sum, count), then your datasources may be different from the last person that ran it.  You will want to make sure you aren't using an outdated older version.  If you are using an updated more recent version, then convince yourself the changes are what you expect, for example total area increases or decreases.
 
 What if you just can't your data synced properly, and you just need to move forward?
 
@@ -271,6 +296,55 @@ What if you just can't your data synced properly, and you just need to move forw
 Assuming [initial system setup](#initial-system-setup) is complete.
 
 This tutorial now walks through generating a new geoprocessing project codebase and committing it to Github.
+
+## Create Github Repository
+
+First, we'll establish a remote place to store your code.
+
+* [Create a new Github repository](https://github.com/new) called `fsm-reports-test` (you can pick your own name but the tutorial will assume this name). When creating, do not initialize this repository with any files like a README.
+* In your VSCode terminal, make sure you are in your projects top-level directory.  A shorthand way to do this is `cd ~/src/fsm-reports-test`.
+
+### If running codespace (Install Option 1)
+
+When developing within a codespace, you need to give it permission to read and write files from other repositories.  You should have VSCode open and connected to your devcontainer codespace, with no outstanding uncommitted work.  Then do the following:
+
+* In VSCode, edit the .devcontainer/devcontainer.json and add your new geoprocessing project repository `[your_organization_or_username]/fsm-report-test` to the list.  You will do this for each geoprocessing project you create and maintain in this devcontainer, which can be many.
+* Commit and push these changes.
+
+![Workspace Permissions](img/WorkspacePermissions.jpg "Workspace Permissions")
+
+At this point, you need to close your VSCode codespace session and `delete` your existing codespace.  Wait at least one minute for the codespace to be fully delete.  Then recreate a new codespace and it will allow you to enable the new write permissions to your geoprocessing project repository.  It's unfortunate that you need to delete your codespace and recreate it for you to be prompted to enable these permissions, hopefully it will be made simpler in the future.  You can read more [here](https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces#authorizing-requested-permissions)
+
+## Final Steps
+
+Now enter the following commands to establish your project as a git repository, connect it to your Github repository you created as a remote called "origin", and finally push your code up to origin.
+
+```bash
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/PUT_YOUR_GITHUB_ORG_OR_USERNAME_HERE/fsm-reports-test.git
+git push -u origin main
+```
+
+It may ask you if it can use the Github extension to sign you in using Github.  It will open a browser tab and communicate with the Github website.  If you are already logged in there, then it should be done quickly, otherwise it may have you log-in to Github.
+
+You should eventually see your code commit proceed in the VSCode terminal.  You can then browse to your Github repository and see that your first commit is present at https://github.com/[YOUR_GITHUB_ORG_OR_USERNAME]/foo-reports
+
+After this point, you can continue using git commands right in the terminal to stage code changes and commit them, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
+
+## If running devcontainer or codespace (Install Option 1 and 2)
+
+* Ensure your VSCode workspace is connected to your devcontainer
+* You can now create as many geoprocessing projects as you want under `/workspaces` and they will persist as long as the associated docker volume is maintained.  Each project you create should be backed by a Github repository which you should regularly commit your code to in order to ensure it's not lost.
+
+To get started:
+
+* Open a terminal with Ctrl-J if not already open
+* `cd /workspaces`
+
+## If Running Bare Metal (Install Option 3)
 
 Windows:
 
@@ -290,6 +364,8 @@ MacOS:
 * Open a terminal in VSCode with `Command-J` or by clicking Terminal -> New Terminal
 * Create a directory to put your source code and change to that directory
   * `mkdir -d src && cd src`
+
+## Final Steps (All Install Options)
 
 Now we'll create a new project using `geoprocessing init`.
 
@@ -401,6 +477,18 @@ The reason you will need to define a bounding box is so that any preprocessing o
 # Open in VSCode Workspace and Explore Structure
 
 Next, to take full advantage of VSCode you will need to open your new project and establish it as a workspace.
+
+## If Running Devcontainer or Codespace (Install Option 1 and 2)
+
+Once you have more than one folder under `/workspaces` backed by a git repository, VSCode will be default to a `multi-root` workspace.
+
+For the best experience, you will want open a single workspace in your VSCode for a single folder in your devcontainer.
+
+`File` -> `Open folder` -> /workspaces/fsm-report-test
+
+VSCode should now reopen the under this new workspace, using the existing devcontainer, and you're ready to go.
+
+## If Running Bare Metal (Install Option 3)
 
 Type `Command-O` on MacOS or `Ctrl-O` on Windows or just click `File`->`Open` and select your project under `[your_username]/src/fsm-reports-test`
 
@@ -546,30 +634,6 @@ If you're still not sure try some of the following:
 * Run your smoke tests, see if they pass
 * When was the last time your build did succeed?  You can be sure the error is caused by a change you made since then either in your project code, by upgrading your geoprocessing library version and not migratin fully, or by changing something on your system.
 * You can stash your current changes or commit them to a branch so they are not lost.  Then sequentially check out previous commits of the code until you find one that builds properly.  Now you know that the next commit cause the build error.
-
-## Commit Initial Code To Github
-
-Now we'll establish a remote place to store your code as a checkpoint and to allow you to collaborate on it with others.
-
-* [Create a new Github repository](https://github.com/new) called `fsm-reports-test` (you can pick your own name but the tutorial will assume this name). When creating, do not initialize this repository with any files like a README.
-* In your VSCode terminal, make sure you are in your projects top-level directory.  A shorthand way to do this is `cd ~/src/fsm-reports-test`.
-
-Now enter the following commands to establish your project as a git repository, connect it to your Github repository you created as a remote called "origin", and finally push your code up to origin.
-
-```bash
-git init
-git add .
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/PUT_YOUR_GITHUB_ORG_OR_USERNAME_HERE/fsm-reports-test.git
-git push -u origin main
-```
-
-It may ask you if it can use the Github extension to sign you in using Github.  It will open a browser tab and communicate with the Github website.  If you are already logged in there, then it should be done quickly, otherwise it may have you log-in to Github.
-
-You should eventually see your code commit proceed in the VSCode terminal.  You can then browse to your Github repository and see that your first commit is present at https://github.com/[YOUR_GITHUB_ORG_OR_USERNAME]/foo-reports
-
-After this point, you can continue using git commands right in the terminal to stage code changes and commit them, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
 
 # Link Project Data
 
@@ -910,7 +974,6 @@ echo $POEDITOR_API_TOKEN
 Then `npm run translation:publish` to push the new/edited english strings to POEditor.  The strings will be tagged in POEditor with the name of the project e.g the context for yours will be (`fsm-reports-test`).
 
 ![POEditor Context](img/PoeditorContext.png "POEditor Context")
-
 
 with Someone will then need to translate the strings using the POEditor service for each relevant language.
 

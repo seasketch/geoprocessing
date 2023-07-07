@@ -31,7 +31,7 @@ describe("getFeatures", () => {
     );
     expect(feats.length).toEqual(1);
     expect(feats[0].properties?.["UNION"]).toEqual("Micronesia");
-  }, 10000);
+  }, 20000);
 
   test("should successfully fetch from subdivided land datasource", async () => {
     const landDatasource = project.getExternalVectorDatasourceById(
@@ -51,5 +51,5 @@ describe("getFeatures", () => {
       }
     );
     expect(feats.length).toEqual(1050);
-  }, 10000);
+  }, 20000);
 });

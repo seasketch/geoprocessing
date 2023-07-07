@@ -9,7 +9,6 @@ const importSupportedRasterFormats: SupportedFormats[] = ["tif"];
 const importDefaultRasterFormats: SupportedFormats[] = ["tif"];
 
 const defaultDstPath = "data/dist";
-const defaultBinPath = "data/bin";
 
 /** Default datasource file location, relative to project root */
 const defaultDatasourcesPath = "./project/datasources.json";
@@ -22,6 +21,5 @@ export const datasourceConfig = {
   importSupportedRasterFormats,
   importDefaultRasterFormats,
   defaultDstPath,
-  defaultBinPath,
   defaultDatasourcesPath,
 };

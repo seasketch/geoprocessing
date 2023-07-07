@@ -34,27 +34,6 @@ async function bundleAssets() {
 }
 
 /**
- * Copy data bin to dist for project use. e.g. workspace mounts them
- */
-async function bundleData() {
-  const dataBinPath = path.join(__dirname, "..", "..", "data", "bin");
-  const distDataBinPath = path.join(distPath, "data", "bin");
-
-  // Delete old data bin if they exist
-  if (fs.existsSync(path.join(distDataBinPath))) {
-    fs.rmdirSync(distDataBinPath, { recursive: true });
-  }
-
-  if (!fs.existsSync(path.join(distDataBinPath))) {
-    fs.mkdirsSync(path.join(distDataBinPath));
-  }
-
-  if (fs.existsSync(dataBinPath)) {
-    await fs.copySync(dataBinPath, distDataBinPath);
-  }
-}
-
-/**
  * Copy base project from its standalone package to dist
  * Base project can then be installed via gp commands.
  */
@@ -243,10 +222,6 @@ async function bundleTemplates(templateType: TemplateType) {
 
 bundleAssets().then(() => {
   console.log("finished bundling assets");
-});
-
-bundleData().then(() => {
-  console.log("finished bundling data");
 });
 
 bundleTemplates("starter-template").then(() => {

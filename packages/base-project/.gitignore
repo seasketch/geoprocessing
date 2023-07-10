@@ -5,7 +5,7 @@ cdk-outputs.json
 .build
 .build-web
 .workspace.env
-data/src/**
+data/src
 !data/src/README.md
 data/dist/**
 !data/dist/README.md

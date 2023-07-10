@@ -153,7 +153,7 @@ git clone https://github.com/seasketch/geoprocessing-devcontainer
 * Once you have DevContainer support, you should be prompted to ”Reopen folder to develop in a container”.  <b>*Do not do this yet.*</b>
 * Under the `.devcontainer/local-dev` folder, make a copy of the `.env.template` file and rename it to `.env`.
   * Fill in your POEditor API token for you account, which you can find here - https://poeditor.com/account/api.  If you don't have one, then follow the instructions to [create your own](#setup-poeditor-as-an-independent-developer).
-* If you have a data folder to mount into the docker container from your host operating system, edit the docker-compose.yml file and uncomment the volume below this comment
+* If you have a data folder to mount into the docker container from your host operating system, edit the `.devcontainer/local-dev/docker-compose.yml` file and uncomment the volume below this comment
   * `# Bound host volume for Box data folder`
   * The volume is preset to bind to your Box Sync folder in you home directory but you can change it to any path in your operating system where your data resides for all your projects.
 * To start the devcontainer at any time
@@ -170,10 +170,13 @@ git clone https://github.com/seasketch/geoprocessing-devcontainer
 If success, then you're now ready to create a new geoprocessing project in your devcontainer environment.
 
 * To stop devcontainer at any time
-  * `Cmd-Shift-P` to open command palette and type `“Reopen locally”` to find command and hit Enter.
-* To restart
-* To see and manage your devcontainers
-  * Make sure you stop your active VSCODE devcontainer sessions and `"Reopen locally"` first.
+  * `Cmd-Shift-P` to open command palette and type `“DevContainers: Rebuild and Reopen locally”` to find command and hit Enter.
+  * Choose `Local Workspace`
+  * Your devcontainer will now bootstrap, downloading the geoprocessing docker image and installing everything.
+* Notice the bottom left blue icon in your vscode window.  It may say `Opening remote connection` and eventually will say `Dev Container: Geoprocessing`.  This is telling you that this VSCode window is running in a devcontainer environment.
+* To exist your VSCode back out of this devcontainer session, click the blue icon in the bottom left, and click `Reopen locally`.
+* To see and manage your dev containers (or restart)
+  * Make sure you stop your active VSCODE devcontainer session first.
   * Open the Remote Explorer panel in the left sidebar.
   * You can delete any existing devcontainers and volumes to start over.
   * You can also see and delete them from the Docker Desktop app, but it might not be obvious which containers and volumes are which.
@@ -251,6 +254,8 @@ At this point your system is ready for you to `create a new project`, or `setup 
 # Setup an exising geoprocessing project
 
 This use case is where a geoprocessing project already exists, but it was developed on a different computer.
+
+First, clone your existing geoprocessing project to your work environment, whether this is in your codespace, local docker devcontainer, Windows WSL, or bare metal on your operating system.
 
 ## Link your source data
 

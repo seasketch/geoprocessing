@@ -129,7 +129,7 @@ function longitude(lng: number) {
 
 
 
-describe("geoblaze multipolygon tests", () => {
+describe("geoblaze antimeridian tests", () => {
   test("cross-antimeridian raster, cross-antimeridian poly", async () => {
     
     const url = "http://127.0.0.1:8080/gfwfiji_6933_COG.tif";
@@ -228,5 +228,67 @@ describe("geoblaze multipolygon tests", () => {
 
     // expect(stats.sum).toBe(testAgainstStats1.sum + testAgainstStats2.sum);
     // fails. hand-split features sum: 13107100, programmatically split sum: 13040115
+  });
+
+  test("testing cleanCoords and splitGeojson - antimeridian", async () => {
+    const polyNormalCoords = {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [178.0, -18], 
+            [-178.0, -18], 
+            [-178.0, -20],
+            [178.0, -20], 
+            [178.0, -18],
+          ],
+        ],
+      },
+    };
+    const cleanPolyNormalCoords = cleanCoords(polyNormalCoords) as Feature<Polygon | MultiPolygon>;
+    const splitPolyNormalCoords = splitGeojson(cleanPolyNormalCoords);
+
+    const polyPosCoords = {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [178.0, -18], 
+            [182.0, -18], 
+            [182.0, -20],
+            [178.0, -20], 
+            [178.0, -18],
+          ],
+        ],
+      },
+    };
+    const cleanPolyPosCoords = cleanCoords(polyPosCoords) as Feature<Polygon | MultiPolygon>;
+    const splitPolyPosCoords = splitGeojson(cleanPolyPosCoords);
+
+    const polyNegCoords = {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-182.0, -18], 
+            [-178.0, -18], 
+            [-178.0, -20],
+            [-182.0, -20], 
+            [-182.0, -18],
+          ],
+        ],
+      },
+    };
+    const cleanPolyNegCoords = cleanCoords(polyNegCoords) as Feature<Polygon | MultiPolygon>;
+    const splitPolyNegCoords = splitGeojson(cleanPolyNegCoords);
+
+    expect(JSON.stringify(splitPolyNormalCoords)).toBe(JSON.stringify(splitPolyPosCoords));
+    expect(JSON.stringify(splitPolyNormalCoords)).toBe(JSON.stringify(splitPolyNegCoords));
   });
 });

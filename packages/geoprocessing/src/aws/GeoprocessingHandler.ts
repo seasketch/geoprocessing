@@ -103,6 +103,7 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
       this.lastRequestId = context.awsRequestId;
     }
 
+    // get cached result if available. standard method to get results for async function
     if (request.checkCacheOnly) {
       if (request.cacheKey) {
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
@@ -111,6 +112,7 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
           cachedResult &&
           cachedResult?.status !== GeoprocessingTaskStatus.Pending
         ) {
+          // cache hit
           return {
             statusCode: 200,
             headers: {
@@ -120,11 +122,12 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
             body: JSON.stringify(cachedResult),
           };
         } else {
+          // cache miss
           return {
             statusCode: 200,
             headers: {
               ...commonHeaders,
-              "x-gp-cache": "Cache hit",
+              "x-gp-cache": "Cache miss",
             },
             body: JSON.stringify({
               id: "NO_CACHE_HIT",

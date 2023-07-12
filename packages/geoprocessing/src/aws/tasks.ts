@@ -5,8 +5,8 @@ import { DynamoDB } from "aws-sdk";
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Credentials": true,
-  // Serve stale while revalidating cache if < 24 hours old, don't revalidate
-  // if < 5 minutes old
+  // Serve stale while revalidating cache if < 24 hours old
+  // don't revalidate if < 5 minutes old
   "Cache-Control": "max-age=30, stale-while-revalidate=86400",
 };
 
@@ -32,9 +32,15 @@ export enum GeoprocessingTaskStatus {
   Failed = "failed",
 }
 
+/**
+ * Task model responsible for managing task results and estimates in DynamoDB
+ */
 export default class TasksModel {
+  /** task table */
   table: string;
+  /** task estimate table */
   estimatesTable: string;
+  /** database client */
   db: DynamoDB.DocumentClient;
 
   constructor(

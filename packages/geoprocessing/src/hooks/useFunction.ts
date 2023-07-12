@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import { ReportContext } from "../context";
 import LRUCache from "mnemonist/lru-cache";
 import { GeoprocessingRequest, GeoprocessingProject } from "../types";
+import { runTask, finishTask } from "../clients/tasks";
 
 interface PendingRequest {
   functionName: string;
@@ -34,6 +35,7 @@ const resultsCache = new LRUCache<string, GeoprocessingTask>(
 const makeLRUCacheKey = (funcName: string, cacheKey: string): string =>
   `${funcName}-${cacheKey}`;
 
+/**  */
 let pendingRequests: PendingRequest[] = [];
 let pendingMetadataRequests: PendingMetadataRequest[] = [];
 let geoprocessingProjects: { [url: string]: GeoprocessingProject } = {};
@@ -168,6 +170,7 @@ export const useFunction = <ResultType>(
             false
           );
 
+          // add as pending request
           if (payload.cacheKey) {
             const pr = {
               cacheKey: payload.cacheKey,
@@ -175,13 +178,15 @@ export const useFunction = <ResultType>(
               promise: pendingRequest,
             };
             pendingRequests.push(pr);
+
+            // remove from pending once resolves
             pendingRequest.finally(() => {
               pendingRequests = pendingRequests.filter((p) => p !== pr);
             });
           }
         }
 
-        // After task started, but not yet complete
+        // After task started, but still pending
         pendingRequest
           .then((task) => {
             let currServiceName = task.service;
@@ -439,76 +444,6 @@ const getGeoprocessingProject = async (
     promise: request,
   });
   return request;
-};
-
-/**
- * Runs task by sending GET request to url with payload and optional flags
- * Task can be aborted using caller-provided AbortSignal
- */
-const runTask = async (
-  url: string,
-  payload: GeoprocessingRequest,
-  signal: AbortSignal,
-  checkCacheOnly: boolean,
-  onConnect: boolean
-): Promise<GeoprocessingTask> => {
-  const urlInst = new URL(url);
-  urlInst.searchParams.append("geometryUri", payload.geometryUri!);
-  urlInst.searchParams.append("cacheKey", payload.cacheKey || "");
-  if (checkCacheOnly) {
-    urlInst.searchParams.append("checkCacheOnly", "true");
-
-    urlInst.searchParams.append("onConnect", "" + onConnect);
-  }
-
-  const response = await fetch(urlInst.toString(), {
-    signal: signal,
-    method: "get",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const task: GeoprocessingTask = await response.json();
-  if (signal.aborted) {
-    throw new Error("Request aborted");
-  } else {
-    return task;
-  }
-};
-
-/**
- * Finishes task by hitting the remote cache, updating the hook with the task result and cleaning up
- */
-const finishTask = async (
-  url,
-  payload,
-  abortController,
-  setState,
-  currServiceName,
-  socket
-) => {
-  // Get result using checkCacheOnly flag
-  let finishedRequest: Promise<GeoprocessingTask> = runTask(
-    url,
-    payload,
-    abortController.signal,
-    true,
-    false
-  );
-  finishedRequest.then((finishedTask) => {
-    if (finishedTask.data === undefined) {
-      return;
-    } else if (finishedTask.data) {
-      setState({
-        loading: false,
-        task: finishedTask,
-        error: finishedTask.error,
-      });
-      socket.close(1000, currServiceName);
-    }
-    return;
-  });
 };
 
 useFunction.reset = () => {

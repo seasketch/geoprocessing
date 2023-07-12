@@ -4,15 +4,6 @@ import { ReportContext } from "../context";
 import LRUCache from "mnemonist/lru-cache";
 import { GeoprocessingRequest, GeoprocessingProject } from "../types";
 
-const resultsCache = new LRUCache<string, GeoprocessingTask>(
-  Uint32Array,
-  Array,
-  12
-);
-
-const makeLRUCacheKey = (func: string, cacheKey: string): string =>
-  `${func}-${cacheKey}`;
-
 interface PendingRequest {
   functionName: string;
   cacheKey: string;
@@ -20,14 +11,10 @@ interface PendingRequest {
   task?: GeoprocessingTask;
 }
 
-let pendingRequests: PendingRequest[] = [];
-
 interface PendingMetadataRequest {
   url: string;
   promise: Promise<GeoprocessingProject>;
 }
-
-let pendingMetadataRequests: PendingMetadataRequest[] = [];
 
 interface FunctionState<ResultType> {
   /** Populated as soon as the function request returns */
@@ -36,15 +23,27 @@ interface FunctionState<ResultType> {
   error?: string;
 }
 
+/** Local results cache */
+const resultsCache = new LRUCache<string, GeoprocessingTask>(
+  Uint32Array,
+  Array,
+  12
+);
+
+/** Generates key for results cache combining function name and user-defined cacheKey */
+const makeLRUCacheKey = (funcName: string, cacheKey: string): string =>
+  `${funcName}-${cacheKey}`;
+
+let pendingRequests: PendingRequest[] = [];
+let pendingMetadataRequests: PendingMetadataRequest[] = [];
 let geoprocessingProjects: { [url: string]: GeoprocessingProject } = {};
 
-// Runs the given function for the open sketch. "open sketch" is that defined by
-// ReportContext. During testing, useFunction will look for example output
-// values in SketchContext.exampleOutputs
+/**
+ * Runs the given geoprocessing function for the current sketch, as defined by ReportContext
+ * During testing, useFunction will look for example output values in SketchContext.exampleOutputs
+ */
 export const useFunction = <ResultType>(
-  // Can refer to the title of a geoprocessing function in the same project as
-  // this report client, or (todo) the url of a geoprocessing function endpoint
-  // from another project
+  /** Title of geoprocessing function in this project to run.  @todo support external project function */
   functionTitle: string
 ): FunctionState<ResultType> => {
   const context = useContext(ReportContext);
@@ -55,10 +54,9 @@ export const useFunction = <ResultType>(
     loading: true,
   });
   let socket: WebSocket;
+
   useEffect(() => {
     const abortController = new AbortController();
-    const startTime = new Date().getTime();
-    //@ts-ignore
 
     setState({
       loading: true,
@@ -71,9 +69,12 @@ export const useFunction = <ResultType>(
         });
         return;
       }
+
       (async () => {
-        // find the appropriate endpoint and request results
+        /** current geoprocessing project metadata (service manifest) */
         let geoprocessingProject: GeoprocessingProject;
+
+        // get function endpoint url for running task
         try {
           geoprocessingProject = await getGeoprocessingProject(
             context.projectUrl,
@@ -107,6 +108,7 @@ export const useFunction = <ResultType>(
           url = service.endpoint;
           executionMode = service?.executionMode;
         }
+
         // fetch task/results
         // TODO: Check for requiredProperties
         const payload: GeoprocessingRequest = {
@@ -116,10 +118,9 @@ export const useFunction = <ResultType>(
           payload.cacheKey = `${context.sketchProperties.id}-${context.sketchProperties.updatedAt}`;
         }
 
+        // check local results cache. may already be available
         if (payload.cacheKey) {
-          // check results cache. may already be available
           let lruKey = makeLRUCacheKey(functionTitle, payload.cacheKey);
-
           let task = resultsCache.get(lruKey) as
             | GeoprocessingTask<ResultType>
             | undefined;
@@ -132,10 +133,10 @@ export const useFunction = <ResultType>(
             return;
           }
         }
-        //let socket: WebSocket;
+
+        // check if a matching request is already in-flight and assign to it if so
         let pendingRequest: Promise<GeoprocessingTask> | undefined;
         if (payload.cacheKey) {
-          // check for in-flight requests
           const pending = pendingRequests.find(
             (r) =>
               r.cacheKey === payload.cacheKey &&
@@ -147,11 +148,11 @@ export const useFunction = <ResultType>(
               task: pending.task,
               error: undefined,
             });
-            // attach handlers to promise
             pendingRequest = pending.promise;
           }
         }
 
+        // start the task
         if (!pendingRequest) {
           setState({
             loading: true,
@@ -180,6 +181,7 @@ export const useFunction = <ResultType>(
           }
         }
 
+        // After task started, but not yet complete
         pendingRequest
           .then((task) => {
             let currServiceName = task.service;
@@ -195,9 +197,8 @@ export const useFunction = <ResultType>(
                   "&cacheKey=" +
                   ck +
                   "&fromClient=true";
-                //need to set up the socket before the task is run
-                //dont set this up if its an sync or during testing
 
+                // set up the socket (async only)
                 getSendSocket(
                   task,
                   wssUrl,
@@ -212,6 +213,7 @@ export const useFunction = <ResultType>(
               }
             }
 
+            // check for invalid status
             if (
               !task.status ||
               ["pending", "completed", "failed"].indexOf(task.status) === -1
@@ -224,11 +226,14 @@ export const useFunction = <ResultType>(
               return;
             }
 
+            // set to pending state initially
             setState({
               loading: task.status === GeoprocessingTaskStatus.Pending,
               task: task,
               error: task.error,
             });
+
+            // if task complete then load results
             if (
               payload.cacheKey &&
               task.status === GeoprocessingTaskStatus.Completed
@@ -238,6 +243,7 @@ export const useFunction = <ResultType>(
               resultsCache.set(lruKey, task);
             }
 
+            // if task pending then nothing more to do
             if (task.status === GeoprocessingTaskStatus.Pending) {
               if (task.wss?.length > 0) {
                 setState({
@@ -259,7 +265,7 @@ export const useFunction = <ResultType>(
           });
       })();
     } else {
-      // In test or storybook environment, so this will just load example data
+      // This is test or storybook environment, so load example data
       // or simulate loading and error states.
       const data = context.exampleOutputs.find(
         (output) => output.functionName === functionTitle
@@ -288,8 +294,8 @@ export const useFunction = <ResultType>(
         },
         error: context.simulateError ? context.simulateError : undefined,
       });
-      // end test mode handling
     }
+
     // Upon teardown any outstanding requests should be aborted. This useEffect
     // cleanup function will run whenever geometryUri, sketchProperties, or
     // functionTitle context vars are changed, or if the component is being
@@ -301,6 +307,9 @@ export const useFunction = <ResultType>(
   return state;
 };
 
+/**
+ * Creates WebSocket at wss url that listens for task completion
+ */
 const getSendSocket = (
   task: GeoprocessingTask,
   wss: string,
@@ -316,13 +325,13 @@ const getSendSocket = (
     socket = new WebSocket(wss);
   }
 
+  // once socket open, check if task completed before it opened
   socket.onopen = function (e) {
     const task = resultsCache.get(
       makeLRUCacheKey(currServiceName, cacheKey)
     ) as GeoprocessingTask | undefined;
 
-    //check on open to see if the results are cached. make sure
-    //you call the uri with the checkCacheOnly value set to true
+    // check using checkCacheOnly true
     let finishedRequest: Promise<GeoprocessingTask> = runTask(
       url,
       payload,
@@ -334,18 +343,14 @@ const getSendSocket = (
     finishedRequest.then((finishedTask) => {
       if (finishedTask.service === currServiceName) {
         let ft = JSON.stringify(finishedTask);
-        //in case the socket took too long to open, check and see
-        //if the results are already done - just by looking in the cache.
-        //if they're not cached, you'll get a "NO_CACHE_HIT returned"
+        //if not cached, you'll get a "NO_CACHE_HIT"
         if (ft && finishedTask.id !== "NO_CACHE_HIT" && finishedTask.data) {
           setState({
             loading: false,
             task: finishedTask,
             error: finishedTask.error,
           });
-          //socket can close, dont need to keep it open since the
-          //lambda is already finished
-
+          // task is complete so close the socket
           socket.close(1000, currServiceName);
           return;
         }
@@ -353,16 +358,12 @@ const getSendSocket = (
     });
   };
 
+  // if task complete message received on socket (the only message type supported)
+  // then finish the task (because results aren't sent on the socket, too big)
   socket.onmessage = function (event) {
-    //assuming a finished message only for now
-    //The websocket cannot send the entire return value, it blows up on
-    //the socket.send for some Task results. As a resultt, just sending back
-    //the request cacheKey
-    //Note: check if keys match. can have events for other reports appear if several are open at once.
-    //ignore those.
     let incomingData = JSON.parse(event.data);
-    //testing to see if messages this client sends come back...they shouldn't
 
+    // check cache keys match. can have events for other reports appear if several are open at once.
     if (
       incomingData.cacheKey === cacheKey &&
       incomingData.serviceName === currServiceName
@@ -405,36 +406,45 @@ const getSendSocket = (
   return socket;
 };
 
-const finishTask = async (
-  url,
-  payload,
-  abortController,
-  setState,
-  currServiceName,
-  socket
-) => {
-  let finishedRequest: Promise<GeoprocessingTask> = runTask(
-    url,
-    payload,
-    abortController.signal,
-    true,
-    false
-  );
-  finishedRequest.then((finishedTask) => {
-    if (finishedTask.data === undefined) {
-      return;
-    } else if (finishedTask.data) {
-      setState({
-        loading: false,
-        task: finishedTask,
-        error: finishedTask.error,
-      });
-      socket.close(1000, currServiceName);
+/**
+ * Fetches project metadata, aka service manifest at url
+ */
+const getGeoprocessingProject = async (
+  url: string,
+  signal: AbortSignal
+): Promise<GeoprocessingProject> => {
+  // TODO: eventually handle updated duration
+  const pending = pendingMetadataRequests.find((r) => r.url === url);
+  if (pending) {
+    return pending.promise;
+  }
+  if (url in geoprocessingProjects) {
+    return geoprocessingProjects[url];
+  }
+
+  const request = fetch(url, { signal }).then(async (response) => {
+    const geoprocessingProject = await response.json();
+    if (signal.aborted) {
+      throw new Error("Aborted");
+    } else {
+      geoprocessingProjects[url] = geoprocessingProject;
+      pendingMetadataRequests = pendingMetadataRequests.filter(
+        (r) => r.url !== url
+      );
+      return geoprocessingProject;
     }
-    return;
   });
+  pendingMetadataRequests.push({
+    url,
+    promise: request,
+  });
+  return request;
 };
 
+/**
+ * Runs task by sending GET request to url with payload and optional flags
+ * Task can be aborted using caller-provided AbortSignal
+ */
 const runTask = async (
   url: string,
   payload: GeoprocessingRequest,
@@ -467,36 +477,38 @@ const runTask = async (
   }
 };
 
-const getGeoprocessingProject = async (
-  url: string,
-  signal: AbortSignal
-): Promise<GeoprocessingProject> => {
-  // TODO: eventually handle updated durationsf
-  const pending = pendingMetadataRequests.find((r) => r.url === url);
-  if (pending) {
-    return pending.promise;
-  }
-  if (url in geoprocessingProjects) {
-    return geoprocessingProjects[url];
-  }
-
-  const request = fetch(url, { signal }).then(async (response) => {
-    const geoprocessingProject = await response.json();
-    if (signal.aborted) {
-      throw new Error("Aborted");
-    } else {
-      geoprocessingProjects[url] = geoprocessingProject;
-      pendingMetadataRequests = pendingMetadataRequests.filter(
-        (r) => r.url !== url
-      );
-      return geoprocessingProject;
-    }
-  });
-  pendingMetadataRequests.push({
+/**
+ * Finishes task by hitting the remote cache, updating the hook with the task result and cleaning up
+ */
+const finishTask = async (
+  url,
+  payload,
+  abortController,
+  setState,
+  currServiceName,
+  socket
+) => {
+  // Get result using checkCacheOnly flag
+  let finishedRequest: Promise<GeoprocessingTask> = runTask(
     url,
-    promise: request,
+    payload,
+    abortController.signal,
+    true,
+    false
+  );
+  finishedRequest.then((finishedTask) => {
+    if (finishedTask.data === undefined) {
+      return;
+    } else if (finishedTask.data) {
+      setState({
+        loading: false,
+        task: finishedTask,
+        error: finishedTask.error,
+      });
+      socket.close(1000, currServiceName);
+    }
+    return;
   });
-  return request;
 };
 
 useFunction.reset = () => {

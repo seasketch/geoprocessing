@@ -174,14 +174,32 @@ If success, then you're now ready to create a new geoprocessing project in your 
   * Choose `Local Workspace`
   * Your devcontainer will now bootstrap, downloading the geoprocessing docker image and installing everything.
 * Notice the bottom left blue icon in your vscode window.  It may say `Opening remote connection` and eventually will say `Dev Container: Geoprocessing`.  This is telling you that this VSCode window is running in a devcontainer environment.
-* To exist your VSCode back out of this devcontainer session, click the blue icon in the bottom left, and click `Reopen locally`.
-* To see and manage your dev containers (or restart)
-  * Make sure you stop your active VSCODE devcontainer session first.
+* To exit your devcontainer:
+  * Click the blue icon in the bottom left, and click `Reopen locally`.  This will bring VSCode back out of the devcontainer session.
+* To delete a devcontainer:
+  * This is often the easiest way to "start over" with your devctonainer.
+  * First, make sure you've pushed all of your code work to Github.
+  * Make sure you stop your active VSCODE devcontainer session.
   * Open the Remote Explorer panel in the left sidebar.
-  * You can delete any existing devcontainers and volumes to start over.
-  * You can also see and delete them from the Docker Desktop app, but it might not be obvious which containers and volumes are which.
+  * You can right-click and delete any existing devcontainers and volumes to start over.
+  * You can also see and delete them from the Docker Desktop app, but it might not be obvious which containers and volumes are which.  The VSCode Remote Explorer window gives you that context.
 
 ![Manage Devcontainers](img/ManageDevcontainers.jpg "Manage Devcontainers")
+
+* To upgrade your devcontainer:
+  * The devcontainer settings in this repository may change/improve over time.  You can always pull the latest changes for your `geoprocessing-devcontainer` repository, and then `Cmd-Shift-P` to open command palette and type `“DevContainers: Rebuild and Reopen locally”`.
+* To upgrade the `geoprocessing-workspace` Docker image
+  * This devcontainer builds on the `geoprocessing-workspace` Docker image published at [Docker Hub](https://hub.docker.com/r/seasketch/geoprocessing-workspace/tags).  It will always install the latest version of this image when you setup your devcontainer for the first time.
+  * It is up to you to upgrade it after the initial installation.  The most likely situation is:
+    * You see some changes in the [Changelog](https://github.com/seasketch/docker-gp-workspace/blob/main/Changelog.md) that you want to utilize.
+    * You are upgrading the `geoprocessing` library for your project to a newer version and it requires additional software that isn't in your current devcontainer.  This situation should be flagged in the geoprocessing [changelog](https://github.com/seasketch/geoprocessing/blob/dev/CHANGELOG.md).
+  * In both cases you should be able to simply update your docker image to the latest.  The easiest way to do this is to:
+    * Push all of your unsaved work in your devcontainer to Github.  This is in case the Docker `named volume` where your code lives (which is separate from the devcontainer) is somehow lost.  There are also ways to make a backup of a named volume and recover it if needed but that is an advanced exercise not discussed at this time.
+    * Stop your devcontainer session
+    * Go to the `Images` menu in Docker Desktop, finding your `seasketch/geoprocessing-workspace`.
+    * If it shows as "IN USE" then switch to the `Containers` menu and stop all containers using `seasketch/geoprocessing-workspace`.
+    * Now switch back to `Images` and pull a new version of the `seasketch/geoprocessing-image` by hovering your cursor over the image, clicking the 3-dot menu on the right side and the clicking `Pull`.   This will pull the newest version of this image.
+    * Once complete, you should be able to restart your devcontainer and it will be running the latest `geoprocessing-workspace`.
 
 ## Option #3 - MacOS Bare Metal / Windows WSL
 
@@ -1192,17 +1210,15 @@ Expected cost: [free](https://aws.amazon.com/free) to a few dollars per month.  
 * Create an Amazon [AWS account] such that you can login and access the main AWS Console page (https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
 * Create an AWS IAM [admin account](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html).  This is what you will use to manage projects.
 
-Then install `awscli`, which will allow you to deploy your project.
+### AWSCLI
 
-## AWSCLI on MacOS
+If you are using a Docker devcontainer or Github codespace to develop reports you should already have access to the `aws` command.  But if you are running directly on your host operating system you will need to install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) it with your IAM account credentials.
 
-* Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) it with your IAM account credentials.
+## Extra steps for Windows
 
-## AWSCLI on Windows
+Windows you have the option of installing [awscli for Windows](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and then exposing your credentials in your Ubuntu container.  This allows you to manage one set of credentials.
 
-Install [awscli for Windows](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). This should establish a new or default AWS profile with admin credentials and configure it for use with your Windows shell environment.
-
-Assuming your username is `alex`, confirm you now have the following files under Windows.
+Assuming your username is `alex`, once you've installed awscli in Windows, confirm you now have the following files under Windows.
 
 ```bash
 C:\Users\alex\.aws\credentials

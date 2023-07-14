@@ -166,6 +166,73 @@ The framework has it's own storybook project that can be launched using `npm run
 
 Testing modifications to the framework, particularly build steps, can be tricky because of the varying environments under which the code may run. A good methodology is to first create unit tests and verify that they run, then modify `packages/example-project` and its unit tests and verify the tests run and `npm run build` steps work. It is not uncommon for these steps to pass and for bugs to still appear after publishing of the framework, so manual testing after publishing should be done as well.
 
+## Init new gp project from local geoprocessing
+
+```bash
+cd /PATH/TO/geoprocessing
+npm install # make sure all installed, and prepre is run doing a build
+cd packages
+node geoprocessing/dist/scripts/init/init.js # call it example-project
+npm install # lerna will replace with symlink to sibling geoprocessing
+```
+
+Now follow the tutorial generate example sketches/features, run smoke tests, build, and deploy this project.
+
+Once you've deployed your stack, you can plug this into seasketch, or if you want to do some testing/debugging of your report clients more directly against what you've deployed, you can combine it with running a local client dev server (see next section).
+
+Once you're done with your example project don't forget to cleanup:
+
+```bash
+npm run destroy
+cd ..
+rm -rf 
+```
+
+## Running local client dev server
+
+Sometimes running report clients in storybook isn't enough.  You might be debugging or making changes to the underlying client infrastructure, and need a faster development cycle than deploying every change to AWS first.
+
+You can serve up all of your report clients locally, straight out of your `.build-web` folder.  You just need to have a geoprocessing stack already deployed with all of the geoprocessing functions in place that your report clients expect.  Just follow these steps:
+
+```bash
+# Make any edits you want to your report client
+npm run build:client
+npm run start:client
+```
+
+Browse to `http://localhost:8080/?service=SERVICE_URL` where SERVICE_URL is the URL of your deployed geoprocessing projects Rest API endpoint.  An example is `http://localhost:8080/?service=https://bhxn1rmxf5.execute-api.us-west-1.amazonaws.com/prod/`.
+
+This would load the report client app, which will fetch the service manifest from the service URL.  The client app is now ready for you to send it a message using the `postMessage` API, the same API that seasketch uses to send messages to the report client app it runs in an iframe.
+
+```javascript
+window.postMessage({
+    "type": "SeaSketchReportingMessageEventType",
+    "client": "MpaTabReport",
+    "language": "en",
+    "geometryUri": "https://legacy.seasketch.org/geojson/625a657273095115bb25e275",
+    "sketchProperties": {
+        "id": "625a657273095115bb25e275",
+        "name": "Azores Test Sketch",
+        "createdAt": "2021-04-20T20:28:03.607Z",
+        "updatedAt": "2021-04-20T20:28:03.607Z",
+        "sketchClassId": "615b65a2aac8c8285d50d9f3",
+        "isCollection": false,
+        "userAttributes": [],
+        "visibleLayers": []
+    }
+})
+```
+
+The parameters you may want to change include:
+
+- `client` - MpaTabReport is the default client published by the ocean EEZ template.  You might have your own report client name.  Check your geoprocessing.json or browse to the service URL and look at the list of available clients.
+- `language` - en or English is the default.  You can choose any supported language, for example `pt` for Portuguese.
+- `geometryUri` - this is the URL that report clients will give to geoprocessing functions to load the sketch from to operate on.  Change it to any valid sketch URL.
+- `sketchProperties` - these are the sketch properties that seasketch would normally pass to the report client.  You can override these however you want, which you will need to if you have report clients that require or change their behavior depending on sketch attributes present.
+
+
+## Test local gp project against local geoprocessing
+
 To test with projects other than `example-project` on your local machine, npm link is a handy tool. From within `packages/geoprocessing` run the command `npm link`. This will make the library available to other packages locally (assuming the same version of node. watch out nvm users!). Then change to you project directory and run `npm link @seasketch/geoprocessing`. Any changes you make to the library will automatically be reflected in your geoprocessing implementation. Just watch out for a couple common problems:
 
   1. Make sure VSCode is running the two build processes, and they complete without errors. Implementations import code from `dist/`, not the source typescript files.

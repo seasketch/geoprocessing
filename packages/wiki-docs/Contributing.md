@@ -146,7 +146,7 @@ You can alway open a browser and navigate to `http://127.0.0.1:8080` and see if 
 
 # Debugging
 
-The geoprocessing library and example-project both provide debug launchers for their test suite, just as the project template does.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of the core tests, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
+The geoprocessing library provides VSCode debug launchers for its test suites, templates and translation machinery.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of the core tests, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.
 
 ## Debugging Functions
 
@@ -162,11 +162,24 @@ As you build report functions, using console logging or inspecting with a VSCode
 
 The framework has it's own storybook project that can be launched using `npm run start-storybook`. These components and their stories can be found under `packages/geoprocessing/src/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.
 
-# Testing integration with project implementations
+# Make and Test Modifications
 
-Testing modifications to the framework, particularly build steps, can be tricky because of the varying environments under which the code may run. A good methodology is to first create unit tests and verify that they run, then modify `packages/example-project` and its unit tests and verify the tests run and `npm run build` steps work. It is not uncommon for these steps to pass and for bugs to still appear after publishing of the framework, so manual testing after publishing should be done as well.
+Making changes to geoprocessing UI components, toolbox functions, and utilities can be pretty straightforward.  Everything is handled within the library before committing.
 
-## Init new gp project from local geoprocessing
+- Make the necessary code changes
+- Write unit tests that demonstrate its proper behavior
+- Make sure you export your work up to the top-level for library users to be able import it
+- Publish a new version of the library
+- Update your existing geoprocessing project to use the new version
+
+Making changes to framework CLI commands for example such as `init`, `build`, `import` and `deploy`, etc. can be more involved because to fully test it you need to bundle and often publish a new or experimental version of the geoprocessing library and then manually test it directly. A good methodology is to:
+
+- Create unit or end-to-end tests in the geoprocessing framework for functions behind the CLI command
+- Create unit or end-to-end tests in templates (template-blank-project, template-ocean-eez).  Consider that users will also then get these tests when they install the template.
+- Publish an alpha or experimental release of geoprocessing library and [init]](#project-init-with-non-latest-version) a project with it, or update an existing project to use the new version (via package.json version).
+- If you want to avoid publishing, you can create an [example project](#init-example-project) in the geoprocessing folder and then deploy it.  You can then plug it into a SeaSketch sketch class and test using it, or run a [local client dev server](#running-local-client-dev-server) if you want to debug your report clients more directly outside of an iframe.
+
+## Init example project
 
 ```bash
 cd /PATH/TO/geoprocessing

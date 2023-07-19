@@ -127,7 +127,7 @@
         "${workspaceRoot}/packages/geoprocessing/src/i18n/bin/publishTerms.ts"
     ]
 }, {
-  "name": "geoprocessing template - debug tests scripts with pattern",
+  "name": "geoprocessing - debug template tests scripts given template name",
   "type": "node",
   "request": "launch",
   "cwd": "${workspaceFolder}/packages/${input:templateName}",

@@ -191,7 +191,11 @@ export const useFunction = <ResultType>(
           .then((task) => {
             let currServiceName = task.service;
             if (currServiceName) {
-              if (task.wss?.length > 0 && executionMode === "async") {
+              if (
+                task.status !== "completed" &&
+                task.wss?.length > 0 &&
+                executionMode === "async"
+              ) {
                 let sname = encodeURIComponent(currServiceName);
                 let ck = encodeURIComponent(payload.cacheKey || "");
                 let wssUrl =

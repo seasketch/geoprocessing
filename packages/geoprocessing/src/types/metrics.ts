@@ -40,6 +40,12 @@ export interface Metric {
   sketchId: Nullable<string>;
 }
 
+/** Alternative JSON format for metrics data that is smaller in size, better suited for blob storage and network transport */
+export interface MetricPack {
+  dimensions: string[];
+  data: (string | number | boolean | JSONValue)[][];
+}
+
 //// AGGREGATIONS ////
 
 /**

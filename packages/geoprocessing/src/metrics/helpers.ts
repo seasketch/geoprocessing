@@ -4,6 +4,7 @@ import {
   NullSketch,
   NullSketchCollection,
   Metric,
+  MetricPack,
   MetricDimension,
   MetricProperty,
   DataClass,
@@ -73,6 +74,54 @@ export const rekeyMetrics = (
     });
     return newMetric;
   }) as Metric[];
+};
+
+/**
+ * Converts Metric array to a MetricPack.
+ * Assumes metric dimensions are consistent for each element in the array, and null values are used
+ */
+export const packMetrics = (metrics: Metric[]): MetricPack => {
+  let pack: MetricPack = { dimensions: [], data: [] };
+  if (metrics.length === 0) return pack;
+
+  const keys = Object.keys(metrics[0]).sort();
+  pack.dimensions = keys;
+
+  const packData: MetricPack["data"] = [];
+  // Pack data values, for-loop for speed
+  for (var a = 0, ml = metrics.length; a < ml; ++a) {
+    let curMetric = metrics[a];
+    let curRow: MetricPack["data"][0] = [];
+    for (var b = 0, kl = keys.length; b < kl; ++b) {
+      let curKey = keys[b];
+      curRow.push(curMetric[curKey]);
+    }
+    packData.push(curRow);
+  }
+  pack.data = packData;
+
+  return pack;
+};
+
+/**
+ * Converts MetricPack to a Metric array
+ * @param metricPack
+ * @returns
+ */
+export const unpackMetrics = (metricPack: MetricPack): Metric[] => {
+  let metrics: Metric[] = [];
+
+  for (var a = 0, ml = metricPack.data.length; a < ml; ++a) {
+    let curRow = metricPack.data[a];
+    let curMetric = createMetric({});
+    for (var b = 0, kl = metricPack.dimensions.length; b < kl; ++b) {
+      const curDimension = metricPack.dimensions[b];
+      curMetric[curDimension] = curRow[b];
+    }
+    metrics.push(curMetric);
+  }
+
+  return metrics;
 };
 
 /**

@@ -181,11 +181,13 @@ Making changes to framework CLI commands for example such as `init`, `build`, `i
 
 ## Init example project
 
+This will run the project init function directly from your library build.  When you run it, call your project something lik example-project-[insert some unique word] to avoid collisions with any other projects
+
 ```bash
 cd /PATH/TO/geoprocessing
 npm install # make sure all installed, and prepre is run doing a build
 cd packages
-node geoprocessing/dist/scripts/init/init.js # call it example-project
+node geoprocessing/dist/scripts/init/init.js # follow the tutorial if needed
 npm install # lerna will replace with symlink to sibling geoprocessing
 ```
 
@@ -242,7 +244,6 @@ The parameters you may want to change include:
 - `language` - en or English is the default.  You can choose any supported language, for example `pt` for Portuguese.
 - `geometryUri` - this is the URL that report clients will give to geoprocessing functions to load the sketch from to operate on.  Change it to any valid sketch URL.
 - `sketchProperties` - these are the sketch properties that seasketch would normally pass to the report client.  You can override these however you want, which you will need to if you have report clients that require or change their behavior depending on sketch attributes present.
-
 
 ## Test local gp project against local geoprocessing
 

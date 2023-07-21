@@ -164,7 +164,7 @@ export default class TasksModel {
           "#duration": "duration",
         },
         ExpressionAttributeValues: {
-          ":data": results,
+          ":data": dataToStore,
           ":status": task.status,
           ":duration": task.duration,
         },
@@ -315,6 +315,7 @@ export default class TasksModel {
 
       const result = response.Item as GeoprocessingTask;
       // Check for metrics and unpack them before returning
+      console.log("result", result);
       if (
         result.data &&
         result.data.metrics &&

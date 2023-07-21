@@ -1,4 +1,4 @@
-import { createMetric, isMetricArray } from "../metrics";
+import { createMetric, isMetricArray, isMetricPack } from "../metrics";
 import TaskModel from "./tasks";
 import { DynamoDB } from "aws-sdk";
 
@@ -119,7 +119,7 @@ test("complete an existing task", async () => {
   expect(item && item.Item && item.Item.duration).toBeGreaterThan(0);
 });
 
-test("complete an existing task with metrics", async () => {
+test("complete a task with metrics should have packed in db", async () => {
   const task = await Tasks.create(SERVICE_NAME);
   const response = await Tasks.complete(task, {
     metrics: [createMetric({ value: 15 })],
@@ -139,12 +139,19 @@ test("complete an existing task with metrics", async () => {
   expect(isMetricArray(metrics)).toBe(true);
   expect(metrics[0].value).toEqual(15);
 
-  expect(item && item.Item && item.Item.status).toBe("completed");
-  // result returned from db should be unpacked and same as original
   const dbMetrics = item?.Item?.data.metrics;
-  expect(dbMetrics).toBeTruthy();
-  expect(isMetricArray(dbMetrics)).toBe(true);
-  expect(dbMetrics[0].value).toEqual(15);
+  expect(isMetricPack(dbMetrics)).toBe(true);
+});
+
+test("completed task with metrics should return unpacked result", async () => {
+  const task = await Tasks.create(SERVICE_NAME);
+  const response = await Tasks.complete(task, {
+    metrics: [createMetric({ value: 15 })],
+  });
+  const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
+
+  expect(cachedResult?.data.metrics).toBeTruthy();
+  expect(isMetricArray(cachedResult?.data.metrics)).toBe(true);
 });
 
 test("fail a task", async () => {

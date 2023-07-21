@@ -10,6 +10,7 @@ import {
   DataClass,
   MetricIdTypes,
   GroupMetricSketchAgg,
+  MetricDimensions,
 } from "../types";
 
 import {
@@ -19,6 +20,7 @@ import {
   isSketchCollection,
   isNullSketch,
   isNullSketchCollection,
+  hasOwnProperty,
 } from "../helpers";
 
 import reduce from "lodash/reduce";
@@ -122,6 +124,48 @@ export const unpackMetrics = (metricPack: MetricPack): Metric[] => {
   }
 
   return metrics;
+};
+
+/**
+ * Checks if object is a MetricPack.  Any code inside a block guarded by a conditional call to this function will have type narrowed to MetricPack
+ */
+export const isMetricPack = (json: any): json is MetricPack => {
+  return (
+    json &&
+    hasOwnProperty(json, "dimensions") &&
+    Array.isArray(json.dimensions) &&
+    hasOwnProperty(json, "data") &&
+    Array.isArray(json.data)
+  );
+};
+
+/**
+ * Checks if object is a Metric array and returns narrowed type
+ */
+export const isMetricArray = (metrics: any): metrics is Metric[] => {
+  return (
+    metrics &&
+    Array.isArray(metrics) &&
+    metrics.length > 0 &&
+    isMetric(metrics[0])
+  );
+};
+
+/**
+ * Checks if object is a Metric and returns narrowed type
+ */
+export const isMetric = (metric: any): metric is Metric => {
+  return (
+    metric &&
+    MetricDimensions.reduce(
+      (soFar, curDim) =>
+        soFar &&
+        metric.hasOwnProperty(curDim) &&
+        (metric[curDim] === null || !!metric[curDim]),
+      true
+    ) &&
+    metric.hasOwnProperty("value")
+  );
 };
 
 /**

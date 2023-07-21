@@ -1,3 +1,4 @@
+import { createMetric, isMetricArray } from "../metrics";
 import TaskModel from "./tasks";
 import { DynamoDB } from "aws-sdk";
 
@@ -116,6 +117,34 @@ test("complete an existing task", async () => {
   expect(item && item.Item && item.Item.status).toBe("completed");
   expect(item && item.Item && item.Item.data.area).toBe(1234556);
   expect(item && item.Item && item.Item.duration).toBeGreaterThan(0);
+});
+
+test("complete an existing task with metrics", async () => {
+  const task = await Tasks.create(SERVICE_NAME);
+  const response = await Tasks.complete(task, {
+    metrics: [createMetric({ value: 15 })],
+  });
+  const item = await db
+    .get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    })
+    .promise();
+  expect(response.statusCode).toBe(200);
+  const metrics = JSON.parse(response.body).data.metrics;
+  expect(metrics).toBeTruthy();
+  expect(isMetricArray(metrics)).toBe(true);
+  expect(metrics[0].value).toEqual(15);
+
+  expect(item && item.Item && item.Item.status).toBe("completed");
+  // result returned from db should be unpacked and same as original
+  const dbMetrics = item?.Item?.data.metrics;
+  expect(dbMetrics).toBeTruthy();
+  expect(isMetricArray(dbMetrics)).toBe(true);
+  expect(dbMetrics[0].value).toEqual(15);
 });
 
 test("fail a task", async () => {

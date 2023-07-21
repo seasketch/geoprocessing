@@ -2,7 +2,7 @@ import { Nullable, JSONValue } from "./base";
 import { MetricProperties } from "../metrics/helpers";
 
 /** Dimensions used in Metric */
-const MetricDimensions = [
+export const MetricDimensions = [
   "metricId",
   "geographyId",
   "sketchId",

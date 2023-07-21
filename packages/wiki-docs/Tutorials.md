@@ -1393,6 +1393,8 @@ Over time you will want to make changes to your reports.  Here's some best pract
 
 # Debugging
 
+See the [Testing](./Testing.md) page for additional options for testing your project.
+
 ## Debugging Unit Tests
 
 Each project you create includes a debug launcher which is useful for debugging your function.  With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of your tests or in one of your functions, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package.  The debugger should break at the appropriate place.

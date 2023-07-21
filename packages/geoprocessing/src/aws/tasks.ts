@@ -1,6 +1,13 @@
 import { v4 as uuid } from "uuid";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
+import {
+  isMetricArray,
+  isMetricPack,
+  packMetrics,
+  unpackMetrics,
+} from "../metrics";
+import cloneDeep from "lodash/cloneDeep";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -137,6 +144,11 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
+    // Check for metrics and pack them before inserting into DB
+    const dataToStore = cloneDeep(results);
+    if (results.metrics && isMetricArray(results.metrics)) {
+      dataToStore.metrics = packMetrics(results.metrics);
+    }
     await this.db
       .update({
         TableName: this.table,
@@ -300,7 +312,17 @@ export default class TasksModel {
           },
         })
         .promise();
-      return response.Item as GeoprocessingTask;
+
+      const result = response.Item as GeoprocessingTask;
+      // Check for metrics and unpack them before returning
+      if (
+        result.data &&
+        result.data.metrics &&
+        isMetricPack(result.data.metrics)
+      ) {
+        result.data.metrics = unpackMetrics(result.data.metrics);
+      }
+      return result;
     } catch (e) {
       return undefined;
     }

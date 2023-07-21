@@ -8,6 +8,10 @@ import {
   flattenBySketchAllClass,
   nestMetrics,
   createMetric,
+  packMetrics,
+  unpackMetrics,
+  isMetric,
+  isMetricArray,
 } from "./helpers";
 import { NullSketch, NullSketchCollection, Metric } from "../types";
 import { toPercentMetric } from "../../client-core";
@@ -261,6 +265,61 @@ const groupMetrics: Metric[] = [
     value: 15,
   }),
 ];
+
+describe("Metric checks", () => {
+  test("isMetric", async () => {
+    const trueMetric = metrics[0];
+    trueMetric.extra = { big: "fish" };
+    expect(isMetric(trueMetric)).toBe(true);
+  });
+
+  test("isMetric false", async () => {
+    const falseMetric = { value: 15 };
+    expect(isMetric(falseMetric)).toBe(false);
+    const falseMetric2 = createMetric({ value: 15 });
+    //@ts-ignore
+    falseMetric2.groupId = undefined; // not allowed
+    expect(isMetric(falseMetric2)).toBe(false);
+  });
+
+  test("isMetricArray", async () => {
+    expect(isMetricArray(metrics)).toBe(true);
+  });
+});
+
+describe("MetricPack", () => {
+  test("Can pack and unpack metrics", async () => {
+    const packed = packMetrics(metrics);
+    expect(packed.hasOwnProperty("dimensions")).toBe(true);
+    expect(packed.hasOwnProperty("data")).toBe(true);
+    expect(packed.dimensions).toHaveLength(7);
+    expect(packed.data).toHaveLength(8);
+    expect(packed.data[0]).toHaveLength(7);
+
+    const unpacked = unpackMetrics(packed);
+    expect(unpacked).toHaveLength(metrics.length);
+  });
+
+  test("Can pack and unpack metrics with extra", async () => {
+    const metrics = [
+      createMetric({
+        value: 15,
+        extra: { big: "fish" },
+      }),
+    ];
+    const packed = packMetrics(metrics);
+    expect(packed.hasOwnProperty("dimensions")).toBe(true);
+    expect(packed.hasOwnProperty("data")).toBe(true);
+    expect(packed.dimensions).toHaveLength(7);
+    expect(packed.data).toHaveLength(1);
+    expect(packed.data[0]).toHaveLength(7);
+
+    const unpacked = unpackMetrics(packed);
+    expect(unpacked).toHaveLength(metrics.length);
+    expect(unpacked[0].value).toEqual(15);
+    expect(unpacked[0]?.extra?.big).toEqual("fish");
+  });
+});
 
 describe("flattenSketchAllClass", () => {
   test("flattenSketchAllClass - basic", async () => {

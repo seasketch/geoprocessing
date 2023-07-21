@@ -2,7 +2,7 @@ import { Nullable, JSONValue } from "./base";
 import { MetricProperties } from "../metrics/helpers";
 
 /** Dimensions used in Metric */
-const MetricDimensions = [
+export const MetricDimensions = [
   "metricId",
   "geographyId",
   "sketchId",
@@ -38,6 +38,12 @@ export interface Metric {
   geographyId: Nullable<string>;
   /** Identifier for sketch or sketch collection */
   sketchId: Nullable<string>;
+}
+
+/** Alternative JSON format for metrics data that is smaller in size, better suited for blob storage and network transport */
+export interface MetricPack {
+  dimensions: string[];
+  data: (string | number | boolean | JSONValue)[][];
 }
 
 //// AGGREGATIONS ////

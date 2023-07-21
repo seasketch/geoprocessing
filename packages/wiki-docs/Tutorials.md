@@ -1356,7 +1356,44 @@ If your sketch class is a collection then you only need to assign it a report cl
 
 This should give you the sense that you can create different report clients for different sketch classes within the same project.  Or even make reports for sketch collections completely different from reports for individual sketches.
 
+# Updating reports
+
+Over time you will want to make changes to your reports.  Here's some best practices for doing that.
+
+## Updating Datasource
+
+* When updating a datasource, be sure to take it all the way through the process so that there's no confusion about which step you are on.  It's easy to leave things in an incomplete state without it being obvious.
+  * Edit/update your data in data/src
+  * Run `npm run reimport:data`, choose your source datasource and choose to not publish right away.  `data/dist` will now contain your updated datasource file(s).
+  * `npm test` to run your smoke tests which read data from `data/dist` and make sure the geoprocessing function results change as you would expect based on the data changes.  Are you expecting result values to go up or down?  Stay about or exactly the same?  Try not to accept changes that you don't understand.
+  * Add additional sketches or features to your smoke tests as needed.  Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this.  Convince yourself the results are correct.
+  * Publish your updated datasets with `npm run publish:data`.
+  * Clear the cache for all reports that use this datasource with `npm run clear-resuts` and type the name of your geoprocessing function (e.g. `boundaryAreaOverlap`).  You can also opt to just clear results for all reports with `npm run clear-all-results`.  Cached results are cleared one record at a time in dynamodb so this can take quite a while.  In fact, the process can run out of memory and suddenly die.  In this case, you can simply rerun the clear command and it will continue.  Eventually you will get through them all.
+  * Test your reports in SeaSketch.  Any sketches you exported should produce the same numbers.  Test with any really big sketches, make sure your data updates haven't reached any new limit.  This can happen if your updated data is much larger, has more features, higher resolution, etc.
+
+## Updating report clients
+
+* Make code changes to your report clients
+* If adding a new ResultsCard, be sure to link it into the appropriate report client such as a top-level `MpaTabReport`.
+* If adding a new top-level report client, be sure to add it to geoprocessing.json or you will get an error in production that a report client with this name doesn't exist.  Also create a story for it to test in storybook.
+* Run storybook and confirm reports look and behave as expected for all relevant scenarios (single sketch, sketch collection, different sizes and levels of protection, etc.)
+* `npm run build`
+* `npm run deploy`
+* Commit code changes and push to Github
+
+## Updating geoprocessing functions
+
+* Make code changes to your geoprocessing functions
+* If adding a new geoprocessing function, be sure to add it to geoprocessing.json or you will get an error in production that it can't find the function.
+* Add a smoke test alongside your geoprocessing function.
+* `npm test` to run your smoke tests which read data from `data/dist` and make sure the geoprocessing function results change as you would expect based on the data changes.  Are you expecting result values to go up or down?  Stay about or exactly the same?  Try not to accept changes that you don't understand.
+* Add additional sketches or features to your smoke tests as needed.  Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this.  Convince yourself the results are correct.
+* `npm run build`
+* `npm run deploy`
+
 # Debugging
+
+See the [Testing](./Testing.md) page for additional options for testing your project.
 
 ## Debugging Unit Tests
 

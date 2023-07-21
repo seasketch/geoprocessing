@@ -103,14 +103,27 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
       this.lastRequestId = context.awsRequestId;
     }
 
+    console.log(
+      `${this.options.executionMode} ${
+        ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : ""
+      } request`,
+      JSON.stringify(request)
+    );
+
+    // get cached result if available. standard method to get results for async function
     if (request.checkCacheOnly) {
       if (request.cacheKey) {
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+        console.log(
+          `checkCacheOnly for ${serviceName} using cacheKey ${request.cacheKey} resulted in`,
+          JSON.stringify(cachedResult)
+        );
 
         if (
           cachedResult &&
           cachedResult?.status !== GeoprocessingTaskStatus.Pending
         ) {
+          // cache hit
           return {
             statusCode: 200,
             headers: {
@@ -120,11 +133,12 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
             body: JSON.stringify(cachedResult),
           };
         } else {
+          // cache miss
           return {
             statusCode: 200,
             headers: {
               ...commonHeaders,
-              "x-gp-cache": "Cache hit",
+              "x-gp-cache": "Cache miss",
             },
             body: JSON.stringify({
               id: "NO_CACHE_HIT",
@@ -136,13 +150,16 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
       }
     }
 
-    // If gp function to be executed and result returned (scenario 1 or 3),
-    // respond with cached result first if available
+    // respond with cached result right away if available
     if (
       request.cacheKey &&
-      (this.options.executionMode === "sync" || ASYNC_REQUEST_TYPE === "run")
+      (this.options.executionMode === "sync" || ASYNC_REQUEST_TYPE === "start")
     ) {
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+      console.log(
+        `Cache check for ${serviceName} using cacheKey ${request.cacheKey} resulted in`,
+        JSON.stringify(cachedResult)
+      );
       if (
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Pending

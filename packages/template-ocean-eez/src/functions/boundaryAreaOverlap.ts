@@ -25,11 +25,9 @@ interface MyParams {
 }
 
 export async function boundaryAreaOverlap(
-  sketch: Sketch<Polygon> | SketchCollection<Polygon>,
-  extraParams: MyParams
+  sketch: Sketch<Polygon> | SketchCollection<Polygon>
 ): Promise<ReportResult> {
   const sketchBox = sketch.bbox || bbox(sketch);
-  const { geography } = extraParams;
 
   // Fetch boundary features indexed by classId
   const polysByBoundary = (

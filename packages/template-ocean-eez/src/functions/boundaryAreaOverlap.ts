@@ -10,24 +10,26 @@ import {
   overlapFeatures,
   rekeyMetrics,
   sortMetrics,
-  getFlatGeobufFilename,
   isInternalVectorDatasource,
   isExternalVectorDatasource,
   isPolygonFeatureArray,
 } from "@seasketch/geoprocessing";
-import {
-  fgbFetchAll,
-  getFeatures,
-} from "@seasketch/geoprocessing/dataproviders";
+import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import bbox from "@turf/bbox";
 import project from "../../project";
 
 const metricGroup = project.getMetricGroup("boundaryAreaOverlap");
 
+interface MyParams {
+  geography: string[];
+}
+
 export async function boundaryAreaOverlap(
-  sketch: Sketch<Polygon> | SketchCollection<Polygon>
+  sketch: Sketch<Polygon> | SketchCollection<Polygon>,
+  extraParams: MyParams
 ): Promise<ReportResult> {
   const sketchBox = sketch.bbox || bbox(sketch);
+  const { geography } = extraParams;
 
   // Fetch boundary features indexed by classId
   const polysByBoundary = (
@@ -88,7 +90,6 @@ export async function boundaryAreaOverlap(
       (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
       []
     );
-  console.log("the  metrics", metrics);
 
   return {
     metrics: sortMetrics(rekeyMetrics(metrics)),

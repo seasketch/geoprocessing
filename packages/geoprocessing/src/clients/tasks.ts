@@ -14,10 +14,10 @@ export const runTask = async (
 ): Promise<GeoprocessingTask> => {
   const urlInst = new URL(url);
   urlInst.searchParams.append("geometryUri", payload.geometryUri!);
+  urlInst.searchParams.append("extraParams", payload.extraParams || "{}");
   urlInst.searchParams.append("cacheKey", payload.cacheKey || "");
   if (checkCacheOnly) {
     urlInst.searchParams.append("checkCacheOnly", "true");
-
     urlInst.searchParams.append("onConnect", "" + onConnect);
   }
 

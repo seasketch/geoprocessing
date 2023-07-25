@@ -2,7 +2,13 @@ import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
 import { useState, useContext, useEffect } from "react";
 import { ReportContext } from "../context";
 import LRUCache from "mnemonist/lru-cache";
-import { GeoprocessingRequest, GeoprocessingProject } from "../types";
+import md5 from "spark-md5";
+import canonicalJson from "@tufjs/canonical-json";
+import {
+  GeoprocessingRequest,
+  GeoprocessingProject,
+  GeoprocessingRequestParams,
+} from "../types";
 import { runTask, finishTask } from "../clients/tasks";
 
 interface PendingRequest {
@@ -46,7 +52,9 @@ let geoprocessingProjects: { [url: string]: GeoprocessingProject } = {};
  */
 export const useFunction = <ResultType>(
   /** Title of geoprocessing function in this project to run.  @todo support external project function */
-  functionTitle: string
+  functionTitle: string,
+  /** Additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
+  extraParams: GeoprocessingRequestParams = {}
 ): FunctionState<ResultType> => {
   const context = useContext(ReportContext);
   if (!context) {
@@ -115,9 +123,18 @@ export const useFunction = <ResultType>(
         // TODO: Check for requiredProperties
         const payload: GeoprocessingRequest = {
           geometryUri: context.geometryUri,
+          extraParams: encodeURIComponent(JSON.stringify(extraParams)),
         };
         if (context.sketchProperties.id && context.sketchProperties.updatedAt) {
           payload.cacheKey = `${context.sketchProperties.id}-${context.sketchProperties.updatedAt}`;
+          if (Object.keys(extraParams).length > 0) {
+            // Ensure JSON object has consistent stringification
+            const canon = canonicalJson.canonicalize(extraParams);
+            // Hash the stringified JSON object
+            const hash = md5.hash(JSON.stringify(canon));
+            // Append the hash to the cache key to keep the key semi-human-readable
+            payload.cacheKey = `${payload.cacheKey}-${hash}`;
+          }
         }
 
         // check local results cache. may already be available

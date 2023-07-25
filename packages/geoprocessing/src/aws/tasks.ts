@@ -88,6 +88,7 @@ export default class TasksModel {
 
   async create(
     service: string,
+    /** Cache key */
     id?: string,
     correlationId?: string,
     wss?: string

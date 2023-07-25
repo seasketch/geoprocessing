@@ -6,7 +6,7 @@ import "../util/fetchPolyfill";
 // Seasketch client
 
 /**
- * Given geoprocessing function request, fetches the GeoJSON, which can alsosketch JSON
+ * Given geoprocessing function request, fetches the GeoJSON, which can also be sketch JSON
  * @param request
  * @returns the JSON with geometry type optionally specified by request
  */

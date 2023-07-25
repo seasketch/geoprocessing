@@ -1,3 +1,4 @@
+import { JSONValue } from "./base";
 import { Polygon, LineString, Point, Feature } from "./geojson";
 import { Sketch, SketchProperties } from "./sketch";
 
@@ -97,9 +98,16 @@ export interface PreprocessingHandlerOptions {
   requiresProperties: string[];
 }
 
+/** Request parameter values can be any valid JSON value */
+export type GeoprocessingRequestParams = Record<string, JSONValue>;
+
 export interface GeoprocessingRequest<G = Polygon | LineString | Point> {
-  geometry?: Sketch<G>;
+  /** URL to fetch Sketch JSON */
   geometryUri?: string; // must be https
+  /** Sketch JSON */
+  geometry?: Sketch<G>;
+  /** Additional runtime parameters (stringified and escaped). */
+  extraParams?: string;
   token?: string;
   cacheKey?: string;
   wss?: string;

@@ -8,6 +8,8 @@ import {
   LineString,
   Point,
   GeoprocessingRequest,
+  JSONValue,
+  GeoprocessingRequestParams,
 } from "../types";
 import TaskModel, {
   commonHeaders,
@@ -21,6 +23,7 @@ import {
   APIGatewayProxyEvent,
 } from "aws-lambda";
 import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
+import { unescape } from "querystring";
 
 const Lambda = new LambdaClient();
 const Db = new DynamoDB.DocumentClient();
@@ -47,9 +50,19 @@ const WSS_STAGE = process.env.WSS_STAGE || "";
  * @template T the return type of the geoprocessing function, automatically set from func return type
  * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
  */
-export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
+export class GeoprocessingHandler<
+  T = JSONValue,
+  G = Polygon | LineString | Point,
+  P = Record<string, JSONValue>
+> {
   func: (
-    feature: Feature<G> | FeatureCollection<G> | Sketch<G> | SketchCollection<G>
+    feature:
+      | Feature<G>
+      | FeatureCollection<G>
+      | Sketch<G>
+      | SketchCollection<G>,
+    /** Additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
+    extraParams: P
   ) => Promise<T>;
   options: GeoprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
@@ -64,15 +77,21 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
    * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
    */
   constructor(
-    func: (feature: Feature<G> | FeatureCollection<G>) => Promise<T>,
+    func: (
+      feature: Feature<G> | FeatureCollection<G>,
+      extraParams: P
+    ) => Promise<T>,
     options: GeoprocessingHandlerOptions
   );
   constructor(
-    func: (feature: Sketch<G> | SketchCollection<G>) => Promise<T>,
+    func: (
+      feature: Sketch<G> | SketchCollection<G>,
+      extraParams: P
+    ) => Promise<T>,
     options: GeoprocessingHandlerOptions
   );
   constructor(
-    func: (feature) => Promise<T>,
+    func: (feature, extraParams) => Promise<T>,
     options: GeoprocessingHandlerOptions
   ) {
     this.func = func;
@@ -88,6 +107,7 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
     const serviceName = options.title;
 
     const request = this.parseRequest<G>(event);
+
     // TODO: Authorization
     // Bail out if replaying previous task
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
@@ -224,7 +244,11 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
         const featureSet = await fetchGeoJSON<G>(request);
         try {
           console.time(`run func ${this.options.title}`);
-          const results = await this.func(featureSet);
+          const extraParamString = request.extraParams
+            ? unescape(request.extraParams)
+            : "{}";
+          const extraParams = JSON.parse(extraParamString) as P;
+          const results = await this.func(featureSet, extraParams);
           console.timeEnd(`run func ${this.options.title}`);
 
           task.data = results;
@@ -287,11 +311,11 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
         //@ts-ignore
         task.asyncStartTime = asyncStartTime;
 
-        let params = event.queryStringParameters;
-        if (params) {
-          params["wss"] = wss;
+        let queryParams = event.queryStringParameters;
+        if (queryParams) {
+          queryParams["wss"] = wss;
         }
-        event.queryStringParameters = params;
+        event.queryStringParameters = queryParams;
         let payload = JSON.stringify(event);
         await Lambda.invoke({
           FunctionName: RUN_HANDLER_FUNCTION_NAME,

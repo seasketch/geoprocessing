@@ -147,7 +147,11 @@ export default class TasksModel {
     // Check for metrics and pack them before inserting into DB
     const dataToStore = cloneDeep(results);
     if (results.metrics && isMetricArray(results.metrics)) {
+      console.log("tasks.ts complete before pack");
+      console.log(JSON.stringify(results.metrics));
       dataToStore.metrics = packMetrics(results.metrics);
+      console.log("tasks.ts complete after unpack");
+      console.log(JSON.stringify(dataToStore.metrics));
     }
     await this.db
       .update({
@@ -321,7 +325,11 @@ export default class TasksModel {
         result.data.metrics &&
         isMetricPack(result.data.metrics)
       ) {
+        console.log("tasks.ts get before unpack");
+        console.log(JSON.stringify(result.data.metrics));
         result.data.metrics = unpackMetrics(result.data.metrics);
+        console.log("taskts.ts get after unpack");
+        console.timeLog(JSON.stringify(unpackMetrics));
       }
       return result;
     } catch (e) {

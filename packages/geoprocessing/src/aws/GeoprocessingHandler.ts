@@ -234,6 +234,8 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
 
           //the duration has been updated, now update the estimates table
           await Tasks.updateEstimate(task);
+          console.log("calling tasks.complete with results");
+          console.log(JSON.stringify(results));
           let promise = await Tasks.complete(task, results);
 
           if (this.options.executionMode !== "sync") {

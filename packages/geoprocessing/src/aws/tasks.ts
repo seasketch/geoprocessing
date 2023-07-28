@@ -8,6 +8,7 @@ import {
   unpackMetrics,
 } from "../metrics";
 import cloneDeep from "lodash/cloneDeep";
+import { MetricPack } from "../types";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -146,12 +147,16 @@ export default class TasksModel {
 
     // Check for metrics and pack them before inserting into DB
     const dataToStore = cloneDeep(results);
+    let packed: MetricPack | null = null;
     if (results.metrics && isMetricArray(results.metrics)) {
       console.log("tasks.ts complete before pack");
-      console.log(JSON.stringify(results.metrics));
-      dataToStore.metrics = packMetrics(results.metrics);
-      console.log("tasks.ts complete after unpack");
-      console.log(JSON.stringify(dataToStore.metrics));
+      console.log(JSON.stringify(dataToStore));
+      const packed = (dataToStore.metrics = packMetrics(dataToStore.metrics));
+      console.log("tasks.ts complete packed");
+      console.log("packed", JSON.stringify(packed));
+      dataToStore.metrics = packed;
+      console.log("tasks.ts complete final dataToStore");
+      console.log(JSON.stringify(dataToStore));
     }
     await this.db
       .update({

@@ -82,8 +82,10 @@ export const rekeyMetrics = (
  * Converts Metric array to a MetricPack.
  * Assumes metric dimensions are consistent for each element in the array, and null values are used
  */
-export const packMetrics = (metrics: Metric[]): MetricPack => {
-  let pack: MetricPack = { dimensions: [], data: [] };
+export const packMetrics = (inMetrics: Metric[]): MetricPack => {
+  const metrics = cloneDeep(inMetrics);
+  console.log("inMetrics", inMetrics);
+  const pack: MetricPack = { dimensions: [], data: [] };
   if (metrics.length === 0) return pack;
 
   console.log("packMetrics");
@@ -96,8 +98,8 @@ export const packMetrics = (metrics: Metric[]): MetricPack => {
   const packData: MetricPack["data"] = [];
   // Pack data values, for-loop for speed
   for (var a = 0, ml = metrics.length; a < ml; ++a) {
-    let curMetric = metrics[a];
-    let curRow: MetricPack["data"][0] = [];
+    const curMetric = metrics[a];
+    const curRow: MetricPack["data"][0] = [];
     for (var b = 0, kl = keys.length; b < kl; ++b) {
       let curKey = keys[b];
       curRow.push(curMetric[curKey]);

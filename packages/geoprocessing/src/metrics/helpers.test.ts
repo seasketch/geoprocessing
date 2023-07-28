@@ -292,9 +292,9 @@ describe("MetricPack", () => {
     const packed = packMetrics(metrics);
     expect(packed.hasOwnProperty("dimensions")).toBe(true);
     expect(packed.hasOwnProperty("data")).toBe(true);
-    expect(packed.dimensions).toHaveLength(7);
+    expect(packed.dimensions).toHaveLength(6);
     expect(packed.data).toHaveLength(8);
-    expect(packed.data[0]).toHaveLength(7);
+    expect(packed.data[0]).toHaveLength(6);
 
     const unpacked = unpackMetrics(packed);
     expect(unpacked).toHaveLength(metrics.length);

@@ -149,6 +149,8 @@ export default class TasksModel {
     const dataToStore = cloneDeep(results);
     console.log("results");
     console.log(JSON.stringify(results));
+    console.log("results direct packed");
+    console.log(packMetrics(results.metrics));
     if (dataToStore.metrics && isMetricArray(dataToStore.metrics)) {
       console.log("tasks.ts complete before pack");
       console.log(JSON.stringify(dataToStore));

@@ -147,8 +147,7 @@ export default class TasksModel {
 
     // Check for metrics and pack them before inserting into DB
     const dataToStore = cloneDeep(results);
-    let packed: MetricPack | null = null;
-    if (results.metrics && isMetricArray(results.metrics)) {
+    if (dataToStore.metrics && isMetricArray(dataToStore.metrics)) {
       console.log("tasks.ts complete before pack");
       console.log(JSON.stringify(dataToStore));
       const packed = (dataToStore.metrics = packMetrics(dataToStore.metrics));

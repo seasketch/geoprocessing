@@ -86,7 +86,11 @@ export const packMetrics = (metrics: Metric[]): MetricPack => {
   let pack: MetricPack = { dimensions: [], data: [] };
   if (metrics.length === 0) return pack;
 
+  console.log("packMetrics");
+  console.log(metrics);
+  console.log(metrics[0]);
   const keys = Object.keys(metrics[0]).sort();
+  console.log(keys);
   pack.dimensions = keys;
 
   const packData: MetricPack["data"] = [];

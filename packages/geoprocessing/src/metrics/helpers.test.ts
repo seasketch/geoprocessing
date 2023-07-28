@@ -12,9 +12,12 @@ import {
   unpackMetrics,
   isMetric,
   isMetricArray,
+  rekeyMetrics,
+  MetricProperties,
 } from "./helpers";
 import { NullSketch, NullSketchCollection, Metric } from "../types";
 import { toPercentMetric } from "../../client-core";
+import deepEqual from "fast-deep-equal";
 
 const metricName = "metric1";
 
@@ -407,6 +410,16 @@ describe("flattenSketchAllClass", () => {
       percMetricName
     );
     percMetrics.forEach((m) => expect(m.metricId).toEqual(percMetricName));
+  });
+
+  test("rekeyMetrics", async () => {
+    const metrics = [createMetric({ value: 10 })];
+    const rekeyed = rekeyMetrics(metrics);
+    expect(rekeyed.length).toBe(1);
+    const keys = Object.keys(rekeyed[0]);
+    expect(keys.length).toBeLessThanOrEqual(MetricProperties.length);
+
+    // Add test of correct key order
   });
 
   test("flattenByGroup - single class", async () => {

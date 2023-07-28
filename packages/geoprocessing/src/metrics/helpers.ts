@@ -72,7 +72,7 @@ export const rekeyMetrics = (
   return metrics.map((curMetric) => {
     var newMetric: Record<string, any> = {};
     idOrder.forEach((id) => {
-      if (newMetric.hasOwnProperty(id)) newMetric[id] = curMetric[id];
+      if (curMetric.hasOwnProperty(id)) newMetric[id] = curMetric[id];
     });
     return newMetric;
   }) as Metric[];

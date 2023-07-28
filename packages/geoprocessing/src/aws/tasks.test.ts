@@ -1,6 +1,7 @@
 import { createMetric, isMetricArray, isMetricPack } from "../metrics";
 import TaskModel from "./tasks";
 import { DynamoDB } from "aws-sdk";
+import deepEqual from "fast-deep-equal";
 
 const db = new DynamoDB.DocumentClient({
   endpoint: "localhost:8000",
@@ -145,13 +146,16 @@ test("complete a task with metrics should have packed in db", async () => {
 
 test("completed task with metrics should return unpacked result", async () => {
   const task = await Tasks.create(SERVICE_NAME);
-  const response = await Tasks.complete(task, {
-    metrics: [createMetric({ value: 15 })],
+  const metrics = [createMetric({ value: 15 })];
+  await Tasks.complete(task, {
+    metrics,
   });
   const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
 
+  const cachedMetrics = cachedResult?.data.metrics;
   expect(cachedResult?.data.metrics).toBeTruthy();
   expect(isMetricArray(cachedResult?.data.metrics)).toBe(true);
+  expect(deepEqual(cachedMetrics, metrics)).toBe(true);
 });
 
 test("fail a task", async () => {

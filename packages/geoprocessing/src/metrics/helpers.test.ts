@@ -289,6 +289,57 @@ describe("Metric checks", () => {
 
 describe("MetricPack", () => {
   test("Can pack and unpack metrics", async () => {
+    const metrics: Metric[] = [
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchAId,
+        value: 10,
+        classId: "class1",
+      }),
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchBId,
+        value: 20,
+        classId: "class1",
+      }),
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchDId,
+        value: 40,
+        classId: "class1",
+      }),
+      createMetric({
+        metricId: metricName,
+        sketchId: collectionId,
+        value: 30,
+        classId: "class1",
+      }),
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchAId,
+        value: 40,
+        classId: "class2",
+      }),
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchBId,
+        value: 50,
+        classId: "class2",
+      }),
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchDId,
+        value: 60,
+        classId: "class2",
+      }),
+      createMetric({
+        metricId: metricName,
+        sketchId: collectionId,
+        value: 90,
+        classId: "class2",
+      }),
+    ];
+
     const packed = packMetrics(metrics);
     expect(packed.hasOwnProperty("dimensions")).toBe(true);
     expect(packed.hasOwnProperty("data")).toBe(true);

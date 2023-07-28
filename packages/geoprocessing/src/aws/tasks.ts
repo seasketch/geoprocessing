@@ -145,21 +145,23 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
+    if (results.metrics) {
+      const direct = packMetrics(results.metrics);
+      console.log("results direct packed", direct);
+    }
+
     // Check for metrics and pack them before inserting into DB
     const dataToStore = cloneDeep(results);
-    console.log("results");
-    console.log(JSON.stringify(results));
-    console.log("results direct packed");
-    console.log(packMetrics(results.metrics));
     if (dataToStore.metrics && isMetricArray(dataToStore.metrics)) {
-      console.log("tasks.ts complete before pack");
-      console.log(JSON.stringify(dataToStore));
+      console.log("tasks complete results", JSON.stringify(results));
+      console.log("tasks.ts complete before pack", JSON.stringify(dataToStore));
       const packed = packMetrics(dataToStore.metrics);
-      console.log("tasks.ts complete packed");
-      console.log("packed", JSON.stringify(packed));
+      console.log("tasks.ts complete packed", JSON.stringify(packed));
       dataToStore.metrics = packed;
-      console.log("tasks.ts complete final dataToStore");
-      console.log(JSON.stringify(dataToStore));
+      console.log(
+        "tasks.ts complete final dataToStore",
+        JSON.stringify(dataToStore)
+      );
     }
     await this.db
       .update({

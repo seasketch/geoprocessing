@@ -38,7 +38,7 @@ export const MetricProperties = [
 ] as const;
 
 /**
- * Creates a base metric object with 0 value, metricId of 'metric' and all other IDs null.  Then overrides with properties of passed metric.
+ * Creates a new metric with default values of null.  Copies in properties of passed metric.
  * @param metric - partial metric
  * @returns metric
  */
@@ -50,7 +50,7 @@ export const createMetric = (metric: Partial<Metric>): Metric => {
     groupId: null,
     geographyId: null,
     sketchId: null,
-    ...metric,
+    ...cloneDeep(metric),
   };
 };
 
@@ -72,7 +72,7 @@ export const rekeyMetrics = (
   return metrics.map((curMetric) => {
     var newMetric: Record<string, any> = {};
     idOrder.forEach((id) => {
-      newMetric[id] = curMetric[id];
+      if (newMetric.hasOwnProperty(id)) newMetric[id] = curMetric[id];
     });
     return newMetric;
   }) as Metric[];
@@ -83,16 +83,16 @@ export const rekeyMetrics = (
  * Assumes metric dimensions are consistent for each element in the array, and null values are used
  */
 export const packMetrics = (inMetrics: Metric[]): MetricPack => {
-  const metrics = cloneDeep(inMetrics);
   console.log("inMetrics", inMetrics);
+  const metrics = cloneDeep(inMetrics);
+  console.log("cloned inMetrics", metrics);
   const pack: MetricPack = { dimensions: [], data: [] };
   if (metrics.length === 0) return pack;
 
-  console.log("packMetrics");
-  console.log(metrics);
+  console.log("packMetrics", metrics);
   console.log(metrics[0]);
   const keys = Object.keys(metrics[0]).sort();
-  console.log(keys);
+  console.log("keys", keys);
   pack.dimensions = keys;
 
   const packData: MetricPack["data"] = [];
@@ -116,7 +116,8 @@ export const packMetrics = (inMetrics: Metric[]): MetricPack => {
  * @param metricPack
  * @returns
  */
-export const unpackMetrics = (metricPack: MetricPack): Metric[] => {
+export const unpackMetrics = (inMetricPack: MetricPack): Metric[] => {
+  const metricPack = cloneDeep(inMetricPack);
   let metrics: Metric[] = [];
 
   for (var a = 0, ml = metricPack.data.length; a < ml; ++a) {

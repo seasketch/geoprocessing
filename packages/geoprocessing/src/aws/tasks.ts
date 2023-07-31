@@ -316,7 +316,6 @@ export default class TasksModel {
 
       const result = response.Item as GeoprocessingTask;
       // Check for metrics and unpack them before returning
-      console.log("result", result);
       if (
         result.data &&
         result.data.metrics &&

@@ -147,14 +147,16 @@ test("complete a task with metrics should have packed in db", async () => {
 test("completed task with metrics should return unpacked result", async () => {
   const task = await Tasks.create(SERVICE_NAME);
   const metrics = [createMetric({ value: 15 })];
-  await Tasks.complete(task, {
+  const response = await Tasks.complete(task, {
     metrics,
   });
+  expect(response.statusCode).toBe(200);
+
   const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
 
   const cachedMetrics = cachedResult?.data.metrics;
-  expect(cachedResult?.data.metrics).toBeTruthy();
-  expect(isMetricArray(cachedResult?.data.metrics)).toBe(true);
+  expect(cachedMetrics).toBeTruthy();
+  expect(isMetricArray(cachedMetrics)).toBe(true);
   expect(deepEqual(cachedMetrics, metrics)).toBe(true);
 });
 

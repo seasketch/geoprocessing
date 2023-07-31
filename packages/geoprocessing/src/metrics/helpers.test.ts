@@ -17,6 +17,7 @@ import {
 } from "./helpers";
 import { NullSketch, NullSketchCollection, Metric } from "../types";
 import { toPercentMetric } from "../../client-core";
+import deepEqual from "fast-deep-equal";
 
 const metricName = "metric1";
 
@@ -346,6 +347,29 @@ describe("MetricPack", () => {
     expect(unpacked[0].value).toEqual(15);
     expect(unpacked[0]?.extra?.big).toEqual("fish");
   });
+});
+
+test("MetricPack", async () => {
+  const metrics: Metric[] = [
+    {
+      metricId: "ousPeopleCount",
+      sketchId: "16624",
+      classId: "saomiguel",
+      groupId: null,
+      geographyId: null,
+      value: 102,
+    },
+  ];
+  const packed = packMetrics(metrics);
+  expect(packed.hasOwnProperty("dimensions")).toBe(true);
+  expect(packed.hasOwnProperty("data")).toBe(true);
+  expect(packed.dimensions).toHaveLength(6);
+  expect(packed.data).toHaveLength(1);
+  expect(packed.data[0]).toHaveLength(6);
+
+  const unpacked = unpackMetrics(packed);
+  console.log("unpacked", JSON.stringify(unpacked, null, 2));
+  expect(deepEqual(metrics, unpacked)).toBe(true);
 });
 
 describe("flattenSketchAllClass", () => {

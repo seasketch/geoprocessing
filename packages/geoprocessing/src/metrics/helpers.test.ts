@@ -12,9 +12,12 @@ import {
   unpackMetrics,
   isMetric,
   isMetricArray,
+  rekeyMetrics,
+  MetricProperties,
 } from "./helpers";
 import { NullSketch, NullSketchCollection, Metric } from "../types";
 import { toPercentMetric } from "../../client-core";
+import deepEqual from "fast-deep-equal";
 
 const metricName = "metric1";
 
@@ -287,14 +290,39 @@ describe("Metric checks", () => {
   });
 });
 
+test("rekeyMetrics", async () => {
+  const metrics = [createMetric({ value: 10 })];
+  const rekeyed = rekeyMetrics(metrics);
+  expect(rekeyed.length).toBe(1);
+  const keys = Object.keys(rekeyed[0]);
+  expect(keys.length).toBeLessThanOrEqual(MetricProperties.length);
+
+  // Add test of correct key order
+});
+
 describe("MetricPack", () => {
   test("Can pack and unpack metrics", async () => {
+    const metrics: Metric[] = [
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchAId,
+        value: 10,
+        classId: "class1",
+      }),
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchBId,
+        value: 20,
+        classId: "class1",
+      }),
+    ];
+
     const packed = packMetrics(metrics);
     expect(packed.hasOwnProperty("dimensions")).toBe(true);
     expect(packed.hasOwnProperty("data")).toBe(true);
-    expect(packed.dimensions).toHaveLength(7);
-    expect(packed.data).toHaveLength(8);
-    expect(packed.data[0]).toHaveLength(7);
+    expect(packed.dimensions).toHaveLength(6);
+    expect(packed.data).toHaveLength(2);
+    expect(packed.data[0]).toHaveLength(6);
 
     const unpacked = unpackMetrics(packed);
     expect(unpacked).toHaveLength(metrics.length);
@@ -319,6 +347,29 @@ describe("MetricPack", () => {
     expect(unpacked[0].value).toEqual(15);
     expect(unpacked[0]?.extra?.big).toEqual("fish");
   });
+});
+
+test("MetricPack", async () => {
+  const metrics: Metric[] = [
+    {
+      metricId: "ousPeopleCount",
+      sketchId: "16624",
+      classId: "saomiguel",
+      groupId: null,
+      geographyId: null,
+      value: 102,
+    },
+  ];
+  const packed = packMetrics(metrics);
+  expect(packed.hasOwnProperty("dimensions")).toBe(true);
+  expect(packed.hasOwnProperty("data")).toBe(true);
+  expect(packed.dimensions).toHaveLength(6);
+  expect(packed.data).toHaveLength(1);
+  expect(packed.data[0]).toHaveLength(6);
+
+  const unpacked = unpackMetrics(packed);
+  console.log("unpacked", JSON.stringify(unpacked, null, 2));
+  expect(deepEqual(metrics, unpacked)).toBe(true);
 });
 
 describe("flattenSketchAllClass", () => {

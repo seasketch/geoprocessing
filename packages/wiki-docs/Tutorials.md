@@ -98,7 +98,7 @@ Choose an option and follow the instructions below to get started.  You can try 
 
 If you are a developer on the SeaSketch team:
 
-* You will work directly with this [devcontainer repository](`https://github.com/seasketch/geoprocessing-devcontainer`)
+* You will work directly with this [devcontainer repository](`https://github.com/seasketch/geoprocessing-devcontainer`).  Skip to the next section.
 
 If you are a developer independent of seasketch:
 

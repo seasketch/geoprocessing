@@ -147,8 +147,9 @@ export default class TasksModel {
 
     // Check for metrics and pack them before inserting into DB
     const dataToStore = cloneDeep(results);
-    if (results.metrics && isMetricArray(results.metrics)) {
-      dataToStore.metrics = packMetrics(results.metrics);
+    if (dataToStore.metrics && isMetricArray(dataToStore.metrics)) {
+      const packed = packMetrics(dataToStore.metrics);
+      dataToStore.metrics = packed;
     }
     await this.db
       .update({
@@ -316,7 +317,6 @@ export default class TasksModel {
 
       const result = response.Item as GeoprocessingTask;
       // Check for metrics and unpack them before returning
-      console.log("result", result);
       if (
         result.data &&
         result.data.metrics &&

@@ -39,8 +39,8 @@ const WSS_REGION = process.env.WSS_REGION || "";
 const WSS_STAGE = process.env.WSS_STAGE || "";
 
 /**
- * Lambda handler for a geoprocessing function
- * This one class supports 2 different execution modes for running a geoprocessing function - sync and async
+ * Manages execution of a geoprocessing function within an AWS Lambda function.
+ * Supports 2 different execution modes for running a geoprocessing function - sync and async
  * These modes create 3 different request scenarios.  A lambda is created for each scenario, and they all run
  * this one handler.
  * 1 - sync executionMode - immediately run gp function and return result in resolved promise to client
@@ -49,6 +49,7 @@ const WSS_STAGE = process.env.WSS_STAGE || "";
  *
  * @template T the return type of the geoprocessing function, automatically set from func return type
  * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
+ * @template P extra parameters to pass to geoprocessing function, automatically set from func parameter type
  */
 export class GeoprocessingHandler<
   T = JSONValue,
@@ -71,10 +72,11 @@ export class GeoprocessingHandler<
   Tasks: TaskModel;
 
   /**
-   * @param func the geoprocessing function, overloaded to allow caller to pass Feature/FeatureCollection *or* Sketch/SketchCollection
+   * @param func the geoprocessing function to run
    * @param options geoprocessing function deployment options
-   * @template T the return type of the geoprocessing function, automatically set from func return type
    * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
+   * @template P extra parameters to pass to geoprocessing function, automatically set from func parameter type
+   * @template T the return type of the geoprocessing function, automatically set from func return type
    */
   constructor(
     func: (
@@ -99,6 +101,13 @@ export class GeoprocessingHandler<
     this.Tasks = new TaskModel(TASKS_TABLE!, ESTIMATES_TABLE!, Db);
   }
 
+  /**
+   * Given request event, runs geoprocessing function and returns APIGatewayProxyResult with task status in the body
+   * If sync executionMode, then result is returned with task, if async executionMode, then returns socket for client to listen for task update
+   * If event.geometry present, assumes request is already a GeoprocessingRequest (from AWS console).
+   * If event.queryStringParameters present, request must be from API Gateway and need to coerce into GeoprocessingRequest
+   * If event.body present with JSON string, then parse as a GeoprocessingRequest
+   */
   async lambdaHandler(
     event: APIGatewayProxyEvent,
     context: Context
@@ -125,7 +134,7 @@ export class GeoprocessingHandler<
 
     console.log(
       `${this.options.executionMode} ${
-        ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : ""
+        ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : "sync"
       } request`,
       JSON.stringify(request)
     );
@@ -244,10 +253,8 @@ export class GeoprocessingHandler<
         const featureSet = await fetchGeoJSON<G>(request);
         try {
           console.time(`run func ${this.options.title}`);
-          const extraParamString = request.extraParams
-            ? unescape(request.extraParams)
-            : "{}";
-          const extraParams = JSON.parse(extraParamString) as P;
+          const extraParams = request.extraParams as unknown as P;
+
           const results = await this.func(featureSet, extraParams);
           console.timeEnd(`run func ${this.options.title}`);
 
@@ -412,7 +419,7 @@ export class GeoprocessingHandler<
   }
 
   /**
-   * Parse gp request parameters
+   * Parses request event and returns GeoprocessingRequest.
    */
   parseRequest<G>(event: APIGatewayProxyEvent): GeoprocessingRequest<G> {
     let request: GeoprocessingRequest<G>;
@@ -429,12 +436,14 @@ export class GeoprocessingHandler<
         cacheKey: event.queryStringParameters["cacheKey"],
         wss: event.queryStringParameters["wss"],
         checkCacheOnly: event.queryStringParameters["checkCacheOnly"],
+        extraParams: event.queryStringParameters["extraParams"],
       };
     } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);
     } else {
       throw new Error("Could not interpret incoming request");
     }
+
     return request;
   }
 }

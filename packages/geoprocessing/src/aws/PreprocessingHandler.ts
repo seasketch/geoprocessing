@@ -13,6 +13,7 @@ import {
   Point,
   Sketch,
   ValidationError,
+  JSONValue,
 } from "../types";
 
 const commonHeaders = {
@@ -25,8 +26,14 @@ const commonHeaders = {
  * Lambda handler for a preprocessing function
  * @template G the geometry type of the feature for the geoprocessing function, automatically set from func feature type
  */
-export class PreprocessingHandler<G = Polygon | LineString | Point> {
-  func: (feature: Feature<G> | Sketch<G>) => Promise<Feature<G> | Sketch<G>>;
+export class PreprocessingHandler<
+  G = Polygon | LineString | Point,
+  P = Record<string, JSONValue>
+> {
+  func: (
+    feature: Feature<G> | Sketch<G>,
+    extraParams: P
+  ) => Promise<Feature<G> | Sketch<G>>;
   options: PreprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
   // aws runs several retries and there appears to be no setting to avoid this
@@ -38,15 +45,15 @@ export class PreprocessingHandler<G = Polygon | LineString | Point> {
    * @template G the geometry type of features for the preprocessing function, automatically set from func feature type
    */
   constructor(
-    func: (feature: Feature<G>) => Promise<Feature<G>>,
+    func: (feature: Feature<G>, extraParams: P) => Promise<Feature<G>>,
     options: PreprocessingHandlerOptions
   );
   constructor(
-    func: (feature: Sketch<G>) => Promise<Sketch<G>>,
+    func: (feature: Sketch<G>, extraParams: P) => Promise<Sketch<G>>,
     options: PreprocessingHandlerOptions
   );
   constructor(
-    func: (feature) => Promise<any>,
+    func: (feature, extraParams) => Promise<any>,
     options: PreprocessingHandlerOptions
   ) {
     this.func = func;
@@ -85,7 +92,7 @@ export class PreprocessingHandler<G = Polygon | LineString | Point> {
       this.lastRequestId = context.awsRequestId;
     }
     try {
-      const feature = await this.func(request.feature);
+      const feature = await this.func(request.feature, request.extraParams);
       return {
         statusCode: 200,
         headers: commonHeaders,
@@ -130,6 +137,7 @@ export class PreprocessingHandler<G = Polygon | LineString | Point> {
     return {
       feature: json.feature,
       // TODO: support more response types in seasketch/next
+      extraParams: json.extraParams || {},
       responseFormat: "application/json",
     };
   }

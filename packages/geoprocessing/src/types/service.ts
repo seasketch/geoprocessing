@@ -106,7 +106,7 @@ export interface GeoprocessingRequest<G = Polygon | LineString | Point> {
   geometryUri?: string; // must be https
   /** Sketch JSON */
   geometry?: Sketch<G>;
-  /** Additional runtime parameters (stringified and escaped). */
+  /** Additional runtime parameters */
   extraParams?: string;
   token?: string;
   cacheKey?: string;
@@ -145,6 +145,8 @@ export interface SeaSketchReportingToggleLanguageEvent {
 export interface PreprocessingRequest {
   /** Geometry drawn by the user. Typically simple */
   feature: Feature<Polygon | Point | LineString>;
+  /** Additional runtime parameters */
+  extraParams?: string;
   /** Defaults to geojson  */
   responseFormat?: "application/json"; // | "application/pbf+geobuf" | "application/pbf+mvt";
 }

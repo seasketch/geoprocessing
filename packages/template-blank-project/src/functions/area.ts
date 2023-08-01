@@ -7,6 +7,11 @@ import bbox from "@turf/bbox";
 import { AllGeoJSON, BBox } from "@turf/helpers";
 import turfArea from "@turf/area";
 
+interface GeoprocessingParams {
+  /** IDs of one or more sub-regions to operate on */
+  geographies?: string[];
+}
+
 export interface AreaResults {
   /** area of the sketch in square meters */
   area: number;
@@ -14,7 +19,8 @@ export interface AreaResults {
 }
 
 async function calculateArea(
-  sketch: Sketch | SketchCollection
+  sketch: Sketch | SketchCollection,
+  extraParams?: GeoprocessingParams
 ): Promise<AreaResults> {
   return {
     area: turfArea(sketch),

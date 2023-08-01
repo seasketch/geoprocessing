@@ -1,4 +1,4 @@
-import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
+import { GeoprocessingTask } from "../aws/tasks";
 import {
   GeoprocessingRequest,
   GeoprocessingRequestParams,

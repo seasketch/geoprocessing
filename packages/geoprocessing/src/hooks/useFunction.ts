@@ -121,7 +121,7 @@ export const useFunction = <ResultType>(
         // TODO: Check for requiredProperties
         const payload: GeoprocessingRequest = {
           geometryUri: context.geometryUri,
-          extraParams: encodeURIComponent(JSON.stringify(extraParams)),
+          extraParams: JSON.stringify(extraParams), // will be url encoded automatically
         };
         if (context.sketchProperties.id && context.sketchProperties.updatedAt) {
           payload.cacheKey = genTaskCacheKey(

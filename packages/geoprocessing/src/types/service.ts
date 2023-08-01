@@ -98,16 +98,35 @@ export interface PreprocessingHandlerOptions {
   requiresProperties: string[];
 }
 
-/** Request parameter values can be any valid JSON value */
-export type GeoprocessingRequestParams = Record<string, JSONValue>;
-
+/**
+ * Represents geoprocessing request via HTTP method, fully packed
+ */
 export interface GeoprocessingRequest<G = Polygon | LineString | Point> {
   /** URL to fetch Sketch JSON */
   geometryUri?: string; // must be https
   /** Sketch JSON */
   geometry?: Sketch<G>;
-  /** Additional runtime parameters */
+  /** Additional runtime parameters, as escaped JSON string */
   extraParams?: string;
+  token?: string;
+  cacheKey?: string;
+  wss?: string;
+  checkCacheOnly?: string;
+  onSocketConnect?: string;
+}
+
+export type GeoprocessingRequestParams = Record<string, JSONValue>;
+
+/**
+ * Represents geoprocessing request internally, fully unpacked
+ */
+export interface GeoprocessingRequestModel<G = Polygon | LineString | Point> {
+  /** URL to fetch Sketch JSON */
+  geometryUri?: string; // must be https
+  /** Sketch JSON */
+  geometry?: Sketch<G>;
+  /** Additional runtime parameters */
+  extraParams?: GeoprocessingRequestParams;
   token?: string;
   cacheKey?: string;
   wss?: string;

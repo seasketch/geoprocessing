@@ -9,7 +9,7 @@ import {
   Point,
   GeoprocessingRequest,
   JSONValue,
-  GeoprocessingRequestParams,
+  GeoprocessingRequestModel,
 } from "../types";
 import TaskModel, {
   commonHeaders,
@@ -39,7 +39,8 @@ const WSS_REGION = process.env.WSS_REGION || "";
 const WSS_STAGE = process.env.WSS_STAGE || "";
 
 /**
- * Manages execution of a geoprocessing function within an AWS Lambda function.
+ * Manages the task of executing a geoprocessing function within an AWS Lambda function.
+ * This includes sending estimate of completion, caching the results, and getting them back to the client.
  * Supports 2 different execution modes for running a geoprocessing function - sync and async
  * These modes create 3 different request scenarios.  A lambda is created for each scenario, and they all run
  * this one handler.
@@ -54,7 +55,7 @@ const WSS_STAGE = process.env.WSS_STAGE || "";
 export class GeoprocessingHandler<
   T = JSONValue,
   G = Polygon | LineString | Point,
-  P = Record<string, JSONValue>
+  P extends Record<string, JSONValue> = Record<string, JSONValue>
 > {
   func: (
     feature:
@@ -251,10 +252,9 @@ export class GeoprocessingHandler<
       });
       try {
         const featureSet = await fetchGeoJSON<G>(request);
+        const extraParams = request.extraParams as unknown as P;
         try {
           console.time(`run func ${this.options.title}`);
-          const extraParams = request.extraParams as unknown as P;
-
           const results = await this.func(featureSet, extraParams);
           console.timeEnd(`run func ${this.options.title}`);
 
@@ -268,8 +268,6 @@ export class GeoprocessingHandler<
           let promise = await Tasks.complete(task, results);
 
           if (this.options.executionMode !== "sync") {
-            //let fetchedTask = await Tasks.get(task.service, task.id);
-
             let sname = encodeURIComponent(task.service);
             let ck = encodeURIComponent(task.id || "");
             let wssUrl =
@@ -421,22 +419,35 @@ export class GeoprocessingHandler<
   /**
    * Parses request event and returns GeoprocessingRequest.
    */
-  parseRequest<G>(event: APIGatewayProxyEvent): GeoprocessingRequest<G> {
-    let request: GeoprocessingRequest<G>;
+  parseRequest<G>(event: APIGatewayProxyEvent): GeoprocessingRequestModel<G> {
+    let request: GeoprocessingRequestModel<G>;
     // geometry requires POST
     if ("geometry" in event) {
-      // likely coming from aws console
-      request = event as GeoprocessingRequest<G>;
+      // likely coming from aws console, so already in internal model form
+      request = event as GeoprocessingRequestModel<G>;
     } else if (
       event.queryStringParameters &&
       event.queryStringParameters["geometryUri"]
     ) {
+      // Otherwise we need to extra fro query string parameters
+      const extraString = event.queryStringParameters["extraParams"];
+      let extraParams: P | undefined;
+      if (typeof extraString === "string") {
+        console.log("GeoprocessingHandler extracting extra params");
+        console.log("extraParamString", extraString);
+        extraParams = JSON.parse(unescape(extraString));
+        console.log("extraParams after", extraParams);
+      } else {
+        console.log("GeoprocessingHandler extraParams already extracted");
+        extraParams = extraString;
+      }
+
       request = {
         geometryUri: event.queryStringParameters["geometryUri"],
         cacheKey: event.queryStringParameters["cacheKey"],
         wss: event.queryStringParameters["wss"],
         checkCacheOnly: event.queryStringParameters["checkCacheOnly"],
-        extraParams: event.queryStringParameters["extraParams"],
+        extraParams,
       };
     } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);

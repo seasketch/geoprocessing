@@ -10,7 +10,7 @@ import {
 import project from "../../project";
 import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
 
-interface ClipToOceanParams {
+interface ExtraParams {
   /** Array of country ID's to clip to  */
   countryIds?: string[];
 }
@@ -22,7 +22,7 @@ interface ClipToOceanParams {
  */
 export async function clipToLand(
   feature: Feature | Sketch,
-  extraParams?: ClipToOceanParams
+  extraParams: ExtraParams = {}
 ): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");

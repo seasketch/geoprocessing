@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npx lerna run prepare
-npx lerna run test:local
+npx lerna run prepare # transpiles core geoprocessing code for templates
+npx lerna run test:local # tests all packages including e2e tests not run by Github CI (GDAL, etc.)

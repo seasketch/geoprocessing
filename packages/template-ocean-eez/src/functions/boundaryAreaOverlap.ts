@@ -20,14 +20,15 @@ import project from "../../project";
 
 const metricGroup = project.getMetricGroup("boundaryAreaOverlap");
 
-interface GeoprocessingParams {
+/** Optional caller-provided parameters */
+interface ExtraParams {
   /** Optional ID(s) of geographies to operate on.  Use to constrain function to subregion */
   geographies?: string[];
 }
 
 export async function boundaryAreaOverlap(
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
-  extraParams?: GeoprocessingParams
+  extraParams: ExtraParams = {}
 ): Promise<ReportResult> {
   const sketchBox = sketch.bbox || bbox(sketch);
 

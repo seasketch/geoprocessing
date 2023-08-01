@@ -2,14 +2,12 @@ import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
 import { useState, useContext, useEffect } from "react";
 import { ReportContext } from "../context";
 import LRUCache from "mnemonist/lru-cache";
-import md5 from "spark-md5";
-import canonicalJson from "@tufjs/canonical-json";
 import {
   GeoprocessingRequest,
   GeoprocessingProject,
   GeoprocessingRequestParams,
 } from "../types";
-import { runTask, finishTask } from "../clients/tasks";
+import { runTask, finishTask, genTaskCacheKey } from "../clients/tasks";
 
 interface PendingRequest {
   functionName: string;
@@ -126,15 +124,10 @@ export const useFunction = <ResultType>(
           extraParams: encodeURIComponent(JSON.stringify(extraParams)),
         };
         if (context.sketchProperties.id && context.sketchProperties.updatedAt) {
-          payload.cacheKey = `${context.sketchProperties.id}-${context.sketchProperties.updatedAt}`;
-          if (Object.keys(extraParams).length > 0) {
-            // Ensure JSON object has consistent stringification
-            const canon = canonicalJson.canonicalize(extraParams);
-            // Hash the stringified JSON object
-            const hash = md5.hash(JSON.stringify(canon));
-            // Append the hash to the cache key to keep the key semi-human-readable
-            payload.cacheKey = `${payload.cacheKey}-${hash}`;
-          }
+          payload.cacheKey = genTaskCacheKey(
+            context.sketchProperties,
+            extraParams
+          );
         }
 
         // check local results cache. may already be available

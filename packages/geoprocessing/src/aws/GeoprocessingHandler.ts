@@ -431,6 +431,10 @@ export class GeoprocessingHandler<
     ) {
       // Otherwise we need to extra fro query string parameters
       const extraString = event.queryStringParameters["extraParams"];
+      console.log(
+        'parseRequest event.queryStringParameters["extraParams"]',
+        extraString
+      );
       let extraParams: P | undefined;
       if (typeof extraString === "string") {
         console.log("GeoprocessingHandler extracting extra params");

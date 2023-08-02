@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ResultsCard from "./ResultsCard";
 import ReportDecorator, {
   createReportDecorator,
@@ -36,6 +36,48 @@ export const basic = () => (
     )}
   </ResultsCard>
 );
+
+const geographies = ["nearshore", "offshore"];
+export const extraParams = () => {
+  const [geography, setGeography] = useState("nearshore");
+
+  const geographySwitcher = (e: any) => {
+    console.log("changing geography to", e.target.value);
+    setGeography(e.target.value);
+  };
+
+  return (
+    <>
+      <select onChange={geographySwitcher}>
+        {geographies.map((geography) => {
+          return (
+            <option key={geography} value={geography}>
+              {geography}
+            </option>
+          );
+        })}
+      </select>{" "}
+      <ResultsCard
+        title="Card Title"
+        functionName="area"
+        extraParams={{ geography }}
+      >
+        {(data: any) => (
+          <>
+            <p>Cur geography: {geography}</p>
+            <p>
+              This zone is {data.area} sq km. Lorem ipsum dolor sit amet
+              consectetur adipisicing elit. Ut nisi beatae, officiis perferendis
+              quis inventore quisquam? Provident doloremque inventore, natus
+              beatae quam nisi eius quidem deserunt, aperiam aliquid corrupti
+              eveniet.
+            </p>
+          </>
+        )}
+      </ResultsCard>
+    </>
+  );
+};
 
 export const loadingState = () => (
   <ReportContext.Provider

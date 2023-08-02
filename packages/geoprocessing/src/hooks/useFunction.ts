@@ -1,5 +1,6 @@
 import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
 import { useState, useContext, useEffect } from "react";
+import { useDeepEqualMemo } from "./useDeepEqualMemo";
 import { ReportContext } from "../context";
 import LRUCache from "mnemonist/lru-cache";
 import {
@@ -61,6 +62,8 @@ export const useFunction = <ResultType>(
   const [state, setState] = useState<FunctionState<ResultType>>({
     loading: true,
   });
+  const memoizedExtraParams = useDeepEqualMemo(extraParams);
+
   let socket: WebSocket;
 
   useEffect(() => {
@@ -322,7 +325,12 @@ export const useFunction = <ResultType>(
     return () => {
       abortController.abort();
     };
-  }, [context.geometryUri, context.sketchProperties, functionTitle]);
+  }, [
+    context.geometryUri,
+    context.sketchProperties,
+    functionTitle,
+    memoizedExtraParams,
+  ]);
   return state;
 };
 

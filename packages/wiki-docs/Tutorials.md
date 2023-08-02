@@ -30,8 +30,8 @@ These tutorials will teach you the fundamentals of creating and deploying a seas
 * [Debugging](#debugging)
 * [Upgrading](#upgrading)
 * [Subdividing Large Datasets](#subdividing-large-datasets)
-* [Use Docker Geoprocessing Workspace](#use-docker-geoprocessing-workspace)
 * [Advanced Storybook Usage](#advanced-storybook-usage)
+* [Passing Extra Parameters To Functions](#passing-extra-parameters-to-functions)
 
 # Assumptions
 
@@ -1390,6 +1390,177 @@ Over time you will want to make changes to your reports.  Here's some best pract
 * Add additional sketches or features to your smoke tests as needed.  Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this.  Convince yourself the results are correct.
 * `npm run build`
 * `npm run deploy`
+
+# Custom Sketch Attributes
+
+Sketch attributes are additional properties provided with a Sketch Feature or a Sketch Collection.  They can be user-defined at draw time or by the SeaSketch platform itself.  The SeaSketch admin tool lets you add custom attributes to your [sketch classes](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes). SeaSketch will pass these sketch attributes on to both preprocessing and geoprocessing functions.
+
+Common use cases:
+
+* Preprocessor
+  * Passing an extra yes/no attribute for whether to include existing protected areas as part of your sketch, or whether to allow the sketch to extend beyond the EEZ, or to include land.
+  * Passing a numeric value to be used with a buffer.
+* Geoprocessor
+  * Provide language translations for each sketch attribute name and description, for each language enabled for the project.
+  * Assign a protection level or type to an area, such that the function (and resulting report) can assess against the required amount of protection for each level.
+  * Assign activities to an area, that the function can assign a protection level.  This is particularly useful when reporting on an entire SketchCollection.  The function can group results by protection level and ensure that overlap is not double counted within each group, but allow overlap between groups to go to the higher protection level.
+
+## Accessing sketch properties from report client
+
+The main way to access sketch attributes from a browser client is the [useSketchProperties()](https://seasketch.github.io/geoprocessing/api/modules/client_ui.html#useSketchProperties) hook.  Examples include:
+
+* [SketchAttributesCard](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/SketchAttributesCard.tsx) and [story](https://seasketch.github.io/geoprocessing/storybook/?path=/story/components-card-sketchattributescard--next) with [source](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/SketchAttributesNextCard.stories.tsx)
+
+## Accessing sketch properties from function
+
+Withing a preprocessing or geoprocessing function, the [SketchProperties](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#SketchProperties) are provided within every sketch.  Within that are [userAttributes](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#UserAttribute) that contain all of the user-defined attributes.
+
+For example, assume your Polygon sketch class contains an attribute called `ACTIVITIES` which is an array of allowed activities for this sketch class.  And you have a second attribute called `ISLAND` that is a string containing the name of the island this sketch is located.  You can access it as follow:
+
+```javascript
+export async function protection(
+  sketch: Sketch<Polygon> | SketchCollection<Polygon>
+): Promise<ReportResult> {
+  const sketches = toSketchArray(sketch);
+  // Complex attributes are JSON that need to be parsed
+  const activities = getJsonUserAttribute(sketches[0], 'ACTIVITIES')
+  // Simple attributes are simple strings or numbers that can be used directly
+  const island = getUserAttribute(sketches[0], 'ISLAND')
+```
+
+Examples of working with user attributes:
+
+* [getIucnCategoryForSketches](https://github.com/seasketch/geoprocessing/blob/1301dc787aeff59ed29ceb07ed2d925984da6abf/packages/geoprocessing/src/iucn/helpers.ts#L36) takes an array of sketches, extracts the list of IUCN `ACTIVITIES` the sketch designated as allowed for each sketch, and returns the category (protection level) for each sketch.  The sketch array can be generated from the `sketch` parameter passed to a geoprocessing functions using [toSketchArray()`](https://github.com/seasketch/geoprocessing/blob/1301dc787aeff59ed29ceb07ed2d925984da6abf/packages/geoprocessing/src/helpers/sketch.ts#L83).  toSketchArray helps you write single functions that work on either a single sketch or a collection of sketches.
+* [isContiguous](https://github.com/seasketch/fsm-reports/blob/main/src/functions/boundaryAreaOverlap.ts#L26) function that optionally merges the contiguous zone with the users sketch.  Checks for existence of a [specific user attribute](https://github.com/seasketch/fsm-reports/blob/main/src/util/includeContiguousSketch.ts#L28)
+
+# Passing Extra Parameters To Functions
+
+Sometimes you want to pass additional parameters to a preprocessing or geoprocessing function that are defined outside of the sketch creation process by seasketch or through the report itself.  These `extraParams` are separate from the sketch. They are an additional object accessible from any preprocessing or geoprocessing function.
+
+Use Cases:
+
+* Preprocessor
+  * Passing one or more `eezs` to a global clipping function that specifies optional EEZ boundaries to clip the sketch to in addition to removing land.
+* Geoprocessor
+  * Subregional planning.  Passing one or more `geographies`, as subregions within an EEZ.  This can be used to when calculating results for all subregions at once doesn't make sense, or is computationally prohibitive.  Instead you may want the user to be able to switch between subregions, and the reports will rerun the geoprocessing function with a different geography and update with the result on-demand.
+
+## Passing Extra Parameters To Geoprocessing Functions
+
+Report developers will pass the extra parameters to a geoprocessing function via the ResultsCard.  It must be an object where the keys can be any JSON-compatible value.  Even nested objects and arrays are allowed.
+
+```jsx
+<ResultsCard
+  title={t("Size")}
+  functionName="boundaryAreaOverlap"
+  extraParams={{ geographies: ["nearshore", "offshore"] }}
+  useChildCard
+>
+```
+
+A common next step for this is to maintain the array of geographies in the parent Card, and potentially allow the user to change the values using a UI selector.  If the value passed to `extraParams` changes, the card will re-render itself, triggering the run of a new function, and displaying the results.
+
+Internally the [ResultsCard](https://github.com/seasketch/geoprocessing/blob/7275bd3ddf355259cf99335a761b99472045b6f8/packages/geoprocessing/src/components/ResultsCard.tsx) uses the [useFunction](https://github.com/seasketch/geoprocessing/blob/7275bd3/packages/geoprocessing/src/hooks/useFunction.ts#L44) hook, which accepts `extraParams`.
+
+```typescript
+useFunction('boundaryAreaOverlap', { geographies: ['santa-maria'] }
+```
+
+If invoking functions directly, such as SeaSketch invoking a preprocessing function, the `extraParams` can be provided in the event body.
+
+```json
+{
+  "feature": {...},
+  "extraParams": { "eezs": ["Azores"], "foos": "blorts", "nested": { "a": 3, "b": 4 }}
+}
+```
+
+## Accessing Extra Parameters In Functions
+
+Both preprocessing and geoprocessing functions receive a second `extraParams` parameter.  The default type is `Record<string, JSONValue>` but the implementer can provide a narrower type that defines explicit parameters.
+
+Geoprocessing function:
+
+```typescript
+/** Optional caller-provided parameters */
+interface ExtraParams {
+  /** Optional ID(s) of geographies to operate on. **/
+  geographies?: string[];
+}
+
+export async function boundaryAreaOverlap(
+  sketch: Sketch<Polygon> | SketchCollection<Polygon>,
+  extraParams: ExtraParams = {}
+): Promise<ReportResult> {
+  const geographies = extraParams.geographies
+  console.log('Current geographies', geographies)
+  const results = runAnalysis(geographies)
+  return results
+```
+
+Preprocessing function:
+
+```typescript
+interface ExtraParams {
+  /** Array of EEZ ID's to clip to  */
+  eezs?: string[];
+}
+
+/**
+ * Preprocessor takes a Polygon feature/sketch and returns the portion that
+ * is in the ocean (not on land) and within one or more EEZ boundaries.
+ */
+export async function clipToOceanEez(
+  feature: Feature | Sketch,
+  extraParams: ExtraParams = {}
+): Promise<Feature> {
+  if (!isPolygonFeature(feature)) {
+    throw new ValidationError("Input must be a polygon");
+  }
+
+  /**
+   * Subtract parts of feature/sketch that overlap with land. Uses global land polygons
+   * unionProperty is specific to subdivided datasets.  When defined, it will fetch
+   * and rebuild all subdivided land features overlapping with the feature/sketch
+   * with the same gid property (assigned one per country) into one feature before clipping.
+   * This is useful for preventing slivers from forming and possible for performance.
+   */
+  const removeLand: DatasourceClipOperation = {
+    datasourceId: "global-clipping-osm-land",
+    operation: "difference",
+    options: {
+      unionProperty: "gid", // gid is assigned per country
+    },
+  };
+
+  /**
+   * Optionally, subtract parts of feature/sketch that are outside of one or
+   * more EEZ's.  Using a runtime-provided list of EEZ's via extraParams.
+   * eezFilterByNames allows this preprocessor to work for any set of EEZ's
+   * Using a project-configured planningAreaId allows this preprocessor to work
+   * for a specific EEZ.
+  */
+  const removeOutsideEez: DatasourceClipOperation = {
+    datasourceId: "global-clipping-eez-land-union",
+    operation: "intersection",
+    options: {
+      propertyFilter: {
+        property: "UNION",
+        values: extraParams?.eezs || [project.basic.planningAreaId] || [],
+      },
+    },
+  };
+
+  // Create a function that will perform the clip operations in order
+  const clipLoader = genClipLoader(project, [removeLand, removeOutsideEez]);
+
+  // Wrap clip function into preprocessing function with additional clip options
+  return clipToPolygonFeatures(feature, clipLoader, {
+    maxSize: 500000 * 1000 ** 2, // Default 500,000 KM
+    enforceMaxSize: false, // throws error if feature is larger than maxSize
+    ensurePolygon: true, // don't allow multipolygon result, returns largest if multiple
+  });
+}
+```
 
 # Debugging
 

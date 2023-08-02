@@ -92,6 +92,7 @@ export class PreprocessingHandler<
       this.lastRequestId = context.awsRequestId;
     }
     try {
+      console.log("request", JSON.stringify(request));
       const feature = await this.func(request.feature, request.extraParams);
       return {
         statusCode: 200,

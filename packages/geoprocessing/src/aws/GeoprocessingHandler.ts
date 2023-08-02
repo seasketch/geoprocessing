@@ -144,16 +144,15 @@ export class GeoprocessingHandler<
     if (request.checkCacheOnly) {
       if (request.cacheKey) {
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
-        console.log(
-          `checkCacheOnly for ${serviceName} using cacheKey ${request.cacheKey} resulted in`,
-          JSON.stringify(cachedResult)
-        );
 
         if (
           cachedResult &&
           cachedResult?.status !== GeoprocessingTaskStatus.Pending
         ) {
           // cache hit
+          console.log(
+            `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+          );
           return {
             statusCode: 200,
             headers: {
@@ -164,6 +163,9 @@ export class GeoprocessingHandler<
           };
         } else {
           // cache miss
+          console.log(
+            `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`
+          );
           return {
             statusCode: 200,
             headers: {
@@ -186,14 +188,13 @@ export class GeoprocessingHandler<
       (this.options.executionMode === "sync" || ASYNC_REQUEST_TYPE === "start")
     ) {
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
-      console.log(
-        `Cache check for ${serviceName} using cacheKey ${request.cacheKey} resulted in`,
-        JSON.stringify(cachedResult)
-      );
       if (
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Pending
       ) {
+        console.log(
+          `Cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+        );
         return {
           statusCode: 200,
           headers: {
@@ -421,28 +422,21 @@ export class GeoprocessingHandler<
    */
   parseRequest<G>(event: APIGatewayProxyEvent): GeoprocessingRequestModel<G> {
     let request: GeoprocessingRequestModel<G>;
-    // geometry requires POST
     if ("geometry" in event) {
-      // likely coming from aws console, so already in internal model form
+      // POST request or aws console, so already in internal model form
       request = event as GeoprocessingRequestModel<G>;
     } else if (
       event.queryStringParameters &&
       event.queryStringParameters["geometryUri"]
     ) {
-      // Otherwise we need to extra fro query string parameters
+      // GET request with query string parameters to merge
+
+      // Extract extraParams from query string if necessary, though gateway lambda integration seems to do it for us
       const extraString = event.queryStringParameters["extraParams"];
-      console.log(
-        'parseRequest event.queryStringParameters["extraParams"]',
-        extraString
-      );
       let extraParams: P | undefined;
       if (typeof extraString === "string") {
-        console.log("GeoprocessingHandler extracting extra params");
-        console.log("extraParamString", extraString);
         extraParams = JSON.parse(unescape(extraString));
-        console.log("extraParams after", extraParams);
       } else {
-        console.log("GeoprocessingHandler extraParams already extracted");
         extraParams = extraString;
       }
 

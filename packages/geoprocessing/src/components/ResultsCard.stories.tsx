@@ -66,11 +66,15 @@ export const extraParams = () => {
           <>
             <p>Cur geography: {geography}</p>
             <p>
-              This zone is {data.area} sq km. Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Ut nisi beatae, officiis perferendis
-              quis inventore quisquam? Provident doloremque inventore, natus
-              beatae quam nisi eius quidem deserunt, aperiam aliquid corrupti
-              eveniet.
+              Note that smoke tests are not setup to generate output for more
+              than one extraParams value. In fact, by default the extraParams
+              value is not set for a story. Storybook is also not setup to load
+              more than one output. So This story demonstrates how to use a UI
+              switcher to control passing different values to extraParams, but
+              it won't change the output. The approach to seeing what the output
+              would be for different values of extraParams is to run the smoke
+              tests is to create multiple independent smoke tests, each with
+              different values.
             </p>
           </>
         )}

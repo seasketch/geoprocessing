@@ -1435,7 +1435,7 @@ Examples of working with user attributes:
 
 # Passing Extra Parameters To Functions
 
-Sometimes you want to pass additional parameters to a preprocessing or geoprocessing function that are defined outside of the sketch creation process by seasketch or through the report itself.  These `extraParams` are separate from the sketch. They are an additional object accessible from any preprocessing or geoprocessing function.
+Sometimes you want to pass additional parameters to a preprocessing or geoprocessing function that are defined outside of the sketch creation process by seasketch or through the report itself.  These `extraParams` are separate from the `sketch`. They are an additional object passed to every preprocessing and geoprocessing function.
 
 Use Cases:
 
@@ -1559,6 +1559,24 @@ export async function clipToOceanEez(
     enforceMaxSize: false, // throws error if feature is larger than maxSize
     ensurePolygon: true, // don't allow multipolygon result, returns largest if multiple
   });
+}
+```
+
+## Writing stories with extraParams
+
+Default smoke tests typically don't pass extraParams to the preprocessing or geoprocessing function but they can.  Just know that each smoke test can only output results for one configuration of extraParams.  And storybook can only load results for one smoke test run.
+This means that in order to test multiple variations of extraParams, you will need to create multiple smoke tests.  You could even write multiple smoke tests that each write out results all in one file.
+
+Example smoke test (e.g. boundaryAreaOverlapExtraParamSmoke.test.ts):
+
+```typescript
+test("boundaryAreaOverlapSantaMariaSmoke - tests run with one subregion", async () => {
+  const examples = await getExamplePolygonSketchAll();
+  for (const example of examples) {
+    const result = await boundaryAreaOverlap(example, { geographies: ['santa-maria']});
+    expect(result).toBeTruthy();
+    writeResultOutput(result, "boundaryAreaOverlapSantaMaria", example.properties.name);
+  }
 }
 ```
 

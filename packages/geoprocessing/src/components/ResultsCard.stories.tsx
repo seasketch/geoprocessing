@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ResultsCard from "./ResultsCard";
 import ReportDecorator, {
   createReportDecorator,
@@ -36,6 +36,52 @@ export const basic = () => (
     )}
   </ResultsCard>
 );
+
+const geographies = ["nearshore", "offshore"];
+export const extraParams = () => {
+  const [geography, setGeography] = useState("nearshore");
+
+  const geographySwitcher = (e: any) => {
+    console.log("changing geography to", e.target.value);
+    setGeography(e.target.value);
+  };
+
+  return (
+    <>
+      <select onChange={geographySwitcher}>
+        {geographies.map((geography) => {
+          return (
+            <option key={geography} value={geography}>
+              {geography}
+            </option>
+          );
+        })}
+      </select>{" "}
+      <ResultsCard
+        title="Card Title"
+        functionName="area"
+        extraParams={{ geography }}
+      >
+        {(data: any) => (
+          <>
+            <p>Cur geography: {geography}</p>
+            <p>
+              Note that smoke tests are not setup to generate output for more
+              than one extraParams value. In fact, by default the extraParams
+              value is not set for a story. Storybook is also not setup to load
+              more than one output. So This story demonstrates how to use a UI
+              switcher to control passing different values to extraParams, but
+              it won't change the output. The approach to seeing what the output
+              would be for different values of extraParams is to run the smoke
+              tests is to create multiple independent smoke tests, each with
+              different values.
+            </p>
+          </>
+        )}
+      </ResultsCard>
+    </>
+  );
+};
 
 export const loadingState = () => (
   <ReportContext.Provider

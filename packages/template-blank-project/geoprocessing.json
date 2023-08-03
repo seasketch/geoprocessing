@@ -11,7 +11,10 @@
     "description":  "Sketch size",
     "source": "src/clients/SizeReport.tsx"
   }],
-  "preprocessingFunctions": [],
+  "preprocessingFunctions": [
+    "src/functions/clipToLand.ts",
+    "src/functions/clipToOcean.ts"
+  ],
   "geoprocessingFunctions": [
     "src/functions/area.ts"
   ]

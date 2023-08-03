@@ -1,6 +1,7 @@
 import { PreprocessingHandler } from "./PreprocessingHandler";
 import { ValidationError } from "../types";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
+import deepEqual from "fast-deep-equal";
 
 const feature = {
   type: "Feature",
@@ -31,6 +32,23 @@ const simpleHandler = new PreprocessingHandler(
   }
 );
 
+const extraParamHandler = new PreprocessingHandler(
+  async (feature, extraParams) => {
+    // Put extra params on the feature properties for testing
+    const result = {
+      ...feature,
+      properties: extraParams,
+    };
+    return result;
+  },
+  {
+    title: "handler",
+    description: "description",
+    timeout: 2,
+    requiresProperties: [],
+  }
+);
+
 test("Makes options available as an instance var", () => {
   expect(simpleHandler.options).toBeInstanceOf(Object);
   expect(simpleHandler.options.title).toBe("handler");
@@ -44,6 +62,21 @@ test("Returns successful output as geojson", async () => {
   expect(results.statusCode).toBe(200);
   const body = JSON.parse(results.body);
   expect(body.data.type).toBe("Feature");
+});
+
+test("Preprocessor can accept extraParams", async () => {
+  const extraParams = { geography: "nearshore" };
+  const results = await extraParamHandler.lambdaHandler(
+    {
+      body: JSON.stringify({ feature, extraParams }),
+      headers: {},
+    } as APIGatewayProxyEvent,
+    {} as Context
+  );
+  expect(results.statusCode).toBe(200);
+  const body = JSON.parse(results.body);
+  expect(body.data.type).toBe("Feature");
+  expect(deepEqual(body.data.properties, extraParams)).toBe(true);
 });
 
 test("Rejects misshapen requests", async () => {

@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Skeleton from "./Skeleton";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
 import { ReportError } from "./ReportError";
+import { GeoprocessingRequestParams } from "../types";
 
 export interface ResultsCardProps<T> extends CardProps {
   functionName: string;
@@ -15,6 +16,8 @@ export interface ResultsCardProps<T> extends CardProps {
   titleStyle?: React.CSSProperties;
   /** Assumes caller will provide card in children to use results (e.g. ToolbarCard with DataDownload). Shows a simple card until loading complete */
   useChildCard?: boolean;
+  /** Additional runtime parameters from report client for geoprocessing function. */
+  extraParams?: GeoprocessingRequestParams;
 }
 
 const DefaultSkeleton = () => (
@@ -66,6 +69,7 @@ export function ResultsCard<T>({
   titleStyle = {},
   style = {},
   useChildCard = false,
+  extraParams = {},
 }: ResultsCardProps<T>) {
   if (!functionName) {
     throw new Error("No function specified for ResultsCard");
@@ -84,7 +88,7 @@ export function ResultsCard<T>({
     titleStyle,
   };
 
-  let { task, loading, error } = useFunction(functionName);
+  let { task, loading, error } = useFunction(functionName, extraParams);
   let taskEstimate = 5;
   if (task && task.estimate) {
     taskEstimate = Math.round(task.estimate / 1000);

@@ -1,9 +1,14 @@
 import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
 import { useState, useContext, useEffect } from "react";
+import { useDeepEqualMemo } from "./useDeepEqualMemo";
 import { ReportContext } from "../context";
 import LRUCache from "mnemonist/lru-cache";
-import { GeoprocessingRequest, GeoprocessingProject } from "../types";
-import { runTask, finishTask } from "../clients/tasks";
+import {
+  GeoprocessingRequest,
+  GeoprocessingProject,
+  GeoprocessingRequestParams,
+} from "../types";
+import { runTask, finishTask, genTaskCacheKey } from "../clients/tasks";
 
 interface PendingRequest {
   functionName: string;
@@ -46,7 +51,9 @@ let geoprocessingProjects: { [url: string]: GeoprocessingProject } = {};
  */
 export const useFunction = <ResultType>(
   /** Title of geoprocessing function in this project to run.  @todo support external project function */
-  functionTitle: string
+  functionTitle: string,
+  /** Additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
+  extraParams: GeoprocessingRequestParams = {}
 ): FunctionState<ResultType> => {
   const context = useContext(ReportContext);
   if (!context) {
@@ -55,6 +62,8 @@ export const useFunction = <ResultType>(
   const [state, setState] = useState<FunctionState<ResultType>>({
     loading: true,
   });
+  const memoizedExtraParams = useDeepEqualMemo(extraParams);
+
   let socket: WebSocket;
 
   useEffect(() => {
@@ -115,9 +124,13 @@ export const useFunction = <ResultType>(
         // TODO: Check for requiredProperties
         const payload: GeoprocessingRequest = {
           geometryUri: context.geometryUri,
+          extraParams: JSON.stringify(extraParams), // will be url encoded automatically
         };
         if (context.sketchProperties.id && context.sketchProperties.updatedAt) {
-          payload.cacheKey = `${context.sketchProperties.id}-${context.sketchProperties.updatedAt}`;
+          payload.cacheKey = genTaskCacheKey(
+            context.sketchProperties,
+            extraParams
+          );
         }
 
         // check local results cache. may already be available
@@ -312,7 +325,12 @@ export const useFunction = <ResultType>(
     return () => {
       abortController.abort();
     };
-  }, [context.geometryUri, context.sketchProperties, functionTitle]);
+  }, [
+    context.geometryUri,
+    context.sketchProperties,
+    functionTitle,
+    memoizedExtraParams,
+  ]);
   return state;
 };
 

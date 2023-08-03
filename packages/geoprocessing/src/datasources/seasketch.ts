@@ -1,4 +1,10 @@
-import { Feature, FeatureCollection, Sketch, SketchCollection } from "../types";
+import {
+  Feature,
+  FeatureCollection,
+  GeoprocessingRequestModel,
+  Sketch,
+  SketchCollection,
+} from "../types";
 import { GeoprocessingRequest } from "../types";
 import isHostedOnLambda from "../util/isHostedOnLambda";
 import "../util/fetchPolyfill";
@@ -6,12 +12,12 @@ import "../util/fetchPolyfill";
 // Seasketch client
 
 /**
- * Given geoprocessing function request, fetches the GeoJSON, which can alsosketch JSON
+ * Given geoprocessing function request, fetches the GeoJSON, which can also be sketch JSON
  * @param request
  * @returns the JSON with geometry type optionally specified by request
  */
 export const fetchGeoJSON = async <G>(
-  request: GeoprocessingRequest<G>
+  request: GeoprocessingRequest<G> | GeoprocessingRequestModel<G>
 ): Promise<
   Feature<G> | FeatureCollection<G> | Sketch<G> | SketchCollection<G>
 > => {

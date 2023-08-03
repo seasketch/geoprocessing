@@ -8,6 +8,8 @@ import {
   LineString,
   Point,
   GeoprocessingRequest,
+  JSONValue,
+  GeoprocessingRequestModel,
 } from "../types";
 import TaskModel, {
   commonHeaders,
@@ -21,6 +23,7 @@ import {
   APIGatewayProxyEvent,
 } from "aws-lambda";
 import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
+import { unescape } from "querystring";
 
 const Lambda = new LambdaClient();
 const Db = new DynamoDB.DocumentClient();
@@ -36,8 +39,9 @@ const WSS_REGION = process.env.WSS_REGION || "";
 const WSS_STAGE = process.env.WSS_STAGE || "";
 
 /**
- * Lambda handler for a geoprocessing function
- * This one class supports 2 different execution modes for running a geoprocessing function - sync and async
+ * Manages the task of executing a geoprocessing function within an AWS Lambda function.
+ * This includes sending estimate of completion, caching the results, and getting them back to the client.
+ * Supports 2 different execution modes for running a geoprocessing function - sync and async
  * These modes create 3 different request scenarios.  A lambda is created for each scenario, and they all run
  * this one handler.
  * 1 - sync executionMode - immediately run gp function and return result in resolved promise to client
@@ -46,10 +50,21 @@ const WSS_STAGE = process.env.WSS_STAGE || "";
  *
  * @template T the return type of the geoprocessing function, automatically set from func return type
  * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
+ * @template P extra parameters to pass to geoprocessing function, automatically set from func parameter type
  */
-export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
+export class GeoprocessingHandler<
+  T = JSONValue,
+  G = Polygon | LineString | Point,
+  P extends Record<string, JSONValue> = Record<string, JSONValue>
+> {
   func: (
-    feature: Feature<G> | FeatureCollection<G> | Sketch<G> | SketchCollection<G>
+    feature:
+      | Feature<G>
+      | FeatureCollection<G>
+      | Sketch<G>
+      | SketchCollection<G>,
+    /** Additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
+    extraParams: P
   ) => Promise<T>;
   options: GeoprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
@@ -58,21 +73,28 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
   Tasks: TaskModel;
 
   /**
-   * @param func the geoprocessing function, overloaded to allow caller to pass Feature/FeatureCollection *or* Sketch/SketchCollection
+   * @param func the geoprocessing function to run
    * @param options geoprocessing function deployment options
-   * @template T the return type of the geoprocessing function, automatically set from func return type
    * @template G the geometry type of features for the geoprocessing function, automatically set from func feature type
+   * @template P extra parameters to pass to geoprocessing function, automatically set from func parameter type
+   * @template T the return type of the geoprocessing function, automatically set from func return type
    */
   constructor(
-    func: (feature: Feature<G> | FeatureCollection<G>) => Promise<T>,
+    func: (
+      feature: Feature<G> | FeatureCollection<G>,
+      extraParams: P
+    ) => Promise<T>,
     options: GeoprocessingHandlerOptions
   );
   constructor(
-    func: (feature: Sketch<G> | SketchCollection<G>) => Promise<T>,
+    func: (
+      feature: Sketch<G> | SketchCollection<G>,
+      extraParams: P
+    ) => Promise<T>,
     options: GeoprocessingHandlerOptions
   );
   constructor(
-    func: (feature) => Promise<T>,
+    func: (feature, extraParams) => Promise<T>,
     options: GeoprocessingHandlerOptions
   ) {
     this.func = func;
@@ -80,6 +102,13 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
     this.Tasks = new TaskModel(TASKS_TABLE!, ESTIMATES_TABLE!, Db);
   }
 
+  /**
+   * Given request event, runs geoprocessing function and returns APIGatewayProxyResult with task status in the body
+   * If sync executionMode, then result is returned with task, if async executionMode, then returns socket for client to listen for task update
+   * If event.geometry present, assumes request is already a GeoprocessingRequest (from AWS console).
+   * If event.queryStringParameters present, request must be from API Gateway and need to coerce into GeoprocessingRequest
+   * If event.body present with JSON string, then parse as a GeoprocessingRequest
+   */
   async lambdaHandler(
     event: APIGatewayProxyEvent,
     context: Context
@@ -88,6 +117,7 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
     const serviceName = options.title;
 
     const request = this.parseRequest<G>(event);
+
     // TODO: Authorization
     // Bail out if replaying previous task
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
@@ -105,7 +135,7 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
 
     console.log(
       `${this.options.executionMode} ${
-        ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : ""
+        ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : "sync"
       } request`,
       JSON.stringify(request)
     );
@@ -114,16 +144,15 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
     if (request.checkCacheOnly) {
       if (request.cacheKey) {
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
-        console.log(
-          `checkCacheOnly for ${serviceName} using cacheKey ${request.cacheKey} resulted in`,
-          JSON.stringify(cachedResult)
-        );
 
         if (
           cachedResult &&
           cachedResult?.status !== GeoprocessingTaskStatus.Pending
         ) {
           // cache hit
+          console.log(
+            `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+          );
           return {
             statusCode: 200,
             headers: {
@@ -134,6 +163,9 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
           };
         } else {
           // cache miss
+          console.log(
+            `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`
+          );
           return {
             statusCode: 200,
             headers: {
@@ -156,14 +188,13 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
       (this.options.executionMode === "sync" || ASYNC_REQUEST_TYPE === "start")
     ) {
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
-      console.log(
-        `Cache check for ${serviceName} using cacheKey ${request.cacheKey} resulted in`,
-        JSON.stringify(cachedResult)
-      );
       if (
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Pending
       ) {
+        console.log(
+          `Cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+        );
         return {
           statusCode: 200,
           headers: {
@@ -222,9 +253,10 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
       });
       try {
         const featureSet = await fetchGeoJSON<G>(request);
+        const extraParams = request.extraParams as unknown as P;
         try {
           console.time(`run func ${this.options.title}`);
-          const results = await this.func(featureSet);
+          const results = await this.func(featureSet, extraParams);
           console.timeEnd(`run func ${this.options.title}`);
 
           task.data = results;
@@ -237,8 +269,6 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
           let promise = await Tasks.complete(task, results);
 
           if (this.options.executionMode !== "sync") {
-            //let fetchedTask = await Tasks.get(task.service, task.id);
-
             let sname = encodeURIComponent(task.service);
             let ck = encodeURIComponent(task.id || "");
             let wssUrl =
@@ -287,11 +317,11 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
         //@ts-ignore
         task.asyncStartTime = asyncStartTime;
 
-        let params = event.queryStringParameters;
-        if (params) {
-          params["wss"] = wss;
+        let queryParams = event.queryStringParameters;
+        if (queryParams) {
+          queryParams["wss"] = wss;
         }
-        event.queryStringParameters = params;
+        event.queryStringParameters = queryParams;
         let payload = JSON.stringify(event);
         await Lambda.invoke({
           FunctionName: RUN_HANDLER_FUNCTION_NAME,
@@ -388,29 +418,41 @@ export class GeoprocessingHandler<T, G = Polygon | LineString | Point> {
   }
 
   /**
-   * Parse gp request parameters
+   * Parses request event and returns GeoprocessingRequest.
    */
-  parseRequest<G>(event: APIGatewayProxyEvent): GeoprocessingRequest<G> {
-    let request: GeoprocessingRequest<G>;
-    // geometry requires POST
+  parseRequest<G>(event: APIGatewayProxyEvent): GeoprocessingRequestModel<G> {
+    let request: GeoprocessingRequestModel<G>;
     if ("geometry" in event) {
-      // likely coming from aws console
-      request = event as GeoprocessingRequest<G>;
+      // POST request or aws console, so already in internal model form
+      request = event as GeoprocessingRequestModel<G>;
     } else if (
       event.queryStringParameters &&
       event.queryStringParameters["geometryUri"]
     ) {
+      // GET request with query string parameters to merge
+
+      // Extract extraParams from query string if necessary, though gateway lambda integration seems to do it for us
+      const extraString = event.queryStringParameters["extraParams"];
+      let extraParams: P | undefined;
+      if (typeof extraString === "string") {
+        extraParams = JSON.parse(unescape(extraString));
+      } else {
+        extraParams = extraString;
+      }
+
       request = {
         geometryUri: event.queryStringParameters["geometryUri"],
         cacheKey: event.queryStringParameters["cacheKey"],
         wss: event.queryStringParameters["wss"],
         checkCacheOnly: event.queryStringParameters["checkCacheOnly"],
+        extraParams,
       };
     } else if (event.body && typeof event.body === "string") {
       request = JSON.parse(event.body);
     } else {
       throw new Error("Could not interpret incoming request");
     }
+
     return request;
   }
 }

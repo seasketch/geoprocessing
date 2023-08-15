@@ -139,6 +139,13 @@ export const useFunction = <ResultType>(
           let task = resultsCache.get(lruKey) as
             | GeoprocessingTask<ResultType>
             | undefined;
+          console.log(
+            "LRUCache get",
+            functionTitle,
+            payload.cacheKey,
+            lruKey,
+            task
+          );
           if (task) {
             setState({
               loading: false,
@@ -263,6 +270,13 @@ export const useFunction = <ResultType>(
               let lruKey = makeLRUCacheKey(functionTitle, payload.cacheKey);
 
               resultsCache.set(lruKey, task);
+              console.log(
+                "LRUCache set",
+                functionTitle,
+                payload.cacheKey,
+                lruKey,
+                task
+              );
             }
 
             // if task pending then nothing more to do
@@ -353,12 +367,23 @@ const getSendSocket = (
   }
 
   // once socket open, check if task completed before it opened
-  socket.onopen = function (e) {
-    const task = resultsCache.get(
-      makeLRUCacheKey(currServiceName, cacheKey)
-    ) as GeoprocessingTask | undefined;
+  socket.onopen = function () {
+    // Check local cache first
+    const lruKey = makeLRUCacheKey(currServiceName, cacheKey);
+    const task = resultsCache.get(lruKey) as GeoprocessingTask | undefined;
+    console.log("LRUCache get", currServiceName, cacheKey, lruKey, task);
 
-    // check using checkCacheOnly true
+    if (task) {
+      setState({
+        loading: false,
+        task: task,
+        error: task.error,
+      });
+      socket.close();
+      return;
+    }
+
+    // Check server-side cache next using checkCacheOnly true
     let finishedRequest: Promise<GeoprocessingTask> = runTask(
       url,
       payload,

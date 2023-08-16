@@ -9,6 +9,7 @@ import {
   GeoprocessingRequestParams,
 } from "../types";
 import { runTask, finishTask, genTaskCacheKey } from "../clients/tasks";
+import cloneDeep from "lodash/cloneDeep";
 
 interface PendingRequest {
   functionName: string;
@@ -140,7 +141,7 @@ export const useFunction = <ResultType>(
             | GeoprocessingTask<ResultType>
             | undefined;
           console.log(
-            "LRUCache get",
+            "LRUCache get useEffect start",
             functionTitle,
             payload.cacheKey,
             lruKey,
@@ -209,17 +210,18 @@ export const useFunction = <ResultType>(
         // After task started, but still pending
         pendingRequest
           .then((task) => {
-            let currServiceName = task.service;
+            const clonedTask = cloneDeep(task);
+            let currServiceName = clonedTask.service;
             if (currServiceName) {
               if (
-                task.status !== "completed" &&
-                task.wss?.length > 0 &&
+                clonedTask.status !== "completed" &&
+                clonedTask.wss?.length > 0 &&
                 executionMode === "async"
               ) {
                 let sname = encodeURIComponent(currServiceName);
                 let ck = encodeURIComponent(payload.cacheKey || "");
                 let wssUrl =
-                  task.wss +
+                  clonedTask.wss +
                   "?" +
                   "serviceName=" +
                   sname +
@@ -229,7 +231,7 @@ export const useFunction = <ResultType>(
 
                 // set up the socket (async only)
                 getSendSocket(
-                  task,
+                  clonedTask,
                   wssUrl,
                   setState,
                   payload.cacheKey,
@@ -244,12 +246,13 @@ export const useFunction = <ResultType>(
 
             // check for invalid status
             if (
-              !task.status ||
-              ["pending", "completed", "failed"].indexOf(task.status) === -1
+              !clonedTask.status ||
+              ["pending", "completed", "failed"].indexOf(clonedTask.status) ===
+                -1
             ) {
               setState({
                 loading: false,
-                task: task,
+                task: clonedTask,
                 error: `Could not parse response from geoprocessing function.`,
               });
               return;
@@ -257,35 +260,35 @@ export const useFunction = <ResultType>(
 
             // set to pending state initially
             setState({
-              loading: task.status === GeoprocessingTaskStatus.Pending,
-              task: task,
-              error: task.error,
+              loading: clonedTask.status === GeoprocessingTaskStatus.Pending,
+              task: clonedTask,
+              error: clonedTask.error,
             });
 
             // if task complete then load results
             if (
               payload.cacheKey &&
-              task.status === GeoprocessingTaskStatus.Completed
+              clonedTask.status === GeoprocessingTaskStatus.Completed
             ) {
               let lruKey = makeLRUCacheKey(functionTitle, payload.cacheKey);
 
-              resultsCache.set(lruKey, task);
+              resultsCache.set(lruKey, clonedTask);
               console.log(
                 "LRUCache set",
                 functionTitle,
                 payload.cacheKey,
                 lruKey,
-                task
+                clonedTask
               );
             }
 
             // if task pending then nothing more to do
-            if (task.status === GeoprocessingTaskStatus.Pending) {
-              if (task.wss?.length > 0) {
+            if (clonedTask.status === GeoprocessingTaskStatus.Pending) {
+              if (clonedTask.wss?.length > 0) {
                 setState({
                   loading: true,
-                  task: task,
-                  error: task.error,
+                  task: clonedTask,
+                  error: clonedTask.error,
                 });
               }
               return;
@@ -371,7 +374,7 @@ const getSendSocket = (
     // Check local cache first
     const lruKey = makeLRUCacheKey(currServiceName, cacheKey);
     const task = resultsCache.get(lruKey) as GeoprocessingTask | undefined;
-    console.log("LRUCache get", currServiceName, cacheKey, lruKey, task);
+    console.log("LRUCache get onOpen", currServiceName, cacheKey, lruKey, task);
 
     if (task) {
       setState({

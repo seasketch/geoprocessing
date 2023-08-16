@@ -140,13 +140,7 @@ export const useFunction = <ResultType>(
           let task = resultsCache.get(lruKey) as
             | GeoprocessingTask<ResultType>
             | undefined;
-          console.log(
-            "LRUCache get useEffect start",
-            functionTitle,
-            payload.cacheKey,
-            lruKey,
-            task
-          );
+          console.log("LRUCache get useEffect start", lruKey, task);
           if (task) {
             setState({
               loading: false,
@@ -272,32 +266,19 @@ export const useFunction = <ResultType>(
             ) {
               let lruKey = makeLRUCacheKey(functionTitle, payload.cacheKey);
 
-              resultsCache.set(lruKey, clonedTask);
-
-              console.log(" ");
               console.log("cache before set");
-
-              for (var [key, value] of resultsCache) {
+              resultsCache.forEach(function (value, key, cache) {
                 console.log(key, value);
-              }
+              });
 
-              console.log(" ");
+              resultsCache.set(lruKey, clonedTask);
+              console.log("LRUCache set", lruKey, clonedTask);
+              console.log("LRUCache size", resultsCache.size);
 
-              console.log(
-                "LRUCache set",
-                functionTitle,
-                payload.cacheKey,
-                lruKey,
-                clonedTask
-              );
-
-              console.log(" ");
-              console.log("cache after set");
-
-              for (var [key, value] of resultsCache) {
+              console.log("cache state after set");
+              resultsCache.forEach(function (value, key, cache) {
                 console.log(key, value);
-              }
-              console.log(" ");
+              });
             }
 
             // if task pending then nothing more to do
@@ -392,7 +373,7 @@ const getSendSocket = (
     // Check local cache first
     const lruKey = makeLRUCacheKey(currServiceName, cacheKey);
     const task = resultsCache.get(lruKey) as GeoprocessingTask | undefined;
-    console.log("LRUCache get onOpen", currServiceName, cacheKey, lruKey, task);
+    console.log("LRUCache get onOpen", lruKey, task);
 
     if (task) {
       setState({

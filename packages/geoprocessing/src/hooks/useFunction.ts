@@ -34,7 +34,7 @@ interface FunctionState<ResultType> {
 const resultsCache = new LRUCache<string, GeoprocessingTask>(
   Uint32Array,
   Array,
-  12
+  100
 );
 
 /** Generates key for results cache combining function name and user-defined cacheKey */
@@ -273,6 +273,16 @@ export const useFunction = <ResultType>(
               let lruKey = makeLRUCacheKey(functionTitle, payload.cacheKey);
 
               resultsCache.set(lruKey, clonedTask);
+
+              console.log(" ");
+              console.log("cache before set");
+
+              for (var [key, value] of resultsCache) {
+                console.log(key, value);
+              }
+
+              console.log(" ");
+
               console.log(
                 "LRUCache set",
                 functionTitle,
@@ -280,6 +290,14 @@ export const useFunction = <ResultType>(
                 lruKey,
                 clonedTask
               );
+
+              console.log(" ");
+              console.log("cache after set");
+
+              for (var [key, value] of resultsCache) {
+                console.log(key, value);
+              }
+              console.log(" ");
             }
 
             // if task pending then nothing more to do

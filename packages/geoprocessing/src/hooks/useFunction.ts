@@ -2,7 +2,6 @@ import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
 import { useState, useContext, useEffect } from "react";
 import { useDeepEqualMemo } from "./useDeepEqualMemo";
 import { ReportContext } from "../context";
-import LRUCache from "mnemonist/lru-cache";
 import {
   GeoprocessingRequest,
   GeoprocessingProject,
@@ -33,14 +32,8 @@ interface FunctionState<ResultType> {
 /** Local results cache */
 const resultsCache = {};
 
-// new LRUCache<string, GeoprocessingTask>(
-//   Uint32Array,
-//   Array,
-//   100
-// );
-
 /** Generates key for results cache combining function name and user-defined cacheKey */
-const makeLRUCacheKey = (funcName: string, cacheKey: string): string =>
+const makeLocalCacheKey = (funcName: string, cacheKey: string): string =>
   `${funcName}-${cacheKey}`;
 
 /**  */
@@ -138,11 +131,10 @@ export const useFunction = <ResultType>(
 
         // check local results cache. may already be available
         if (payload.cacheKey) {
-          let lruKey = makeLRUCacheKey(functionTitle, payload.cacheKey);
-          let task = resultsCache[lruKey] as
+          let localKey = makeLocalCacheKey(functionTitle, payload.cacheKey);
+          let task = resultsCache[localKey] as
             | GeoprocessingTask<ResultType>
             | undefined;
-          console.log("LRUCache get useEffect start", lruKey, task);
           if (task) {
             setState({
               loading: false,
@@ -266,12 +258,8 @@ export const useFunction = <ResultType>(
               payload.cacheKey &&
               clonedTask.status === GeoprocessingTaskStatus.Completed
             ) {
-              let lruKey = makeLRUCacheKey(functionTitle, payload.cacheKey);
-
-              console.log("cache before set");
-              resultsCache[lruKey] = clonedTask;
-              console.log("LRUCache size", Object.keys(resultsCache).length);
-              console.log("cache state after set", resultsCache);
+              let localKey = makeLocalCacheKey(functionTitle, payload.cacheKey);
+              resultsCache[localKey] = clonedTask;
             }
 
             // if task pending then nothing more to do
@@ -364,9 +352,8 @@ const getSendSocket = (
   // once socket open, check if task completed before it opened
   socket.onopen = function () {
     // Check local cache first
-    const lruKey = makeLRUCacheKey(currServiceName, cacheKey);
-    const task = resultsCache[lruKey] as GeoprocessingTask | undefined;
-    console.log("LRUCache get onOpen", lruKey, task);
+    const localKey = makeLocalCacheKey(currServiceName, cacheKey);
+    const task = resultsCache[localKey] as GeoprocessingTask | undefined;
 
     if (task) {
       setState({

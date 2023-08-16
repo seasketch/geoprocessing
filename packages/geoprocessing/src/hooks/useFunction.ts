@@ -2,6 +2,7 @@ import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
 import { useState, useContext, useEffect } from "react";
 import { useDeepEqualMemo } from "./useDeepEqualMemo";
 import { ReportContext } from "../context";
+import { LRUCache } from "lru-cache";
 import {
   GeoprocessingRequest,
   GeoprocessingProject,
@@ -30,7 +31,7 @@ interface FunctionState<ResultType> {
 }
 
 /** Local results cache */
-const resultsCache = {};
+const localCache = new LRUCache<string, GeoprocessingTask>({ max: 500 });
 
 /** Generates key for results cache combining function name and user-defined cacheKey */
 const makeLocalCacheKey = (funcName: string, cacheKey: string): string =>
@@ -131,8 +132,11 @@ export const useFunction = <ResultType>(
 
         // check local results cache. may already be available
         if (payload.cacheKey) {
-          let localKey = makeLocalCacheKey(functionTitle, payload.cacheKey);
-          let task = resultsCache[localKey] as
+          let localCacheKey = makeLocalCacheKey(
+            functionTitle,
+            payload.cacheKey
+          );
+          let task = localCache.get(localCacheKey) as
             | GeoprocessingTask<ResultType>
             | undefined;
           if (task) {
@@ -198,18 +202,17 @@ export const useFunction = <ResultType>(
         // After task started, but still pending
         pendingRequest
           .then((task) => {
-            const clonedTask = cloneDeep(task);
-            let currServiceName = clonedTask.service;
+            let currServiceName = task.service;
             if (currServiceName) {
               if (
-                clonedTask.status !== "completed" &&
-                clonedTask.wss?.length > 0 &&
+                task.status !== "completed" &&
+                task.wss?.length > 0 &&
                 executionMode === "async"
               ) {
                 let sname = encodeURIComponent(currServiceName);
                 let ck = encodeURIComponent(payload.cacheKey || "");
                 let wssUrl =
-                  clonedTask.wss +
+                  task.wss +
                   "?" +
                   "serviceName=" +
                   sname +
@@ -219,7 +222,7 @@ export const useFunction = <ResultType>(
 
                 // set up the socket (async only)
                 getSendSocket(
-                  clonedTask,
+                  task,
                   wssUrl,
                   setState,
                   payload.cacheKey,
@@ -234,13 +237,12 @@ export const useFunction = <ResultType>(
 
             // check for invalid status
             if (
-              !clonedTask.status ||
-              ["pending", "completed", "failed"].indexOf(clonedTask.status) ===
-                -1
+              !task.status ||
+              ["pending", "completed", "failed"].indexOf(task.status) === -1
             ) {
               setState({
                 loading: false,
-                task: clonedTask,
+                task: task,
                 error: `Could not parse response from geoprocessing function.`,
               });
               return;
@@ -248,27 +250,31 @@ export const useFunction = <ResultType>(
 
             // set to pending state initially
             setState({
-              loading: clonedTask.status === GeoprocessingTaskStatus.Pending,
-              task: clonedTask,
-              error: clonedTask.error,
+              loading: task.status === GeoprocessingTaskStatus.Pending,
+              task: task,
+              error: task.error,
             });
 
             // if task complete then load results
             if (
               payload.cacheKey &&
-              clonedTask.status === GeoprocessingTaskStatus.Completed
+              task.status === GeoprocessingTaskStatus.Completed
             ) {
-              let localKey = makeLocalCacheKey(functionTitle, payload.cacheKey);
-              resultsCache[localKey] = clonedTask;
+              let localCacheKey = makeLocalCacheKey(
+                functionTitle,
+                payload.cacheKey
+              );
+
+              localCache.set(localCacheKey, cloneDeep(task));
             }
 
             // if task pending then nothing more to do
-            if (clonedTask.status === GeoprocessingTaskStatus.Pending) {
-              if (clonedTask.wss?.length > 0) {
+            if (task.status === GeoprocessingTaskStatus.Pending) {
+              if (task.wss?.length > 0) {
                 setState({
                   loading: true,
-                  task: clonedTask,
-                  error: clonedTask.error,
+                  task: task,
+                  error: task.error,
                 });
               }
               return;
@@ -352,8 +358,9 @@ const getSendSocket = (
   // once socket open, check if task completed before it opened
   socket.onopen = function () {
     // Check local cache first
-    const localKey = makeLocalCacheKey(currServiceName, cacheKey);
-    const task = resultsCache[localKey] as GeoprocessingTask | undefined;
+    const task = localCache.get(
+      makeLocalCacheKey(currServiceName, cacheKey)
+    ) as GeoprocessingTask | undefined;
 
     if (task) {
       setState({

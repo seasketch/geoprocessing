@@ -2,7 +2,6 @@ import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
 import { useState, useContext, useEffect } from "react";
 import { useDeepEqualMemo } from "./useDeepEqualMemo";
 import { ReportContext } from "../context";
-import { LRUCache } from "lru-cache";
 import {
   GeoprocessingRequest,
   GeoprocessingProject,
@@ -31,7 +30,7 @@ interface FunctionState<ResultType> {
 }
 
 /** Local results cache */
-const localCache = new LRUCache<string, GeoprocessingTask>({ max: 500 });
+const localCache = new Map<string, GeoprocessingTask>();
 
 /** Generates key for results cache combining function name and user-defined cacheKey */
 const makeLocalCacheKey = (funcName: string, cacheKey: string): string =>

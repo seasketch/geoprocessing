@@ -316,45 +316,78 @@ const classSortAlphaDisplay = (a: DataClass, b: DataClass) => {
 };
 
 /**
- * Returns new metrics with their values transformed to percentage of corresponding totals
- * metrics are paired with total based on classId if present, falling back to metricId
- * Deep copies and maintains all other properties from the original metric
+ * Matches numerator metrics with denominator metrics and divides their value,
+ * returning a new array of percent metrics
+ * Matches on the optional idProperty given, otherwise defaulting to classId
+ * Deep copies and maintains all other properties from the numerator metric
+ * @param numerators array of metrics, to be used as numerators (often sketch metrics)
+ * @param denominators array of metrics, to be used as denominators (often planning region metrics)
+ * @param metricIdOverride optional metricId value to assign to outputted metrics
+ * @param idProperty optional id property to match metric with total metric, defaults to classId
+ * @returns Metric[] of percent values
  */
 export const toPercentMetric = (
-  metrics: Metric[],
-  totals: Metric[],
-  /** Set percent metrics with new metricId.  Defaults to leaving the same */
-  percMetricId?: string
+  numerators: Metric[],
+  denominators: Metric[],
+  options: {
+    metricIdOverride?: string;
+    idProperty?: string;
+  } = {}
 ): Metric[] => {
+  const { metricIdOverride, idProperty = "classId" } = options;
+
+  // Index into precalc totals using idProperty
   const totalsByKey = (() => {
-    return keyBy(totals, (total) =>
-      total.classId ? total.classId : total.metricId
-    );
+    return keyBy(denominators, (total) => String(total[idProperty]));
   })();
-  return metrics.map((curMetric) => {
-    if (!curMetric || curMetric.value === undefined)
-      throw new Error(`Malformed metrics: ${JSON.stringify(curMetric)}`);
 
-    const idProperty = curMetric.classId ? "classId" : "metricId";
-
-    const idValue = curMetric[idProperty];
-    if (!idValue) throw new Error(`Missing total index: ${idValue}`);
-
-    const value = curMetric[idProperty];
-    if (!value)
+  // For each metric in metric group
+  return numerators.map((numerMetric) => {
+    if (!numerMetric || numerMetric.value === undefined)
       throw new Error(
-        `Missing metric id property ${idProperty}, ${JSON.stringify(curMetric)}`
+        `Malformed numerator metric: ${JSON.stringify(numerMetric)}`
       );
-    const totalMetric = totalsByKey[idValue];
-    if (!totalMetric) {
+
+    const idValue = numerMetric[idProperty];
+
+    if (idValue === null || idValue === undefined)
       throw new Error(
-        `Missing total: ${idProperty}: ${JSON.stringify(curMetric)}`
+        `Invalid ${idProperty} found in numerator metric: ${JSON.stringify(
+          numerMetric
+        )}`
+      );
+
+    const denomMetric = totalsByKey[idValue];
+    if (!denomMetric) {
+      throw new Error(
+        `Missing matching denominator metric with ${idProperty} of ${idValue} for numerator: ${JSON.stringify(
+          numerMetric
+        )}`
       );
     }
+    if (denomMetric.value === null || denomMetric.value === undefined) {
+      throw new Error(
+        `Malformed denominator metric: ${JSON.stringify(numerMetric)}`
+      );
+    }
+
+    const value = (() => {
+      // Catch 0 or malformed denominator value and return percent metric with 0 value
+      if (denomMetric.value === 0) {
+        console.log(
+          `Denominator metric with ${idProperty} of ${idValue} has 0 value, returning 0 percent metric`
+        );
+        return 0;
+      } else {
+        return numerMetric.value / denomMetric.value;
+      }
+    })();
+
+    // Create percent metric
     return {
-      ...cloneDeep(curMetric),
-      value: curMetric.value / totalMetric.value,
-      ...(percMetricId ? { metricId: percMetricId } : {}),
+      ...cloneDeep(numerMetric),
+      value,
+      ...(metricIdOverride ? { metricId: metricIdOverride } : {}),
     };
   });
 };

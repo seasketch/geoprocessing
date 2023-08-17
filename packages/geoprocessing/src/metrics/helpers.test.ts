@@ -399,14 +399,96 @@ describe("flattenSketchAllClass", () => {
     expect(rows).toEqual(answer);
   });
 
+  test("toPercentMetric - basic", async () => {
+    const percMetrics = toPercentMetric(
+      [
+        createMetric({
+          groupId: "group1",
+          classId: "nearshore",
+          metricId: metricName,
+          sketchId: collectionId,
+          value: 25,
+        }),
+      ],
+      [
+        createMetric({
+          groupId: "group1",
+          classId: "nearshore",
+          metricId: metricName,
+          sketchId: collectionId,
+          value: 100,
+        }),
+      ]
+    );
+    percMetrics.forEach((m) => {
+      expect(m.value).toEqual(0.25);
+      expect(m.classId).toEqual("nearshore");
+    });
+  });
+
+  test("toPercentMetric - zero denominator value", async () => {
+    const percMetrics = toPercentMetric(
+      [
+        createMetric({
+          groupId: "group1",
+          classId: "nearshore",
+          metricId: metricName,
+          sketchId: collectionId,
+          value: 25,
+        }),
+      ],
+      [
+        createMetric({
+          groupId: "group1",
+          classId: "nearshore",
+          metricId: metricName,
+          sketchId: collectionId,
+          value: 0,
+        }),
+      ]
+    );
+    percMetrics.forEach((m) => {
+      expect(m.value).toEqual(0);
+      expect(m.classId).toEqual("nearshore");
+    });
+  });
+
   test("toPercentMetric - set new percent metric ID", async () => {
     const percMetricName = `${metricName}Perc`;
-    const percMetrics = toPercentMetric(
-      groupMetrics,
-      PRECALC_TOTALS,
-      percMetricName
-    );
+    const percMetrics = toPercentMetric(groupMetrics, PRECALC_TOTALS, {
+      metricIdOverride: percMetricName,
+    });
     percMetrics.forEach((m) => expect(m.metricId).toEqual(percMetricName));
+  });
+
+  test("toPercentMetric - set alternative idProperty", async () => {
+    const percMetrics = toPercentMetric(
+      [
+        createMetric({
+          groupId: "group1",
+          geographyId: "nearshore",
+          metricId: metricName,
+          sketchId: collectionId,
+          value: 25,
+        }),
+      ],
+      [
+        createMetric({
+          groupId: "group1",
+          geographyId: "nearshore",
+          metricId: metricName,
+          sketchId: collectionId,
+          value: 100,
+        }),
+      ],
+      {
+        idProperty: "geographyId",
+      }
+    );
+    percMetrics.forEach((m) => {
+      expect(m.value).toEqual(0.25);
+      expect(m.geographyId).toEqual("nearshore");
+    });
   });
 
   test("flattenByGroup - single class", async () => {

@@ -13,6 +13,7 @@ export * from "./reports";
 export * from "./sketch";
 export * from "./service";
 export * from "./dataProcessor";
+export * from "./functions";
 
 // 3rd party
 export * from "./georaster";

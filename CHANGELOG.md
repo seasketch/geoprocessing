@@ -1,5 +1,49 @@
 # Changelog
 
+## v4.0.0 (2023-08-21)
+
+### :boom: Breaking Changes
+
+* `getSum` and `getHistogram` are now async functions and take a raster that's been loaded with `geoblaze.parse` or `loadCog`
+
+### :rocket: New Feature / Improvement
+
+* Refactor raster analysis to utilize broad geoblaze improvements in v2.0.0
+  * Remove `parseGeoraster` and use geoblaze cog support locally
+  * Deprecate `loadCogWindow` and create `loadCog`
+  * Add testing around holes, equal area, and multipolygon
+  * Refactor `overlapRaster` and `overlapRasterClass` to use geoblaze functions
+  * Improve geoblaze support for polygons with holes, multipolygons, overlapping polygons and multipolygons
+* Support running in [devcontainer environment](https://github.com/seasketch/docker-gp-workspace) using an improved version of `docker-gp-workspace` ([Changelog](https://github.com/seasketch/docker-gp-workspace/blob/main/Changelog.md))
+  * Data:import commands no longer run docker directly because of the expectation that gdal is available in your current environment (devcontainer, codespaces, bare metal, etc)
+  * Docker `workspace` module and `workspace:shell` command have been removed
+* Support passing extra parameters (`ExtraParams`) to gp and pp functions (#204)
+  * Add `ExtraParams` to functions install by templates
+  * ResultsCard can send `extraParams` attribute
+
+### :bug: Bug Fix
+
+* Fix jest-dynamodb bug with workaround `ae7d429`
+* Fix report caching server-side cache and will return cached result from initial lambda request, even if it's an async geogrocessing function
+* Fix browser report cache, switching from LRU cache library to simple object-based cache 
+
+### :house: Internal
+
+* Add threads.js package for multithreading in functions
+* Upgrade aws-cdk-lib to 2.84.0 and aws-sdk to 2.1399.0 to address node12.x EOL 
+  * Update stack snapshots
+* Gitignore data/src top-level directory to avoid failing symlink creation 
+* Add metric packing to DynamoDB payload to support larger payload sizes (400kb limit)
+
+### :memo: Documentation
+
+* Add tutorial for development within devcontainer and codespaces environments
+* Update tutorial for AWSCLI use
+* Update Contributing doc with example of generating example project and dev client
+* Update Contributing doc with making and testing modifications instructions
+* Document how to clear cache
+* Create [Postman API workspace](https://www.postman.com/seasketch/workspace/) for testing function parameters
+
 ## v3.0.0 (2023-06-05)
 
 ### :boom: Breaking Changes

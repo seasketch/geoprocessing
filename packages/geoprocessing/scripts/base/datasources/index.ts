@@ -3,3 +3,5 @@ export * from "./importDatasource";
 export * from "./reimportDatasources";
 export * from "./publishDatasource";
 export * from "./publishDatasources";
+export * from "./importRasterDatasource";
+export * from "./importVectorDatasource";

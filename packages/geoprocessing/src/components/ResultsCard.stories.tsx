@@ -37,7 +37,7 @@ export const basic = () => (
   </ResultsCard>
 );
 
-const geographies = ["nearshore", "offshore"];
+const geographyIds = ["nearshore", "offshore"];
 export const extraParams = () => {
   const [geography, setGeography] = useState("nearshore");
 
@@ -49,10 +49,10 @@ export const extraParams = () => {
   return (
     <>
       <select onChange={geographySwitcher}>
-        {geographies.map((geography) => {
+        {geographyIds.map((geographyId) => {
           return (
-            <option key={geography} value={geography}>
-              {geography}
+            <option key={geographyId} value={geographyId}>
+              {geographyId}
             </option>
           );
         })}

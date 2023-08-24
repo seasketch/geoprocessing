@@ -6,10 +6,6 @@ import { Metric } from "../../../src/types";
 import { readMetrics, writeMetrics, createOrUpdateMetrics } from "./metrics";
 
 /**
- * Manage a metrics datasource
- */
-
-/**
  * Reads metrics from disk, validates them
  * If metrics file not exist then start a new one and ensure directory exists
  */

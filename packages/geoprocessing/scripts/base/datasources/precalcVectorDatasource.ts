@@ -27,11 +27,19 @@ import { genVectorConfig } from "./importVectorDatasource";
 export async function precalcVectorDatasource<C extends ProjectClientBase>(
   projectClient: C,
   datasource: InternalVectorDatasource,
-  geography: Geography
+  geography: Geography,
+  extraOptions: {
+    /** Alternative path to store precalc data. useful for testing */
+    newDstPath?: string;
+  } = {}
 ): Promise<Metric[]> {
   // Creates vector config from datasources.json
   // @ts-ignore
-  const vectorConfig = genVectorConfig(projectClient, datasource);
+  const vectorConfig = genVectorConfig(
+    projectClient,
+    datasource,
+    extraOptions.newDstPath
+  );
 
   console.log(
     `Precalculating vector ${datasource.datasourceId} and geography ${geography.datasourceId}`

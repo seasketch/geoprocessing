@@ -76,7 +76,7 @@ export async function createOrUpdateMetrics(
   let metrics = readMetrics(filePath);
 
   if (matcher) {
-    metrics = metrics.filter((m) => matcher(m));
+    metrics = metrics.filter(matcher);
   }
 
   metrics = metrics.concat(inputMetrics);

@@ -7,14 +7,15 @@ import { z } from "zod";
 export const geographySchema = z.object({
   /** Unique name of the geography */
   geographyId: z.string(),
-  /** Optional unique id of the datasource containing geographic boundary.  If not provided, then geometry must be provided */
-  datasourceId: z.string().optional(),
-  /** Optional GeoJSON representing geographic boundary */
-  geometry: polygonSchema.or(multipolygonSchema).optional(),
+  /** Optional unique id of the datasource containing geographic boundary */
+  datasourceId: z.string(),
   /** Display name for the geography */
   display: z.string(),
 });
 
+export const geographiesSchema = z.array(geographySchema);
+
 //// INFERRED TYPES ////
 
 export type Geography = z.infer<typeof geographySchema>;
+export type Geographies = z.infer<typeof geographiesSchema>;

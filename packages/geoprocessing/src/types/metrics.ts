@@ -1,5 +1,7 @@
-import { Nullable, JSONValue } from "./base";
+import { JSONValue, jsonSchema } from "./base";
 import { MetricProperties } from "../metrics/helpers";
+import { z } from "zod";
+import { toZod } from "tozod";
 
 /** Dimensions used in Metric */
 export const MetricDimensions = [
@@ -11,34 +13,29 @@ export const MetricDimensions = [
 ] as const;
 export type MetricDimension = typeof MetricDimensions[number] & keyof Metric;
 
+export const metricSchema = z.object({
+  metricId: z.string(),
+  value: z.number(),
+  extra: z.record(jsonSchema).optional(),
+  classId: z.string().nullable(),
+  groupId: z.string().nullable(),
+  geographyId: z.string().nullable(),
+  sketchId: z.string().nullable(),
+  //   // Time
+  //   /** Metric duration of time */
+  //   // duration: Nullable<ISO8601Duration>;
+  //   /** Metric for event at specific time  */
+  //   // startTime: Nullable<ISO8601DateTime>;
+});
+
+export const metricsSchema = z.array(metricSchema);
+
 /**
  * Represents a single record of a metric with a value, stratified by one or more dimensions.
  * The naming is a bit of a misnomer, you can think of it as a MetricValue
  */
-export interface Metric {
-  /** Name of the metric this is a measurement for */
-  metricId: string;
-  /** The metric value */
-  value: number;
-  /** Additional ad-hoc properties, often used to ease interpretation */
-  extra?: Record<string, JSONValue>;
-
-  // Time
-  /** Metric duration of time */
-  // duration: Nullable<ISO8601Duration>;
-  /** Metric for event at specific time  */
-  // startTime: Nullable<ISO8601DateTime>;
-
-  // Other Dimensions
-  /** Metric from specific data class */
-  classId: Nullable<string>;
-  /** Identifier for group - e.g. protection level.  A sketch can only be a member of one*/
-  groupId: Nullable<string>;
-  /** Identifier for geography */
-  geographyId: Nullable<string>;
-  /** Identifier for sketch or sketch collection */
-  sketchId: Nullable<string>;
-}
+export type Metric = z.infer<typeof metricSchema>;
+export type Metrics = z.infer<typeof metricSchema>;
 
 /** Alternative JSON format for metrics data that is smaller in size, better suited for blob storage and network transport */
 export interface MetricPack {

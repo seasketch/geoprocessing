@@ -30,9 +30,7 @@ import ProjectClientBase from "../../../src/project/ProjectClientBase";
 import { publishDatasource } from "./publishDatasource";
 
 /**
- * Import a dataset into the project.  Must be a src file that OGR or GDAL can read.
- * Importing means stripping unnecessary properties/layers,
- * converting to cloud optimized format, and adding as datasource.
+ * Reimport one or more datasources into project.
  */
 export async function reimportDatasources<C extends ProjectClientBase>(
   projectClient: C,

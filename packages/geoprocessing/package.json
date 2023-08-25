@@ -37,6 +37,7 @@
     "prepare": "npm run build:core && npm run build:scripts && npm run _prepare",
     "_prepare": "npx ts-node scripts/npm/prepare",
     "start-data": "http-server data -c-1",
+    "start-data-testing": "http-server data/testing/output -c-1",
     "watch": "tsc --watch",
     "watch:scripts": "npx tsc --build scripts/tsconfig.json --watch"
   },

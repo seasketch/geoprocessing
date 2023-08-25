@@ -1,4 +1,3 @@
-import path from "path";
 import fs from "fs-extra";
 import area from "@turf/area";
 import {
@@ -9,6 +8,7 @@ import {
   Polygon,
   Geography,
 } from "../../../src/types";
+import { getJsonPath } from "../../../src/datasources";
 import {
   Feature,
   MultiPolygon,
@@ -16,7 +16,8 @@ import {
   clipMultiMerge,
   createMetric,
 } from "../../../src";
-import { genVectorConfig } from "./importVectorDatasource";
+import { genVectorConfig } from "./genVectorConfig";
+import { readDatasourceGeojsonById } from "./datasources";
 
 /**
  * Creates precalc metrics for a datasource and geography
@@ -34,7 +35,6 @@ export async function precalcVectorDatasource<C extends ProjectClientBase>(
   } = {}
 ): Promise<Metric[]> {
   // Creates vector config from datasources.json
-  // @ts-ignore
   const vectorConfig = genVectorConfig(
     projectClient,
     datasource,
@@ -59,13 +59,21 @@ export function genVectorMetrics(
   vectorConfig: ImportVectorDatasourceConfig,
   geography: Geography
 ): Metric[] {
-  // Read in vector geojson datasource as FeatureCollection
-  const rawJsonDs = fs.readJsonSync(
-    getJsonPath(vectorConfig.dstPath, vectorConfig.datasourceId)
+  // Read in vector datasource (geojson) as FeatureCollection
+  const featureCollection = readDatasourceGeojsonById(
+    vectorConfig.datasourceId,
+    vectorConfig.dstPath
   );
-  const featureCollection = rawJsonDs as FeatureCollection<
-    Polygon | MultiPolygon
-  >;
+
+  // Read in vector geography datasource (geojson) as FeatureCollection
+  const geographyFeatureColl = readDatasourceGeojsonById(
+    geography.datasourceId,
+    vectorConfig.dstPath
+  );
+
+  console.log(
+    `Precalculating vector ${vectorConfig.datasourceId} and geography ${geography.datasourceId}`
+  );
 
   // Creates record of all class keys present in OG features
   // to avoid missing a class after cropping
@@ -87,14 +95,6 @@ export function genVectorMetrics(
       }
     });
   });
-
-  // Read in vector geography datasource (geojson) as FeatureCollection
-  const rawJsonGeo = fs.readJsonSync(
-    getJsonPath(vectorConfig.dstPath, geography.datasourceId)
-  );
-  const geographyFeatureColl = rawJsonGeo as FeatureCollection<
-    Polygon | MultiPolygon
-  >;
 
   // Clip vector data to geography boundaries
   const clippedFeatures = featureCollection.features
@@ -217,14 +217,4 @@ export function genVectorMetrics(
   });
 
   return totalMetrics.concat(classMetrics);
-}
-
-/**
- * Builds JSON path from dist folder path and datasourceId
- * @param dstPath string path to dist folder
- * @param datasourceId string id for datasource
- * @returns string path to datasource file
- */
-function getJsonPath(dstPath: string, datasourceId: string) {
-  return path.join(dstPath, datasourceId) + ".json";
 }

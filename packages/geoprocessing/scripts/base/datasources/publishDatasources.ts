@@ -11,8 +11,8 @@ import {
   isInternalVectorDatasource,
   getDatasetBucketName,
 } from "../../../src/datasources";
-import { genVectorConfig } from "./importVectorDatasource";
-import { genRasterConfig } from "./importRasterDatasource";
+import { genVectorConfig } from "./genVectorConfig";
+import { genRasterConfig } from "./genRasterConfig";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 import { publishDatasource } from "./publishDatasource";
 

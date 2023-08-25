@@ -8,6 +8,7 @@ import ProjectClientBase from "../../../src/project/ProjectClientBase";
 import { readGeographies } from "../geographies/geographies";
 import { createOrUpdatePrecalcMetrics } from "./precalc";
 import { precalcVectorDatasource } from "./precalcVectorDatasource";
+import { precalcRasterDatasource } from "./precalcRasterDatasource";
 
 /**
  * Precalc one or more datasources for a project, for one or more defined geographies
@@ -38,6 +39,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 
   // Get geographies to precalc
   const allGeographies = await readGeographies(newGeographyPath);
+
   const filteredGeographies = (() => {
     if (!geographyMatcher) {
       return allGeographies;
@@ -75,14 +77,14 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   let successful = 0;
   let finalMetrics: Metric[] = [];
 
-  // Run precalc on subset of datasources for all geographies
+  // Run precalc on user-defined subset of datasources for all geographies
   for (const ds of filteredDatasources) {
     for (const geog of allGeographies) {
       try {
         console.log(
           `Precalculating datasource ${ds.datasourceId} for geography ${geog.geographyId}`
         );
-        const metrics = await precalculateMetrics(
+        const metrics = await precalcMetrics(
           projectClient,
           ds,
           geog,
@@ -105,14 +107,14 @@ export async function precalcDatasources<C extends ProjectClientBase>(
     }
   }
 
-  // Run precalc on subset of geographies for all datasources
+  // Run precalc on user-defined subset of geographies for all datasources
   for (const geog of filteredGeographies) {
     for (const ds of allDatasources) {
       try {
         console.log(
           `Precalculating datasource ${ds.datasourceId} for geography ${geog.geographyId}`
         );
-        const metrics = await precalculateMetrics(
+        const metrics = await precalcMetrics(
           projectClient,
           ds,
           geog,
@@ -148,7 +150,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 /**
  * Precalculate metrics for internal vector/raster datasource for given geography
  */
-export const precalculateMetrics = async (
+export const precalcMetrics = async (
   projectClient: ProjectClientBase,
   ds: Datasource,
   geog: Geography,
@@ -168,11 +170,9 @@ export const precalculateMetrics = async (
         newDstPath,
       });
     } else if (isInternalRasterDatasource(ds) && ds.geo_type === "raster") {
-      return [];
-      // metrics = metrics.concat(await precalcRasterDatasource(
-      //   datasource,
-      //   geography
-      // ))
+      return await precalcRasterDatasource(projectClient, ds, geog, {
+        newDstPath,
+      });
     } else {
       console.log(`Skipping ${ds.datasourceId}, precalc not supported`);
       return [];
@@ -183,13 +183,13 @@ export const precalculateMetrics = async (
   if (!curMetrics.length) return [];
 
   // Find metric classes to be updated on disk
-  const curMetricsClassIds = curMetrics.reduce<string[]>((acc, m: Metric) => {
-    if (!m.classId) return acc;
-    return acc.includes(m.classId) ? acc : acc.concat([m.classId]);
-  }, []);
+  // const curMetricsClassIds = curMetrics.reduce<string[]>((acc, m: Metric) => {
+  //   if (!m.classId) return acc;
+  //   return acc.includes(m.classId) ? acc : acc.concat([m.classId]);
+  // }, []);
 
   const staleMetricsFilterFn = staleMetricsFilterNursery(
-    curMetricsClassIds,
+    ds.datasourceId,
     geog.geographyId
   );
 
@@ -207,12 +207,12 @@ export const precalculateMetrics = async (
  * @param classIds
  */
 export const staleMetricsFilterNursery = (
-  classIds: string[],
+  datasourceId: string,
   geographyId: string
 ) => {
   return (m: Metric) => {
     return (
-      (!!m.classId && classIds.includes(m.classId) === false) ||
+      (!!m.classId && !m.classId.startsWith(datasourceId + "-")) ||
       (!!m.geographyId && m.geographyId !== geographyId)
     );
   };

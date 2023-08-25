@@ -13,21 +13,20 @@ import {
   Datasource,
 } from "../../../src/types";
 import {
-  datasourceConfig,
   getJsonFilename,
   getCogFilename,
   isInternalVectorDatasource,
   getDatasetBucketName,
 } from "../../../src/datasources";
+import { genRasterConfig } from "./genRasterConfig";
 import { getSum, getHistogram } from "../../../src/toolbox";
 import { isPolygonFeature } from "../../../src/helpers";
 import { createOrUpdateDatasource } from "./datasources";
 import { loadCog } from "../../../src/dataproviders/cog";
+import { publishDatasource } from "./publishDatasource";
+import dissolve from "@turf/dissolve";
 
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
-
-import dissolve from "@turf/dissolve";
-import { publishDatasource } from "./publishDatasource";
 
 export async function importRasterDatasource<C extends ProjectClientBase>(
   projectClient: C,
@@ -96,42 +95,6 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
 
   await createOrUpdateDatasource(newVectorD, newDatasourcePath);
   return newVectorD;
-}
-
-/** Takes import options and creates full import config */
-export function genRasterConfig<C extends ProjectClientBase>(
-  projectClient: C,
-  options: ImportRasterDatasourceOptions,
-  newDstPath?: string
-): ImportRasterDatasourceConfig {
-  let {
-    geo_type,
-    src,
-    datasourceId,
-    band,
-    formats = datasourceConfig.importDefaultRasterFormats,
-    noDataValue,
-    measurementType,
-    filterDatasource,
-  } = options;
-
-  if (!band) band = 0;
-
-  const config: ImportRasterDatasourceConfig = {
-    geo_type,
-    src,
-    dstPath: newDstPath || datasourceConfig.defaultDstPath,
-    band,
-    datasourceId,
-    package: projectClient.package,
-    gp: projectClient.geoprocessing,
-    formats,
-    noDataValue,
-    measurementType,
-    filterDatasource,
-  };
-
-  return config;
 }
 
 /** Returns classes for datasource.  If classKeys not defined then will return a single class with datasourceID */

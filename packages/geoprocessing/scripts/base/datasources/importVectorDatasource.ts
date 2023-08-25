@@ -1,5 +1,5 @@
-import path from "path";
 import { FeatureCollection, Polygon } from "../../../src/types";
+import { getJsonPath, getFlatGeobufPath } from "../../../src/datasources";
 import fs from "fs-extra";
 import { $ } from "zx";
 import {
@@ -10,14 +10,12 @@ import {
   Stats,
   ImportVectorDatasourceConfig,
 } from "../../../src/types";
-import {
-  datasourceConfig,
-  getDatasetBucketName,
-} from "../../../src/datasources";
+import { getDatasetBucketName } from "../../../src/datasources";
 import { ProjectClientBase } from "../../../src";
 import { createOrUpdateDatasource } from "./datasources";
 import area from "@turf/area";
 import { publishDatasource } from "./publishDatasource";
+import { genVectorConfig } from "./genVectorConfig";
 
 export async function importVectorDatasource<C extends ProjectClientBase>(
   projectClient: C,
@@ -29,7 +27,6 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
     srcBucketUrl?: string;
   }
 ) {
-
   const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genVectorConfig(projectClient, options, newDstPath);
 
@@ -72,46 +69,6 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
 
   await createOrUpdateDatasource(newVectorD, newDatasourcePath);
   return newVectorD;
-}
-
-/** Takes import options and creates full import config */
-export function genVectorConfig<C extends ProjectClientBase>(
-  projectClient: C,
-  options: ImportVectorDatasourceOptions,
-  newDstPath?: string
-): ImportVectorDatasourceConfig {
-  let {
-    geo_type,
-    src,
-    datasourceId,
-    propertiesToKeep = [],
-    classKeys,
-    layerName,
-    formats = datasourceConfig.importDefaultVectorFormats,
-    explodeMulti,
-  } = options;
-
-  if (!layerName)
-    layerName = path.basename(src, "." + path.basename(src).split(".").pop());
-
-  // merge to ensure keep at least classKeys
-  propertiesToKeep = Array.from(new Set(propertiesToKeep.concat(classKeys)));
-
-  const config: ImportVectorDatasourceConfig = {
-    geo_type,
-    src,
-    dstPath: newDstPath || datasourceConfig.defaultDstPath,
-    propertiesToKeep,
-    classKeys,
-    layerName,
-    datasourceId,
-    package: projectClient.package,
-    gp: projectClient.geoprocessing,
-    formats,
-    explodeMulti,
-  };
-
-  return config;
 }
 
 /** Returns classes for datasource.  If classKeys not defined then will return a single class with datasourceID */
@@ -219,12 +176,4 @@ export async function genFlatgeobuf(config: ImportVectorDatasourceConfig) {
       : "";
   fs.removeSync(dst);
   await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
-}
-
-function getJsonPath(dstPath: string, datasourceId: string) {
-  return path.join(dstPath, datasourceId) + ".json";
-}
-
-function getFlatGeobufPath(dstPath: string, datasourceId: string) {
-  return path.join(dstPath, datasourceId) + ".fgb";
 }

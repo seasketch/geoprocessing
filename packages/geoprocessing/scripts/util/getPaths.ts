@@ -1,3 +1,4 @@
+import path from "path";
 //// GEOPROCESSING LIBRARY PATHS ////
 
 // Functions that return relatives paths to access assets within

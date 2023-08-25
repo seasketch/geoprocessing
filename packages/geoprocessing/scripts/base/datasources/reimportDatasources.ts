@@ -15,16 +15,13 @@ import {
   getDatasetBucketName,
 } from "../../../src/datasources";
 import {
-  genVectorConfig,
   genGeojson,
   genFlatgeobuf,
   genVectorKeyStats,
 } from "./importVectorDatasource";
-import {
-  genCog,
-  genRasterConfig,
-  genRasterKeyStats,
-} from "./importRasterDatasource";
+import { genVectorConfig } from "./genVectorConfig";
+import { genCog, genRasterKeyStats } from "./importRasterDatasource";
+import { genRasterConfig } from "./genRasterConfig";
 import { loadCog } from "../../../src/dataproviders/cog";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 import { publishDatasource } from "./publishDatasource";

@@ -12,6 +12,7 @@ import {
   BaseImportDatasourceConfig,
 } from "../types";
 import { DataClass } from "../types";
+import path from "path";
 
 /** Returns mapping of class ID to class DataClass objects */
 export const classIdMapping = (classes: DataClass[]) => {
@@ -137,4 +138,12 @@ export function getDatasetBucketName<C extends BaseImportDatasourceConfig>(
   config: C
 ) {
   return `gp-${config.package.name}-datasets`;
+}
+
+export function getJsonPath(dstPath: string, datasourceId: string) {
+  return path.join(dstPath, datasourceId) + ".json";
+}
+
+export function getFlatGeobufPath(dstPath: string, datasourceId: string) {
+  return path.join(dstPath, datasourceId) + ".fgb";
 }

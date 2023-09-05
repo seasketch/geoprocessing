@@ -6,6 +6,7 @@
 import {
   Geography,
   ProjectClientBase,
+  firstMatchingMetric,
   geographySchema,
   metricsSchema,
 } from "../../../src";
@@ -83,6 +84,9 @@ describe("precalcRasterDatasource", () => {
       display: geographyId,
     };
     writeGeographies([eezGeog], geogFilePath);
+    const savedGeos = fs.readJSONSync(geogFilePath);
+    expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
+    geographySchema.parse(savedGeos[0]);
 
     await precalcDatasources(projectClient, {
       newDatasourcePath: dsFilePath,
@@ -90,37 +94,35 @@ describe("precalcRasterDatasource", () => {
       newPrecalcPath: precalcFilePath,
       newDstPath: dstPath,
     });
-    const savedGeos = fs.readJSONSync(geogFilePath);
-    expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-    geographySchema.parse(savedGeos[0]);
 
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     console.log(metrics);
     metricsSchema.parse(metrics);
-    // expect(metrics.length).toBe(2);
-    // metrics.forEach((metric) => {
-    //   expect(metric.classId).toBe("eez-total");
-    //   expect(metric.geographyId).toBe("eez");
-    // });
+    expect(metrics.length).toBe(2);
+    metrics.forEach((metric) => {
+      expect(metric.classId).toBe("eez-total");
+      expect(metric.geographyId).toBe("eez");
+    });
 
-    // const areaMetric = firstMatchingMetric(
-    //   metrics,
-    //   (m) => m.metricId === "area"
-    // );
-    // expect(areaMetric).toBeTruthy();
+    const areaMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.metricId === "area"
+    );
+    expect(areaMetric).toBeTruthy();
 
-    // const countMetric = firstMatchingMetric(
-    //   metrics,
-    //   (m) => m.metricId === "count"
-    // );
-    // expect(countMetric).toBeTruthy();
-    // expect(countMetric.value).toBe(1);
+    const countMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.metricId === "count"
+    );
+    expect(countMetric).toBeTruthy();
+    expect(countMetric.value).toBe(1);
 
-    // fs.removeSync(dsFilePath);
-    // fs.removeSync(path.join(dstPath, `${datasourceId}.fgb`));
-    // fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
-    // fs.removeSync(geogFilePath);
-    // fs.removeSync(precalcFilePath);
+    fs.removeSync(dsFilePath);
+    fs.removeSync(path.join(dstPath, `${geogDatasourceId}.fgb`));
+    fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
+    fs.removeSync(geogFilePath);
+    fs.removeSync(path.join(dstPath, `${datasourceId}.tif`));
+    fs.removeSync(precalcFilePath);
   }, 20000);
 });

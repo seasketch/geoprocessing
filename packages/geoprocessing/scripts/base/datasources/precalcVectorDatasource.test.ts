@@ -302,7 +302,6 @@ describe("precalcDatasources", () => {
       // Verify precalc
       const metrics = fs.readJSONSync(precalcFilePath);
       metricsSchema.parse(metrics);
-      console.log(metrics);
       expect(metrics.length).toBe(10);
       metrics.forEach((metric) => {
         expect(metric.geographyId).toBe("eez");

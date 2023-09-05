@@ -1,7 +1,7 @@
 import LocalFileServer from "./base/util/localServer";
 
 module.exports = async function (globalConfig, projectConfig) {
-  const dstPath = "data/testing/output";
+  const dstPath = "data/out";
   const tempPort = 8001;
 
   console.log(

@@ -18,8 +18,8 @@ import { importDatasource } from "./importDatasource";
 import { writeGeographies } from "../geographies/geographies";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
-const srcPath = "data/testing";
-const dstPath = "data/testing/output";
+const srcPath = "data/in";
+const dstPath = "data/out";
 
 describe("precalcDatasources", () => {
   describe("precalcVectorDatasource", () => {

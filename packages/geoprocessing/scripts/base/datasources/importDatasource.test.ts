@@ -14,8 +14,8 @@ import fs from "fs-extra";
 import path from "path";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
-const srcPath = "data/testing";
-const dstPath = "data/testing/output";
+const srcPath = "data/in";
+const dstPath = "data/out";
 
 describe("importDatasource", () => {
   describe("importVectorDatasource - single file, single class", () => {

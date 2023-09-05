@@ -15,8 +15,8 @@ import path from "path";
 import fs from "fs-extra";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
-const srcPath = "data/testing";
-const dstPath = "data/testing/output";
+const srcPath = "data/in";
+const dstPath = "data/out";
 
 describe("Reimport datasources", () => {
   describe("reimport - single file, single class", () => {

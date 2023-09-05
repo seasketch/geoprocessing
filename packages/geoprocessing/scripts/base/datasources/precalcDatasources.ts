@@ -188,7 +188,7 @@ export const precalcMetrics = async (
   //   return acc.includes(m.classId) ? acc : acc.concat([m.classId]);
   // }, []);
 
-  const staleMetricsFilterFn = staleMetricsFilterNursery(
+  const staleMetricsFilterFn = staleMetricsFilterFactory(
     ds.datasourceId,
     geog.geographyId
   );
@@ -206,7 +206,7 @@ export const precalcMetrics = async (
  * Given a list of classIds, return a filter function that will filter out metrics that are not in the list
  * @param classIds
  */
-export const staleMetricsFilterNursery = (
+export const staleMetricsFilterFactory = (
   datasourceId: string,
   geographyId: string
 ) => {

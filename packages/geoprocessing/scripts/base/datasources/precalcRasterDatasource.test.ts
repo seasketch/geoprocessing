@@ -7,7 +7,6 @@ import {
   Geography,
   ProjectClientBase,
   geographySchema,
-  firstMatchingMetric,
   metricsSchema,
 } from "../../../src";
 import configFixtures from "../../../src/testing/fixtures/projectConfig";
@@ -18,8 +17,8 @@ import { importDatasource } from "./importDatasource";
 import { writeGeographies } from "../geographies/geographies";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
-const srcPath = "data/testing";
-const dstPath = "data/testing/output";
+const srcPath = "data/in";
+const dstPath = "data/out";
 
 describe("precalcRasterDatasource", () => {
   beforeEach(() => {

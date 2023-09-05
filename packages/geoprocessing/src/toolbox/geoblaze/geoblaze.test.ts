@@ -76,7 +76,7 @@ describe("geoblaze basics", () => {
 
 describe("geoblaze cog test", () => {
   test("quad 10 - should pick up quad 1 using geoblaze.parse", async () => {
-    const url = "http://127.0.0.1:8080/quad_10_cog.tif";
+    const url = "http://127.0.0.1:8080/in/quad_10_cog.tif";
     const raster = await geoblaze.parse(url);
 
     const sum = await geoblaze.sum(raster, quad1Poly);
@@ -87,19 +87,19 @@ describe("geoblaze cog test", () => {
   });
 
   test("quad 10 - should pick up q2 value with direct load of url", async () => {
-    const url = "http://127.0.0.1:8080/quad_10_cog.tif";
+    const url = "http://127.0.0.1:8080/in/quad_10_cog.tif";
     const sum = await geoblaze.sum(url, quad2Poly);
     expect(sum[0]).toBe(1);
   });
 
   test("quad 10 - should pick up all quad values with direct load of url", async () => {
-    const url = "http://127.0.0.1:8080/quad_10_cog.tif";
+    const url = "http://127.0.0.1:8080/in/quad_10_cog.tif";
     const sum = await geoblaze.sum(url, allQuadPoly);
     expect(sum[0]).toBe(4);
   });
 
   test("feature smaller than a pixel should throw", async () => {
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/in/feature_abyssopelagic_cog.tif";
 
     const feature: Feature<Polygon> = {
       type: "Feature",
@@ -135,7 +135,7 @@ describe("geoblaze cog test", () => {
   });
 
   test("larger feature covering only nodata should throw", async () => {
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/in/feature_abyssopelagic_cog.tif";
 
     const raster = await geoblaze.parse(url);
     // Create polygon covering much but not all of the value in the raster with nodata inside it

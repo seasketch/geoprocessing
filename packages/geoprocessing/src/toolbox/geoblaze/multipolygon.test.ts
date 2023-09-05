@@ -122,7 +122,7 @@ describe("geoblaze multipolygon tests", () => {
 
   test("geoblaze - compares multipolygon sum with polygon collection sum (joined edge)", async () => {
     // Theoretically, multipolygons shouldn't share edges, but if they're made manually it might be possible
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/in/feature_abyssopelagic_cog.tif";
     const raster = await geoblaze.parse(url);
 
     const whole = {
@@ -216,7 +216,7 @@ describe("geoblaze multipolygon tests", () => {
   });
 
   test("geoblaze - compares multipolygon sum with polygon collection sum (no joined edge)", async () => {
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/in/feature_abyssopelagic_cog.tif";
     const raster = await geoblaze.parse(url);
 
     const featureCollection = {
@@ -296,7 +296,7 @@ describe("geoblaze multipolygon tests", () => {
 
   test("geoblaze - compares multipolygon sum with polygon collection sum (full overlap)", async () => {
     // Theoretically, multipolygons shouldn't overlap, but if they're made manually it might be possible
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/in/feature_abyssopelagic_cog.tif";
     const raster = await geoblaze.parse(url);
 
     const whole = {
@@ -444,7 +444,7 @@ describe("geoblaze multipolygon tests", () => {
 
   test("geoblaze - compares multipolygon sum with polygon collection sum (partial overlap)", async () => {
     // Theoretically, multipolygons shouldn't overlap, but if they're made manually it might be possible
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/in/feature_abyssopelagic_cog.tif";
     const raster = await geoblaze.parse(url);
 
     const whole = {

@@ -1442,7 +1442,7 @@ Use Cases:
 * Preprocessor
   * Passing one or more `eezs` to a global clipping function that specifies optional EEZ boundaries to clip the sketch to in addition to removing land.
 * Geoprocessor
-  * Subregional planning.  Passing one or more `geographies`, as subregions within an EEZ.  This can be used to when calculating results for all subregions at once doesn't make sense, or is computationally prohibitive.  Instead you may want the user to be able to switch between subregions, and the reports will rerun the geoprocessing function with a different geography and update with the result on-demand.
+  * Subregional planning.  Passing one or more `geographyIds`, as subregions within an EEZ.  This can be used to when calculating results for all subregions at once doesn't make sense, or is computationally prohibitive.  Instead you may want the user to be able to switch between subregions, and the reports will rerun the geoprocessing function with a different geography and update with the result on-demand.
 
 ## Passing Extra Parameters To Geoprocessing Functions
 
@@ -1452,17 +1452,17 @@ Report developers will pass the extra parameters to a geoprocessing function via
 <ResultsCard
   title={t("Size")}
   functionName="boundaryAreaOverlap"
-  extraParams={{ geographies: ["nearshore", "offshore"] }}
+  extraParams={{ geographyIds: ["nearshore", "offshore"] }}
   useChildCard
 >
 ```
 
-A common next step for this is to maintain the array of geographies in the parent Card, and potentially allow the user to change the values using a UI selector.  If the value passed to `extraParams` changes, the card will re-render itself, triggering the run of a new function, and displaying the results.
+A common next step for this is to maintain the array of geographyIds in the parent Card, and potentially allow the user to change the values using a UI selector.  If the value passed to `extraParams` changes, the card will re-render itself, triggering the run of a new function, and displaying the results.
 
 Internally the [ResultsCard](https://github.com/seasketch/geoprocessing/blob/7275bd3ddf355259cf99335a761b99472045b6f8/packages/geoprocessing/src/components/ResultsCard.tsx) uses the [useFunction](https://github.com/seasketch/geoprocessing/blob/7275bd3/packages/geoprocessing/src/hooks/useFunction.ts#L44) hook, which accepts `extraParams`.
 
 ```typescript
-useFunction('boundaryAreaOverlap', { geographies: ['santa-maria'] }
+useFunction('boundaryAreaOverlap', { geographyIds: ['santa-maria'] }
 ```
 
 If invoking functions directly, such as SeaSketch invoking a preprocessing function, the `extraParams` can be provided in the event body.
@@ -1484,16 +1484,16 @@ Geoprocessing function:
 /** Optional caller-provided parameters */
 interface ExtraParams {
   /** Optional ID(s) of geographies to operate on. **/
-  geographies?: string[];
+  geographyIds?: string[];
 }
 
 export async function boundaryAreaOverlap(
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
   extraParams: ExtraParams = {}
 ): Promise<ReportResult> {
-  const geographies = extraParams.geographies
-  console.log('Current geographies', geographies)
-  const results = runAnalysis(geographies)
+  const geographyIds = extraParams.geographyIds
+  console.log('Current geographies', geographyIds)
+  const results = runAnalysis(geographyIds)
   return results
 ```
 
@@ -1573,7 +1573,7 @@ Example smoke test (e.g. boundaryAreaOverlapExtraParamSmoke.test.ts):
 test("boundaryAreaOverlapSantaMariaSmoke - tests run with one subregion", async () => {
   const examples = await getExamplePolygonSketchAll();
   for (const example of examples) {
-    const result = await boundaryAreaOverlap(example, { geographies: ['santa-maria']});
+    const result = await boundaryAreaOverlap(example, { geographyIds: ['santa-maria']});
     expect(result).toBeTruthy();
     writeResultOutput(result, "boundaryAreaOverlapSantaMaria", example.properties.name);
   }

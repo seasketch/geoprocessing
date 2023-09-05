@@ -22,8 +22,8 @@ const metricGroup = project.getMetricGroup("boundaryAreaOverlap");
 
 /** Optional caller-provided parameters */
 interface ExtraParams {
-  /** Optional ID(s) of geographies to operate on.  Use to constrain function to subregion */
-  geographies?: string[];
+  /** Optional ID(s) of geographyIds to operate on.  Use to constrain function to subregion */
+  geographyIds?: string[];
 }
 
 export async function boundaryAreaOverlap(

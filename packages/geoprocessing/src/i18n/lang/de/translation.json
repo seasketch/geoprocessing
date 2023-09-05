@@ -72,5 +72,8 @@
   "SizeCard title": "Zonengröße",
   "Target": "Ziel",
   "Value": "Wert",
-  "Viability": "Lebensfähigkeit"
+  "Viability": "Lebensfähigkeit",
+  "(Not answered)": "(Nicht beantwortet)",
+  "% Within Plan": "% Innerhalb des Plans",
+  "Results not found": "Ergebnisse nicht gefunden"
 }

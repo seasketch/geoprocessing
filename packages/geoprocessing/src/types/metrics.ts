@@ -1,7 +1,6 @@
 import { JSONValue, jsonSchema } from "./base";
 import { MetricProperties } from "../metrics/helpers";
 import { z } from "zod";
-import { toZod } from "tozod";
 
 /** Dimensions used in Metric */
 export const MetricDimensions = [

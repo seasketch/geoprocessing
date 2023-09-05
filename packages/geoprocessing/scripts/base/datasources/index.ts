@@ -5,3 +5,5 @@ export * from "./publishDatasource";
 export * from "./publishDatasources";
 export * from "./genVectorConfig";
 export * from "./genRasterConfig";
+export * from "./importRasterDatasource";
+export * from "./importVectorDatasource";

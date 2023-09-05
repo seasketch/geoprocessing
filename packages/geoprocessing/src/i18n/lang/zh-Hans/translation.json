@@ -72,5 +72,8 @@
   "SizeCard title": "区域大小",
   "Target": "目标",
   "Value": "价值",
-  "Viability": "可行性"
+  "Viability": "可行性",
+  "(Not answered)": "（无解答）",
+  "% Within Plan": "计划内百分比",
+  "Results not found": "未找到结果"
 }

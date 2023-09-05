@@ -10,7 +10,7 @@ import turfArea from "@turf/area";
 /** Optional caller-provided parameters */
 interface GeoprocessingParams {
   /** IDs of one or more sub-regions to operate on */
-  geographies?: string[];
+  geographyIds?: string[];
 }
 
 export interface AreaResults {

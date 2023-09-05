@@ -90,6 +90,101 @@ const languages: LangDetails[] = [
       code: "ar",
       rtl: true,
     },
+    {
+      name: "Dutch",
+      code: "nl",
+      localName: "Nederlands",
+    },
+    {
+      name: "Italian",
+      code: "it",
+      localName: "Italiano",
+    },
+    {
+      name: "Bulgarian",
+      code: "bg",
+      localName: "български",
+    },
+    {
+      code: "fr-be",
+      name: "French (Belgium)",
+      localName: "Français (Belgique)",
+    },
+    {
+      code: "el",
+      name: "Greek",
+      localName: "Ελληνικά",
+    },
+    {
+      name: "Hindi",
+      code: "hi",
+      localName: "हिन्दी",
+    },
+    {
+      name: "Indonesian",
+      code: "id",
+      localName: "Bahasa Indonesia",
+    },
+    {
+      name: "Maori",
+      code: "mi",
+      localName: "Te Reo Māori",
+    },
+    {
+      name: "Polish",
+      code: "pl",
+      localName: "Polski",
+    },
+    {
+      name: "Romanian",
+      code: "ro",
+      localName: "Română",
+    },
+    {
+      name: "Tongan",
+      code: "to",
+      localName: "lea fakatonga",
+    },
+    {
+      name: "Zulu",
+      code: "zu",
+      localName: "isiZulu",
+    },
+    {
+      name: "Swedish",
+      code: "sv",
+      localName: "Svenska",
+    },
+    {
+      name: "Swedish (Finland)",
+      code: "sv-fi",
+      localName: "Svenska (Finland)",
+    },
+    {
+      name: "Estonian",
+      code: "et",
+      localName: "Eesti",
+    },
+    {
+      name: "Latvian",
+      code: "lv",
+      localName: "Latviešu",
+    },
+    {
+      name: "Lithuanian",
+      code: "lt",
+      localName: "Lietuvių",
+    },
+    {
+      name: "Russian",
+      code: "ru",
+      localName: "Русский",
+    },
+    {
+      name: "Danish",
+      code: "da",
+      localName: "Dansk",
+    },
   ].sort((a, b) => a.name.localeCompare(b.name)),
 ];
 

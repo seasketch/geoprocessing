@@ -97,7 +97,6 @@ describe("precalcRasterDatasource", () => {
 
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
-    console.log(metrics);
     metricsSchema.parse(metrics);
     expect(metrics.length).toBe(2);
     metrics.forEach((metric) => {

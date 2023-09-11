@@ -148,13 +148,13 @@ describe("createProject", () => {
         region: "us-west-1",
         templates: [],
         planningAreaType: "other",
-        bboxMaxLat: -180,
-        bboxMinLat: 180,
-        bboxMaxLng: -90,
-        bboxMinLng: 90,
+        bboxMaxLat: 90,
+        bboxMinLat: -90,
+        bboxMaxLng: 180,
+        bboxMinLng: -180,
         planningAreaId: "Test Area",
-        planningAreaName: "Samoa",
-        planningAreaNameQuestion: "yes",
+        planningAreaName: "",
+        planningAreaNameQuestion: "no",
       },
       false,
       rootPath
@@ -168,6 +168,15 @@ describe("createProject", () => {
     expect(packageJson.description).toBe("");
     expect(packageJson.license).toBe("UNLICENSED");
     expect(packageJson.author).toBe("");
+
+    const basicJson = JSON.parse(
+      fs
+        .readFileSync(path.join(projectPath, "project", "basic.json"))
+        .toString()
+    );
+
+    expect(basicJson.bbox).toEqual([-180, -90, 180, 90]);
+    expect(basicJson.planningAreaName).toEqual("Test Area");
 
     const gpConfig = JSON.parse(
       fs.readFileSync(projectPath + "/geoprocessing.json").toString()

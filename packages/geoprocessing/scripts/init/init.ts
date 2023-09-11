@@ -155,6 +155,8 @@ async function init(gpVersion?: string) {
       name: "planningAreaId",
       message:
         "What is the name of the planning area as it should be displayed in reports? (e.g. Samoa)",
+      validate: (value) =>
+        value === "" ? "Provide a name for your planning area" : true,
     },
     {
       when: (answers) => answers.planningAreaType === "other",
@@ -162,8 +164,8 @@ async function init(gpVersion?: string) {
       name: "bboxMinLng",
       message:
         "What is the projects minimum longitude (left) in degrees (-180.0 to 180.0)?",
-      validate: (value) =>
-        value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
+      default: -180,
+      validate: (value) => (isNaN(parseFloat(value)) ? "Not a number!" : true),
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
@@ -171,9 +173,9 @@ async function init(gpVersion?: string) {
       type: "input",
       name: "bboxMinLat",
       message:
-        "What is the projects minimum latitude (bottom) in degrees (-180.0 to 180.0)?",
-      validate: (value) =>
-        value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
+        "What is the projects minimum latitude (bottom) in degrees (-90.0 to 90.0)?",
+      default: -90,
+      validate: (value) => (isNaN(parseFloat(value)) ? "Not a number!" : true),
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
@@ -182,8 +184,8 @@ async function init(gpVersion?: string) {
       name: "bboxMaxLng",
       message:
         "What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)?",
-      validate: (value) =>
-        value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
+      default: 180,
+      validate: (value) => (isNaN(parseFloat(value)) ? "Not a number!" : true),
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     {
@@ -191,9 +193,9 @@ async function init(gpVersion?: string) {
       type: "input",
       name: "bboxMaxLat",
       message:
-        "What is the projects maximum latitude (top) in degrees (-180.0 to 180.0)?",
-      validate: (value) =>
-        value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
+        "What is the projects maximum latitude (top) in degrees (-90.0 to 90.0)?",
+      default: 90,
+      validate: (value) => (isNaN(parseFloat(value)) ? "Not a number!" : true),
       filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
     },
     templateQuestion,

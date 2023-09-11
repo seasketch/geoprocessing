@@ -386,45 +386,56 @@ export const nestMetrics = (
 
 /**
  * Flattens class sketch metrics into array of objects, one for each sketch,
- * where each object contains sketch id, sketch name, and all metric value for each class
- * @param classMetrics - metric data by class and sketch
- * @param classes - data classes represented in metrics
- * @param sketches - the sketches contained in metrics
- * @returns
+ * where each object contains sketch id, sketch name, and all metric values for each class
+ * @param metrics Metric data by class and sketch
+ * @param classes Data classes represented in metrics
+ * @param sketches Sketches contained in metrics
+ * @param sortFn Function to sort class configs using Array.sort (defaults to alphabetical by display name)
+ * @returns An array of objects with flattened sketch metrics
  */
 export const flattenBySketchAllClass = (
   metrics: Metric[],
   classes: DataClass[],
   sketches: Sketch[] | NullSketch[],
-  /** function to sort class configs using Array.sort, defaults to alphabetical by display name */
   sortFn?: (a: DataClass, b: DataClass) => number
 ): Record<string, string | number>[] => {
+  // Group metrics by class, using classId as the key
   const metricsByClass = groupBy(
     metrics,
     (metric) => metric.classId || "error"
   );
+
+  // Initialize an array to store the flattened sketch metrics
   let sketchRows: Record<string, string | number>[] = [];
+
+  // Iterate through each sketch
   sketches.forEach((curSketch) => {
+    // Initialize an object to accumulate metric values for each class
     const classMetricAgg = classes
       .sort(sortFn || classSortAlphaDisplay)
       .reduce<Record<string, number>>((aggSoFar, curClass) => {
+        // For each class, reduce the metrics to an object with sketchId as the key
         const sketchMetricsById = metricsByClass[curClass.classId].reduce<
           Record<string, Metric>
-        >((soFar, sm) => ({ ...soFar, [sm.sketchId || "undefined"]: sm }), {});
-        return {
-          ...aggSoFar,
-          ...{
-            [curClass.classId]:
-              sketchMetricsById[curSketch.properties.id].value,
-          },
-        };
+        >((soFar, sm) => {
+          soFar[sm.sketchId || "undefined"] = sm;
+          return soFar;
+        }, {});
+
+        // Assign the aggregated metric value to the classId key
+        aggSoFar[curClass.classId] =
+          sketchMetricsById[curSketch.properties.id].value;
+
+        return aggSoFar;
       }, {});
+
     sketchRows.push({
       sketchId: curSketch.properties.id,
       sketchName: curSketch.properties.name,
       ...classMetricAgg,
     });
   });
+
   return sketchRows;
 };
 

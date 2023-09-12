@@ -387,7 +387,7 @@ export const nestMetrics = (
 /**
  * Flattens class sketch metrics into array of objects, one for each sketch,
  * where each object contains sketch id, sketch name, and all metric values for each class
- * @param metrics Metric data by class and sketch
+ * @param metrics List of metrics, expects one metric per sketch and class combination
  * @param classes Data classes represented in metrics
  * @param sketches Sketches contained in metrics
  * @param sortFn Function to sort class configs using Array.sort (defaults to alphabetical by display name)
@@ -399,30 +399,27 @@ export const flattenBySketchAllClass = (
   sketches: Sketch[] | NullSketch[],
   sortFn?: (a: DataClass, b: DataClass) => number
 ): Record<string, string | number>[] => {
-  // Group metrics by class, using classId as the key
-  const metricsByClass = groupBy(
+  const metricsByClassId = groupBy(
     metrics,
     (metric) => metric.classId || "error"
   );
 
-  // Initialize an array to store the flattened sketch metrics
   let sketchRows: Record<string, string | number>[] = [];
 
-  // Iterate through each sketch
   sketches.forEach((curSketch) => {
-    // Initialize an object to accumulate metric values for each class
+    // For current sketch, transform classes into an object mapping classId to its one metric value
     const classMetricAgg = classes
       .sort(sortFn || classSortAlphaDisplay)
       .reduce<Record<string, number>>((aggSoFar, curClass) => {
-        // For each class, reduce the metrics to an object with sketchId as the key
-        const sketchMetricsById = metricsByClass[curClass.classId].reduce<
+        // Transform current class metrics into an object mapping each sketchId to its one class Metric
+        const sketchMetricsById = metricsByClassId[curClass.classId].reduce<
           Record<string, Metric>
         >((soFar, sm) => {
           soFar[sm.sketchId || "undefined"] = sm;
           return soFar;
         }, {});
 
-        // Assign the aggregated metric value to the classId key
+        // Map current classId to extracted metric value
         aggSoFar[curClass.classId] =
           sketchMetricsById[curSketch.properties.id].value;
 

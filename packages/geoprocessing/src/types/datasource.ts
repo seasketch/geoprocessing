@@ -47,6 +47,16 @@ export const baseDatasourceSchema = z.object({
   keyStats: keyStatsSchema.optional(),
   /** Available formats */
   formats: z.array(supportedFormatsSchema),
+  metadata: z
+    .object({
+      name: z.string(),
+      idProperty: z.string(),
+      version: z.string(),
+      publisher: z.string(),
+      publishDate: z.string(),
+      publishLink: z.string(),
+    })
+    .optional(),
 });
 
 /** Properties for vector datasource */
@@ -145,7 +155,6 @@ export type ExternalRasterDatasource = z.infer<
   typeof externalRasterDatasourceSchema
 >;
 export type Datasource = z.infer<typeof datasourceSchema>;
-export type Datasources = z.infer<typeof datasourcesSchema>;
 
 //// IMPORT DATSOURCE ////
 

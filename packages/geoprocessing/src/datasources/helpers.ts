@@ -8,7 +8,6 @@ import {
   internalRasterDatasourceSchema,
   externalRasterDatasourceSchema,
   Datasource,
-  Datasources,
   BaseImportDatasourceConfig,
 } from "../types";
 import { DataClass } from "../types";
@@ -58,7 +57,7 @@ export const isExternalRasterDatasource = (
 /** find and return datasource from passed datasources, otherwise reads from disk */
 export const getDatasourceById = (
   datasourceId: string,
-  datasources: Datasources
+  datasources: Datasource[]
 ): Datasource => {
   const ds = datasources.find((ds) => ds.datasourceId === datasourceId);
   if (!ds) {
@@ -71,7 +70,7 @@ export const getDatasourceById = (
 /** find and return external vector datasource from passed datasources, otherwise reads from disk */
 export const getExternalVectorDatasourceById = (
   datasourceId: string,
-  datasources: Datasources
+  datasources: Datasource[]
 ): ExternalVectorDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isExternalVectorDatasource(ds)) {
@@ -84,7 +83,7 @@ export const getExternalVectorDatasourceById = (
 /** find and return internal vector datasource from passed datasources, otherwise reads from disk */
 export const getInternalVectorDatasourceById = (
   datasourceId: string,
-  datasources: Datasources
+  datasources: Datasource[]
 ): InternalVectorDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isInternalVectorDatasource(ds)) {
@@ -97,7 +96,7 @@ export const getInternalVectorDatasourceById = (
 /** find and return external raster datasource from passed datasources, otherwise reads from disk */
 export const getExternalRasterDatasourceById = (
   datasourceId: string,
-  datasources: Datasources
+  datasources: Datasource[]
 ): ExternalRasterDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isExternalRasterDatasource(ds)) {
@@ -110,7 +109,7 @@ export const getExternalRasterDatasourceById = (
 /** find and return internal datasource from passed datasources, otherwise reads from disk */
 export const getInternalRasterDatasourceById = (
   datasourceId: string,
-  datasources: Datasources
+  datasources: Datasource[]
 ): InternalRasterDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isInternalRasterDatasource(ds)) {

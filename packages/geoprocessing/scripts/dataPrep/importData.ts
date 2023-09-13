@@ -4,7 +4,7 @@ import {
   datasourceFormatDescriptions,
   importVectorDatasourceOptionsSchema,
   ImportVectorDatasourceOptions,
-  Datasources,
+  Datasource,
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
   datasourceConfig,
@@ -122,7 +122,7 @@ function rasterMapper(
 }
 
 async function geoTypeQuestion(
-  datasources: Datasources
+  datasources: Datasource[]
 ): Promise<Pick<ImportVectorDatasourceAnswers, "geo_type">> {
   return inquirer.prompt<Pick<ImportVectorDatasourceAnswers, "geo_type">>([
     {
@@ -144,7 +144,7 @@ async function geoTypeQuestion(
 }
 
 async function inputQuestions(
-  datasources: Datasources
+  datasources: Datasource[]
 ): Promise<Pick<ImportVectorDatasourceAnswers, "src" | "datasourceId">> {
   const datasourceIds = datasources.map((ds) => ds.datasourceId);
   return inquirer.prompt<
@@ -199,7 +199,7 @@ async function rasterBandQuestion(
 }
 
 async function detailedVectorQuestions(
-  datasources: Datasources
+  datasources: Datasource[]
 ): Promise<
   Pick<
     ImportVectorDatasourceAnswers,
@@ -249,7 +249,7 @@ async function detailedVectorQuestions(
 }
 
 async function detailedRasterQuestions(
-  datasources: Datasources
+  datasources: Datasource[]
 ): Promise<
   Pick<
     ImportRasterDatasourceAnswers,

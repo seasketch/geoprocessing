@@ -24,11 +24,11 @@ export async function precalcDatasources<C extends ProjectClientBase>(
     newPrecalcPath?: string;
     /** Alternative dist path. useful for testing */
     newDstPath?: string;
-    /** string or regular expression to express with datasources to reimport, matching on datasourceId */
+    /** array of datasource ID's to reimport */
     datasourceMatcher?: string[];
-    /** string or regular expression to express with geographies to reimport, matching on geographyId */
+    /** array of geography ID's to reimport */
     geographyMatcher?: string[];
-  }
+  } = {}
 ): Promise<Metric[]> {
   const {
     newDatasourcePath,
@@ -51,7 +51,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
     }
   })();
   if (filteredGeographies.length === 0) {
-    console.log("No geographies found");
+    console.log("No geographies found, nothing to do");
     return [];
   }
 
@@ -163,7 +163,7 @@ export const precalcMetrics = async (
 ): Promise<Metric[]> => {
   const { newPrecalcPath, newDstPath } = extraOptions;
 
-  // precalc
+  // precalc if possible. If external datasource, then return nothing
   const curMetrics = await (async () => {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       return await precalcVectorDatasource(projectClient, ds, geog, {
@@ -179,14 +179,7 @@ export const precalcMetrics = async (
     }
   })();
 
-  // If global datasource or unable to precalculate
   if (!curMetrics.length) return [];
-
-  // Find metric classes to be updated on disk
-  // const curMetricsClassIds = curMetrics.reduce<string[]>((acc, m: Metric) => {
-  //   if (!m.classId) return acc;
-  //   return acc.includes(m.classId) ? acc : acc.concat([m.classId]);
-  // }, []);
 
   const staleMetricsFilterFn = staleMetricsFilterFactory(
     ds.datasourceId,
@@ -203,7 +196,8 @@ export const precalcMetrics = async (
 };
 
 /**
- * Given a list of classIds, return a filter function that will filter out metrics that are not in the list
+ * Given a list of classIds, return a filter function that will
+ * filter out metrics that are not in the list
  * @param classIds
  */
 export const staleMetricsFilterFactory = (

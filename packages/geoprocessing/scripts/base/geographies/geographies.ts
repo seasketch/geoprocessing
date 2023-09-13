@@ -13,6 +13,7 @@ import { geographyConfig } from "../../../src/geographies/config";
  */
 export function readGeographies(filePath?: string) {
   // Start with default
+  // if planningAreaType is EEZ, then default to external geography for it
   let geos: Geographies = [];
 
   // Optional override
@@ -30,9 +31,7 @@ export function readGeographies(filePath?: string) {
         );
       }
     } catch (err: unknown) {
-      console.log(
-        `Datasource file not found at ${finalFilePath}, using default datasources`
-      );
+      console.log(`Geography file not found at ${finalFilePath}`);
       fs.ensureDirSync(path.dirname(geographyConfig.defaultSrcPath));
       // fallback to default
       return geos;

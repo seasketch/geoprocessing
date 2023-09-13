@@ -1,6 +1,5 @@
 import { TFunction } from "i18next";
 import {
-  Datasources,
   Datasource,
   datasourcesSchema,
   InternalVectorDatasource,
@@ -21,9 +20,6 @@ import {
   Package,
   packageSchema,
   geoprocessingConfigSchema,
-  getLandVectorDatasource as getGlobalLandVectorDatasource,
-  getEezVectorDatasource as getGlobalEezVectorDatasource,
-  getGlobalVectorDatasourceById,
   Project,
   projectSchema,
   Objective,
@@ -56,7 +52,7 @@ export interface ProjectClientInterface {
  */
 export class ProjectClientBase implements ProjectClientInterface {
   private _project: Project;
-  private _datasources: Datasources;
+  private _datasources: Datasource[];
   private _metricGroups: MetricGroups;
   private _objectives: Objectives;
   private _package: Package;
@@ -79,7 +75,7 @@ export class ProjectClientBase implements ProjectClientInterface {
   }
 
   /** Returns typed config from datasources.json */
-  public get datasources(): Datasources {
+  public get datasources(): Datasource[] {
     return this._datasources;
   }
 
@@ -152,21 +148,6 @@ export class ProjectClientBase implements ProjectClientInterface {
     datasourceId: string
   ): InternalRasterDatasource {
     return getInternalRasterDatasourceById(datasourceId, this._datasources);
-  }
-
-  /** Returns global VectorDatasource given datasourceId */
-  public getGlobalVectorDatasourceById(datasourceId: string) {
-    return getGlobalVectorDatasourceById(datasourceId, this._datasources);
-  }
-
-  /** Returns global land VectorDatasource */
-  public getGlobalLandVectorDatasource() {
-    return getGlobalLandVectorDatasource(this._datasources);
-  }
-
-  /** Returns global eez VectorDatasource */
-  public getGlobalEezVectorDatasource() {
-    return getGlobalEezVectorDatasource(this._datasources);
   }
 
   // OBJECTIVES //

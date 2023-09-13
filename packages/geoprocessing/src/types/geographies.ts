@@ -1,4 +1,3 @@
-import { polygonSchema, multipolygonSchema } from ".";
 import { z } from "zod";
 
 /**
@@ -7,10 +6,18 @@ import { z } from "zod";
 export const geographySchema = z.object({
   /** Unique name of the geography */
   geographyId: z.string(),
-  /** Optional unique id of the datasource containing geographic boundary */
+  /** ID of datasource containing geography boundary */
   datasourceId: z.string(),
   /** Display name for the geography */
   display: z.string(),
+  /** Optional, defines property to use to uniquely identify geography, if geography is within larger multi-record datasource */
+  geographyProperty: z.string().optional(),
+  /** Optional, defines property value that uniquely identifies geography, if geography is within larger multi-record datasource */
+  propertyValue: z.string().optional(),
+  /** Optional, defines external layer for visualizing the geography */
+  layerId: z.string().optional(),
+  /** Optional, sub-group ID. Useful when Example would be a 'primary' geography and 'secondary' or 'subregion' areas within it */
+  groupId: z.string().optional(),
 });
 
 export const geographiesSchema = z.array(geographySchema);

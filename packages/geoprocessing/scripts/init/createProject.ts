@@ -2,11 +2,12 @@ import { TemplateMetadata, copyTemplates } from "../template/addTemplate";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
-import { BBox, Package, projectSchema } from "../../src/types";
+import { BBox, Geography, Package, projectSchema } from "../../src/types";
 import util from "util";
 import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths";
-import { getEezCountryBbox } from "../datasources/eez_land_union_v3";
+import { getBbox } from "../global/datasources/mr-eez";
 import { $ } from "zx";
+import { globalDatasources } from "../../src/datasources/global";
 
 $.verbose = false;
 
@@ -187,7 +188,7 @@ export async function createProject(
   // Either lookup bbox of planning area by name or construct from user-provided
   const bbox: BBox = await (async () => {
     if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
-      const bbox = await getEezCountryBbox(metadata.planningAreaId);
+      const bbox = await getBbox(metadata.planningAreaId);
       if (!bbox)
         throw new Error(`Bounding box not for EEZ named ${metadata.name}`);
       return bbox;
@@ -223,6 +224,31 @@ export async function createProject(
     spaces: 2,
   });
   spinner.succeed("updated basic.json");
+
+  if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
+    spinner.start("updating geographies.json");
+
+    const eezDs = globalDatasources.find((ds) => ds.datasourceId === "mr-eez");
+
+    // Optionally assign initial geography
+    const geos: Geography[] = [
+      {
+        geographyId: "eez",
+        datasourceId: "mr-eez",
+        display: metadata.planningAreaName
+          ? metadata.planningAreaName
+          : metadata.planningAreaId,
+        geographyProperty: eezDs?.metadata?.idProperty,
+        propertyValue: metadata.planningAreaId,
+        groupId: "eez",
+      },
+    ];
+
+    await fs.writeJSONSync(`${projectPath}/project/geographies.json`, geos, {
+      spaces: 2,
+    });
+    spinner.succeed("updated geographies.json");
+  }
 
   spinner.start("add .gitignore");
   try {

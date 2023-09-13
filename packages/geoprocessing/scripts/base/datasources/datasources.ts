@@ -3,7 +3,6 @@ import path from "path";
 import {
   datasourcesSchema,
   Datasource,
-  Datasources,
   FeatureCollection,
   Polygon,
   MultiPolygon,
@@ -15,6 +14,7 @@ import {
   getJsonPath,
 } from "../../../src/datasources";
 import { isFeatureCollection } from "../../../src";
+import { globalDatasources } from "../../../src/datasources/global";
 
 /**
  * Manage datasources for a geoprocessing project
@@ -66,22 +66,7 @@ export async function createOrUpdateDatasource(
  */
 export function readDatasources(filePath?: string) {
   // Start with default datasources
-  let pds: Datasources = [
-    {
-      datasourceId: "global-clipping-osm-land",
-      geo_type: "vector",
-      url: "https://d3p1dsef9f0gjr.cloudfront.net/",
-      formats: ["subdivided"],
-      classKeys: [],
-    },
-    {
-      datasourceId: "global-clipping-eez-land-union",
-      geo_type: "vector",
-      url: "https://d3muy0hbwp5qkl.cloudfront.net",
-      formats: ["subdivided"],
-      classKeys: [],
-    },
-  ];
+  let pds: Datasource[] = globalDatasources as Datasource[];
   // Override datasources path
   const finalFilePath =
     filePath && filePath.length > 0
@@ -118,7 +103,7 @@ export function readDatasources(filePath?: string) {
   }
 }
 
-export function writeDatasources(pd: Datasources, filePath?: string) {
+export function writeDatasources(pd: Datasource[], filePath?: string) {
   const finalFilePath =
     filePath && filePath.length > 0
       ? filePath

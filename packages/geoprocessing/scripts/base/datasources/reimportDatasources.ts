@@ -1,6 +1,6 @@
 import { createOrUpdateDatasource, readDatasources } from "./datasources";
 import {
-  Datasources,
+  Datasource,
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
   ImportVectorDatasourceOptions,
@@ -41,7 +41,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
     /** string or regular expression to express with datasources to reimport, matching on datasourceId */
     matcher?: string[];
   }
-): Promise<Datasources> {
+): Promise<Datasource[]> {
   const {
     newDatasourcePath,
     newDstPath,
@@ -69,7 +69,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   // Process one at a time
   let failed = 0;
   let updated = 0;
-  let finalDatasources: Datasources = [];
+  let finalDatasources: Datasource[] = [];
   for (const ds of filteredDatasources) {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       try {

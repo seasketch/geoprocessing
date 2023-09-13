@@ -1,6 +1,6 @@
 import { readDatasources } from "./datasources";
 import {
-  Datasources,
+  Datasource,
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
   ImportVectorDatasourceOptions,
@@ -31,7 +31,7 @@ export async function publishDatasources<C extends ProjectClientBase>(
     /** string/regular expression matching on datasourceID or array of datasource IDs */
     matcher?: string | string[];
   } = {}
-): Promise<Datasources> {
+): Promise<Datasource[]> {
   const { newDatasourcePath, newDstPath, matcher } = extraOptions;
 
   const allDatasources = await readDatasources(newDatasourcePath);

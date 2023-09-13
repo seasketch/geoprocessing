@@ -1,4 +1,5 @@
 import { ProjectClientConfig } from "../../project";
+import { globalDatasources } from "../../datasources/global";
 
 const basicConfig: ProjectClientConfig = {
   basic: {
@@ -8,22 +9,7 @@ const basicConfig: ProjectClientConfig = {
     planningAreaType: "eez",
     externalLinks: {},
   },
-  datasources: [
-    {
-      datasourceId: "global-clipping-osm-land",
-      geo_type: "vector",
-      formats: ["subdivided"],
-      classKeys: [],
-      url: "https://d3p1dsef9f0gjr.cloudfront.net/",
-    },
-    {
-      datasourceId: "global-clipping-eez-land-union",
-      geo_type: "vector",
-      formats: ["subdivided"],
-      classKeys: [],
-      url: "https://d3muy0hbwp5qkl.cloudfront.net",
-    },
-  ],
+  datasources: globalDatasources,
   metricGroups: [
     {
       metricId: "boundaryAreaOverlap",

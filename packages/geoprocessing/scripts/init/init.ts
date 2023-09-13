@@ -7,7 +7,7 @@ import awsRegions from "aws-regions";
 import util from "util";
 import { getTemplateQuestion } from "../template/addTemplate";
 import { createProject, CreateProjectMetadata } from "./createProject";
-import { eezCountries } from "../datasources/eez_land_union_v3";
+import { eezColl } from "../global/datasources/mr-eez";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -22,9 +22,9 @@ async function init(gpVersion?: string) {
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
 
-  const countryChoices = eezCountries.features.map((eez) => ({
-    value: eez.properties.UNION,
-    name: eez.properties.UNION,
+  const eezChoices = eezColl.features.map((eez) => ({
+    value: eez.properties.GEONAME,
+    name: eez.properties.GEONAME,
   }));
 
   const templateQuestion = await getTemplateQuestion("starter-template");
@@ -129,7 +129,7 @@ async function init(gpVersion?: string) {
       type: "list",
       name: "planningAreaId",
       message: "What countries EEZ is this for?",
-      choices: countryChoices,
+      choices: eezChoices,
     },
     {
       when: (answers) => answers.planningAreaType === "eez",

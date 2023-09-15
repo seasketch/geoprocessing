@@ -22,9 +22,9 @@ export function readGeographies(filePath?: string) {
 
   const diskGeos = (() => {
     try {
-      const dsString = fs.readFileSync(finalFilePath).toString();
+      const geosString = fs.readFileSync(finalFilePath).toString();
       try {
-        return JSON.parse(dsString);
+        return JSON.parse(geosString);
       } catch (err: unknown) {
         throw new Error(
           `Unable to parse JSON found in ${finalFilePath}, fix it and try again`

@@ -52,6 +52,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   const allDatasources = await readDatasources(newDatasourcePath);
   const filteredDatasources = (() => {
     if (!matcher) {
+      // Filter out external datasources or support them
       return allDatasources;
     } else {
       const filteredDs = allDatasources.filter((ds) =>

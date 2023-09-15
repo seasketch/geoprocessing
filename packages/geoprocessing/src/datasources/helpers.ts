@@ -5,10 +5,12 @@ import {
   externalVectorDatasourceSchema,
   InternalRasterDatasource,
   ExternalRasterDatasource,
+  externalDatasourceSchema,
   internalRasterDatasourceSchema,
   externalRasterDatasourceSchema,
   Datasource,
   BaseImportDatasourceConfig,
+  internalDatasourceSchema,
 } from "../types";
 import { DataClass } from "../types";
 import path from "path";
@@ -26,6 +28,13 @@ export const classIdMapping = (classes: DataClass[]) => {
   );
 };
 
+export const isinternalDatasource = (
+  /** Datasource object */
+  ds: any
+): ds is Datasource => {
+  return internalDatasourceSchema.safeParse(ds).success;
+};
+
 export const isInternalVectorDatasource = (
   /** InternalVectorDatasource object */
   ds: any
@@ -33,18 +42,25 @@ export const isInternalVectorDatasource = (
   return internalVectorDatasourceSchema.safeParse(ds).success;
 };
 
-export const isExternalVectorDatasource = (
-  /** ExternalVectorDatasource object */
-  ds: any
-): ds is ExternalVectorDatasource => {
-  return externalVectorDatasourceSchema.safeParse(ds).success;
-};
-
 export const isInternalRasterDatasource = (
   /** InternalRasterDatasource object */
   ds: any
 ): ds is InternalRasterDatasource => {
   return internalRasterDatasourceSchema.safeParse(ds).success;
+};
+
+export const isExternalDatasource = (
+  /** Datasource object */
+  ds: any
+): ds is Datasource => {
+  return externalDatasourceSchema.safeParse(ds).success;
+};
+
+export const isExternalVectorDatasource = (
+  /** ExternalVectorDatasource object */
+  ds: any
+): ds is ExternalVectorDatasource => {
+  return externalVectorDatasourceSchema.safeParse(ds).success;
 };
 
 export const isExternalRasterDatasource = (

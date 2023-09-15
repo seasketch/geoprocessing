@@ -84,7 +84,7 @@ export const rasterDatasourceSchema = baseDatasourceSchema.merge(
 );
 
 /** Properties for external datasource */
-export const externalSourceSchema = z.object({
+export const externalDatasourceSchema = z.object({
   /** Url if external datasource */
   url: z.string(),
 });
@@ -96,7 +96,7 @@ export const internalImportSchema = z.object({
 });
 
 /** Timestamp properties to ease syncing with local/published datasource files */
-export const internalTimestampSchema = z.object({
+export const internalDatasourceSchema = z.object({
   /** Datasource creation timestamp  */
   created: z.string(),
   /** Datasource updated timestamp */
@@ -114,18 +114,20 @@ export const internalVectorImportSchema = internalImportSchema.merge(
 );
 
 export const internalVectorDatasourceSchema = vectorDatasourceSchema
-  .merge(internalTimestampSchema)
+  .merge(internalDatasourceSchema)
   .merge(internalVectorImportSchema);
 
-export const externalVectorDatasourceSchema =
-  vectorDatasourceSchema.and(externalSourceSchema);
+export const externalVectorDatasourceSchema = vectorDatasourceSchema.and(
+  externalDatasourceSchema
+);
 
 export const internalRasterDatasourceSchema = rasterDatasourceSchema
-  .merge(internalTimestampSchema)
+  .merge(internalDatasourceSchema)
   .merge(internalImportSchema);
 
-export const externalRasterDatasourceSchema =
-  rasterDatasourceSchema.and(externalSourceSchema);
+export const externalRasterDatasourceSchema = rasterDatasourceSchema.and(
+  externalDatasourceSchema
+);
 
 export const datasourceSchema = internalVectorDatasourceSchema
   .or(externalVectorDatasourceSchema)

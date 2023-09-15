@@ -3,12 +3,14 @@ import { Metric, Datasource, Geography } from "../../../src/types";
 import {
   isInternalRasterDatasource,
   isInternalVectorDatasource,
+  isinternalDatasource,
 } from "../../../src/datasources";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 import { readGeographies } from "../geographies/geographies";
 import { createOrUpdatePrecalcMetrics } from "./precalc";
 import { precalcVectorDatasource } from "./precalcVectorDatasource";
 import { precalcRasterDatasource } from "./precalcRasterDatasource";
+import { cloneDeep } from "lodash";
 
 /**
  * Precalc one or more datasources for a project, for one or more defined geographies
@@ -37,49 +39,47 @@ export async function precalcDatasources<C extends ProjectClientBase>(
     geographyMatcher,
   } = extraOptions;
 
-  // Get geographies to precalc
+  // Get geographies, filter out external
   const allGeographies = await readGeographies(newGeographyPath);
-
-  const filteredGeographies = (() => {
-    if (!geographyMatcher) {
-      return allGeographies;
-    } else {
-      const filteredDs = allGeographies.filter((ds) =>
-        geographyMatcher.includes(ds.datasourceId)
-      );
-      return filteredDs;
-    }
-  })();
-  if (filteredGeographies.length === 0) {
-    console.log("No geographies found, nothing to do");
-    return [];
+  // Also filter to user-defined matching
+  let matchingGeographies = cloneDeep(allGeographies);
+  if (geographyMatcher) {
+    matchingGeographies = matchingGeographies.filter((ds) =>
+      geographyMatcher.includes(ds.datasourceId)
+    );
   }
 
-  // Get datasources to precalc
-  const allDatasources = await readDatasources(newDatasourcePath);
-  const filteredDatasources = (() => {
-    if (!datasourceMatcher) {
-      return allDatasources;
-    } else {
-      const filteredDs = allDatasources.filter((ds) =>
-        datasourceMatcher.includes(ds.datasourceId)
-      );
-      return filteredDs;
-    }
-  })();
-  if (filteredDatasources.length === 0) {
-    console.log("No datasources found");
-    return [];
+  // Get datasources to precalc, filter out external
+  const allDatasources = (await readDatasources(newDatasourcePath)).filter(
+    (ds) => isinternalDatasource(ds)
+  );
+  // Also filter to user-defined matching
+  let matchingDatasources = cloneDeep(allDatasources);
+  if (datasourceMatcher) {
+    matchingDatasources = matchingDatasources.filter((ds) =>
+      datasourceMatcher.includes(ds.datasourceId)
+    );
   }
 
   // Process one at a time
   let failed = 0;
   let successful = 0;
   let finalMetrics: Metric[] = [];
+  let processed = {}; // Track processed datasource/geography combinations to avoid duplicates
 
-  // Run precalc on user-defined subset of datasources for all geographies
-  for (const ds of filteredDatasources) {
+  console.log("all datasources", allDatasources);
+  console.log("matching datasources", matchingDatasources);
+  console.log("all geographies", allGeographies);
+  console.log("matching geographies", matchingGeographies);
+
+  // Run precalc on matching subset of datasources for all geographies
+  for (const ds of matchingDatasources) {
     for (const geog of allGeographies) {
+      // Skip if already processed
+      if (processed[`${ds.datasourceId}-${geog.geographyId}`] === true) {
+        console.log("skippy");
+        continue;
+      }
       try {
         console.log(
           `Precalculating datasource ${ds.datasourceId} for geography ${geog.geographyId}`
@@ -90,10 +90,12 @@ export async function precalcDatasources<C extends ProjectClientBase>(
           geog,
           extraOptions
         );
+        // console.log(ds.datasourceId, geog.geographyId, metrics);
         finalMetrics = finalMetrics.concat(metrics);
         console.log(`${ds.datasourceId} precalc complete`);
         console.log(" ");
         successful += 1;
+        processed[`${ds.datasourceId}-${geog.geographyId}`] = true;
       } catch (e: unknown) {
         if (e instanceof Error) {
           console.log(e.message);
@@ -107,9 +109,13 @@ export async function precalcDatasources<C extends ProjectClientBase>(
     }
   }
 
-  // Run precalc on user-defined subset of geographies for all datasources
-  for (const geog of filteredGeographies) {
+  // Also run precalc on matching subset of geographies for all datasources, for completeness
+  for (const geog of matchingGeographies) {
     for (const ds of allDatasources) {
+      // Skip if already processed
+      if (processed[`${ds.datasourceId}-${geog.geographyId}`] === true) {
+        continue;
+      }
       try {
         console.log(
           `Precalculating datasource ${ds.datasourceId} for geography ${geog.geographyId}`

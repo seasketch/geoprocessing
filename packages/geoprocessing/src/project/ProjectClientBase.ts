@@ -28,6 +28,10 @@ import {
   getFlatGeobufFilename,
   ExternalVectorDatasource,
   isExternalVectorDatasource,
+  isInternalRasterDatasource,
+  isExternalRasterDatasource,
+  isinternalDatasource,
+  isExternalDatasource,
 } from "..";
 
 export interface ProjectClientConfig {
@@ -77,6 +81,14 @@ export class ProjectClientBase implements ProjectClientInterface {
   /** Returns typed config from datasources.json */
   public get datasources(): Datasource[] {
     return this._datasources;
+  }
+
+  public get internalDatasources(): Datasource[] {
+    return this._datasources.filter((ds) => isinternalDatasource(ds));
+  }
+
+  public get externalDatasources(): Datasource[] {
+    return this._datasources.filter((ds) => isExternalDatasource(ds));
   }
 
   /** Returns typed config from metrics.json */

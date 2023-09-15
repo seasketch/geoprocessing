@@ -1,9 +1,9 @@
-const defaultDstPath = "data/dist";
+// const defaultDstPath = "data/dist";
 
 /** Default file location, relative to project root */
-const defaultSrcPath = "./data/dist/precalc.json";
+const defaultSrcPath = "./project/precalc.json";
 
 export const precalcConfig = {
   defaultSrcPath,
-  defaultDstPath,
+  // defaultDstPath,
 };

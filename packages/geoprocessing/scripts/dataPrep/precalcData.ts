@@ -7,16 +7,25 @@ import { getProjectClient } from "../base/project/projectClient";
 
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
-const numDs = projectClient.datasources.length;
+const numDs = projectClient.internalDatasources.length;
 
 // Wrap in an IIFE to avoid top-level await
 void (async function () {
-  const precalcAnswers = await precalcWhichQuestion(numDs);
+  if (numDs === 0) {
+    console.error("No precalc-able datasources found, exiting");
+    process.exit();
+  }
+
+  // If there's only one datasource, jump straight to precalculating it
+  const precalcAnswers =
+    numDs === 1 ? { precalcWhich: "all" } : await precalcWhichDsQuestion(numDs);
 
   if (precalcAnswers.precalcWhich === "all") {
     await precalcDatasources(projectClient);
   } else {
-    const dsAnswers = await datasourcesQuestion(projectClient.datasources);
+    const dsAnswers = await datasourcesQuestion(
+      projectClient.internalDatasources
+    );
     await precalcDatasources(projectClient, {
       datasourceMatcher: dsAnswers.datasources,
     });
@@ -27,7 +36,30 @@ export interface PrecalcAnswers {
   precalcWhich: "list" | "all";
 }
 
-export async function precalcWhichQuestion(
+export async function precalcWhichDsQuestion(
+  numDs: number
+): Promise<Pick<PrecalcAnswers, "precalcWhich">> {
+  return inquirer.prompt<Pick<PrecalcAnswers, "precalcWhich">>([
+    {
+      type: "list",
+      name: "precalcWhich",
+      message: `Which datasources do you want to precalculate?`,
+      default: "list",
+      choices: [
+        {
+          value: "list",
+          name: "Let me choose from a list",
+        },
+        {
+          value: "all",
+          name: `All ${numDs} datasources (may take a while)`,
+        },
+      ],
+    },
+  ]);
+}
+
+export async function precalcWhichGeogsQuestion(
   numDs: number
 ): Promise<Pick<PrecalcAnswers, "precalcWhich">> {
   return inquirer.prompt<Pick<PrecalcAnswers, "precalcWhich">>([

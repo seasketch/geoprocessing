@@ -1,14 +1,11 @@
-import fs from "fs-extra";
 import area from "@turf/area";
 import {
-  FeatureCollection,
   ImportVectorDatasourceConfig,
   InternalVectorDatasource,
   Metric,
   Polygon,
   Geography,
 } from "../../../src/types";
-import { getJsonPath } from "../../../src/datasources";
 import {
   Feature,
   MultiPolygon,
@@ -42,7 +39,7 @@ export async function precalcVectorDatasource<C extends ProjectClientBase>(
   );
 
   console.log(
-    `Precalculating vector ${datasource.datasourceId} and geography ${geography.datasourceId}`
+    `Precalculating vector datasource ${datasource.datasourceId} and geography ${geography.datasourceId}`
   );
 
   // Create metrics and return to precalc.ts
@@ -69,10 +66,6 @@ export function genVectorMetrics(
   const geographyFeatureColl = readDatasourceGeojsonById(
     geography.datasourceId,
     vectorConfig.dstPath
-  );
-
-  console.log(
-    `Precalculating vector ${vectorConfig.datasourceId} and geography ${geography.datasourceId}`
   );
 
   // Creates record of all class keys present in OG features

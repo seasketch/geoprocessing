@@ -38,6 +38,10 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
     datasource,
     extraOptions.newDstPath
   );
+  console.log(
+    `Precalculating ${rasterConfig.measurementType}, for raster datasource ${rasterConfig.datasourceId} and geography ${geography.datasourceId}`
+  );
+
   const tempPort = 8080;
   const url = `${projectClient.dataBucketUrl(true, tempPort)}${getCogFilename(
     rasterConfig.datasourceId
@@ -66,10 +70,6 @@ export async function genRasterMetrics(
   const geographyFeatureColl = readDatasourceGeojsonById(
     geography.datasourceId,
     rasterConfig.dstPath
-  );
-
-  console.log(
-    `Precalculating ${rasterConfig.measurementType}, for raster ${rasterConfig.datasourceId} and geography ${geography.datasourceId}`
   );
 
   const rasterBbox: BBox = [raster.xmin, raster.ymin, raster.xmax, raster.ymax];

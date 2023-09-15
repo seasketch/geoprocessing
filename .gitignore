@@ -9,7 +9,7 @@ packages/geoprocessing/docs/api
 packages/geoprocessing/docs/storybook
 packages/geoprocessing/data/out
 .workspace.env
-packages/example-project/
+packages/example-project*/
 report.*
 test-projects
 **/.env

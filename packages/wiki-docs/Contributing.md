@@ -188,19 +188,27 @@ cd /PATH/TO/geoprocessing
 npm install # make sure all installed, and prepre is run doing a build
 cd packages
 node geoprocessing/dist/scripts/init/init.js # follow the tutorial if needed
-npm install # lerna will replace with symlink to sibling geoprocessing
+npm install
 ```
 
-Now follow the tutorial generate example sketches/features, run smoke tests, build, and deploy this project.
+Upon running install, as long as your version of geoprocessing in your example projects package.json matches the current version in `packages/geoprocess/package/json` then lerna will symlink your example project to use the sibline geoprocessing folder for its dependency.  You can confirm the symlink is in place with `ls -al packages/geoprocess/node_modules/@seasketch`.  If it's not then check your geoprocessing version, and run `npm install` again after changing.
 
-Once you've deployed your stack, you can plug this into seasketch, or if you want to do some testing/debugging of your report clients more directly against what you've deployed, you can combine it with running a local client dev server (see next section).
+Now follow the tutorial to generate example sketches/features, run smoke tests, build, and deploy this project.  If you deploy your stack, you can then import datasources, plug it into seasketch, etc.
+
+### Testing CLI commands
+
+You can also now do additional development in geoprocessing, such as to CLI commands, and test them with your example project.  Just make sure to you run `npm run prepare` in your geoprocessing folder first to transpile and bundle everything to dist (which is where project CLI commands run code from), or use `npm run watch` if your changes are limited to src folder, or `npm run watch:scripts` if your changes are limited to scripts folder.  This can speed up your development loop.
+
+### Testing Report Clients
+
+If you've deployed your example project, and you want to do some testing/debugging of your report clients more directly against it (outside of a seasketch iframe), you can run a local client dev server (see next section).
 
 Once you're done with your example project don't forget to cleanup:
 
 ```bash
 npm run destroy
 cd ..
-rm -rf 
+rm -rf example-project-foo
 ```
 
 ## Running local client dev server

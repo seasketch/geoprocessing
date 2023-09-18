@@ -28,16 +28,17 @@ import {
   getFlatGeobufFilename,
   ExternalVectorDatasource,
   isExternalVectorDatasource,
-  isInternalRasterDatasource,
-  isExternalRasterDatasource,
   isinternalDatasource,
   isExternalDatasource,
+  Geography,
+  geographiesSchema,
 } from "..";
 
 export interface ProjectClientConfig {
   basic: any;
   datasources: any;
   metricGroups: any;
+  geographies: any;
   objectives: any;
   package: any;
   geoprocessing: any;
@@ -58,6 +59,7 @@ export class ProjectClientBase implements ProjectClientInterface {
   private _project: Project;
   private _datasources: Datasource[];
   private _metricGroups: MetricGroups;
+  private _geographies: Geography[];
   private _objectives: Objectives;
   private _package: Package;
   private _geoprocessing: GeoprocessingJsonConfig;
@@ -66,6 +68,7 @@ export class ProjectClientBase implements ProjectClientInterface {
     this._project = projectSchema.parse(config.basic);
     this._datasources = datasourcesSchema.parse(config.datasources);
     this._metricGroups = metricGroupsSchema.parse(config.metricGroups);
+    this._geographies = geographiesSchema.parse(config.geographies);
     this._objectives = objectivesSchema.parse(config.objectives);
     this._package = packageSchema.parse(config.package);
     this._geoprocessing = geoprocessingConfigSchema.parse(config.geoprocessing);
@@ -83,12 +86,19 @@ export class ProjectClientBase implements ProjectClientInterface {
     return this._datasources;
   }
 
+  /** Returns internal datasources from datasources.json */
   public get internalDatasources(): Datasource[] {
     return this._datasources.filter((ds) => isinternalDatasource(ds));
   }
 
+  /** Return external datasources from datasources.json */
   public get externalDatasources(): Datasource[] {
     return this._datasources.filter((ds) => isExternalDatasource(ds));
+  }
+
+  /** Returns typed config from geographies.json */
+  public get geographies(): Geography[] {
+    return this._geographies;
   }
 
   /** Returns typed config from metrics.json */

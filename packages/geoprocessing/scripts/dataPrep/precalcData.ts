@@ -1,6 +1,9 @@
 import inquirer from "inquirer";
-import { Datasource } from "../../src";
-import { precalcDatasources } from "../base/datasources";
+import { Datasource, Geography } from "../../src";
+import {
+  PrecalcDatasourceOptions,
+  precalcDatasources,
+} from "../base/datasources";
 import { getProjectClient } from "../base/project/projectClient";
 
 // This is a standalone script used as a CLI command with a top-level function
@@ -8,74 +11,142 @@ import { getProjectClient } from "../base/project/projectClient";
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
 const numDs = projectClient.internalDatasources.length;
+const numGeos = projectClient.geographies.length;
 
-// Wrap in an IIFE to avoid top-level await
+// Wrap in an IIFE to use async/await
 void (async function () {
   if (numDs === 0) {
     console.error("No precalc-able datasources found, exiting");
     process.exit();
   }
 
-  // If there's only one datasource, jump straight to precalculating it
-  const precalcAnswers =
-    numDs === 1 ? { precalcWhich: "all" } : await precalcWhichDsQuestion(numDs);
-
-  if (precalcAnswers.precalcWhich === "all") {
-    await precalcDatasources(projectClient);
-  } else {
-    const dsAnswers = await datasourcesQuestion(
-      projectClient.internalDatasources
-    );
-    await precalcDatasources(projectClient, {
-      datasourceMatcher: dsAnswers.datasources,
-    });
+  if (numGeos === 0) {
+    console.error("No precalc-able geographies found, exiting");
+    process.exit();
   }
+
+  const subsetAnswer = await precalcSubsetQuestion();
+
+  let dsOptions: PrecalcDatasourceOptions = {};
+  if (["all", "both", "datasource"].includes(subsetAnswer.subset)) {
+    if (subsetAnswer.subset === "all") {
+      dsOptions.datasourceMatcher = ["*"];
+    } else {
+      // Ask user what they want to precalculate
+      const precalcDsAnswers = await precalcWhichDsQuestion(numDs);
+      if (precalcDsAnswers.precalcWhichDs === "list") {
+        const dsAnswers = await datasourcesQuestion(
+          projectClient.internalDatasources
+        );
+        dsOptions.datasourceMatcher = dsAnswers.datasources;
+      }
+    }
+  }
+
+  let geogOptions: PrecalcDatasourceOptions = {};
+  if (["all", "both", "geography"].includes(subsetAnswer.subset)) {
+    if (subsetAnswer.subset === "all") {
+      dsOptions.geographyMatcher = ["*"];
+    } else {
+      // Ask user what they want to precalculate
+      const precalcGeosAnswers = await precalcWhichGeosQuestion(numGeos);
+      console.log("precalcGeosAnswers", precalcGeosAnswers);
+      if (precalcGeosAnswers.precalcWhichGeos === "list") {
+        const geogAnswers = await geographiesQuestion(
+          projectClient.geographies
+        );
+        console.log("geogAnswers", geogAnswers);
+        geogOptions.geographyMatcher = geogAnswers.geographies;
+      }
+    }
+  }
+
+  // Then precalculate
+  await precalcDatasources(projectClient, { ...dsOptions, ...geogOptions });
 })();
 
-export interface PrecalcAnswers {
-  precalcWhich: "list" | "all";
+export interface PrecalcSubsetAnswer {
+  subset: string;
 }
 
-export async function precalcWhichDsQuestion(
-  numDs: number
-): Promise<Pick<PrecalcAnswers, "precalcWhich">> {
-  return inquirer.prompt<Pick<PrecalcAnswers, "precalcWhich">>([
+export async function precalcSubsetQuestion(): Promise<PrecalcSubsetAnswer> {
+  return inquirer.prompt<PrecalcSubsetAnswer>([
     {
       type: "list",
-      name: "precalcWhich",
-      message: `Which datasources do you want to precalculate?`,
-      default: "list",
+      name: "subset",
+      message: `Do you want to precalculate only a subset?`,
+      default: "datasource",
       choices: [
         {
-          value: "list",
-          name: "Let me choose from a list",
+          value: "datasource",
+          name: "Yes, by datasource",
+        },
+        {
+          value: "geography",
+          name: "Yes, by geography",
+        },
+        {
+          value: "both",
+          name: `Yes, by both`,
         },
         {
           value: "all",
-          name: `All ${numDs} datasources (may take a while)`,
+          name: "No, just precalculate everything (may take a while)",
         },
       ],
     },
   ]);
 }
 
-export async function precalcWhichGeogsQuestion(
+export interface PrecalcAnswers {
+  precalcWhichDs: "list" | "all";
+  precalcWhichGeos: "list" | "all";
+}
+
+export async function precalcWhichDsQuestion(
   numDs: number
-): Promise<Pick<PrecalcAnswers, "precalcWhich">> {
-  return inquirer.prompt<Pick<PrecalcAnswers, "precalcWhich">>([
+): Promise<Pick<PrecalcAnswers, "precalcWhichDs">> {
+  return inquirer.prompt<Pick<PrecalcAnswers, "precalcWhichDs">>([
     {
       type: "list",
-      name: "precalcWhich",
-      message: `Which datasources do you want to precalculate?`,
+      name: "precalcWhichDs",
+      message: `Which datasources do you want to precalculate? (will precalculate for all geographies)`,
       default: "list",
       choices: [
         {
           value: "list",
-          name: "Let me choose from a list",
+          name: "Let me choose",
         },
         {
           value: "all",
-          name: `All ${numDs} datasources (may take a while)`,
+          name: `All ${numDs} datasources`,
+        },
+      ],
+    },
+  ]);
+}
+
+export interface PrecalcGeosAnswers {
+  precalcWhichGeos: "list" | "all";
+}
+
+export async function precalcWhichGeosQuestion(
+  numDs: number
+): Promise<Pick<PrecalcAnswers, "precalcWhichGeos">> {
+  return inquirer.prompt<Pick<PrecalcAnswers, "precalcWhichGeos">>([
+    {
+      type: "list",
+      name: "precalcWhichGeos",
+      message: `Which geographies do you want to precalculate? (will precalculate for all datasources)`,
+      default: "list",
+      choices: [
+        {
+          value: "list",
+          name: "Let me choose",
+        },
+        {
+          value: "all",
+          name: `All ${numGeos} geographies`,
         },
       ],
     },
@@ -117,6 +188,46 @@ export async function getDatasourcesQuestion(datasources: Datasource[]) {
       ...datasources.map((ds) => ({
         value: ds.datasourceId,
         name: `${ds.datasourceId} - ${ds.geo_type}`,
+      })),
+    ],
+  };
+}
+
+export interface GeographiesAnswers {
+  geographies: string[];
+}
+
+export async function geographiesQuestion(
+  geographies: Geography[]
+): Promise<GeographiesAnswers> {
+  const geographiesQuestion = await getGeographiesQuestion(geographies);
+  const answer = await inquirer.prompt<GeographiesAnswers>([
+    geographiesQuestion,
+  ]);
+  return answer;
+}
+
+export async function getGeographiesQuestion(geographies: Geography[]) {
+  if (geographies.length === 0) {
+    console.error("No geographies found, exiting");
+    process.exit();
+  }
+
+  const geographyQuestion = {
+    type: "checkbox",
+    name: "geographies",
+    message:
+      "What geographies would you like to precalculate? (select as many as you want)",
+    choices: [],
+  };
+
+  return {
+    ...geographyQuestion,
+    choices: [
+      ...geographyQuestion.choices,
+      ...geographies.map((geog) => ({
+        value: geog.geographyId,
+        name: `${geog.geographyId} - ${geog.display}`,
       })),
     ],
   };

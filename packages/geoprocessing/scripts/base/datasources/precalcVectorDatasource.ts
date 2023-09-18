@@ -38,10 +38,6 @@ export async function precalcVectorDatasource<C extends ProjectClientBase>(
     extraOptions.newDstPath
   );
 
-  console.log(
-    `Precalculating vector datasource ${datasource.datasourceId} and geography ${geography.datasourceId}`
-  );
-
   // Create metrics and return to precalc.ts
   return genVectorMetrics(vectorConfig, geography);
 }

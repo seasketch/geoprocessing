@@ -16,8 +16,10 @@ export const geographySchema = z.object({
   propertyValue: z.string().optional(),
   /** Optional, defines external layer for visualizing the geography */
   layerId: z.string().optional(),
-  /** Optional, sub-group ID. Useful when Example would be a 'primary' geography and 'secondary' or 'subregion' areas within it */
+  /** Optional, sub-geography identifier. Useful when you have multiple groupings/levels of geographies and want to select for a specific group */
   groupId: z.string().optional(),
+  /** Optional, whether or not precalc should be run for this geography, defaults to true */
+  precalc: z.boolean().optional(),
 });
 
 export const geographiesSchema = z.array(geographySchema);

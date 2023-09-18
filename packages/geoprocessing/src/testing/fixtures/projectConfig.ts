@@ -10,6 +10,7 @@ const basicConfig: ProjectClientConfig = {
     externalLinks: {},
   },
   datasources: globalDatasources,
+  geographies: [],
   metricGroups: [
     {
       metricId: "boundaryAreaOverlap",

@@ -6,6 +6,9 @@ export function getProjectClient(projectPath: string) {
   const datasources = fs.readJsonSync(
     path.join(projectPath, "project", "datasources.json")
   );
+  const geographies = fs.readJsonSync(
+    path.join(projectPath, "project", "geographies.json")
+  );
   const metrics = fs.readJsonSync(
     path.join(projectPath, "project", "metrics.json")
   );
@@ -22,6 +25,7 @@ export function getProjectClient(projectPath: string) {
 
   return new ProjectClientBase({
     datasources,
+    geographies,
     metricGroups: metrics,
     objectives,
     basic,

@@ -38,9 +38,6 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
     datasource,
     extraOptions.newDstPath
   );
-  console.log(
-    `Precalculating ${rasterConfig.measurementType}, for raster datasource ${rasterConfig.datasourceId} and geography ${geography.datasourceId}`
-  );
 
   const tempPort = 8080;
   const url = `${projectClient.dataBucketUrl(true, tempPort)}${getCogFilename(

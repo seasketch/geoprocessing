@@ -7,6 +7,7 @@ import { globalDatasources } from "../../../src/datasources/global";
 // Config constructed just for working with global datasources
 const internalConfig: ProjectClientConfig = {
   datasources: globalDatasources,
+  geographies: [],
   basic: {
     bbox: [0, 0, 1, 1],
     planningAreaName: "undefined",

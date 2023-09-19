@@ -7,6 +7,7 @@ import area from "@turf/area";
 import fix from "../testing/fixtures/squareSketches";
 import { firstMatchingMetric } from "../metrics";
 import { testWithinPerc } from "../testing";
+import { roundDecimal } from "../helpers";
 
 describe("overlapFeatures", () => {
   test("function is present", () => {
@@ -27,9 +28,9 @@ describe("overlapFeatures", () => {
 
   test("overlapFeatures - sketch polygon fully inside - simplified precision", async () => {
     const metrics = await overlapFeatures("test", [fix.outer], fix.sketch1, {
-      simplifyPrecision: true,
+      truncate: true,
     });
-    expect(metrics[0].value).toBe(parseFloat(area(fix.sketch1).toPrecision(6)));
+    expect(metrics[0].value).toBe(roundDecimal(area(fix.sketch1), 6));
   });
 
   test("overlapFeatures - sketch multipolygon fully inside", async () => {

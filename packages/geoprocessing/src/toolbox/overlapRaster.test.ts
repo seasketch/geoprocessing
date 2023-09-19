@@ -58,7 +58,7 @@ describe("overlapRaster test", () => {
     const raster = await parseGeoraster(
       [
         [
-          [1, 2323232],
+          [1, 0.0023456],
           [1, 1],
         ],
       ],
@@ -71,9 +71,11 @@ describe("overlapRaster test", () => {
         pixelHeight: 10,
       }
     );
-    const metrics = await overlapRaster("test", raster, fix.topRightPoly, true);
+    const metrics = await overlapRaster("test", raster, fix.topRightPoly, {
+      truncate: true,
+    });
     expect(metrics.length).toBe(1);
-    expect(metrics[0].value).toBe(2323230); // Not 2323232
+    expect(metrics[0].value).toBe(0.002346);
   });
 
   test("overlapRaster - whole raster sum should be 5", async () => {

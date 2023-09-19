@@ -5,6 +5,7 @@ import {
   chunk,
   clip,
   clipMultiMerge,
+  roundDecimal,
 } from "../helpers";
 import { createMetric } from "../metrics";
 import { featureCollection, MultiPolygon } from "@turf/helpers";
@@ -20,8 +21,8 @@ interface OverlapFeatureOptions {
   /** If sketch collection, will include its child sketch metrics in addition to collection metrics, defaults to true */
   includeChildMetrics?: boolean;
   sumProperty?: string;
-  /** Simplifies results to 6 significant digits to avoid floating pt arithmetric differences, defaults to false */
-  simplifyPrecision?: boolean;
+  /** Truncates results to 6 digits, defaults to false */
+  truncate?: boolean;
 }
 
 // ToDo: support
@@ -90,9 +91,7 @@ export async function overlapFeatures(
     return createMetric({
       metricId,
       sketchId: curSketch.properties.id,
-      value: newOptions.simplifyPrecision
-        ? parseFloat(sketchValue.toPrecision(6))
-        : sketchValue,
+      value: newOptions.truncate ? roundDecimal(sketchValue, 6) : sketchValue,
       extra: {
         sketchName: curSketch.properties.name,
       },
@@ -110,9 +109,7 @@ export async function overlapFeatures(
         createMetric({
           metricId,
           sketchId: sketch.properties.id,
-          value: newOptions.simplifyPrecision
-            ? parseFloat(sumValue.toPrecision(6))
-            : sumValue,
+          value: newOptions.truncate ? roundDecimal(sumValue, 6) : sumValue,
           extra: {
             sketchName: sketch.properties.name,
             isCollection: true,

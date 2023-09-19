@@ -1,12 +1,19 @@
 import { v4 as uuid } from "uuid";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
+import {
+  isMetricArray,
+  isMetricPack,
+  packMetrics,
+  unpackMetrics,
+} from "../metrics";
+import cloneDeep from "lodash/cloneDeep";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Credentials": true,
-  // Serve stale while revalidating cache if < 24 hours old, don't revalidate
-  // if < 5 minutes old
+  // Serve stale while revalidating cache if < 24 hours old
+  // don't revalidate if < 5 minutes old
   "Cache-Control": "max-age=30, stale-while-revalidate=86400",
 };
 
@@ -32,9 +39,15 @@ export enum GeoprocessingTaskStatus {
   Failed = "failed",
 }
 
+/**
+ * Task model responsible for managing task results and estimates in DynamoDB
+ */
 export default class TasksModel {
+  /** task table */
   table: string;
+  /** task estimate table */
   estimatesTable: string;
+  /** database client */
   db: DynamoDB.DocumentClient;
 
   constructor(
@@ -75,6 +88,7 @@ export default class TasksModel {
 
   async create(
     service: string,
+    /** Cache key */
     id?: string,
     correlationId?: string,
     wss?: string
@@ -131,6 +145,12 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
+    // Check for metrics and pack them before inserting into DB
+    const dataToStore = cloneDeep(results);
+    if (dataToStore.metrics && isMetricArray(dataToStore.metrics)) {
+      const packed = packMetrics(dataToStore.metrics);
+      dataToStore.metrics = packed;
+    }
     await this.db
       .update({
         TableName: this.table,
@@ -146,7 +166,7 @@ export default class TasksModel {
           "#duration": "duration",
         },
         ExpressionAttributeValues: {
-          ":data": results,
+          ":data": dataToStore,
           ":status": task.status,
           ":duration": task.duration,
         },
@@ -294,7 +314,17 @@ export default class TasksModel {
           },
         })
         .promise();
-      return response.Item as GeoprocessingTask;
+
+      const result = response.Item as GeoprocessingTask;
+      // Check for metrics and unpack them before returning
+      if (
+        result.data &&
+        result.data.metrics &&
+        isMetricPack(result.data.metrics)
+      ) {
+        result.data.metrics = unpackMetrics(result.data.metrics);
+      }
+      return result;
     } catch (e) {
       return undefined;
     }

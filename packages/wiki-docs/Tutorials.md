@@ -1,4 +1,4 @@
-These tutorials will teach you the fundamentals of creating and deploying a `geoprocessing` project. They expect you have a basic working knowledge of your computer, command line interfaces, and web application development.  There is also a limit to what the framework can do out of the box and at some point you will likely need to extend it to create custom reports.  What follows is a short list of resources to help you:
+These tutorials will teach you the fundamentals of creating and deploying a seasketch `geoprocessing` project. They expect you have a basic working knowledge of your computer, command line interfaces, and web application development.  There is also a limit to what the framework can do out of the box and at some point you will likely need to extend it to create custom reports.  What follows is a short list of resources to help you:
 
 * [Git and Github](https://www.youtube.com/watch?v=RGOj5yH7evk)
 * [Node JS](https://www.freecodecamp.org/news/what-is-node-js/) development
@@ -30,8 +30,8 @@ These tutorials will teach you the fundamentals of creating and deploying a `geo
 * [Debugging](#debugging)
 * [Upgrading](#upgrading)
 * [Subdividing Large Datasets](#subdividing-large-datasets)
-* [Use Docker Geoprocessing Workspace](#use-docker-geoprocessing-workspace)
 * [Advanced Storybook Usage](#advanced-storybook-usage)
+* [Passing Extra Parameters To Functions](#passing-extra-parameters-to-functions)
 
 # Assumptions
 
@@ -61,10 +61,152 @@ Web browser:
 
 * Chrome is the most common but Firefox, Safari, Edge can also work.  Their developer tools will all be a little different.
 
-## MacOS
+## Install Options
+
+You have 3 options for how to develop geoprocessing projects
+
+1. Github Codespace
+    * Github provides a server running Ubuntu Linux, pre-configured to develop your geoprocessing project.  Your local VSCode editor connects to it.
+    * Best for: beginners trying things out
+    * Pros
+      * Easiest to get started.  The codespace is managed by Github and connection to VSCode running locally is seamless.
+    * Cons
+      * Because the docker environment is completely in "the cloud", there are different limitations for bringing datasets into your environment.  Syncing with network drives like Box and Google Drive is not yet solved but may be possible.  Best-suited for projects utilizing external datasources, or reasonably sized files that can be kept directly in the repository.
+2. Local Docker environment
+    * Docker provides a sandboxed Ubuntu Linux environment on your local computer, setup specifically for geoprocessing projects.
+    * Best for: intermediate to power users doing development every day
+    * Pros
+      * Provides a fully configured environment, with installation of many of the third-party dependencies already take care of.
+      * Docker workspace is isolated from your host operating system.  You can remove or recreate these environment as needed.
+      * You can work completely offline once you are setup.
+    * Cons
+      * You will need to get comfortable with Docker Desktop software.
+      * Docker is slower than running directly on your system (maybe 30%)
+      * Syncing data from network drives like Box into the Docker container is more challenging.
+3. MacOS Bare Metal / Windows WSL
+    * All geoprocessing dependencies are installed and maintained directly by you on your local computer operating system.  For MacOS this means no virtualization is done.  For Windows, this means running Ubuntu via WSL2 aka the Windows Subsystem for Linux.
+    * Best for - power user.
+    * Pros - fastest speeds because you are running without virtualization (aka bare metal)
+    * Cons - prone to instability and issues due to progression of dependency versions or operating system changes. Difficult to test and ensure stable support for all operating systems and processors (amd64, arm64).
+
+Choose an option and follow the instructions below to get started.  You can try out different options over time.
+
+## If Install Option #1 - Github Codespace
+
+* Install [VS Code](https://code.visualstudio.com)
+* Setup or log in to your [Github account](https://github.com/)
+
+If you are a developer on the SeaSketch team:
+
+* You will work directly with this [devcontainer repository](`https://github.com/seasketch/geoprocessing-devcontainer`).  Skip to the next section.
+
+If you are a developer independent of seasketch:
+
+* You will need to create your own devcontainer repository in your own Github user account, or your own organization.
+* Go to this [devcontainer repository](https://github.com/seasketch/geoprocessing-devcontainer-tpl).
+* Click the green `Use this template` button and `Create a new repository`.
+
+![Create from template](img/CreateFromTemplate.jpg "Create from template")
+
+* You can call this repository `geoprocessing-devcontainer`.  And if you create it under a Github organization, then everyone in the organization will be able to utilize it.
+
+Now you're ready to setup codespaces for this devcontainer:
+
+* Configure Github secrets for all environment variables your codespace will need for accessing POEditor and Amazon Web Services.
+  * Go to your [Github codespace settings](https://github.com/settings/codespaces)
+  * Define each of the following Codespaces secrets found in the screenshot.
+  * your POEditor API token you can find here - https://poeditor.com/account/api.  If you don't have one, then follow the instructions to [create your own](#setup-poeditor-as-an-independent-developer)
+  * You can leave your AWS credentials blank until you set them up in a later tutorial when you want to deploy your project.
+
+![Add Secrets](img/AddSecrets.jpg "Add Secrets")
+
+* Browse to `https://github.com/seasketch/geoprocessing-devcontainer`
+* Click the green `Code` button, then the `Codespaces` tab, then `New with options...`
+
+![Add Codespace](img/AddCodespace.jpg "Add Codespace")
+
+* Accept all defaults, except choose a Machine type of `4-core` which provides the minimum 8GB of ram needed.  This codespace can be run for 30 hours per month for free, and will cost $0.36 per hour after that.  See [Github codespace pricing](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces) for more information.
+
+![Configure Codespace](img/ConfigCodespace.jpg "Configure Codespace")
+
+* It will automatically attempt to open your local VSCode editor and connect it to the codespace.  You will be prompted to allow this to happen.
+
+## If Install Option #2 - Local Docker Environment
 
 * Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for either Apple chip or Intel chip as appropriate to your system and make sure it's running.
   * If you don't know which you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`
+* Install [VS Code](https://code.visualstudio.com) and open it
+* Clone the geoprocessing devcontainer repository to your system
+
+```bash
+git clone https://github.com/seasketch/geoprocessing-devcontainer
+```
+
+* Open the geoprocessing-devcontainer folder in VSCode
+  * `File` -> `Open Folder` -> geoprocessing-devcontainer folder
+
+* If you are prompted to install suggested extensions, then do so, otherwise go to the Extension panel and install the following:
+  * Remote Development
+  * Dev Containers
+  * Docker
+  * Remote Explorer
+* Once you have DevContainer support, you should be prompted to ”Reopen folder to develop in a container”.  <b>*Do not do this yet.*</b>
+* Under the `.devcontainer/local-dev` folder, make a copy of the `.env.template` file and rename it to `.env`.
+  * Fill in your POEditor API token for you account, which you can find here - https://poeditor.com/account/api.  If you don't have one, then follow the instructions to [create your own](#setup-poeditor-as-an-independent-developer).
+* If you have a data folder to mount into the docker container from your host operating system, edit the `.devcontainer/local-dev/docker-compose.yml` file and uncomment the volume below this comment
+  * `# Bound host volume for Box data folder`
+  * The volume is preset to bind to your Box Sync folder in you home directory but you can change it to any path in your operating system where your data resides for all your projects.
+* To start the devcontainer at any time
+  * `Cmd-Shift-P` to open command palette
+  * type “Reopen in container” and select the Dev Container command to do so.
+  * VSCode will reload, pull the latest `geoprocessing-workspace` docker image, run it, and start a remote code experience inside the container.  
+* Once container starts
+  * It will automatically clone the geoprocessing repository into your environment under `/workspaces/geoprocessing`, and then run `npm install` to install all dependencies.  Wait for this process to finish which can take up to 3-4 minutes the first time.
+  * `Ctrl-J` will open a terminal inside the container.
+  * Navigate to geoprocessing and verify tests run successfully.
+    * `cd /workspaces/geoprocessing`
+    * `npm run test`
+
+If success, then you're now ready to create a new geoprocessing project in your devcontainer environment.
+
+* To stop devcontainer at any time
+  * `Cmd-Shift-P` to open command palette and type `“DevContainers: Rebuild and Reopen locally”` to find command and hit Enter.
+  * Choose `Local Workspace`
+  * Your devcontainer will now bootstrap, downloading the geoprocessing docker image and installing everything.
+* Notice the bottom left blue icon in your vscode window.  It may say `Opening remote connection` and eventually will say `Dev Container: Geoprocessing`.  This is telling you that this VSCode window is running in a devcontainer environment.
+* To exit your devcontainer:
+  * Click the blue icon in the bottom left, and click `Reopen locally`.  This will bring VSCode back out of the devcontainer session.
+* To delete a devcontainer:
+  * This is often the easiest way to "start over" with your devctonainer.
+  * First, make sure you've pushed all of your code work to Github.
+  * Make sure you stop your active VSCODE devcontainer session.
+  * Open the Remote Explorer panel in the left sidebar.
+  * You can right-click and delete any existing devcontainers and volumes to start over.
+  * You can also see and delete them from the Docker Desktop app, but it might not be obvious which containers and volumes are which.  The VSCode Remote Explorer window gives you that context.
+
+![Manage Devcontainers](img/ManageDevcontainers.jpg "Manage Devcontainers")
+
+* To upgrade your devcontainer:
+  * The devcontainer settings in this repository may change/improve over time.  You can always pull the latest changes for your `geoprocessing-devcontainer` repository, and then `Cmd-Shift-P` to open command palette and type `“DevContainers: Rebuild and Reopen locally”`.
+* To upgrade the `geoprocessing-workspace` Docker image
+  * This devcontainer builds on the `geoprocessing-workspace` Docker image published at [Docker Hub](https://hub.docker.com/r/seasketch/geoprocessing-workspace/tags).  It will always install the latest version of this image when you setup your devcontainer for the first time.
+  * It is up to you to upgrade it after the initial installation.  The most likely situation is:
+    * You see some changes in the [Changelog](https://github.com/seasketch/docker-gp-workspace/blob/main/Changelog.md) that you want to utilize.
+    * You are upgrading the `geoprocessing` library for your project to a newer version and it requires additional software that isn't in your current devcontainer.  This situation should be flagged in the geoprocessing [changelog](https://github.com/seasketch/geoprocessing/blob/dev/CHANGELOG.md).
+  * In both cases you should be able to simply update your docker image to the latest.  The easiest way to do this is to:
+    * Push all of your unsaved work in your devcontainer to Github.  This is in case the Docker `named volume` where your code lives (which is separate from the devcontainer) is somehow lost.  There are also ways to make a backup of a named volume and recover it if needed but that is an advanced exercise not discussed at this time.
+    * Stop your devcontainer session
+    * Go to the `Images` menu in Docker Desktop, finding your `seasketch/geoprocessing-workspace`.
+    * If it shows as "IN USE" then switch to the `Containers` menu and stop all containers using `seasketch/geoprocessing-workspace`.
+    * Now switch back to `Images` and pull a new version of the `seasketch/geoprocessing-image` by hovering your cursor over the image, clicking the 3-dot menu on the right side and the clicking `Pull`.   This will pull the newest version of this image.
+    * Once complete, you should be able to restart your devcontainer and it will be running the latest `geoprocessing-workspace`.
+
+## Option #3 - MacOS Bare Metal / Windows WSL
+
+### MacOS
+
+* Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+  * For MacOS, choose either Apple chip or Intel chip as appropriate to your system and make sure it's running.  If you don't know which you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`.
 * Install [Node JS](https://nodejs.org/en/download/) >= v16.0.0
   * [nvm](https://github.com/nvm-sh/nvm) is great for this, then `nvm install v16`.  May ask you to first install XCode developer tools as well which is available through the App Store or follow the instructions provided when you try to install nvm.
   * Then open your Terminal app of choice and run `node -v` to check your node version
@@ -80,9 +222,9 @@ Web browser:
 * Create a free Github account if you don't have one already
   * Set your git username
 
-## Windows
+### Windows
 
-For Windows, your `geoprocessing` project and the underlying code run in a Docker container running Ubuntu Linux.  This is done using the Windows Subsystem for Linux (WSL2) so performance is actually quite good.  Docker Desktop and VSCode both know how to work seamlessly with WSL2.  Some of the building blocks you will install in Windows (Git, AWSCLI) and link them into the Ubuntu Docker container.  The rest will be installed directly in the Ubuntu Docker container.
+For Windows, you won't actually be running bare metal.  your `geoprocessing` project and the underlying code run in a Docker container running Ubuntu Linux.  This is done using the Windows Subsystem for Linux (WSL2) so performance is actually quite good.  Docker Desktop and VSCode both know how to work seamlessly with WSL2.  Some of the building blocks you will install in Windows (Git, AWSCLI) and link them into the Ubuntu Docker container.  The rest will be installed directly in the Ubuntu Docker container.
 
 In Windows:
 
@@ -106,9 +248,9 @@ In Ubuntu:
 
 ## Final Steps
 
-If you haven't already, establish the [username](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git?platform=mac) and email address git should associate with your commits
+Whichever option you chose, if you haven't already, establish the [username](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git?platform=mac) and email address git should associate with your commits.
 
-You can set these per repository, or set them globall on your system for all repositories and override them as needed.  Here's the commands to set globally
+You can set these per repository, or set them globall on your system for all repositories and override them as needed.  Here's the commands to set globally for your environment.
 
 ```bash
 git config --global user.name "Your Name"
@@ -131,19 +273,21 @@ At this point your system is ready for you to `create a new project`, or `setup 
 
 This use case is where a geoprocessing project already exists, but it was developed on a different computer.
 
+First, clone your existing geoprocessing project to your work environment, whether this is in your codespace, local docker devcontainer, Windows WSL, or bare metal on your operating system.
+
 ## Link your source data
 
 1. figure out [which option](#link-project-data) was used to bring data into your geoprocessing project, and follow the steps to set it up.
 
 * Option 1, you're good to go, the data should already be in `data/src` and src paths in `project/datasources.json` should have relative paths pointing into it.
 * Option 2, Look at `project/datasources.json` for the existing datasource paths and if your data file paths and operating system match you may be good to go.  Try re-importing your data as below, and if it fails consider migrating to Option 1 or 3.
-* Option 3, you'll just need to symlink the `data/src` project directory to your data.  Make sure you point it to the right level of your data folder.  Check the src paths in `project/datasources.json`.  If for example the source paths start with `data/src/Data_Received/...` and your data directory is at `/Users/alex/Library/CloudStorage/Box-Box/ProjectX/Data_Received`, you want to create your symlink as such
+* Option 3, if you're running a devcontainer you'll need to have made your data available in workspace by mounting it from the host operating system via docker-compose.yml (see installation tutorial) or have somehow synced or downloaded it directly to your container.  Either way, you then just need to symlink the `data/src` directory in your project to your data.  Make sure you point it to the right level of your data folder.  Check the src paths in `project/datasources.json`.  If for example the source paths start with `data/src/Data_Received/...` and your data directory is at `/Users/alex/Library/CloudStorage/Box-Box/ProjectX/Data_Received`, you want to create your symlink as such
 
 ```bash
 ln -s /Users/alex/Library/CloudStorage/Box-Box/ProjectX data/src
 ```
 
-Assuming `data/src` is now populated, you need to ensure everything is in order
+Assuming `data/src` is now populated, you need to ensure everything is in order.
 
 2.Reimport your data
 
@@ -161,8 +305,8 @@ If all is well, you should see no error, and `data/dist` should be populated wit
 
 But what if git changes show a lot of red and green?
 
-* You should look closer at what's happening.  If parts of the file are being re-ordered, that may just be because Javascript is being a little bit different in how it generates JSON files from the other computer.
-* If you are seeing changes to your keyStats values however (area, sum, count), then your datasources may be different from the last person that ran it.  You will want to make sure you aren't using an outdated older version.  If you are using an updated more recent version, then convince yourself the changes are what you expect, for example total area increases or decreases.
+* You should look closer at what's happening.  If parts of the smoke test output (examples directory JSON files) are being re-ordered, that may just be because Javascript is being a little bit different in how it generates JSON files from another computer that previously ran the tests.
+* If you are seeing changes to your keyStats values in datasources.json (area, sum, count), then your datasources may be different from the last person that ran it.  You will want to make sure you aren't using an outdated older version.  If you are using an updated more recent version, then convince yourself the changes are what you expect, for example total area increases or decreases.
 
 What if you just can't your data synced properly, and you just need to move forward?
 
@@ -175,6 +319,55 @@ What if you just can't your data synced properly, and you just need to move forw
 Assuming [initial system setup](#initial-system-setup) is complete.
 
 This tutorial now walks through generating a new geoprocessing project codebase and committing it to Github.
+
+## Create Github Repository
+
+First, we'll establish a remote place to store your code.
+
+* [Create a new Github repository](https://github.com/new) called `fsm-reports-test` (you can pick your own name but the tutorial will assume this name). When creating, do not initialize this repository with any files like a README.
+* In your VSCode terminal, make sure you are in your projects top-level directory.  A shorthand way to do this is `cd ~/src/fsm-reports-test`.
+
+### If running codespace (Install Option 1)
+
+When developing within a codespace, you need to give it permission to read and write files from other repositories.  You should have VSCode open and connected to your devcontainer codespace, with no outstanding uncommitted work.  Then do the following:
+
+* In VSCode, edit the .devcontainer/devcontainer.json and add your new geoprocessing project repository `[your_organization_or_username]/fsm-report-test` to the list.  You will do this for each geoprocessing project you create and maintain in this devcontainer, which can be many.
+* Commit and push these changes.
+
+![Workspace Permissions](img/WorkspacePermissions.jpg "Workspace Permissions")
+
+At this point, you need to close your VSCode codespace session and `delete` your existing codespace.  Wait at least one minute for the codespace to be fully delete.  Then recreate a new codespace and it will allow you to enable the new write permissions to your geoprocessing project repository.  It's unfortunate that you need to delete your codespace and recreate it for you to be prompted to enable these permissions, hopefully it will be made simpler in the future.  You can read more [here](https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces#authorizing-requested-permissions)
+
+## Final Steps
+
+Now enter the following commands to establish your project as a git repository, connect it to your Github repository you created as a remote called "origin", and finally push your code up to origin.
+
+```bash
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/PUT_YOUR_GITHUB_ORG_OR_USERNAME_HERE/fsm-reports-test.git
+git push -u origin main
+```
+
+It may ask you if it can use the Github extension to sign you in using Github.  It will open a browser tab and communicate with the Github website.  If you are already logged in there, then it should be done quickly, otherwise it may have you log-in to Github.
+
+You should eventually see your code commit proceed in the VSCode terminal.  You can then browse to your Github repository and see that your first commit is present at https://github.com/[YOUR_GITHUB_ORG_OR_USERNAME]/foo-reports
+
+After this point, you can continue using git commands right in the terminal to stage code changes and commit them, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
+
+## If running devcontainer or codespace (Install Option 1 and 2)
+
+* Ensure your VSCode workspace is connected to your devcontainer
+* You can now create as many geoprocessing projects as you want under `/workspaces` and they will persist as long as the associated docker volume is maintained.  Each project you create should be backed by a Github repository which you should regularly commit your code to in order to ensure it's not lost.
+
+To get started:
+
+* Open a terminal with Ctrl-J if not already open
+* `cd /workspaces`
+
+## If Running Bare Metal (Install Option 3)
 
 Windows:
 
@@ -194,6 +387,8 @@ MacOS:
 * Open a terminal in VSCode with `Command-J` or by clicking Terminal -> New Terminal
 * Create a directory to put your source code and change to that directory
   * `mkdir -d src && cd src`
+
+## Final Steps (All Install Options)
 
 Now we'll create a new project using `geoprocessing init`.
 
@@ -305,6 +500,18 @@ The reason you will need to define a bounding box is so that any preprocessing o
 # Open in VSCode Workspace and Explore Structure
 
 Next, to take full advantage of VSCode you will need to open your new project and establish it as a workspace.
+
+## If Running Devcontainer or Codespace (Install Option 1 and 2)
+
+Once you have more than one folder under `/workspaces` backed by a git repository, VSCode will be default to a `multi-root` workspace.
+
+For the best experience, you will want open a single workspace in your VSCode for a single folder in your devcontainer.
+
+`File` -> `Open folder` -> /workspaces/fsm-report-test
+
+VSCode should now reopen the under this new workspace, using the existing devcontainer, and you're ready to go.
+
+## If Running Bare Metal (Install Option 3)
 
 Type `Command-O` on MacOS or `Ctrl-O` on Windows or just click `File`->`Open` and select your project under `[your_username]/src/fsm-reports-test`
 
@@ -450,30 +657,6 @@ If you're still not sure try some of the following:
 * Run your smoke tests, see if they pass
 * When was the last time your build did succeed?  You can be sure the error is caused by a change you made since then either in your project code, by upgrading your geoprocessing library version and not migratin fully, or by changing something on your system.
 * You can stash your current changes or commit them to a branch so they are not lost.  Then sequentially check out previous commits of the code until you find one that builds properly.  Now you know that the next commit cause the build error.
-
-## Commit Initial Code To Github
-
-Now we'll establish a remote place to store your code as a checkpoint and to allow you to collaborate on it with others.
-
-* [Create a new Github repository](https://github.com/new) called `fsm-reports-test` (you can pick your own name but the tutorial will assume this name). When creating, do not initialize this repository with any files like a README.
-* In your VSCode terminal, make sure you are in your projects top-level directory.  A shorthand way to do this is `cd ~/src/fsm-reports-test`.
-
-Now enter the following commands to establish your project as a git repository, connect it to your Github repository you created as a remote called "origin", and finally push your code up to origin.
-
-```bash
-git init
-git add .
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/PUT_YOUR_GITHUB_ORG_OR_USERNAME_HERE/fsm-reports-test.git
-git push -u origin main
-```
-
-It may ask you if it can use the Github extension to sign you in using Github.  It will open a browser tab and communicate with the Github website.  If you are already logged in there, then it should be done quickly, otherwise it may have you log-in to Github.
-
-You should eventually see your code commit proceed in the VSCode terminal.  You can then browse to your Github repository and see that your first commit is present at https://github.com/[YOUR_GITHUB_ORG_OR_USERNAME]/foo-reports
-
-After this point, you can continue using git commands right in the terminal to stage code changes and commit them, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
 
 # Link Project Data
 
@@ -815,7 +998,6 @@ Then `npm run translation:publish` to push the new/edited english strings to POE
 
 ![POEditor Context](img/PoeditorContext.png "POEditor Context")
 
-
 with Someone will then need to translate the strings using the POEditor service for each relevant language.
 
 ## Importing Translations from POEditor
@@ -1028,17 +1210,15 @@ Expected cost: [free](https://aws.amazon.com/free) to a few dollars per month.  
 * Create an Amazon [AWS account] such that you can login and access the main AWS Console page (https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
 * Create an AWS IAM [admin account](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html).  This is what you will use to manage projects.
 
-Then install `awscli`, which will allow you to deploy your project.
+### AWSCLI
 
-## AWSCLI on MacOS
+If you are using a Docker devcontainer or Github codespace to develop reports you should already have access to the `aws` command.  But if you are running directly on your host operating system you will need to install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) it with your IAM account credentials.
 
-* Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) it with your IAM account credentials.
+## Extra steps for Windows
 
-## AWSCLI on Windows
+Windows you have the option of installing [awscli for Windows](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and then exposing your credentials in your Ubuntu container.  This allows you to manage one set of credentials.
 
-Install [awscli for Windows](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). This should establish a new or default AWS profile with admin credentials and configure it for use with your Windows shell environment.
-
-Assuming your username is `alex`, confirm you now have the following files under Windows.
+Assuming your username is `alex`, once you've installed awscli in Windows, confirm you now have the following files under Windows.
 
 ```bash
 C:\Users\alex\.aws\credentials
@@ -1176,7 +1356,233 @@ If your sketch class is a collection then you only need to assign it a report cl
 
 This should give you the sense that you can create different report clients for different sketch classes within the same project.  Or even make reports for sketch collections completely different from reports for individual sketches.
 
+# Updating reports
+
+Over time you will want to make changes to your reports.  Here's some best practices for doing that.
+
+## Updating Datasource
+
+* When updating a datasource, be sure to take it all the way through the process so that there's no confusion about which step you are on.  It's easy to leave things in an incomplete state without it being obvious.
+  * Edit/update your data in data/src
+  * Run `npm run reimport:data`, choose your source datasource and choose to not publish right away.  `data/dist` will now contain your updated datasource file(s).
+  * `npm test` to run your smoke tests which read data from `data/dist` and make sure the geoprocessing function results change as you would expect based on the data changes.  Are you expecting result values to go up or down?  Stay about or exactly the same?  Try not to accept changes that you don't understand.
+  * Add additional sketches or features to your smoke tests as needed.  Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this.  Convince yourself the results are correct.
+  * Publish your updated datasets with `npm run publish:data`.
+  * Clear the cache for all reports that use this datasource with `npm run clear-resuts` and type the name of your geoprocessing function (e.g. `boundaryAreaOverlap`).  You can also opt to just clear results for all reports with `npm run clear-all-results`.  Cached results are cleared one record at a time in dynamodb so this can take quite a while.  In fact, the process can run out of memory and suddenly die.  In this case, you can simply rerun the clear command and it will continue.  Eventually you will get through them all.
+  * Test your reports in SeaSketch.  Any sketches you exported should produce the same numbers.  Test with any really big sketches, make sure your data updates haven't reached any new limit.  This can happen if your updated data is much larger, has more features, higher resolution, etc.
+
+## Updating report clients
+
+* Make code changes to your report clients
+* If adding a new ResultsCard, be sure to link it into the appropriate report client such as a top-level `MpaTabReport`.
+* If adding a new top-level report client, be sure to add it to geoprocessing.json or you will get an error in production that a report client with this name doesn't exist.  Also create a story for it to test in storybook.
+* Run storybook and confirm reports look and behave as expected for all relevant scenarios (single sketch, sketch collection, different sizes and levels of protection, etc.)
+* `npm run build`
+* `npm run deploy`
+* Commit code changes and push to Github
+
+## Updating geoprocessing functions
+
+* Make code changes to your geoprocessing functions
+* If adding a new geoprocessing function, be sure to add it to geoprocessing.json or you will get an error in production that it can't find the function.
+* Add a smoke test alongside your geoprocessing function.
+* `npm test` to run your smoke tests which read data from `data/dist` and make sure the geoprocessing function results change as you would expect based on the data changes.  Are you expecting result values to go up or down?  Stay about or exactly the same?  Try not to accept changes that you don't understand.
+* Add additional sketches or features to your smoke tests as needed.  Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this.  Convince yourself the results are correct.
+* `npm run build`
+* `npm run deploy`
+
+# Custom Sketch Attributes
+
+Sketch attributes are additional properties provided with a Sketch Feature or a Sketch Collection.  They can be user-defined at draw time or by the SeaSketch platform itself.  The SeaSketch admin tool lets you add custom attributes to your [sketch classes](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes). SeaSketch will pass these sketch attributes on to both preprocessing and geoprocessing functions.
+
+Common use cases:
+
+* Preprocessor
+  * Passing an extra yes/no attribute for whether to include existing protected areas as part of your sketch, or whether to allow the sketch to extend beyond the EEZ, or to include land.
+  * Passing a numeric value to be used with a buffer.
+* Geoprocessor
+  * Provide language translations for each sketch attribute name and description, for each language enabled for the project.
+  * Assign a protection level or type to an area, such that the function (and resulting report) can assess against the required amount of protection for each level.
+  * Assign activities to an area, that the function can assign a protection level.  This is particularly useful when reporting on an entire SketchCollection.  The function can group results by protection level and ensure that overlap is not double counted within each group, but allow overlap between groups to go to the higher protection level.
+
+## Accessing sketch properties from report client
+
+The main way to access sketch attributes from a browser client is the [useSketchProperties()](https://seasketch.github.io/geoprocessing/api/modules/client_ui.html#useSketchProperties) hook.  Examples include:
+
+* [SketchAttributesCard](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/SketchAttributesCard.tsx) and [story](https://seasketch.github.io/geoprocessing/storybook/?path=/story/components-card-sketchattributescard--next) with [source](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/SketchAttributesNextCard.stories.tsx)
+
+## Accessing sketch properties from function
+
+Withing a preprocessing or geoprocessing function, the [SketchProperties](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#SketchProperties) are provided within every sketch.  Within that are [userAttributes](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#UserAttribute) that contain all of the user-defined attributes.
+
+For example, assume your Polygon sketch class contains an attribute called `ACTIVITIES` which is an array of allowed activities for this sketch class.  And you have a second attribute called `ISLAND` that is a string containing the name of the island this sketch is located.  You can access it as follow:
+
+```javascript
+export async function protection(
+  sketch: Sketch<Polygon> | SketchCollection<Polygon>
+): Promise<ReportResult> {
+  const sketches = toSketchArray(sketch);
+  // Complex attributes are JSON that need to be parsed
+  const activities = getJsonUserAttribute(sketches[0], 'ACTIVITIES')
+  // Simple attributes are simple strings or numbers that can be used directly
+  const island = getUserAttribute(sketches[0], 'ISLAND')
+```
+
+Examples of working with user attributes:
+
+* [getIucnCategoryForSketches](https://github.com/seasketch/geoprocessing/blob/1301dc787aeff59ed29ceb07ed2d925984da6abf/packages/geoprocessing/src/iucn/helpers.ts#L36) takes an array of sketches, extracts the list of IUCN `ACTIVITIES` the sketch designated as allowed for each sketch, and returns the category (protection level) for each sketch.  The sketch array can be generated from the `sketch` parameter passed to a geoprocessing functions using [toSketchArray()`](https://github.com/seasketch/geoprocessing/blob/1301dc787aeff59ed29ceb07ed2d925984da6abf/packages/geoprocessing/src/helpers/sketch.ts#L83).  toSketchArray helps you write single functions that work on either a single sketch or a collection of sketches.
+* [isContiguous](https://github.com/seasketch/fsm-reports/blob/main/src/functions/boundaryAreaOverlap.ts#L26) function that optionally merges the contiguous zone with the users sketch.  Checks for existence of a [specific user attribute](https://github.com/seasketch/fsm-reports/blob/main/src/util/includeContiguousSketch.ts#L28)
+
+# Passing Extra Parameters To Functions
+
+Sometimes you want to pass additional parameters to a preprocessing or geoprocessing function that are defined outside of the sketch creation process by seasketch or through the report itself.  These `extraParams` are separate from the `sketch`. They are an additional object passed to every preprocessing and geoprocessing function.
+
+Use Cases:
+
+* Preprocessor
+  * Passing one or more `eezs` to a global clipping function that specifies optional EEZ boundaries to clip the sketch to in addition to removing land.
+* Geoprocessor
+  * Subregional planning.  Passing one or more `geographies`, as subregions within an EEZ.  This can be used to when calculating results for all subregions at once doesn't make sense, or is computationally prohibitive.  Instead you may want the user to be able to switch between subregions, and the reports will rerun the geoprocessing function with a different geography and update with the result on-demand.
+
+## Passing Extra Parameters To Geoprocessing Functions
+
+Report developers will pass the extra parameters to a geoprocessing function via the ResultsCard.  It must be an object where the keys can be any JSON-compatible value.  Even nested objects and arrays are allowed.
+
+```jsx
+<ResultsCard
+  title={t("Size")}
+  functionName="boundaryAreaOverlap"
+  extraParams={{ geographies: ["nearshore", "offshore"] }}
+  useChildCard
+>
+```
+
+A common next step for this is to maintain the array of geographies in the parent Card, and potentially allow the user to change the values using a UI selector.  If the value passed to `extraParams` changes, the card will re-render itself, triggering the run of a new function, and displaying the results.
+
+Internally the [ResultsCard](https://github.com/seasketch/geoprocessing/blob/7275bd3ddf355259cf99335a761b99472045b6f8/packages/geoprocessing/src/components/ResultsCard.tsx) uses the [useFunction](https://github.com/seasketch/geoprocessing/blob/7275bd3/packages/geoprocessing/src/hooks/useFunction.ts#L44) hook, which accepts `extraParams`.
+
+```typescript
+useFunction('boundaryAreaOverlap', { geographies: ['santa-maria'] }
+```
+
+If invoking functions directly, such as SeaSketch invoking a preprocessing function, the `extraParams` can be provided in the event body.
+
+```json
+{
+  "feature": {...},
+  "extraParams": { "eezs": ["Azores"], "foos": "blorts", "nested": { "a": 3, "b": 4 }}
+}
+```
+
+## Accessing Extra Parameters In Functions
+
+Both preprocessing and geoprocessing functions receive a second `extraParams` parameter.  The default type is `Record<string, JSONValue>` but the implementer can provide a narrower type that defines explicit parameters.
+
+Geoprocessing function:
+
+```typescript
+/** Optional caller-provided parameters */
+interface ExtraParams {
+  /** Optional ID(s) of geographies to operate on. **/
+  geographies?: string[];
+}
+
+export async function boundaryAreaOverlap(
+  sketch: Sketch<Polygon> | SketchCollection<Polygon>,
+  extraParams: ExtraParams = {}
+): Promise<ReportResult> {
+  const geographies = extraParams.geographies
+  console.log('Current geographies', geographies)
+  const results = runAnalysis(geographies)
+  return results
+```
+
+Preprocessing function:
+
+```typescript
+interface ExtraParams {
+  /** Array of EEZ ID's to clip to  */
+  eezs?: string[];
+}
+
+/**
+ * Preprocessor takes a Polygon feature/sketch and returns the portion that
+ * is in the ocean (not on land) and within one or more EEZ boundaries.
+ */
+export async function clipToOceanEez(
+  feature: Feature | Sketch,
+  extraParams: ExtraParams = {}
+): Promise<Feature> {
+  if (!isPolygonFeature(feature)) {
+    throw new ValidationError("Input must be a polygon");
+  }
+
+  /**
+   * Subtract parts of feature/sketch that overlap with land. Uses global land polygons
+   * unionProperty is specific to subdivided datasets.  When defined, it will fetch
+   * and rebuild all subdivided land features overlapping with the feature/sketch
+   * with the same gid property (assigned one per country) into one feature before clipping.
+   * This is useful for preventing slivers from forming and possible for performance.
+   */
+  const removeLand: DatasourceClipOperation = {
+    datasourceId: "global-clipping-osm-land",
+    operation: "difference",
+    options: {
+      unionProperty: "gid", // gid is assigned per country
+    },
+  };
+
+  /**
+   * Optionally, subtract parts of feature/sketch that are outside of one or
+   * more EEZ's.  Using a runtime-provided list of EEZ's via extraParams.
+   * eezFilterByNames allows this preprocessor to work for any set of EEZ's
+   * Using a project-configured planningAreaId allows this preprocessor to work
+   * for a specific EEZ.
+  */
+  const removeOutsideEez: DatasourceClipOperation = {
+    datasourceId: "global-clipping-eez-land-union",
+    operation: "intersection",
+    options: {
+      propertyFilter: {
+        property: "UNION",
+        values: extraParams?.eezs || [project.basic.planningAreaId] || [],
+      },
+    },
+  };
+
+  // Create a function that will perform the clip operations in order
+  const clipLoader = genClipLoader(project, [removeLand, removeOutsideEez]);
+
+  // Wrap clip function into preprocessing function with additional clip options
+  return clipToPolygonFeatures(feature, clipLoader, {
+    maxSize: 500000 * 1000 ** 2, // Default 500,000 KM
+    enforceMaxSize: false, // throws error if feature is larger than maxSize
+    ensurePolygon: true, // don't allow multipolygon result, returns largest if multiple
+  });
+}
+```
+
+## Writing stories with extraParams
+
+Default smoke tests typically don't pass extraParams to the preprocessing or geoprocessing function but they can.  Just know that each smoke test can only output results for one configuration of extraParams.  And storybook can only load results for one smoke test run.
+This means that in order to test multiple variations of extraParams, you will need to create multiple smoke tests.  You could even write multiple smoke tests that each write out results all in one file.
+
+Example smoke test (e.g. boundaryAreaOverlapExtraParamSmoke.test.ts):
+
+```typescript
+test("boundaryAreaOverlapSantaMariaSmoke - tests run with one subregion", async () => {
+  const examples = await getExamplePolygonSketchAll();
+  for (const example of examples) {
+    const result = await boundaryAreaOverlap(example, { geographies: ['santa-maria']});
+    expect(result).toBeTruthy();
+    writeResultOutput(result, "boundaryAreaOverlapSantaMaria", example.properties.name);
+  }
+}
+```
+
 # Debugging
+
+See the [Testing](./Testing.md) page for additional options for testing your project.
 
 ## Debugging Unit Tests
 
@@ -1204,7 +1610,7 @@ The magic comes in being able to request polygons from this bundle in our geopro
 
 Here is an example of use end-to-end.  Note this is quite a manual process.  Future framework versions may try to automate it.
 
-* [data prep script](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union-prep.sh) which can be run from the docker workspace using `npm run workspace:shell`, which includes postgis, and mounts your local files in the data directory into the container.
+* [data prep script](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union-prep.sh).
 * [sql subdivide script](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union.sql) run by the data prep script
 * [publish script](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union-publish.sh) brings the subdivided polygons out of postgis, encodes them in geobuf format, builds the index, and publishes it all to a standalone S3 bucket that is independent of your project.  The url of the S3 bucket will be provided once complete.  You can ``--dry-run` the command to see how many bundles it will create and how big they'll be.  The sweet spot is bundles about ~25KB in size.  Once you've found that sweet spot you can do the actual run.
 * [use of VectorDataSource in gp function](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/src/functions/clipToOceanEez.ts#L32)
@@ -1212,17 +1618,6 @@ Here is an example of use end-to-end.  Note this is quite a manual process.  Fut
 This is the method that is used for the global `land` and `eez` datasources. Here is a full example of subdividing OpenStreetMap land polygons for the entire world.  This is what is used for the `clipToOceanEez` script that comes with the `ocean-eez` starter template.
 
 * [publish vector data source](https://github.com/mcclintock-lab/hawaii-reports-next/blob/main/data/eez-land-union-publish.sh)
-
-# Use docker geoprocessing workspace
-
-To open a command in the geoprocessing workspace:
-
-```bash
-npm run workspace:shell
-```
-
-This will start the `gp-workspace` Docker container and open a terminal window that you can interact with.
-It will also start a PostgreSQL database container. You can access this database using the `psql` command (no args) within the workspace, or from the host computer (such as using QGIS) on port 54320 using the credentials found in `data/docker-compose.yml`.
 
 # Advanced storybook usage
 

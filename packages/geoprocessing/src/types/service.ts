@@ -1,3 +1,4 @@
+import { JSONValue } from "./base";
 import { Polygon, LineString, Point, Feature } from "./geojson";
 import { Sketch, SketchProperties } from "./sketch";
 
@@ -97,9 +98,35 @@ export interface PreprocessingHandlerOptions {
   requiresProperties: string[];
 }
 
+/**
+ * Represents geoprocessing request via HTTP method, fully packed
+ */
 export interface GeoprocessingRequest<G = Polygon | LineString | Point> {
-  geometry?: Sketch<G>;
+  /** URL to fetch Sketch JSON */
   geometryUri?: string; // must be https
+  /** Sketch JSON */
+  geometry?: Sketch<G>;
+  /** Additional runtime parameters, as escaped JSON string */
+  extraParams?: string;
+  token?: string;
+  cacheKey?: string;
+  wss?: string;
+  checkCacheOnly?: string;
+  onSocketConnect?: string;
+}
+
+export type GeoprocessingRequestParams = Record<string, JSONValue>;
+
+/**
+ * Represents geoprocessing request internally, fully unpacked
+ */
+export interface GeoprocessingRequestModel<G = Polygon | LineString | Point> {
+  /** URL to fetch Sketch JSON */
+  geometryUri?: string; // must be https
+  /** Sketch JSON */
+  geometry?: Sketch<G>;
+  /** Additional runtime parameters */
+  extraParams?: GeoprocessingRequestParams;
   token?: string;
   cacheKey?: string;
   wss?: string;
@@ -137,6 +164,8 @@ export interface SeaSketchReportingToggleLanguageEvent {
 export interface PreprocessingRequest {
   /** Geometry drawn by the user. Typically simple */
   feature: Feature<Polygon | Point | LineString>;
+  /** Additional runtime parameters */
+  extraParams?: string;
   /** Defaults to geojson  */
   responseFormat?: "application/json"; // | "application/pbf+geobuf" | "application/pbf+mvt";
 }

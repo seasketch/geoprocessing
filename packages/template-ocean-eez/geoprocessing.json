@@ -12,7 +12,9 @@
     "source": "src/clients/SizeReport.tsx"
   }],
   "preprocessingFunctions": [
-    "src/functions/clipToOceanEez.ts"
+    "src/functions/clipToOceanEez.ts",
+    "src/functions/clipToLand.ts",
+    "src/functions/clipToOcean.ts"
   ],
   "geoprocessingFunctions": [
     "src/functions/boundaryAreaOverlap.ts"

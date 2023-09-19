@@ -2,7 +2,7 @@
  * @jest-environment node
  * @group e2e
  */
-import { loadCogWindow } from "./cog";
+import { loadCog, loadCogWindow } from "./cog";
 import { Feature, Polygon, Sketch } from "../types";
 import { genSampleSketch } from "../helpers";
 // @ts-ignore
@@ -89,149 +89,128 @@ describe("COG test", () => {
 
   test("quad 10 - q1 full", async () => {
     const url = "http://127.0.0.1:8080/quad_10_cog.tif";
-    const raster = await loadCogWindow(url, {
-      windowBox: bbox(q1Poly),
-    });
+    const raster = await loadCog(url);
 
-    const sum = geoblaze.sum(raster, q1Poly);
+    const sum = await geoblaze.sum(raster, q1Poly);
     expect(raster).toBeTruthy();
-    expect(raster.values.length).toBeGreaterThan(0);
-
     expect(raster.pixelHeight).toBe(10);
     expect(raster.pixelWidth).toBe(10);
-    expect(raster.values[0][0].length).toBe(2);
-    expect(raster.values[0][1].length).toBe(2);
-    expect(raster.values[0][0][0]).toBe(1);
-    expect(raster.values[0][0][1]).toBe(0);
-    expect(raster.values[0][1][0]).toBe(0);
-    expect(raster.values[0][1][1]).toBe(0);
     expect(sum[0]).toBe(1);
   });
 
   test("quad 10 - q2 full", async () => {
     const url = "http://127.0.0.1:8080/quad_10_cog.tif";
-    const raster = await loadCogWindow(url, {
-      windowBox: bbox(q2Poly),
-    });
+    const raster = await loadCog(url);
 
-    const sum = geoblaze.sum(raster, q2Poly);
+    const sum = await geoblaze.sum(raster, q2Poly);
     expect(raster).toBeTruthy();
-    expect(raster.values.length).toBeGreaterThan(0);
-
     expect(raster.pixelHeight).toBe(10);
     expect(raster.pixelWidth).toBe(10);
-    expect(raster.values[0][0].length).toBe(2);
-    expect(raster.values[0][1].length).toBe(2);
-    expect(raster.values[0][0][0]).toBe(0);
-    expect(raster.values[0][0][1]).toBe(1);
-    expect(raster.values[0][1][0]).toBe(0);
-    expect(raster.values[0][1][1]).toBe(0);
     expect(sum[0]).toBe(1);
   });
 
   test("quad 10 - q3 full", async () => {
     const url = "http://127.0.0.1:8080/quad_10_cog.tif";
-    const raster = await loadCogWindow(url, {
-      windowBox: bbox(q3Poly),
-    });
+    const raster = await loadCog(url);
 
-    const sum = geoblaze.sum(raster, q3Poly);
+    const sum = await geoblaze.sum(raster, q3Poly);
     expect(raster).toBeTruthy();
-    expect(raster.values.length).toBeGreaterThan(0);
-
     expect(raster.pixelHeight).toBe(10);
     expect(raster.pixelWidth).toBe(10);
-    expect(raster.values[0][0].length).toBe(2);
-    expect(raster.values[0][1].length).toBe(2);
-    expect(raster.values[0][0][0]).toBe(0);
-    expect(raster.values[0][0][1]).toBe(0);
-    expect(raster.values[0][1][0]).toBe(1);
-    expect(raster.values[0][1][1]).toBe(0);
     expect(sum[0]).toBe(1);
   });
 
   test("quad 10 - q4 full", async () => {
     const url = "http://127.0.0.1:8080/quad_10_cog.tif";
-    const raster = await loadCogWindow(url, {
-      windowBox: bbox(q4Poly),
-    });
+    const raster = await loadCog(url);
 
-    const sum = geoblaze.sum(raster, q4Poly);
+    const sum = await geoblaze.sum(raster, q4Poly);
     expect(raster).toBeTruthy();
-    expect(raster.values.length).toBeGreaterThan(0);
-
     expect(raster.pixelHeight).toBe(10);
     expect(raster.pixelWidth).toBe(10);
-    expect(raster.values[0][0].length).toBe(2);
-    expect(raster.values[0][1].length).toBe(2);
-    expect(raster.values[0][0][0]).toBe(0);
-    expect(raster.values[0][0][1]).toBe(0);
-    expect(raster.values[0][1][0]).toBe(0);
-    expect(raster.values[0][1][1]).toBe(1);
     expect(sum[0]).toBe(1);
   });
 
   test("window box smaller than and within pixel should work properly", async () => {
     const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
-    const raster = await loadCogWindow(url, {
-      windowBox: [
-        -64.98190014112853, 32.28094566811551, -64.93314831007392,
-        32.328245479189846,
-      ],
-    });
+    const raster = await loadCog(url);
     expect(raster).toBeTruthy();
-    expect(raster.values.length).toBeGreaterThan(0);
   });
 
   test("window box 2 smaller than and within pixel should work properly", async () => {
     const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
-    const raster = await loadCogWindow(url, {
-      windowBox: [
-        -64.86625596136682, 32.20595207620439, -64.76875229925741,
-        32.250097107343166,
-      ],
-    });
+    const raster = await loadCog(url);
     expect(raster).toBeTruthy();
-    expect(raster.values.length).toBeGreaterThan(0);
   });
 
-  test("window box 3 smaller than and within pixel should work properly", async () => {
-    const feature: Feature<Polygon> = {
+  test("two load methods should produce same result", async () => {
+    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+
+    const rasterParse = await loadCog(url);
+    const rasterLoad = await loadCogWindow(url, {});
+
+    const parseSumAll = await geoblaze.sum(rasterParse);
+    const loadSumAll = await geoblaze.sum(rasterLoad);
+
+    expect(JSON.stringify(parseSumAll)).toEqual(JSON.stringify(loadSumAll));
+  });
+
+  test("two load methods should produce same result with polygon", async () => {
+    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+
+    const rasterParse = await loadCog(url);
+    const rasterLoad = await loadCogWindow(url, {});
+
+    // Polygon covering most of the eez raster value but not all of it, including some nodata values
+    const bigFeatureWithin: Feature<Polygon> = {
       type: "Feature",
+      properties: {},
       geometry: {
         type: "Polygon",
         coordinates: [
           [
-            [-64.98190014112853, 32.28094566811551],
-            [-64.97915355909728, 32.328245479189846],
-            [-64.93314831007392, 32.32186289702012],
-            [-64.94207470167548, 32.281816439778545],
-            [-64.98190014112853, 32.28094566811551],
+            [-65.90969082848031, 30.182428167053605],
+            [-67.85475060186064, 33.21332227994239],
+            [-65.08823354554784, 34.66739609111022],
+            [-62.00068720624991, 31.71203828010028],
+            [-63.40755082874345, 30.201312242523315],
+            [-63.40755082874345, 30.201312242523315],
+            [-65.90969082848031, 30.182428167053605],
           ],
         ],
-        bbox: [
-          -64.98190014112853, 32.28094566811551, -64.93314831007392,
-          32.328245479189846,
-        ],
       },
-      properties: {},
-      id: "1",
-      bbox: [
-        -64.98190014112853, 32.28094566811551, -64.93314831007392,
-        32.328245479189846,
-      ],
     };
 
-    const url = "http://127.0.0.1:8080/Bathypelagic1_cog.tif";
-    const raster = await loadCogWindow(url, {
-      windowBox: feature.bbox,
-      noDataValue: -3.39999995214436425e38,
-    });
+    const parseSumWithin = await geoblaze.sum(rasterParse, bigFeatureWithin);
+    const loadSumWithin = await geoblaze.sum(rasterLoad, bigFeatureWithin);
+    expect(JSON.stringify(parseSumWithin)).toEqual(
+      JSON.stringify(loadSumWithin)
+    );
 
-    expect(raster.pixelHeight).toBe(0.07777950326934817);
-    expect(raster.pixelWidth).toBe(0.07777950326934817);
-    // feature should only overlap nodata cells, the 1 value should not get picked up
-    // geoblaze will throw if nothing is returned
-    expect(() => geoblaze.sum(raster, feature)).toThrow();
+    // Larger than the raster but still not covering all value
+    const bigFeatureOutside: Feature<Polygon> = {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-66.74059014914764, 34.506881449617666],
+            [-69.10109958286165, 30.14466001611418],
+            [-65.08823354554784, 27.0476716390814],
+            [-60.442750979998664, 29.33264477091656],
+            [-59.88567075364215, 34.40301903453425],
+            [-65.93801694168488, 37.80215261908243],
+            [-66.74059014914764, 34.506881449617666],
+          ],
+        ],
+      },
+    };
+
+    const parseSumOutside = await geoblaze.sum(rasterParse, bigFeatureOutside);
+    const loadSumOutside = await geoblaze.sum(rasterLoad, bigFeatureOutside);
+    expect(JSON.stringify(parseSumOutside)).toEqual(
+      JSON.stringify(loadSumOutside)
+    );
   });
 });

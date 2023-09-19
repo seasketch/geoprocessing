@@ -8,9 +8,16 @@ import {
   flattenBySketchAllClass,
   nestMetrics,
   createMetric,
+  packMetrics,
+  unpackMetrics,
+  isMetric,
+  isMetricArray,
+  rekeyMetrics,
+  MetricProperties,
 } from "./helpers";
 import { NullSketch, NullSketchCollection, Metric } from "../types";
 import { toPercentMetric } from "../../client-core";
+import deepEqual from "fast-deep-equal";
 
 const metricName = "metric1";
 
@@ -261,6 +268,109 @@ const groupMetrics: Metric[] = [
     value: 15,
   }),
 ];
+
+describe("Metric checks", () => {
+  test("isMetric", async () => {
+    const trueMetric = metrics[0];
+    trueMetric.extra = { big: "fish" };
+    expect(isMetric(trueMetric)).toBe(true);
+  });
+
+  test("isMetric false", async () => {
+    const falseMetric = { value: 15 };
+    expect(isMetric(falseMetric)).toBe(false);
+    const falseMetric2 = createMetric({ value: 15 });
+    //@ts-ignore
+    falseMetric2.groupId = undefined; // not allowed
+    expect(isMetric(falseMetric2)).toBe(false);
+  });
+
+  test("isMetricArray", async () => {
+    expect(isMetricArray(metrics)).toBe(true);
+  });
+});
+
+test("rekeyMetrics", async () => {
+  const metrics = [createMetric({ value: 10 })];
+  const rekeyed = rekeyMetrics(metrics);
+  expect(rekeyed.length).toBe(1);
+  const keys = Object.keys(rekeyed[0]);
+  expect(keys.length).toBeLessThanOrEqual(MetricProperties.length);
+
+  // Add test of correct key order
+});
+
+describe("MetricPack", () => {
+  test("Can pack and unpack metrics", async () => {
+    const metrics: Metric[] = [
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchAId,
+        value: 10,
+        classId: "class1",
+      }),
+      createMetric({
+        metricId: metricName,
+        sketchId: sketchBId,
+        value: 20,
+        classId: "class1",
+      }),
+    ];
+
+    const packed = packMetrics(metrics);
+    expect(packed.hasOwnProperty("dimensions")).toBe(true);
+    expect(packed.hasOwnProperty("data")).toBe(true);
+    expect(packed.dimensions).toHaveLength(6);
+    expect(packed.data).toHaveLength(2);
+    expect(packed.data[0]).toHaveLength(6);
+
+    const unpacked = unpackMetrics(packed);
+    expect(unpacked).toHaveLength(metrics.length);
+  });
+
+  test("Can pack and unpack metrics with extra", async () => {
+    const metrics = [
+      createMetric({
+        value: 15,
+        extra: { big: "fish" },
+      }),
+    ];
+    const packed = packMetrics(metrics);
+    expect(packed.hasOwnProperty("dimensions")).toBe(true);
+    expect(packed.hasOwnProperty("data")).toBe(true);
+    expect(packed.dimensions).toHaveLength(7);
+    expect(packed.data).toHaveLength(1);
+    expect(packed.data[0]).toHaveLength(7);
+
+    const unpacked = unpackMetrics(packed);
+    expect(unpacked).toHaveLength(metrics.length);
+    expect(unpacked[0].value).toEqual(15);
+    expect(unpacked[0]?.extra?.big).toEqual("fish");
+  });
+});
+
+test("MetricPack", async () => {
+  const metrics: Metric[] = [
+    {
+      metricId: "ousPeopleCount",
+      sketchId: "16624",
+      classId: "saomiguel",
+      groupId: null,
+      geographyId: null,
+      value: 102,
+    },
+  ];
+  const packed = packMetrics(metrics);
+  expect(packed.hasOwnProperty("dimensions")).toBe(true);
+  expect(packed.hasOwnProperty("data")).toBe(true);
+  expect(packed.dimensions).toHaveLength(6);
+  expect(packed.data).toHaveLength(1);
+  expect(packed.data[0]).toHaveLength(6);
+
+  const unpacked = unpackMetrics(packed);
+  console.log("unpacked", JSON.stringify(unpacked, null, 2));
+  expect(deepEqual(metrics, unpacked)).toBe(true);
+});
 
 describe("flattenSketchAllClass", () => {
   test("flattenSketchAllClass - basic", async () => {

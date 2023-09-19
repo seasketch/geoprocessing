@@ -11,3 +11,4 @@ export * from "./src/components";
 export type { FilterSelectTableOptions } from "./src/components/table/FilterSelectTable";
 export * from "./src/context";
 export * from "./src/hooks";
+export * from "./src/clients";

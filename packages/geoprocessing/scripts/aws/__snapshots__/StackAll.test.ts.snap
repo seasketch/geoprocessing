@@ -105,7 +105,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": "74ffc8606670c67d6fb0102782b44a64a139c8f4aca1f9c0de934bb6517010e7.zip",
+          "S3Key": "e2277687077a2abf9ae1af1cc9565e6715e2ebb62f79ec53aa75a1af9298f642.zip",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -155,7 +155,12 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": "f98b78092dcdd31f5e6d47489beb5f804d4835ef86a8085d0a2053cb9ae711da.zip",
+          "S3Key": "9eb41a5505d37607ac419321497a4f8c21cf0ee1f9b4a6b29aa04301aea5c7fd.zip",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_CA_BUNDLE": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem",
+          },
         },
         "Handler": "index.handler",
         "Layers": Array [
@@ -169,7 +174,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "python3.7",
+        "Runtime": "python3.9",
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
@@ -316,7 +321,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-us-west-1",
           },
-          "S3Key": "0758db37a61ce7177f50559cad0340df233a2001b5880615afa517203dd67c21.zip",
+          "S3Key": "350185a1069fa20a23a583e20c77f6844218bd73097902362dc94f1a108f5d89.zip",
         },
         "Description": Object {
           "Fn::Join": Array [
@@ -338,7 +343,7 @@ Object {
             "Arn",
           ],
         },
-        "Runtime": "nodejs12.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
@@ -764,13 +769,16 @@ Object {
       "UpdateReplacePolicy": "Delete",
     },
     "GpRestApi3C403820": Object {
+      "DeletionPolicy": "Delete",
       "Properties": Object {
         "Description": "Serves API requests for all.",
         "Name": "gp-all",
       },
       "Type": "AWS::ApiGateway::RestApi",
+      "UpdateReplacePolicy": "Delete",
     },
     "GpRestApiAccountFCFC4532": Object {
+      "DeletionPolicy": "Retain",
       "DependsOn": Array [
         "GpRestApi3C403820",
       ],
@@ -783,8 +791,10 @@ Object {
         },
       },
       "Type": "AWS::ApiGateway::Account",
+      "UpdateReplacePolicy": "Retain",
     },
     "GpRestApiCloudWatchRole263212C0": Object {
+      "DeletionPolicy": "Retain",
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -814,8 +824,9 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Role",
+      "UpdateReplacePolicy": "Retain",
     },
-    "GpRestApiDeployment8BC1361A98cd23824b5ff55784bf91412fde64dd": Object {
+    "GpRestApiDeployment8BC1361Ad3c11afbca40d8edb1ee35774c526b01": Object {
       "DependsOn": Array [
         "GpRestApiGET037A17F9",
         "GpRestApiOPTIONS0D97A1CF",
@@ -832,7 +843,7 @@ Object {
         "GpRestApitestSyncGeoprocessorACDEBF58",
       ],
       "Properties": Object {
-        "Description": "Automatically created by the RestApi construct",
+        "Description": "Serves API requests for all.",
         "RestApiId": Object {
           "Ref": "GpRestApi3C403820",
         },
@@ -845,7 +856,7 @@ Object {
       ],
       "Properties": Object {
         "DeploymentId": Object {
-          "Ref": "GpRestApiDeployment8BC1361A98cd23824b5ff55784bf91412fde64dd",
+          "Ref": "GpRestApiDeployment8BC1361Ad3c11afbca40d8edb1ee35774c526b01",
         },
         "MethodSettings": Array [
           Object {
@@ -977,6 +988,7 @@ Object {
     },
     "GpRestApiOPTIONS0D97A1CF": Object {
       "Properties": Object {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": Object {
@@ -1143,6 +1155,7 @@ Object {
     },
     "GpRestApitestAsyncGeoprocessorOPTIONS5536AC3F": Object {
       "Properties": Object {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": Object {
@@ -1306,6 +1319,7 @@ Object {
     },
     "GpRestApitestPreprocessorOPTIONSF3E96077": Object {
       "Properties": Object {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": Object {
@@ -1578,6 +1592,7 @@ Object {
     },
     "GpRestApitestSyncGeoprocessorOPTIONSEA2E29D8": Object {
       "Properties": Object {
+        "ApiKeyRequired": false,
         "AuthorizationType": "NONE",
         "HttpMethod": "OPTIONS",
         "Integration": Object {

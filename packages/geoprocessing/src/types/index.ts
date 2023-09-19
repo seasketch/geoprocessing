@@ -12,6 +12,7 @@ export * from "./projectBasic";
 export * from "./reports";
 export * from "./sketch";
 export * from "./service";
+export * from "./dataProcessor";
 
 // 3rd party
 export * from "./georaster";

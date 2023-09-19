@@ -10,6 +10,7 @@ import { DataClass } from "../types";
 import { classIdMapping } from "../datasources";
 import bbox from "@turf/bbox";
 import { featureCollection } from "@turf/helpers";
+import fix from "../testing/fixtures/sketches";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]
@@ -49,19 +50,6 @@ const topRightPoly: Sketch<Polygon> = genSampleSketch({
       [18, 18],
       [18, 12],
       [12, 12],
-    ],
-  ],
-});
-
-const wholePoly: Sketch<Polygon> = genSampleSketch({
-  type: "Polygon",
-  coordinates: [
-    [
-      [2, 2],
-      [2, 20],
-      [20, 20],
-      [20, 2],
-      [2, 2],
     ],
   ],
 });
@@ -144,7 +132,7 @@ describe("overlapRasterClass test", () => {
     const metrics = await overlapRasterClass(
       "test",
       raster,
-      null,
+      undefined,
       classIdMapping(classes)
     );
     // only cell in polygon should have been nodata in bottom left
@@ -156,6 +144,36 @@ describe("overlapRasterClass test", () => {
     expect(metrics[1].classId).toBe("2");
     expect(metrics[1].sketchId).toBe(null);
     expect(metrics[1].value).toBe(1);
+  });
+
+  test("overlapRasterClass - can assign categories to alternate metric dimension", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [0, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await overlapRasterClass(
+      "test",
+      raster,
+      undefined,
+      classIdMapping(classes),
+      "groupId"
+    );
+    expect(metrics.length).toBe(2);
+    expect(metrics[0].sketchId).toBe(null);
+    expect(metrics[0].groupId).toBe("1");
+    expect(metrics[0].value).toBe(2);
   });
 
   test("overlapRasterClass - single polygon sketch bottom left", async () => {
@@ -392,7 +410,44 @@ describe("overlapRasterClass test", () => {
     expect(metrics[5].value).toBe(1); // collection should not double count class 2
   });
 
-  // missing tests:
-  // overlapping sketch test
-  // hole in polygon test
+  test("overlapRasterClass - should handle multiple holes in collection", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [1, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+
+    const metrics = await overlapRasterClass(
+      "test",
+      raster,
+      fix.holeMixedSC,
+      classIdMapping(classes)
+    );
+    // Remember
+    expect(metrics.length).toBe(6);
+    expect(metrics[0].classId).toBe("1");
+    expect(metrics[0].value).toBe(2); // hole covered bottom left 1
+    expect(metrics[1].classId).toBe("2");
+    expect(metrics[1].value).toBe(1);
+    expect(metrics[2].classId).toBe("1");
+    expect(metrics[2].value).toBe(3); // hole covered top right 1
+    expect(metrics[3].classId).toBe("2");
+    expect(metrics[3].value).toBe(0);
+    // collection together should cancel holes
+    expect(metrics[4].classId).toBe("1");
+    expect(metrics[4].value).toBe(3);
+    expect(metrics[5].classId).toBe("2");
+    expect(metrics[5].value).toBe(1);
+  });
 });

@@ -81,8 +81,8 @@ export async function createProject(
     await fs.ensureDir(projectPath);
     await $`cp -r ${baseProjectPath}/* ${projectPath}`;
     await $`cp -r ${baseProjectPath}/. ${projectPath}`;
-    await $`rm ${projectPath}/package-lock.json`;
-    await $`rm ${projectPath}/geoprocessing.json`;
+    await $`rm -f ${projectPath}/package-lock.json`;
+    await $`rm -f ${projectPath}/geoprocessing.json`;
     await $`rm -rf ${projectPath}/examples/outputs/*.*`;
     await $`rm -rf ${projectPath}/examples/features/*.*`;
     await $`rm -rf ${projectPath}/examples/sketches/*/*`;
@@ -234,16 +234,6 @@ export async function createProject(
     spinner.fail(".gitignore add failed");
     console.error(error);
   }
-
-  // recursively copy entire data/bin directory to project space
-  spinner.start("add data directory");
-  await fs.copy(
-    `${getGeoprocessingPath()}/data/bin`,
-    projectPath + "/data/bin"
-  );
-  await fs.ensureDir(`${projectPath}/data/src`);
-  await fs.ensureDir(`${projectPath}/data/dist`);
-  spinner.succeed("added data directory");
 
   // recursively copy entire i18n directory to project space
   spinner.start("add i18n directory");

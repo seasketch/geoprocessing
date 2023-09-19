@@ -1,5 +1,7 @@
+import { createMetric, isMetricArray, isMetricPack } from "../metrics";
 import TaskModel from "./tasks";
 import { DynamoDB } from "aws-sdk";
+import deepEqual from "fast-deep-equal";
 
 const db = new DynamoDB.DocumentClient({
   endpoint: "localhost:8000",
@@ -116,6 +118,46 @@ test("complete an existing task", async () => {
   expect(item && item.Item && item.Item.status).toBe("completed");
   expect(item && item.Item && item.Item.data.area).toBe(1234556);
   expect(item && item.Item && item.Item.duration).toBeGreaterThan(0);
+});
+
+test("complete a task with metrics should have packed in db", async () => {
+  const task = await Tasks.create(SERVICE_NAME);
+  const response = await Tasks.complete(task, {
+    metrics: [createMetric({ value: 15 })],
+  });
+  const item = await db
+    .get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    })
+    .promise();
+  expect(response.statusCode).toBe(200);
+  const metrics = JSON.parse(response.body).data.metrics;
+  expect(metrics).toBeTruthy();
+  expect(isMetricArray(metrics)).toBe(true);
+  expect(metrics[0].value).toEqual(15);
+
+  const dbMetrics = item?.Item?.data.metrics;
+  expect(isMetricPack(dbMetrics)).toBe(true);
+});
+
+test("completed task with metrics should return unpacked result", async () => {
+  const task = await Tasks.create(SERVICE_NAME);
+  const metrics = [createMetric({ value: 15 })];
+  const response = await Tasks.complete(task, {
+    metrics,
+  });
+  expect(response.statusCode).toBe(200);
+
+  const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
+
+  const cachedMetrics = cachedResult?.data.metrics;
+  expect(cachedMetrics).toBeTruthy();
+  expect(isMetricArray(cachedMetrics)).toBe(true);
+  expect(deepEqual(cachedMetrics, metrics)).toBe(true);
 });
 
 test("fail a task", async () => {

@@ -66,11 +66,10 @@ describe("overlapFeatures", () => {
     ];
     const percs = [0.5, 1, 1]; // the poly and multipoly overlap 100% so overlapFeatures area should be half
     ids.forEach((curSketchId, index) => {
-      console.log("index", index);
+      // console.log("index", index);
       testWithinPerc(
         firstMatchingMetric(metrics, (m) => m.sketchId === curSketchId).value,
-        areas[index] * percs[index],
-        { debug: true }
+        areas[index] * percs[index]
       );
     });
   });

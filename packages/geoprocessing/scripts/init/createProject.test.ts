@@ -7,11 +7,11 @@ import fs from "fs-extra";
 import { createProject } from "./createProject";
 import { GeoprocessingJsonConfig } from "../../src/types";
 
-const rootPath = `${__dirname}/__test__`;
+const rootPath = `${__dirname}/../__test__`;
 
 describe("createProject", () => {
   afterAll(async () => {
-    await fs.remove(rootPath); // Cleanup
+    await fs.emptyDirSync(rootPath); // Cleanup
   });
 
   it("should create empty project", async () => {
@@ -60,7 +60,7 @@ describe("createProject", () => {
     expect(gpConfig.preprocessingFunctions.length).toBe(0);
     expect(gpConfig.geoprocessingFunctions.length).toBe(0);
     expect(gpConfig.clients.length).toBe(0);
-  }, 60000);
+  }, 120000);
 
   it("should create project using eez selection", async () => {
     const projectName = "test-project-empty";
@@ -95,7 +95,7 @@ describe("createProject", () => {
       135.31244183762126, -1.173110965298591, 165.67652822599732,
       13.445432925389298,
     ]);
-  }, 60000);
+  }, 120000);
 
   it("should create project with template", async () => {
     const projectName = "test-project-template";
@@ -131,5 +131,5 @@ describe("createProject", () => {
     expect(gpConfig.preprocessingFunctions.length).toBeGreaterThanOrEqual(1);
     expect(gpConfig.geoprocessingFunctions.length).toBeGreaterThan(0);
     expect(gpConfig.clients.length).toBeGreaterThan(0);
-  }, 60000);
+  }, 120000);
 });

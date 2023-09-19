@@ -2,52 +2,12 @@
  * @jest-environment node
  * @group unit
  */
-import { Polygon, Sketch } from "../types";
-import { genSampleSketch } from "../helpers";
+import fix from "../testing/fixtures/sketches";
 import parseGeoraster from "georaster";
 import { overlapRaster } from "./overlapRaster";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]
-
-const bottomLeftPoly: Sketch<Polygon> = genSampleSketch({
-  type: "Polygon",
-  coordinates: [
-    [
-      [2, 2],
-      [2, 8],
-      [8, 8],
-      [8, 2],
-      [2, 2],
-    ],
-  ],
-});
-
-const topRightPoly: Sketch<Polygon> = genSampleSketch({
-  type: "Polygon",
-  coordinates: [
-    [
-      [12, 12],
-      [12, 18],
-      [18, 18],
-      [18, 12],
-      [12, 12],
-    ],
-  ],
-});
-
-const wholePoly: Sketch<Polygon> = genSampleSketch({
-  type: "Polygon",
-  coordinates: [
-    [
-      [2, 2],
-      [2, 20],
-      [20, 20],
-      [20, 2],
-      [2, 2],
-    ],
-  ],
-});
 
 describe("overlapRaster test", () => {
   test("overlapRaster - bottom left raster cell sum should be 0", async () => {
@@ -67,7 +27,7 @@ describe("overlapRaster test", () => {
         pixelHeight: 10,
       }
     );
-    const metrics = await overlapRaster("test", raster, bottomLeftPoly);
+    const metrics = await overlapRaster("test", raster, fix.bottomLeftPoly);
     expect(metrics.length).toBe(1);
     expect(metrics[0].value).toBe(0);
   });
@@ -89,7 +49,7 @@ describe("overlapRaster test", () => {
         pixelHeight: 10,
       }
     );
-    const metrics = await overlapRaster("test", raster, topRightPoly);
+    const metrics = await overlapRaster("test", raster, fix.topRightPoly);
     expect(metrics.length).toBe(1);
     expect(metrics[0].value).toBe(2);
   });
@@ -111,8 +71,78 @@ describe("overlapRaster test", () => {
         pixelHeight: 10,
       }
     );
-    const metrics = await overlapRaster("test", raster, wholePoly);
+    const metrics = await overlapRaster("test", raster, fix.wholePoly);
     expect(metrics.length).toBe(1);
     expect(metrics[0].value).toBe(5);
+  });
+
+  test("overlapRaster - mixed coll should handle overlap and not double count", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [1, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await overlapRaster("test", raster, fix.wholeMixedSC);
+    expect(metrics.length).toBe(3);
+    expect(metrics[0].value).toBe(5); // first sketch
+    expect(metrics[1].value).toBe(5); // second sketch
+    expect(metrics[2].value).toBe(5); // collection - no double count
+  });
+
+  test("overlapRaster - should not count holes", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [1, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await overlapRaster("test", raster, fix.holeBlPoly);
+    expect(metrics.length).toBe(1);
+    expect(metrics[0].value).toBe(4); // first sketch
+  });
+
+  test("overlapRaster - should handle holes in each sketch, that cancel in collection for full sum", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [1, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await overlapRaster("test", raster, fix.holeMixedSC);
+    expect(metrics.length).toBe(3);
+    expect(metrics[0].value).toBe(4); // first sketch
+    expect(metrics[1].value).toBe(3); // second sketch
+    expect(metrics[2].value).toBe(5); // collection is full sum, each sketch picking up the others hole
   });
 });

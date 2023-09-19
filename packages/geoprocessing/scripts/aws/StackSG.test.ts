@@ -10,14 +10,14 @@ import config from "./config";
 import createTestProjectManifest from "../testing/createTestProjectManifest";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
 
-const rootPath = `${__dirname}/__test__`;
+const rootPath = `${__dirname}/../__test__`;
+const projectName = "sync-geoprocessor-only";
+const projectPath = path.join(rootPath, projectName);
 
 describe("GeoprocessingStack - sync geoprocessor only", () => {
-  afterAll(() => cleanupBuildDirs(rootPath));
+  afterAll(() => cleanupBuildDirs(projectPath));
 
   it.only("should create a valid stack", async () => {
-    const projectName = "sync-geoprocessor-only";
-    const projectPath = path.join(rootPath, projectName);
     await setupBuildDirs(projectPath);
 
     const manifest = await createTestProjectManifest(projectName, [

@@ -4,11 +4,13 @@ import {
   NullSketch,
   NullSketchCollection,
   Metric,
+  MetricPack,
   MetricDimension,
   MetricProperty,
   DataClass,
   MetricIdTypes,
   GroupMetricSketchAgg,
+  MetricDimensions,
 } from "../types";
 
 import {
@@ -18,6 +20,7 @@ import {
   isSketchCollection,
   isNullSketch,
   isNullSketchCollection,
+  hasOwnProperty,
 } from "../helpers";
 
 import reduce from "lodash/reduce";
@@ -35,7 +38,7 @@ export const MetricProperties = [
 ] as const;
 
 /**
- * Creates a base metric object with 0 value, metricId of 'metric' and all other IDs null.  Then overrides with properties of passed metric.
+ * Creates a new metric.  Defaults to ID values of null and then copies in passed metric properties
  * @param metric - partial metric
  * @returns metric
  */
@@ -47,7 +50,7 @@ export const createMetric = (metric: Partial<Metric>): Metric => {
     groupId: null,
     geographyId: null,
     sketchId: null,
-    ...metric,
+    ...cloneDeep(metric),
   };
 };
 
@@ -60,7 +63,7 @@ export const createMetrics = (metrics: Partial<Metric>[]): Metric[] =>
   metrics.map((m) => createMetric(m));
 
 /**
- * Reorders metrics to a consistent key order for readability
+ * Reorders metrics (by mutation) to a consistent key order for readability
  */
 export const rekeyMetrics = (
   metrics: Metric[],
@@ -69,10 +72,101 @@ export const rekeyMetrics = (
   return metrics.map((curMetric) => {
     var newMetric: Record<string, any> = {};
     idOrder.forEach((id) => {
-      newMetric[id] = curMetric[id];
+      if (curMetric.hasOwnProperty(id)) newMetric[id] = curMetric[id];
     });
     return newMetric;
   }) as Metric[];
+};
+
+/**
+ * Converts Metric array to a new MetricPack.
+ * Assumes metric dimensions are consistent for each element in the array, and null values are used
+ */
+export const packMetrics = (inMetrics: Metric[]): MetricPack => {
+  const metrics = cloneDeep(inMetrics);
+  const pack: MetricPack = { dimensions: [], data: [] };
+  if (metrics.length === 0) return pack;
+
+  const keys = Object.keys(metrics[0]).sort();
+  pack.dimensions = keys;
+
+  const packData: MetricPack["data"] = [];
+  // Pack data values, for-loop for speed
+  for (var a = 0, ml = metrics.length; a < ml; ++a) {
+    const curMetric = metrics[a];
+    const curRow: MetricPack["data"][0] = [];
+    for (var b = 0, kl = keys.length; b < kl; ++b) {
+      let curKey = keys[b];
+      curRow.push(curMetric[curKey]);
+    }
+    packData.push(curRow);
+  }
+  pack.data = packData;
+  return pack;
+};
+
+/**
+ * Converts MetricPack to a new Metric array.
+ * @param metricPack
+ * @returns
+ */
+export const unpackMetrics = (inMetricPack: MetricPack): Metric[] => {
+  const metricPack = cloneDeep(inMetricPack);
+  let metrics: Metric[] = [];
+
+  for (var a = 0, ml = metricPack.data.length; a < ml; ++a) {
+    let curRow = metricPack.data[a];
+    let curMetric = createMetric({});
+    for (var b = 0, kl = metricPack.dimensions.length; b < kl; ++b) {
+      const curDimension = metricPack.dimensions[b];
+      curMetric[curDimension] = curRow[b];
+    }
+    metrics.push(curMetric);
+  }
+
+  return metrics;
+};
+
+/**
+ * Checks if object is a MetricPack.  Any code inside a block guarded by a conditional call to this function will have type narrowed to MetricPack
+ */
+export const isMetricPack = (json: any): json is MetricPack => {
+  return (
+    json &&
+    hasOwnProperty(json, "dimensions") &&
+    Array.isArray(json.dimensions) &&
+    hasOwnProperty(json, "data") &&
+    Array.isArray(json.data)
+  );
+};
+
+/**
+ * Checks if object is a Metric array and returns narrowed type
+ */
+export const isMetricArray = (metrics: any): metrics is Metric[] => {
+  return (
+    metrics &&
+    Array.isArray(metrics) &&
+    metrics.length > 0 &&
+    isMetric(metrics[0])
+  );
+};
+
+/**
+ * Checks if object is a Metric and returns narrowed type
+ */
+export const isMetric = (metric: any): metric is Metric => {
+  return (
+    metric &&
+    MetricDimensions.reduce(
+      (soFar, curDim) =>
+        soFar &&
+        metric.hasOwnProperty(curDim) &&
+        (metric[curDim] === null || !!metric[curDim]),
+      true
+    ) &&
+    metric.hasOwnProperty("value")
+  );
 };
 
 /**

@@ -54,6 +54,28 @@ describe("overlapRaster test", () => {
     expect(metrics[0].value).toBe(2);
   });
 
+  test("overlapRaster - top right raster cell - simplified precision", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2323232],
+          [1, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await overlapRaster("test", raster, fix.topRightPoly, true);
+    expect(metrics.length).toBe(1);
+    expect(metrics[0].value).toBe(2323230); // Not 2323232
+  });
+
   test("overlapRaster - whole raster sum should be 5", async () => {
     const raster = await parseGeoraster(
       [

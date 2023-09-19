@@ -25,6 +25,13 @@ describe("overlapFeatures", () => {
     expect(metrics[0].value).toBeCloseTo(area(fix.sketch1));
   });
 
+  test("overlapFeatures - sketch polygon fully inside - simplified precision", async () => {
+    const metrics = await overlapFeatures("test", [fix.outer], fix.sketch1, {
+      simplifyPrecision: true,
+    });
+    expect(metrics[0].value).toBe(parseFloat(area(fix.sketch1).toPrecision(6)));
+  });
+
   test("overlapFeatures - sketch multipolygon fully inside", async () => {
     const metrics = await overlapFeatures(
       "test",

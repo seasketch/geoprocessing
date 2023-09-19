@@ -20,7 +20,9 @@ export async function overlapRaster(
   /** single sketch or collection to calculate metrics for. */
   sketch:
     | Sketch<Polygon | MultiPolygon>
-    | SketchCollection<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
+  /** Simplifies results to 6 significant digits to avoid floating pt arithmetric differences, defaults to false */
+  simplifyPrecision?: boolean
 ): Promise<Metric[]> {
   // Get raster sum for each feature
   const sumPromises: Promise<number>[] = [];
@@ -39,7 +41,7 @@ export async function overlapRaster(
       createMetric({
         metricId,
         sketchId: sumFeatures[index].properties.id,
-        value: curSum,
+        value: simplifyPrecision ? parseFloat(curSum.toPrecision(6)) : curSum,
         extra: {
           sketchName: sumFeatures[index].properties.name,
         },
@@ -54,7 +56,9 @@ export async function overlapRaster(
       createMetric({
         metricId,
         sketchId: sketch.properties.id,
-        value: collSumValue,
+        value: simplifyPrecision
+          ? parseFloat(collSumValue.toPrecision(6))
+          : collSumValue,
         extra: {
           sketchName: sketch.properties.name,
           isCollection: true,

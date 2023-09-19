@@ -20,6 +20,8 @@ interface OverlapFeatureOptions {
   /** If sketch collection, will include its child sketch metrics in addition to collection metrics, defaults to true */
   includeChildMetrics?: boolean;
   sumProperty?: string;
+  /** Simplifies results to 6 significant digits to avoid floating pt arithmetric differences, defaults to false */
+  simplifyPrecision?: boolean;
 }
 
 // ToDo: support
@@ -88,7 +90,9 @@ export async function overlapFeatures(
     return createMetric({
       metricId,
       sketchId: curSketch.properties.id,
-      value: sketchValue,
+      value: newOptions.simplifyPrecision
+        ? parseFloat(sketchValue.toPrecision(6))
+        : sketchValue,
       extra: {
         sketchName: curSketch.properties.name,
       },
@@ -106,7 +110,9 @@ export async function overlapFeatures(
         createMetric({
           metricId,
           sketchId: sketch.properties.id,
-          value: sumValue,
+          value: newOptions.simplifyPrecision
+            ? parseFloat(sumValue.toPrecision(6))
+            : sumValue,
           extra: {
             sketchName: sketch.properties.name,
             isCollection: true,

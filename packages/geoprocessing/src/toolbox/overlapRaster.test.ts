@@ -78,6 +78,30 @@ describe("overlapRaster test", () => {
     expect(metrics[0].value).toBe(0.002346);
   });
 
+  test("overlapRaster - top right raster cell - simplified precision with very small value", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 8.58e-7],
+          [1, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await overlapRaster("test", raster, fix.topRightPoly, {
+      truncate: true,
+    });
+    expect(metrics.length).toBe(1);
+    expect(metrics[0].value).toBe(8.58e-7); // Value untruncated because it would truncate to 0
+  });
+
   test("overlapRaster - whole raster sum should be 5", async () => {
     const raster = await parseGeoraster(
       [

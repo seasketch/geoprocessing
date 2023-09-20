@@ -177,7 +177,7 @@ If success, then you're now ready to create a new geoprocessing project in your 
 * To exit your devcontainer:
   * Click the blue icon in the bottom left, and click `Reopen locally`.  This will bring VSCode back out of the devcontainer session.
 * To delete a devcontainer:
-  * This is often the easiest way to "start over" with your devctonainer.
+  * This is often the easiest way to "start over" with your devcontainer.
   * First, make sure you've pushed all of your code work to Github.
   * Make sure you stop your active VSCODE devcontainer session.
   * Open the Remote Explorer panel in the left sidebar.

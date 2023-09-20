@@ -81,6 +81,7 @@ export async function createBucket(name: string, publicAccess?: boolean) {
     })
     .promise();
   if (publicAccess) {
+    await s3.deletePublicAccessBlock({ Bucket: bucket }).promise(); // Required starting 6/23
     await s3
       .putBucketPolicy({
         Bucket: bucket,

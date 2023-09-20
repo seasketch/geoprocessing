@@ -132,4 +132,61 @@ describe("createProject", () => {
     expect(gpConfig.geoprocessingFunctions.length).toBeGreaterThan(0);
     expect(gpConfig.clients.length).toBeGreaterThan(0);
   }, 120000);
+
+  it("should create empty project with all defaults", async () => {
+    const projectName = "test-project-empty-defaults";
+    const projectPath = path.join(rootPath, projectName);
+    await createProject(
+      {
+        name: projectName,
+        description: "",
+        author: "",
+        email: "",
+        license: "UNLICENSED",
+        organization: "",
+        repositoryUrl: "",
+        region: "us-west-1",
+        templates: [],
+        planningAreaType: "other",
+        bboxMaxLat: 90,
+        bboxMinLat: -90,
+        bboxMaxLng: 180,
+        bboxMinLng: -180,
+        planningAreaId: "Test Area",
+        planningAreaName: "",
+        planningAreaNameQuestion: "no",
+      },
+      false,
+      rootPath
+    );
+
+    const packageJson = JSON.parse(
+      fs.readFileSync(path.join(projectPath, "package.json")).toString()
+    );
+
+    expect(packageJson.name).toBe(projectName);
+    expect(packageJson.description).toBe("");
+    expect(packageJson.license).toBe("UNLICENSED");
+    expect(packageJson.author).toBe("");
+
+    const basicJson = JSON.parse(
+      fs
+        .readFileSync(path.join(projectPath, "project", "basic.json"))
+        .toString()
+    );
+
+    expect(basicJson.bbox).toEqual([-180, -90, 180, 90]);
+    expect(basicJson.planningAreaName).toEqual("Test Area");
+
+    const gpConfig = JSON.parse(
+      fs.readFileSync(projectPath + "/geoprocessing.json").toString()
+    ) as GeoprocessingJsonConfig;
+
+    expect(gpConfig.author).toBe("");
+    expect(gpConfig.organization).toBe("");
+    expect(gpConfig.region).toBe("us-west-1");
+    expect(gpConfig.preprocessingFunctions.length).toBe(0);
+    expect(gpConfig.geoprocessingFunctions.length).toBe(0);
+    expect(gpConfig.clients.length).toBe(0);
+  }, 120000);
 });

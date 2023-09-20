@@ -144,13 +144,18 @@ export function genVectorKeyStats(
   };
 }
 
+/** Generate fields for SQL query, each wrapped in double quotes to support non-alphanumeric characters */
+export function genFields(fieldNames: string[]) {
+  return fieldNames.length > 0
+    ? fieldNames.map((p) => `"${p}"`).join(",")
+    : "*";
+}
+
 /** Convert vector datasource to GeoJSON */
 export async function genGeojson(config: ImportVectorDatasourceConfig) {
   let { src, propertiesToKeep, layerName } = config;
   const dst = getJsonPath(config.dstPath, config.datasourceId);
-  const query = `SELECT "${
-    propertiesToKeep.length > 0 ? propertiesToKeep.join(",") : "*"
-  }" FROM "${layerName}"`;
+  const query = `SELECT ${genFields(propertiesToKeep)} FROM "${layerName}"`;
   const explodeOption =
     config.explodeMulti === undefined
       ? "-explodecollections"
@@ -165,9 +170,7 @@ export async function genGeojson(config: ImportVectorDatasourceConfig) {
 export async function genFlatgeobuf(config: ImportVectorDatasourceConfig) {
   const { src, propertiesToKeep, layerName } = config;
   const dst = getFlatGeobufPath(config.dstPath, config.datasourceId);
-  const query = `SELECT "${
-    propertiesToKeep.length > 0 ? propertiesToKeep.join(",") : "*"
-  }" FROM "${layerName}"`;
+  const query = `SELECT ${genFields(propertiesToKeep)} FROM "${layerName}"`;
   const explodeOption =
     config.explodeMulti === undefined
       ? "-explodecollections"

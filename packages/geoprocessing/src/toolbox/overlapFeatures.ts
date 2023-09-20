@@ -91,10 +91,7 @@ export async function overlapFeatures(
     return createMetric({
       metricId,
       sketchId: curSketch.properties.id,
-      value:
-        newOptions.truncate && roundDecimal(sketchValue, 6)
-          ? roundDecimal(sketchValue, 6)
-          : sketchValue,
+      value: roundDecimal(sketchValue, 6, true),
       extra: {
         sketchName: curSketch.properties.name,
       },
@@ -112,10 +109,7 @@ export async function overlapFeatures(
         createMetric({
           metricId,
           sketchId: sketch.properties.id,
-          value:
-            newOptions.truncate && roundDecimal(sumValue, 6)
-              ? roundDecimal(sumValue, 6)
-              : sumValue,
+          value: roundDecimal(sumValue, 6, true),
           extra: {
             sketchName: sketch.properties.name,
             isCollection: true,

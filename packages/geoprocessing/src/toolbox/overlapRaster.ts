@@ -47,7 +47,7 @@ export async function overlapRaster(
       createMetric({
         metricId,
         sketchId: sumFeatures[index].properties.id,
-        value: roundDecimal(curSum, 6, true),
+        value: roundDecimal(curSum, 6, { keepSmallValues: true }),
         extra: {
           sketchName: sumFeatures[index].properties.name,
         },
@@ -62,7 +62,7 @@ export async function overlapRaster(
       createMetric({
         metricId,
         sketchId: sketch.properties.id,
-        value: roundDecimal(collSumValue, 6, true),
+        value: roundDecimal(collSumValue, 6, { keepSmallValues: true }),
         extra: {
           sketchName: sketch.properties.name,
           isCollection: true,

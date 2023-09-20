@@ -14,7 +14,9 @@ describe("number", () => {
   });
 
   test("number - roundDecimal with 6 digit precision and keep small values", () => {
-    expect(roundDecimal(0.000000858374, 6, true)).toBe(0.000000858374);
-    expect(roundDecimal(8.58e-7, 6, true)).toBe(8.58e-7);
+    expect(roundDecimal(0.000000858374, 6, { keepSmallValues: true })).toBe(
+      0.000000858374
+    );
+    expect(roundDecimal(8.58e-7, 6, { keepSmallValues: true })).toBe(8.58e-7);
   });
 });

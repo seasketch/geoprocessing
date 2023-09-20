@@ -30,7 +30,9 @@ describe("overlapFeatures", () => {
     const metrics = await overlapFeatures("test", [fix.outer], fix.sketch1, {
       truncate: true,
     });
-    expect(metrics[0].value).toBe(roundDecimal(area(fix.sketch1), 6, true));
+    expect(metrics[0].value).toBe(
+      roundDecimal(area(fix.sketch1), 6, { keepSmallValues: true })
+    );
   });
 
   test("overlapFeatures - sketch multipolygon fully inside", async () => {

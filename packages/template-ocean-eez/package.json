@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/template-ocean-eez",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "template for ocean EEZ planning project",
   "author": "Tim Welch",
   "license": "BSD-3-Clause",
@@ -19,7 +19,7 @@
     "starter-template"
   ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "^2.1.0",
+    "@seasketch/geoprocessing": "^2.2.0",
     "@turf/boolean-disjoint": "^6.5.0",
     "@turf/boolean-valid": "^6.5.0"
   },

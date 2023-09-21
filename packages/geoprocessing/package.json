@@ -1,7 +1,7 @@
 {
   "name": "@seasketch/geoprocessing",
   "version": "2.1.0",
-  "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
+  "description": "Geoprocessing and reporting framework for SeaSketch Next",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "exports": {

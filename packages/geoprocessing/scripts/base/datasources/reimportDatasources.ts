@@ -76,8 +76,16 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           importVectorDatasourceOptionsSchema.parse(ds);
         // generate full config
         const config = genVectorConfig(projectClient, options, newDstPath);
-        await genGeojson(config);
-        await genFlatgeobuf(config);
+
+        await Promise.all(
+          config.formats.map(async (format) => {
+            if (format === "json") {
+              await genGeojson(config);
+            } else if (format === "fgb") {
+              await genFlatgeobuf(config);
+            }
+          })
+        );
 
         if (doPublish) {
           await Promise.all(

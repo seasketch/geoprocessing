@@ -6,7 +6,7 @@ import {
   ImportRasterDatasourceOptions,
   ImportRasterDatasourceConfig,
 } from "../../../src/types";
-import { getCogFilename, getDatasetBucketName } from "../../../src/datasources";
+import { getDatasetBucketName } from "../../../src/datasources";
 import { genRasterConfig } from "./genRasterConfig";
 import { createOrUpdateDatasource } from "./datasources";
 import { loadCog } from "../../../src/dataproviders/cog";
@@ -33,9 +33,10 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
   await genCog(config);
 
   const tempPort = 8001;
-  const url = `${projectClient.dataBucketUrl(true, tempPort)}${getCogFilename(
-    config.datasourceId
-  )}`;
+  const url = projectClient.getDatasourceUrl(config, {
+    local: true,
+    port: tempPort,
+  });
   console.log(
     `Fetching raster to calculate stats from temp file server ${url}`
   );

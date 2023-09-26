@@ -39,7 +39,7 @@ describe("Reimport datasources", () => {
           src: path.join(srcPath, `${vectorDatasourceId}.json`),
           datasourceId: vectorDatasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["tif"],
           propertiesToKeep: [],
         },
         {
@@ -56,7 +56,7 @@ describe("Reimport datasources", () => {
           src: path.join(srcPath, `${rasterDatasourceId}.tif`),
           datasourceId: rasterDatasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["tif"],
           noDataValue: 0,
           band: 1,
           measurementType: "quantitative",

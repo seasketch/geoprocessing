@@ -16,7 +16,7 @@ describe("getFeatures", () => {
       throw new Error("missing global eez land union datasource");
     const feats = await getFeatures(
       eezDatasource,
-      project.getVectorDatasourceUrl(eezDatasource),
+      project.getDatasourceUrl(eezDatasource),
       {
         bbox: [
           135.312441837621, -1.17311096529859, 165.676528225997,
@@ -41,7 +41,7 @@ describe("getFeatures", () => {
       throw new Error("missing global eez land union datasource");
     const feats = await getFeatures(
       landDatasource,
-      project.getVectorDatasourceUrl(landDatasource),
+      project.getDatasourceUrl(landDatasource),
       {
         bbox: [
           135.312441837621, -1.17311096529859, 165.676528225997,

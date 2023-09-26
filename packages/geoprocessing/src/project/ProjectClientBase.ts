@@ -34,6 +34,12 @@ import {
   geographiesSchema,
   metricsSchema,
   createMetrics,
+  isInternalRasterDatasource,
+  getCogFilename,
+  ImportRasterDatasourceConfig,
+  ImportVectorDatasourceConfig,
+  isImportVectorDatasourceConfig,
+  isImportRasterDatasourceConfig,
 } from "..";
 
 export interface ProjectClientConfig {
@@ -50,8 +56,13 @@ export interface ProjectClientConfig {
 export interface ProjectClientInterface {
   getDatasourceById(datasourceId: string): Datasource;
   dataBucketUrl(local?: boolean, port?: number): string;
-  getVectorDatasourceUrl(
-    ds: InternalVectorDatasource | ExternalVectorDatasource
+  getDatasourceUrl(
+    ds:
+      | InternalVectorDatasource
+      | InternalRasterDatasource
+      | ExternalVectorDatasource
+      | ImportRasterDatasourceConfig
+      | ImportVectorDatasourceConfig
   );
 }
 
@@ -141,16 +152,34 @@ export class ProjectClientBase implements ProjectClientInterface {
       : `https://gp-${this._package.name}-datasets.s3.${this._geoprocessing.region}.amazonaws.com/`;
   }
 
-  public getVectorDatasourceUrl(
-    ds: InternalVectorDatasource | ExternalVectorDatasource
+  public getDatasourceUrl(
+    ds:
+      | InternalVectorDatasource
+      | InternalRasterDatasource
+      | ExternalVectorDatasource
+      | ImportRasterDatasourceConfig
+      | ImportVectorDatasourceConfig,
+    options: {
+      local?: boolean;
+      port?: number;
+    } = {}
   ) {
-    if (isInternalVectorDatasource(ds) && ds.formats.includes("fgb")) {
-      return `${this.dataBucketUrl()}${getFlatGeobufFilename(ds)}`;
+    const { local, port } = options;
+    if (
+      (isInternalVectorDatasource(ds) || isImportVectorDatasourceConfig(ds)) &&
+      ds.formats.includes("fgb")
+    ) {
+      return `${this.dataBucketUrl(local, port)}${getFlatGeobufFilename(ds)}`;
+    } else if (
+      (isInternalRasterDatasource(ds) || isImportRasterDatasourceConfig(ds)) &&
+      ds.formats.includes("tif")
+    ) {
+      return `${this.dataBucketUrl(local, port)}${getCogFilename(ds)}`;
     } else if (isExternalVectorDatasource(ds)) {
       return ds.url;
     }
     throw new Error(
-      `getVectorDatasourceUrl: cannot generate url for datasource ${ds.datasourceId}`
+      `getDatasourceUrl: cannot generate url for datasource ${ds.datasourceId}`
     );
   }
 

@@ -33,7 +33,7 @@ const infile = "/mnt/c/data/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp";
   const landDs = project.getExternalVectorDatasourceById(
     "global-clipping-osm-land"
   );
-  const landUrl = project.getVectorDatasourceUrl(landDs);
+  const landUrl = project.getDatasourceUrl(landDs);
   for (const eezFeat of eezFeatures.features) {
     // Get land features that overlap with eez
     const eezBbox = bbox(eezFeat);

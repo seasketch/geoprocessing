@@ -122,7 +122,7 @@ describe("importDatasource", () => {
           src: path.join(srcPath, `${datasourceId}.tif`),
           datasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["tif"],
           noDataValue: 0,
           band: 1,
           measurementType: "quantitative",

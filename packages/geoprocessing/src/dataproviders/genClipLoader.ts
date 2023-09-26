@@ -29,7 +29,7 @@ export const genClipLoader = <P extends ProjectClientInterface>(
           throw new Error(`Expected vector datasource for ${ds.datasourceId}`);
         }
 
-        const url = project.getVectorDatasourceUrl(ds);
+        const url = project.getDatasourceUrl(ds);
 
         const featureBox = bbox(feature);
         const clipFeatures = await getFeatures(ds, url, {

@@ -1,1 +1,3946 @@
-{"type":"FeatureCollection","name":"SELECT","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":[{"type":"Feature","properties":{"GEONAME":"Albanian Exclusive Economic Zone"},"geometry":null,"area_turf":12177338992.529707,"bbox":[18.321493067051733,39.64039404355046,20.020827650775743,42.011203050580434]},{"type":"Feature","properties":{"GEONAME":"Algerian Exclusive Economic Zone"},"geometry":null,"area_turf":131422966840.63657,"bbox":[-2.212332550706321,35.070668458682405,8.642049726043524,38.800874592388794]},{"type":"Feature","properties":{"GEONAME":"American Samoa Exclusive Economic Zone"},"geometry":null,"area_turf":408260850642.9071,"bbox":[-173.7746906500533,-17.55526875286155,-165.2008333331916,-10.024476331539347]},{"type":"Feature","properties":{"GEONAME":"Amsterdam Island & St. Paul Island Exclusive Economic Zone"},"geometry":null,"area_turf":512995953849.33514,"bbox":[73.2414778285395,-42.07807010774913,81.81344155628315,-34.451897870190464]},{"type":"Feature","properties":{"GEONAME":"Angolan Exclusive Economic Zone"},"geometry":null,"area_turf":498911605618.28015,"bbox":[8.195856622685255,-17.272144555826458,13.865172505706738,-5.029881000907324]},{"type":"Feature","properties":{"GEONAME":"Anguilla Exclusive Economic Zone"},"geometry":null,"area_turf":90619334916.19818,"bbox":[-63.89909378544968,17.938824711491336,-60.73666931233859,21.939841734208755]},{"type":"Feature","properties":{"GEONAME":"Antarctic 200NM zone beyond the coastline"},"geometry":null,"area_turf":9571891963750.314,"bbox":[-180,-85.5624999997749,180,-57.188654502703]},{"type":"Feature","properties":{"GEONAME":"Antigua and Barbuda Exclusive Economic Zone"},"geometry":null,"area_turf":112156580689.79012,"bbox":[-62.75095982523558,16.611630439393437,-58.36828209594171,20.92249020602935]},{"type":"Feature","properties":{"GEONAME":"Argentinean Exclusive Economic Zone"},"geometry":null,"area_turf":1072485533157.7753,"bbox":[-69.60083675371311,-58.391917214607545,-52.66714194864173,-31.52702534234568]},{"type":"Feature","properties":{"GEONAME":"Aruban Exclusive Economic Zone"},"geometry":null,"area_turf":30128606771.305614,"bbox":[-70.4166666664334,12.150501230947128,-68.87016907294432,15.300000000100113]},{"type":"Feature","properties":{"GEONAME":"Ascension Exclusive Economic Zone"},"geometry":null,"area_turf":448891364656.63354,"bbox":[-17.78279067884651,-11.344694109345568,-10.932478470404817,-4.537528547004698]},{"type":"Feature","properties":{"GEONAME":"Australian Exclusive Economic Zone"},"geometry":null,"area_turf":6897919679248.157,"bbox":[109.23348002808174,-47.193641170803204,163.1920849105907,-8.883333333166505]},{"type":"Feature","properties":{"GEONAME":"Australian Exclusive Economic Zone (Macquarie Island)"},"geometry":null,"area_turf":474675511707.8813,"bbox":[152.8625534398898,-58.44946994588107,164.69123333333354,-51.02734444399064]},{"type":"Feature","properties":{"GEONAME":"Azerbaijanis Exclusive Economic Zone"},"geometry":null,"area_turf":80665977403.1068,"bbox":[48.593871354179925,38.28529210144961,51.817353093370826,42.60552261177915]},{"type":"Feature","properties":{"GEONAME":"Bahamas Exclusive Economic Zone"},"geometry":null,"area_turf":622459424946.5708,"bbox":[-81.23147808234722,20.373544444428944,-70.51048641886854,30.372393704069736]},{"type":"Feature","properties":{"GEONAME":"Bahraini Exclusive Economic Zone"},"geometry":null,"area_turf":7545774742.633828,"bbox":[50.269625000000445,25.535000000000394,51.121893252936815,27.166666666722477]},{"type":"Feature","properties":{"GEONAME":"Bangladeshi Exclusive Economic Zone"},"geometry":null,"area_turf":112874988775.80673,"bbox":[88.92677892151082,17.863384600077893,92.42944444444501,24.37766897644252]},{"type":"Feature","properties":{"GEONAME":"Barbados Exclusive Economic Zone"},"geometry":null,"area_turf":186119788881.4135,"bbox":[-60.38157809805057,10.693349318268517,-56.001580028295336,16.019233498927193]},{"type":"Feature","properties":{"GEONAME":"Bassas da India Exclusive Economic Zone"},"geometry":null,"area_turf":121296430745.382,"bbox":[37.544554576832894,-23.18541313382609,41.580574455547236,-19.10531746502876]},{"type":"Feature","properties":{"GEONAME":"Belgian Exclusive Economic Zone"},"geometry":null,"area_turf":3486486690.822984,"bbox":[2.238333333455898,51.08931434138415,3.370403170770004,51.87611444429919]},{"type":"Feature","properties":{"GEONAME":"Belizean Exclusive Economic Zone"},"geometry":null,"area_turf":34500830738.84652,"bbox":[-88.94536983974601,15.887456102117582,-86.17251230290017,18.48793375473919]},{"type":"Feature","properties":{"GEONAME":"Beninese Exclusive Economic Zone"},"geometry":null,"area_turf":35764590547.176704,"bbox":[1.631998890012142,2.969916666221337,2.984194444218446,6.512100815800238]},{"type":"Feature","properties":{"GEONAME":"Bermudian Exclusive Economic Zone"},"geometry":null,"area_turf":465727317952.2597,"bbox":[-68.91705579978532,28.90577059963361,-60.704798800424165,35.80855140022713]},{"type":"Feature","properties":{"GEONAME":"Bonaire Exclusive Economic Zone"},"geometry":null,"area_turf":13059039217.91084,"bbox":[-68.72019218132397,11.66666666623378,-67.98972222190275,14.271187892007703]},{"type":"Feature","properties":{"GEONAME":"Bosnian and Herzegovinian Exclusive Economic Zone"},"geometry":null,"area_turf":12986161.14875405,"bbox":[17.541998087042316,42.88342379477254,17.647989631117014,42.938361644674444]},{"type":"Feature","properties":{"GEONAME":"Brazilian Exclusive Economic Zone"},"geometry":null,"area_turf":3223627792382.5913,"bbox":[-54.58321261397063,-35.78778688484125,-26.014521804637326,7.045066039966088]},{"type":"Feature","properties":{"GEONAME":"Brazilian Exclusive Economic Zone (Trindade)"},"geometry":null,"area_turf":474881274011.08466,"bbox":[-32.89888993422278,-23.877612489025026,-25.29395969148618,-17.11870173909378]},{"type":"Feature","properties":{"GEONAME":"British Virgin Islands Exclusive Economic Zone"},"geometry":null,"area_turf":81999535523.5972,"bbox":[-65.8420654889058,17.96447758057603,-63.25764052708834,22.096731597485388]},{"type":"Feature","properties":{"GEONAME":"Bruneian Exclusive Economic Zone"},"geometry":null,"area_turf":43421678768.14199,"bbox":[111.7259573552104,4.55212414291536,115.25644611111167,7.587377390728506]},{"type":"Feature","properties":{"GEONAME":"Bulgarian Exclusive Economic Zone"},"geometry":null,"area_turf":34770068080.28657,"bbox":[27.443712115721866,41.978194444444625,31.330820012970065,43.73847246203471]},{"type":"Feature","properties":{"GEONAME":"Cambodian Exclusive Economic Zone"},"geometry":null,"area_turf":49004672418.156944,"bbox":[101.30259927903435,8.78188205539395,104.52001130577773,11.830980777441411]},{"type":"Feature","properties":{"GEONAME":"Cameroonian Exclusive Economic Zone"},"geometry":null,"area_turf":15243888569.41823,"bbox":[8.32607699985374,2.232365250755706,10.127436041840298,4.932517170531057]},{"type":"Feature","properties":{"GEONAME":"Canadian Exclusive Economic Zone"},"geometry":null,"area_turf":5721236334481.179,"bbox":[-141.00000000229062,40.051148997328625,-47.694147024065614,86.4318731326392]},{"type":"Feature","properties":{"GEONAME":"Cape Verdean Exclusive Economic Zone"},"geometry":null,"area_turf":806498627457.4524,"bbox":[-28.847093094170845,11.451306690351586,-19.535000000249397,20.555512486612002]},{"type":"Feature","properties":{"GEONAME":"Cayman Islands Exclusive Economic Zone"},"geometry":null,"area_turf":119025123435.69614,"bbox":[-83.5972222218279,17.584166666458643,-78.72694300051896,20.633437737361902]},{"type":"Feature","properties":{"GEONAME":"Chagos Archipelago Exclusive Economic Zone"},"geometry":null,"area_turf":655066948067.7838,"bbox":[67.88312830056216,-10.796742471849312,75.85286678900174,-2.288339273758435]},{"type":"Feature","properties":{"GEONAME":"Chilean Exclusive Economic Zone"},"geometry":null,"area_turf":2491308838447.1406,"bbox":[-84.8413699638522,-59.85268183849573,-65.72666666666646,-18.350116666666636]},{"type":"Feature","properties":{"GEONAME":"Chilean Exclusive Economic Zone (Easter Island)"},"geometry":null,"area_turf":732678128892.1676,"bbox":[-113.19655223526446,-30.54684479054113,-101.64147350339582,-23.12315708266425]},{"type":"Feature","properties":{"GEONAME":"Chilean Exclusive Economic Zone (San Felix and San Ambrosio islands)"},"geometry":null,"area_turf":452803389623.248,"bbox":[-83.82780313236464,-29.698358404363788,-76.15315012880595,-22.9399559979893]},{"type":"Feature","properties":{"GEONAME":"Chinese Exclusive Economic Zone"},"geometry":null,"area_turf":967203307680.9156,"bbox":[107.15944444450625,15.979308293203118,126.18630098040674,41.15916395195504]},{"type":"Feature","properties":{"GEONAME":"Christmas Island Exclusive Economic Zone"},"geometry":null,"area_turf":330034802063.87463,"bbox":[102.14933221301172,-13.918822880571412,109.03497232571291,-8.726071440144736]},{"type":"Feature","properties":{"GEONAME":"Clipperton Exclusive Economic Zone"},"geometry":null,"area_turf":438400708467.93396,"bbox":[-112.61852288442346,6.936490687895045,-105.81587556370609,13.670815165587555]},{"type":"Feature","properties":{"GEONAME":"Cocos Islands Exclusive Economic Zone"},"geometry":null,"area_turf":470311348720.7918,"bbox":[93.41158618135742,-15.55884000416276,100.33610963025566,-8.471743827415551]},{"type":"Feature","properties":{"GEONAME":"Colombian Exclusive Economic Zone"},"geometry":null,"area_turf":722727068290.5424,"bbox":[-84.80980215114798,1.376809358665341,-70.6981485178394,15.033333333666619]},{"type":"Feature","properties":{"GEONAME":"Colombian Exclusive Economic Zone (Bajo Nuevo)"},"geometry":null,"area_turf":1559348100.0896723,"bbox":[-78.84083333329144,15.649166666908215,-78.42583333304177,16.05083333289234]},{"type":"Feature","properties":{"GEONAME":"Colombian Exclusive Economic Zone (Quitasueño)"},"geometry":null,"area_turf":3711240246.079127,"bbox":[-81.44651565611784,13.913463929168799,-80.89714004113338,14.69623571440654]},{"type":"Feature","properties":{"GEONAME":"Colombian Exclusive Economic Zone (Serrana)"},"geometry":null,"area_turf":2854849655.3861647,"bbox":[-80.57745735463388,14.080746748393267,-80.0188427397419,14.673512490916494]},{"type":"Feature","properties":{"GEONAME":"Colombian Exclusive Economic Zone (Serranilla)"},"geometry":null,"area_turf":1561388257.8405259,"bbox":[-80.06305555526941,15.596388888736328,-79.64805555591894,15.998333333716502]},{"type":"Feature","properties":{"GEONAME":"Comoran Exclusive Economic Zone"},"geometry":null,"area_turf":165492650463.5766,"bbox":[41.83517740154312,-14.463057397485855,45.76749999996312,-8.105182064398107]},{"type":"Feature","properties":{"GEONAME":"Congolese Exclusive Economic Zone"},"geometry":null,"area_turf":34030545589.918106,"bbox":[8.911353333189908,-6.734454479090815,12.009580135514966,-3.925223231666706]},{"type":"Feature","properties":{"GEONAME":"Cook Islands Exclusive Economic Zone"},"geometry":null,"area_turf":1980842954273.7507,"bbox":[-168.52359118283155,-25.305960237674654,-154.80555555554412,-5.798219471850928]},{"type":"Feature","properties":{"GEONAME":"Costa Rican Exclusive Economic Zone"},"geometry":null,"area_turf":585611573856.112,"bbox":[-90.43956702689638,2.147619162004816,-79.99999999999989,11.601707894500336]},{"type":"Feature","properties":{"GEONAME":"Croatian Exclusive Economic Zone"},"geometry":null,"area_turf":55431249294.8459,"bbox":[13.008333333217195,41.629702201195926,18.549245177323428,45.564946670145616]},{"type":"Feature","properties":{"GEONAME":"Crozet Islands Exclusive Economic Zone"},"geometry":null,"area_turf":575213448366.182,"bbox":[45.36880483147823,-49.81812147072922,57.15183064117119,-42.601845611385826]},{"type":"Feature","properties":{"GEONAME":"Cuban Exclusive Economic Zone"},"geometry":null,"area_turf":353995728955.6441,"bbox":[-86.93965782944514,18.83223752374286,-73.58235555542797,25.224565781286287]},{"type":"Feature","properties":{"GEONAME":"Curaçaoan Exclusive Economic Zone"},"geometry":null,"area_turf":25550356794.0409,"bbox":[-69.54599572122547,11.66666666623378,-68.40522271015982,15.241854594014427]},{"type":"Feature","properties":{"GEONAME":"Cypriote Exclusive Economic Zone"},"geometry":null,"area_turf":98691861636.21713,"bbox":[29.84647999845376,32.88888888871139,35.19429819290772,36.2191099960296]},{"type":"Feature","properties":{"GEONAME":"Danish Exclusive Economic Zone"},"geometry":null,"area_turf":104619394697.10458,"bbox":[3.249999999900609,54.36483333333359,16.5073720939491,58.261444444618576]},{"type":"Feature","properties":{"GEONAME":"Democratic Republic of the Congo Exclusive Economic Zone"},"geometry":null,"area_turf":13448441185.229895,"bbox":[9.007324264103858,-7.065050672650344,13.650399804207808,-5.527091025929963]},{"type":"Feature","properties":{"GEONAME":"Djiboutian Exclusive Economic Zone"},"geometry":null,"area_turf":7267907272.639868,"bbox":[42.513462066521384,11.461013988704906,44.14265365044608,12.71483242634531]},{"type":"Feature","properties":{"GEONAME":"Dominican Exclusive Economic Zone"},"geometry":null,"area_turf":28754888310.649494,"bbox":[-62.813888888960776,14.48861111141376,-57.8750000002496,16.50083333289217]},{"type":"Feature","properties":{"GEONAME":"Dominican Republic Exclusive Economic Zone"},"geometry":null,"area_turf":352547899016.4302,"bbox":[-73.47474846916623,15.011111111111276,-65.82185139747415,24.089310214395056]},{"type":"Feature","properties":{"GEONAME":"Dutch Exclusive Economic Zone"},"geometry":null,"area_turf":64147422748.87682,"bbox":[2.53933305536961,51.0397591587585,7.210279465125637,55.76500000034997]},{"type":"Feature","properties":{"GEONAME":"East Timorian Exclusive Economic Zone"},"geometry":null,"area_turf":76117451407.90802,"bbox":[124.94133478876986,-11.400169444444273,128.50201111111116,-8.1043673667605]},{"type":"Feature","properties":{"GEONAME":"Ecuadorian Exclusive Economic Zone"},"geometry":null,"area_turf":237878695264.65005,"bbox":[-84.48900000004986,-3.444141626634632,-78.76201951458856,1.45666666698321]},{"type":"Feature","properties":{"GEONAME":"Ecuadorian Exclusive Economic Zone (Galapagos)"},"geometry":null,"area_turf":847082128368.7772,"bbox":[-95.3388321351947,-4.763353680827663,-85.91067114585661,5.031639107359226]},{"type":"Feature","properties":{"GEONAME":"Egyptian Exclusive Economic Zone"},"geometry":null,"area_turf":244123859295.95816,"bbox":[25.14461203411841,23.093082706901725,37.25764291119194,33.820853487698486]},{"type":"Feature","properties":{"GEONAME":"El Salvador Exclusive Economic Zone"},"geometry":null,"area_turf":95685592234.43405,"bbox":[-91.44010240388354,9.944877746710787,-87.59714672474138,13.747722625698927]},{"type":"Feature","properties":{"GEONAME":"Equatorial Guinean Exclusive Economic Zone"},"geometry":null,"area_turf":306173324732.71576,"bbox":[2.28586355495932,-4.82015829397001,9.920082569155511,4.123405766363277]},{"type":"Feature","properties":{"GEONAME":"Eritrean Exclusive Economic Zone"},"geometry":null,"area_turf":78556380136.9238,"bbox":[38.566904545209155,12.71066665634116,43.25290245038801,18.103843047618767]},{"type":"Feature","properties":{"GEONAME":"Estonian Exclusive Economic Zone"},"geometry":null,"area_turf":36329754642.372116,"bbox":[20.371333333466907,57.58638333333346,28.20898543722845,59.99491666651468]},{"type":"Feature","properties":{"GEONAME":"Faeroe Exclusive Economic Zone"},"geometry":null,"area_turf":264616298960.44318,"bbox":[-14.000885397642605,59.94083333333356,-0.486397198071984,65.69336381908505]},{"type":"Feature","properties":{"GEONAME":"Fijian Exclusive Economic Zone"},"geometry":null,"area_turf":1296135615965.7427,"bbox":[-180,-25.0971098344673,180,-9.78332062105598]},{"type":"Feature","properties":{"GEONAME":"Finnish Exclusive Economic Zone"},"geometry":null,"area_turf":80706151933.5256,"bbox":[19.08320000018037,58.84450000027496,27.83119930050762,66.77515614004386]},{"type":"Feature","properties":{"GEONAME":"French Exclusive Economic Zone"},"geometry":null,"area_turf":344722998067.611,"bbox":[-9.877283333658653,41.24333333328181,10.218333333333732,51.55777777807404]},{"type":"Feature","properties":{"GEONAME":"French Guiana Exclusive Economic Zone"},"geometry":null,"area_turf":132403954216.49245,"bbox":[-54.3886945245325,3.850193023789174,-49.40613340241552,8.831757024267233]},{"type":"Feature","properties":{"GEONAME":"French Polynesian Exclusive Economic Zone"},"geometry":null,"area_turf":4791973459437.845,"bbox":[-158.13106403907386,-31.24447428785797,-131.9780908040471,-4.543219364282123]},{"type":"Feature","properties":{"GEONAME":"Gabonese Exclusive Economic Zone"},"geometry":null,"area_turf":203103182399.6335,"bbox":[6.922445995286665,-6.447263850046468,11.180538773645793,1.073768581455028]},{"type":"Feature","properties":{"GEONAME":"Gambian Exclusive Economic Zone"},"geometry":null,"area_turf":23095065452.657097,"bbox":[-20.237308313928054,13.055833333040354,-15.299880742601829,13.642830849064737]},{"type":"Feature","properties":{"GEONAME":"Georgian Exclusive Economic Zone"},"geometry":null,"area_turf":22965888049.10584,"bbox":[38.97584981661592,41.52049160040724,42.35496044187104,43.38569761265495]},{"type":"Feature","properties":{"GEONAME":"German Exclusive Economic Zone"},"geometry":null,"area_turf":56643836720.85603,"bbox":[3.349999999800559,52.87112224079934,14.750000000300048,55.9192777774912]},{"type":"Feature","properties":{"GEONAME":"Ghanaian Exclusive Economic Zone"},"geometry":null,"area_turf":228991659175.33307,"bbox":[-3.788075973413441,1.386880669307502,2.166937963916411,6.122303962458233]},{"type":"Feature","properties":{"GEONAME":"Greek Exclusive Economic Zone"},"geometry":null,"area_turf":483830191006.7898,"bbox":[18.26166666708329,33.28103042211666,30.103592354703807,41.091325521555575]},{"type":"Feature","properties":{"GEONAME":"Greenlandic Exclusive Economic Zone"},"geometry":null,"area_turf":2259365409268.4175,"bbox":[-75.00000000019963,56.38706986578171,7.96833243569364,86.99400535016684]},{"type":"Feature","properties":{"GEONAME":"Grenadian Exclusive Economic Zone"},"geometry":null,"area_turf":25733518310.730125,"bbox":[-63.267087345804185,11.366803951041732,-60.78119118912181,13.35158612210195]},{"type":"Feature","properties":{"GEONAME":"Guadeloupean Exclusive Economic Zone"},"geometry":null,"area_turf":91369468304.3731,"bbox":[-62.813888888960776,15.064999999850286,-57.53364581385722,18.541532550087297]},{"type":"Feature","properties":{"GEONAME":"Guam Exclusive Economic Zone"},"geometry":null,"area_turf":209473380746.3635,"bbox":[141.19540676780846,10.953972222540159,148.07709548426934,15.726687346843676]},{"type":"Feature","properties":{"GEONAME":"Guatemalan Exclusive Economic Zone"},"geometry":null,"area_turf":111317637083.77504,"bbox":[-94.30880809711562,10.584149194191511,-88.21344394448232,16.072351465447866]},{"type":"Feature","properties":{"GEONAME":"Guernsey Exclusive Economic Zone"},"geometry":null,"area_turf":6519099959.596864,"bbox":[-3.674362385814561,49.21531818003993,-2.048888888888598,50.15297222220141]},{"type":"Feature","properties":{"GEONAME":"Guinea Bissau Exclusive Economic Zone"},"geometry":null,"area_turf":107416064268.9633,"bbox":[-19.804168333321286,8.639183291575819,-14.822735070866486,12.413515329668869]},{"type":"Feature","properties":{"GEONAME":"Guinean Exclusive Economic Zone"},"geometry":null,"area_turf":102818641848.77821,"bbox":[-17.934699999614224,7.47841011363613,-13.09405350706345,11.302204012605145]},{"type":"Feature","properties":{"GEONAME":"Guyanese Exclusive Economic Zone"},"geometry":null,"area_turf":135921909855.76984,"bbox":[-59.84489199007291,5.996146227665605,-55.767343657683426,10.698417287028462]},{"type":"Feature","properties":{"GEONAME":"Haitian Exclusive Economic Zone"},"geometry":null,"area_turf":104063059325.31514,"bbox":[-74.96492916085182,14.878155918960587,-71.75861942754443,20.722519391057205]},{"type":"Feature","properties":{"GEONAME":"Heard and McDonald Islands Exclusive Economic Zone"},"geometry":null,"area_turf":416545510942.34436,"bbox":[67.05405956409797,-56.524553196372864,79.40902580529686,-49.8261905707643]},{"type":"Feature","properties":{"GEONAME":"Honduran Exclusive Economic Zone"},"geometry":null,"area_turf":209700880499.5565,"bbox":[-88.23779666458415,12.983988449807313,-80.22399028941993,19.5404999995756]},{"type":"Feature","properties":{"GEONAME":"Howland and Baker Islands Exclusive Economic Zone"},"geometry":null,"area_turf":437809899666.2679,"bbox":[-179.95194791399987,-3.014830555520419,-173.14298275041847,4.170125718000023]},{"type":"Feature","properties":{"GEONAME":"Icelandic Exclusive Economic Zone"},"geometry":null,"area_turf":759973238479.4688,"bbox":[-30.867924725245615,59.96894076540423,-5.57340970769161,69.5833333333926]},{"type":"Feature","properties":{"GEONAME":"Ile Europa Exclusive Economic Zone"},"geometry":null,"area_turf":128533210556.57451,"bbox":[38.01246168002862,-25.750944431739995,41.82035062388266,-20.91624336694173]},{"type":"Feature","properties":{"GEONAME":"Indian Exclusive Economic Zone"},"geometry":null,"area_turf":1669156173142.6104,"bbox":[65.63914950074926,4.789999999700314,89.37354884720165,23.990036324517007]},{"type":"Feature","properties":{"GEONAME":"Indian Exclusive Economic Zone (Andaman and Nicobar Islands)"},"geometry":null,"area_turf":668531049995.5001,"bbox":[88.79875114634879,3.84065778732753,95.69666666683347,15.718269162791785]},{"type":"Feature","properties":{"GEONAME":"Indonesian Exclusive Economic Zone"},"geometry":null,"area_turf":6060465975026.265,"bbox":[92.05060462190619,-13.942138889198247,141.3999999999005,7.783333333766848]},{"type":"Feature","properties":{"GEONAME":"Iranian Exclusive Economic Zone"},"geometry":null,"area_turf":216084446324.83673,"bbox":[48.102167816891466,23.34666666663361,61.61229693865303,38.70501529522002]},{"type":"Feature","properties":{"GEONAME":"Iraqi Exclusive Economic Zone"},"geometry":null,"area_turf":1191561622.109411,"bbox":[47.83492314808498,29.47813285274907,48.86192558639678,30.452845931095112]},{"type":"Feature","properties":{"GEONAME":"Irish Exclusive Economic Zone"},"geometry":null,"area_turf":426258788327.6049,"bbox":[-16.073890430098885,48.178707779630656,-5.272333333332881,56.7]},{"type":"Feature","properties":{"GEONAME":"Israeli Exclusive Economic Zone"},"geometry":null,"area_turf":24694907210.200054,"bbox":[32.97222222247754,29.449959436798025,35.10561287403536,33.48099254856743]},{"type":"Feature","properties":{"GEONAME":"Italian Exclusive Economic Zone"},"geometry":null,"area_turf":537362879055.34894,"bbox":[5.889722222129848,35.06440614922465,18.99523827942329,45.80891370810167]},{"type":"Feature","properties":{"GEONAME":"Ivory Coast Exclusive Economic Zone"},"geometry":null,"area_turf":172910999554.31638,"bbox":[-7.594489527369547,1.013434462930149,-2.850222348881971,5.544782877028666]},{"type":"Feature","properties":{"GEONAME":"Jamaican Exclusive Economic Zone"},"geometry":null,"area_turf":258495701069.01758,"bbox":[-80.83305555516966,14.083333333766447,-74.00943069247228,19.35780662807366]},{"type":"Feature","properties":{"GEONAME":"Jan Mayen Exclusive Economic Zone"},"geometry":null,"area_turf":290101019754.9381,"bbox":[-13.62955555589528,67.61186853100801,2.38665844393239,74.36302777781003]},{"type":"Feature","properties":{"GEONAME":"Japanese Exclusive Economic Zone"},"geometry":null,"area_turf":4080510963652.1206,"bbox":[122.3863875018823,17.06508159224201,157.6378941052291,46.09947625882256]},{"type":"Feature","properties":{"GEONAME":"Jarvis Island Exclusive Economic Zone"},"geometry":null,"area_turf":325347211470.41156,"bbox":[-163.34523866613145,-3.73480883775747,-156.99744444420566,2.042111111538745]},{"type":"Feature","properties":{"GEONAME":"Jersey Exclusive Economic Zone"},"geometry":null,"area_turf":2274795140.132928,"bbox":[-2.55801007991596,48.87216666655874,-1.83333333376595,49.432203154365396]},{"type":"Feature","properties":{"GEONAME":"Johnston Atoll Exclusive Economic Zone"},"geometry":null,"area_turf":444926046528.68005,"bbox":[-173.03289041799994,13.35822166500003,-165.98451789999984,20.132119438000075]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Argentina / Uruguay"},"geometry":null,"area_turf":41496629264.25116,"bbox":[-56.783333333333246,-37.53333333333333,-53.533333333333275,-34.9704528336932]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Colombia / Dominican Republic"},"geometry":null,"area_turf":13186731085.696661,"bbox":[-73.34166666688293,14.674999999550636,-71.66666666663309,15.366666666933213]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Colombia / Jamaica"},"geometry":null,"area_turf":15339565470.392948,"bbox":[-80.0181944443178,14.493611110864151,-78.43055555529446,16.1694444445058]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Costa Rica / Ecuador (Galapagos)"},"geometry":null,"area_turf":17453303827.921837,"bbox":[-90.47111111098863,1.983055555569507,-86.98444444415532,4.719722222103201]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Croatia / Slovenia"},"geometry":null,"area_turf":98348084.61275257,"bbox":[13.211666666548922,45.39905556000005,13.452138890000185,45.564946670145616]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Ecuador / Colombia"},"geometry":null,"area_turf":18765146103.28174,"bbox":[-83.97583333333313,1.28916666676183,-79.04388888926383,1.624444444444393]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Guyana / Barbados"},"geometry":null,"area_turf":67579039.27543946,"bbox":[-57.173888888888825,10.604444444444425,-57.0775,10.744999999992245]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Honduras / Cayman Islands"},"geometry":null,"area_turf":2086928018.0211399,"bbox":[-84.19999999979993,18.416666666233866,-83.63333333306676,18.95]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Iceland / Denmark (Faeroe Islands)"},"geometry":null,"area_turf":1277111434.9269896,"bbox":[-12.145394444146774,62.53932222250265,-10.093233333151431,63.5]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Iceland / Norway (Jan Mayen)"},"geometry":null,"area_turf":45276381572.048996,"bbox":[-10.49999999973764,68.00000000000011,-6.50000000039941,70.58333333326681]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Italy / France"},"geometry":null,"area_turf":67099961.86331674,"bbox":[8.998888888611702,41.27111111148892,9.098888889311098,41.343333333067164]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Japan / Korea"},"geometry":null,"area_turf":82967997874.51094,"bbox":[125.92500000025015,28.599999999600414,129.1500000001008,32.94999999990034]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Nigeria / Sao Tome and Principe"},"geometry":null,"area_turf":34768492840.518906,"bbox":[3.575833333541595,1.154722221853135,7.606944444530882,3.039444444305829]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Peru / Ecuador"},"geometry":null,"area_turf":16231785569.539875,"bbox":[-84.51583333364138,-3.5605555559941,-80.38361111136368,-3.224444444455486]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Senegal / Guinea Bissau"},"geometry":null,"area_turf":63900640992.892334,"bbox":[-20.18916666680795,9.339444444305883,-16.889166667107673,12.33499999955066]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Spain / France"},"geometry":null,"area_turf":2859370793.7638507,"bbox":[-5.666666666366524,45.00833333311698,-4.999999999799854,45.500000000000256]},{"type":"Feature","properties":{"GEONAME":"Joint regime area Sweden / Norway"},"geometry":null,"area_turf":139508667.04403546,"bbox":[10.268138888898847,58.76147222196565,10.640277777797678,58.89277777777255]},{"type":"Feature","properties":{"GEONAME":"Joint regime area United Kingdom / Denmark (Faeroe Islands)"},"geometry":null,"area_turf":7909117652.305478,"bbox":[-11.265927630055785,59.830555555794405,-4.736111110738818,60.40194444478038]},{"type":"Feature","properties":{"GEONAME":"Joint regime area United States / Russia"},"geometry":null,"area_turf":8434413342.705978,"bbox":[-180,51.1700648212503,180,73.3560218928258]},{"type":"Feature","properties":{"GEONAME":"Jordanian Exclusive Economic Zone"},"geometry":null,"area_turf":97422029.20397826,"bbox":[34.88535215893168,29.357355952415503,35.00137317153505,29.542523200176305]},{"type":"Feature","properties":{"GEONAME":"Juan de Nova Exclusive Economic Zone"},"geometry":null,"area_turf":63118503296.10183,"bbox":[40.9375657270775,-19.251737868008107,43.31358670646168,-15.326963112769974]},{"type":"Feature","properties":{"GEONAME":"Kazakh Exclusive Economic Zone"},"geometry":null,"area_turf":114397546576.0153,"bbox":[49.000000000200174,41.222766743690414,53.845257759238706,47.13060986965007]},{"type":"Feature","properties":{"GEONAME":"Kenyan Exclusive Economic Zone"},"geometry":null,"area_turf":114579652369.89223,"bbox":[39.22130441676589,-4.900325,44.32958535569426,-1.654068112253469]},{"type":"Feature","properties":{"GEONAME":"Kerguelen Exclusive Economic Zone"},"geometry":null,"area_turf":550300857071.2936,"bbox":[63.29775192101434,-53.17862968133764,75.65145686034626,-45.11797528992756]},{"type":"Feature","properties":{"GEONAME":"Kiribati Exclusive Economic Zone (Gilbert Islands)"},"geometry":null,"area_turf":1060312875904.9884,"bbox":[-180,-4.36169722222215,180,5.61710277767467]},{"type":"Feature","properties":{"GEONAME":"Kiribati Exclusive Economic Zone (Line Islands)"},"geometry":null,"area_turf":1651669159618.7966,"bbox":[-163.0647222225523,-13.83833333351636,-146.8142999999448,7.879055555369746]},{"type":"Feature","properties":{"GEONAME":"Kiribati Exclusive Economic Zone (Phoenix Islands)"},"geometry":null,"area_turf":750672470129.5872,"bbox":[-177.88432222179296,-7.78488333309916,-167.37273333337646,0.586638889073626]},{"type":"Feature","properties":{"GEONAME":"Kuwaiti Exclusive Economic Zone"},"geometry":null,"area_turf":11222096221.72884,"bbox":[47.70244097686995,28.534024119118186,49.550469128676895,30.03015274964997]},{"type":"Feature","properties":{"GEONAME":"Latvian Exclusive Economic Zone"},"geometry":null,"area_turf":28278298306.427765,"bbox":[19.097538990532428,56.04173333332693,24.412466168279167,58.02406696073504]},{"type":"Feature","properties":{"GEONAME":"Lebanese Exclusive Economic Zone"},"geometry":null,"area_turf":20237063858.749584,"bbox":[33.694652988344984,33.09507027227539,35.99164032953789,34.81244571669657]},{"type":"Feature","properties":{"GEONAME":"Liberian Exclusive Economic Zone"},"geometry":null,"area_turf":253456396563.882,"bbox":[-13.566925421470756,1.001067070689089,-7.330426092489859,6.939070635101842]},{"type":"Feature","properties":{"GEONAME":"Libyan Exclusive Economic Zone"},"geometry":null,"area_turf":365436230440.6225,"bbox":[11.561388888886484,30.267049551395843,26.192264343724815,35.42514523906166]},{"type":"Feature","properties":{"GEONAME":"Lithuanian Exclusive Economic Zone"},"geometry":null,"area_turf":6813816747.434758,"bbox":[19.023483708706607,55.18487756834537,21.53884446599963,56.06913333333716]},{"type":"Feature","properties":{"GEONAME":"Madagascan Exclusive Economic Zone"},"geometry":null,"area_turf":1202195714292.633,"bbox":[40.33437141730772,-28.951304496804966,53.36642434600728,-10.337324733749256]},{"type":"Feature","properties":{"GEONAME":"Malaysian Exclusive Economic Zone"},"geometry":null,"area_turf":514205452884.9147,"bbox":[98.02500000016684,1.212300977708438,119.4945315684777,8.990886006931532]},{"type":"Feature","properties":{"GEONAME":"Maldives Exclusive Economic Zone"},"geometry":null,"area_turf":926874280667.1274,"bbox":[69.20593029617163,-3.31163877293011,77.10595306499391,8.093888889070456]},{"type":"Feature","properties":{"GEONAME":"Maltese Exclusive Economic Zone"},"geometry":null,"area_turf":53031976822.60017,"bbox":[13.416968867319781,34.21328863266433,17.497259306372143,36.51239962844036]},{"type":"Feature","properties":{"GEONAME":"Marshall Islands Exclusive Economic Zone"},"geometry":null,"area_turf":2013943320472.4304,"bbox":[157.46054378047168,1.777313889000936,175.52347257170257,17.94606149843962]},{"type":"Feature","properties":{"GEONAME":"Martinican Exclusive Economic Zone"},"geometry":null,"area_turf":47877047939.4537,"bbox":[-62.813888888960776,14.080555555494684,-57.53130799416854,16.485863351158216]},{"type":"Feature","properties":{"GEONAME":"Mauritanian Exclusive Economic Zone"},"geometry":null,"area_turf":174127428586.316,"bbox":[-20.269012363129832,16.063754278537132,-16.020222306014347,21.16635596745408]},{"type":"Feature","properties":{"GEONAME":"Mauritian Exclusive Economic Zone"},"geometry":null,"area_turf":1285226374656.7017,"bbox":[53.80398098983093,-23.809557545943917,67.04766383661675,-8.436388888636102]},{"type":"Feature","properties":{"GEONAME":"Mexican Exclusive Economic Zone"},"geometry":null,"area_turf":3202585657736.4624,"bbox":[-122.17910387844107,11.873286828124705,-84.64184999987737,32.6269444444448]},{"type":"Feature","properties":{"GEONAME":"Micronesian Exclusive Economic Zone"},"geometry":null,"area_turf":3030241287385.821,"bbox":[135.31244183762126,-1.173110965298591,165.67652822599732,13.445432925389298]},{"type":"Feature","properties":{"GEONAME":"Montenegrin Exclusive economic Zone"},"geometry":null,"area_turf":6387113176.731149,"bbox":[18.018298593905456,41.44175138491872,19.388226615366335,42.516798734773744]},{"type":"Feature","properties":{"GEONAME":"Montserrat Exclusive Economic Zone"},"geometry":null,"area_turf":7230851980.735893,"bbox":[-63.046712524463345,15.841944444080852,-61.83155233317359,16.888515590522218]},{"type":"Feature","properties":{"GEONAME":"Monégasque Exclusive Economic Zone"},"geometry":null,"area_turf":287725154.354497,"bbox":[7.41978981790362,42.94638888893638,7.756944444231038,43.74983672786354]},{"type":"Feature","properties":{"GEONAME":"Moroccan Exclusive Economic Zone"},"geometry":null,"area_turf":281239639673.8999,"bbox":[-13.664751392342339,27.666666668961113,-2.057521401990812,36.00510438386084]},{"type":"Feature","properties":{"GEONAME":"Mozambican Exclusive Economic Zone"},"geometry":null,"area_turf":569144869717.8241,"bbox":[32.43062305431184,-27.716048903822923,43.00910460532853,-10.09138888910006]},{"type":"Feature","properties":{"GEONAME":"Myanmar Exclusive Economic Zone"},"geometry":null,"area_turf":500354339486.2394,"bbox":[90.14458252516417,9.429390111764363,99.13973867859781,21.132428645765742]},{"type":"Feature","properties":{"GEONAME":"Namibian Exclusive Economic Zone"},"geometry":null,"area_turf":564769187274.3822,"bbox":[8.243287698368931,-30.658138482105144,16.828434464778866,-17.24294742170902]},{"type":"Feature","properties":{"GEONAME":"Nauruan Exclusive Economic Zone"},"geometry":null,"area_turf":311340798578.56195,"bbox":[163.57879845198002,-3.907306622600743,168.56024444433862,2.693850810815462]},{"type":"Feature","properties":{"GEONAME":"New Caledonian Exclusive Economic Zone"},"geometry":null,"area_turf":1181797076481.2368,"bbox":[156.25555555554482,-26.201438266562647,170.55349191960877,-14.787536340729389]},{"type":"Feature","properties":{"GEONAME":"New Zealand Exclusive Economic Zone"},"geometry":null,"area_turf":4107370526383.601,"bbox":[-180,-55.949295362,180,-25.8882586939999]},{"type":"Feature","properties":{"GEONAME":"Nicaraguan Exclusive Economic Zone"},"geometry":null,"area_turf":215104853122.11877,"bbox":[-89.42419988321797,9.723097842763693,-79.23974799999979,16.0087513887659]},{"type":"Feature","properties":{"GEONAME":"Nigerian Exclusive Economic Zone"},"geometry":null,"area_turf":180242942803.883,"bbox":[2.684863607869687,1.92166666628367,8.653532549488062,6.622693657486565]},{"type":"Feature","properties":{"GEONAME":"Niue Exclusive Economic Zone"},"geometry":null,"area_turf":319807369146.37634,"bbox":[-172.02701977624145,-22.503696198220922,-166.29888019866206,-16.594166666258516]},{"type":"Feature","properties":{"GEONAME":"Norfolk Island Exclusive Economic Zone"},"geometry":null,"area_turf":432277723367.77216,"bbox":[164.11116641809807,-32.47752181208176,171.8011066460003,-25.84500000004985]},{"type":"Feature","properties":{"GEONAME":"North Korean Exclusive Economic Zone"},"geometry":null,"area_turf":114533432311.77512,"bbox":[123.56225746141311,36.966829456814196,133.18004509993463,42.42638146912961]},{"type":"Feature","properties":{"GEONAME":"Northern Mariana Exclusive Economic Zone"},"geometry":null,"area_turf":767673418977.7207,"bbox":[141.33109139874907,12.227880121070868,149.52928010998963,23.89565431669351]},{"type":"Feature","properties":{"GEONAME":"Norwegian Exclusive Economic Zone"},"geometry":null,"area_turf":929347845596.8555,"bbox":[-0.488763889041934,56.086666667033285,36.54111205397626,74.504832]},{"type":"Feature","properties":{"GEONAME":"Oecussi Ambeno Exclusive Economic Zone"},"geometry":null,"area_turf":1838200620.564036,"bbox":[124.0317516004566,-9.335590242994968,124.49722200359318,-8.813668938170807]},{"type":"Feature","properties":{"GEONAME":"Omani Exclusive Economic Zone"},"geometry":null,"area_turf":559434527024.5166,"bbox":[53.10934064925701,13.764166666666853,63.36953733288212,26.737499999725543]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Alhucemas Islands: Spain / Morocco"},"geometry":null,"area_turf":14089454.686157309,"bbox":[-3.905100904483021,35.209468451807936,-3.845876538584804,35.26533519693575]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Ceuta: Spain / Morocco"},"geometry":null,"area_turf":32786917.475813005,"bbox":[-5.385840861388374,35.815591216735214,-5.277466391871457,35.91746485881316]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Chafarinas Islands: Spain / Morocco"},"geometry":null,"area_turf":25566060.231559914,"bbox":[-2.52455518247055,35.154384993572904,-2.383721669153573,35.18666666666684]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Doumeira Islands: Djibouti / Eritrea"},"geometry":null,"area_turf":246473294.23630676,"bbox":[43.12902785595091,12.68005704159944,43.300992049244115,12.861585298223105]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Falkland / Malvinas Islands: UK / Argentina"},"geometry":null,"area_turf":549098252797.9455,"bbox":[-65.01514935455884,-56.22781610732734,-52.32033814708774,-47.66976629817585]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Gibraltarian Exclusive Economic Zone"},"geometry":null,"area_turf":389100196.6388786,"bbox":[-5.397351636768434,36.01042198338803,-4.967165531563779,36.157292009618715]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Glorioso Islands: France / Madagascar"},"geometry":null,"area_turf":43789933358.91872,"bbox":[45.76749999996312,-12.809391776604286,48.48650136884365,-10.650277777397164]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Ile Tromelin: Reunion / Madagascar / Mauritus"},"geometry":null,"area_turf":276014033985.87946,"bbox":[52.39061063327452,-18.800000000099843,57.21418730170299,-12.507302375504139]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Kuril Islands: Japan / Russia"},"geometry":null,"area_turf":213444588038.51797,"bbox":[145.2311337948889,40.321015083779486,151.0384630835047,47.730811839994715]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Liancourt Rocks: Japan / South Korea"},"geometry":null,"area_turf":1626565380.3272667,"bbox":[131.61044093496142,37.03709808708973,132.122682930658,37.44804272168403]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Matthew and Hunter Islands: New Caledonia / Vanuatu"},"geometry":null,"area_turf":188861892538.77704,"bbox":[170.05927827781656,-25.746712118769153,174.27569259200303,-20.022500000139715]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Mayotte: France / Comoros"},"geometry":null,"area_turf":67144905444.30548,"bbox":[43.48496394637684,-14.530650596547588,46.68597898959902,-11.139722222218083]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Melilla: Spain / Morocco"},"geometry":null,"area_turf":27118483.19247203,"bbox":[-2.952204942803462,35.271623189359104,-2.880905802474814,35.34990356075363]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Navassa Island: USA / Haiti / Jamaica"},"geometry":null,"area_turf":13965889871.05592,"bbox":[-75.83243623264593,17.333679761412014,-74.73451345383262,19.163579599718943]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Perejil Island: Spain / Morocco"},"geometry":null,"area_turf":642584.0048871979,"bbox":[-5.429189211922903,35.910776138305835,-5.412588497828779,35.918457472524295]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Peñón de Vélez de la Gomera: Spain / Morocco"},"geometry":null,"area_turf":3693511.04374866,"bbox":[-4.319106950028015,35.16945235564194,-4.294732674672957,35.198825419812124]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Qatar / Saudi Arabia / United Arab Emirates"},"geometry":null,"area_turf":126245065.29107223,"bbox":[51.43555555555557,24.63805555555561,51.725431294692754,24.749983675054892]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Senkaku Islands: Japan / China / Taiwan"},"geometry":null,"area_turf":74075967543.14359,"bbox":[122.61068585846616,25.053420226462606,125.67969338264427,28.313483691219574]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim South China Sea"},"geometry":null,"area_turf":340877434250.79553,"bbox":[109.57203178798383,6.100491743750837,116.56787417081503,18.225772474552542]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim South Georgia and South Sandwich Islands: UK / Argentina"},"geometry":null,"area_turf":1234619327923.1262,"bbox":[-43.960089926915444,-62.78834217149148,-19.899908145185535,-50.63863518138284]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Ukrainian Exclusive Economic Zone"},"geometry":null,"area_turf":136256376003.36804,"bbox":[29.60404396016068,43.18805555555582,38.34362664125675,47.3102964163466]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim Western Saharan Exclusive Economic Zone"},"geometry":null,"area_turf":285375673183.52496,"bbox":[-20.666921030281117,19.330115407800236,-13.173152977483369,27.833616760931676]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim: Canada / USA"},"geometry":null,"area_turf":24638260473.56501,"bbox":[-141.0000000010486,69.64777056746613,-137.50341302699985,73.39761270989757]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim: Iran / United Arab Emirates"},"geometry":null,"area_turf":6198835069.209381,"bbox":[54.75273197889848,25.495889125583005,55.72806959773416,26.412927088414648]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim: Kenya / Somalia"},"geometry":null,"area_turf":50566984993.71418,"bbox":[41.56621637092283,-3.554754486330438,45.94519517000256,-1.654]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim: Puerto Rico / Dominican Republic"},"geometry":null,"area_turf":18390611878.40684,"bbox":[-67.78288673986361,18.875358498701416,-65.84126623341697,21.85425094700011]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim: Sudan / Egypt"},"geometry":null,"area_turf":19827175623.65155,"bbox":[35.61351072823814,21.889673488554394,37.82926915374915,23.333131925598025]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim: Trinidad and Tobago / Venezuela / Guyana"},"geometry":null,"area_turf":3613295055.0791574,"bbox":[-58.81999999979982,10.166388889310838,-57.114424539120876,10.976499999783812]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim: Venezuela / Aruba / Dominican Republic"},"geometry":null,"area_turf":1121075520.160593,"bbox":[-70.41768040382735,15.177474009218244,-68.86222222177787,15.413333333266948]},{"type":"Feature","properties":{"GEONAME":"Overlapping claim: Venezuela / Colombia / Dominican Republic"},"geometry":null,"area_turf":868119093.9938648,"bbox":[-71.675,14.96444444475543,-70.41768040382735,15.177474009218244]},{"type":"Feature","properties":{"GEONAME":"Pakistani Exclusive Economic Zone"},"geometry":null,"area_turf":225417637812.07358,"bbox":[61.41666666663369,20.98033993194244,68.90908992276243,25.59737706180215]},{"type":"Feature","properties":{"GEONAME":"Palau Exclusive Economic Zone"},"geometry":null,"area_turf":618830568854.2858,"bbox":[129.5088048172889,1.621407206177722,136.9541002113523,11.558724726465158]},{"type":"Feature","properties":{"GEONAME":"Palestinian Exclusive Economic Zone"},"geometry":null,"area_turf":1123704899.4523888,"bbox":[34.00896885238072,31.335975944511716,34.47270409814601,31.789463972767038]},{"type":"Feature","properties":{"GEONAME":"Palmyra Atoll Exclusive Economic Zone"},"geometry":null,"area_turf":356055635861.8237,"bbox":[-165.74071897180306,2.661159925790159,-159.33273283305346,9.78564397139229]},{"type":"Feature","properties":{"GEONAME":"Panamanian Exclusive Economic Zone"},"geometry":null,"area_turf":333376023190.1751,"bbox":[-84.31666666653334,5.000000000000213,-77.04999999999973,12.500000000000327]},{"type":"Feature","properties":{"GEONAME":"Papua New Guinean Exclusive Economic Zone"},"geometry":null,"area_turf":2415294291386.6177,"bbox":[139.20137452543443,-14.748448665973015,162.80337908773717,2.595969925971403]},{"type":"Feature","properties":{"GEONAME":"Peruvian Exclusive Economic Zone"},"geometry":null,"area_turf":859864135707.7418,"bbox":[-84.67070686505556,-20.208142087837857,-70.37954998004724,-3.392124999568978]},{"type":"Feature","properties":{"GEONAME":"Philippines Exclusive Economic Zone"},"geometry":null,"area_turf":1982992931261.022,"bbox":[113.67771869365836,3.105449495198229,129.9438416625383,22.253562953567723]},{"type":"Feature","properties":{"GEONAME":"Pitcairn Islands Exclusive Economic Zone"},"geometry":null,"area_turf":846050690168.5487,"bbox":[-133.43269348461638,-28.42470391955011,-121.10896893406887,-20.56053653553262]},{"type":"Feature","properties":{"GEONAME":"Polish Exclusive Economic Zone"},"geometry":null,"area_turf":29902892357.013733,"bbox":[14.201402422184401,52.65351867674582,19.804859757472173,55.92154999993289]},{"type":"Feature","properties":{"GEONAME":"Portuguese Exclusive Economic Zone"},"geometry":null,"area_turf":315971047906.5686,"bbox":[-13.865349921961268,34.87759921928421,-7.256941066267927,42.054670215058536]},{"type":"Feature","properties":{"GEONAME":"Portuguese Exclusive Economic Zone (Azores)"},"geometry":null,"area_turf":961899194184.2039,"bbox":[-35.5855811271671,33.586358463972005,-20.599166485045004,43.0648262038664]},{"type":"Feature","properties":{"GEONAME":"Portuguese Exclusive Economic Zone (Madeira)"},"geometry":null,"area_turf":454037436044.72125,"bbox":[-21.224500492003955,29.247847234462455,-12.590454221584821,36.469743481576586]},{"type":"Feature","properties":{"GEONAME":"Protected Zone established under the Torres Strait Treaty"},"geometry":null,"area_turf":3740262808.547474,"bbox":[142.05944245300012,-9.755174162777834,142.8519675670003,-9.187953102779332]},{"type":"Feature","properties":{"GEONAME":"Puerto Rican Exclusive Economic Zone"},"geometry":null,"area_turf":155499918007.8879,"bbox":[-68.49651723837968,14.930000000299842,-65.01538093897909,21.805401724503298]},{"type":"Feature","properties":{"GEONAME":"Qatari Exclusive Economic Zone"},"geometry":null,"area_turf":31489451157.637863,"bbox":[50.56452637469292,24.50638496859196,53.03472222167838,27.043333333766782]},{"type":"Feature","properties":{"GEONAME":"Romanian Exclusive economic Zone"},"geometry":null,"area_turf":29610400589.060074,"bbox":[28.52782404454416,43.43980056164668,31.409722222222598,45.21283686143221]},{"type":"Feature","properties":{"GEONAME":"Russian Exclusive economic Zone"},"geometry":null,"area_turf":7703902160003.626,"bbox":[-180,39.7266865929444,180,85.1780004637504]},{"type":"Feature","properties":{"GEONAME":"Réunion Exclusive Economic Zone"},"geometry":null,"area_turf":316948313340.3718,"bbox":[51.80000000000038,-24.736861734881046,58.24358901252319,-18.286388888736084]},{"type":"Feature","properties":{"GEONAME":"Saba Exclusive Economic Zone"},"geometry":null,"area_turf":9540400303.375992,"bbox":[-64.01501726773259,16.678716050905038,-63.01974487532564,17.947997068809727]},{"type":"Feature","properties":{"GEONAME":"Saint Kitts and Nevis Exclusive Economic Zone"},"geometry":null,"area_turf":9554937214.495304,"bbox":[-63.624924417827486,16.341563586490494,-62.374186344923714,17.661734249636012]},{"type":"Feature","properties":{"GEONAME":"Saint Lucia Exclusive Economic Zone"},"geometry":null,"area_turf":15504862122.463612,"bbox":[-62.86401493424154,13.243237630312578,-59.9997222224024,14.272500000174986]},{"type":"Feature","properties":{"GEONAME":"Saint Vincent and the Grenadines Exclusive Economic Zone"},"geometry":null,"area_turf":36462121452.70091,"bbox":[-63.36907934033903,12.062033006618094,-60.29506249973443,14.080324540345373]},{"type":"Feature","properties":{"GEONAME":"Saint-Barthélemy Exclusive Economic Zone"},"geometry":null,"area_turf":4201841641.172728,"bbox":[-63.10657572648839,17.641716787899554,-62.22634440696859,18.312091422181496]},{"type":"Feature","properties":{"GEONAME":"Saint-Martin Exclusive Economic Zone"},"geometry":null,"area_turf":1105383650.5023577,"bbox":[-63.63404375741328,17.87369815074925,-62.73944444440545,18.190277777997082]},{"type":"Feature","properties":{"GEONAME":"Saint-Pierre and Miquelon Exclusive Economic Zone"},"geometry":null,"area_turf":12411516801.575823,"bbox":[-57.096777777672145,43.41611111133881,-55.90333333326646,47.36500000005017]},{"type":"Feature","properties":{"GEONAME":"Samoan Exclusive Economic Zone"},"geometry":null,"area_turf":131259352923.98515,"bbox":[-174.51139447157757,-15.878383591829206,-170.54265693017294,-10.960825304544073]},{"type":"Feature","properties":{"GEONAME":"Sao Tome and Principe Exclusive Economic Zone"},"geometry":null,"area_turf":131721083297.16125,"bbox":[3.202639123497022,-1.48152096312181,8.550138888698939,2.710480843116471]},{"type":"Feature","properties":{"GEONAME":"Saudi Arabian Exclusive Economic Zone"},"geometry":null,"area_turf":225283985747.6696,"bbox":[34.45589469678336,16.290000000100108,51.68368464458982,29.375206381339552]},{"type":"Feature","properties":{"GEONAME":"Senegalese Exclusive Economic Zone"},"geometry":null,"area_turf":159552735571.3773,"bbox":[-20.21422789977734,10.645221352332584,-15.210765242921354,16.528909921655597]},{"type":"Feature","properties":{"GEONAME":"Seychellois Exclusive Economic Zone"},"geometry":null,"area_turf":1350245204536.1042,"bbox":[43.176069148518735,-12.756501007115645,59.63137068191193,-0.360904071265765]},{"type":"Feature","properties":{"GEONAME":"Sierra Leonian Exclusive Economic Zone"},"geometry":null,"area_turf":161630915121.5259,"bbox":[-16.553794213731777,4.187259311568297,-11.445194120511871,9.131225705102224]},{"type":"Feature","properties":{"GEONAME":"Singaporean Exclusive Economic Zone"},"geometry":null,"area_turf":718917479.9214002,"bbox":[103.5473848326441,1.130361111076681,104.0985666315456,1.477972073053252]},{"type":"Feature","properties":{"GEONAME":"Sint-Eustatius Exclusive Economic Zone"},"geometry":null,"area_turf":2187449477.326853,"bbox":[-63.62305031611902,16.681298550387837,-62.76955066273274,17.736182632322766]},{"type":"Feature","properties":{"GEONAME":"Sint-Maarten Exclusive Economic Zone"},"geometry":null,"area_turf":468532554.06222796,"bbox":[-63.286352771063264,17.814949192551282,-62.958106612130194,18.05582933533657]},{"type":"Feature","properties":{"GEONAME":"Slovenian Exclusive Economic Zone"},"geometry":null,"area_turf":214347712.81079206,"bbox":[13.387006679660772,45.465483903859365,13.746684550851683,45.63000000000031]},{"type":"Feature","properties":{"GEONAME":"Solomon Islands Exclusive Economic Zone"},"geometry":null,"area_turf":1615377135992.6104,"bbox":[154.585555555556,-16.126944444030713,173.59340189552145,-4.139944961356122]},{"type":"Feature","properties":{"GEONAME":"Somali Exclusive Economic Zone"},"geometry":null,"area_turf":786953181889.6483,"bbox":[41.566216416655294,-1.654068055591594,54.445036390817535,13.524636939243578]},{"type":"Feature","properties":{"GEONAME":"South African Exclusive Economic Zone"},"geometry":null,"area_turf":1075551868756.3115,"bbox":[13.348024994758077,-38.17521749928798,36.53068583960143,-26.86206471931122]},{"type":"Feature","properties":{"GEONAME":"South African Exclusive Economic Zone (Prince Edward Islands)"},"geometry":null,"area_turf":474704960130.81085,"bbox":[32.71193876046553,-50.315063477097645,42.84750311677581,-43.26482131275324]},{"type":"Feature","properties":{"GEONAME":"South Korean Exclusive Economic Zone"},"geometry":null,"area_turf":348509637857.9117,"bbox":[122.89633518981796,30.77000000029986,133.80608782048424,39.83969111620442]},{"type":"Feature","properties":{"GEONAME":"Spanish Exclusive Economic Zone"},"geometry":null,"area_turf":562133178760.4956,"bbox":[-13.853048482401476,35.66859129065614,6.300000000100368,46.87400344590259]},{"type":"Feature","properties":{"GEONAME":"Spanish Exclusive Economic Zone (Canary Islands)"},"geometry":null,"area_turf":447542162990.35,"bbox":[-21.920389920658124,24.584738389265624,-11.812690026423184,32.289083752313786]},{"type":"Feature","properties":{"GEONAME":"Sri Lankan Exclusive Economic Zone"},"geometry":null,"area_turf":537038363843.53815,"bbox":[77.02333333316713,2.566489011658703,85.23291866616412,11.448824809717323]},{"type":"Feature","properties":{"GEONAME":"St. Helena Exclusive Economic Zone"},"geometry":null,"area_turf":451780068996.8466,"bbox":[-9.253389251912182,-19.37971304272267,-2.167926408576704,-12.549195821729725]},{"type":"Feature","properties":{"GEONAME":"Sudanese Exclusive Economic Zone"},"geometry":null,"area_turf":63152576452.04358,"bbox":[36.853499650788564,18.02316617088225,39.735172397888306,22.00000000000216]},{"type":"Feature","properties":{"GEONAME":"Surinamese Exclusive Economic Zone"},"geometry":null,"area_turf":134183229691.94426,"bbox":[-57.3407429458301,5.097656249636415,-52.52101801976562,9.353091996298758]},{"type":"Feature","properties":{"GEONAME":"Svalbard Exclusive Economic Zone"},"geometry":null,"area_turf":791774193070.7161,"bbox":[-3.34387500033074,72.17308952774474,37.99999999985036,84.14577661110215]},{"type":"Feature","properties":{"GEONAME":"Swedish Exclusive Economic Zone"},"geometry":null,"area_turf":155458963067.38327,"bbox":[10.03002777763291,54.962444444444856,24.189723170288545,67.08058834047995]},{"type":"Feature","properties":{"GEONAME":"Syrian Exclusive Economic Zone"},"geometry":null,"area_turf":10293235010.590672,"bbox":[34.963341673180054,34.59925085504307,35.97254309278955,36.06250096045122]},{"type":"Feature","properties":{"GEONAME":"Taiwanese Exclusive Economic Zone"},"geometry":null,"area_turf":357225644320.1302,"bbox":[114.23736254035865,17.26387530490726,123.54476074541262,26.931359896042608]},{"type":"Feature","properties":{"GEONAME":"Tanzanian Exclusive Economic Zone"},"geometry":null,"area_turf":243154703104.90762,"bbox":[38.53763425391847,-10.909851619456518,43.2822389021043,-4.678317585088408]},{"type":"Feature","properties":{"GEONAME":"Thailand Exclusive Economic Zone"},"geometry":null,"area_turf":300593240625.3517,"bbox":[95.5300000002002,5.949999999933695,103.05300480772311,13.727085709138507]},{"type":"Feature","properties":{"GEONAME":"Togolese Exclusive Economic Zone"},"geometry":null,"area_turf":15541829138.47035,"bbox":[1.199507528949653,2.884006111093257,2.416228055680534,6.235700827086404]},{"type":"Feature","properties":{"GEONAME":"Tokelau Exclusive Economic Zone"},"geometry":null,"area_turf":322679607956.7993,"bbox":[-175.8881313330942,-11.048131664144776,-168.00151225998263,-6.466427777819504]},{"type":"Feature","properties":{"GEONAME":"Tongan Exclusive Economic Zone"},"geometry":null,"area_turf":669481115111.2509,"bbox":[-179.0882488330868,-25.6960574564863,-171.3052777777471,-14.154640220669492]},{"type":"Feature","properties":{"GEONAME":"Trinidad and Tobago Exclusive Economic Zone"},"geometry":null,"area_turf":77053367406.86769,"bbox":[-62.08305555576899,9.8319444445807,-57.11750000021627,12.354641111198518]},{"type":"Feature","properties":{"GEONAME":"Tristan Da Cunha Exclusive Economic Zone"},"geometry":null,"area_turf":759287967394.288,"bbox":[-16.887281398005854,-43.70774150420354,-5.510495733502779,-33.72202433990057]},{"type":"Feature","properties":{"GEONAME":"Tunisian Exclusive Economic Zone"},"geometry":null,"area_turf":99972609024.39026,"bbox":[7.816666666711427,33.16146516758374,13.683888888961462,38.40999999960076]},{"type":"Feature","properties":{"GEONAME":"Turkish Exclusive Economic Zone"},"geometry":null,"area_turf":262416380713.79572,"bbox":[25.44175450876395,34.20922587697291,41.54702794548385,43.44972222222239]},{"type":"Feature","properties":{"GEONAME":"Turkmen Exclusive Economic Zone"},"geometry":null,"area_turf":61305138924.46301,"bbox":[51.37653418490518,37.31889429233797,54.01154875746968,41.76313495671323]},{"type":"Feature","properties":{"GEONAME":"Turks and Caicos Exclusive Economic Zone"},"geometry":null,"area_turf":91457346880.01491,"bbox":[-72.68051153238122,20.59366157130549,-68.82691987355292,25.0320178909885]},{"type":"Feature","properties":{"GEONAME":"Tuvaluan Exclusive Economic Zone"},"geometry":null,"area_turf":758003887666.9353,"bbox":[-180,-13.240386111111,180,-3.96556388888877]},{"type":"Feature","properties":{"GEONAME":"United Arab Emirates Exclusive Economic Zone"},"geometry":null,"area_turf":51888590860.014656,"bbox":[51.51644104933396,23.959013819332824,57.127391972861886,26.15460632662098]},{"type":"Feature","properties":{"GEONAME":"United Kingdom Exclusive Economic Zone"},"geometry":null,"area_turf":729739937977.5662,"bbox":[-14.897341626314699,47.43540537525797,3.399999999600652,63.8874805558832]},{"type":"Feature","properties":{"GEONAME":"United States Exclusive Economic Zone"},"geometry":null,"area_turf":2456767536235.776,"bbox":[-129.23482665059146,23.833333333167218,-65.69971857933155,49.091585754979405]},{"type":"Feature","properties":{"GEONAME":"United States Exclusive Economic Zone (Alaska)"},"geometry":null,"area_turf":3672947656884.8433,"bbox":[-180,47.8764414340005,180,74.7088400040004]},{"type":"Feature","properties":{"GEONAME":"United States Exclusive Economic Zone (Hawaii)"},"geometry":null,"area_turf":2485813329604.2017,"bbox":[-180,15.56312417,180,31.7978661719999]},{"type":"Feature","properties":{"GEONAME":"Uruguayan Exclusive Economic Zone"},"geometry":null,"area_turf":143396306968.74487,"bbox":[-58.494350582013396,-37.859911042260606,-50.059382031255495,-31.523437499740794]},{"type":"Feature","properties":{"GEONAME":"Vanuatu Exclusive Economic Zone"},"geometry":null,"area_turf":626924424073.1707,"bbox":[163.30859653600132,-21.64288185769476,173.60893256515195,-12.282150029899825]},{"type":"Feature","properties":{"GEONAME":"Venezuelan Exclusive Economic Zone"},"geometry":null,"area_turf":475484455653.04095,"bbox":[-72.7609532831674,8.304830724258636,-58.819999999795755,16.74694444443064]},{"type":"Feature","properties":{"GEONAME":"Vietnamese Exclusive Economic Zone"},"geometry":null,"area_turf":755613411357.2101,"bbox":[102.20323727784532,6.096666666933501,112.88160248273411,21.54716303844384]},{"type":"Feature","properties":{"GEONAME":"Virgin Islander Exclusive Economic Zone"},"geometry":null,"area_turf":38502723101.673965,"bbox":[-65.98140326225052,15.654914136078773,-63.88734033788609,19.621494173317586]},{"type":"Feature","properties":{"GEONAME":"Wake Island Exclusive Economic Zone"},"geometry":null,"area_turf":409284801266.6469,"bbox":[163.0697756221476,16.047093436512995,170.185469471939,22.669927207374798]},{"type":"Feature","properties":{"GEONAME":"Wallis and Futuna Exclusive Economic Zone"},"geometry":null,"area_turf":264346286689.96158,"bbox":[-180,-15.9193064582264,180,-9.82964082776658]},{"type":"Feature","properties":{"GEONAME":"Yemeni Exclusive Economic Zone"},"geometry":null,"area_turf":530578971831.697,"bbox":[41.081944444181346,8.9527534599045,57.94600331510148,16.649593796246492]}]}
+{
+    "type": "FeatureCollection",
+    "name": "SELECT",
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+        }
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Albanian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 12177338992.529707,
+            "bbox": [
+                18.321493067051733,
+                39.64039404355046,
+                20.020827650775743,
+                42.011203050580434
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Algerian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 131422966840.63657,
+            "bbox": [
+                -2.212332550706321,
+                35.070668458682405,
+                8.642049726043524,
+                38.800874592388794
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "American Samoa Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 408260850642.9071,
+            "bbox": [
+                -173.7746906500533,
+                -17.55526875286155,
+                -165.2008333331916,
+                -10.024476331539347
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Amsterdam Island & St. Paul Island Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 512995953849.33514,
+            "bbox": [
+                73.2414778285395,
+                -42.07807010774913,
+                81.81344155628315,
+                -34.451897870190464
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Angolan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 498911605618.28015,
+            "bbox": [
+                8.195856622685255,
+                -17.272144555826458,
+                13.865172505706738,
+                -5.029881000907324
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Anguilla Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 90619334916.19818,
+            "bbox": [
+                -63.89909378544968,
+                17.938824711491336,
+                -60.73666931233859,
+                21.939841734208755
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Antarctic 200NM zone beyond the coastline"
+            },
+            "geometry": null,
+            "area_turf": 9571891963750.314,
+            "bbox": [
+                -180,
+                -85.5624999997749,
+                180,
+                -57.188654502703
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Antigua and Barbuda Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 112156580689.79012,
+            "bbox": [
+                -62.75095982523558,
+                16.611630439393437,
+                -58.36828209594171,
+                20.92249020602935
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Argentinean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1072485533157.7753,
+            "bbox": [
+                -69.60083675371311,
+                -58.391917214607545,
+                -52.66714194864173,
+                -31.52702534234568
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Aruban Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 30128606771.305614,
+            "bbox": [
+                -70.4166666664334,
+                12.150501230947128,
+                -68.87016907294432,
+                15.300000000100113
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Ascension Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 448891364656.63354,
+            "bbox": [
+                -17.78279067884651,
+                -11.344694109345568,
+                -10.932478470404817,
+                -4.537528547004698
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Australian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 6897919679248.157,
+            "bbox": [
+                109.23348002808174,
+                -47.193641170803204,
+                163.1920849105907,
+                -8.883333333166505
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Australian Exclusive Economic Zone (Macquarie Island)"
+            },
+            "geometry": null,
+            "area_turf": 474675511707.8813,
+            "bbox": [
+                152.8625534398898,
+                -58.44946994588107,
+                164.69123333333354,
+                -51.02734444399064
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Azerbaijanis Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 80665977403.1068,
+            "bbox": [
+                48.593871354179925,
+                38.28529210144961,
+                51.817353093370826,
+                42.60552261177915
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Bahamas Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 622459424946.5708,
+            "bbox": [
+                -81.23147808234722,
+                20.373544444428944,
+                -70.51048641886854,
+                30.372393704069736
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Bahraini Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 7545774742.633828,
+            "bbox": [
+                50.269625000000445,
+                25.535000000000394,
+                51.121893252936815,
+                27.166666666722477
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Bangladeshi Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 112874988775.80673,
+            "bbox": [
+                88.92677892151082,
+                17.863384600077893,
+                92.42944444444501,
+                24.37766897644252
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Barbados Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 186119788881.4135,
+            "bbox": [
+                -60.38157809805057,
+                10.693349318268517,
+                -56.001580028295336,
+                16.019233498927193
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Bassas da India Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 121296430745.382,
+            "bbox": [
+                37.544554576832894,
+                -23.18541313382609,
+                41.580574455547236,
+                -19.10531746502876
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Belgian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 3486486690.822984,
+            "bbox": [
+                2.238333333455898,
+                51.08931434138415,
+                3.370403170770004,
+                51.87611444429919
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Belizean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 34500830738.84652,
+            "bbox": [
+                -88.94536983974601,
+                15.887456102117582,
+                -86.17251230290017,
+                18.48793375473919
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Beninese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 35764590547.176704,
+            "bbox": [
+                1.631998890012142,
+                2.969916666221337,
+                2.984194444218446,
+                6.512100815800238
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Bermudian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 465727317952.2597,
+            "bbox": [
+                -68.91705579978532,
+                28.90577059963361,
+                -60.704798800424165,
+                35.80855140022713
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Bonaire Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 13059039217.91084,
+            "bbox": [
+                -68.72019218132397,
+                11.66666666623378,
+                -67.98972222190275,
+                14.271187892007703
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Bosnian and Herzegovinian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 12986161.14875405,
+            "bbox": [
+                17.541998087042316,
+                42.88342379477254,
+                17.647989631117014,
+                42.938361644674444
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Brazilian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 3223627792382.5913,
+            "bbox": [
+                -54.58321261397063,
+                -35.78778688484125,
+                -26.014521804637326,
+                7.045066039966088
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Brazilian Exclusive Economic Zone (Trindade)"
+            },
+            "geometry": null,
+            "area_turf": 474881274011.08466,
+            "bbox": [
+                -32.89888993422278,
+                -23.877612489025026,
+                -25.29395969148618,
+                -17.11870173909378
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "British Virgin Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 81999535523.5972,
+            "bbox": [
+                -65.8420654889058,
+                17.96447758057603,
+                -63.25764052708834,
+                22.096731597485388
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Bruneian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 43421678768.14199,
+            "bbox": [
+                111.7259573552104,
+                4.55212414291536,
+                115.25644611111167,
+                7.587377390728506
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Bulgarian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 34770068080.28657,
+            "bbox": [
+                27.443712115721866,
+                41.978194444444625,
+                31.330820012970065,
+                43.73847246203471
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Cambodian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 49004672418.156944,
+            "bbox": [
+                101.30259927903435,
+                8.78188205539395,
+                104.52001130577773,
+                11.830980777441411
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Cameroonian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 15243888569.41823,
+            "bbox": [
+                8.32607699985374,
+                2.232365250755706,
+                10.127436041840298,
+                4.932517170531057
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Canadian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 5721236334481.179,
+            "bbox": [
+                -141.00000000229062,
+                40.051148997328625,
+                -47.694147024065614,
+                86.4318731326392
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Cape Verdean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 806498627457.4524,
+            "bbox": [
+                -28.847093094170845,
+                11.451306690351586,
+                -19.535000000249397,
+                20.555512486612002
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Cayman Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 119025123435.69614,
+            "bbox": [
+                -83.5972222218279,
+                17.584166666458643,
+                -78.72694300051896,
+                20.633437737361902
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Chagos Archipelago Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 655066948067.7838,
+            "bbox": [
+                67.88312830056216,
+                -10.796742471849312,
+                75.85286678900174,
+                -2.288339273758435
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Chilean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 2491308838447.1406,
+            "bbox": [
+                -84.8413699638522,
+                -59.85268183849573,
+                -65.72666666666646,
+                -18.350116666666636
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Chilean Exclusive Economic Zone (Easter Island)"
+            },
+            "geometry": null,
+            "area_turf": 732678128892.1676,
+            "bbox": [
+                -113.19655223526446,
+                -30.54684479054113,
+                -101.64147350339582,
+                -23.12315708266425
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Chilean Exclusive Economic Zone (San Felix and San Ambrosio islands)"
+            },
+            "geometry": null,
+            "area_turf": 452803389623.248,
+            "bbox": [
+                -83.82780313236464,
+                -29.698358404363788,
+                -76.15315012880595,
+                -22.9399559979893
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Chinese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 967203307680.9156,
+            "bbox": [
+                107.15944444450625,
+                15.979308293203118,
+                126.18630098040674,
+                41.15916395195504
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Christmas Island Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 330034802063.87463,
+            "bbox": [
+                102.14933221301172,
+                -13.918822880571412,
+                109.03497232571291,
+                -8.726071440144736
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Clipperton Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 438400708467.93396,
+            "bbox": [
+                -112.61852288442346,
+                6.936490687895045,
+                -105.81587556370609,
+                13.670815165587555
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Cocos Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 470311348720.7918,
+            "bbox": [
+                93.41158618135742,
+                -15.55884000416276,
+                100.33610963025566,
+                -8.471743827415551
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Colombian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 722727068290.5424,
+            "bbox": [
+                -84.80980215114798,
+                1.376809358665341,
+                -70.6981485178394,
+                15.033333333666619
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Colombian Exclusive Economic Zone (Bajo Nuevo)"
+            },
+            "geometry": null,
+            "area_turf": 1559348100.0896723,
+            "bbox": [
+                -78.84083333329144,
+                15.649166666908215,
+                -78.42583333304177,
+                16.05083333289234
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Colombian Exclusive Economic Zone (Quitasueño)"
+            },
+            "geometry": null,
+            "area_turf": 3711240246.079127,
+            "bbox": [
+                -81.44651565611784,
+                13.913463929168799,
+                -80.89714004113338,
+                14.69623571440654
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Colombian Exclusive Economic Zone (Serrana)"
+            },
+            "geometry": null,
+            "area_turf": 2854849655.3861647,
+            "bbox": [
+                -80.57745735463388,
+                14.080746748393267,
+                -80.0188427397419,
+                14.673512490916494
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Colombian Exclusive Economic Zone (Serranilla)"
+            },
+            "geometry": null,
+            "area_turf": 1561388257.8405259,
+            "bbox": [
+                -80.06305555526941,
+                15.596388888736328,
+                -79.64805555591894,
+                15.998333333716502
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Comoran Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 165492650463.5766,
+            "bbox": [
+                41.83517740154312,
+                -14.463057397485855,
+                45.76749999996312,
+                -8.105182064398107
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Congolese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 34030545589.918106,
+            "bbox": [
+                8.911353333189908,
+                -6.734454479090815,
+                12.009580135514966,
+                -3.925223231666706
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Cook Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1980842954273.7507,
+            "bbox": [
+                -168.52359118283155,
+                -25.305960237674654,
+                -154.80555555554412,
+                -5.798219471850928
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Costa Rican Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 585611573856.112,
+            "bbox": [
+                -90.43956702689638,
+                2.147619162004816,
+                -79.99999999999989,
+                11.601707894500336
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Croatian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 55431249294.8459,
+            "bbox": [
+                13.008333333217195,
+                41.629702201195926,
+                18.549245177323428,
+                45.564946670145616
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Crozet Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 575213448366.182,
+            "bbox": [
+                45.36880483147823,
+                -49.81812147072922,
+                57.15183064117119,
+                -42.601845611385826
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Cuban Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 353995728955.6441,
+            "bbox": [
+                -86.93965782944514,
+                18.83223752374286,
+                -73.58235555542797,
+                25.224565781286287
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Curaçaoan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 25550356794.0409,
+            "bbox": [
+                -69.54599572122547,
+                11.66666666623378,
+                -68.40522271015982,
+                15.241854594014427
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Cypriote Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 98691861636.21713,
+            "bbox": [
+                29.84647999845376,
+                32.88888888871139,
+                35.19429819290772,
+                36.2191099960296
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Danish Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 104619394697.10458,
+            "bbox": [
+                3.249999999900609,
+                54.36483333333359,
+                16.5073720939491,
+                58.261444444618576
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Democratic Republic of the Congo Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 13448441185.229895,
+            "bbox": [
+                9.007324264103858,
+                -7.065050672650344,
+                13.650399804207808,
+                -5.527091025929963
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Djiboutian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 7267907272.639868,
+            "bbox": [
+                42.513462066521384,
+                11.461013988704906,
+                44.14265365044608,
+                12.71483242634531
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Dominican Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 28754888310.649494,
+            "bbox": [
+                -62.813888888960776,
+                14.48861111141376,
+                -57.8750000002496,
+                16.50083333289217
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Dominican Republic Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 352547899016.4302,
+            "bbox": [
+                -73.47474846916623,
+                15.011111111111276,
+                -65.82185139747415,
+                24.089310214395056
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Dutch Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 64147422748.87682,
+            "bbox": [
+                2.53933305536961,
+                51.0397591587585,
+                7.210279465125637,
+                55.76500000034997
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "East Timorian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 76117451407.90802,
+            "bbox": [
+                124.94133478876986,
+                -11.400169444444273,
+                128.50201111111116,
+                -8.1043673667605
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Ecuadorian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 237878695264.65005,
+            "bbox": [
+                -84.48900000004986,
+                -3.444141626634632,
+                -78.76201951458856,
+                1.45666666698321
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Ecuadorian Exclusive Economic Zone (Galapagos)"
+            },
+            "geometry": null,
+            "area_turf": 847082128368.7772,
+            "bbox": [
+                -95.3388321351947,
+                -4.763353680827663,
+                -85.91067114585661,
+                5.031639107359226
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Egyptian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 244123859295.95816,
+            "bbox": [
+                25.14461203411841,
+                23.093082706901725,
+                37.25764291119194,
+                33.820853487698486
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "El Salvador Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 95685592234.43405,
+            "bbox": [
+                -91.44010240388354,
+                9.944877746710787,
+                -87.59714672474138,
+                13.747722625698927
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Equatorial Guinean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 306173324732.71576,
+            "bbox": [
+                2.28586355495932,
+                -4.82015829397001,
+                9.920082569155511,
+                4.123405766363277
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Eritrean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 78556380136.9238,
+            "bbox": [
+                38.566904545209155,
+                12.71066665634116,
+                43.25290245038801,
+                18.103843047618767
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Estonian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 36329754642.372116,
+            "bbox": [
+                20.371333333466907,
+                57.58638333333346,
+                28.20898543722845,
+                59.99491666651468
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Faeroe Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 264616298960.44318,
+            "bbox": [
+                -14.000885397642605,
+                59.94083333333356,
+                -0.486397198071984,
+                65.69336381908505
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Fijian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1296135615965.7427,
+            "bbox": [
+                -180,
+                -25.0971098344673,
+                180,
+                -9.78332062105598
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Finnish Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 80706151933.5256,
+            "bbox": [
+                19.08320000018037,
+                58.84450000027496,
+                27.83119930050762,
+                66.77515614004386
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "French Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 344722998067.611,
+            "bbox": [
+                -9.877283333658653,
+                41.24333333328181,
+                10.218333333333732,
+                51.55777777807404
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "French Guiana Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 132403954216.49245,
+            "bbox": [
+                -54.3886945245325,
+                3.850193023789174,
+                -49.40613340241552,
+                8.831757024267233
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "French Polynesian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 4791973459437.845,
+            "bbox": [
+                -158.13106403907386,
+                -31.24447428785797,
+                -131.9780908040471,
+                -4.543219364282123
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Gabonese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 203103182399.6335,
+            "bbox": [
+                6.922445995286665,
+                -6.447263850046468,
+                11.180538773645793,
+                1.073768581455028
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Gambian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 23095065452.657097,
+            "bbox": [
+                -20.237308313928054,
+                13.055833333040354,
+                -15.299880742601829,
+                13.642830849064737
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Georgian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 22965888049.10584,
+            "bbox": [
+                38.97584981661592,
+                41.52049160040724,
+                42.35496044187104,
+                43.38569761265495
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "German Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 56643836720.85603,
+            "bbox": [
+                3.349999999800559,
+                52.87112224079934,
+                14.750000000300048,
+                55.9192777774912
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Ghanaian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 228991659175.33307,
+            "bbox": [
+                -3.788075973413441,
+                1.386880669307502,
+                2.166937963916411,
+                6.122303962458233
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Greek Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 483830191006.7898,
+            "bbox": [
+                18.26166666708329,
+                33.28103042211666,
+                30.103592354703807,
+                41.091325521555575
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Greenlandic Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 2259365409268.4175,
+            "bbox": [
+                -75.00000000019963,
+                56.38706986578171,
+                7.96833243569364,
+                86.99400535016684
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Grenadian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 25733518310.730125,
+            "bbox": [
+                -63.267087345804185,
+                11.366803951041732,
+                -60.78119118912181,
+                13.35158612210195
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Guadeloupean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 91369468304.3731,
+            "bbox": [
+                -62.813888888960776,
+                15.064999999850286,
+                -57.53364581385722,
+                18.541532550087297
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Guam Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 209473380746.3635,
+            "bbox": [
+                141.19540676780846,
+                10.953972222540159,
+                148.07709548426934,
+                15.726687346843676
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Guatemalan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 111317637083.77504,
+            "bbox": [
+                -94.30880809711562,
+                10.584149194191511,
+                -88.21344394448232,
+                16.072351465447866
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Guernsey Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 6519099959.596864,
+            "bbox": [
+                -3.674362385814561,
+                49.21531818003993,
+                -2.048888888888598,
+                50.15297222220141
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Guinea Bissau Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 107416064268.9633,
+            "bbox": [
+                -19.804168333321286,
+                8.639183291575819,
+                -14.822735070866486,
+                12.413515329668869
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Guinean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 102818641848.77821,
+            "bbox": [
+                -17.934699999614224,
+                7.47841011363613,
+                -13.09405350706345,
+                11.302204012605145
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Guyanese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 135921909855.76984,
+            "bbox": [
+                -59.84489199007291,
+                5.996146227665605,
+                -55.767343657683426,
+                10.698417287028462
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Haitian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 104063059325.31514,
+            "bbox": [
+                -74.96492916085182,
+                14.878155918960587,
+                -71.75861942754443,
+                20.722519391057205
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Heard and McDonald Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 416545510942.34436,
+            "bbox": [
+                67.05405956409797,
+                -56.524553196372864,
+                79.40902580529686,
+                -49.8261905707643
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Honduran Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 209700880499.5565,
+            "bbox": [
+                -88.23779666458415,
+                12.983988449807313,
+                -80.22399028941993,
+                19.5404999995756
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Howland and Baker Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 437809899666.2679,
+            "bbox": [
+                -179.95194791399987,
+                -3.014830555520419,
+                -173.14298275041847,
+                4.170125718000023
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Icelandic Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 759973238479.4688,
+            "bbox": [
+                -30.867924725245615,
+                59.96894076540423,
+                -5.57340970769161,
+                69.5833333333926
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Ile Europa Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 128533210556.57451,
+            "bbox": [
+                38.01246168002862,
+                -25.750944431739995,
+                41.82035062388266,
+                -20.91624336694173
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Indian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1669156173142.6104,
+            "bbox": [
+                65.63914950074926,
+                4.789999999700314,
+                89.37354884720165,
+                23.990036324517007
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Indian Exclusive Economic Zone (Andaman and Nicobar Islands)"
+            },
+            "geometry": null,
+            "area_turf": 668531049995.5001,
+            "bbox": [
+                88.79875114634879,
+                3.84065778732753,
+                95.69666666683347,
+                15.718269162791785
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Indonesian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 6060465975026.265,
+            "bbox": [
+                92.05060462190619,
+                -13.942138889198247,
+                141.3999999999005,
+                7.783333333766848
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Iranian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 216084446324.83673,
+            "bbox": [
+                48.102167816891466,
+                23.34666666663361,
+                61.61229693865303,
+                38.70501529522002
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Iraqi Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1191561622.109411,
+            "bbox": [
+                47.83492314808498,
+                29.47813285274907,
+                48.86192558639678,
+                30.452845931095112
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Irish Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 426258788327.6049,
+            "bbox": [
+                -16.073890430098885,
+                48.178707779630656,
+                -5.272333333332881,
+                56.7
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Israeli Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 24694907210.200054,
+            "bbox": [
+                32.97222222247754,
+                29.449959436798025,
+                35.10561287403536,
+                33.48099254856743
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Italian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 537362879055.34894,
+            "bbox": [
+                5.889722222129848,
+                35.06440614922465,
+                18.99523827942329,
+                45.80891370810167
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Ivory Coast Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 172910999554.31638,
+            "bbox": [
+                -7.594489527369547,
+                1.013434462930149,
+                -2.850222348881971,
+                5.544782877028666
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Jamaican Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 258495701069.01758,
+            "bbox": [
+                -80.83305555516966,
+                14.083333333766447,
+                -74.00943069247228,
+                19.35780662807366
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Jan Mayen Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 290101019754.9381,
+            "bbox": [
+                -13.62955555589528,
+                67.61186853100801,
+                2.38665844393239,
+                74.36302777781003
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Japanese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 4080510963652.1206,
+            "bbox": [
+                122.3863875018823,
+                17.06508159224201,
+                157.6378941052291,
+                46.09947625882256
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Jarvis Island Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 325347211470.41156,
+            "bbox": [
+                -163.34523866613145,
+                -3.73480883775747,
+                -156.99744444420566,
+                2.042111111538745
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Jersey Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 2274795140.132928,
+            "bbox": [
+                -2.55801007991596,
+                48.87216666655874,
+                -1.83333333376595,
+                49.432203154365396
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Johnston Atoll Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 444926046528.68005,
+            "bbox": [
+                -173.03289041799994,
+                13.35822166500003,
+                -165.98451789999984,
+                20.132119438000075
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Argentina / Uruguay"
+            },
+            "geometry": null,
+            "area_turf": 41496629264.25116,
+            "bbox": [
+                -56.783333333333246,
+                -37.53333333333333,
+                -53.533333333333275,
+                -34.9704528336932
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Colombia / Dominican Republic"
+            },
+            "geometry": null,
+            "area_turf": 13186731085.696661,
+            "bbox": [
+                -73.34166666688293,
+                14.674999999550636,
+                -71.66666666663309,
+                15.366666666933213
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Colombia / Jamaica"
+            },
+            "geometry": null,
+            "area_turf": 15339565470.392948,
+            "bbox": [
+                -80.0181944443178,
+                14.493611110864151,
+                -78.43055555529446,
+                16.1694444445058
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Costa Rica / Ecuador (Galapagos)"
+            },
+            "geometry": null,
+            "area_turf": 17453303827.921837,
+            "bbox": [
+                -90.47111111098863,
+                1.983055555569507,
+                -86.98444444415532,
+                4.719722222103201
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Croatia / Slovenia"
+            },
+            "geometry": null,
+            "area_turf": 98348084.61275257,
+            "bbox": [
+                13.211666666548922,
+                45.39905556000005,
+                13.452138890000185,
+                45.564946670145616
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Ecuador / Colombia"
+            },
+            "geometry": null,
+            "area_turf": 18765146103.28174,
+            "bbox": [
+                -83.97583333333313,
+                1.28916666676183,
+                -79.04388888926383,
+                1.624444444444393
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Guyana / Barbados"
+            },
+            "geometry": null,
+            "area_turf": 67579039.27543946,
+            "bbox": [
+                -57.173888888888825,
+                10.604444444444425,
+                -57.0775,
+                10.744999999992245
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Honduras / Cayman Islands"
+            },
+            "geometry": null,
+            "area_turf": 2086928018.0211399,
+            "bbox": [
+                -84.19999999979993,
+                18.416666666233866,
+                -83.63333333306676,
+                18.95
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Iceland / Denmark (Faeroe Islands)"
+            },
+            "geometry": null,
+            "area_turf": 1277111434.9269896,
+            "bbox": [
+                -12.145394444146774,
+                62.53932222250265,
+                -10.093233333151431,
+                63.5
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Iceland / Norway (Jan Mayen)"
+            },
+            "geometry": null,
+            "area_turf": 45276381572.048996,
+            "bbox": [
+                -10.49999999973764,
+                68.00000000000011,
+                -6.50000000039941,
+                70.58333333326681
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Italy / France"
+            },
+            "geometry": null,
+            "area_turf": 67099961.86331674,
+            "bbox": [
+                8.998888888611702,
+                41.27111111148892,
+                9.098888889311098,
+                41.343333333067164
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Japan / Korea"
+            },
+            "geometry": null,
+            "area_turf": 82967997874.51094,
+            "bbox": [
+                125.92500000025015,
+                28.599999999600414,
+                129.1500000001008,
+                32.94999999990034
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Nigeria / Sao Tome and Principe"
+            },
+            "geometry": null,
+            "area_turf": 34768492840.518906,
+            "bbox": [
+                3.575833333541595,
+                1.154722221853135,
+                7.606944444530882,
+                3.039444444305829
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Peru / Ecuador"
+            },
+            "geometry": null,
+            "area_turf": 16231785569.539875,
+            "bbox": [
+                -84.51583333364138,
+                -3.5605555559941,
+                -80.38361111136368,
+                -3.224444444455486
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Senegal / Guinea Bissau"
+            },
+            "geometry": null,
+            "area_turf": 63900640992.892334,
+            "bbox": [
+                -20.18916666680795,
+                9.339444444305883,
+                -16.889166667107673,
+                12.33499999955066
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Spain / France"
+            },
+            "geometry": null,
+            "area_turf": 2859370793.7638507,
+            "bbox": [
+                -5.666666666366524,
+                45.00833333311698,
+                -4.999999999799854,
+                45.500000000000256
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area Sweden / Norway"
+            },
+            "geometry": null,
+            "area_turf": 139508667.04403546,
+            "bbox": [
+                10.268138888898847,
+                58.76147222196565,
+                10.640277777797678,
+                58.89277777777255
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area United Kingdom / Denmark (Faeroe Islands)"
+            },
+            "geometry": null,
+            "area_turf": 7909117652.305478,
+            "bbox": [
+                -11.265927630055785,
+                59.830555555794405,
+                -4.736111110738818,
+                60.40194444478038
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Joint regime area United States / Russia"
+            },
+            "geometry": null,
+            "area_turf": 8434413342.705978,
+            "bbox": [
+                -180,
+                51.1700648212503,
+                180,
+                73.3560218928258
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Jordanian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 97422029.20397826,
+            "bbox": [
+                34.88535215893168,
+                29.357355952415503,
+                35.00137317153505,
+                29.542523200176305
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Juan de Nova Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 63118503296.10183,
+            "bbox": [
+                40.9375657270775,
+                -19.251737868008107,
+                43.31358670646168,
+                -15.326963112769974
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Kazakh Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 114397546576.0153,
+            "bbox": [
+                49.000000000200174,
+                41.222766743690414,
+                53.845257759238706,
+                47.13060986965007
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Kenyan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 114579652369.89223,
+            "bbox": [
+                39.22130441676589,
+                -4.900325,
+                44.32958535569426,
+                -1.654068112253469
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Kerguelen Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 550300857071.2936,
+            "bbox": [
+                63.29775192101434,
+                -53.17862968133764,
+                75.65145686034626,
+                -45.11797528992756
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Kiribati Exclusive Economic Zone (Gilbert Islands)"
+            },
+            "geometry": null,
+            "area_turf": 1060312875904.9884,
+            "bbox": [
+                -180,
+                -4.36169722222215,
+                180,
+                5.61710277767467
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Kiribati Exclusive Economic Zone (Line Islands)"
+            },
+            "geometry": null,
+            "area_turf": 1651669159618.7966,
+            "bbox": [
+                -163.0647222225523,
+                -13.83833333351636,
+                -146.8142999999448,
+                7.879055555369746
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Kiribati Exclusive Economic Zone (Phoenix Islands)"
+            },
+            "geometry": null,
+            "area_turf": 750672470129.5872,
+            "bbox": [
+                -177.88432222179296,
+                -7.78488333309916,
+                -167.37273333337646,
+                0.586638889073626
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Kuwaiti Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 11222096221.72884,
+            "bbox": [
+                47.70244097686995,
+                28.534024119118186,
+                49.550469128676895,
+                30.03015274964997
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Latvian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 28278298306.427765,
+            "bbox": [
+                19.097538990532428,
+                56.04173333332693,
+                24.412466168279167,
+                58.02406696073504
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Lebanese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 20237063858.749584,
+            "bbox": [
+                33.694652988344984,
+                33.09507027227539,
+                35.99164032953789,
+                34.81244571669657
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Liberian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 253456396563.882,
+            "bbox": [
+                -13.566925421470756,
+                1.001067070689089,
+                -7.330426092489859,
+                6.939070635101842
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Libyan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 365436230440.6225,
+            "bbox": [
+                11.561388888886484,
+                30.267049551395843,
+                26.192264343724815,
+                35.42514523906166
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Lithuanian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 6813816747.434758,
+            "bbox": [
+                19.023483708706607,
+                55.18487756834537,
+                21.53884446599963,
+                56.06913333333716
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Madagascan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1202195714292.633,
+            "bbox": [
+                40.33437141730772,
+                -28.951304496804966,
+                53.36642434600728,
+                -10.337324733749256
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Malaysian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 514205452884.9147,
+            "bbox": [
+                98.02500000016684,
+                1.212300977708438,
+                119.4945315684777,
+                8.990886006931532
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Maldives Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 926874280667.1274,
+            "bbox": [
+                69.20593029617163,
+                -3.31163877293011,
+                77.10595306499391,
+                8.093888889070456
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Maltese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 53031976822.60017,
+            "bbox": [
+                13.416968867319781,
+                34.21328863266433,
+                17.497259306372143,
+                36.51239962844036
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Marshall Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 2013943320472.4304,
+            "bbox": [
+                157.46054378047168,
+                1.777313889000936,
+                175.52347257170257,
+                17.94606149843962
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Martinican Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 47877047939.4537,
+            "bbox": [
+                -62.813888888960776,
+                14.080555555494684,
+                -57.53130799416854,
+                16.485863351158216
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Mauritanian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 174127428586.316,
+            "bbox": [
+                -20.269012363129832,
+                16.063754278537132,
+                -16.020222306014347,
+                21.16635596745408
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Mauritian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1285226374656.7017,
+            "bbox": [
+                53.80398098983093,
+                -23.809557545943917,
+                67.04766383661675,
+                -8.436388888636102
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Mexican Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 3202585657736.4624,
+            "bbox": [
+                -122.17910387844107,
+                11.873286828124705,
+                -84.64184999987737,
+                32.6269444444448
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Micronesian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 3030241287385.821,
+            "bbox": [
+                135.31244183762126,
+                -1.173110965298591,
+                165.67652822599732,
+                13.445432925389298
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Montenegrin Exclusive economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 6387113176.731149,
+            "bbox": [
+                18.018298593905456,
+                41.44175138491872,
+                19.388226615366335,
+                42.516798734773744
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Montserrat Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 7230851980.735893,
+            "bbox": [
+                -63.046712524463345,
+                15.841944444080852,
+                -61.83155233317359,
+                16.888515590522218
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Monégasque Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 287725154.354497,
+            "bbox": [
+                7.41978981790362,
+                42.94638888893638,
+                7.756944444231038,
+                43.74983672786354
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Moroccan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 281239639673.8999,
+            "bbox": [
+                -13.664751392342339,
+                27.666666668961113,
+                -2.057521401990812,
+                36.00510438386084
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Mozambican Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 569144869717.8241,
+            "bbox": [
+                32.43062305431184,
+                -27.716048903822923,
+                43.00910460532853,
+                -10.09138888910006
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Myanmar Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 500354339486.2394,
+            "bbox": [
+                90.14458252516417,
+                9.429390111764363,
+                99.13973867859781,
+                21.132428645765742
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Namibian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 564769187274.3822,
+            "bbox": [
+                8.243287698368931,
+                -30.658138482105144,
+                16.828434464778866,
+                -17.24294742170902
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Nauruan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 311340798578.56195,
+            "bbox": [
+                163.57879845198002,
+                -3.907306622600743,
+                168.56024444433862,
+                2.693850810815462
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "New Caledonian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1181797076481.2368,
+            "bbox": [
+                156.25555555554482,
+                -26.201438266562647,
+                170.55349191960877,
+                -14.787536340729389
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "New Zealand Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 4107370526383.601,
+            "bbox": [
+                -180,
+                -55.949295362,
+                180,
+                -25.8882586939999
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Nicaraguan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 215104853122.11877,
+            "bbox": [
+                -89.42419988321797,
+                9.723097842763693,
+                -79.23974799999979,
+                16.0087513887659
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Nigerian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 180242942803.883,
+            "bbox": [
+                2.684863607869687,
+                1.92166666628367,
+                8.653532549488062,
+                6.622693657486565
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Niue Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 319807369146.37634,
+            "bbox": [
+                -172.02701977624145,
+                -22.503696198220922,
+                -166.29888019866206,
+                -16.594166666258516
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Norfolk Island Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 432277723367.77216,
+            "bbox": [
+                164.11116641809807,
+                -32.47752181208176,
+                171.8011066460003,
+                -25.84500000004985
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "North Korean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 114533432311.77512,
+            "bbox": [
+                123.56225746141311,
+                36.966829456814196,
+                133.18004509993463,
+                42.42638146912961
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Northern Mariana Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 767673418977.7207,
+            "bbox": [
+                141.33109139874907,
+                12.227880121070868,
+                149.52928010998963,
+                23.89565431669351
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Norwegian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 929347845596.8555,
+            "bbox": [
+                -0.488763889041934,
+                56.086666667033285,
+                36.54111205397626,
+                74.504832
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Oecussi Ambeno Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1838200620.564036,
+            "bbox": [
+                124.0317516004566,
+                -9.335590242994968,
+                124.49722200359318,
+                -8.813668938170807
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Omani Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 559434527024.5166,
+            "bbox": [
+                53.10934064925701,
+                13.764166666666853,
+                63.36953733288212,
+                26.737499999725543
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Alhucemas Islands: Spain / Morocco"
+            },
+            "geometry": null,
+            "area_turf": 14089454.686157309,
+            "bbox": [
+                -3.905100904483021,
+                35.209468451807936,
+                -3.845876538584804,
+                35.26533519693575
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Ceuta: Spain / Morocco"
+            },
+            "geometry": null,
+            "area_turf": 32786917.475813005,
+            "bbox": [
+                -5.385840861388374,
+                35.815591216735214,
+                -5.277466391871457,
+                35.91746485881316
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Chafarinas Islands: Spain / Morocco"
+            },
+            "geometry": null,
+            "area_turf": 25566060.231559914,
+            "bbox": [
+                -2.52455518247055,
+                35.154384993572904,
+                -2.383721669153573,
+                35.18666666666684
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Doumeira Islands: Djibouti / Eritrea"
+            },
+            "geometry": null,
+            "area_turf": 246473294.23630676,
+            "bbox": [
+                43.12902785595091,
+                12.68005704159944,
+                43.300992049244115,
+                12.861585298223105
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Falkland / Malvinas Islands: UK / Argentina"
+            },
+            "geometry": null,
+            "area_turf": 549098252797.9455,
+            "bbox": [
+                -65.01514935455884,
+                -56.22781610732734,
+                -52.32033814708774,
+                -47.66976629817585
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Gibraltarian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 389100196.6388786,
+            "bbox": [
+                -5.397351636768434,
+                36.01042198338803,
+                -4.967165531563779,
+                36.157292009618715
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Glorioso Islands: France / Madagascar"
+            },
+            "geometry": null,
+            "area_turf": 43789933358.91872,
+            "bbox": [
+                45.76749999996312,
+                -12.809391776604286,
+                48.48650136884365,
+                -10.650277777397164
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Ile Tromelin: Reunion / Madagascar / Mauritus"
+            },
+            "geometry": null,
+            "area_turf": 276014033985.87946,
+            "bbox": [
+                52.39061063327452,
+                -18.800000000099843,
+                57.21418730170299,
+                -12.507302375504139
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Kuril Islands: Japan / Russia"
+            },
+            "geometry": null,
+            "area_turf": 213444588038.51797,
+            "bbox": [
+                145.2311337948889,
+                40.321015083779486,
+                151.0384630835047,
+                47.730811839994715
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Liancourt Rocks: Japan / South Korea"
+            },
+            "geometry": null,
+            "area_turf": 1626565380.3272667,
+            "bbox": [
+                131.61044093496142,
+                37.03709808708973,
+                132.122682930658,
+                37.44804272168403
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Matthew and Hunter Islands: New Caledonia / Vanuatu"
+            },
+            "geometry": null,
+            "area_turf": 188861892538.77704,
+            "bbox": [
+                170.05927827781656,
+                -25.746712118769153,
+                174.27569259200303,
+                -20.022500000139715
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Mayotte: France / Comoros"
+            },
+            "geometry": null,
+            "area_turf": 67144905444.30548,
+            "bbox": [
+                43.48496394637684,
+                -14.530650596547588,
+                46.68597898959902,
+                -11.139722222218083
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Melilla: Spain / Morocco"
+            },
+            "geometry": null,
+            "area_turf": 27118483.19247203,
+            "bbox": [
+                -2.952204942803462,
+                35.271623189359104,
+                -2.880905802474814,
+                35.34990356075363
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Navassa Island: USA / Haiti / Jamaica"
+            },
+            "geometry": null,
+            "area_turf": 13965889871.05592,
+            "bbox": [
+                -75.83243623264593,
+                17.333679761412014,
+                -74.73451345383262,
+                19.163579599718943
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Perejil Island: Spain / Morocco"
+            },
+            "geometry": null,
+            "area_turf": 642584.0048871979,
+            "bbox": [
+                -5.429189211922903,
+                35.910776138305835,
+                -5.412588497828779,
+                35.918457472524295
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Peñón de Vélez de la Gomera: Spain / Morocco"
+            },
+            "geometry": null,
+            "area_turf": 3693511.04374866,
+            "bbox": [
+                -4.319106950028015,
+                35.16945235564194,
+                -4.294732674672957,
+                35.198825419812124
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Qatar / Saudi Arabia / United Arab Emirates"
+            },
+            "geometry": null,
+            "area_turf": 126245065.29107223,
+            "bbox": [
+                51.43555555555557,
+                24.63805555555561,
+                51.725431294692754,
+                24.749983675054892
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Senkaku Islands: Japan / China / Taiwan"
+            },
+            "geometry": null,
+            "area_turf": 74075967543.14359,
+            "bbox": [
+                122.61068585846616,
+                25.053420226462606,
+                125.67969338264427,
+                28.313483691219574
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim South China Sea"
+            },
+            "geometry": null,
+            "area_turf": 340877434250.79553,
+            "bbox": [
+                109.57203178798383,
+                6.100491743750837,
+                116.56787417081503,
+                18.225772474552542
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim South Georgia and South Sandwich Islands: UK / Argentina"
+            },
+            "geometry": null,
+            "area_turf": 1234619327923.1262,
+            "bbox": [
+                -43.960089926915444,
+                -62.78834217149148,
+                -19.899908145185535,
+                -50.63863518138284
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Ukrainian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 136256376003.36804,
+            "bbox": [
+                29.60404396016068,
+                43.18805555555582,
+                38.34362664125675,
+                47.3102964163466
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim Western Saharan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 285375673183.52496,
+            "bbox": [
+                -20.666921030281117,
+                19.330115407800236,
+                -13.173152977483369,
+                27.833616760931676
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim: Canada / USA"
+            },
+            "geometry": null,
+            "area_turf": 24638260473.56501,
+            "bbox": [
+                -141.0000000010486,
+                69.64777056746613,
+                -137.50341302699985,
+                73.39761270989757
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim: Iran / United Arab Emirates"
+            },
+            "geometry": null,
+            "area_turf": 6198835069.209381,
+            "bbox": [
+                54.75273197889848,
+                25.495889125583005,
+                55.72806959773416,
+                26.412927088414648
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim: Kenya / Somalia"
+            },
+            "geometry": null,
+            "area_turf": 50566984993.71418,
+            "bbox": [
+                41.56621637092283,
+                -3.554754486330438,
+                45.94519517000256,
+                -1.654
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim: Puerto Rico / Dominican Republic"
+            },
+            "geometry": null,
+            "area_turf": 18390611878.40684,
+            "bbox": [
+                -67.78288673986361,
+                18.875358498701416,
+                -65.84126623341697,
+                21.85425094700011
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim: Sudan / Egypt"
+            },
+            "geometry": null,
+            "area_turf": 19827175623.65155,
+            "bbox": [
+                35.61351072823814,
+                21.889673488554394,
+                37.82926915374915,
+                23.333131925598025
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim: Trinidad and Tobago / Venezuela / Guyana"
+            },
+            "geometry": null,
+            "area_turf": 3613295055.0791574,
+            "bbox": [
+                -58.81999999979982,
+                10.166388889310838,
+                -57.114424539120876,
+                10.976499999783812
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim: Venezuela / Aruba / Dominican Republic"
+            },
+            "geometry": null,
+            "area_turf": 1121075520.160593,
+            "bbox": [
+                -70.41768040382735,
+                15.177474009218244,
+                -68.86222222177787,
+                15.413333333266948
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Overlapping claim: Venezuela / Colombia / Dominican Republic"
+            },
+            "geometry": null,
+            "area_turf": 868119093.9938648,
+            "bbox": [
+                -71.675,
+                14.96444444475543,
+                -70.41768040382735,
+                15.177474009218244
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Pakistani Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 225417637812.07358,
+            "bbox": [
+                61.41666666663369,
+                20.98033993194244,
+                68.90908992276243,
+                25.59737706180215
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Palau Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 618830568854.2858,
+            "bbox": [
+                129.5088048172889,
+                1.621407206177722,
+                136.9541002113523,
+                11.558724726465158
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Palestinian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1123704899.4523888,
+            "bbox": [
+                34.00896885238072,
+                31.335975944511716,
+                34.47270409814601,
+                31.789463972767038
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Palmyra Atoll Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 356055635861.8237,
+            "bbox": [
+                -165.74071897180306,
+                2.661159925790159,
+                -159.33273283305346,
+                9.78564397139229
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Panamanian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 333376023190.1751,
+            "bbox": [
+                -84.31666666653334,
+                5.000000000000213,
+                -77.04999999999973,
+                12.500000000000327
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Papua New Guinean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 2415294291386.6177,
+            "bbox": [
+                139.20137452543443,
+                -14.748448665973015,
+                162.80337908773717,
+                2.595969925971403
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Peruvian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 859864135707.7418,
+            "bbox": [
+                -84.67070686505556,
+                -20.208142087837857,
+                -70.37954998004724,
+                -3.392124999568978
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Philippines Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1982992931261.022,
+            "bbox": [
+                113.67771869365836,
+                3.105449495198229,
+                129.9438416625383,
+                22.253562953567723
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Pitcairn Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 846050690168.5487,
+            "bbox": [
+                -133.43269348461638,
+                -28.42470391955011,
+                -121.10896893406887,
+                -20.56053653553262
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Polish Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 29902892357.013733,
+            "bbox": [
+                14.201402422184401,
+                52.65351867674582,
+                19.804859757472173,
+                55.92154999993289
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Portuguese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 315971047906.5686,
+            "bbox": [
+                -13.865349921961268,
+                34.87759921928421,
+                -7.256941066267927,
+                42.054670215058536
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Portuguese Exclusive Economic Zone (Azores)"
+            },
+            "geometry": null,
+            "area_turf": 961899194184.2039,
+            "bbox": [
+                -35.5855811271671,
+                33.586358463972005,
+                -20.599166485045004,
+                43.0648262038664
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Portuguese Exclusive Economic Zone (Madeira)"
+            },
+            "geometry": null,
+            "area_turf": 454037436044.72125,
+            "bbox": [
+                -21.224500492003955,
+                29.247847234462455,
+                -12.590454221584821,
+                36.469743481576586
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Protected Zone established under the Torres Strait Treaty"
+            },
+            "geometry": null,
+            "area_turf": 3740262808.547474,
+            "bbox": [
+                142.05944245300012,
+                -9.755174162777834,
+                142.8519675670003,
+                -9.187953102779332
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Puerto Rican Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 155499918007.8879,
+            "bbox": [
+                -68.49651723837968,
+                14.930000000299842,
+                -65.01538093897909,
+                21.805401724503298
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Qatari Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 31489451157.637863,
+            "bbox": [
+                50.56452637469292,
+                24.50638496859196,
+                53.03472222167838,
+                27.043333333766782
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Romanian Exclusive economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 29610400589.060074,
+            "bbox": [
+                28.52782404454416,
+                43.43980056164668,
+                31.409722222222598,
+                45.21283686143221
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Russian Exclusive economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 7703902160003.626,
+            "bbox": [
+                -180,
+                39.7266865929444,
+                180,
+                85.1780004637504
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Réunion Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 316948313340.3718,
+            "bbox": [
+                51.80000000000038,
+                -24.736861734881046,
+                58.24358901252319,
+                -18.286388888736084
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Saba Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 9540400303.375992,
+            "bbox": [
+                -64.01501726773259,
+                16.678716050905038,
+                -63.01974487532564,
+                17.947997068809727
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Saint Kitts and Nevis Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 9554937214.495304,
+            "bbox": [
+                -63.624924417827486,
+                16.341563586490494,
+                -62.374186344923714,
+                17.661734249636012
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Saint Lucia Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 15504862122.463612,
+            "bbox": [
+                -62.86401493424154,
+                13.243237630312578,
+                -59.9997222224024,
+                14.272500000174986
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Saint Vincent and the Grenadines Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 36462121452.70091,
+            "bbox": [
+                -63.36907934033903,
+                12.062033006618094,
+                -60.29506249973443,
+                14.080324540345373
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Saint-Barthélemy Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 4201841641.172728,
+            "bbox": [
+                -63.10657572648839,
+                17.641716787899554,
+                -62.22634440696859,
+                18.312091422181496
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Saint-Martin Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1105383650.5023577,
+            "bbox": [
+                -63.63404375741328,
+                17.87369815074925,
+                -62.73944444440545,
+                18.190277777997082
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Saint-Pierre and Miquelon Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 12411516801.575823,
+            "bbox": [
+                -57.096777777672145,
+                43.41611111133881,
+                -55.90333333326646,
+                47.36500000005017
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Samoan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 131259352923.98515,
+            "bbox": [
+                -174.51139447157757,
+                -15.878383591829206,
+                -170.54265693017294,
+                -10.960825304544073
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Sao Tome and Principe Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 131721083297.16125,
+            "bbox": [
+                3.202639123497022,
+                -1.48152096312181,
+                8.550138888698939,
+                2.710480843116471
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Saudi Arabian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 225283985747.6696,
+            "bbox": [
+                34.45589469678336,
+                16.290000000100108,
+                51.68368464458982,
+                29.375206381339552
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Senegalese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 159552735571.3773,
+            "bbox": [
+                -20.21422789977734,
+                10.645221352332584,
+                -15.210765242921354,
+                16.528909921655597
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Seychellois Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1350245204536.1042,
+            "bbox": [
+                43.176069148518735,
+                -12.756501007115645,
+                59.63137068191193,
+                -0.360904071265765
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Sierra Leonian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 161630915121.5259,
+            "bbox": [
+                -16.553794213731777,
+                4.187259311568297,
+                -11.445194120511871,
+                9.131225705102224
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Singaporean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 718917479.9214002,
+            "bbox": [
+                103.5473848326441,
+                1.130361111076681,
+                104.0985666315456,
+                1.477972073053252
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Sint-Eustatius Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 2187449477.326853,
+            "bbox": [
+                -63.62305031611902,
+                16.681298550387837,
+                -62.76955066273274,
+                17.736182632322766
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Sint-Maarten Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 468532554.06222796,
+            "bbox": [
+                -63.286352771063264,
+                17.814949192551282,
+                -62.958106612130194,
+                18.05582933533657
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Slovenian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 214347712.81079206,
+            "bbox": [
+                13.387006679660772,
+                45.465483903859365,
+                13.746684550851683,
+                45.63000000000031
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Solomon Islands Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1615377135992.6104,
+            "bbox": [
+                154.585555555556,
+                -16.126944444030713,
+                173.59340189552145,
+                -4.139944961356122
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Somali Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 786953181889.6483,
+            "bbox": [
+                41.566216416655294,
+                -1.654068055591594,
+                54.445036390817535,
+                13.524636939243578
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "South African Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 1075551868756.3115,
+            "bbox": [
+                13.348024994758077,
+                -38.17521749928798,
+                36.53068583960143,
+                -26.86206471931122
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "South African Exclusive Economic Zone (Prince Edward Islands)"
+            },
+            "geometry": null,
+            "area_turf": 474704960130.81085,
+            "bbox": [
+                32.71193876046553,
+                -50.315063477097645,
+                42.84750311677581,
+                -43.26482131275324
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "South Korean Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 348509637857.9117,
+            "bbox": [
+                122.89633518981796,
+                30.77000000029986,
+                133.80608782048424,
+                39.83969111620442
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Spanish Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 562133178760.4956,
+            "bbox": [
+                -13.853048482401476,
+                35.66859129065614,
+                6.300000000100368,
+                46.87400344590259
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Spanish Exclusive Economic Zone (Canary Islands)"
+            },
+            "geometry": null,
+            "area_turf": 447542162990.35,
+            "bbox": [
+                -21.920389920658124,
+                24.584738389265624,
+                -11.812690026423184,
+                32.289083752313786
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Sri Lankan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 537038363843.53815,
+            "bbox": [
+                77.02333333316713,
+                2.566489011658703,
+                85.23291866616412,
+                11.448824809717323
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "St. Helena Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 451780068996.8466,
+            "bbox": [
+                -9.253389251912182,
+                -19.37971304272267,
+                -2.167926408576704,
+                -12.549195821729725
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Sudanese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 63152576452.04358,
+            "bbox": [
+                36.853499650788564,
+                18.02316617088225,
+                39.735172397888306,
+                22.00000000000216
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Surinamese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 134183229691.94426,
+            "bbox": [
+                -57.3407429458301,
+                5.097656249636415,
+                -52.52101801976562,
+                9.353091996298758
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Svalbard Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 791774193070.7161,
+            "bbox": [
+                -3.34387500033074,
+                72.17308952774474,
+                37.99999999985036,
+                84.14577661110215
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Swedish Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 155458963067.38327,
+            "bbox": [
+                10.03002777763291,
+                54.962444444444856,
+                24.189723170288545,
+                67.08058834047995
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Syrian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 10293235010.590672,
+            "bbox": [
+                34.963341673180054,
+                34.59925085504307,
+                35.97254309278955,
+                36.06250096045122
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Taiwanese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 357225644320.1302,
+            "bbox": [
+                114.23736254035865,
+                17.26387530490726,
+                123.54476074541262,
+                26.931359896042608
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Tanzanian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 243154703104.90762,
+            "bbox": [
+                38.53763425391847,
+                -10.909851619456518,
+                43.2822389021043,
+                -4.678317585088408
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Thailand Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 300593240625.3517,
+            "bbox": [
+                95.5300000002002,
+                5.949999999933695,
+                103.05300480772311,
+                13.727085709138507
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Togolese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 15541829138.47035,
+            "bbox": [
+                1.199507528949653,
+                2.884006111093257,
+                2.416228055680534,
+                6.235700827086404
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Tokelau Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 322679607956.7993,
+            "bbox": [
+                -175.8881313330942,
+                -11.048131664144776,
+                -168.00151225998263,
+                -6.466427777819504
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Tongan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 669481115111.2509,
+            "bbox": [
+                -179.0882488330868,
+                -25.6960574564863,
+                -171.3052777777471,
+                -14.154640220669492
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Trinidad and Tobago Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 77053367406.86769,
+            "bbox": [
+                -62.08305555576899,
+                9.8319444445807,
+                -57.11750000021627,
+                12.354641111198518
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Tristan Da Cunha Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 759287967394.288,
+            "bbox": [
+                -16.887281398005854,
+                -43.70774150420354,
+                -5.510495733502779,
+                -33.72202433990057
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Tunisian Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 99972609024.39026,
+            "bbox": [
+                7.816666666711427,
+                33.16146516758374,
+                13.683888888961462,
+                38.40999999960076
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Turkish Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 262416380713.79572,
+            "bbox": [
+                25.44175450876395,
+                34.20922587697291,
+                41.54702794548385,
+                43.44972222222239
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Turkmen Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 61305138924.46301,
+            "bbox": [
+                51.37653418490518,
+                37.31889429233797,
+                54.01154875746968,
+                41.76313495671323
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Turks and Caicos Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 91457346880.01491,
+            "bbox": [
+                -72.68051153238122,
+                20.59366157130549,
+                -68.82691987355292,
+                25.0320178909885
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Tuvaluan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 758003887666.9353,
+            "bbox": [
+                -180,
+                -13.240386111111,
+                180,
+                -3.96556388888877
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "United Arab Emirates Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 51888590860.014656,
+            "bbox": [
+                51.51644104933396,
+                23.959013819332824,
+                57.127391972861886,
+                26.15460632662098
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "United Kingdom Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 729739937977.5662,
+            "bbox": [
+                -14.897341626314699,
+                47.43540537525797,
+                3.399999999600652,
+                63.8874805558832
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "United States Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 2456767536235.776,
+            "bbox": [
+                -129.23482665059146,
+                23.833333333167218,
+                -65.69971857933155,
+                49.091585754979405
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "United States Exclusive Economic Zone (Alaska)"
+            },
+            "geometry": null,
+            "area_turf": 3672947656884.8433,
+            "bbox": [
+                -180,
+                47.8764414340005,
+                180,
+                74.7088400040004
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "United States Exclusive Economic Zone (Hawaii)"
+            },
+            "geometry": null,
+            "area_turf": 2485813329604.2017,
+            "bbox": [
+                -180,
+                15.56312417,
+                180,
+                31.7978661719999
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Uruguayan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 143396306968.74487,
+            "bbox": [
+                -58.494350582013396,
+                -37.859911042260606,
+                -50.059382031255495,
+                -31.523437499740794
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Vanuatu Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 626924424073.1707,
+            "bbox": [
+                163.30859653600132,
+                -21.64288185769476,
+                173.60893256515195,
+                -12.282150029899825
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Venezuelan Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 475484455653.04095,
+            "bbox": [
+                -72.7609532831674,
+                8.304830724258636,
+                -58.819999999795755,
+                16.74694444443064
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Vietnamese Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 755613411357.2101,
+            "bbox": [
+                102.20323727784532,
+                6.096666666933501,
+                112.88160248273411,
+                21.54716303844384
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Virgin Islander Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 38502723101.673965,
+            "bbox": [
+                -65.98140326225052,
+                15.654914136078773,
+                -63.88734033788609,
+                19.621494173317586
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Wake Island Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 409284801266.6469,
+            "bbox": [
+                163.0697756221476,
+                16.047093436512995,
+                170.185469471939,
+                22.669927207374798
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Wallis and Futuna Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 264346286689.96158,
+            "bbox": [
+                -180,
+                -15.9193064582264,
+                180,
+                -9.82964082776658
+            ]
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "GEONAME": "Yemeni Exclusive Economic Zone"
+            },
+            "geometry": null,
+            "area_turf": 530578971831.697,
+            "bbox": [
+                41.081944444181346,
+                8.9527534599045,
+                57.94600331510148,
+                16.649593796246492
+            ]
+        }
+    ]
+}

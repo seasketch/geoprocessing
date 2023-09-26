@@ -48,7 +48,7 @@ export async function boundaryAreaOverlap(
         }
 
         // Fetch only the features that overlap the bounding box of the sketch
-        const url = project.getVectorDatasourceUrl(ds);
+        const url = project.getDatasourceUrl(ds);
         const polys = await getFeatures(ds, url, {
           propertyFilter: {
             property: "UNION",

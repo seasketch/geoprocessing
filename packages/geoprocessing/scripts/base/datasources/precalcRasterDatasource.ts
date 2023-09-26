@@ -1,7 +1,6 @@
 import { Histogram, Georaster, Metric, Geography } from "../../../src/types";
 import {
   createMetric,
-  getCogFilename,
   InternalRasterDatasource,
   ImportRasterDatasourceConfig,
   getSum,
@@ -40,9 +39,10 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
   );
 
   const tempPort = 8080;
-  const url = `${projectClient.dataBucketUrl(true, tempPort)}${getCogFilename(
-    rasterConfig.datasourceId
-  )}`;
+  const url = projectClient.getDatasourceUrl(rasterConfig, {
+    local: true,
+    port: tempPort,
+  });
   const raster: Georaster = await geoblaze.parse(url);
 
   const rasterMetrics = await genRasterMetrics(raster, rasterConfig, geography);

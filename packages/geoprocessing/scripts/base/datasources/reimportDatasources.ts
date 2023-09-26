@@ -5,13 +5,10 @@ import {
   importRasterDatasourceOptionsSchema,
   ImportVectorDatasourceOptions,
   importVectorDatasourceOptionsSchema,
-  InternalRasterDatasource,
-  InternalVectorDatasource,
 } from "../../../src/types";
 import {
   isInternalRasterDatasource,
   isInternalVectorDatasource,
-  getCogFilename,
   getDatasetBucketName,
 } from "../../../src/datasources";
 import { genGeojson, genFlatgeobuf } from "./importVectorDatasource";
@@ -128,10 +125,10 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         await genCog(config);
 
         const tempPort = 8001;
-        const url = `${projectClient.dataBucketUrl(
-          true,
-          tempPort
-        )}${getCogFilename(config.datasourceId)}`;
+        const url = projectClient.getDatasourceUrl(config, {
+          local: true,
+          port: tempPort,
+        });
         console.log(
           `Fetching raster to calculate stats from temp file server ${url}`
         );

@@ -13,6 +13,12 @@ import {
   internalDatasourceSchema,
   vectorDatasourceSchema,
   VectorDatasource,
+  ImportRasterDatasourceConfig,
+  ImportVectorDatasourceConfig,
+  ImportVectorDatasourceOptions,
+  ImportRasterDatasourceOptions,
+  importRasterDatasourceOptionsSchema,
+  importVectorDatasourceOptionsSchema,
 } from "../types";
 import { DataClass } from "../types";
 import path from "path";
@@ -77,6 +83,20 @@ export const isExternalRasterDatasource = (
   ds: any
 ): ds is ExternalRasterDatasource => {
   return externalRasterDatasourceSchema.safeParse(ds).success;
+};
+
+export const isImportRasterDatasourceConfig = (
+  /** ImportRasterDatasourceConfig object */
+  ds: any
+): ds is ImportRasterDatasourceConfig => {
+  return importRasterDatasourceOptionsSchema.safeParse(ds).success;
+};
+
+export const isImportVectorDatasourceConfig = (
+  /** ImportVectorDatasourceConfig object */
+  ds: any
+): ds is ImportVectorDatasourceConfig => {
+  return importVectorDatasourceOptionsSchema.safeParse(ds).success;
 };
 
 /** find and return datasource from passed datasources, otherwise reads from disk */
@@ -145,17 +165,33 @@ export const getInternalRasterDatasourceById = (
 };
 
 /** Returns datasource filename in geojson format */
-export function getJsonFilename(datasource: InternalVectorDatasource) {
+export function getJsonFilename(
+  datasource:
+    | InternalVectorDatasource
+    | ImportVectorDatasourceConfig
+    | ImportVectorDatasourceOptions
+) {
   return datasource.datasourceId + ".json";
 }
 
 /** Returns datasource filename in flatgeobuf format */
-export function getFlatGeobufFilename(datasource: InternalVectorDatasource) {
+export function getFlatGeobufFilename(
+  datasource:
+    | InternalVectorDatasource
+    | ImportVectorDatasourceConfig
+    | ImportVectorDatasourceOptions
+) {
   return datasource.datasourceId + ".fgb";
 }
 
-export function getCogFilename(datasourceId: string, postfix?: string) {
-  return datasourceId + (postfix ? postfix : "") + ".tif";
+export function getCogFilename(
+  datasource:
+    | InternalRasterDatasource
+    | ImportRasterDatasourceConfig
+    | ImportRasterDatasourceOptions,
+  postfix?: string
+) {
+  return datasource.datasourceId + (postfix ? postfix : "") + ".tif";
 }
 
 export function getDatasetBucketName<C extends BaseImportDatasourceConfig>(

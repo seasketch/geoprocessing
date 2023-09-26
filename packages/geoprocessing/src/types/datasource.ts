@@ -68,7 +68,7 @@ export const baseDatasourceSchema = z.object({
 /** Properties for vector datasource */
 export const vectorDatasourceSchema = baseDatasourceSchema.merge(
   z.object({
-    /** Name of property containing unique ID for each vector feature */
+    /** Name of property containing unique ID value for each vector feature */
     idProperty: z.string().optional(),
     /** Name of property containing name for each vector feature */
     nameProperty: z.string().optional(),

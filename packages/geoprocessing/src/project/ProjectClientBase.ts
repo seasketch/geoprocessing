@@ -58,6 +58,7 @@ export interface ProjectClientInterface {
   dataBucketUrl(local?: boolean, port?: number): string;
   getDatasourceUrl(
     ds:
+      | Datasource
       | InternalVectorDatasource
       | InternalRasterDatasource
       | ExternalVectorDatasource
@@ -154,6 +155,7 @@ export class ProjectClientBase implements ProjectClientInterface {
 
   public getDatasourceUrl(
     ds:
+      | Datasource
       | InternalVectorDatasource
       | InternalRasterDatasource
       | ExternalVectorDatasource

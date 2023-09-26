@@ -32,6 +32,8 @@ import {
   isExternalDatasource,
   Geography,
   geographiesSchema,
+  metricsSchema,
+  createMetrics,
 } from "..";
 
 export interface ProjectClientConfig {
@@ -42,6 +44,7 @@ export interface ProjectClientConfig {
   objectives: any;
   package: any;
   geoprocessing: any;
+  precalc: any;
 }
 
 export interface ProjectClientInterface {
@@ -63,6 +66,7 @@ export class ProjectClientBase implements ProjectClientInterface {
   private _objectives: Objectives;
   private _package: Package;
   private _geoprocessing: GeoprocessingJsonConfig;
+  private _precalc: Metric[];
 
   constructor(config: ProjectClientConfig) {
     this._project = projectSchema.parse(config.basic);
@@ -72,6 +76,7 @@ export class ProjectClientBase implements ProjectClientInterface {
     this._objectives = objectivesSchema.parse(config.objectives);
     this._package = packageSchema.parse(config.package);
     this._geoprocessing = geoprocessingConfigSchema.parse(config.geoprocessing);
+    this._precalc = metricsSchema.parse(config.precalc);
   }
 
   // ASSETS //
@@ -104,6 +109,11 @@ export class ProjectClientBase implements ProjectClientInterface {
   /** Returns typed config from metrics.json */
   public get metricGroups(): MetricGroups {
     return this._metricGroups;
+  }
+
+  /** Returns precalculated metrics from precalc.json */
+  public get precalc(): Metric[] {
+    return this._precalc;
   }
 
   /** Returns typed config from objectives.json */
@@ -214,55 +224,70 @@ export class ProjectClientBase implements ProjectClientInterface {
     }));
   }
 
-  /** Returns Metrics for given MetricGroup stat precalcuated on import (keyStats) */
+  /**
+   * Extracts precalc metrics from precalc.json for a MetricGroup
+   * @param mg MetricGroup to get precalculated metrics for
+   * @param metricId string, "area", "count", or "sum"
+   * @param geographyId string, geographyId to get precalculated metrics for
+   * @returns Metric[] of precalculated metrics
+   */
   public getPrecalcMetrics(
     mg: MetricGroup,
-    /** The stat name to return - area, count */
-    statName: keyof Stats,
-    /** Optional class key to use */
-    classKey?: string
+    metricId: string,
+    geographyId: string
   ): Metric[] {
-    // top-level datasource with multi-class
-    // class-level datasource single-class (use total)
-    // class-level datasource multi-class (use total)
-    // class-level multi-datasource single-class and multi-class
-
+    // For each class in the metric group
     const metrics = mg.classes.map((curClass) => {
-      if (!mg.datasourceId && !curClass.datasourceId)
+      // use top-level datasourceId if available, otherwise fallback to class datasourceId
+      const datasourceId = mg.datasourceId || curClass.datasourceId;
+      if (!datasourceId)
         throw new Error(`Missing datasourceId for ${mg.metricId}`);
-      const ds = this.getDatasourceById(
-        mg.datasourceId! || curClass.datasourceId!
-      );
-      if (!ds.keyStats)
-        throw new Error(`Expected keyStats for ${ds.datasourceId}`);
+
+      // If class key (multiclass datasource), find that metric and return
       const classKey = mg.classKey! || curClass.classKey!;
-      // If not class key use the total
-      if (
-        !classKey &&
-        curClass.classId !== ds.datasourceId &&
-        !curClass.datasourceId
-      )
-        console.log(
-          `Missing classKey in metricGroup ${mg.metricId}, class ${curClass.classId} so using total stat for precalc denominator.  Is this what is intended?`
+      if (classKey) {
+        // Expect precalc metric classId to be in form `${datasourceId}-${classId}`
+        const metric = this._precalc.filter(function (pMetric) {
+          return (
+            pMetric.metricId === metricId &&
+            pMetric.classId === datasourceId + "-" + curClass.classId &&
+            pMetric.geographyId === geographyId
+          );
+        });
+
+        // Throw error if metric is unable to be found
+        if (!metric || metric.length !== 1) {
+          throw new Error(
+            `No matching total metric for ${datasourceId}-${curClass.classId}, ${metricId}, ${geographyId}`
+          );
+        }
+
+        // Return metric, overwriting classId in its simple form
+        return { ...metric[0], classId: curClass.classId };
+      }
+
+      // Otherwise find metric for general, aka classId total, and add classId
+      const metric = this._precalc.filter(function (pMetric) {
+        return (
+          pMetric.metricId === metricId &&
+          pMetric.classId === datasourceId + "-total" &&
+          pMetric.geographyId === geographyId
         );
-      const classValue = classKey
-        ? ds.keyStats[classKey][curClass.classId][statName]
-        : ds.keyStats.total.total[statName];
-      if (!classValue)
+      });
+
+      if (!metric || !metric.length)
         throw new Error(
-          `Expected total ${statName} stat for ${ds.datasourceId} ${curClass.classId}`
+          `Can't find metric for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}`
         );
-      const classMetric = {
-        groupId: null,
-        geographyId: null,
-        sketchId: null,
-        metricId: mg.metricId,
-        classId: curClass.classId,
-        value: classValue,
-      };
-      return classMetric;
+      if (metric.length > 1)
+        throw new Error(
+          `Returned multiple precalc metrics for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}`
+        );
+
+      // Returns metric, overwriting classId for easy match in report
+      return { ...metric[0], classId: curClass.classId };
     });
-    return metrics;
+    return createMetrics(metrics);
   }
 }
 

@@ -16,6 +16,7 @@ const internalConfig: ProjectClientConfig = {
     externalLinks: {},
   },
   metricGroups: [],
+  precalc: [],
   objectives: [],
   package: {
     name: "internal",

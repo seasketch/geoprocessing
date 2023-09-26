@@ -29,6 +29,7 @@ const projectClient = new ProjectClientBase({
   datasources,
   geographies,
   metricGroups: metrics,
+  precalc: [],
   objectives,
   basic,
   package: projectPackage,

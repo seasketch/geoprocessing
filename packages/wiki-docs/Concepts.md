@@ -338,7 +338,6 @@ Base:
 
 * `datasourceId` - unique string identifier for datasource.
 * `geo_type` - vector | raster
-* `keyStats` - Summary stats by key, by class (as defined by `classKeys` property for vector and `measurementType` for raster).  These are automatically calculated on import.
 * [formats](https://github.com/seasketch/geoprocessing/blob/d633b20/packages/geoprocessing/src/types/datasource.ts#L11)
   * [fgb](https://flatgeobuf.org/) - Flatgeobuf. Efficient file and network transfer size.
   * [json](https://geojson.org/) - GeoJSON. Easy to use and human readable.
@@ -355,7 +354,6 @@ Raster:
 * `measurementType` - quantitative | categorical
 * `band` - band number to import from source dataset
 * `noDataValue` - value that if assigned to a raster cell, should not be counted as data.
-* `filterDatasource` - id of a datasource to intersect with the input datasource on import.  Currently only supported for rasters.  This is useful for example if you have a dataset that extends beyond the planning area and you want to filter it to the planning area on import so that keyStats as well as any geoprocessing functions will be based on the filtered set.
 
 External:
 
@@ -379,21 +377,12 @@ Global datasets are published independently and available for use in each projec
 
 Internal [vector](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#InternalVectorDatasource) datasource have a `src` path as well as optional `layerName` and `classKeys` properties.
 
-This example is for an `eez` boundary datasets, that is imported from the `current-vector` geopackage with layerName `eez_mr_osm`.  Based on keyStats there is 1 feature in the datasource with an area of `3,032,525,677,797 square meters`
+This example is for an `eez` boundary datasets, that is imported from the `current-vector` geopackage with layerName `eez_mr_osm`.
 
 ```json
 {
     "datasourceId": "eez",
     "geo_type": "vector",
-    "keyStats": {
-      "total": {
-        "total": {
-          "count": 1,
-          "sum": null,
-          "area": 3032525677797.563
-        }
-      }
-    },
     "formats": [
       "fgb"
     ],
@@ -414,15 +403,6 @@ An [internal raster datasource]()
 {
     "datasourceId": "depth_zone_photic",
     "geo_type": "raster",
-    "keyStats": {
-        "total": {
-        "total": {
-            "count": null,
-            "sum": 85,
-            "area": null
-        }
-        }
-    },
     "formats": [
         "tif"
     ],

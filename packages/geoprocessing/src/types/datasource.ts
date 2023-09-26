@@ -36,15 +36,11 @@ export const statsSchema = z.object({
 /** Pre-calculated stats by key by class */
 export const classStatsSchema = z.record(statsSchema);
 
-export const keyStatsSchema = z.record(classStatsSchema);
-
 export const baseDatasourceSchema = z.object({
   /** Unique id of datasource in project */
   datasourceId: z.string(),
   /** basic geospatial type */
   geo_type: geoTypesSchema,
-  /** Pre-calculated stats by key by class */
-  keyStats: keyStatsSchema.optional(),
   /** Available formats */
   formats: z.array(supportedFormatsSchema),
   metadata: z
@@ -88,8 +84,6 @@ export const rasterDatasourceSchema = baseDatasourceSchema.merge(
     band: z.number(),
     /** Nodata value */
     noDataValue: z.number().optional(),
-    /** Datasource ID containing polygon to filter pixels to include in raster precalc */
-    filterDatasource: z.string().optional(),
   })
 );
 
@@ -151,7 +145,6 @@ export type GeoTypes = z.infer<typeof geoTypesSchema>;
 export type SupportedFormats = z.infer<typeof supportedFormatsSchema>;
 export type Stats = z.infer<typeof statsSchema>;
 export type ClassStats = z.infer<typeof classStatsSchema>;
-export type KeyStats = z.infer<typeof keyStatsSchema>;
 export type BaseDatasource = z.infer<typeof baseDatasourceSchema>;
 
 export type VectorDatasource = z.infer<typeof vectorDatasourceSchema>;

@@ -14,13 +14,9 @@ import {
   getCogFilename,
   getDatasetBucketName,
 } from "../../../src/datasources";
-import {
-  genGeojson,
-  genFlatgeobuf,
-  genVectorKeyStats,
-} from "./importVectorDatasource";
+import { genGeojson, genFlatgeobuf } from "./importVectorDatasource";
 import { genVectorConfig } from "./genVectorConfig";
-import { genCog, genRasterKeyStats } from "./importRasterDatasource";
+import { genCog } from "./importRasterDatasource";
 import { genRasterConfig } from "./genRasterConfig";
 import { loadCog } from "../../../src/dataproviders/cog";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
@@ -82,7 +78,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         const config = genVectorConfig(projectClient, options, newDstPath);
         await genGeojson(config);
         await genFlatgeobuf(config);
-        const classStatsByProperty = genVectorKeyStats(config);
 
         if (doPublish) {
           await Promise.all(
@@ -97,16 +92,8 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           );
         }
 
-        const newVectorD: InternalVectorDatasource = {
-          ...ds,
-          keyStats: classStatsByProperty,
-        };
-
         // Datasource record with new or updated timestamp
-        const finalDs = await createOrUpdateDatasource(
-          newVectorD,
-          newDatasourcePath
-        );
+        const finalDs = await createOrUpdateDatasource(ds, newDatasourcePath);
         finalDatasources.push(finalDs);
 
         console.log(`${ds.datasourceId} reimport complete`);
@@ -144,11 +131,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
 
         console.log("raster loaded");
 
-        const classStatsByProperty = await genRasterKeyStats(config, raster);
-
-        console.log("raster key stats calculated");
-        console.log(JSON.stringify(classStatsByProperty));
-
         if (doPublish) {
           await Promise.all(
             config.formats.map((format) => {
@@ -162,16 +144,8 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           );
         }
 
-        const newRasterD: InternalRasterDatasource = {
-          ...ds,
-          keyStats: classStatsByProperty,
-        };
-
         // Datasource record with new or updated timestamp
-        const finalDs = await createOrUpdateDatasource(
-          newRasterD,
-          newDatasourcePath
-        );
+        const finalDs = await createOrUpdateDatasource(ds, newDatasourcePath);
         finalDatasources.push(finalDs);
 
         console.log(`${ds.datasourceId} reimport complete`);

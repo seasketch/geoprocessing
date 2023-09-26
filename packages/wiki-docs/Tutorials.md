@@ -306,7 +306,7 @@ If all is well, you should see no error, and `data/dist` should be populated wit
 But what if git changes show a lot of red and green?
 
 * You should look closer at what's happening.  If parts of the smoke test output (examples directory JSON files) are being re-ordered, that may just be because Javascript is being a little bit different in how it generates JSON files from another computer that previously ran the tests.
-* If you are seeing changes to your keyStats values in datasources.json (area, sum, count), then your datasources may be different from the last person that ran it.  You will want to make sure you aren't using an outdated older version.  If you are using an updated more recent version, then convince yourself the changes are what you expect, for example total area increases or decreases.
+* If you are seeing changes to your precalc values in precalc.json, then your datasources may be different from the last person that ran it.  You will want to make sure you aren't using an outdated older version.  If you are using an updated more recent version, then convince yourself the changes are what you expect, for example total area increases or decreases.
 
 What if you just can't your data synced properly, and you just need to move forward?
 
@@ -831,7 +831,7 @@ to invert selection)
  ◯ json - GeoJSON
 ```
 
-You can import and then publish your data to AWS all in one step, but typically I default to `No` here so that I can ensure it's imported properly and the `keyStats` are properly calculated.  If you answer yes, you must have already done your first deploy of the project, or else the `datasets` bucket won't exist.  You will also need to have your `awscli` setup properly IAM user account credentials.
+You can import and then publish your data to AWS all in one step, but typically I default to `No` here so that I can ensure it's imported properly and precalculation runs properly.  If you answer yes, you must have already done your first deploy of the project, or else the `datasets` bucket won't exist.  You will also need to have your `awscli` setup properly IAM user account credentials.
 
 ```bash
 ? Do you want to publish the datasource to S3 cloud storage? (Use 
@@ -844,7 +844,6 @@ At this point the import will proceed and various log output will be generated. 
 
 * The output file `data/dist/eez.fgb` and possibly `eez.json` if you chose to generate it.
 * An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `eez`
-* Also in this datasource object will be `keyStats` with a total feature `count` of 1 and a total `area` of ~3 trillion square meters.
 
 If the import fails, try again double checking everything.  It is most likely one of the following:
 
@@ -916,7 +915,7 @@ Raster formats often support a `nodata` value, which is a value that if assigned
 ? Enter nodata value for raster or leave blank -3.3999999521443642e+38
 ```
 
-You can import and then publish your data to AWS all in one step, but typically I default to `No` here so that I can ensure it's imported properly and the `keyStats` are properly calculated.  If you answer yes, you must have already done your first deploy of the project, or else the `datasets` bucket won't exist.  You will also need to have your `awscli` setup properly IAM user account credentials.
+You can import and then publish your data to AWS all in one step, but typically I default to `No` here so that I can ensure it's imported properly and precalculation runs properly.  If you answer yes, you must have already done your first deploy of the project, or else the `datasets` bucket won't exist.  You will also need to have your `awscli` setup properly IAM user account credentials.
 
 ```bash
 ? Do you want to publish the datasource to S3 cloud storage? (Use 
@@ -930,8 +929,7 @@ At this point the import will proceed and various log output will be generated.
 Do not be concerned about an error that an ".ovr" file could not be found. This is expected.  Once complete you will find:
 
 * The output file `data/dist/octocorals.tif`
-* An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `octocorals`
-* Also in this datasource object will be `keyStats` with a total `sum` of `432`.  You can run a `Raster layer statistics` report in the QGIS Processing Toolbox and compare the values as a final check.  If they don't match, verify you entered the correct `nodata` value.
+* An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `octocorals`.
 
 If the import fails, try again double checking everything.  It is most likely one of the following:
 

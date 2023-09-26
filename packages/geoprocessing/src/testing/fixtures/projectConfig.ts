@@ -26,6 +26,7 @@ const basicConfig: ProjectClientConfig = {
       ],
     },
   ],
+  precalc: [],
   objectives: [
     {
       objectiveId: "eez_objective",

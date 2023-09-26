@@ -12,6 +12,9 @@ export function getProjectClient(projectPath: string) {
   const metrics = fs.readJsonSync(
     path.join(projectPath, "project", "metrics.json")
   );
+  const precalc = fs.readJsonSync(
+    path.join(projectPath, "project", "precalc.json")
+  );
   const objectives = fs.readJsonSync(
     path.join(projectPath, "project", "objectives.json")
   );
@@ -27,6 +30,7 @@ export function getProjectClient(projectPath: string) {
     datasources,
     geographies,
     metricGroups: metrics,
+    precalc,
     objectives,
     basic,
     package: projectPackage,

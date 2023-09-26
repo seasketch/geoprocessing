@@ -49,11 +49,17 @@ export const baseDatasourceSchema = z.object({
   formats: z.array(supportedFormatsSchema),
   metadata: z
     .object({
+      /** Human-readable name of datasource */
       name: z.string(),
-      idProperty: z.string(),
+      /** Description of datasource */
+      description: z.string().optional(),
+      /** Publisher-provided version number or ISO 8601 date */
       version: z.string(),
+      /** Publisher name */
       publisher: z.string(),
+      /** ISO 8601 publish date */
       publishDate: z.string(),
+      /** Public URL to access published data */
       publishLink: z.string(),
     })
     .optional(),
@@ -62,6 +68,10 @@ export const baseDatasourceSchema = z.object({
 /** Properties for vector datasource */
 export const vectorDatasourceSchema = baseDatasourceSchema.merge(
   z.object({
+    /** Name of property containing unique ID for each vector feature */
+    idProperty: z.string().optional(),
+    /** Name of property containing name for each vector feature */
+    nameProperty: z.string().optional(),
     /** Import - Name of layer within vector datasource to extract */
     layerName: z.string().optional(),
     /** keys to generate classes for.  Vector - property names */
@@ -144,6 +154,7 @@ export type ClassStats = z.infer<typeof classStatsSchema>;
 export type KeyStats = z.infer<typeof keyStatsSchema>;
 export type BaseDatasource = z.infer<typeof baseDatasourceSchema>;
 
+export type VectorDatasource = z.infer<typeof vectorDatasourceSchema>;
 export type InternalVectorDatasource = z.infer<
   typeof internalVectorDatasourceSchema
 >;

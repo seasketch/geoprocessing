@@ -11,6 +11,8 @@ import {
   Datasource,
   BaseImportDatasourceConfig,
   internalDatasourceSchema,
+  vectorDatasourceSchema,
+  VectorDatasource,
 } from "../types";
 import { DataClass } from "../types";
 import path from "path";
@@ -33,6 +35,13 @@ export const isinternalDatasource = (
   ds: any
 ): ds is Datasource => {
   return internalDatasourceSchema.safeParse(ds).success;
+};
+
+export const isVectorDatasource = (
+  /** VectorDatasource object */
+  ds: any
+): ds is VectorDatasource => {
+  return vectorDatasourceSchema.safeParse(ds).success;
 };
 
 export const isInternalVectorDatasource = (

@@ -8,6 +8,7 @@ import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths";
 import { getBbox } from "../global/datasources/mr-eez";
 import { $ } from "zx";
 import { globalDatasources } from "../../src/datasources/global";
+import { isVectorDatasource } from "../../src";
 
 $.verbose = false;
 
@@ -229,25 +230,30 @@ export async function createProject(
     spinner.start("updating geographies.json");
 
     const eezDs = globalDatasources.find((ds) => ds.datasourceId === "mr-eez");
+    if (isVectorDatasource(eezDs)) {
+      // Optionally assign initial geography
+      const geos: Geography[] = [
+        {
+          geographyId: "eez",
+          datasourceId: "mr-eez",
+          display: metadata.planningAreaName
+            ? metadata.planningAreaName
+            : metadata.planningAreaId,
+          geographyProperty: eezDs.idProperty,
+          propertyValue: metadata.planningAreaId,
+          groupId: "eez",
+        },
+      ];
 
-    // Optionally assign initial geography
-    const geos: Geography[] = [
-      {
-        geographyId: "eez",
-        datasourceId: "mr-eez",
-        display: metadata.planningAreaName
-          ? metadata.planningAreaName
-          : metadata.planningAreaId,
-        geographyProperty: eezDs?.metadata?.idProperty,
-        propertyValue: metadata.planningAreaId,
-        groupId: "eez",
-      },
-    ];
-
-    await fs.writeJSONSync(`${projectPath}/project/geographies.json`, geos, {
-      spaces: 2,
-    });
-    spinner.succeed("updated geographies.json");
+      await fs.writeJSONSync(`${projectPath}/project/geographies.json`, geos, {
+        spaces: 2,
+      });
+      spinner.succeed("updated geographies.json");
+    } else {
+      console.error(
+        "Expected vector datasource for mr-eez, geographies.json not updated"
+      );
+    }
   }
 
   spinner.start("add .gitignore");

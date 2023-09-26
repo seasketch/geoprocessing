@@ -28,8 +28,15 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
   // Ensure dstPath is created
   fs.ensureDirSync(config.dstPath);
 
-  await genGeojson(config);
-  await genFlatgeobuf(config);
+  await Promise.all(
+    config.formats.map(async (format) => {
+      if (format === "json") {
+        await genGeojson(config);
+      } else if (format === "fgb") {
+        await genFlatgeobuf(config);
+      }
+    })
+  );
 
   if (doPublish) {
     await Promise.all(

@@ -21,6 +21,8 @@ const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";
 const dstPath = "data/out";
 
+const eezSrc = "eez";
+
 describe("precalcRasterDatasource", () => {
   beforeEach(() => {
     // Ensure test data folder
@@ -31,10 +33,10 @@ describe("precalcRasterDatasource", () => {
     const dsFilePath = path.join(dstPath, dsFilename);
     const datasourceId = "samoa_benthic_reef_sand";
 
-    const geogDatasourceId = "eez";
+    const geogDatasourceId = "eez_raster1";
     const geogFilename = "geographies_precalc_raster_test_1.json";
     const geogFilePath = path.join(dstPath, geogFilename);
-    const geographyId = "eez";
+    const geographyId = "eez_raster1";
 
     const precalcFilename = "precalc_raster_test_1.json";
     const precalcFilePath = path.join(dstPath, precalcFilename);
@@ -47,10 +49,10 @@ describe("precalcRasterDatasource", () => {
       projectClient,
       {
         geo_type: "vector",
-        src: path.join(srcPath, `${geogDatasourceId}.json`),
+        src: path.join(srcPath, `${eezSrc}.json`),
         datasourceId: geogDatasourceId,
         classKeys: [],
-        formats: [],
+        formats: ["json"],
         propertiesToKeep: [],
       },
       {
@@ -66,7 +68,7 @@ describe("precalcRasterDatasource", () => {
         src: path.join(srcPath, `${datasourceId}.tif`),
         datasourceId,
         classKeys: [],
-        formats: [],
+        formats: ["tif"],
         noDataValue: 0,
         band: 1,
         measurementType: "quantitative",
@@ -80,7 +82,7 @@ describe("precalcRasterDatasource", () => {
     // Create geography
     const eezGeog: Geography = {
       geographyId: geographyId,
-      datasourceId: geographyId,
+      datasourceId: geogDatasourceId,
       display: geographyId,
     };
     writeGeographies([eezGeog], geogFilePath);
@@ -100,8 +102,8 @@ describe("precalcRasterDatasource", () => {
     metricsSchema.parse(metrics);
     expect(metrics.length).toBe(2);
     metrics.forEach((metric) => {
-      expect(metric.classId).toBe("eez-total");
-      expect(metric.geographyId).toBe("eez");
+      expect(metric.classId).toBe(`${geographyId}-total`);
+      expect(metric.geographyId).toBe(geographyId);
     });
 
     const areaMetric = firstMatchingMetric(

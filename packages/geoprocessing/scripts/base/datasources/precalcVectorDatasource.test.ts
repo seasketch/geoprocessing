@@ -20,6 +20,10 @@ import { writeGeographies } from "../geographies/geographies";
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";
 const dstPath = "data/out";
+const eezSrc = "eez";
+const shelfSrc = "shelf_class";
+const shelfSrcUpdated = "shelf_class_updated";
+const deepwaterSrc = "deepwater_bioregions";
 
 describe("precalcDatasources", () => {
   describe("precalcVectorDatasource", () => {
@@ -30,10 +34,10 @@ describe("precalcDatasources", () => {
     test("precalcVectorDatasource - single file, single class should write geography and precalc vector metrics", async () => {
       const dsFilename = "datasources_precalc_vector_test_1.json";
       const dsFilePath = path.join(dstPath, dsFilename);
-      const datasourceId = "eez";
+      const datasourceId = "eez1";
       const geogFilename = "geographies_precalc_vector_test_1.json";
       const geogFilePath = path.join(dstPath, geogFilename);
-      const geographyId = "eez";
+      const geographyId = "eez1";
       const precalcFilename = "precalc_vector_test_1.json";
       const precalcFilePath = path.join(dstPath, precalcFilename);
 
@@ -44,10 +48,10 @@ describe("precalcDatasources", () => {
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, `${datasourceId}.json`),
+          src: path.join(srcPath, `${eezSrc}.json`),
           datasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["json"],
           propertiesToKeep: [],
         },
         {
@@ -79,8 +83,8 @@ describe("precalcDatasources", () => {
       metricsSchema.parse(metrics);
       expect(metrics.length).toBe(2);
       metrics.forEach((metric) => {
-        expect(metric.classId).toBe("eez-total");
-        expect(metric.geographyId).toBe("eez");
+        expect(metric.classId).toBe(`${geographyId}-total`);
+        expect(metric.geographyId).toBe(geographyId);
       });
 
       const areaMetric = firstMatchingMetric(
@@ -105,11 +109,11 @@ describe("precalcDatasources", () => {
     test("precalcVectorDatasource - single geog, multi-class should write geography and precalc vector metrics", async () => {
       const dsFilename = "datasources_precalc_vector_test_2.json";
       const dsFilePath = path.join(dstPath, dsFilename);
-      const classDatasourceId = "shelf_class";
-      const geogDatasourceId = "eez";
+      const classDatasourceId = "shelf_class2";
+      const geogDatasourceId = "eez2";
       const geogFilename = "geographies_precalc_vector_test_2.json";
       const geogFilePath = path.join(dstPath, geogFilename);
-      const geographyId = "eez";
+      const geographyId = "eez2";
       const precalcFilename = "precalc_vector_test_2.json";
       const precalcFilePath = path.join(dstPath, precalcFilename);
 
@@ -118,10 +122,10 @@ describe("precalcDatasources", () => {
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, `${geogDatasourceId}.json`),
+          src: path.join(srcPath, `${eezSrc}.json`),
           datasourceId: geogDatasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["json"],
           propertiesToKeep: [],
         },
         {
@@ -134,10 +138,10 @@ describe("precalcDatasources", () => {
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, `${classDatasourceId}.json`),
+          src: path.join(srcPath, `${shelfSrc}.json`),
           datasourceId: classDatasourceId,
           classKeys: ["Class"],
-          formats: [],
+          formats: ["json"],
           propertiesToKeep: ["Class"],
         },
         {
@@ -169,32 +173,36 @@ describe("precalcDatasources", () => {
       metricsSchema.parse(metrics);
       expect(metrics.length).toBe(8);
       metrics.forEach((metric) => {
-        expect(metric.geographyId).toBe("eez");
+        expect(metric.geographyId).toBe(geogDatasourceId);
       });
 
       const shelfTotalCountMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-total" && m.metricId === "count"
+        (m) =>
+          m.classId === `${classDatasourceId}-total` && m.metricId === "count"
       );
       expect(shelfTotalCountMetric).toBeTruthy();
       expect(shelfTotalCountMetric.value).toBe(7);
 
       const shelfTotalAreaMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-total" && m.metricId === "area"
+        (m) =>
+          m.classId === `${classDatasourceId}-total` && m.metricId === "area"
       );
       expect(shelfTotalAreaMetric).toBeTruthy();
 
       const shelfMediumCountMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-medium" && m.metricId === "count"
+        (m) =>
+          m.classId === `${classDatasourceId}-medium` && m.metricId === "count"
       );
       expect(shelfMediumCountMetric).toBeTruthy();
       expect(shelfMediumCountMetric.value).toBe(2);
 
       const shelfHighCountMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-high" && m.metricId === "count"
+        (m) =>
+          m.classId === `${classDatasourceId}-high` && m.metricId === "count"
       );
       expect(shelfHighCountMetric).toBeTruthy();
       expect(shelfHighCountMetric.value).toBe(5);
@@ -210,12 +218,12 @@ describe("precalcDatasources", () => {
     test("precalcVectorDatasource - single geog, two datasources should write metrics", async () => {
       const dsFilename = "datasources_precalc_vector_test_3.json";
       const dsFilePath = path.join(dstPath, dsFilename);
-      const classDatasourceId1 = "shelf_class";
-      const classDatasourceId2 = "deepwater_bioregions";
-      const geogDatasourceId = "eez";
+      const classDatasourceId1 = "shelf_class3";
+      const classDatasourceId2 = "deepwater_bioregions3";
+      const geogDatasourceId = "eez3";
       const geogFilename = "geographies_precalc_vector_test_3.json";
       const geogFilePath = path.join(dstPath, geogFilename);
-      const geographyId = "eez";
+      const geographyId = "eez3";
       const precalcFilename = "precalc_vector_test_3.json";
       const precalcFilePath = path.join(dstPath, precalcFilename);
 
@@ -224,10 +232,10 @@ describe("precalcDatasources", () => {
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, `${geogDatasourceId}.json`),
+          src: path.join(srcPath, `${eezSrc}.json`),
           datasourceId: geogDatasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["json"],
           propertiesToKeep: [],
         },
         {
@@ -240,10 +248,10 @@ describe("precalcDatasources", () => {
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, `${classDatasourceId1}.json`),
+          src: path.join(srcPath, `${shelfSrc}.json`),
           datasourceId: classDatasourceId1,
           classKeys: ["Class"],
-          formats: [],
+          formats: ["json"],
           propertiesToKeep: ["Class"],
         },
         {
@@ -275,10 +283,10 @@ describe("precalcDatasources", () => {
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, `${classDatasourceId2}.json`),
+          src: path.join(srcPath, `${deepwaterSrc}.json`),
           datasourceId: classDatasourceId2,
           classKeys: [],
-          formats: [],
+          formats: ["json"],
           propertiesToKeep: [],
         },
         {
@@ -304,32 +312,36 @@ describe("precalcDatasources", () => {
       metricsSchema.parse(metrics);
       expect(metrics.length).toBe(10);
       metrics.forEach((metric) => {
-        expect(metric.geographyId).toBe("eez");
+        expect(metric.geographyId).toBe(geogDatasourceId);
       });
 
       const shelfTotalCountMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-total" && m.metricId === "count"
+        (m) =>
+          m.classId === `${classDatasourceId1}-total` && m.metricId === "count"
       );
       expect(shelfTotalCountMetric).toBeTruthy();
       expect(shelfTotalCountMetric.value).toBe(7);
 
       const shelfTotalAreaMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-total" && m.metricId === "area"
+        (m) =>
+          m.classId === `${classDatasourceId1}-total` && m.metricId === "area"
       );
       expect(shelfTotalAreaMetric).toBeTruthy();
 
       const shelfMediumCountMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-medium" && m.metricId === "count"
+        (m) =>
+          m.classId === `${classDatasourceId1}-medium` && m.metricId === "count"
       );
       expect(shelfMediumCountMetric).toBeTruthy();
       expect(shelfMediumCountMetric.value).toBe(2);
 
       const shelfHighCountMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-high" && m.metricId === "count"
+        (m) =>
+          m.classId === `${classDatasourceId1}-high` && m.metricId === "count"
       );
       expect(shelfHighCountMetric).toBeTruthy();
       expect(shelfHighCountMetric.value).toBe(5);
@@ -337,7 +349,7 @@ describe("precalcDatasources", () => {
       const deepwaterCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === "deepwater_bioregions-total" && m.metricId === "count"
+          m.classId === `${classDatasourceId2}-total` && m.metricId === "count"
       );
       expect(deepwaterCountMetric).toBeTruthy();
       expect(deepwaterCountMetric.value).toBe(8);
@@ -355,12 +367,12 @@ describe("precalcDatasources", () => {
     test("precalcVectorDatasource - single geog, update datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_4.json";
       const dsFilePath = path.join(dstPath, dsFilename);
-      const classDatasourceId1 = "shelf_class";
-      const classDatasourceId2 = "shelf_class_updated";
-      const geogDatasourceId = "eez";
+      const classDatasourceId1 = "shelf_class4";
+      const classDatasourceId2 = "shelf_class_updated4";
+      const geogDatasourceId = "eez4";
       const geogFilename = "geographies_precalc_vector_test_4.json";
       const geogFilePath = path.join(dstPath, geogFilename);
-      const geographyId = "eez";
+      const geographyId = "eez4";
       const precalcFilename = "precalc_vector_test_4.json";
       const precalcFilePath = path.join(dstPath, precalcFilename);
 
@@ -369,10 +381,10 @@ describe("precalcDatasources", () => {
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, `${geogDatasourceId}.json`),
+          src: path.join(srcPath, `${eezSrc}.json`),
           datasourceId: geogDatasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["json"],
           propertiesToKeep: [],
         },
         {
@@ -386,10 +398,10 @@ describe("precalcDatasources", () => {
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, `${classDatasourceId1}.json`),
+          src: path.join(srcPath, `${shelfSrc}.json`),
           datasourceId: classDatasourceId1,
           classKeys: ["Class"],
-          formats: [],
+          formats: ["json"],
           propertiesToKeep: ["Class"],
         },
         {
@@ -421,10 +433,10 @@ describe("precalcDatasources", () => {
         projectClient,
         {
           geo_type: "vector",
-          src: path.join(srcPath, `${classDatasourceId2}.json`),
+          src: path.join(srcPath, `${shelfSrcUpdated}.json`),
           datasourceId: classDatasourceId1,
           classKeys: ["Class"],
-          formats: [],
+          formats: ["json"],
           propertiesToKeep: ["Class"],
         },
         {
@@ -450,25 +462,28 @@ describe("precalcDatasources", () => {
       metricsSchema.parse(metrics);
       expect(metrics.length).toBe(6);
       metrics.forEach((metric) => {
-        expect(metric.geographyId).toBe("eez");
+        expect(metric.geographyId).toBe(geogDatasourceId);
       });
 
       const shelfTotalCountMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-total" && m.metricId === "count"
+        (m) =>
+          m.classId === `${classDatasourceId1}-total` && m.metricId === "count"
       );
       expect(shelfTotalCountMetric).toBeTruthy();
       expect(shelfTotalCountMetric.value).toBe(5);
 
       const shelfTotalAreaMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-total" && m.metricId === "area"
+        (m) =>
+          m.classId === `${classDatasourceId1}-total` && m.metricId === "area"
       );
       expect(shelfTotalAreaMetric).toBeTruthy();
 
       const shelfHighCountMetric = firstMatchingMetric(
         metrics,
-        (m) => m.classId === "shelf_class-high" && m.metricId === "count"
+        (m) =>
+          m.classId === `${classDatasourceId1}-high` && m.metricId === "count"
       );
       expect(shelfHighCountMetric).toBeTruthy();
       expect(shelfHighCountMetric.value).toBe(5);
@@ -476,7 +491,9 @@ describe("precalcDatasources", () => {
       try {
         const shelfMediumCountMetric = firstMatchingMetric(
           metrics,
-          (m) => m.classId === "shelf_class-medium" && m.metricId === "count"
+          (m) =>
+            m.classId === `${classDatasourceId1}-medium` &&
+            m.metricId === "count"
         );
         expect(shelfMediumCountMetric).toBeFalsy();
       } catch (err: unknown) {

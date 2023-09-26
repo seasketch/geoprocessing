@@ -183,7 +183,6 @@ describe("staleMetricsFilterFactory", () => {
     // should filter out metrics with eez geography
     const matcher = staleMetricsFilterFactory("basins", "eez");
     const filtered = m.filter(matcher);
-    console.log(filtered);
     expect(filtered.length).toBe(6);
   });
 });

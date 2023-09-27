@@ -40,6 +40,7 @@ import {
   ImportVectorDatasourceConfig,
   isImportVectorDatasourceConfig,
   isImportRasterDatasourceConfig,
+  SupportedFormats,
 } from "..";
 
 export interface ProjectClientConfig {
@@ -162,23 +163,45 @@ export class ProjectClientBase implements ProjectClientInterface {
       | ImportRasterDatasourceConfig
       | ImportVectorDatasourceConfig,
     options: {
+      format?: SupportedFormats;
       local?: boolean;
       port?: number;
     } = {}
   ) {
-    const { local, port } = options;
-    if (
-      (isInternalVectorDatasource(ds) || isImportVectorDatasourceConfig(ds)) &&
-      ds.formats.includes("fgb")
-    ) {
-      return `${this.dataBucketUrl(local, port)}${getFlatGeobufFilename(ds)}`;
+    const { format, local, port } = options;
+    if (isInternalVectorDatasource(ds) || isImportVectorDatasourceConfig(ds)) {
+      // default to fgb format if not specified
+      if (!format) {
+        if (ds.formats.includes("fgb"))
+          return `${this.dataBucketUrl(local, port)}${getFlatGeobufFilename(
+            ds
+          )}`;
+      } else if (ds.formats.includes(format))
+        return `${this.dataBucketUrl(local, port)}${ds.datasourceId}.${format}`;
+      else
+        throw new Error(
+          `getDatasourceUrl: format not found for datasource ${ds.datasourceId}`
+        );
     } else if (
-      (isInternalRasterDatasource(ds) || isImportRasterDatasourceConfig(ds)) &&
-      ds.formats.includes("tif")
+      isInternalRasterDatasource(ds) ||
+      isImportRasterDatasourceConfig(ds)
     ) {
-      return `${this.dataBucketUrl(local, port)}${getCogFilename(ds)}`;
+      // default to cog tif format if not specificed
+      if (!format) {
+        if (ds.formats.includes("tif"))
+          return `${this.dataBucketUrl(local, port)}${getCogFilename(ds)}`;
+      } else if (ds.formats.includes(format))
+        return `${this.dataBucketUrl(local, port)}${ds.datasourceId}.${format}`;
+      else
+        throw new Error(
+          `getDatasourceUrl: format not found for datasource ${ds.datasourceId}`
+        );
     } else if (isExternalVectorDatasource(ds)) {
-      return ds.url;
+      if (ds.url) return ds.url;
+      else
+        throw new Error(
+          `getDatasourceUrl: url undefined for external datasource ${ds.datasourceId}`
+        );
     }
     throw new Error(
       `getDatasourceUrl: cannot generate url for datasource ${ds.datasourceId}`

@@ -18,5 +18,16 @@
     "classKeys": [],
     "propertiesToKeep": ["UNION"],
     "url": "https://d3muy0hbwp5qkl.cloudfront.net"
+  },
+  {
+    "datasourceId": "world",
+    "geo_type": "vector",
+    "formats": [
+      "json"
+    ],
+    "layerName": "world",
+    "classKeys": [],
+    "src": "data/default/world.json",
+    "propertiesToKeep": []
   }
 ]

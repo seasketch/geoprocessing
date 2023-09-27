@@ -39,3 +39,17 @@ export const multipolygonSchema = z.object({
   type: z.literal('MultiPolygon'),
   coordinates: z.array(z.array(z.array(z.array(z.number()))))
 }) satisfies z.ZodType<MultiPolygon>
+
+/** Zod schema for Feature containing Polygon or MultiPolygon */
+export const featureSchema = z.object({
+  type: z.literal('Feature'),
+  geometry: polygonSchema.or(multipolygonSchema),
+  id: z.string().or(z.number()).optional(),
+  properties: z.record(z.any()).or(z.null())
+})
+
+/** Zod schema for FeatureCollection containing polygons or multipolygons */
+export const fcSchema = z.object({
+  type: z.literal('FeatureCollection'),
+  features: z.array(featureSchema)
+}) satisfies z.ZodType<FeatureCollection<Polygon | MultiPolygon>>

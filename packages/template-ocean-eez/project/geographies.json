@@ -1,1 +1,8 @@
-[]
+[{
+  "geographyId": "eez",
+  "datasourceId": "eez_mr_osm",
+  "geographyProperty": "GEONAME",
+  "propertyValue": "Micronesian Exclusive Economic Zone",
+  "display": "Micronesia",
+  "groups": ["project boundary"]
+}]

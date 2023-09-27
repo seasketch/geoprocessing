@@ -241,7 +241,7 @@ export async function createProject(
             : metadata.planningAreaId,
           geographyProperty: eezDs.idProperty,
           propertyValue: metadata.planningAreaId,
-          groupId: "eez",
+          groups: ["project boundary"],
         },
       ];
 

@@ -12,8 +12,6 @@ import { geographyConfig } from "../../../src/geographies/config";
  * If geographies file not exist then start a new one and ensure directory exists
  */
 export function readGeographies(filePath?: string) {
-  // Start with default
-  // if planningAreaType is EEZ, then default to external geography for it
   let geos: Geographies = [];
 
   // Optional override

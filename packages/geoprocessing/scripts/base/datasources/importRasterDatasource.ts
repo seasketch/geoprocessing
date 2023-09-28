@@ -32,16 +32,6 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
 
   await genCog(config);
 
-  const tempPort = 8001;
-  const url = projectClient.getDatasourceUrl(config, {
-    local: true,
-    port: tempPort,
-  });
-  console.log(
-    `Fetching raster to calculate stats from temp file server ${url}`
-  );
-  const raster = await loadCog(url);
-
   if (doPublish) {
     await Promise.all(
       config.formats.map((format) => {

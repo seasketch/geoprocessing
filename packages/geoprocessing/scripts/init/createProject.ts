@@ -229,7 +229,6 @@ export async function createProject(
   if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
     spinner.start("updating geographies.json");
 
-    // IS THIS RIGHT GLOBAL DATASOURCE ID?
     const eezDs = globalDatasources.find((ds) => ds.datasourceId === "mr-eez");
     if (isVectorDatasource(eezDs)) {
       // Optionally assign initial geography

@@ -30,6 +30,24 @@ export type {
 
 // zod schemas
 
+export const box2dSchema = z.tuple([
+  z.number(),
+  z.number(),
+  z.number(),
+  z.number(),
+]);
+
+export const box3dSchema = z.tuple([
+  z.number(),
+  z.number(),
+  z.number(),
+  z.number(),
+  z.number(),
+  z.number(),
+]);
+
+export const bboxSchema = box2dSchema.or(box3dSchema);
+
 export const polygonSchema = z.object({
   type: z.literal('Polygon'),
   coordinates: z.array(z.array(z.array(z.number())))
@@ -47,6 +65,8 @@ export const featureSchema = z.object({
   id: z.string().or(z.number()).optional(),
   properties: z.record(z.any()).or(z.null())
 })
+
+export const featuresSchema = z.array(featureSchema)
 
 /** Zod schema for FeatureCollection containing polygons or multipolygons */
 export const fcSchema = z.object({

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { bboxSchema } from "./geojson";
 
 /**
  * A geographic area (Polygon) for planning.  Typically used to represent a planning area
@@ -10,16 +11,20 @@ export const geographySchema = z.object({
   datasourceId: z.string(),
   /** Display name for the geography */
   display: z.string(),
-  /** Optional, defines property to use to uniquely identify geography, if geography is within larger multi-record datasource */
-  geographyProperty: z.string().optional(),
-  /** Optional, defines property value that uniquely identifies geography, if geography is within larger multi-record datasource */
-  propertyValue: z.string().optional(),
   /** Optional, defines external layer for visualizing the geography */
   layerId: z.string().optional(),
   /** Optional, sub-geography identifier. Useful when you have multiple groupings/levels of geographies and want to select for a specific group */
   groups: z.array(z.string()).optional(),
-  /** Optional, whether or not precalc should be run for this geography, defaults to true if not present */
+  /** Required if external datasource used, defines whether or not precalc should be run for this geography, defaults to true if not present */
   precalc: z.boolean().optional(),
+  /** Required if external datasource used, defines filter to constrain geography features, matches feature property having one or more specific values */
+  propertyFilter: z
+    .object({
+      property: z.string(),
+      values: z.array(z.string().or(z.number())),
+    })
+    .optional(),
+  bboxFilter: bboxSchema.optional(),
 });
 
 export const geographiesSchema = z.array(geographySchema);

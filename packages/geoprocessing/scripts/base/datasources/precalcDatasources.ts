@@ -1,8 +1,15 @@
 import { readDatasources } from "./datasources";
-import { Metric, Datasource, Geography } from "../../../src/types";
 import {
+  Metric,
+  Datasource,
+  Geography,
+  VectorDatasource,
+} from "../../../src/types";
+import {
+  firstMatching,
   isInternalRasterDatasource,
   isInternalVectorDatasource,
+  isVectorDatasource,
   isinternalDatasource,
 } from "../../../src/datasources";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
@@ -13,7 +20,7 @@ import { precalcRasterDatasource } from "./precalcRasterDatasource";
 import { cloneDeep } from "lodash";
 
 export interface PrecalcDatasourceOptions {
-  /** Alternative path to look for datasources than default. useful for testing */
+  /** Alternative path to look for datasources than default if using internal.*/
   newDatasourcePath?: string;
   /** Alternative path to look for geographes than default. useful for testing */
   newGeographyPath?: string;
@@ -54,7 +61,12 @@ export async function precalcDatasources<C extends ProjectClientBase>(
     }
   }
 
-  const allDatasources = (await readDatasources(newDatasourcePath)).filter(
+  const vectorDatasources: VectorDatasource[] = (await readDatasources(
+    newDatasourcePath
+  ).filter((ds) => isVectorDatasource(ds))) as VectorDatasource[];
+  const internalDatasources = cloneDeep(
+    await readDatasources(newDatasourcePath)
+  ).filter(
     (ds) => isinternalDatasource(ds) // Only internal datasources currently supported for precalc
   );
   // Start with no datasources to precalc.  Matcher can specify all or some
@@ -62,9 +74,9 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 
   if (datasourceMatcher) {
     if (datasourceMatcher.includes("*")) {
-      matchingDatasources = cloneDeep(allDatasources);
+      matchingDatasources = cloneDeep(internalDatasources);
     } else {
-      matchingDatasources = cloneDeep(allDatasources).filter((ds) =>
+      matchingDatasources = cloneDeep(internalDatasources).filter((ds) =>
         datasourceMatcher.includes(ds.datasourceId)
       );
     }
@@ -77,7 +89,8 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   let finalMetrics: Metric[] = [];
   let processed = {}; // Track processed datasource/geography combinations to avoid duplicates
 
-  // console.log("all datasources", allDatasources);
+  // console.log("vector (geog) datasources", vectorDatasources);
+  // console.log("internal datasources", internalDatasources);
   // console.log("matching datasources", matchingDatasources);
   // console.log("all geographies", allGeographies);
   // console.log("matching geographies", matchingGeographies);
@@ -93,10 +106,15 @@ export async function precalcDatasources<C extends ProjectClientBase>(
         console.log(
           `Precalculating datasource ${ds.datasourceId} for geography ${geog.geographyId}`
         );
+        const geogDatasource = firstMatching(
+          vectorDatasources,
+          (item) => item.datasourceId === geog.datasourceId
+        );
         const metrics = await precalcMetrics(
           projectClient,
           ds,
           geog,
+          geogDatasource,
           extraOptions
         );
         // console.log(ds.datasourceId, geog.geographyId, metrics);
@@ -120,7 +138,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 
   // Also run precalc on matching subset of geographies for all datasources, for completeness
   for (const geog of matchingGeographies) {
-    for (const ds of allDatasources) {
+    for (const ds of internalDatasources) {
       // Skip if already processed
       if (processed[`${ds.datasourceId}-${geog.geographyId}`] === true) {
         continue;
@@ -129,10 +147,15 @@ export async function precalcDatasources<C extends ProjectClientBase>(
         console.log(
           `Precalculating datasource ${ds.datasourceId} for geography ${geog.geographyId}`
         );
+        const geogDatasource = firstMatching(
+          vectorDatasources,
+          (item) => item.datasourceId === geog.datasourceId
+        );
         const metrics = await precalcMetrics(
           projectClient,
           ds,
           geog,
+          geogDatasource,
           extraOptions
         );
         finalMetrics = finalMetrics.concat(metrics);
@@ -172,6 +195,7 @@ export const precalcMetrics = async (
   projectClient: ProjectClientBase,
   ds: Datasource,
   geog: Geography,
+  geogDs: VectorDatasource,
   extraOptions: {
     /** Alternative path to store precalc data. useful for testing */
     newPrecalcPath?: string;
@@ -184,7 +208,7 @@ export const precalcMetrics = async (
   // precalc if possible. If external datasource, then return nothing
   const curMetrics = await (async () => {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
-      return await precalcVectorDatasource(projectClient, ds, geog, {
+      return await precalcVectorDatasource(projectClient, ds, geog, geogDs, {
         newDstPath,
       });
     } else if (isInternalRasterDatasource(ds) && ds.geo_type === "raster") {

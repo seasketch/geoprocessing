@@ -23,6 +23,15 @@ import {
 import { DataClass } from "../types";
 import path from "path";
 
+/**
+ * Returns the first item that returns true for filter
+ */
+export const firstMatching = <D>(list: D[], filter: (item: D) => boolean) => {
+  const item = list.find((m) => filter(m));
+  if (!item) throw new Error(`firstMatching: matching item not found`);
+  return item;
+};
+
 /** Returns mapping of class ID to class DataClass objects */
 export const classIdMapping = (classes: DataClass[]) => {
   return classes.reduce<Record<string, string>>(

@@ -1,24 +1,7 @@
 import { z } from "zod";
+import { bboxSchema } from "./geojson";
 
 //// SCHEMA ////
-
-export const box2dSchema = z.tuple([
-  z.number(),
-  z.number(),
-  z.number(),
-  z.number(),
-]);
-
-export const box3dSchema = z.tuple([
-  z.number(),
-  z.number(),
-  z.number(),
-  z.number(),
-  z.number(),
-  z.number(),
-]);
-
-export const bboxSchema = box2dSchema.or(box3dSchema);
 
 export const PLANNING_AREA_TYPES = ["eez", "other"] as const;
 export const planningAreaTypesSchema = z.enum(PLANNING_AREA_TYPES);

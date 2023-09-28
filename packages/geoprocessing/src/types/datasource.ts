@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { Package } from "./package";
 import { GeoprocessingJsonConfig } from "./project";
+import { bboxSchema } from "./geojson";
 
 // Schema and types for representing datasources used in calculating metrics
 
@@ -64,10 +65,19 @@ export const baseDatasourceSchema = z.object({
 /** Properties for vector datasource */
 export const vectorDatasourceSchema = baseDatasourceSchema.merge(
   z.object({
-    /** Name of property containing unique ID value for each vector feature */
+    /** Optional, name of property containing unique ID value for each vector feature */
     idProperty: z.string().optional(),
-    /** Name of property containing name for each vector feature */
+    /** Optional, name of property containing name for each vector feature */
     nameProperty: z.string().optional(),
+    /** Optional, constrain datasource features by property having one or more specific values */
+    propertyFilter: z
+      .object({
+        property: z.string(),
+        values: z.array(z.string().or(z.number())),
+      })
+      .optional(),
+    /** Optional, constrain datasource to smaller bbox */
+    bboxFilter: bboxSchema.optional(),
     /** Import - Name of layer within vector datasource to extract */
     layerName: z.string().optional(),
     /** keys to generate classes for.  Vector - property names */

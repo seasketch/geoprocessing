@@ -69,7 +69,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   ).filter(
     (ds) => isinternalDatasource(ds) // Only internal datasources currently supported for precalc
   );
-  // Start with no datasources to precalc.  Matcher can specify all or some
+  // Start with no datasources to precalc.  Matcher can specify all (*) or some
   let matchingDatasources: Datasource[] = [];
 
   if (datasourceMatcher) {
@@ -196,12 +196,7 @@ export const precalcMetrics = async (
   ds: Datasource,
   geog: Geography,
   geogDs: VectorDatasource,
-  extraOptions: {
-    /** Alternative path to store precalc data. useful for testing */
-    newPrecalcPath?: string;
-    /** Alternative dist path. useful for testing */
-    newDstPath?: string;
-  }
+  extraOptions: PrecalcDatasourceOptions
 ): Promise<Metric[]> => {
   const { newPrecalcPath, newDstPath } = extraOptions;
 
@@ -212,7 +207,7 @@ export const precalcMetrics = async (
         newDstPath,
       });
     } else if (isInternalRasterDatasource(ds) && ds.geo_type === "raster") {
-      return await precalcRasterDatasource(projectClient, ds, geog, {
+      return await precalcRasterDatasource(projectClient, ds, geog, geogDs, {
         newDstPath,
       });
     } else {

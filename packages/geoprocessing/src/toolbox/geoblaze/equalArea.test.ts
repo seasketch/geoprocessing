@@ -11,7 +11,7 @@ import geoblaze from "geoblaze";
 describe("geoblaze equal-area tests", () => {
   test("discrete raster, no geometry", async () => {
     const url =
-      "http://127.0.0.1:8080/in/existing_marine_reserves_6933_COG.tif";
+      "http://127.0.0.1:8080/data/in/existing_marine_reserves_6933_COG.tif";
 
     const stats = (await geoblaze.stats(url))[0];
     const georaster = await geoblaze.parse(url);
@@ -36,7 +36,7 @@ describe("geoblaze equal-area tests", () => {
 
   test("cross-dateline geometry", async () => {
     const url =
-      "http://127.0.0.1:8080/in/existing_marine_reserves_6933_COG.tif";
+      "http://127.0.0.1:8080/data/in/existing_marine_reserves_6933_COG.tif";
 
     const poly = {
       type: "Polygon",
@@ -59,7 +59,7 @@ describe("geoblaze equal-area tests", () => {
 
   test("raster and geom equal-area", async () => {
     const url =
-      "http://127.0.0.1:8080/in/existing_marine_reserves_6933_COG.tif";
+      "http://127.0.0.1:8080/data/in/existing_marine_reserves_6933_COG.tif";
 
     // Wholly contains an area
     const poly = {
@@ -97,7 +97,7 @@ describe("geoblaze equal-area tests", () => {
 
   test("raster 6933, geom 4326", async () => {
     const url =
-      "http://127.0.0.1:8080/in/existing_marine_reserves_6933_COG.tif";
+      "http://127.0.0.1:8080/data/in/existing_marine_reserves_6933_COG.tif";
 
     const stats = (
       await geoblaze.stats(url, {
@@ -137,7 +137,7 @@ describe("geoblaze equal-area tests", () => {
 
   test("raster 6933, two 4326 polygons", async () => {
     const url =
-      "http://127.0.0.1:8080/in/existing_marine_reserves_6933_COG.tif";
+      "http://127.0.0.1:8080/data/in/existing_marine_reserves_6933_COG.tif";
 
     // Wholly contains an area but split down the middle, no overlap
     const stats = (
@@ -203,7 +203,7 @@ describe("geoblaze equal-area tests", () => {
 
   test("Two polygons overlapping", async () => {
     const url =
-      "http://127.0.0.1:8080/in/existing_marine_reserves_6933_COG.tif";
+      "http://127.0.0.1:8080/data/in/existing_marine_reserves_6933_COG.tif";
 
     // Wholly contains an area but split down the middle, overlap
     const stats = (

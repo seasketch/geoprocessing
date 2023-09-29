@@ -1,4 +1,11 @@
-import { Histogram, Georaster, Metric, Geography } from "../../../src/types";
+import {
+  Histogram,
+  Georaster,
+  Metric,
+  Geography,
+  VectorDatasource,
+  RasterDatasource,
+} from "../../../src/types";
 import {
   createMetric,
   InternalRasterDatasource,
@@ -8,6 +15,7 @@ import {
   bboxOverlap,
   BBox,
   ProjectClientBase,
+  datasourceConfig,
 } from "../../../src";
 import { genRasterConfig } from "./genRasterConfig";
 import bbox from "@turf/bbox";
@@ -15,6 +23,7 @@ import bbox from "@turf/bbox";
 // @ts-ignore
 import geoblaze from "geoblaze";
 import { readDatasourceGeojsonById } from "./datasources";
+import { getGeographyFeatures } from "../geographies/helpers";
 
 /**
  * Returns Metric array for raster datasource and geography
@@ -25,7 +34,10 @@ import { readDatasourceGeojsonById } from "./datasources";
 export async function precalcRasterDatasource<C extends ProjectClientBase>(
   projectClient: C,
   datasource: InternalRasterDatasource,
+  /** Input geography */
   geography: Geography,
+  /** Geography datasource to get geography from */
+  geogDs: VectorDatasource,
   extraOptions: {
     /** Alternative path to store precalc data. useful for testing */
     newDstPath?: string;
@@ -38,14 +50,20 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
     extraOptions.newDstPath
   );
 
-  const tempPort = 8080;
+  // const tempPort = 8080;
   const url = projectClient.getDatasourceUrl(rasterConfig, {
     local: true,
-    port: tempPort,
+    subPath: extraOptions.newDstPath,
   });
   const raster: Georaster = await geoblaze.parse(url);
 
-  const rasterMetrics = await genRasterMetrics(raster, rasterConfig, geography);
+  const rasterMetrics = await genRasterMetrics(
+    raster,
+    datasource,
+    geography,
+    geogDs,
+    extraOptions
+  );
 
   return rasterMetrics;
 }
@@ -59,14 +77,24 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
  */
 export async function genRasterMetrics(
   raster: Georaster,
-  rasterConfig: ImportRasterDatasourceConfig,
-  geography: Geography
+  datasource: RasterDatasource,
+  /** Input geography */
+  geography: Geography,
+  /** Geography datasource to get geography from */
+  geogDs: VectorDatasource,
+  extraOptions: {
+    /** Alternative path to store precalc data. useful for testing */
+    newDstPath?: string;
+  }
 ): Promise<Metric[]> {
+  const dstPath = extraOptions.newDstPath || datasourceConfig.defaultDstPath;
+
   // Reads in geography vector data as FeatureCollection
   if (!geography) throw new Error(`Expected geography`);
-  const geographyFeatureColl = readDatasourceGeojsonById(
-    geography.datasourceId,
-    rasterConfig.dstPath
+  const geographyFeatureColl = await getGeographyFeatures(
+    geography,
+    geogDs,
+    dstPath
   );
 
   const rasterBbox: BBox = [raster.xmin, raster.ymin, raster.xmax, raster.ymax];
@@ -77,7 +105,7 @@ export async function genRasterMetrics(
     return [
       createMetric({
         geographyId: geography.geographyId,
-        classId: rasterConfig.datasourceId + "-total",
+        classId: datasource.datasourceId + "-total",
         metricId: "sum",
         value: 0,
       }),
@@ -85,11 +113,11 @@ export async function genRasterMetrics(
   }
 
   // Creates metric for simple continous raster
-  if (rasterConfig.measurementType === "quantitative") {
+  if (datasource.measurementType === "quantitative") {
     return [
       createMetric({
         geographyId: geography.geographyId,
-        classId: rasterConfig.datasourceId + "-total",
+        classId: datasource.datasourceId + "-total",
         metricId: "sum",
         value: await getSum(raster, geographyFeatureColl),
       }),
@@ -97,7 +125,7 @@ export async function genRasterMetrics(
   }
 
   // Creates metrics for categorical raster (histogram, count by class)
-  if (rasterConfig.measurementType === "categorical") {
+  if (datasource.measurementType === "categorical") {
     const metrics: Metric[] = [];
     const histogram = (await getHistogram(raster)) as Histogram;
     if (!histogram) throw new Error("Histogram not returned");
@@ -106,7 +134,7 @@ export async function genRasterMetrics(
       metrics.push(
         createMetric({
           geographyId: geography.geographyId,
-          classId: rasterConfig.datasourceId + "-" + curClass,
+          classId: datasource.datasourceId + "-" + curClass,
           metricId: "count",
           value: histogram[curClass],
         })
@@ -117,6 +145,6 @@ export async function genRasterMetrics(
   }
 
   throw new Error(
-    `Something is malformed, check raster ${rasterConfig.datasourceId} and geography ${geography.datasourceId}]`
+    `Something is malformed, check raster ${datasource.datasourceId} and geography ${geography.datasourceId}]`
   );
 }

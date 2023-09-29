@@ -55,7 +55,6 @@ void (async function () {
         const geogAnswers = await geographiesQuestion(
           projectClient.geographies
         );
-        console.log("geogAnswers", geogAnswers);
         geogOptions.geographyMatcher = geogAnswers.geographies;
       }
     }

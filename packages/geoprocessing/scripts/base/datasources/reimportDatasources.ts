@@ -124,18 +124,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         const config = genRasterConfig(projectClient, options, newDstPath);
         await genCog(config);
 
-        const tempPort = 8001;
-        const url = projectClient.getDatasourceUrl(config, {
-          local: true,
-          port: tempPort,
-        });
-        console.log(
-          `Fetching raster to calculate stats from temp file server ${url}`
-        );
-        const raster = await loadCog(url);
-
-        console.log("raster loaded");
-
         if (doPublish) {
           await Promise.all(
             config.formats.map((format) => {

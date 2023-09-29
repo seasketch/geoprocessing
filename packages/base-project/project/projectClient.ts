@@ -12,7 +12,7 @@ import { ProjectClientBase } from "@seasketch/geoprocessing";
 const projectClient = new ProjectClientBase({
   datasources,
   metricGroups: metrics,
-  precalc
+  precalc,
   objectives,
   geographies,
   basic,

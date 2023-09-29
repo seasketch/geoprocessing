@@ -16,7 +16,6 @@ import path from "path";
 import { precalcDatasources } from "./precalcDatasources";
 import { importDatasource } from "./importDatasource";
 import { writeGeographies } from "../geographies/geographies";
-import internal from "stream";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";
@@ -511,7 +510,8 @@ describe("precalcDatasources", () => {
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
     }, 20000);
-    test("precalcVectorDatasource - geography with external datasource", async () => {
+
+    test("precalcVectorDatasource - geography with external subdivided datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_5.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const internalDatasourceId = "eez5";
@@ -560,7 +560,7 @@ describe("precalcDatasources", () => {
         datasourceId: "global-clipping-eez-land-union",
         propertyFilter: {
           property: "UNION",
-          values: ["American Samoa"],
+          values: ["Samoa"],
         },
         bboxFilter: [
           -173.7746906500533, -17.55526875286155, -165.2008333331916,
@@ -591,6 +591,7 @@ describe("precalcDatasources", () => {
         (m) => m.metricId === "area"
       );
       expect(areaMetric).toBeTruthy();
+      expect(areaMetric.value).toBeGreaterThan(100000000000);
 
       const countMetric = firstMatchingMetric(
         metrics,
@@ -599,11 +600,105 @@ describe("precalcDatasources", () => {
       expect(countMetric).toBeTruthy();
       expect(countMetric.value).toBe(1);
 
-      // fs.removeSync(dsFilePath);
-      // fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
-      // fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
-      // fs.removeSync(geogFilePath);
-      // fs.removeSync(precalcFilePath);
+      fs.removeSync(dsFilePath);
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
+      fs.removeSync(geogFilePath);
+      fs.removeSync(precalcFilePath);
+    }, 20000);
+
+    test("precalcVectorDatasource - geography with external flatgeobuf datasource", async () => {
+      const dsFilename = "datasources_precalc_vector_test_6.json";
+      const dsFilePath = path.join(dstPath, dsFilename);
+      const internalDatasourceId = "eez6";
+      const geogFilename = "geographies_precalc_vector_test_6.json";
+      const geogFilePath = path.join(dstPath, geogFilename);
+      const geographyId = "eez";
+      const precalcFilename = "precalc_vector_test_6.json";
+      const precalcFilePath = path.join(dstPath, precalcFilename);
+
+      // start with external datasource
+      fs.writeJSONSync(dsFilePath, [
+        {
+          datasourceId: "global-clipping-eez-land-union",
+          geo_type: "vector",
+          url: "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-with-land-mr-v3.fgb",
+          formats: ["fgb"],
+          classKeys: [],
+          idProperty: "UNION",
+          nameProperty: "UNION",
+        },
+      ]);
+
+      // add internal datasource
+      await importDatasource(
+        projectClient,
+        {
+          geo_type: "vector",
+          src: path.join(srcPath, `${eezSrc}.json`),
+          datasourceId: internalDatasourceId,
+          classKeys: [],
+          formats: ["json"],
+          propertiesToKeep: [],
+        },
+        {
+          newDatasourcePath: dsFilePath,
+          newDstPath: dstPath,
+          doPublish: false,
+        }
+      );
+
+      // Create geography using external datasource and required filters
+      const eezGeog: Geography = {
+        geographyId: geographyId,
+        datasourceId: "global-clipping-eez-land-union",
+        propertyFilter: {
+          property: "UNION",
+          values: ["Samoa"],
+        },
+        bboxFilter: [
+          -173.7746906500533, -17.55526875286155, -165.2008333331916,
+          -10.024476331539347,
+        ],
+        display: geographyId,
+      };
+      writeGeographies([eezGeog], geogFilePath);
+
+      await precalcDatasources(projectClient, {
+        newDatasourcePath: dsFilePath,
+        newGeographyPath: geogFilePath,
+        newPrecalcPath: precalcFilePath,
+        newDstPath: dstPath,
+      });
+
+      // Verify precalc
+      const metrics = fs.readJSONSync(precalcFilePath);
+      metricsSchema.parse(metrics);
+      expect(metrics.length).toBe(2);
+      metrics.forEach((metric) => {
+        expect(metric.classId).toBe(`${internalDatasourceId}-total`);
+        expect(metric.geographyId).toBe(geographyId);
+      });
+
+      const areaMetric = firstMatchingMetric(
+        metrics,
+        (m) => m.metricId === "area"
+      );
+      expect(areaMetric).toBeTruthy();
+      expect(areaMetric.value).toBeGreaterThan(100000000000);
+
+      const countMetric = firstMatchingMetric(
+        metrics,
+        (m) => m.metricId === "count"
+      );
+      expect(countMetric).toBeTruthy();
+      expect(countMetric.value).toBe(1);
+
+      fs.removeSync(dsFilePath);
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
+      fs.removeSync(geogFilePath);
+      fs.removeSync(precalcFilePath);
     }, 20000);
   });
 });

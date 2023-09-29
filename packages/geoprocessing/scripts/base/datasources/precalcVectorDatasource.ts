@@ -1,7 +1,5 @@
 import area from "@turf/area";
 import {
-  ImportVectorDatasourceConfig,
-  InternalVectorDatasource,
   Metric,
   Polygon,
   Geography,
@@ -17,13 +15,13 @@ import {
   createMetric,
   datasourceConfig,
   isExternalVectorDatasource,
-  isImportVectorDatasourceConfig,
   isInternalVectorDatasource,
 } from "../../../src";
-import { genVectorConfig } from "./genVectorConfig";
 import { readDatasourceGeojsonById } from "./datasources";
 import { getFeatures } from "../../../src/dataproviders";
 import { featureCollection } from "@turf/helpers";
+import truncate from "@turf/truncate";
+import { getGeographyFeatures } from "../geographies/helpers";
 
 /**
  * Creates precalc metrics for a datasource and geography
@@ -44,13 +42,6 @@ export async function precalcVectorDatasource<C extends ProjectClientBase>(
     newDstPath?: string;
   } = {}
 ): Promise<Metric[]> {
-  // Creates vector config from datasource
-  // const vectorConfig = genVectorConfig(
-  //   projectClient,
-  //   datasource,
-  //   extraOptions.newDstPath
-  // );
-
   // Create metrics and return to precalc.ts
   return genVectorMetrics(datasource, geography, geogDs, extraOptions);
 }
@@ -74,50 +65,37 @@ export async function genVectorMetrics(
   }
 ): Promise<Metric[]> {
   const dstPath = extraOptions.newDstPath || datasourceConfig.defaultDstPath;
-  // Read in vector datasource (geojson) as FeatureCollection
+
+  // console.log(
+  //   `DATASOURCE: ${datasource.datasourceId}}, GEOGRAPHY: ${geography.geographyId}}\n`
+  // );
+
   const dsFeatureColl: FeatureCollection<Polygon | MultiPolygon> =
     await (async () => {
       if (isInternalVectorDatasource(datasource)) {
         // Read local datasource
-        return readDatasourceGeojsonById(datasource.datasourceId, dstPath);
+        return truncate(
+          readDatasourceGeojsonById(datasource.datasourceId, dstPath),
+          { mutate: true }
+        );
       } else if (isExternalVectorDatasource(datasource)) {
         // Fetch external datasource
         const feats = await getFeatures(datasource, datasource.url);
         // Make sure only contains polygon or multipolygon in array
         const validFeats = featuresSchema.parse(feats);
-        return featureCollection(validFeats);
+        return truncate(featureCollection(validFeats), { mutate: true });
       } else {
         return featureCollection([]);
       }
     })();
+  // console.log("dsFeatureColl", JSON.stringify(dsFeatureColl));
 
-  // Read in vector geography datasource (geojson) as FeatureCollection
-  const geographyFeatureColl: FeatureCollection<Polygon | MultiPolygon> =
-    await (async () => {
-      if (isInternalVectorDatasource(geogDs)) {
-        // Read local datasource
-        return readDatasourceGeojsonById(geography.datasourceId, dstPath);
-      } else if (isExternalVectorDatasource(geogDs)) {
-        // Fetch external datasource
-        if (!geography.bboxFilter)
-          throw new Error(
-            "Missing geography bboxFilter for external datasource"
-          );
-        if (!geography.propertyFilter)
-          throw new Error(
-            "Missing geography propertyFilter for external datasource"
-          );
-        const feats = await getFeatures(geogDs, geogDs.url, {
-          bbox: geography.bboxFilter,
-          propertyFilter: geography.propertyFilter,
-        });
-        // Make sure only contains polygon or multipolygon in array
-        const validFeats = featuresSchema.parse(feats);
-        return featureCollection(validFeats);
-      } else {
-        return featureCollection([]);
-      }
-    })();
+  const geographyFeatureColl = await getGeographyFeatures(
+    geography,
+    geogDs,
+    dstPath
+  );
+  // console.log("geographyFeatureColl", JSON.stringify(geographyFeatureColl));
 
   // Creates record of all class keys present in OG features
   // to avoid missing a class after cropping

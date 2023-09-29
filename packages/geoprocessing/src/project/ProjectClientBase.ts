@@ -54,9 +54,15 @@ export interface ProjectClientConfig {
   precalc: any;
 }
 
+interface DataBucketUrlOptions {
+  local?: boolean;
+  port?: number;
+  subPath?: string;
+}
+
 export interface ProjectClientInterface {
   getDatasourceById(datasourceId: string): Datasource;
-  dataBucketUrl(local?: boolean, port?: number): string;
+  dataBucketUrl(options: DataBucketUrlOptions): string;
   getDatasourceUrl(
     ds:
       | Datasource
@@ -148,9 +154,10 @@ export class ProjectClientBase implements ProjectClientInterface {
    * Returns URL to dataset bucket for project.  In test environment or if local parameter is true, will
    * return local URL expected to serve up dist data folder
    */
-  public dataBucketUrl(local: boolean = false, port: number = 8080) {
+  public dataBucketUrl(options: DataBucketUrlOptions = {}) {
+    const { local = false, port = 8080, subPath = "" } = options;
     return process.env.NODE_ENV === "test" || local
-      ? `http://127.0.0.1:${port}/`
+      ? `http://127.0.0.1:${port}/${subPath ? subPath + "/" : ""}`
       : `https://gp-${this._package.name}-datasets.s3.${this._geoprocessing.region}.amazonaws.com/`;
   }
 
@@ -166,18 +173,23 @@ export class ProjectClientBase implements ProjectClientInterface {
       format?: SupportedFormats;
       local?: boolean;
       port?: number;
+      subPath?: string;
     } = {}
   ) {
-    const { format, local, port } = options;
+    const { format, local, port, subPath } = options;
     if (isInternalVectorDatasource(ds) || isImportVectorDatasourceConfig(ds)) {
       // default to fgb format if not specified
       if (!format) {
         if (ds.formats.includes("fgb"))
-          return `${this.dataBucketUrl(local, port)}${getFlatGeobufFilename(
-            ds
-          )}`;
+          return `${this.dataBucketUrl({
+            local,
+            port,
+            subPath,
+          })}${getFlatGeobufFilename(ds)}`;
       } else if (ds.formats.includes(format))
-        return `${this.dataBucketUrl(local, port)}${ds.datasourceId}.${format}`;
+        return `${this.dataBucketUrl({ local, port, subPath })}${
+          ds.datasourceId
+        }.${format}`;
       else
         throw new Error(
           `getDatasourceUrl: format not found for datasource ${ds.datasourceId}`
@@ -189,9 +201,15 @@ export class ProjectClientBase implements ProjectClientInterface {
       // default to cog tif format if not specificed
       if (!format) {
         if (ds.formats.includes("tif"))
-          return `${this.dataBucketUrl(local, port)}${getCogFilename(ds)}`;
+          return `${this.dataBucketUrl({
+            local,
+            port,
+            subPath,
+          })}${getCogFilename(ds)}`;
       } else if (ds.formats.includes(format))
-        return `${this.dataBucketUrl(local, port)}${ds.datasourceId}.${format}`;
+        return `${this.dataBucketUrl({ local, port, subPath })}${
+          ds.datasourceId
+        }.${format}`;
       else
         throw new Error(
           `getDatasourceUrl: format not found for datasource ${ds.datasourceId}`

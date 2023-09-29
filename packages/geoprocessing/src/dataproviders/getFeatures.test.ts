@@ -8,7 +8,7 @@ import project from "../testing/project";
 
 // import micronesia eez from global subdivided
 describe("getFeatures", () => {
-  test("should successfully fetch from subdivided eez datasource", async () => {
+  test("should successfully fetch from external subdivided eez datasource", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );
@@ -31,9 +31,9 @@ describe("getFeatures", () => {
     );
     expect(feats.length).toEqual(1);
     expect(feats[0].properties?.["UNION"]).toEqual("Micronesia");
-  }, 20000);
+  }, 5000);
 
-  test("should successfully fetch from subdivided land datasource", async () => {
+  test("should successfully fetch from external subdivided land datasource", async () => {
     const landDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-osm-land"
     );
@@ -51,5 +51,7 @@ describe("getFeatures", () => {
       }
     );
     expect(feats.length).toEqual(1050);
-  }, 20000);
+  }, 5000);
+
+  // import of internal datasources is tested by precalcVectorDatasource.test.ts and precalcRasterDatasource.test.ts
 });

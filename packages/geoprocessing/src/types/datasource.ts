@@ -161,6 +161,9 @@ export type VectorDatasource = z.infer<typeof vectorDatasourceSchema>;
 export type InternalVectorDatasource = z.infer<
   typeof internalVectorDatasourceSchema
 >;
+
+export type RasterDatasource = z.infer<typeof rasterDatasourceSchema>;
+
 export type InternalRasterDatasource = z.infer<
   typeof internalRasterDatasourceSchema
 >;

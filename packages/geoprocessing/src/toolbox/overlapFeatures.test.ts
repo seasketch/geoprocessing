@@ -8,6 +8,7 @@ import fix from "../testing/fixtures/squareSketches";
 import sk from "../testing/fixtures/sketches";
 import { firstMatchingMetric } from "../metrics";
 import { testWithinPerc } from "../testing";
+import { roundDecimal } from "../helpers";
 
 describe("overlapFeatures", () => {
   test("function is present", () => {
@@ -24,6 +25,15 @@ describe("overlapFeatures", () => {
   test("overlapFeatures - sketch polygon fully inside", async () => {
     const metrics = await overlapFeatures("test", [fix.outer], fix.sketch1);
     expect(metrics[0].value).toBeCloseTo(area(fix.sketch1));
+  });
+
+  test("overlapFeatures - sketch polygon fully inside - simplified precision", async () => {
+    const metrics = await overlapFeatures("test", [fix.outer], fix.sketch1, {
+      truncate: true,
+    });
+    expect(metrics[0].value).toBe(
+      roundDecimal(area(fix.sketch1), 6, { keepSmallValues: true })
+    );
   });
 
   test("overlapFeatures - sketch multipolygon fully inside", async () => {

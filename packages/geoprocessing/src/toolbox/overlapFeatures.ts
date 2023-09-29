@@ -5,12 +5,14 @@ import {
   chunk,
   clip,
   clipMultiMerge,
+  roundDecimal,
 } from "../helpers";
 import { createMetric } from "../metrics";
 import { featureCollection, MultiPolygon } from "@turf/helpers";
 import { featureEach } from "@turf/meta";
 import area from "@turf/area";
 import flatten from "@turf/flatten";
+import truncate from "@turf/truncate";
 
 interface OverlapFeatureOptions {
   /** Operation to perform, supports area or sum.  Defaults to area */
@@ -21,6 +23,8 @@ interface OverlapFeatureOptions {
   includeChildMetrics?: boolean;
   /** Name of feature property to sum */
   sumProperty?: string;
+  /** Truncates results to 6 digits, defaults to false */
+  truncate?: boolean;
 }
 
 // ToDo: support
@@ -53,13 +57,16 @@ export async function overlapFeatures(
   let sumValue: number = 0;
   let isOverlap = false;
   let featureIndices: Set<number> = new Set();
-  const sketches = Array.isArray(sketch) ? sketch : toSketchArray(sketch);
+  const sketches = (Array.isArray(sketch) ? sketch : toSketchArray(sketch)).map(
+    (s) => truncate(s)
+  );
+  const finalFeatures = features.map((f) => truncate(f));
 
   // Create individual sketch metrics
   const sketchMetrics: Metric[] = sketches.map((curSketch) => {
     const sketchValue = doIntersect(
       curSketch as Feature<Polygon | MultiPolygon>,
-      features as Feature<Polygon | MultiPolygon>[],
+      finalFeatures as Feature<Polygon | MultiPolygon>[],
       newOptions
     );
 
@@ -68,7 +75,7 @@ export async function overlapFeatures(
     return createMetric({
       metricId,
       sketchId: curSketch.properties.id,
-      value: sketchValue.value,
+      value: roundDecimal(sketchValue.value, 6, { keepSmallValues: true }),
       extra: {
         sketchName: curSketch.properties.name,
       },
@@ -91,7 +98,7 @@ export async function overlapFeatures(
 
     if (newOptions.operation === "sum") {
       featureIndices.forEach((index) => {
-        const feature = features[index];
+        const feature = finalFeatures[index];
 
         if (!newOptions.sumProperty) sumValue += 1;
         else if (feature.properties![newOptions.sumProperty])
@@ -102,7 +109,7 @@ export async function overlapFeatures(
       featureEach(finalSketches, (feat) => {
         const curSum = doIntersect(
           feat,
-          features as Feature<Polygon | MultiPolygon>[],
+          finalFeatures as Feature<Polygon | MultiPolygon>[],
           newOptions
         );
         sumValue += curSum.value;
@@ -118,7 +125,7 @@ export async function overlapFeatures(
         createMetric({
           metricId,
           sketchId: sketch.properties.id,
-          value: sumValue,
+          value: roundDecimal(sumValue, 6, { keepSmallValues: true }),
           extra: {
             sketchName: sketch.properties.name,
             isCollection: true,

@@ -1,8 +1,23 @@
+export interface RoundDecimalOptions {
+  /** If true, will keep any small value as-is which would be rounded to 0, defaults to false */
+  keepSmallValues?: boolean;
+}
+
 /** Rounds a number to a fixed precision  */
-export const roundDecimal = (value: number, decimals = 1) => {
-  return Number(
+export const roundDecimal = (
+  /** Value to round */
+  value: number,
+  /** Number of digits after the decimal point to keep */
+  decimals = 1,
+  options: RoundDecimalOptions = { keepSmallValues: false }
+) => {
+  const roundedValue = Number(
     Math.round(parseFloat(`${value}e${decimals}`)) + `e-${decimals}`
   );
+
+  return options.keepSmallValues && value && !roundedValue
+    ? value
+    : roundedValue;
 };
 
 export interface PercentEdgeOptions {

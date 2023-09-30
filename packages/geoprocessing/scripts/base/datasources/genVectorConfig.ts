@@ -21,6 +21,9 @@ export function genVectorConfig<C extends ProjectClientBase>(
     layerName,
     formats = datasourceConfig.importDefaultVectorFormats,
     explodeMulti,
+    precalc,
+    propertyFilter,
+    bboxFilter,
   } = options;
 
   if (!layerName)
@@ -41,6 +44,9 @@ export function genVectorConfig<C extends ProjectClientBase>(
     gp: projectClient.geoprocessing,
     formats,
     explodeMulti,
+    precalc,
+    propertyFilter,
+    bboxFilter,
   };
 
   return config;

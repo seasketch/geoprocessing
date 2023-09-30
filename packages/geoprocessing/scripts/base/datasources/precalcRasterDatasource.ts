@@ -9,7 +9,6 @@ import {
 import {
   createMetric,
   InternalRasterDatasource,
-  ImportRasterDatasourceConfig,
   getSum,
   getHistogram,
   bboxOverlap,
@@ -22,7 +21,6 @@ import bbox from "@turf/bbox";
 
 // @ts-ignore
 import geoblaze from "geoblaze";
-import { readDatasourceGeojsonById } from "./datasources";
 import { getGeographyFeatures } from "../geographies/helpers";
 
 /**
@@ -89,6 +87,10 @@ export async function genRasterMetrics(
 ): Promise<Metric[]> {
   const dstPath = extraOptions.newDstPath || datasourceConfig.defaultDstPath;
 
+  // console.log(
+  //   `DATASOURCE: ${datasource.datasourceId}}, GEOGRAPHY: ${geography.geographyId}}\n`
+  // );
+
   // Reads in geography vector data as FeatureCollection
   if (!geography) throw new Error(`Expected geography`);
   const geographyFeatureColl = await getGeographyFeatures(
@@ -96,6 +98,7 @@ export async function genRasterMetrics(
     geogDs,
     dstPath
   );
+  // console.log("geographyFeatureColl", JSON.stringify(geographyFeatureColl));
 
   const rasterBbox: BBox = [raster.xmin, raster.ymin, raster.xmax, raster.ymax];
 

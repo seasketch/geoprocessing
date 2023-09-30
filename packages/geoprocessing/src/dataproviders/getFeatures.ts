@@ -8,14 +8,8 @@ import {
   ExternalVectorDatasource,
   InternalVectorDatasource,
   Feature,
-  VectorDatasource,
-  Geography,
-  FeatureCollection,
-  Polygon,
-  MultiPolygon,
 } from "../types";
 import { DatasourceOptions } from "../types/dataProcessor";
-import truncate from "@turf/truncate";
 
 /**
  * Returns features for a variety of vector datasources and formats, with additional filter options

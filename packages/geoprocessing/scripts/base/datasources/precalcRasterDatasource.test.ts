@@ -10,18 +10,20 @@ import {
   geographySchema,
   metricsSchema,
 } from "../../../src";
-import configFixtures from "../../../src/testing/fixtures/projectConfig";
 import fs from "fs-extra";
 import path from "path";
 import { precalcDatasources } from "./precalcDatasources";
 import { importDatasource } from "./importDatasource";
 import { writeGeographies } from "../geographies/geographies";
+import configFixtures from "../../../src/testing/fixtures/projectConfig";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";
 const dstPath = "data/out";
 
 const eezSrc = "eez";
+const multiEezSrc = "two-samoas-eez";
+const reefSrc = "samoa_benthic_reef_sand";
 
 describe("precalcRasterDatasource", () => {
   beforeEach(() => {
@@ -100,6 +102,8 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
+
+    // Should create metrics for both the geography datasource and the raster datasource
     expect(metrics.length).toBe(3);
 
     const areaMetric = firstMatchingMetric(
@@ -127,51 +131,38 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(precalcFilePath);
   }, 5000);
 
-  test("precalcRasterDatasource - geography using external subdivided datasource", async () => {
-    const dsFilename = "datasources_precalc_raster_test_3.json";
+  test("precalcRasterDatasource - multiple geog scenarios with external subdivided datasource", async () => {
+    const dsFilename = "datasources_precalc_vector_test_9.json";
     const dsFilePath = path.join(dstPath, dsFilename);
-    const datasourceId = "samoa_benthic_reef_sand";
-    const geogDatasourceId = "eez_raster2";
-    const geogFilename = "geographies_precalc_raster_test_3.json";
+    const rasterDatasourceId = "samoa_benthic_reef_sand9";
+    const geogDatasourceId = "global-clipping-eez-land-union";
+    const geogFilename = "geographies_precalc_vector_test_9.json";
     const geogFilePath = path.join(dstPath, geogFilename);
-    const geographyId = "eez_raster2";
-    const precalcFilename = "precalc_raster_test_2.json";
+    const precalcFilename = "precalc_vector_test_9.json";
     const precalcFilePath = path.join(dstPath, precalcFilename);
+
     // Start off with clean empty datasources file
+    //TODO: remove this once global datasources are updated, because they'll be added by default on datasource import
     fs.writeJSONSync(dsFilePath, [
       {
-        datasourceId: "global-clipping-eez-land-union",
+        datasourceId: geogDatasourceId,
         geo_type: "vector",
         url: "https://d3muy0hbwp5qkl.cloudfront.net",
         formats: ["subdivided"],
         classKeys: [],
         idProperty: "UNION",
         nameProperty: "UNION",
+        precalc: false,
       },
     ]);
-    // First import the datasources
-    await importDatasource(
-      projectClient,
-      {
-        geo_type: "vector",
-        src: path.join(srcPath, `${eezSrc}.json`),
-        datasourceId: geogDatasourceId,
-        classKeys: [],
-        formats: ["json"],
-        propertiesToKeep: [],
-      },
-      {
-        newDatasourcePath: dsFilePath,
-        newDstPath: dstPath,
-        doPublish: false,
-      }
-    );
+
+    // Import raster to test against with known counts (49 Samoa and 17 American Samoa)
     await importDatasource(
       projectClient,
       {
         geo_type: "raster",
-        src: path.join(srcPath, `${datasourceId}.tif`),
-        datasourceId,
+        src: path.join(srcPath, `${reefSrc}.tif`),
+        datasourceId: rasterDatasourceId,
         classKeys: [],
         formats: ["tif"],
         noDataValue: 0,
@@ -184,10 +175,24 @@ describe("precalcRasterDatasource", () => {
         doPublish: false,
       }
     );
-    // Create geography
-    const eezGeog: Geography = {
-      geographyId: geographyId,
-      datasourceId: "global-clipping-eez-land-union",
+
+    // Create geographies that reference this datasource
+
+    // Box filter should give all polygons within bounding box (more than 2)
+    const geogBoxFilter: Geography = {
+      geographyId: "geog-box-filter",
+      datasourceId: geogDatasourceId,
+      display: "geog-box-filter",
+      bboxFilter: [
+        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
+        -10.024476331539347,
+      ],
+    };
+
+    // Filter to single polygon geography
+    const geogSingleFilter: Geography = {
+      geographyId: "geog-single-filter",
+      datasourceId: geogDatasourceId,
       propertyFilter: {
         property: "UNION",
         values: ["Samoa"],
@@ -196,91 +201,102 @@ describe("precalcRasterDatasource", () => {
         -173.7746906500533, -17.55526875286155, -165.2008333331916,
         -10.024476331539347,
       ],
-      display: geographyId,
+      display: "geog-single-filter",
     };
-    writeGeographies([eezGeog], geogFilePath);
-    const savedGeos = fs.readJSONSync(geogFilePath);
-    expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-    geographySchema.parse(savedGeos[0]);
+
+    // Filter should give two Samoan polygons
+    const geogDoubleFilter: Geography = {
+      geographyId: "geog-double-filter",
+      datasourceId: geogDatasourceId,
+      propertyFilter: {
+        property: "UNION",
+        values: ["Samoa", "American Samoa"], // Should include two polygons
+      },
+      bboxFilter: [
+        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
+        -10.024476331539347,
+      ],
+      display: "geog-double-filter",
+    };
+
+    writeGeographies(
+      [geogBoxFilter, geogSingleFilter, geogDoubleFilter],
+      geogFilePath
+    );
+
     await precalcDatasources(projectClient, {
       newDatasourcePath: dsFilePath,
       newGeographyPath: geogFilePath,
       newPrecalcPath: precalcFilePath,
       newDstPath: dstPath,
     });
+    const savedGeos = fs.readJSONSync(geogFilePath);
+    expect(Array.isArray(savedGeos) && savedGeos.length === 3).toBe(true);
+    geographySchema.parse(savedGeos[0]);
+
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(3);
-    const areaMetric = firstMatchingMetric(
-      metrics,
-      (m) => m.metricId === "area"
-    );
-    expect(areaMetric).toBeTruthy();
+    expect(metrics.length).toBe(3); // because precalc false for geog datasource
 
-    const countMetric = firstMatchingMetric(
+    const boxFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.metricId === "count"
+      (m) => m.geographyId === "geog-box-filter"
     );
-    expect(countMetric).toBeTruthy();
-    expect(countMetric.value).toBe(1);
+    expect(boxFilterMetric.value).toEqual(91);
 
-    const sumMetric = firstMatchingMetric(metrics, (m) => m.metricId === "sum");
-    expect(sumMetric).toBeTruthy();
-    expect(sumMetric.value).toBe(70);
+    const singleFilterMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.geographyId === "geog-single-filter"
+    );
+    expect(singleFilterMetric.value).toEqual(70);
+
+    const doubleFilterMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.geographyId === "geog-double-filter"
+    );
+    expect(doubleFilterMetric.value).toEqual(88);
+
     fs.removeSync(dsFilePath);
+    fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.fgb`));
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
     fs.removeSync(geogFilePath);
-    fs.removeSync(path.join(dstPath, `${datasourceId}.tif`));
     fs.removeSync(precalcFilePath);
   }, 5000);
 
-  test("precalcRasterDatasource - geography using external flatgeobuf datasource", async () => {
-    const dsFilename = "datasources_precalc_raster_test_3.json";
+  test("precalcRasterDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
+    const dsFilename = "datasources_precalc_vector_test_8.json";
     const dsFilePath = path.join(dstPath, dsFilename);
-    const datasourceId = "samoa_benthic_reef_sand";
-    const geogDatasourceId = "eez_raster3";
-    const geogFilename = "geographies_precalc_raster_test_3.json";
+    const rasterDatasourceId = "samoa_benthic_reef_sand8";
+    const geogDatasourceId = "global-eez-mr-v11";
+    const geogFilename = "geographies_precalc_vector_test_8.json";
     const geogFilePath = path.join(dstPath, geogFilename);
-    const geographyId = "eez_raster3";
-    const precalcFilename = "precalc_raster_test_3.json";
+    const precalcFilename = "precalc_vector_test_8.json";
     const precalcFilePath = path.join(dstPath, precalcFilename);
+
     // Start off with clean empty datasources file
+    //TODO: remove this once global datasources are updated, because they'll be added by default on datasource import
     fs.writeJSONSync(dsFilePath, [
       {
-        datasourceId: "global-clipping-eez-land-union",
+        datasourceId: geogDatasourceId,
         geo_type: "vector",
-        url: "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-with-land-mr-v3.fgb",
+        url: `https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/${geogDatasourceId}.fgb`,
         formats: ["fgb"],
         classKeys: [],
-        idProperty: "UNION",
-        nameProperty: "UNION",
+        idProperty: "GEONAME",
+        nameProperty: "GEONAME",
+        precalc: false,
       },
     ]);
-    // First import the datasources
-    await importDatasource(
-      projectClient,
-      {
-        geo_type: "vector",
-        src: path.join(srcPath, `${eezSrc}.json`),
-        datasourceId: geogDatasourceId,
-        classKeys: [],
-        formats: ["json"],
-        propertiesToKeep: [],
-      },
-      {
-        newDatasourcePath: dsFilePath,
-        newDstPath: dstPath,
-        doPublish: false,
-      }
-    );
+
+    // Import raster to test against with known counts (49 Samoa and 17 American Samoa)
     await importDatasource(
       projectClient,
       {
         geo_type: "raster",
-        src: path.join(srcPath, `${datasourceId}.tif`),
-        datasourceId,
+        src: path.join(srcPath, `${reefSrc}.tif`),
+        datasourceId: rasterDatasourceId,
         classKeys: [],
         formats: ["tif"],
         noDataValue: 0,
@@ -293,55 +309,237 @@ describe("precalcRasterDatasource", () => {
         doPublish: false,
       }
     );
-    // Create geography
-    const eezGeog: Geography = {
-      geographyId: geographyId,
-      datasourceId: "global-clipping-eez-land-union",
+
+    // Create geographies that reference this datasource
+
+    // Box filter should give all polygons within bounding box (more than 2)
+    const geoBoxFilter: Geography = {
+      geographyId: "geog-box-filter",
+      datasourceId: geogDatasourceId,
+      display: "geog-box-filter",
+      bboxFilter: [
+        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
+        -10.024476331539347,
+      ],
+    };
+
+    // Filter to single polygon geography
+    const geogSingleFilter: Geography = {
+      geographyId: "geog-single-filter",
+      datasourceId: geogDatasourceId,
       propertyFilter: {
-        property: "UNION",
-        values: ["Samoa"],
+        property: "GEONAME",
+        values: ["Samoan Exclusive Economic Zone"],
       },
       bboxFilter: [
         -173.7746906500533, -17.55526875286155, -165.2008333331916,
         -10.024476331539347,
       ],
-      display: geographyId,
+      display: "geog-single-filter",
     };
-    writeGeographies([eezGeog], geogFilePath);
-    const savedGeos = fs.readJSONSync(geogFilePath);
-    expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-    geographySchema.parse(savedGeos[0]);
+
+    // Filter should give two Samoan polygons
+    const geogDoubleFilter: Geography = {
+      geographyId: "geog-double-filter",
+      datasourceId: geogDatasourceId,
+      propertyFilter: {
+        property: "GEONAME",
+        values: [
+          "Samoan Exclusive Economic Zone",
+          "American Samoa Exclusive Economic Zone",
+        ], // Should include two polygons
+      },
+      bboxFilter: [
+        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
+        -10.024476331539347,
+      ],
+      display: "geog-double-filter",
+    };
+
+    writeGeographies(
+      [geoBoxFilter, geogSingleFilter, geogDoubleFilter],
+      geogFilePath
+    );
+
     await precalcDatasources(projectClient, {
       newDatasourcePath: dsFilePath,
       newGeographyPath: geogFilePath,
       newPrecalcPath: precalcFilePath,
       newDstPath: dstPath,
     });
+    const savedGeos = fs.readJSONSync(geogFilePath);
+    expect(Array.isArray(savedGeos) && savedGeos.length === 3).toBe(true);
+    geographySchema.parse(savedGeos[0]);
+
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(3);
-    const areaMetric = firstMatchingMetric(
-      metrics,
-      (m) => m.metricId === "area"
-    );
-    expect(areaMetric).toBeTruthy();
+    expect(metrics.length).toBe(3); // because precalc false for geog datasource
 
-    const countMetric = firstMatchingMetric(
+    const boxFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.metricId === "count"
+      (m) => m.geographyId === "geog-box-filter"
     );
-    expect(countMetric).toBeTruthy();
-    expect(countMetric.value).toBe(1);
+    expect(boxFilterMetric.value).toEqual(69);
 
-    const sumMetric = firstMatchingMetric(metrics, (m) => m.metricId === "sum");
-    expect(sumMetric).toBeTruthy();
-    expect(sumMetric.value).toBe(70);
+    const singleFilterMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.geographyId === "geog-single-filter"
+    );
+    expect(singleFilterMetric.value).toEqual(49);
+
+    const doubleFilterMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.geographyId === "geog-double-filter"
+    );
+    expect(doubleFilterMetric.value).toEqual(66);
+
     fs.removeSync(dsFilePath);
+    fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.fgb`));
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
     fs.removeSync(geogFilePath);
-    fs.removeSync(path.join(dstPath, `${datasourceId}.tif`));
+    fs.removeSync(precalcFilePath);
+  }, 5000);
+
+  test("precalcRasterDatasource - multiple geog scenarios with internal geojson datasource", async () => {
+    const dsFilename = "datasources_precalc_vector_test_7.json";
+    const dsFilePath = path.join(dstPath, dsFilename);
+    const rasterDatasourceId = "samoa_benthic_reef_sand7";
+    const geogDatasourceId = "two-samoas-eez";
+    const geogFilename = "geographies_precalc_vector_test_7.json";
+    const geogFilePath = path.join(dstPath, geogFilename);
+    const precalcFilename = "precalc_vector_test_7.json";
+    const precalcFilePath = path.join(dstPath, precalcFilename);
+
+    // Start off with clean empty datasources file
+    fs.writeJSONSync(dsFilePath, []);
+
+    // First import the two-samoas as internal datasource for geographies
+    await importDatasource(
+      projectClient,
+      {
+        geo_type: "vector",
+        src: path.join(srcPath, `${multiEezSrc}.json`),
+        datasourceId: geogDatasourceId,
+        classKeys: [],
+        formats: ["json"],
+        propertiesToKeep: [],
+        precalc: false,
+      },
+      {
+        newDatasourcePath: dsFilePath,
+        newDstPath: dstPath,
+        doPublish: false,
+      }
+    );
+
+    // Import raster to test against with known counts (49 Samoa and 21 American Samoa)
+    await importDatasource(
+      projectClient,
+      {
+        geo_type: "raster",
+        src: path.join(srcPath, `${reefSrc}.tif`),
+        datasourceId: rasterDatasourceId,
+        classKeys: [],
+        formats: ["tif"],
+        noDataValue: 0,
+        band: 1,
+        measurementType: "quantitative",
+      },
+      {
+        newDatasourcePath: dsFilePath,
+        newDstPath: dstPath,
+        doPublish: false,
+      }
+    );
+
+    // Create geographies that reference this datasource
+
+    // No filter should give all polygons (two) in geography
+    const geoBoxFilter: Geography = {
+      geographyId: "geog-box-filter",
+      datasourceId: geogDatasourceId,
+      display: "geog-box-filter",
+    };
+
+    // Filter to single polygon geography
+    const geogSingleFilter: Geography = {
+      geographyId: "geog-single-filter",
+      datasourceId: geogDatasourceId,
+      propertyFilter: {
+        property: "GEONAME",
+        values: ["Samoan Exclusive Economic Zone"],
+      },
+      bboxFilter: [
+        -173.7746906500533, -17.55526875286155, -165.2008333331916,
+        -10.024476331539347,
+      ],
+      display: "geog-single-filter",
+    };
+
+    // Filter should give all polygons (both countries)
+    const geogDoubleFilter: Geography = {
+      geographyId: "geog-double-filter",
+      datasourceId: geogDatasourceId,
+      propertyFilter: {
+        property: "GEONAME",
+        values: [
+          "Samoan Exclusive Economic Zone",
+          "American Samoa Exclusive Economic Zone",
+        ], // Should include two polygons
+      },
+      bboxFilter: [
+        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
+        -10.024476331539347,
+      ],
+      display: "geog-double-filter",
+    };
+
+    writeGeographies(
+      [geoBoxFilter, geogSingleFilter, geogDoubleFilter],
+      geogFilePath
+    );
+
+    await precalcDatasources(projectClient, {
+      newDatasourcePath: dsFilePath,
+      newGeographyPath: geogFilePath,
+      newPrecalcPath: precalcFilePath,
+      newDstPath: dstPath,
+    });
+    const savedGeos = fs.readJSONSync(geogFilePath);
+    expect(Array.isArray(savedGeos) && savedGeos.length === 3).toBe(true);
+    geographySchema.parse(savedGeos[0]);
+
+    // Verify precalc
+    const metrics = fs.readJSONSync(precalcFilePath);
+    metricsSchema.parse(metrics);
+    expect(metrics.length).toBe(3); // because precalc false for geog datasource
+
+    // check each metric for expected value
+    const noFilterMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.geographyId === "geog-box-filter"
+    );
+    expect(noFilterMetric.value).toEqual(66);
+
+    const singleFilterMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.geographyId === "geog-single-filter"
+    );
+    expect(singleFilterMetric.value).toEqual(49);
+
+    const doubleFilterMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.geographyId === "geog-double-filter"
+    );
+    expect(doubleFilterMetric.value).toEqual(66);
+
+    fs.removeSync(dsFilePath);
+    fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
+    fs.removeSync(path.join(dstPath, `${geogDatasourceId}.fgb`));
+    fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
+    fs.removeSync(geogFilePath);
     fs.removeSync(precalcFilePath);
   }, 5000);
 });

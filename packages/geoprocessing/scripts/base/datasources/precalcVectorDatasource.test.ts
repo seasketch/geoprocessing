@@ -21,6 +21,7 @@ const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";
 const dstPath = "data/out";
 const eezSrc = "eez";
+const multiEezSrc = "two-samoas-eez";
 const shelfSrc = "shelf_class";
 const shelfSrcUpdated = "shelf_class_updated";
 const deepwaterSrc = "deepwater_bioregions";
@@ -31,7 +32,7 @@ describe("precalcDatasources", () => {
       // Ensure test data folder
       fs.mkdirsSync(dstPath);
     });
-    test("precalcVectorDatasource - single file, single class should write geography and precalc vector metrics", async () => {
+    test("precalcVectorDatasource - single geog, internal datasource, single class", async () => {
       const dsFilename = "datasources_precalc_vector_test_1.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const datasourceId = "eez1";
@@ -106,7 +107,8 @@ describe("precalcDatasources", () => {
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
     }, 20000);
-    test("precalcVectorDatasource - single geog, multi-class should write geography and precalc vector metrics", async () => {
+
+    test("precalcVectorDatasource - single geog, internal datasource, multi-class", async () => {
       const dsFilename = "datasources_precalc_vector_test_2.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const classDatasourceId = "shelf_class2";

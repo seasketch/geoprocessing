@@ -24,7 +24,6 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
 ) {
   const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genVectorConfig(projectClient, options, newDstPath);
-
   // Ensure dstPath is created
   fs.ensureDirSync(config.dstPath);
 
@@ -64,6 +63,9 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
     lastUpdated: timestamp,
     propertiesToKeep: config.propertiesToKeep,
     explodeMulti: config.explodeMulti,
+    precalc: config.precalc,
+    propertyFilter: config.propertyFilter,
+    bboxFilter: config.bboxFilter,
   };
 
   await createOrUpdateDatasource(newVectorD, newDatasourcePath);

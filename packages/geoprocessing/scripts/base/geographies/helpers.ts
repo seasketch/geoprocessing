@@ -26,18 +26,23 @@ export async function getGeographyFeatures(
 ): Promise<FeatureCollection<Polygon | MultiPolygon>> {
   if (isInternalVectorDatasource(datasource)) {
     // Read local datasource
-    return truncate(
+    let featureColl = truncate(
       readDatasourceGeojsonById(geography.datasourceId, dstPath),
       { mutate: true }
     );
+    if (geography.propertyFilter) {
+      featureColl = featureCollection(
+        featureColl.features.filter((curFeat) => {
+          if (!curFeat.properties) return false;
+          return geography.propertyFilter?.values.includes(
+            curFeat.properties[geography.propertyFilter.property]
+          );
+        })
+      );
+    }
+    return featureColl;
   } else if (isExternalVectorDatasource(datasource)) {
     // Fetch external datasource
-    if (!geography.bboxFilter)
-      throw new Error("Missing geography bboxFilter for external datasource");
-    if (!geography.propertyFilter)
-      throw new Error(
-        "Missing geography propertyFilter for external datasource"
-      );
     const feats = await getFeatures(datasource, datasource.url, {
       bbox: geography.bboxFilter,
       propertyFilter: geography.propertyFilter,
@@ -45,7 +50,7 @@ export async function getGeographyFeatures(
     // Make sure only contains polygon or multipolygon in array
     const validFeats = featuresSchema.parse(feats);
     return truncate(featureCollection(validFeats), { mutate: true });
-  } else {
-    return featureCollection([]);
   }
+
+  return featureCollection([]);
 }

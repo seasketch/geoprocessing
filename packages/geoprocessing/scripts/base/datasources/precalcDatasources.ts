@@ -98,6 +98,13 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   // Run precalc on matching subset of datasources for all geographies
   for (const ds of matchingDatasources) {
     for (const geog of allGeographies) {
+      // Skip if either datasource or geography has precalc set to false
+      if (geog.precalc === false || ds.precalc === false) {
+        console.log(
+          `Precalc disabled for datasource ${ds.datasourceId} for geography ${geog.geographyId}`
+        );
+        continue;
+      }
       // Skip if already processed
       if (processed[`${ds.datasourceId}-${geog.geographyId}`] === true) {
         continue;
@@ -119,7 +126,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
         );
         // console.log(ds.datasourceId, geog.geographyId, metrics);
         finalMetrics = finalMetrics.concat(metrics);
-        console.log(`${ds.datasourceId} precalc complete`);
+
         console.log(" ");
         successfulDs += 1;
         processed[`${ds.datasourceId}-${geog.geographyId}`] = true;
@@ -139,6 +146,12 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   // Also run precalc on matching subset of geographies for all datasources, for completeness
   for (const geog of matchingGeographies) {
     for (const ds of internalDatasources) {
+      if (geog.precalc === false || ds.precalc === false) {
+        console.log(
+          `Precalc disabled for datasource ${ds.datasourceId} for geography ${geog.geographyId}`
+        );
+        continue;
+      }
       // Skip if already processed
       if (processed[`${ds.datasourceId}-${geog.geographyId}`] === true) {
         continue;
@@ -176,9 +189,13 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   }
 
   if (successfulDs > 0)
-    console.log(`${successfulDs} datasources precalculated successfully`);
+    console.log(
+      `${successfulDs} datasource/geography combinations precalculated successfully`
+    );
   if (successfulGs > 0)
-    console.log(`${successfulGs} geographies precalculated successfully`);
+    console.log(
+      `${successfulGs} geography/datasource combinations precalculated successfully`
+    );
   if (failed > 0) {
     console.log(
       `${failed} datasources failed to precalculate.  Fix them and try again`

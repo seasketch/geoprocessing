@@ -64,18 +64,18 @@ export async function overlapFeatures(
 
   // Create individual sketch metrics
   const sketchMetrics: Metric[] = sketches.map((curSketch) => {
-    const sketchValue = doIntersect(
+    const intersections = doIntersect(
       curSketch as Feature<Polygon | MultiPolygon>,
       finalFeatures as Feature<Polygon | MultiPolygon>[],
       newOptions
     );
 
-    sketchValue.indices.forEach((index) => featureIndices.add(index));
+    intersections.indices.forEach((index) => featureIndices.add(index));
 
     return createMetric({
       metricId,
       sketchId: curSketch.properties.id,
-      value: roundDecimal(sketchValue.value, 6, { keepSmallValues: true }),
+      value: roundDecimal(intersections.value, 6, { keepSmallValues: true }),
       extra: {
         sketchName: curSketch.properties.name,
       },
@@ -100,19 +100,21 @@ export async function overlapFeatures(
       featureIndices.forEach((index) => {
         const feature = finalFeatures[index];
 
-        if (!newOptions.sumProperty) sumValue += 1;
-        else if (feature.properties![newOptions.sumProperty])
+        if (
+          newOptions.sumProperty &&
+          feature.properties![newOptions.sumProperty]
+        )
           sumValue += feature.properties![newOptions.sumProperty];
         else sumValue += 1;
       });
     } else {
       featureEach(finalSketches, (feat) => {
-        const curSum = doIntersect(
+        const intersections = doIntersect(
           feat,
           finalFeatures as Feature<Polygon | MultiPolygon>[],
           newOptions
         );
-        sumValue += curSum.value;
+        sumValue += intersections.value;
       });
     }
   }

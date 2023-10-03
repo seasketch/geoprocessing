@@ -5,8 +5,10 @@
 import { overlapFeatures } from "./overlapFeatures";
 import area from "@turf/area";
 import fix from "../testing/fixtures/squareSketches";
+import sk from "../testing/fixtures/sketches";
 import { firstMatchingMetric } from "../metrics";
 import { testWithinPerc } from "../testing";
+import { roundDecimal } from "../helpers";
 
 describe("overlapFeatures", () => {
   test("function is present", () => {
@@ -23,6 +25,15 @@ describe("overlapFeatures", () => {
   test("overlapFeatures - sketch polygon fully inside", async () => {
     const metrics = await overlapFeatures("test", [fix.outer], fix.sketch1);
     expect(metrics[0].value).toBeCloseTo(area(fix.sketch1));
+  });
+
+  test("overlapFeatures - sketch polygon fully inside - simplified precision", async () => {
+    const metrics = await overlapFeatures("test", [fix.outer], fix.sketch1, {
+      truncate: true,
+    });
+    expect(metrics[0].value).toBe(
+      roundDecimal(area(fix.sketch1), 6, { keepSmallValues: true })
+    );
   });
 
   test("overlapFeatures - sketch multipolygon fully inside", async () => {
@@ -71,6 +82,23 @@ describe("overlapFeatures", () => {
         firstMatchingMetric(metrics, (m) => m.sketchId === curSketchId).value,
         areas[index] * percs[index]
       );
+    });
+  });
+
+  test("overlapFeatures - sketch collection two inside polys SUM", async () => {
+    // Two sketches in sketch collection, both within feature.
+    // Individual sketches and sketch collection metrics should all list 1 as sum
+    // Tests that features aren't being double counted.
+
+    const metrics = await overlapFeatures(
+      "test",
+      [sk.outer],
+      sk.twoPolyInsideSC,
+      { operation: "sum" }
+    );
+    expect(metrics.length).toBe(3);
+    metrics.forEach((metric) => {
+      expect(metric.value).toBe(1);
     });
   });
 

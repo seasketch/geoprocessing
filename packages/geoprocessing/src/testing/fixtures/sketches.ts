@@ -11,6 +11,19 @@ import {
   genSampleSketchCollectionFromSketches,
 } from "../../helpers";
 
+const outer: Sketch<Polygon> = genSampleSketch({
+  type: "Polygon",
+  coordinates: [
+    [
+      [0, 0],
+      [0, 20],
+      [20, 20],
+      [20, 0],
+      [0, 0],
+    ],
+  ],
+});
+
 const bottomLeftPoly: Sketch<Polygon> = genSampleSketch({
   type: "Polygon",
   coordinates: [
@@ -36,6 +49,14 @@ const topRightPoly: Sketch<Polygon> = genSampleSketch({
     ],
   ],
 });
+
+const twoPolyInsideFC: FeatureCollection<MultiPolygon | Polygon> = {
+  type: "FeatureCollection",
+  features: [bottomLeftPoly, topRightPoly],
+};
+
+const twoPolyInsideSC: SketchCollection<MultiPolygon | Polygon> =
+  genSampleSketchCollection(twoPolyInsideFC);
 
 const wholePoly: Sketch<Polygon> = genSampleSketch({
   type: "Polygon",
@@ -134,8 +155,11 @@ const holeMixedSC: SketchCollection<MultiPolygon | Polygon> =
   );
 
 export default {
+  outer,
   bottomLeftPoly,
   topRightPoly,
+  twoPolyInsideFC,
+  twoPolyInsideSC,
   wholePoly,
   wholeMultipoly,
   wholeMixedFC,

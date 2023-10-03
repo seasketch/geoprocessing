@@ -6,7 +6,7 @@
       "classId": "eez",
       "groupId": null,
       "geographyId": null,
-      "value": 75148780190.74915,
+      "value": 75148776307.6926,
       "extra": {
         "sketchName": "fsm-east-west"
       }
@@ -17,7 +17,7 @@
       "classId": "eez",
       "groupId": null,
       "geographyId": null,
-      "value": 75148780190.74915,
+      "value": 75148776307.6926,
       "extra": {
         "sketchName": "fsm-east-west-coll",
         "isCollection": true

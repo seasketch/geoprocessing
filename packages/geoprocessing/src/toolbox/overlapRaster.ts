@@ -1,5 +1,5 @@
 import { Sketch, SketchCollection, Polygon, Metric } from "../types";
-import { isSketchCollection } from "../helpers";
+import { isSketchCollection, roundDecimal } from "../helpers";
 import { createMetric } from "../metrics";
 import { featureEach } from "@turf/meta";
 import { MultiPolygon } from "@turf/helpers";
@@ -7,6 +7,11 @@ import { getSum } from "./geoblaze";
 
 // @ts-ignore
 import { Georaster } from "geoblaze";
+
+interface OverlapRasterOptions {
+  /** Truncates results to 6 digits, defaults to false */
+  truncate?: boolean;
+}
 
 /**
  * Returns metrics representing sketch overlap with raster.
@@ -20,8 +25,11 @@ export async function overlapRaster(
   /** single sketch or collection to calculate metrics for. */
   sketch:
     | Sketch<Polygon | MultiPolygon>
-    | SketchCollection<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
+  options?: Partial<OverlapRasterOptions>
 ): Promise<Metric[]> {
+  const newOptions: OverlapRasterOptions = options || {};
+
   // Get raster sum for each feature
   const sumPromises: Promise<number>[] = [];
   const sumFeatures: Sketch[] = [];
@@ -39,7 +47,7 @@ export async function overlapRaster(
       createMetric({
         metricId,
         sketchId: sumFeatures[index].properties.id,
-        value: curSum,
+        value: roundDecimal(curSum, 6, { keepSmallValues: true }),
         extra: {
           sketchName: sumFeatures[index].properties.name,
         },
@@ -54,7 +62,7 @@ export async function overlapRaster(
       createMetric({
         metricId,
         sketchId: sketch.properties.id,
-        value: collSumValue,
+        value: roundDecimal(collSumValue, 6, { keepSmallValues: true }),
         extra: {
           sketchName: sketch.properties.name,
           isCollection: true,

@@ -23,7 +23,7 @@ interface OverlapFeatureOptions {
   includeChildMetrics?: boolean;
   /** Name of feature property to sum */
   sumProperty?: string;
-  /** Truncates results to 6 digits, defaults to false */
+  /** Truncates results to 6 digits, defaults to true */
   truncate?: boolean;
 }
 
@@ -51,6 +51,7 @@ export async function overlapFeatures(
     includeChildMetrics: true,
     operation: "area",
     chunkSize: 5000,
+    truncate: true,
     ...(options || {}),
   };
   const { includeChildMetrics } = newOptions;
@@ -75,7 +76,9 @@ export async function overlapFeatures(
     return createMetric({
       metricId,
       sketchId: curSketch.properties.id,
-      value: roundDecimal(intersections.value, 6, { keepSmallValues: true }),
+      value: newOptions.truncate
+        ? roundDecimal(intersections.value, 6, { keepSmallValues: true })
+        : intersections.value,
       extra: {
         sketchName: curSketch.properties.name,
       },
@@ -127,7 +130,9 @@ export async function overlapFeatures(
         createMetric({
           metricId,
           sketchId: sketch.properties.id,
-          value: roundDecimal(sumValue, 6, { keepSmallValues: true }),
+          value: newOptions.truncate
+            ? roundDecimal(sumValue, 6, { keepSmallValues: true })
+            : sumValue,
           extra: {
             sketchName: sketch.properties.name,
             isCollection: true,

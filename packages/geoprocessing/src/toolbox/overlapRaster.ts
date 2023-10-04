@@ -9,7 +9,7 @@ import { getSum } from "./geoblaze";
 import { Georaster } from "geoblaze";
 
 interface OverlapRasterOptions {
-  /** Truncates results to 6 digits, defaults to false */
+  /** Truncates results to 6 digits, defaults to true */
   truncate?: boolean;
 }
 
@@ -28,7 +28,10 @@ export async function overlapRaster(
     | SketchCollection<Polygon | MultiPolygon>,
   options?: Partial<OverlapRasterOptions>
 ): Promise<Metric[]> {
-  const newOptions: OverlapRasterOptions = options || {};
+  const newOptions: OverlapRasterOptions = {
+    truncate: true,
+    ...(options || {}),
+  };
 
   // Get raster sum for each feature
   const sumPromises: Promise<number>[] = [];
@@ -47,7 +50,9 @@ export async function overlapRaster(
       createMetric({
         metricId,
         sketchId: sumFeatures[index].properties.id,
-        value: roundDecimal(curSum, 6, { keepSmallValues: true }),
+        value: newOptions.truncate
+          ? roundDecimal(curSum, 6, { keepSmallValues: true })
+          : curSum,
         extra: {
           sketchName: sumFeatures[index].properties.name,
         },
@@ -62,7 +67,9 @@ export async function overlapRaster(
       createMetric({
         metricId,
         sketchId: sketch.properties.id,
-        value: roundDecimal(collSumValue, 6, { keepSmallValues: true }),
+        value: newOptions.truncate
+          ? roundDecimal(collSumValue, 6, { keepSmallValues: true })
+          : collSumValue,
         extra: {
           sketchName: sketch.properties.name,
           isCollection: true,

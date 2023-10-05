@@ -28,7 +28,10 @@ import path from "path";
  */
 export const firstMatching = <D>(list: D[], filter: (item: D) => boolean) => {
   const item = list.find((m) => filter(m));
-  if (!item) throw new Error(`firstMatching: matching item not found`);
+  if (!item)
+    throw new Error(
+      `firstMatching: matching item not found for ${JSON.stringify(item)}`
+    );
   return item;
 };
 

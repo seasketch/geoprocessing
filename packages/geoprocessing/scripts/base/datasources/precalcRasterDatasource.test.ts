@@ -132,13 +132,13 @@ describe("precalcRasterDatasource", () => {
   }, 5000);
 
   test("precalcRasterDatasource - multiple geog scenarios with external subdivided datasource", async () => {
-    const dsFilename = "datasources_precalc_vector_test_9.json";
+    const dsFilename = "datasources_precalc_raster_test_9.json";
     const dsFilePath = path.join(dstPath, dsFilename);
     const rasterDatasourceId = "samoa_benthic_reef_sand9";
     const geogDatasourceId = "global-clipping-eez-land-union";
-    const geogFilename = "geographies_precalc_vector_test_9.json";
+    const geogFilename = "geographies_precalc_raster_test_9.json";
     const geogFilePath = path.join(dstPath, geogFilename);
-    const precalcFilename = "precalc_vector_test_9.json";
+    const precalcFilename = "precalc_raster_test_9.json";
     const precalcFilePath = path.join(dstPath, precalcFilename);
 
     // Start off with clean empty datasources file
@@ -266,13 +266,13 @@ describe("precalcRasterDatasource", () => {
   }, 5000);
 
   test("precalcRasterDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
-    const dsFilename = "datasources_precalc_vector_test_8.json";
+    const dsFilename = "datasources_precalc_raster_test_8.json";
     const dsFilePath = path.join(dstPath, dsFilename);
     const rasterDatasourceId = "samoa_benthic_reef_sand8";
     const geogDatasourceId = "global-eez-mr-v11";
-    const geogFilename = "geographies_precalc_vector_test_8.json";
+    const geogFilename = "geographies_precalc_raster_test_8.json";
     const geogFilePath = path.join(dstPath, geogFilename);
-    const precalcFilename = "precalc_vector_test_8.json";
+    const precalcFilename = "precalc_raster_test_8.json";
     const precalcFilePath = path.join(dstPath, precalcFilename);
 
     // Start off with clean empty datasources file
@@ -313,7 +313,7 @@ describe("precalcRasterDatasource", () => {
     // Create geographies that reference this datasource
 
     // Box filter should give all polygons within bounding box (more than 2)
-    const geoBoxFilter: Geography = {
+    const geogBoxFilter: Geography = {
       geographyId: "geog-box-filter",
       datasourceId: geogDatasourceId,
       display: "geog-box-filter",
@@ -357,7 +357,7 @@ describe("precalcRasterDatasource", () => {
     };
 
     writeGeographies(
-      [geoBoxFilter, geogSingleFilter, geogDoubleFilter],
+      [geogBoxFilter, geogSingleFilter, geogDoubleFilter],
       geogFilePath
     );
 
@@ -367,6 +367,8 @@ describe("precalcRasterDatasource", () => {
       newPrecalcPath: precalcFilePath,
       newDstPath: dstPath,
     });
+
+    // Verify geography
     const savedGeos = fs.readJSONSync(geogFilePath);
     expect(Array.isArray(savedGeos) && savedGeos.length === 3).toBe(true);
     geographySchema.parse(savedGeos[0]);
@@ -403,13 +405,13 @@ describe("precalcRasterDatasource", () => {
   }, 5000);
 
   test("precalcRasterDatasource - multiple geog scenarios with internal geojson datasource", async () => {
-    const dsFilename = "datasources_precalc_vector_test_7.json";
+    const dsFilename = "datasources_precalc_raster_test_7.json";
     const dsFilePath = path.join(dstPath, dsFilename);
     const rasterDatasourceId = "samoa_benthic_reef_sand7";
     const geogDatasourceId = "two-samoas-eez";
-    const geogFilename = "geographies_precalc_vector_test_7.json";
+    const geogFilename = "geographies_precalc_raster_test_7.json";
     const geogFilePath = path.join(dstPath, geogFilename);
-    const precalcFilename = "precalc_vector_test_7.json";
+    const precalcFilename = "precalc_raster_test_7.json";
     const precalcFilePath = path.join(dstPath, precalcFilename);
 
     // Start off with clean empty datasources file

@@ -22,7 +22,6 @@ const srcPath = "data/in";
 const dstPath = "data/out";
 const eezSrc = "eez";
 const eezCrossSrc = "samoa-eez-cross";
-const multiEezSrc = "two-samoas-eez";
 const shelfSrc = "shelf_class";
 const shelfSrcUpdated = "shelf_class_updated";
 const deepwaterSrc = "deepwater_bioregions";
@@ -786,11 +785,86 @@ describe("precalcDatasources", () => {
       // Slightly larger area value, both samoa
       expect(doubleFilterMetric.value).toEqual(37433764168.14005);
 
-      // fs.removeSync(dsFilePath);
-      // fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
-      // fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
-      // fs.removeSync(geogFilePath);
-      // fs.removeSync(precalcFilePath);
+      fs.removeSync(dsFilePath);
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
+      fs.removeSync(geogFilePath);
+      fs.removeSync(precalcFilePath);
+    }, 20000);
+
+    test("precalcDatasource - all precalc false should precalculate nothing", async () => {
+      const dsFilename = "datasources_precalc_false_test.json";
+      const dsFilePath = path.join(dstPath, dsFilename);
+      const internalDatasourceId = "samoa-eez-cross";
+      const externalDatasourceId = "global-eez-mr-v11";
+      const geogFilename = "geographies_precalc_false_test.json";
+      const geogFilePath = path.join(dstPath, geogFilename);
+      const precalcFilename = "precalc_false_test.json";
+      const precalcFilePath = path.join(dstPath, precalcFilename);
+
+      // start with external datasource for geography
+      fs.writeJSONSync(dsFilePath, [
+        {
+          datasourceId: externalDatasourceId,
+          geo_type: "vector",
+          url: `https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/${externalDatasourceId}.fgb`,
+          formats: ["fgb"],
+          classKeys: [],
+          idProperty: "GEONAME",
+          nameProperty: "GEONAME",
+          precalc: false,
+        },
+      ]);
+
+      // add internal datasource
+      await importDatasource(
+        projectClient,
+        {
+          geo_type: "vector",
+          src: path.join(srcPath, `${eezCrossSrc}.json`),
+          datasourceId: internalDatasourceId,
+          classKeys: [],
+          formats: ["json"],
+          propertiesToKeep: [],
+          precalc: false,
+        },
+        {
+          newDatasourcePath: dsFilePath,
+          newDstPath: dstPath,
+          doPublish: false,
+        }
+      );
+
+      // Create geographies that reference this datasource
+
+      // Box filter should give all eez polygons within bounding box (more than 2)
+      const geogBoxFilter: Geography = {
+        geographyId: "geog-box-filter",
+        datasourceId: externalDatasourceId,
+        display: "geog-box-filter",
+        bboxFilter: [
+          -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
+          -10.024476331539347,
+        ],
+        precalc: false,
+      };
+
+      writeGeographies([geogBoxFilter], geogFilePath);
+
+      await precalcDatasources(projectClient, {
+        newDatasourcePath: dsFilePath,
+        newGeographyPath: geogFilePath,
+        newPrecalcPath: precalcFilePath,
+        newDstPath: dstPath,
+      });
+
+      // Verify precalc file was not created
+      expect(fs.existsSync(precalcFilePath)).toBe(false);
+
+      fs.removeSync(dsFilePath);
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
+      fs.removeSync(geogFilePath);
     }, 20000);
   });
 });

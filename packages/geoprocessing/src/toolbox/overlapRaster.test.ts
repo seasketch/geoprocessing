@@ -54,7 +54,7 @@ describe("overlapRaster test", () => {
     expect(metrics[0].value).toBe(2);
   });
 
-  test("overlapRaster - top right raster cell - simplified precision", async () => {
+  test("overlapRaster - top right raster cell - truncation", async () => {
     const raster = await parseGeoraster(
       [
         [
@@ -71,14 +71,38 @@ describe("overlapRaster test", () => {
         pixelHeight: 10,
       }
     );
-    const metrics = await overlapRaster("test", raster, fix.topRightPoly, {
-      truncate: true,
-    });
-    expect(metrics.length).toBe(1);
-    expect(metrics[0].value).toBe(0.002346);
+    const metricsTruncationFalse = await overlapRaster(
+      "test",
+      raster,
+      fix.topRightPoly,
+      {
+        truncate: false,
+      }
+    );
+    expect(metricsTruncationFalse.length).toBe(1);
+    expect(metricsTruncationFalse[0].value).toBe(0.0023456);
+
+    const metricsTruncationTrue = await overlapRaster(
+      "test",
+      raster,
+      fix.topRightPoly,
+      {
+        truncate: true,
+      }
+    );
+    expect(metricsTruncationTrue.length).toBe(1);
+    expect(metricsTruncationTrue[0].value).toBe(0.002346);
+
+    const metricsTruncationDefault = await overlapRaster(
+      "test",
+      raster,
+      fix.topRightPoly
+    );
+    expect(metricsTruncationDefault.length).toBe(1);
+    expect(metricsTruncationDefault[0].value).toBe(0.002346);
   });
 
-  test("overlapRaster - top right raster cell - simplified precision with very small value", async () => {
+  test("overlapRaster - top right raster cell - truncation with very small value", async () => {
     const raster = await parseGeoraster(
       [
         [
@@ -95,11 +119,38 @@ describe("overlapRaster test", () => {
         pixelHeight: 10,
       }
     );
-    const metrics = await overlapRaster("test", raster, fix.topRightPoly, {
-      truncate: true,
-    });
-    expect(metrics.length).toBe(1);
-    expect(metrics[0].value).toBe(8.58e-7); // Value untruncated because it would truncate to 0
+    const metricsTruncation = await overlapRaster(
+      "test",
+      raster,
+      fix.topRightPoly,
+      {
+        truncate: true,
+      }
+    );
+    expect(metricsTruncation.length).toBe(1);
+    expect(metricsTruncation[0].value).toBe(8.58e-7); // Value untruncated because it would truncate to 0
+
+    const metricsNoTruncation = await overlapRaster(
+      "test",
+      raster,
+      fix.topRightPoly,
+      {
+        truncate: false,
+      }
+    );
+    expect(metricsNoTruncation.length).toBe(1);
+    expect(metricsNoTruncation[0].value).toBe(8.58e-7); // Value untruncated
+
+    const metricsDefaultTruncation = await overlapRaster(
+      "test",
+      raster,
+      fix.topRightPoly,
+      {
+        truncate: false,
+      }
+    );
+    expect(metricsDefaultTruncation.length).toBe(1);
+    expect(metricsDefaultTruncation[0].value).toBe(8.58e-7); // Value untruncated because it would truncate to 0
   });
 
   test("overlapRaster - whole raster sum should be 5", async () => {

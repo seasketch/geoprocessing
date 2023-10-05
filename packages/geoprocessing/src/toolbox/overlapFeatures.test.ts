@@ -27,13 +27,35 @@ describe("overlapFeatures", () => {
     expect(metrics[0].value).toBeCloseTo(area(fix.sketch1));
   });
 
-  test("overlapFeatures - sketch polygon fully inside - simplified precision", async () => {
-    const metrics = await overlapFeatures("test", [fix.outer], fix.sketch1, {
-      truncate: true,
-    });
-    expect(metrics[0].value).toBe(
-      roundDecimal(area(fix.sketch1), 6, { keepSmallValues: true })
+  test("overlapFeatures - sketch polygon fully inside - truncation", async () => {
+    // Untruncated: 0.012392029030473713
+    // Truncated: 0.012392
+    const metricsNoTruncation = await overlapFeatures(
+      "test",
+      [fix.tiny],
+      fix.sketch1,
+      {
+        truncate: false,
+      }
     );
+    expect(metricsNoTruncation[0].value).toBe(0.012392029030473713);
+
+    const metricsTruncation = await overlapFeatures(
+      "test",
+      [fix.tiny],
+      fix.sketch1,
+      {
+        truncate: true,
+      }
+    );
+    expect(metricsTruncation[0].value).toBe(0.012392);
+
+    const metricsTruncationDefault = await overlapFeatures(
+      "test",
+      [fix.tiny],
+      fix.sketch1
+    );
+    expect(metricsTruncationDefault[0].value).toBe(0.012392);
   });
 
   test("overlapFeatures - sketch multipolygon fully inside", async () => {

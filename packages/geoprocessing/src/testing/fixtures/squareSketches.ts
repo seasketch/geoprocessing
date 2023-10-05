@@ -12,6 +12,19 @@ import {
 import area from "@turf/area";
 import bbox from "@turf/bbox";
 
+const tiny: Feature<Polygon> = feature({
+  type: "Polygon",
+  coordinates: [
+    [
+      [0.000001, 0.000001],
+      [0.000002, 0.000001],
+      [0.000002, 0.000002],
+      [0.000001, 0.000002],
+      [0.000001, 0.000001],
+    ],
+  ],
+});
+
 const outer: Feature<Polygon> = feature({
   type: "Polygon",
   coordinates: [
@@ -134,6 +147,7 @@ const overlapCollection: SketchCollection<Polygon> = {
 };
 
 export default {
+  tiny,
   outer,
   outerArea,
   outerOuterArea,

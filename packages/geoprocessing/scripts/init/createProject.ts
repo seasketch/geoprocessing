@@ -232,11 +232,11 @@ export async function createProject(
     const eezDs = globalDatasources.find((ds) => ds.datasourceId === "mr-eez");
     if (isVectorDatasource(eezDs)) {
       if (validBasic.planningAreaType === "eez") {
-        // assign eez geography
+        // assign eez geography with proper filters
         const geos: Geography[] = [
           {
             geographyId: "eez",
-            datasourceId: "mr-eez",
+            datasourceId: "global-eez-mr-v11",
             display: metadata.planningAreaName
               ? metadata.planningAreaName
               : metadata.planningAreaId,
@@ -244,6 +244,7 @@ export async function createProject(
               property: eezDs.idProperty!,
               values: [metadata.planningAreaId],
             },
+            bboxFilter: validBasic.bbox,
             groups: ["project boundary"],
           },
         ];

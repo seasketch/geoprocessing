@@ -40,20 +40,4 @@ export const globalDatasources: Datasource[] = [
       publishLink: "https://marineregions.org/",
     },
   },
-  {
-    datasourceId: "mr-eez",
-    geo_type: "vector",
-    url: "",
-    formats: ["subdivided"],
-    classKeys: [],
-    idProperty: "GEONAME",
-    nameProperty: "GEONAME",
-    metadata: {
-      name: "World EEZ v11",
-      version: "11.0",
-      publisher: "Flanders Marine Institute (VLIZ)",
-      publishDate: "20191118",
-      publishLink: "https://marineregions.org/",
-    },
-  },
 ];

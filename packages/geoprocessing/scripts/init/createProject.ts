@@ -231,25 +231,42 @@ export async function createProject(
 
     const eezDs = globalDatasources.find((ds) => ds.datasourceId === "mr-eez");
     if (isVectorDatasource(eezDs)) {
-      // Optionally assign initial geography
-      const geos: Geography[] = [
-        {
-          geographyId: "eez",
-          datasourceId: "mr-eez",
-          display: metadata.planningAreaName
-            ? metadata.planningAreaName
-            : metadata.planningAreaId,
-          propertyFilter: {
-            property: eezDs.idProperty!,
-            values: [metadata.planningAreaId],
+      if (validBasic.planningAreaType === "eez") {
+        // assign eez geography
+        const geos: Geography[] = [
+          {
+            geographyId: "eez",
+            datasourceId: "mr-eez",
+            display: metadata.planningAreaName
+              ? metadata.planningAreaName
+              : metadata.planningAreaId,
+            propertyFilter: {
+              property: eezDs.idProperty!,
+              values: [metadata.planningAreaId],
+            },
+            groups: ["project boundary"],
           },
-          groups: ["project boundary"],
-        },
-      ];
+        ];
 
-      await fs.writeJSONSync(`${projectPath}/project/geographies.json`, geos, {
-        spaces: 2,
-      });
+        await fs.writeJSONSync(
+          `${projectPath}/project/geographies.json`,
+          geos,
+          {
+            spaces: 2,
+          }
+        );
+      } else {
+        // copy default world geography
+        try {
+          await fs.ensureDir(projectPath);
+          await $`cp -r ${baseProjectPath}/project/geographies.json ${projectPath}/project/geographies.json`;
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            console.log("Default world geography copy failed");
+            throw err;
+          }
+        }
+      }
       spinner.succeed("updated geographies.json");
     } else {
       console.error(

@@ -18,5 +18,32 @@
     "classKeys": [],
     "propertiesToKeep": ["UNION"],
     "url": "https://d3muy0hbwp5qkl.cloudfront.net"
+  },
+  {
+    "datasourceId": "global-eez-mr-v11",
+    "geo_type": "vector",
+    "formats": [
+      "fgb",
+      "json"
+    ],
+    "metadata": {
+      "name": "World EEZ v11",
+      "description": "World EEZ boundaries and disputed areas",
+      "version": "11.0",
+      "publisher": "Flanders Marine Institute (VLIZ)",
+      "publishDate": "2019118",
+      "publishLink": "https://marineregions.org/"
+    },
+    "layerName": "eez_v11",
+    "classKeys": [],
+    "created": "2023-09-19T01:13:16.233Z",
+    "lastUpdated": "2023-09-26T18:20:33.147Z",
+    "src": "data/src/World_EEZ_v11_20191118/eez_v11.shp",
+    "propertiesToKeep": [
+      "GEONAME",
+      "MRGID"
+    ],
+    "idProperty": "GEONAME",
+    "nameProperty": "GEONAME"
   }
 ]

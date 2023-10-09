@@ -32,6 +32,8 @@ export interface PrecalcDatasourceOptions {
   datasourceMatcher?: string[];
   /** array of geography ID's to precalc, for all datasources.  Defaults to "*" as matcher, which matches on all geographies */
   geographyMatcher?: string[];
+  /** Alternative port to fetch data from */
+  port?: number;
 }
 
 /**
@@ -219,7 +221,7 @@ export const precalcMetrics = async (
   geogDs: VectorDatasource,
   extraOptions: PrecalcDatasourceOptions
 ): Promise<Metric[]> => {
-  const { newPrecalcPath, newDstPath } = extraOptions;
+  const { newPrecalcPath, newDstPath, port } = extraOptions;
 
   // precalc if possible. If external datasource, then return nothing
   const curMetrics = await (async () => {
@@ -230,6 +232,7 @@ export const precalcMetrics = async (
     } else if (isInternalRasterDatasource(ds) && ds.geo_type === "raster") {
       return await precalcRasterDatasource(projectClient, ds, geog, geogDs, {
         newDstPath,
+        port,
       });
     } else {
       console.log(`Skipping ${ds.datasourceId}, precalc not supported`);

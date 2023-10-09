@@ -39,6 +39,8 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
   extraOptions: {
     /** Alternative path to store precalc data. useful for testing */
     newDstPath?: string;
+    /** Alternative port to fetch data from */
+    port?: number;
   } = {}
 ): Promise<Metric[]> {
   // Creates vector config from datasources.json
@@ -48,11 +50,13 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
     extraOptions.newDstPath
   );
 
-  // const tempPort = 8080;
+  // need 8001 for unit tests
   const url = projectClient.getDatasourceUrl(rasterConfig, {
     local: true,
     subPath: extraOptions.newDstPath,
+    port: extraOptions.port || 8001, // use default project port, override such as for tests
   });
+  console.log("precalcing raster datasource", url);
   const raster: Georaster = await geoblaze.parse(url);
 
   const rasterMetrics = await genRasterMetrics(

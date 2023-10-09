@@ -20,6 +20,7 @@ import configFixtures from "../../../src/testing/fixtures/projectConfig";
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";
 const dstPath = "data/out";
+const port = 8080;
 
 const eezSrc = "eez";
 const multiEezSrc = "two-samoas-eez";
@@ -97,6 +98,7 @@ describe("precalcRasterDatasource", () => {
       newGeographyPath: geogFilePath,
       newPrecalcPath: precalcFilePath,
       newDstPath: dstPath,
+      port,
     });
 
     // Verify precalc
@@ -229,6 +231,7 @@ describe("precalcRasterDatasource", () => {
       newGeographyPath: geogFilePath,
       newPrecalcPath: precalcFilePath,
       newDstPath: dstPath,
+      port,
     });
     const savedGeos = fs.readJSONSync(geogFilePath);
     expect(Array.isArray(savedGeos) && savedGeos.length === 3).toBe(true);
@@ -366,6 +369,7 @@ describe("precalcRasterDatasource", () => {
       newGeographyPath: geogFilePath,
       newPrecalcPath: precalcFilePath,
       newDstPath: dstPath,
+      port,
     });
 
     // Verify geography
@@ -508,6 +512,7 @@ describe("precalcRasterDatasource", () => {
       newGeographyPath: geogFilePath,
       newPrecalcPath: precalcFilePath,
       newDstPath: dstPath,
+      port,
     });
     const savedGeos = fs.readJSONSync(geogFilePath);
     expect(Array.isArray(savedGeos) && savedGeos.length === 3).toBe(true);

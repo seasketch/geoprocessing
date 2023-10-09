@@ -229,7 +229,10 @@ export async function createProject(
   if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
     spinner.start("updating geographies.json");
 
-    const eezDs = globalDatasources.find((ds) => ds.datasourceId === "mr-eez");
+    const globalEezDS = "global-eez-mr-v11";
+    const eezDs = globalDatasources.find(
+      (ds) => ds.datasourceId === globalEezDS
+    );
     if (isVectorDatasource(eezDs)) {
       if (validBasic.planningAreaType === "eez") {
         // assign eez geography with proper filters
@@ -271,7 +274,7 @@ export async function createProject(
       spinner.succeed("updated geographies.json");
     } else {
       console.error(
-        "Expected vector datasource for mr-eez, geographies.json not updated"
+        `Expected vector datasource for ${globalEezDS}, geographies.json not updated`
       );
     }
   }

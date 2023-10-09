@@ -9,7 +9,6 @@ import {
 import { getDatasetBucketName } from "../../../src/datasources";
 import { genRasterConfig } from "./genRasterConfig";
 import { createOrUpdateDatasource } from "./datasources";
-import { loadCog } from "../../../src/dataproviders/cog";
 import { publishDatasource } from "./publishDatasource";
 
 import ProjectClientBase from "../../../src/project/ProjectClientBase";

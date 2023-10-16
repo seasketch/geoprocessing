@@ -235,7 +235,7 @@ export async function createProject(
     );
     if (isVectorDatasource(eezDs)) {
       if (validBasic.planningAreaType === "eez") {
-        // assign eez geography with proper filters
+        // assign initial eez geography with proper filters
         const geos: Geography[] = [
           {
             geographyId: "eez",

@@ -5,7 +5,11 @@
 import path from "path";
 import fs from "fs-extra";
 import { createProject } from "./createProject";
-import { GeoprocessingJsonConfig } from "../../src/types";
+import {
+  GeoprocessingJsonConfig,
+  geographiesSchema,
+  geographySchema,
+} from "../../src/types";
 
 const rootPath = `${__dirname}/../__test__`;
 
@@ -14,7 +18,7 @@ describe("createProject", () => {
     await fs.emptyDirSync(rootPath); // Cleanup
   });
 
-  it("should create empty project", async () => {
+  it("createProject - should create empty project", async () => {
     const projectName = "test-project-empty";
     const projectPath = path.join(rootPath, projectName);
     await createProject(
@@ -62,7 +66,7 @@ describe("createProject", () => {
     expect(gpConfig.clients.length).toBe(0);
   }, 120000);
 
-  it("should create project using eez selection", async () => {
+  it("createProject - should create project using eez selection", async () => {
     const projectName = "test-project-empty";
     const projectPath = path.join(rootPath, projectName);
     await createProject(
@@ -95,9 +99,30 @@ describe("createProject", () => {
       135.31244183762126, -1.173110965298591, 165.67652822599732,
       13.445432925389298,
     ]);
+
+    const savedGeogs = fs.readJSONSync(
+      `${projectPath}/project/geographies.json`
+    );
+    const geogs = geographiesSchema.parse(savedGeogs);
+    console.log(JSON.stringify(geogs));
+    expect(Array.isArray(geogs));
+    expect(geogs.length).toEqual(1);
+
+    const geog = geogs[0];
+    expect(geog.display).toEqual("Micronesian Exclusive Economic Zone");
+    expect(geog.bboxFilter).toEqual([
+      135.31244183762126, -1.173110965298591, 165.67652822599732,
+      13.445432925389298,
+    ]);
+    expect(JSON.stringify(geog.propertyFilter)).toEqual(
+      JSON.stringify({
+        property: "GEONAME",
+        values: ["Micronesian Exclusive Economic Zone"],
+      })
+    );
   }, 120000);
 
-  it("should create project with template", async () => {
+  it("createProject - should create project with template", async () => {
     const projectName = "test-project-template";
     const projectPath = path.join(rootPath, projectName);
     await createProject(
@@ -133,7 +158,7 @@ describe("createProject", () => {
     expect(gpConfig.clients.length).toBeGreaterThan(0);
   }, 120000);
 
-  it("should create empty project with all defaults", async () => {
+  it("createProject - should create empty project with all defaults", async () => {
     const projectName = "test-project-empty-defaults";
     const projectPath = path.join(rootPath, projectName);
     await createProject(

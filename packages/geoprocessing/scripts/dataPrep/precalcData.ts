@@ -10,7 +10,7 @@ import { getProjectClient } from "../base/project/projectClient";
 
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
-const numDs = projectClient.internalDatasources.length;
+const numDs = projectClient.datasources.length;
 const numGeos = projectClient.geographies.length;
 
 // Wrap in an IIFE to use async/await
@@ -27,7 +27,10 @@ void (async function () {
 
   const subsetAnswer = await precalcSubsetQuestion();
 
-  let dsOptions: PrecalcDatasourceOptions = {};
+  let dsOptions: PrecalcDatasourceOptions = {
+    datasourceMatcher: [],
+    geographyMatcher: [],
+  };
   if (["all", "both", "datasource"].includes(subsetAnswer.subset)) {
     if (subsetAnswer.subset === "all") {
       dsOptions.datasourceMatcher = ["*"];
@@ -35,9 +38,7 @@ void (async function () {
       // Ask user what they want to precalculate
       const precalcDsAnswers = await precalcWhichDsQuestion(numDs);
       if (precalcDsAnswers.precalcWhichDs === "list") {
-        const dsAnswers = await datasourcesQuestion(
-          projectClient.internalDatasources
-        );
+        const dsAnswers = await datasourcesQuestion(projectClient.datasources);
         dsOptions.datasourceMatcher = dsAnswers.datasources;
       }
     }

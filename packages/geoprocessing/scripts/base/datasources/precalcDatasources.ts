@@ -53,13 +53,18 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   const allGeographies = await readGeographies(newGeographyPath);
   // Start with no geographies to precalc.  Matcher can specify all or some
   let matchingGeographies: Geography[] = [];
-  if (geographyMatcher) {
+  if (geographyMatcher && geographyMatcher.length > 0) {
     if (geographyMatcher.includes("*")) {
       matchingGeographies = cloneDeep(allGeographies);
     } else {
-      matchingGeographies = cloneDeep(allGeographies).filter((ds) =>
-        geographyMatcher.includes(ds.datasourceId)
+      matchingGeographies = cloneDeep(allGeographies).filter((geog) =>
+        geographyMatcher.includes(geog.geographyId)
       );
+
+      if (matchingGeographies.length === 0)
+        throw new Error(
+          `No matching geographies found for ${geographyMatcher}, exiting`
+        );
     }
   }
 
@@ -74,7 +79,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   // Start with no datasources to precalc.  Matcher can specify all (*) or some
   let matchingDatasources: Datasource[] = [];
 
-  if (datasourceMatcher) {
+  if (datasourceMatcher && datasourceMatcher.length > 0) {
     if (datasourceMatcher.includes("*")) {
       matchingDatasources = cloneDeep(internalDatasources);
     } else {

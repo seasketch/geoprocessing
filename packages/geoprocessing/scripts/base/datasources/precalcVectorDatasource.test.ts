@@ -533,7 +533,7 @@ describe("precalcDatasources", () => {
           classKeys: [],
           idProperty: "UNION",
           nameProperty: "UNION",
-          precalc: false,
+          precalc: false, // precalc false because we only need the geography included in precalc, not its datasource in its entirety
         },
       ]);
 
@@ -671,7 +671,7 @@ describe("precalcDatasources", () => {
           classKeys: [],
           idProperty: "GEONAME",
           nameProperty: "GEONAME",
-          precalc: false,
+          precalc: false, // precalc false because we only need the geography included in precalc, not its datasource in its entirety
         },
       ]);
 

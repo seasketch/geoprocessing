@@ -7,7 +7,8 @@
     ],
     "classKeys": [],
     "propertiesToKeep": ["gid"],
-    "url": "https://d3p1dsef9f0gjr.cloudfront.net/"
+    "url": "https://d3p1dsef9f0gjr.cloudfront.net/",
+    "precalc": false
   },
   {
     "datasourceId": "global-clipping-eez-land-union",
@@ -17,6 +18,45 @@
     ],
     "classKeys": [],
     "propertiesToKeep": ["UNION"],
-    "url": "https://d3muy0hbwp5qkl.cloudfront.net"
+    "url": "https://d3muy0hbwp5qkl.cloudfront.net",
+    "precalc": false
+  },
+  {
+    "datasourceId": "global-eez-mr-v11",
+    "geo_type": "vector",
+    "formats": [
+      "fgb",
+      "json"
+    ],
+    "metadata": {
+      "name": "World EEZ v11",
+      "description": "World EEZ boundaries and disputed areas",
+      "version": "11.0",
+      "publisher": "Flanders Marine Institute (VLIZ)",
+      "publishDate": "2019118",
+      "publishLink": "https://marineregions.org/"
+    },
+    "classKeys": [],
+    "url": "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-mr-v11.fgb",
+    "propertiesToKeep": [
+      "GEONAME",
+      "MRGID"
+    ],
+    "idProperty": "GEONAME",
+    "nameProperty": "GEONAME",
+    "precalc": false
+  },
+  {
+    "datasourceId": "world",
+    "geo_type": "vector",
+    "formats": [
+      "json"
+    ],
+    "layerName": "world",
+    "classKeys": [],
+    "src": "data/default/world.json",
+    "propertiesToKeep": [],
+    "created": "2023-10-05T00:00:00Z",
+    "lastUpdated": "2023-10-05T00:00:00Z"
   }
 ]

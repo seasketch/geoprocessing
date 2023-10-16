@@ -7,7 +7,8 @@
     ],
     "classKeys": [],
     "propertiesToKeep": ["gid"],
-    "url": "https://d3p1dsef9f0gjr.cloudfront.net/"
+    "url": "https://d3p1dsef9f0gjr.cloudfront.net/",
+    "precalc": false
   },
   {
     "datasourceId": "global-clipping-eez-land-union",
@@ -17,20 +18,8 @@
     ],
     "classKeys": [],
     "propertiesToKeep": ["UNION"],
-    "url": "https://d3muy0hbwp5qkl.cloudfront.net"
-  },
-  {
-    "datasourceId": "world",
-    "geo_type": "vector",
-    "formats": [
-      "json"
-    ],
-    "layerName": "world",
-    "classKeys": [],
-    "src": "data/default/world.json",
-    "propertiesToKeep": [],
-    "created": "2023-10-05T00:00:00Z",
-    "lastUpdated": "2023-10-05T00:00:00Z"
+    "url": "https://d3muy0hbwp5qkl.cloudfront.net",
+    "precalc": false
   },
   {
     "datasourceId": "global-eez-mr-v11",
@@ -47,16 +36,27 @@
       "publishDate": "2019118",
       "publishLink": "https://marineregions.org/"
     },
-    "layerName": "eez_v11",
     "classKeys": [],
-    "created": "2023-09-19T01:13:16.233Z",
-    "lastUpdated": "2023-09-26T18:20:33.147Z",
-    "src": "data/src/World_EEZ_v11_20191118/eez_v11.shp",
+    "url": "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-mr-v11.fgb",
     "propertiesToKeep": [
       "GEONAME",
       "MRGID"
     ],
     "idProperty": "GEONAME",
-    "nameProperty": "GEONAME"
+    "nameProperty": "GEONAME",
+    "precalc": false
+  },
+  {
+    "datasourceId": "world",
+    "geo_type": "vector",
+    "formats": [
+      "json"
+    ],
+    "layerName": "world",
+    "classKeys": [],
+    "src": "data/default/world.json",
+    "propertiesToKeep": [],
+    "created": "2023-10-05T00:00:00Z",
+    "lastUpdated": "2023-10-05T00:00:00Z"
   }
 ]

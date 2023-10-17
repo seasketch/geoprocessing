@@ -41,6 +41,7 @@ describe("Reimport datasources", () => {
           classKeys: [],
           formats: ["tif"],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,
@@ -60,6 +61,7 @@ describe("Reimport datasources", () => {
           noDataValue: 0,
           band: 1,
           measurementType: "quantitative",
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,

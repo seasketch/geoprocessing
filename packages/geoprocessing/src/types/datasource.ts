@@ -44,8 +44,8 @@ export const baseDatasourceSchema = z.object({
   geo_type: geoTypesSchema,
   /** Available formats */
   formats: z.array(supportedFormatsSchema),
-  /** Optional, defines whether or not precalc should be run for this datasource, defaults to true if not present */
-  precalc: z.boolean().optional(),
+  /** Optional, defines whether or not precalc should be run for this datasource */
+  precalc: z.boolean(),
   metadata: z
     .object({
       /** Human-readable name of datasource */

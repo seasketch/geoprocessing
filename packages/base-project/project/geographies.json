@@ -2,5 +2,6 @@
   "geographyId": "world",
   "datasourceId": "world",
   "display": "World",
-  "groups": ["project boundary"]
+  "groups": ["project boundary"],
+  "precalc": true
 }]

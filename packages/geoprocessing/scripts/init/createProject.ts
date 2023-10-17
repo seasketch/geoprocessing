@@ -249,6 +249,7 @@ export async function createProject(
             },
             bboxFilter: validBasic.bbox,
             groups: ["project boundary"],
+            precalc: false,
           },
         ];
 

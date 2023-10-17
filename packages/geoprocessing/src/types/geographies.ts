@@ -15,8 +15,8 @@ export const geographySchema = z.object({
   layerId: z.string().optional(),
   /** Optional, sub-geography identifier. Useful when you have multiple groupings/levels of geographies and want to select for a specific group */
   groups: z.array(z.string()).optional(),
-  /** Optional, defines whether or not precalc should be run for this geography, defaults to true if not present */
-  precalc: z.boolean().optional(),
+  /** Optional, defines whether or not precalc should be run for this geography */
+  precalc: z.boolean(),
   /** Required if external datasource used, defines filter to constrain geography features, matches feature property having one or more specific values */
   propertyFilter: z
     .object({

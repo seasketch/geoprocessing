@@ -35,10 +35,13 @@ void (async function () {
     if (subsetAnswer.subset === "all") {
       dsOptions.datasourceMatcher = ["*"];
     } else {
+      const precalcDs = projectClient.datasources.filter(
+        (ds) => ds.precalc === true
+      );
       // Ask user what they want to precalculate
       const precalcDsAnswers = await precalcWhichDsQuestion(numDs);
       if (precalcDsAnswers.precalcWhichDs === "list") {
-        const dsAnswers = await datasourcesQuestion(projectClient.datasources);
+        const dsAnswers = await datasourcesQuestion(precalcDs);
         dsOptions.datasourceMatcher = dsAnswers.datasources;
       }
     }
@@ -49,9 +52,11 @@ void (async function () {
     if (subsetAnswer.subset === "all") {
       dsOptions.geographyMatcher = ["*"];
     } else {
+      const precalcDs = projectClient.geographies.filter(
+        (geog) => geog.precalc === true
+      );
       // Ask user what they want to precalculate
       const precalcGeosAnswers = await precalcWhichGeosQuestion(numGeos);
-      console.log("precalcGeosAnswers", precalcGeosAnswers);
       if (precalcGeosAnswers.precalcWhichGeos === "list") {
         const geogAnswers = await geographiesQuestion(
           projectClient.geographies

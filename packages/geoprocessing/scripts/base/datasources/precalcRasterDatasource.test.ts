@@ -57,6 +57,7 @@ describe("precalcRasterDatasource", () => {
         classKeys: [],
         formats: ["json"],
         propertiesToKeep: [],
+        precalc: true,
       },
       {
         newDatasourcePath: dsFilePath,
@@ -75,6 +76,7 @@ describe("precalcRasterDatasource", () => {
         noDataValue: 0,
         band: 1,
         measurementType: "quantitative",
+        precalc: true,
       },
       {
         newDatasourcePath: dsFilePath,
@@ -87,6 +89,7 @@ describe("precalcRasterDatasource", () => {
       geographyId: geographyId,
       datasourceId: geogDatasourceId,
       display: geographyId,
+      precalc: true,
     };
     writeGeographies([eezGeog], geogFilePath);
     const savedGeos = fs.readJSONSync(geogFilePath);
@@ -170,6 +173,7 @@ describe("precalcRasterDatasource", () => {
         noDataValue: 0,
         band: 1,
         measurementType: "quantitative",
+        precalc: true,
       },
       {
         newDatasourcePath: dsFilePath,
@@ -189,6 +193,7 @@ describe("precalcRasterDatasource", () => {
         -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
         -10.024476331539347,
       ],
+      precalc: true,
     };
 
     // Filter to single polygon geography
@@ -204,6 +209,7 @@ describe("precalcRasterDatasource", () => {
         -10.024476331539347,
       ],
       display: "geog-single-filter",
+      precalc: true,
     };
 
     // Filter should give two Samoan polygons
@@ -219,6 +225,7 @@ describe("precalcRasterDatasource", () => {
         -10.024476331539347,
       ],
       display: "geog-double-filter",
+      precalc: true,
     };
 
     writeGeographies(
@@ -305,6 +312,7 @@ describe("precalcRasterDatasource", () => {
         noDataValue: 0,
         band: 1,
         measurementType: "quantitative",
+        precalc: true,
       },
       {
         newDatasourcePath: dsFilePath,
@@ -324,6 +332,7 @@ describe("precalcRasterDatasource", () => {
         -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
         -10.024476331539347,
       ],
+      precalc: true,
     };
 
     // Filter to single polygon geography
@@ -339,6 +348,7 @@ describe("precalcRasterDatasource", () => {
         -10.024476331539347,
       ],
       display: "geog-single-filter",
+      precalc: true,
     };
 
     // Filter should give two Samoan polygons
@@ -357,6 +367,7 @@ describe("precalcRasterDatasource", () => {
         -10.024476331539347,
       ],
       display: "geog-double-filter",
+      precalc: true,
     };
 
     writeGeographies(
@@ -452,6 +463,7 @@ describe("precalcRasterDatasource", () => {
         noDataValue: 0,
         band: 1,
         measurementType: "quantitative",
+        precalc: true,
       },
       {
         newDatasourcePath: dsFilePath,
@@ -467,6 +479,7 @@ describe("precalcRasterDatasource", () => {
       geographyId: "geog-box-filter",
       datasourceId: geogDatasourceId,
       display: "geog-box-filter",
+      precalc: true,
     };
 
     // Filter to single polygon geography
@@ -482,6 +495,7 @@ describe("precalcRasterDatasource", () => {
         -10.024476331539347,
       ],
       display: "geog-single-filter",
+      precalc: true,
     };
 
     // Filter should give all polygons (both countries)
@@ -500,6 +514,7 @@ describe("precalcRasterDatasource", () => {
         -10.024476331539347,
       ],
       display: "geog-double-filter",
+      precalc: true,
     };
 
     writeGeographies(

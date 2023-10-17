@@ -11,7 +11,7 @@ import {
 } from "../../src";
 import path from "path";
 import { getProjectClient } from "../base/project/projectClient";
-import { publishQuestion } from "./publishQuestion";
+import { precalcQuestion } from "./precalcQuestion";
 
 // This is a standalone script used as a CLI command with a top-level function
 
@@ -21,7 +21,7 @@ const projectClient = getProjectClient(projectPath);
 interface ImportVectorDatasourceAnswers
   extends Pick<
     ImportVectorDatasourceOptions,
-    "src" | "datasourceId" | "layerName" | "geo_type" | "formats"
+    "src" | "datasourceId" | "layerName" | "geo_type" | "formats" | "precalc"
   > {
   classKeys: string;
   propertiesToKeep: string;
@@ -37,12 +37,14 @@ interface ImportRasterDatasourceAnswers
     | "formats"
     | "noDataValue"
     | "measurementType"
+    | "precalc"
   > {}
 
 // Main function, wrapped in an IIFE to avoid top-level await
 void (async function () {
   const datasources = readDatasources();
   const geoTypeAnswer = await geoTypeQuestion(datasources);
+  const precalcAnswers = await precalcQuestion();
 
   const config = await (async () => {
     if (geoTypeAnswer.geo_type === "vector") {
@@ -61,6 +63,7 @@ void (async function () {
         ...inputAnswers,
         ...layerNameAnswer,
         ...detailedVectorAnswers,
+        ...precalcAnswers,
       });
       return config;
     } else {
@@ -76,16 +79,13 @@ void (async function () {
         ...inputAnswers,
         ...rasterBandAnswer,
         ...detailedRasterAnswers,
+        ...precalcAnswers,
       });
       return config;
     }
   })();
 
-  const publishAnswers = await publishQuestion();
-  await importDatasource(projectClient, config, {
-    doPublish: publishAnswers.publish === "yes" ? true : false,
-    srcBucketUrl: projectClient.dataBucketUrl(),
-  });
+  await importDatasource(projectClient, config, {});
 })();
 
 /** Maps answers object to options */
@@ -238,7 +238,7 @@ async function detailedVectorQuestions(
       type: "checkbox",
       name: "formats",
       message:
-        "What formats would you like to publish?  Suggested formats already selected",
+        "What formats should be created?  Suggested formats already selected",
       choices: datasourceConfig.importSupportedVectorFormats.map((name) => ({
         value: name,
         name: `${name} - ${datasourceFormatDescriptions[name]}`,

@@ -20,6 +20,7 @@ export function genRasterConfig<C extends ProjectClientBase>(
     formats = datasourceConfig.importDefaultRasterFormats,
     noDataValue,
     measurementType,
+    precalc,
   } = options;
 
   if (!band) band = 0;
@@ -35,6 +36,7 @@ export function genRasterConfig<C extends ProjectClientBase>(
     formats,
     noDataValue,
     measurementType,
+    precalc,
   };
 
   return config;

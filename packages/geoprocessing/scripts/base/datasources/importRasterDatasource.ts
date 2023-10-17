@@ -56,6 +56,7 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
     lastUpdated: timestamp,
     noDataValue: config.noDataValue,
     measurementType: config.measurementType,
+    precalc: config.precalc,
   };
 
   await createOrUpdateDatasource(newVectorD, newDatasourcePath);

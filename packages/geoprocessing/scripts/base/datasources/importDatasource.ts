@@ -23,7 +23,7 @@ export async function importDatasource<C extends ProjectClientBase>(
     newDatasourcePath?: string;
     newDstPath?: string;
     srcBucketUrl?: string;
-  }
+  } = {}
 ) {
   if (options.geo_type === "vector") {
     const vectorOptions: ImportVectorDatasourceOptions =

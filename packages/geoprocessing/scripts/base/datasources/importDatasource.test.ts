@@ -39,6 +39,7 @@ describe("importDatasource", () => {
           classKeys: [],
           formats: [],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,
@@ -82,6 +83,7 @@ describe("importDatasource", () => {
           classKeys: ["Draft name"],
           formats: [],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,
@@ -126,6 +128,7 @@ describe("importDatasource", () => {
           noDataValue: 0,
           band: 1,
           measurementType: "quantitative",
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,

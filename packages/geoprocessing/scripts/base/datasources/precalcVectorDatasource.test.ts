@@ -54,6 +54,7 @@ describe("precalcDatasources", () => {
           classKeys: [],
           formats: ["json"],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -66,6 +67,7 @@ describe("precalcDatasources", () => {
         geographyId: geographyId,
         datasourceId: geographyId,
         display: geographyId,
+        precalc: true,
       };
       writeGeographies([eezGeog], geogFilePath);
 
@@ -129,6 +131,7 @@ describe("precalcDatasources", () => {
           classKeys: [],
           formats: ["json"],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -145,6 +148,7 @@ describe("precalcDatasources", () => {
           classKeys: ["Class"],
           formats: ["json"],
           propertiesToKeep: ["Class"],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -157,6 +161,7 @@ describe("precalcDatasources", () => {
         geographyId: geographyId,
         datasourceId: geographyId,
         display: geographyId,
+        precalc: true,
       };
       writeGeographies([eezGeog], geogFilePath);
 
@@ -239,6 +244,7 @@ describe("precalcDatasources", () => {
           classKeys: [],
           formats: ["json"],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -255,6 +261,7 @@ describe("precalcDatasources", () => {
           classKeys: ["Class"],
           formats: ["json"],
           propertiesToKeep: ["Class"],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -267,6 +274,7 @@ describe("precalcDatasources", () => {
         geographyId: geographyId,
         datasourceId: geographyId,
         display: geographyId,
+        precalc: true,
       };
       writeGeographies([eezGeog], geogFilePath);
 
@@ -290,6 +298,7 @@ describe("precalcDatasources", () => {
           classKeys: [],
           formats: ["json"],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -388,6 +397,7 @@ describe("precalcDatasources", () => {
           classKeys: [],
           formats: ["json"],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -405,6 +415,7 @@ describe("precalcDatasources", () => {
           classKeys: ["Class"],
           formats: ["json"],
           propertiesToKeep: ["Class"],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -417,6 +428,7 @@ describe("precalcDatasources", () => {
         geographyId: geographyId,
         datasourceId: geographyId,
         display: geographyId,
+        precalc: true,
       };
       writeGeographies([eezGeog], geogFilePath);
 
@@ -440,6 +452,7 @@ describe("precalcDatasources", () => {
           classKeys: ["Class"],
           formats: ["json"],
           propertiesToKeep: ["Class"],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -547,6 +560,7 @@ describe("precalcDatasources", () => {
           classKeys: [],
           formats: ["json"],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -566,6 +580,7 @@ describe("precalcDatasources", () => {
           -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
           -10.024476331539347,
         ],
+        precalc: true,
       };
 
       // Filter to single polygon geography
@@ -581,6 +596,7 @@ describe("precalcDatasources", () => {
           -10.024476331539347,
         ],
         display: "geog-single-filter",
+        precalc: true,
       };
 
       // Filter should give two Samoan polygons
@@ -596,6 +612,7 @@ describe("precalcDatasources", () => {
           -10.024476331539347,
         ],
         display: "geog-double-filter",
+        precalc: true,
       };
 
       writeGeographies(
@@ -685,6 +702,7 @@ describe("precalcDatasources", () => {
           classKeys: [],
           formats: ["json"],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -704,6 +722,7 @@ describe("precalcDatasources", () => {
           -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
           -10.024476331539347,
         ],
+        precalc: true,
       };
 
       // Filter to single polygon geography
@@ -719,6 +738,7 @@ describe("precalcDatasources", () => {
           -10.024476331539347,
         ],
         display: "geog-single-filter",
+        precalc: true,
       };
 
       // Filter should give two Samoan polygons
@@ -737,6 +757,7 @@ describe("precalcDatasources", () => {
           -10.024476331539347,
         ],
         display: "geog-double-filter",
+        precalc: true,
       };
 
       writeGeographies(

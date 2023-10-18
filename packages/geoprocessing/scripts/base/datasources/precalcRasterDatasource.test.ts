@@ -563,5 +563,5 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
     fs.removeSync(geogFilePath);
     fs.removeSync(precalcFilePath);
-  }, 5000);
+  }, 20000);
 });

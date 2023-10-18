@@ -8,6 +8,7 @@ packages/geoprocessing/dist
 packages/geoprocessing/docs/api
 packages/geoprocessing/docs/storybook
 packages/geoprocessing/data/out
+packages/geoprocessing/scripts/__test__
 .workspace.env
 packages/example-project*/
 report.*

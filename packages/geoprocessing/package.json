@@ -232,6 +232,5 @@
   "optionalDependencies": {
     "bufferutil": "^4.0.1",
     "utf-8-validate": "^5.0.2"
-  },
-  "gitHead": "09d989b8c937ff40a98f2ea44af0cc5b5841e7d4"
+  }
 }

@@ -264,7 +264,7 @@ export class ProjectClientBase implements ProjectClientInterface {
    * @returns
    */
   public getGeographyById(
-    geographyId: string,
+    geographyId?: string,
     options: { fallbackGroup?: string } = {}
   ): Geography {
     const { fallbackGroup } = options;
@@ -294,7 +294,9 @@ export class ProjectClientBase implements ProjectClientInterface {
       }
     }
 
-    throw new Error(`Could not find geography matching ${geographyId}`);
+    throw new Error(
+      `getGeographyById - did not receive geographyID or fallbackGroup`
+    );
   }
 
   // OBJECTIVES //

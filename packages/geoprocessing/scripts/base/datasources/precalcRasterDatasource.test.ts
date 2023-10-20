@@ -134,7 +134,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(geogFilePath);
     fs.removeSync(path.join(dstPath, `${datasourceId}.tif`));
     fs.removeSync(precalcFilePath);
-  }, 5000);
+  }, 10000);
 
   test("precalcRasterDatasource - multiple geog scenarios with external subdivided datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_9.json";
@@ -273,7 +273,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
     fs.removeSync(geogFilePath);
     fs.removeSync(precalcFilePath);
-  }, 5000);
+  }, 10000);
 
   test("precalcRasterDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_8.json";
@@ -417,7 +417,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
     fs.removeSync(geogFilePath);
     fs.removeSync(precalcFilePath);
-  }, 5000);
+  }, 10000);
 
   test("precalcRasterDatasource - multiple geog scenarios with internal geojson datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_7.json";

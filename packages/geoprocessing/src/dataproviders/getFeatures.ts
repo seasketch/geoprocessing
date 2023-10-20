@@ -8,24 +8,26 @@ import {
   ExternalVectorDatasource,
   InternalVectorDatasource,
   Feature,
+  Geometry,
+  FeatureCollection,
 } from "../types";
 import { DatasourceOptions } from "../types/dataProcessor";
 
 /**
  * Returns features for a variety of vector datasources and formats, with additional filter options
  */
-export async function getFeatures(
+export async function getFeatures<F extends Feature<Geometry>>(
   datasource: InternalVectorDatasource | ExternalVectorDatasource,
   /** url of datasource */
   url: string,
   options: DatasourceOptions = {}
-): Promise<Feature[]> {
+): Promise<F[]> {
   const propertyFilter = datasource.propertyFilter || options.propertyFilter;
   const bboxFilter = datasource.bboxFilter || options.bbox;
 
-  let features: Feature[] = [];
+  let features: F[] = [];
   if (isInternalVectorDatasource(datasource)) {
-    features = await fgbFetchAll<Feature>(url, bboxFilter);
+    features = await fgbFetchAll<F>(url, bboxFilter);
   } else if (
     isExternalVectorDatasource(datasource) &&
     datasource.formats.includes("subdivided")
@@ -38,17 +40,17 @@ export async function getFeatures(
     }
     const vectorDs = new VectorDataSource(url);
     if (options.unionProperty) {
-      features = (await vectorDs.fetchUnion(bboxFilter, options.unionProperty))
-        .features;
+      const fc = await vectorDs.fetchUnion(bboxFilter, options.unionProperty);
+      features = fc.features as F[];
     } else {
-      features = await vectorDs.fetch(bboxFilter);
+      features = (await vectorDs.fetch(bboxFilter)) as F[];
     }
   } else if (
     isExternalVectorDatasource(datasource) &&
     datasource.formats.includes("fgb")
   ) {
     // fallback to flatgeobuf
-    features = await fgbFetchAll<Feature>(url, bboxFilter);
+    features = await fgbFetchAll<F>(url, bboxFilter);
   }
 
   // filter by property value

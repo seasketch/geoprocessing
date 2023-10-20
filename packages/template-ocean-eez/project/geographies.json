@@ -4,6 +4,6 @@
   "geographyProperty": "GEONAME",
   "propertyValue": "Micronesian Exclusive Economic Zone",
   "display": "Micronesia",
-  "groups": ["project boundary"],
+  "groups": ["default-boundary"],
   "precalc": true
 }]

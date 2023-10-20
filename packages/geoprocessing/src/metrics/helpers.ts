@@ -336,7 +336,7 @@ export const toPercentMetric = (
 ): Metric[] => {
   const { metricIdOverride, idProperty = "classId" } = options;
 
-  // Index into precalc totals using idProperty
+  // Index denominators into precalc totals using idProperty
   const totalsByKey = (() => {
     return keyBy(denominators, (total) => String(total[idProperty]));
   })();

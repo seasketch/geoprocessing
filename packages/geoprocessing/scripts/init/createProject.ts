@@ -248,7 +248,7 @@ export async function createProject(
               values: [metadata.planningAreaId],
             },
             bboxFilter: validBasic.bbox,
-            groups: ["project boundary"],
+            groups: ["default-boundary"],
             precalc: false,
           },
         ];

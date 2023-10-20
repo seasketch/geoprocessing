@@ -226,7 +226,7 @@ export class ProjectClientBase implements ProjectClientInterface {
     );
   }
 
-  // HELPERS //
+  // DATSOURCES //
 
   /** Returns Datasource given datasourceId */
   public getDatasourceById(datasourceId: string): Datasource {
@@ -252,6 +252,49 @@ export class ProjectClientBase implements ProjectClientInterface {
     datasourceId: string
   ): InternalRasterDatasource {
     return getInternalRasterDatasourceById(datasourceId, this._datasources);
+  }
+
+  // GEOGRAPHIES //
+
+  /**
+   * Returns project geography matching the provided ID, with optional fallback geography using fallbackGroup parameter
+   * @param geographyId The geography ID to search for
+   * @param options
+   * @param options.fallbackGroup The default group name to lookup if no geographyId is provided. expects there is only one geography with that group name
+   * @returns
+   */
+  public getGeographyById(
+    geographyId: string,
+    options: { fallbackGroup?: string } = {}
+  ): Geography {
+    const { fallbackGroup } = options;
+    if (geographyId && geographyId.length > 0) {
+      const curGeog = this._geographies.find(
+        (g) => g.geographyId === geographyId
+      );
+      // verify matching geography exists
+      if (curGeog) {
+        return curGeog;
+      }
+    } else if (fallbackGroup) {
+      // fallback to user-specified geography group
+      const planGeogs = this._geographies.filter((g) =>
+        g.groups?.includes(fallbackGroup)
+      );
+      if (planGeogs.length === 0) {
+        throw new Error(
+          `Could not find geography with fallback group ${fallbackGroup}`
+        );
+      } else if (planGeogs.length > 1) {
+        throw new Error(
+          `Found more than one geography with fallback group ${fallbackGroup}, there should be only one`
+        );
+      } else {
+        return planGeogs[0];
+      }
+    }
+
+    throw new Error(`Could not find geography matching ${geographyId}`);
   }
 
   // OBJECTIVES //

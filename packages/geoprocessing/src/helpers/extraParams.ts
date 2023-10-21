@@ -1,20 +1,32 @@
 import { DefaultExtraParams } from "../types";
 
 /**
- * Extracts, validates, and returns first element from array in extraParams
+ * Returns first element from param object at paramName key.  Parameter can be string or array of strings
  * @param paramName name of array parameter to extract from extraParams
  * @param params the object containing parameters
  * @returns the first element in the array parameter
  * @throws if param is missing or its array is empty
  */
-export const getFirstFromParamArray = <P extends DefaultExtraParams>(
+export const getFirstFromParam = <P extends DefaultExtraParams>(
   paramName: string,
   params: P
 ): string => {
-  const geographyIds = getParamStringArray(paramName, params);
-  if (!geographyIds || geographyIds.length === 0)
-    throw new Error(`${paramName} with at least one required`);
-  return geographyIds[0];
+  const paramValue = params[paramName];
+  let firstValue: string | undefined = undefined;
+
+  if (Array.isArray(paramValue)) {
+    const arrayVal = getParamStringArray(paramName, params);
+    if (arrayVal) firstValue = arrayVal[0];
+  } else {
+    firstValue = paramValue;
+  }
+  if (!firstValue)
+    throw new Error(
+      `String or string array at parameter ${paramName} expected, found ${JSON.stringify(
+        paramValue
+      )}`
+    );
+  return firstValue;
 };
 
 /**
@@ -28,7 +40,7 @@ export const getParamStringArray = <P extends DefaultExtraParams>(
   paramName: string,
   params: P
 ): string[] | undefined => {
-  const paramValue = params[paramName as keyof P];
+  const paramValue = params[paramName];
   if (Array.isArray(paramValue)) {
     if (paramValue.length === 0) {
       console.log(`Parameter ${paramName} is an empty array`);

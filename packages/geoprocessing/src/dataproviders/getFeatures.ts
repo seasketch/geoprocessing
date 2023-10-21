@@ -9,7 +9,6 @@ import {
   InternalVectorDatasource,
   Feature,
   Geometry,
-  FeatureCollection,
 } from "../types";
 import { DatasourceOptions } from "../types/dataProcessor";
 

@@ -20,7 +20,7 @@ import { featureEach } from "@turf/meta";
 export async function overlapRasterClass(
   /** metricId value to assign to each measurement */
   metricId: string,
-  /** Cloud-optimized geotiff, loaded via geoblaze.parse(), representing categorical data (multiple classes) */
+  /** Cloud-optimized geotiff, loaded via loadCog or geoblaze.parse(), representing categorical data (multiple classes) */
   raster: Georaster,
   /**
    * single sketch or collection.  If undefined will return sum by feature class for the whole raster.

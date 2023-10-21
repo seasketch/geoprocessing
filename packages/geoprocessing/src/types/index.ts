@@ -15,6 +15,7 @@ export * from "./service";
 export * from "./dataProcessor";
 export * from "./functions";
 export * from "./geographies";
+export * from "./extraParams";
 
 // 3rd party
 export * from "./georaster";

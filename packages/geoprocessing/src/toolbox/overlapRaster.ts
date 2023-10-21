@@ -20,7 +20,7 @@ interface OverlapRasterOptions {
 export async function overlapRaster(
   /** metricId value to assign to each measurement */
   metricId: string,
-  /** Cloud-optimized geotiff to calculate overlap with, loaded via geoblaze.parse() */
+  /** Cloud-optimized geotiff to calculate overlap with, loaded via loadCog or geoblaze.parse() */
   raster: Georaster,
   /** single sketch or collection to calculate metrics for. */
   sketch:

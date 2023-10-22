@@ -4,13 +4,15 @@ import { DefaultExtraParams } from "../types";
  * Returns first element from param object at paramName key.  Parameter can be string or array of strings
  * @param paramName name of array parameter to extract from extraParams
  * @param params the object containing parameters
- * @returns the first element in the array parameter
- * @throws if param is missing or its array is empty
+ * @returns the first element ih the parameter or undefined if not found
+ * @throws if required = true and param is missing or its array is empty
  */
 export const getFirstFromParam = <P extends DefaultExtraParams>(
   paramName: string,
-  params: P
-): string => {
+  params: P,
+  options: { required?: boolean } = {}
+): string | undefined => {
+  const { required = false } = options;
   const paramValue = params[paramName];
   let firstValue: string | undefined = undefined;
 
@@ -21,11 +23,15 @@ export const getFirstFromParam = <P extends DefaultExtraParams>(
     firstValue = paramValue;
   }
   if (!firstValue)
-    throw new Error(
-      `String or string array at parameter ${paramName} expected, found ${JSON.stringify(
-        paramValue
-      )}`
-    );
+    if (required) {
+      throw new Error(
+        `String or string array at parameter ${paramName} expected, found ${JSON.stringify(
+          paramValue
+        )}`
+      );
+    } else {
+      return undefined;
+    }
   return firstValue;
 };
 

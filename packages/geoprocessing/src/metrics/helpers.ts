@@ -470,18 +470,19 @@ export const flattenBySketchAllClass = (
 };
 
 /**
- * Returns one aggregate object for every groupId present in metrics
- * Each object includes following properties:
- * numSketches - count of child sketches in the group
+ * Aggregates metrics by group
+ * @param collection sketch collection metrics are for
+ * @param groupMetrics metrics with assigned groupId (except group total metric) and sketchIds for collection
+ * @param totalMetrics totals by class
+ * @returns one aggregate object for every groupId present in metrics.  Each object includes:
+ * [numSketches] - count of child sketches in the group
  * [classId] - a percValue for each classId present in metrics for group
- * value - sum of value across all classIds present in metrics for group
- * percValue - given sum value across all classIds, contains ratio of total sum across all class IDs
+ * [value] - sum of value across all classIds present in metrics for group
+ * [percValue] - given sum value across all classIds, contains ratio of total sum across all class IDs
  */
 export const flattenByGroupAllClass = (
   collection: SketchCollection | NullSketchCollection,
-  /** Group metrics for collection and its child sketches */
   groupMetrics: Metric[],
-  /** Totals by class */
   totalMetrics: Metric[]
 ): {
   value: number;
@@ -528,7 +529,7 @@ export const flattenByGroupAllClass = (
 
     const groupTotal = firstMatchingMetric(
       totalMetrics,
-      (m) => !m.classId
+      (m) => !m.groupId // null groupId identifies group total metric
     ).value;
     return {
       groupId: curGroupId,

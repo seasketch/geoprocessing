@@ -90,7 +90,8 @@ export async function overlapFeatures(
     // If sketch overlap, use union
     const sketchUnion = clip(sketchColl, "union");
     if (!sketchUnion) throw new Error("overlapFeatures - something went wrong");
-    const sketchUnionArea = area(sketchUnion);
+    // Null sketch union = sketch not in geography, so area=0
+    const sketchUnionArea = sketchUnion ? area(sketchUnion) : 0;
     isOverlap = sketchUnionArea < sketchArea;
 
     const finalSketches =

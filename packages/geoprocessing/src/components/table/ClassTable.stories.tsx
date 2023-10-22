@@ -14,6 +14,7 @@ import {
   categoricalClassMetricsMixedTarget,
   categoricalMetricGroup,
   categoricalMetricGroupMixedTarget,
+  missingAndZeroMetrics,
 } from "../../testing/fixtures/metrics";
 import { valueFormatter } from "../../helpers/valueFormatter";
 import Translator from "../i18n/TranslatorAsync";
@@ -342,6 +343,36 @@ export const categoricalData = () => {
     <Translator>
       <ClassTable
         rows={categoricalClassMetrics}
+        metricGroup={categoricalMetricGroup}
+        objective={categoricalSingleObjective}
+        columnConfig={[
+          {
+            type: "class",
+          },
+          {
+            type: "metricValue",
+            metricId: simpleMetricGroup.metricId,
+            valueFormatter: "percent",
+            columnLabel: "% Value",
+          },
+          {
+            type: "metricGoal",
+            valueFormatter: "percent",
+          },
+          {
+            type: "layerToggle",
+          },
+        ]}
+      />
+    </Translator>
+  );
+};
+
+export const missingData = () => {
+  return (
+    <Translator>
+      <ClassTable
+        rows={missingAndZeroMetrics}
         metricGroup={categoricalMetricGroup}
         objective={categoricalSingleObjective}
         columnConfig={[

@@ -33,6 +33,7 @@ export * from "./SketchAttributesCard";
 export * from "./Toolbar";
 export * from "./ToolbarCard";
 export * from "./VerticalSpacer";
+export * from "./Tooltip";
 
 /** Other Modules */
 export * from "../rbcs/components";

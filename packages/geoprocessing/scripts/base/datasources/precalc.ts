@@ -35,5 +35,9 @@ export async function createOrUpdatePrecalcMetrics(
   // Optional override
   const finalFilePath =
     filePath && filePath.length > 0 ? filePath : precalcConfig.defaultSrcPath;
-  return createOrUpdateMetrics(metrics, matcher, finalFilePath);
+  return createOrUpdateMetrics(
+    sortMetrics(rekeyMetrics(metrics)),
+    matcher,
+    finalFilePath
+  );
 }

@@ -317,7 +317,7 @@ const classSortAlphaDisplay = (a: DataClass, b: DataClass) => {
 
 /**
  * Matches numerator metrics with denominator metrics and divides their value,
- * returning a new array of percent metrics
+ * returning a new array of percent metrics.  If denominator metric has value of 0, returns NaN
  * Matches on the optional idProperty given, otherwise defaulting to classId
  * Deep copies and maintains all other properties from the numerator metric
  * @param numerators array of metrics, to be used as numerators (often sketch metrics)
@@ -377,7 +377,7 @@ export const toPercentMetric = (
         console.log(
           `Denominator metric with ${idProperty} of ${idValue} has 0 value, returning 0 percent metric`
         );
-        return 0;
+        return NaN;
       } else {
         return numerMetric.value / denomMetric.value;
       }

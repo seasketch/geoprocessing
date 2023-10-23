@@ -140,6 +140,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
             if (!colConfig.metricId)
               throw new Error("Missing metricId in column config");
             // Return 0 when faced with a 'missing' metric
+            // Return 0 with a Tooltip when faced with a 'NaN' metric value
             const value = (() => {
               if (
                 metricsByClassByMetric[row.classId] &&
@@ -152,11 +153,45 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                 return 0;
               }
             })();
-            return `${
-              colConfig.valueFormatter
-                ? valueFormatter(value, colConfig.valueFormatter)
-                : value
-            } ${colConfig.valueLabel ? ` ${colConfig.valueLabel}` : ""}`;
+            const suffix = (() => {
+              if (isNaN(value)) {
+                const tooltipText =
+                  (classesByName[row.classId || "missing"]?.display ||
+                    "This feature class") +
+                  " not found in the selected planning area";
+                return (
+                  <Tooltip
+                    text={tooltipText}
+                    placement="bottom"
+                    offset={{ horizontal: 0, vertical: 5 }}
+                  >
+                    <InfoCircleFill
+                      size={14}
+                      style={{
+                        color: "#83C6E6",
+                      }}
+                    />
+                  </Tooltip>
+                );
+              } else {
+                return <></>;
+              }
+            })();
+
+            const formattedValue = (() => {
+              const finalValue = isNaN(value) ? 0 : value;
+              return colConfig.valueFormatter
+                ? valueFormatter(finalValue, colConfig.valueFormatter)
+                : finalValue;
+            })();
+
+            return (
+              <>
+                {formattedValue}
+                {colConfig.valueLabel ? ` ${colConfig.valueLabel}` : ""}
+                {suffix}
+              </>
+            );
           },
           style,
         };

@@ -426,7 +426,7 @@ describe("flattenSketchAllClass", () => {
     });
   });
 
-  test("toPercentMetric - zero denominator value", async () => {
+  test("toPercentMetric - zero denominator value produces NaN", async () => {
     const percMetrics = toPercentMetric(
       [
         createMetric({
@@ -448,7 +448,7 @@ describe("flattenSketchAllClass", () => {
       ]
     );
     percMetrics.forEach((m) => {
-      expect(m.value).toEqual(0);
+      expect(m.value).toEqual(NaN);
       expect(m.classId).toEqual("nearshore");
     });
   });

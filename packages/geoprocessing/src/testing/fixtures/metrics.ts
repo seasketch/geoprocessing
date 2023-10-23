@@ -242,11 +242,15 @@ export const categoricalClassMetrics: Metric[] = createMetrics([
   },
 ]);
 
-// Missing MadracisReef
-export const missingAndZeroMetrics: Metric[] = createMetrics([
+export const NaNPercMetrics: Metric[] = createMetrics([
   {
     classId: "Bays and Coast",
-    value: 0,
+    value: NaN,
+    metricId: categoricalMetricGroup.metricId,
+  },
+  {
+    classId: "Madracis Reef",
+    value: 0.45532444,
     metricId: categoricalMetricGroup.metricId,
   },
 ]);

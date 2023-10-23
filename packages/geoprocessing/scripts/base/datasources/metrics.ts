@@ -3,6 +3,7 @@ import path from "path";
 import { metricsSchema } from "../../../src/types";
 import { precalcConfig } from "../../../src/precalc/config";
 import { Metric } from "../../../src/types";
+import { sortMetrics, rekeyMetrics } from "../../../src/metrics/helpers";
 
 /**
  * Manage a metrics datasource
@@ -46,7 +47,7 @@ export function readMetrics(filePath: string) {
 }
 
 /**
- * Writes metrics to disk
+ * Writes metrics to disk, sorting and rekeying before writing easier diffing
  */
 export function writeMetrics(metrics: Metric[], filePath: string) {
   const safeMetrics = metricsSchema.safeParse(metrics);
@@ -57,12 +58,14 @@ export function writeMetrics(metrics: Metric[], filePath: string) {
     console.log(JSON.stringify(safeMetrics.error.issues, null, 2));
     throw new Error("Please fix or report this issue");
   } else {
-    fs.writeJSONSync(filePath, metrics, { spaces: 2 });
+    fs.writeJSONSync(filePath, sortMetrics(rekeyMetrics(metrics)), {
+      spaces: 2,
+    });
   }
 }
 
 /**
- * Creates or updates metrics on disk
+ * Creates or updates metrics on disk, sorting and rekeying before writing for easier diffing
  * @param inputMetrics - new metrics to add
  * @param matcher - old metrics to replace
  * @param filePath - path to metrics file
@@ -79,7 +82,7 @@ export async function createOrUpdateMetrics(
     metrics = metrics.filter(matcher);
   }
 
-  metrics = metrics.concat(inputMetrics);
+  metrics = sortMetrics(rekeyMetrics(metrics.concat(inputMetrics)));
   writeMetrics(metrics, filePath);
   return metrics;
 }

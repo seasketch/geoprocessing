@@ -175,7 +175,12 @@ export const isMetric = (metric: any): metric is Metric => {
  */
 export const sortMetrics = (
   metrics: Metric[],
-  sortIds: MetricDimension[] = ["metricId", "classId", "sketchId"]
+  sortIds: MetricDimension[] = [
+    "geographyId",
+    "metricId",
+    "classId",
+    "sketchId",
+  ]
 ) => {
   return metrics.sort((a, b) => {
     return sortIds.reduce((sortResult, idName) => {

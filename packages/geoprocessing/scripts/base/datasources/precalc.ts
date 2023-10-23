@@ -1,7 +1,6 @@
 import { precalcConfig } from "../../../src/precalc/config";
 import { Metric } from "../../../src/types";
 import { readMetrics, writeMetrics, createOrUpdateMetrics } from "./metrics";
-import { sortMetrics, rekeyMetrics } from "../../../src/metrics/helpers";
 
 // Extends metrics datasource
 
@@ -23,7 +22,7 @@ export function readPrecalcMetrics(filePath?: string) {
 export function writePrecalcMetrics(metrics: Metric[], filePath?: string) {
   const finalFilePath =
     filePath && filePath.length > 0 ? filePath : precalcConfig.defaultSrcPath;
-  return writeMetrics(sortMetrics(rekeyMetrics(metrics)), finalFilePath);
+  return writeMetrics(metrics, finalFilePath);
 }
 
 /** Creates or updates metrics on disk */
@@ -35,9 +34,5 @@ export async function createOrUpdatePrecalcMetrics(
   // Optional override
   const finalFilePath =
     filePath && filePath.length > 0 ? filePath : precalcConfig.defaultSrcPath;
-  return createOrUpdateMetrics(
-    sortMetrics(rekeyMetrics(metrics)),
-    matcher,
-    finalFilePath
-  );
+  return createOrUpdateMetrics(metrics, matcher, finalFilePath);
 }

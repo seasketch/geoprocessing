@@ -33,6 +33,7 @@ const contextValue = sampleSketchReportContextValue({
             updatedAt: "2022-11-17T10:02:53.645Z",
             sketchClassId: "123abc",
             id: "abc123",
+            userAttributes: [],
           },
           geometry: null,
         },

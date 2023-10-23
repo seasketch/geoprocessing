@@ -1,6 +1,7 @@
 import { precalcConfig } from "../../../src/precalc/config";
 import { Metric } from "../../../src/types";
 import { readMetrics, writeMetrics, createOrUpdateMetrics } from "./metrics";
+import { sortMetrics, rekeyMetrics } from "../../../src/metrics/helpers";
 
 // Extends metrics datasource
 
@@ -17,12 +18,12 @@ export function readPrecalcMetrics(filePath?: string) {
 }
 
 /**
- * Writes metrics to disk
+ * Writes metrics to disk, sorted and rekeyed for consistent ordering
  */
 export function writePrecalcMetrics(metrics: Metric[], filePath?: string) {
   const finalFilePath =
     filePath && filePath.length > 0 ? filePath : precalcConfig.defaultSrcPath;
-  return writeMetrics(metrics, finalFilePath);
+  return writeMetrics(sortMetrics(rekeyMetrics(metrics)), finalFilePath);
 }
 
 /** Creates or updates metrics on disk */

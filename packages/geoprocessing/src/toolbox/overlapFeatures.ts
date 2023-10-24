@@ -89,13 +89,14 @@ export async function overlapFeatures(
 
     // If sketch overlap, use union
     const sketchUnion = clip(sketchColl, "union");
-    if (!sketchUnion) throw new Error("overlapFeatures - something went wrong");
-    // Null sketch union = sketch not in geography, so area=0
+    // If union is null, then sketch doesn't overlap with features, so set area to 0
     const sketchUnionArea = sketchUnion ? area(sketchUnion) : 0;
     isOverlap = sketchUnionArea < sketchArea;
 
     const finalSketches =
-      sketches.length > 1 && isOverlap ? flatten(sketchUnion) : sketchColl;
+      sketches.length > 1 && isOverlap && sketchUnion
+        ? flatten(sketchUnion)
+        : sketchColl;
 
     if (newOptions.operation === "sum") {
       featureIndices.forEach((index) => {

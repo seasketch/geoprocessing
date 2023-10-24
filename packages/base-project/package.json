@@ -49,6 +49,7 @@
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-clip": "^6.5.0",
     "@turf/boolean-valid": "^6.5.0",
+    "@turf/simplify": "^6.5.0",
     "react-i18next": "^12.2.0"
   },
   "devDependencies": {

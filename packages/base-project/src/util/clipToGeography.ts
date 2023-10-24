@@ -12,7 +12,11 @@ import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import { featureCollection } from "@turf/helpers";
 import bbox from "@turf/bbox";
 import project from "../../project";
-import { clipMultiMerge } from "@seasketch/geoprocessing";
+import {
+  clipMultiMerge,
+  zeroSketchArray,
+  zeroPolygon,
+} from "@seasketch/geoprocessing";
 import simplify from "@turf/simplify";
 
 /**
@@ -47,11 +51,27 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
     }
   );
 
-  let finalsketches: Sketch<G>[] = [];
-  if (geogFeatures.length === 0 || !geogFeatures[0]) {
-    throw new Error(
-      `Geography ${geography.geographyId} has no features, check your datasource.`
+  let finalSketches: Sketch<G>[] = [];
+
+  if (!geogFeatures[0]) {
+    console.log(
+      sketch.properties.name,
+      "has no overlap with geography",
+      geography.geographyId
     );
+
+    finalSketches = zeroSketchArray(toSketchArray(sketch));
+
+    if (isSketchCollection(sketch)) {
+      return {
+        properties: sketch.properties,
+        bbox: box,
+        type: "FeatureCollection",
+        features: finalSketches,
+      };
+    } else {
+      return finalSketches[0];
+    }
   } else {
     const sketches = toSketchArray(sketch);
     sketches.forEach((sketch) => {
@@ -64,16 +84,16 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
         console.log(
           `Sketch ${sketch.id} does not intersect with geography ${geography.geographyId}`
         );
-
       if (intersection) {
         if (simplifyOptions) {
           sketch.geometry = simplify(intersection.geometry, simplifyOptions);
         } else {
           sketch.geometry = intersection.geometry;
         }
+      } else {
+        sketch.geometry = zeroPolygon() as G;
       }
-
-      finalsketches.push(sketch);
+      finalSketches.push(sketch);
     });
   }
 
@@ -82,9 +102,9 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
       properties: sketch.properties,
       bbox: box,
       type: "FeatureCollection",
-      features: finalsketches,
+      features: finalSketches,
     };
   } else {
-    return finalsketches[0];
+    return finalSketches[0];
   }
 }

@@ -30,8 +30,8 @@ import cloneDeep from "lodash/cloneDeep";
 export const MetricProperties = [
   "geographyId",
   "metricId",
-  "sketchId",
   "classId",
+  "sketchId",
   "groupId",
   "value",
   "extra",

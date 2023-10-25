@@ -13,10 +13,12 @@ import {
   isInternalVectorDatasource,
   isExternalVectorDatasource,
   isPolygonFeatureArray,
+  getFirstFromParam,
 } from "@seasketch/geoprocessing";
 import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import bbox from "@turf/bbox";
 import project from "../../project";
+import { clipToGeography } from "../util/clipToGeography";
 
 const metricGroup = project.getMetricGroup("boundaryAreaOverlap");
 
@@ -30,7 +32,12 @@ export async function boundaryAreaOverlap(
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
   extraParams: ExtraParams = {}
 ): Promise<ReportResult> {
-  const sketchBox = sketch.bbox || bbox(sketch);
+  const geographyId = getFirstFromParam("geographyIds", extraParams);
+  const curGeography = project.getGeographyById(geographyId, {
+    fallbackGroup: "default-boundary",
+  });
+  const clippedSketch = await clipToGeography(sketch, curGeography);
+  const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   // Fetch boundary features indexed by classId
   const polysByBoundary = (
@@ -76,7 +83,7 @@ export async function boundaryAreaOverlap(
           const overlapResult = await overlapFeatures(
             metricGroup.metricId,
             polysByBoundary[curClass.classId],
-            sketch
+            clippedSketch
           );
           return overlapResult.map(
             (metric): Metric => ({

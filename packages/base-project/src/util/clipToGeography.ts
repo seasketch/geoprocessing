@@ -41,7 +41,7 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
 
   const box = sketch.bbox || bbox(sketch);
   // ToDo: need to support external geography too, can we borrow logic from precalc
-  const ds = project.getInternalVectorDatasourceById(geography.datasourceId);
+  const ds = project.getVectorDatasourceById(geography.datasourceId);
   // ToDo - accept array of geographies and union all their features, then intersect with sketch
   const geogFeatures = await getFeatures<Feature<Polygon | MultiPolygon>>(
     ds,

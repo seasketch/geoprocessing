@@ -19,6 +19,8 @@ import {
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
   importVectorDatasourceOptionsSchema,
+  rasterDatasourceSchema,
+  RasterDatasource,
 } from "../types";
 import { DataClass } from "../types";
 import path from "path";
@@ -69,6 +71,13 @@ export const isInternalVectorDatasource = (
   return internalVectorDatasourceSchema.safeParse(ds).success;
 };
 
+export const isRasterDatasource = (
+  /** RasterDatasource object */
+  ds: any
+): ds is RasterDatasource => {
+  return rasterDatasourceSchema.safeParse(ds).success;
+};
+
 export const isInternalRasterDatasource = (
   /** InternalRasterDatasource object */
   ds: any
@@ -111,7 +120,7 @@ export const isImportVectorDatasourceConfig = (
   return importVectorDatasourceOptionsSchema.safeParse(ds).success;
 };
 
-/** find and return datasource from passed datasources, otherwise reads from disk */
+/** find and return datasource from passed datasources */
 export const getDatasourceById = (
   datasourceId: string,
   datasources: Datasource[]
@@ -124,7 +133,20 @@ export const getDatasourceById = (
   }
 };
 
-/** find and return external vector datasource from passed datasources, otherwise reads from disk */
+/** find and return vector datasource (internal or external) from passed datasources */
+export const getVectorDatasourceById = (
+  datasourceId: string,
+  datasources: Datasource[]
+): VectorDatasource => {
+  const ds = getDatasourceById(datasourceId, datasources);
+  if (isVectorDatasource(ds)) {
+    return ds;
+  } else {
+    throw new Error(`Vector datasource not found - ${datasourceId}`);
+  }
+};
+
+/** find and return external vector datasource from passed datasources */
 export const getExternalVectorDatasourceById = (
   datasourceId: string,
   datasources: Datasource[]
@@ -137,7 +159,7 @@ export const getExternalVectorDatasourceById = (
   }
 };
 
-/** find and return internal vector datasource from passed datasources, otherwise reads from disk */
+/** find and return internal vector datasource from passed datasources */
 export const getInternalVectorDatasourceById = (
   datasourceId: string,
   datasources: Datasource[]
@@ -146,11 +168,24 @@ export const getInternalVectorDatasourceById = (
   if (isInternalVectorDatasource(ds)) {
     return ds;
   } else {
-    throw new Error(`Internal Vector datasource not found -${datasourceId}`);
+    throw new Error(`Internal Vector datasource not found - ${datasourceId}`);
   }
 };
 
-/** find and return external raster datasource from passed datasources, otherwise reads from disk */
+/** find and return raster datasource (internal or external) from passed datasources */
+export const getRasterDatasourceById = (
+  datasourceId: string,
+  datasources: Datasource[]
+): RasterDatasource => {
+  const ds = getDatasourceById(datasourceId, datasources);
+  if (isRasterDatasource(ds)) {
+    return ds;
+  } else {
+    throw new Error(`Raster datasource not found - ${datasourceId}`);
+  }
+};
+
+/** find and return external raster datasource from passed datasources */
 export const getExternalRasterDatasourceById = (
   datasourceId: string,
   datasources: Datasource[]
@@ -163,7 +198,7 @@ export const getExternalRasterDatasourceById = (
   }
 };
 
-/** find and return internal datasource from passed datasources, otherwise reads from disk */
+/** find and return internal datasource from passed datasources */
 export const getInternalRasterDatasourceById = (
   datasourceId: string,
   datasources: Datasource[]

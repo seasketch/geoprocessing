@@ -6,6 +6,7 @@ import {
   Stats,
   InternalRasterDatasource,
   getDatasourceById,
+  getVectorDatasourceById,
   getInternalRasterDatasourceById,
   getInternalVectorDatasourceById,
   getExternalVectorDatasourceById,
@@ -41,6 +42,11 @@ import {
   isImportVectorDatasourceConfig,
   isImportRasterDatasourceConfig,
   SupportedFormats,
+  VectorDatasource,
+  RasterDatasource,
+  getRasterDatasourceById,
+  ExternalRasterDatasource,
+  getExternalRasterDatasourceById,
 } from "..";
 
 export interface ProjectClientConfig {
@@ -62,13 +68,18 @@ interface DataBucketUrlOptions {
 
 export interface ProjectClientInterface {
   getDatasourceById(datasourceId: string): Datasource;
+  getVectorDatasourceById(datasourceId: string): VectorDatasource;
+  getRasterDatasourceById(datasourceId: string): RasterDatasource;
   dataBucketUrl(options: DataBucketUrlOptions): string;
   getDatasourceUrl(
     ds:
       | Datasource
+      | VectorDatasource
       | InternalVectorDatasource
-      | InternalRasterDatasource
       | ExternalVectorDatasource
+      | RasterDatasource
+      | ExternalRasterDatasource
+      | InternalRasterDatasource
       | ImportRasterDatasourceConfig
       | ImportVectorDatasourceConfig
   );
@@ -164,9 +175,12 @@ export class ProjectClientBase implements ProjectClientInterface {
   public getDatasourceUrl(
     ds:
       | Datasource
+      | VectorDatasource
       | InternalVectorDatasource
-      | InternalRasterDatasource
       | ExternalVectorDatasource
+      | RasterDatasource
+      | ExternalRasterDatasource
+      | InternalRasterDatasource
       | ImportRasterDatasourceConfig
       | ImportVectorDatasourceConfig,
     options: {
@@ -233,6 +247,11 @@ export class ProjectClientBase implements ProjectClientInterface {
     return getDatasourceById(datasourceId, this._datasources);
   }
 
+  /** Returns VectorDatasource given datasourceId, throws if not found */
+  public getVectorDatasourceById(datasourceId: string): VectorDatasource {
+    return getVectorDatasourceById(datasourceId, this._datasources);
+  }
+
   /** Returns InternalVectorDatasource given datasourceId, throws if not found */
   public getInternalVectorDatasourceById(
     datasourceId: string
@@ -247,11 +266,23 @@ export class ProjectClientBase implements ProjectClientInterface {
     return getExternalVectorDatasourceById(datasourceId, this._datasources);
   }
 
+  /** Returns RasterDatasource given datasourceId, throws if not found */
+  public getRasterDatasourceById(datasourceId: string): RasterDatasource {
+    return getRasterDatasourceById(datasourceId, this._datasources);
+  }
+
   /** Returns InternalRasterDatasource given datasourceId, throws if not found */
   public getInternalRasterDatasourceById(
     datasourceId: string
   ): InternalRasterDatasource {
     return getInternalRasterDatasourceById(datasourceId, this._datasources);
+  }
+
+  /** Returns ExternalRasterDatasource given datasourceId, throws if not found */
+  public getExternalRasterDatasourceById(
+    datasourceId: string
+  ): ExternalRasterDatasource {
+    return getExternalRasterDatasourceById(datasourceId, this._datasources);
   }
 
   // GEOGRAPHIES //

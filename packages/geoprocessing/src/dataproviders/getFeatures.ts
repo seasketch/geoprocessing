@@ -9,6 +9,7 @@ import {
   InternalVectorDatasource,
   Feature,
   Geometry,
+  VectorDatasource,
 } from "../types";
 import { DatasourceOptions } from "../types/dataProcessor";
 
@@ -16,7 +17,10 @@ import { DatasourceOptions } from "../types/dataProcessor";
  * Returns features for a variety of vector datasources and formats, with additional filter options
  */
 export async function getFeatures<F extends Feature<Geometry>>(
-  datasource: InternalVectorDatasource | ExternalVectorDatasource,
+  datasource:
+    | InternalVectorDatasource
+    | ExternalVectorDatasource
+    | VectorDatasource,
   /** url of datasource */
   url: string,
   options: DatasourceOptions = {}

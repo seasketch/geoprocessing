@@ -1,4 +1,4 @@
 # Command to produce precalculations for eez_land_union dataset from Marine Regions
 # Requires you to first download the eez_land_union dataset from marineregions.org and unzip the shapefile
 
-npx tsx mr-eez.ts
+npx tsx mr-eez-precalc.ts

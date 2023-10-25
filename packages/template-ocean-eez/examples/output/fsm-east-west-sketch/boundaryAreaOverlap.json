@@ -1,12 +1,12 @@
 {
   "metrics": [
     {
-      "metricId": "boundaryAreaOverlap",
-      "sketchId": "abc123",
-      "classId": "eez",
-      "groupId": null,
       "geographyId": null,
-      "value": 75066985761.1892,
+      "metricId": "boundaryAreaOverlap",
+      "classId": "eez",
+      "sketchId": "abc123",
+      "groupId": null,
+      "value": 74895793459.37933,
       "extra": {
         "sketchName": "fsm-east-west-sketch"
       }

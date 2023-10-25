@@ -1,12 +1,12 @@
 {
   "metrics": [
     {
-      "metricId": "boundaryAreaOverlap",
-      "sketchId": "abc123",
-      "classId": "eez",
-      "groupId": null,
       "geographyId": null,
-      "value": 1061875032.323581,
+      "metricId": "boundaryAreaOverlap",
+      "classId": "eez",
+      "sketchId": "abc123",
+      "groupId": null,
+      "value": 1054868449.307098,
       "extra": {
         "sketchName": "fsm-land-to-int-sketch"
       }

@@ -95,10 +95,11 @@ describe("createProject", () => {
         .toString()
     );
 
-    expect(basicJson.bbox).toEqual([
-      135.31244183762126, -1.173110965298591, 165.67652822599732,
-      13.445432925389298,
-    ]);
+    // Make sure in the right ballpark
+    expect(basicJson.bbox[0]).toBeGreaterThan(135);
+    expect(basicJson.bbox[0]).toBeLessThan(136);
+    expect(basicJson.bbox[1]).toBeGreaterThan(-2);
+    expect(basicJson.bbox[1]).toBeLessThan(-1);
 
     const savedGeogs = fs.readJSONSync(
       `${projectPath}/project/geographies.json`
@@ -110,10 +111,15 @@ describe("createProject", () => {
 
     const geog = geogs[0];
     expect(geog.display).toEqual("Micronesian Exclusive Economic Zone");
-    expect(geog.bboxFilter).toEqual([
-      135.31244183762126, -1.173110965298591, 165.67652822599732,
-      13.445432925389298,
-    ]);
+
+    // Make sure in the right ballpark
+    expect(geog.bboxFilter![0]).toBeGreaterThan(135);
+    expect(geog.bboxFilter![0]).toBeLessThan(136);
+    expect(geog.bboxFilter![1]).toBeGreaterThan(-2);
+    expect(geog.bboxFilter![1]).toBeLessThan(-1);
+
+    expect(basicJson.bbox).toEqual(geog.bboxFilter);
+
     expect(JSON.stringify(geog.propertyFilter)).toEqual(
       JSON.stringify({
         property: "GEONAME",

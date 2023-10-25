@@ -279,7 +279,7 @@ describe("precalcRasterDatasource", () => {
     const dsFilename = "datasources_precalc_raster_test_8.json";
     const dsFilePath = path.join(dstPath, dsFilename);
     const rasterDatasourceId = "samoa_benthic_reef_sand8";
-    const geogDatasourceId = "global-eez-mr-v11";
+    const geogDatasourceId = "global-eez-mr-v12";
     const geogFilename = "geographies_precalc_raster_test_8.json";
     const geogFilePath = path.join(dstPath, geogFilename);
     const precalcFilename = "precalc_raster_test_8.json";
@@ -359,7 +359,7 @@ describe("precalcRasterDatasource", () => {
         property: "GEONAME",
         values: [
           "Samoan Exclusive Economic Zone",
-          "American Samoa Exclusive Economic Zone",
+          "United States Exclusive Economic Zone (American Samoa)",
         ], // Should include two polygons
       },
       bboxFilter: [
@@ -506,7 +506,7 @@ describe("precalcRasterDatasource", () => {
         property: "GEONAME",
         values: [
           "Samoan Exclusive Economic Zone",
-          "American Samoa Exclusive Economic Zone",
+          "United States Exclusive Economic Zone (American Samoa)",
         ], // Should include two polygons
       },
       bboxFilter: [

@@ -229,7 +229,7 @@ export async function createProject(
   if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
     spinner.start("updating geographies.json");
 
-    const globalEezDS = "global-eez-mr-v11";
+    const globalEezDS = "global-eez-mr-v12";
     const eezDs = globalDatasources.find(
       (ds) => ds.datasourceId === globalEezDS
     );
@@ -239,7 +239,7 @@ export async function createProject(
         const geos: Geography[] = [
           {
             geographyId: "eez",
-            datasourceId: "global-eez-mr-v11",
+            datasourceId: "global-eez-mr-v12",
             display: metadata.planningAreaName
               ? metadata.planningAreaName
               : metadata.planningAreaId,

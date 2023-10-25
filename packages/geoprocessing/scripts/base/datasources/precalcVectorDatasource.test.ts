@@ -672,7 +672,7 @@ describe("precalcDatasources", () => {
       const dsFilename = "datasources_precalc_vector_test_6.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const internalDatasourceId = "samoa-eez-cross";
-      const externalDatasourceId = "global-eez-mr-v11";
+      const externalDatasourceId = "global-eez-mr-v12";
       const geogFilename = "geographies_precalc_vector_test_6.json";
       const geogFilePath = path.join(dstPath, geogFilename);
       const precalcFilename = "precalc_vector_test_6.json";
@@ -749,7 +749,7 @@ describe("precalcDatasources", () => {
           property: "GEONAME",
           values: [
             "Samoan Exclusive Economic Zone",
-            "American Samoa Exclusive Economic Zone",
+            "United States Exclusive Economic Zone (American Samoa)",
           ], // Should include two polygons
         },
         bboxFilter: [
@@ -817,7 +817,7 @@ describe("precalcDatasources", () => {
       const dsFilename = "datasources_precalc_false_test.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const internalDatasourceId = "samoa-eez-cross";
-      const externalDatasourceId = "global-eez-mr-v11";
+      const externalDatasourceId = "global-eez-mr-v12";
       const geogFilename = "geographies_precalc_false_test.json";
       const geogFilePath = path.join(dstPath, geogFilename);
       const precalcFilename = "precalc_false_test.json";

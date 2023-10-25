@@ -1,6 +1,6 @@
 [{
   "geographyId": "eez",
-  "datasourceId": "global-eez-mr-v11",
+  "datasourceId": "global-eez-mr-v12",
   "geographyProperty": "GEONAME",
   "propertyValue": "Micronesian Exclusive Economic Zone",
   "display": "Micronesia",

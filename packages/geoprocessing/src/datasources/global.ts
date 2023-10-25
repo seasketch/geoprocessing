@@ -43,7 +43,7 @@ export const globalDatasources: Datasource[] = [
     precalc: false,
   },
   {
-    datasourceId: "global-eez-mr-v11",
+    datasourceId: "global-eez-mr-v12",
     geo_type: "vector",
     formats: ["fgb", "json"],
     metadata: {
@@ -55,7 +55,7 @@ export const globalDatasources: Datasource[] = [
       publishLink: "https://marineregions.org/",
     },
     classKeys: [],
-    url: "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-mr-v11.fgb",
+    url: "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-mr-v12.fgb",
     idProperty: "GEONAME",
     nameProperty: "GEONAME",
     precalc: false,

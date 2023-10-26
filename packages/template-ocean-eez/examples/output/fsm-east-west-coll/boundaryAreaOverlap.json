@@ -1,23 +1,23 @@
 {
   "metrics": [
     {
-      "geographyId": null,
+      "geographyId": "eez",
       "metricId": "boundaryAreaOverlap",
       "classId": "eez",
       "sketchId": "abc123",
       "groupId": null,
-      "value": 74896353190.97168,
+      "value": 74850547428.42078,
       "extra": {
         "sketchName": "fsm-east-west"
       }
     },
     {
-      "geographyId": null,
+      "geographyId": "eez",
       "metricId": "boundaryAreaOverlap",
       "classId": "eez",
       "sketchId": "fsm-east-west-coll",
       "groupId": null,
-      "value": 74896353190.97168,
+      "value": 74850547428.42078,
       "extra": {
         "sketchName": "fsm-east-west-coll",
         "isCollection": true

@@ -58,7 +58,7 @@ export async function boundaryAreaOverlap(
         const url = project.getDatasourceUrl(ds);
         const polys = await getFeatures(ds, url, {
           propertyFilter: {
-            property: "UNION",
+            property: "GEONAME",
             values: [project.basic.planningAreaId],
           },
           bbox: sketchBox,

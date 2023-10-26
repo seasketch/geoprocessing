@@ -89,6 +89,7 @@ export async function boundaryAreaOverlap(
             (metric): Metric => ({
               ...metric,
               classId: curClass.classId,
+              geographyId: curGeography.geographyId,
             })
           );
         })

@@ -10,8 +10,12 @@ import { getProjectClient } from "../base/project/projectClient";
 
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
-const numDs = projectClient.datasources.length;
-const numGeos = projectClient.geographies.length;
+const numDs = projectClient.datasources.filter(
+  (d) => d.precalc === true
+).length;
+const numGeos = projectClient.geographies.filter(
+  (g) => g.precalc === true
+).length;
 
 // Wrap in an IIFE to use async/await
 void (async function () {

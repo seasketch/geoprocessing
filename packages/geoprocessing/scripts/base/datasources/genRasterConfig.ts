@@ -1,43 +1,29 @@
 import {
   ImportRasterDatasourceOptions,
   ImportRasterDatasourceConfig,
+  RasterDatasource,
 } from "../../../src/types";
 import { datasourceConfig } from "../../../src/datasources";
 
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
+import { hasOwnProperty } from "../../../src";
 
 /** Takes import options and creates full import config */
 export function genRasterConfig<C extends ProjectClientBase>(
   projectClient: C,
-  options: ImportRasterDatasourceOptions,
+  options: ImportRasterDatasourceOptions | RasterDatasource,
   newDstPath?: string
 ): ImportRasterDatasourceConfig {
-  let {
-    geo_type,
-    src,
-    datasourceId,
-    band,
-    formats = datasourceConfig.importDefaultRasterFormats,
-    noDataValue,
-    measurementType,
-    precalc,
-  } = options;
-
-  if (!band) band = 0;
-
-  const config: ImportRasterDatasourceConfig = {
-    geo_type,
-    src,
+  return {
+    ...options,
+    src:
+      hasOwnProperty(options, "src") && typeof options.src === "string"
+        ? options.src
+        : "",
     dstPath: newDstPath || datasourceConfig.defaultDstPath,
-    band,
-    datasourceId,
+    band: options.band || 0,
     package: projectClient.package,
     gp: projectClient.geoprocessing,
-    formats,
-    noDataValue,
-    measurementType,
-    precalc,
+    formats: options.formats || datasourceConfig.importDefaultRasterFormats,
   };
-
-  return config;
 }

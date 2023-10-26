@@ -29,18 +29,6 @@ import Translator from "../components/TranslatorAsync";
 import { Trans, useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
 
-// Hard code total area of eez
-const boundaryTotalMetrics: Metric[] = [
-  {
-    classId: "eez",
-    metricId: "boundaryAreaOverlap",
-    sketchId: null,
-    groupId: null,
-    geographyId: null,
-    value: 3032525677797.563,
-  },
-];
-
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
 const TableStyled = styled(ReportTableStyled)`
@@ -76,10 +64,19 @@ const TableStyled = styled(ReportTableStyled)`
   }
 `;
 
-export const SizeCard = () => {
+export const SizeCard: React.FunctionComponent<GeoProp> = (props) => {
   const [{ isCollection }] = useSketchProperties();
   const { t } = useTranslation();
+
+  const curGeography = project.getGeographyById(props.geographyId, {
+    fallbackGroup: "default-boundary",
+  });
   const metricGroup = project.getMetricGroup("boundaryAreaOverlap", t);
+  const precalcMetrics = project.getPrecalcMetrics(
+    metricGroup,
+    "area",
+    curGeography.geographyId
+  );
 
   const notFoundString = t("Results not found");
 
@@ -119,10 +116,10 @@ export const SizeCard = () => {
                   targets for each boundary.
                 </Trans>
               </p>
-              {genSingleSizeTable(data, metricGroup, t)}
+              {genSingleSizeTable(data, precalcMetrics, metricGroup, t)}
               {isCollection && (
                 <Collapse title={t("Show by MPA")}>
-                  {genNetworkSizeTable(data, metricGroup, t)}
+                  {genNetworkSizeTable(data, precalcMetrics, metricGroup, t)}
                 </Collapse>
               )}
               <Collapse title={t("Learn more")}>
@@ -162,6 +159,7 @@ export const SizeCard = () => {
 
 const genSingleSizeTable = (
   data: ReportResult,
+  precalcMetrics: Metric[],
   mg: MetricGroup,
   t: TFunction
 ) => {
@@ -180,7 +178,7 @@ const genSingleSizeTable = (
   const finalMetrics = sortMetricsDisplayOrder(
     [
       ...singleMetrics,
-      ...toPercentMetric(singleMetrics, boundaryTotalMetrics, {
+      ...toPercentMetric(singleMetrics, precalcMetrics, {
         metricIdOverride: project.getMetricGroupPercId(mg),
       }),
     ],
@@ -257,6 +255,7 @@ const genSingleSizeTable = (
 
 const genNetworkSizeTable = (
   data: ReportResult,
+  precalcMetrics: Metric[],
   mg: MetricGroup,
   t: TFunction
 ) => {
@@ -268,7 +267,7 @@ const genNetworkSizeTable = (
   );
   const finalMetrics = [
     ...sketchMetrics,
-    ...toPercentMetric(sketchMetrics, boundaryTotalMetrics, {
+    ...toPercentMetric(sketchMetrics, precalcMetrics, {
       metricIdOverride: project.getMetricGroupPercId(mg),
     }),
   ];

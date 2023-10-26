@@ -8,7 +8,6 @@ import {
 } from "../../../src/types";
 import {
   createMetric,
-  InternalRasterDatasource,
   getSum,
   getHistogram,
   bboxOverlap,
@@ -31,7 +30,7 @@ import { getGeographyFeatures } from "../geographies/helpers";
  */
 export async function precalcRasterDatasource<C extends ProjectClientBase>(
   projectClient: C,
-  datasource: InternalRasterDatasource,
+  datasource: RasterDatasource,
   /** Input geography */
   geography: Geography,
   /** Geography datasource to get geography from */

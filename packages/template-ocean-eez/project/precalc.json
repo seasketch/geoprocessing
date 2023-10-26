@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "geographyId": "eez",
+    "metricId": "area",
+    "classId": "global-eez-mr-v12-total",
+    "sketchId": null,
+    "groupId": null,
+    "value": 3027294358254.342
+  },
+  {
+    "geographyId": "eez",
+    "metricId": "count",
+    "classId": "global-eez-mr-v12-total",
+    "sketchId": null,
+    "groupId": null,
+    "value": 1
+  }
+]

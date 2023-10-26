@@ -9,7 +9,9 @@ import {
   GeoprocessingJsonConfig,
   geographiesSchema,
   geographySchema,
+  datasourcesSchema,
 } from "../../src/types";
+import { isVectorDatasource } from "../../src/datasources";
 
 const rootPath = `${__dirname}/../__test__`;
 
@@ -105,11 +107,11 @@ describe("createProject", () => {
       `${projectPath}/project/geographies.json`
     );
     const geogs = geographiesSchema.parse(savedGeogs);
-    console.log(JSON.stringify(geogs));
+    // console.log(JSON.stringify(geogs));
     expect(Array.isArray(geogs));
-    expect(geogs.length).toEqual(1);
+    expect(geogs.length).toEqual(2); // world and eez
 
-    const geog = geogs[0];
+    const geog = geogs[1]; // eez should be the second geography
     expect(geog.display).toEqual("Micronesian Exclusive Economic Zone");
 
     // Make sure in the right ballpark
@@ -126,6 +128,20 @@ describe("createProject", () => {
         values: ["Micronesian Exclusive Economic Zone"],
       })
     );
+
+    const savedDatasources = fs.readJSONSync(
+      `${projectPath}/project/datasources.json`
+    );
+    const ds = datasourcesSchema.parse(savedDatasources);
+    const globalEezDS = "global-eez-mr-v12";
+    const eezDs = ds.find((ds) => ds.datasourceId === globalEezDS);
+    // expect(isVectorDatasource(ds)).toBe(true);
+    expect(eezDs).toBeTruthy();
+    if (eezDs && isVectorDatasource(ds)) {
+      expect(eezDs.precalc).toBe(true);
+      // expect(eezDs?.propertyFilter).toBeTruthy();
+      // expect(eezDs?.bboxFilter).toBeTruthy();
+    }
   }, 120000);
 
   it("createProject - should create project with template", async () => {

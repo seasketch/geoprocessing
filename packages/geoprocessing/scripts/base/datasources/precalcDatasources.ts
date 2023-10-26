@@ -9,6 +9,7 @@ import {
   firstMatching,
   isInternalRasterDatasource,
   isInternalVectorDatasource,
+  isRasterDatasource,
   isVectorDatasource,
   isinternalDatasource,
 } from "../../../src/datasources";
@@ -71,19 +72,15 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   const vectorDatasources: VectorDatasource[] = (await readDatasources(
     newDatasourcePath
   ).filter((ds) => isVectorDatasource(ds))) as VectorDatasource[];
-  const internalDatasources = cloneDeep(
-    await readDatasources(newDatasourcePath)
-  ).filter(
-    (ds) => isinternalDatasource(ds) // Only internal datasources currently supported for precalc
-  );
+  const datasources = cloneDeep(await readDatasources(newDatasourcePath));
   // Start with no datasources to precalc.  Matcher can specify all (*) or some
   let matchingDatasources: Datasource[] = [];
 
   if (datasourceMatcher && datasourceMatcher.length > 0) {
     if (datasourceMatcher.includes("*")) {
-      matchingDatasources = cloneDeep(internalDatasources);
+      matchingDatasources = cloneDeep(datasources);
     } else {
-      matchingDatasources = cloneDeep(internalDatasources).filter((ds) =>
+      matchingDatasources = cloneDeep(datasources).filter((ds) =>
         datasourceMatcher.includes(ds.datasourceId)
       );
     }
@@ -97,7 +94,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   let processed = {}; // Track processed datasource/geography combinations to avoid duplicates
 
   // console.log("vector (geog) datasources", vectorDatasources);
-  // console.log("internal datasources", internalDatasources);
+  // console.log("datasources", datasources);
   // console.log("matching datasources", matchingDatasources);
   // console.log("all geographies", allGeographies);
   // console.log("matching geographies", matchingGeographies);
@@ -152,7 +149,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 
   // Also run precalc on matching subset of geographies for all datasources, for completeness
   for (const geog of matchingGeographies) {
-    for (const ds of internalDatasources) {
+    for (const ds of datasources) {
       if (geog.precalc === false || ds.precalc === false) {
         console.log(
           `Precalc disabled for datasource ${ds.datasourceId} + geography ${geog.geographyId}`
@@ -217,7 +214,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 }
 
 /**
- * Precalculate metrics for internal vector/raster datasource for given geography
+ * Precalculate metrics for datasource for given geography
  */
 export const precalcMetrics = async (
   projectClient: ProjectClientBase,
@@ -230,11 +227,11 @@ export const precalcMetrics = async (
 
   // precalc if possible. If external datasource, then return nothing
   const curMetrics = await (async () => {
-    if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
+    if (isVectorDatasource(ds) && ds.geo_type === "vector") {
       return await precalcVectorDatasource(projectClient, ds, geog, geogDs, {
         newDstPath,
       });
-    } else if (isInternalRasterDatasource(ds) && ds.geo_type === "raster") {
+    } else if (isRasterDatasource(ds) && ds.geo_type === "raster") {
       return await precalcRasterDatasource(projectClient, ds, geog, geogDs, {
         newDstPath,
         port,

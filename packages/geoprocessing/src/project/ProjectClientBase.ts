@@ -29,6 +29,7 @@ import {
   getFlatGeobufFilename,
   ExternalVectorDatasource,
   isExternalVectorDatasource,
+  isExternalRasterDatasource,
   isinternalDatasource,
   isExternalDatasource,
   Geography,
@@ -228,7 +229,10 @@ export class ProjectClientBase implements ProjectClientInterface {
         throw new Error(
           `getDatasourceUrl: format not found for datasource ${ds.datasourceId}`
         );
-    } else if (isExternalVectorDatasource(ds)) {
+    } else if (
+      isExternalVectorDatasource(ds) ||
+      isExternalRasterDatasource(ds)
+    ) {
       if (ds.url) return ds.url;
       else
         throw new Error(

@@ -57,10 +57,6 @@ export async function boundaryAreaOverlap(
         // Fetch only the features that overlap the bounding box of the sketch
         const url = project.getDatasourceUrl(ds);
         const polys = await getFeatures(ds, url, {
-          propertyFilter: {
-            property: "GEONAME",
-            values: [project.basic.planningAreaId],
-          },
           bbox: sketchBox,
         });
         if (!isPolygonFeatureArray(polys)) {

@@ -64,11 +64,11 @@ const TableStyled = styled(ReportTableStyled)`
   }
 `;
 
-export interface GeoProp {
+export interface GeogProp {
   geographyId: string;
 }
 
-export const SizeCard: React.FunctionComponent<GeoProp> = (props) => {
+export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
   const [{ isCollection }] = useSketchProperties();
   const { t } = useTranslation();
 

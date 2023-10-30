@@ -27,5 +27,9 @@ import fs from "fs-extra";
     });
   });
 
+  project.geographies.forEach((geography) => {
+    extraTerms[geography.display] = geography.display;
+  });
+
   fs.writeJSONSync(`src/i18n/extraTerms.json`, extraTerms, { spaces: 2 });
 })();

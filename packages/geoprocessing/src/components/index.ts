@@ -34,6 +34,7 @@ export * from "./Toolbar";
 export * from "./ToolbarCard";
 export * from "./VerticalSpacer";
 export * from "./Tooltip";
+export * from "./GeographySwitcher";
 
 /** Other Modules */
 export * from "../rbcs/components";

@@ -65,7 +65,7 @@ export function createI18nAsyncInstance(
               `Warning: failed to find base lang resource.  If this is not a gp project, then this is expected.`
             );
           }
-          console.log("baseLangResources", baseLangResources);
+          //console.log("baseLangResources", baseLangResources);
 
           let langResources = {};
           if (langPath !== undefined) {
@@ -75,24 +75,18 @@ export function createI18nAsyncInstance(
               }/${namespace}.json`
             );
           }
-          console.log("langResources", langResources);
+          //console.log("langResources", langResources);
 
           // Return merged translations
-          if (defaultLang) {
-            // merge in plurals if english, because extractor leaves them blank, so they are managed specially
-            console.log("hasDefaultLang");
-            console.log("baseLangResources", baseLangResources);
-            console.log("langResources", langResources);
-            console.log("extraTerms", extraTerms);
+          if (isDefault) {
+            // merge in extraTerms if english
             callback(null, {
               ...baseLangResources,
               ...langResources,
               ...extraTerms,
             });
           } else {
-            console.log("noDefaultLang");
-            console.log("baseLangResources", baseLangResources);
-            console.log("langResources", langResources);
+            // otherwise extra terms should already be translated in langResources
             callback(null, {
               ...baseLangResources,
               ...langResources,

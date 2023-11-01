@@ -334,6 +334,14 @@ export class ProjectClientBase implements ProjectClientInterface {
     );
   }
 
+  /**
+   * @param group the name of the geography group
+   * @returns geographies with group name assigned
+   */
+  public getGeographyByGroup(group: string): Geography[] {
+    return this._geographies.filter((g) => g.groups?.includes(group));
+  }
+
   // OBJECTIVES //
 
   /** Returns Objective given objectiveId */

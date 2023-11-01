@@ -28,7 +28,7 @@ export function writePrecalcMetrics(metrics: Metric[], filePath?: string) {
 /** Creates or updates metrics on disk */
 export async function createOrUpdatePrecalcMetrics(
   metrics: Metric[],
-  matcher: (m: Metric) => boolean,
+  matcher?: (m: Metric) => boolean,
   filePath?: string
 ): Promise<Metric[]> {
   // Optional override

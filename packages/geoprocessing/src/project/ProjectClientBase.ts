@@ -386,69 +386,78 @@ export class ProjectClientBase implements ProjectClientInterface {
   }
 
   /**
-   * Extracts precalc metrics from precalc.json for a MetricGroup
+   * Returns precalc metrics from precalc.json.  Optionally filters down to specific metricGroup and geographyId
    * @param mg MetricGroup to get precalculated metrics for
    * @param metricId string, "area", "count", or "sum"
    * @param geographyId string, geographyId to get precalculated metrics for
    * @returns Metric[] of precalculated metrics
    */
   public getPrecalcMetrics(
-    mg: MetricGroup,
-    metricId: string,
-    geographyId: string
+    mg?: MetricGroup,
+    metricId?: string,
+    geographyId?: string
   ): Metric[] {
-    // For each class in the metric group
-    const metrics = mg.classes.map((curClass) => {
-      // use top-level datasourceId if available, otherwise fallback to class datasourceId
-      const datasourceId = mg.datasourceId || curClass.datasourceId;
-      if (!datasourceId)
-        throw new Error(`Missing datasourceId for ${mg.metricId}`);
+    if (!mg && !metricId && !geographyId) {
+      // default to return everything
+      return this._precalc;
+    } else if (mg && metricId && geographyId) {
+      // or for specific metricGroup and geography
+      const metrics = mg.classes.map((curClass) => {
+        // use top-level datasourceId if available, otherwise fallback to class datasourceId
+        const datasourceId = mg.datasourceId || curClass.datasourceId;
+        if (!datasourceId)
+          throw new Error(`Missing datasourceId for ${mg.metricId}`);
 
-      // If class key (multiclass datasource), find that metric and return
-      const classKey = mg.classKey! || curClass.classKey!;
-      if (classKey) {
-        // Expect precalc metric classId to be in form `${datasourceId}-${classId}`
+        // If class key (multiclass datasource), find that metric and return
+        const classKey = mg.classKey! || curClass.classKey!;
+        if (classKey) {
+          // Expect precalc metric classId to be in form `${datasourceId}-${classId}`
+          const metric = this._precalc.filter(function (pMetric) {
+            return (
+              pMetric.metricId === metricId &&
+              pMetric.classId === datasourceId + "-" + curClass.classId &&
+              pMetric.geographyId === geographyId
+            );
+          });
+
+          // Throw error if metric is unable to be found
+          if (!metric || metric.length !== 1) {
+            throw new Error(
+              `No matching total metric for ${datasourceId}-${curClass.classId}, ${metricId}, ${geographyId}`
+            );
+          }
+
+          // Return metric, overwriting classId in its simple form
+          return { ...metric[0], classId: curClass.classId };
+        }
+
+        // Otherwise find metric for general, aka classId total, and add classId
         const metric = this._precalc.filter(function (pMetric) {
           return (
             pMetric.metricId === metricId &&
-            pMetric.classId === datasourceId + "-" + curClass.classId &&
+            pMetric.classId === datasourceId + "-total" &&
             pMetric.geographyId === geographyId
           );
         });
 
-        // Throw error if metric is unable to be found
-        if (!metric || metric.length !== 1) {
+        if (!metric || !metric.length)
           throw new Error(
-            `No matching total metric for ${datasourceId}-${curClass.classId}, ${metricId}, ${geographyId}`
+            `Can't find metric for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}`
           );
-        }
+        if (metric.length > 1)
+          throw new Error(
+            `Returned multiple precalc metrics for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}`
+          );
 
-        // Return metric, overwriting classId in its simple form
+        // Returns metric, overwriting classId for easy match in report
         return { ...metric[0], classId: curClass.classId };
-      }
-
-      // Otherwise find metric for general, aka classId total, and add classId
-      const metric = this._precalc.filter(function (pMetric) {
-        return (
-          pMetric.metricId === metricId &&
-          pMetric.classId === datasourceId + "-total" &&
-          pMetric.geographyId === geographyId
-        );
       });
+      return createMetrics(metrics);
+    }
 
-      if (!metric || !metric.length)
-        throw new Error(
-          `Can't find metric for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}`
-        );
-      if (metric.length > 1)
-        throw new Error(
-          `Returned multiple precalc metrics for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}`
-        );
-
-      // Returns metric, overwriting classId for easy match in report
-      return { ...metric[0], classId: curClass.classId };
-    });
-    return createMetrics(metrics);
+    throw new Error(
+      "getPrecalcMetrics must be called with no parameters, or all 3 of mg, metricId, and geographyId"
+    );
   }
 }
 

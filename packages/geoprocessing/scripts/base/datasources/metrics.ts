@@ -73,7 +73,7 @@ export function writeMetrics(metrics: Metric[], filePath: string) {
  */
 export async function createOrUpdateMetrics(
   inputMetrics: Metric[],
-  matcher: (m: Metric) => boolean,
+  matcher: ((m: Metric) => boolean) | undefined,
   filePath: string
 ): Promise<Metric[]> {
   let metrics = readMetrics(filePath);

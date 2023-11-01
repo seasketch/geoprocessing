@@ -7,11 +7,8 @@ import {
 } from "../../../src/types";
 import {
   firstMatching,
-  isInternalRasterDatasource,
-  isInternalVectorDatasource,
   isRasterDatasource,
   isVectorDatasource,
-  isinternalDatasource,
 } from "../../../src/datasources";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 import { readGeographies } from "../geographies/geographies";
@@ -242,7 +239,7 @@ export const precalcMetrics = async (
     }
   })();
 
-  const staleMetricsFilterFn = staleMetricsFilterFactory(
+  const staleMetricsFilterFn = staleMetricsFilterFnFactory(
     ds.datasourceId,
     geog.geographyId
   );
@@ -257,11 +254,9 @@ export const precalcMetrics = async (
 };
 
 /**
- * Given a list of classIds, return a filter function that will
- * filter out metrics that are not in the list
- * @param classIds
+ * returns a function that will filter out metrics that don't match the geographyId or don't have a classId that starts with the datasourceId (total metrics)
  */
-export const staleMetricsFilterFactory = (
+export const staleMetricsFilterFnFactory = (
   datasourceId: string,
   geographyId: string
 ) => {

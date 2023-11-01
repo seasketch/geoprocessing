@@ -4,7 +4,7 @@
  */
 
 import { Metric } from "../../../src";
-import { staleMetricsFilterFactory } from "./precalcDatasources";
+import { staleMetricsFilterFnFactory } from "./precalcDatasources";
 
 describe("staleMetricsFilterFactory", () => {
   test("staleMetricsFilterFactory - simple should return true", () => {
@@ -18,7 +18,7 @@ describe("staleMetricsFilterFactory", () => {
         value: 123,
       },
     ];
-    const matcher = staleMetricsFilterFactory("shelf_class", "eez");
+    const matcher = staleMetricsFilterFnFactory("shelf_class", "eez");
     const filtered = m.filter(matcher);
     expect(filtered.length).toBe(1);
   });
@@ -33,7 +33,7 @@ describe("staleMetricsFilterFactory", () => {
         value: 123,
       },
     ];
-    const matcher = staleMetricsFilterFactory("eez", "eez");
+    const matcher = staleMetricsFilterFnFactory("eez", "eez");
     const filtered = m.filter(matcher);
     expect(filtered.length).toBe(0);
   });
@@ -106,9 +106,9 @@ describe("staleMetricsFilterFactory", () => {
     ];
 
     // should filter out metrics with eez geography
-    const matcherBasinsEEZ = staleMetricsFilterFactory("basins", "eez");
+    const matcherBasinsEEZ = staleMetricsFilterFnFactory("basins", "eez");
     const filteredBasins = m.filter(matcherBasinsEEZ);
-    const matcherCanyonsEEZ = staleMetricsFilterFactory("canyons", "eez");
+    const matcherCanyonsEEZ = staleMetricsFilterFnFactory("canyons", "eez");
     const filtered = filteredBasins.filter(matcherCanyonsEEZ);
     expect(filtered.length).toBe(4);
   });
@@ -181,7 +181,7 @@ describe("staleMetricsFilterFactory", () => {
     ];
 
     // should filter out metrics with eez geography
-    const matcher = staleMetricsFilterFactory("basins", "eez");
+    const matcher = staleMetricsFilterFnFactory("basins", "eez");
     const filtered = m.filter(matcher);
     expect(filtered.length).toBe(6);
   });

@@ -125,11 +125,9 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
         return {
           Header: colConfig.columnLabel || defaultClassLabel,
           accessor: (row) => {
-            /* i18next-extract-disable-next-line */
-            const transString = t(
-              classesByName[row.classId || "missing"]?.display
+            return (
+              classesByName[row.classId || "missing"]?.display || "missing"
             );
-            return transString || "missing";
           },
           style,
         };

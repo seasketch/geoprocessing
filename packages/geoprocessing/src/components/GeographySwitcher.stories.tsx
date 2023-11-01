@@ -1,5 +1,4 @@
 import React from "react";
-import Card from "./Card";
 import { Geography } from "../types";
 import { GeographySwitcher } from "./GeographySwitcher";
 import Translator from "./i18n/TranslatorAsync";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { nestMetrics } from "../../metrics/helpers";
 import {
   percentWithEdge,
@@ -125,9 +125,11 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
         return {
           Header: colConfig.columnLabel || defaultClassLabel,
           accessor: (row) => {
-            return (
-              classesByName[row.classId || "missing"]?.display || "missing"
+            /* i18next-extract-disable-next-line */
+            const transString = t(
+              classesByName[row.classId || "missing"]?.display
             );
+            return transString || "missing";
           },
           style,
         };

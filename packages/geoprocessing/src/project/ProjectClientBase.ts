@@ -343,6 +343,7 @@ export class ProjectClientBase implements ProjectClientInterface {
 
   // METRICS //
 
+  /** Returns MetricGroup given metricId, optional translating display name, given i18n t function */
   public getMetricGroup(metricId: string, t?: TFunction): MetricGroup {
     const mg = this._metricGroups.find((m) => m.metricId === metricId);
     if (!mg) throw new Error(`Missing MetricGroup ${metricId} in metrics.json`);
@@ -361,7 +362,7 @@ export class ProjectClientBase implements ProjectClientInterface {
     return `${mg.metricId}Perc`;
   }
 
-  /** Returns all Objectives for MetricGroup, optionally translating display strings using t function */
+  /** Returns all Objectives for MetricGroup, optionally translating short description, given i18n t function */
   public getMetricGroupObjectives(
     metricGroup: MetricGroup,
     t?: TFunction

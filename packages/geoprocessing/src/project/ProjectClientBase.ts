@@ -297,6 +297,7 @@ export class ProjectClientBase implements ProjectClientInterface {
    * @param options
    * @param options.fallbackGroup The default group name to lookup if no geographyId is provided. expects there is only one geography with that group name
    * @returns
+   * @throws if geography does not exist
    */
   public getGeographyById(
     geographyId?: string,

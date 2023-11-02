@@ -1,7 +1,11 @@
 import { ProjectClientConfig } from "../../project";
 import { globalDatasources } from "../../datasources/global";
+import cloneDeep from "lodash/cloneDeep";
 
-const basicConfig: ProjectClientConfig = {
+/**
+ * Basic starter config with only default global datasources, no geographies or precalc metrics
+ */
+const simpleConfig: ProjectClientConfig = {
   basic: {
     bbox: [0, 0, 1, 1],
     planningAreaName: "undefined",
@@ -19,7 +23,7 @@ const basicConfig: ProjectClientConfig = {
         {
           classId: "eez",
           display: "EEZ",
-          datasourceId: "eez",
+          datasourceId: "global-eez-mr-v12",
           objectiveId: "eez_objective",
           layerId: "",
         },
@@ -63,6 +67,51 @@ const basicConfig: ProjectClientConfig = {
     clients: [],
   },
 };
+
+/**
+ * ProjectClient config complete with datasources, geographies and precalc metrics
+ */
+
+const loadedConfig: ProjectClientConfig = {
+  ...cloneDeep(simpleConfig),
+  geographies: [
+    {
+      geographyId: "eez",
+      datasourceId: "global-eez-mr-v12",
+      display: "Samoan EEZ",
+      propertyFilter: {
+        property: "GEONAME",
+        values: ["Samoan Exclusive Economic Zone"],
+      },
+      bboxFilter: [
+        -174.51139447157757, -15.878383591829206, -170.54265693017294,
+        -10.960825304544073,
+      ],
+      groups: ["default-boundary"],
+      precalc: true,
+    },
+  ],
+  precalc: [
+    {
+      geographyId: "eez",
+      metricId: "area",
+      classId: "global-eez-mr-v12-total",
+      sketchId: null,
+      groupId: null,
+      value: 131259350503.85864,
+    },
+    {
+      geographyId: "eez",
+      metricId: "count",
+      classId: "global-eez-mr-v12-total",
+      sketchId: null,
+      groupId: null,
+      value: 1,
+    },
+  ],
+};
+
 export default {
-  simple: basicConfig,
+  simple: simpleConfig,
+  loaded: loadedConfig,
 };

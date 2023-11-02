@@ -15,7 +15,7 @@ import { readGeographies } from "../geographies/geographies";
 import { createOrUpdatePrecalcMetrics } from "./precalc";
 import { precalcVectorDatasource } from "./precalcVectorDatasource";
 import { precalcRasterDatasource } from "./precalcRasterDatasource";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 
 export interface PrecalcDatasourceOptions {
   /** Alternative path to look for datasources than default if using internal.*/
@@ -36,6 +36,7 @@ export interface PrecalcDatasourceOptions {
 
 /**
  * Precalc one or more datasources for a project, for one or more defined geographies
+ * one at a time, writing them out to disk as they complete
  */
 export async function precalcDatasources<C extends ProjectClientBase>(
   projectClient: C,
@@ -85,6 +86,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 
   // Process one at a time
   let failed = 0;
+  let skipped = 0;
   let successfulDs = 0;
   let successfulGs = 0;
   let finalMetrics: Metric[] = [];
@@ -101,9 +103,9 @@ export async function precalcDatasources<C extends ProjectClientBase>(
     for (const geog of allGeographies) {
       // Skip if either datasource or geography has precalc set to false
       if (geog.precalc === false || ds.precalc === false) {
-        console.log(
-          `Precalc disabled for datasource ${ds.datasourceId} for geography ${geog.geographyId}`
-        );
+        // console.log(
+        //   `Precalc disabled for datasource ${ds.datasourceId} for geography ${geog.geographyId}`
+        // );
         continue;
       }
       // Skip if already processed
@@ -148,9 +150,10 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   for (const geog of matchingGeographies) {
     for (const ds of datasources) {
       if (geog.precalc === false || ds.precalc === false) {
-        console.log(
-          `Precalc disabled for datasource ${ds.datasourceId} + geography ${geog.geographyId}`
-        );
+        // console.log(
+        //   `Precalc disabled for datasource ${ds.datasourceId} + geography ${geog.geographyId}`
+        // );
+        skipped += 1;
         continue;
       }
       // Skip if already processed
@@ -189,15 +192,17 @@ export async function precalcDatasources<C extends ProjectClientBase>(
     }
   }
 
-  if (successfulDs > 0)
+  const successful = successfulDs + successfulGs;
+
+  if (successful > 0)
     console.log(
       `${successfulDs} datasource/geography combinations precalculated successfully`
     );
-  if (successfulGs > 0)
+  if (skipped > 0)
     console.log(
-      `${successfulGs} geography/datasource combinations precalculated successfully`
+      `${successfulDs} datasource/geography combinations skipped due to precalc disabled`
     );
-  if (successfulDs === 0 && successfulGs === 0) {
+  if (successfulDs === 0 && successfulGs === 0 && skipped === 0) {
     console.log(`No datasources or geographies found to precalculate`);
   }
 
@@ -211,7 +216,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 }
 
 /**
- * Precalculate metrics for datasource for given geography
+ * Precalculate metrics for datasource for given geography and write out to disk
  */
 export const precalcMetrics = async (
   projectClient: ProjectClientBase,

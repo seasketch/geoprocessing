@@ -1,19 +1,6 @@
 import { Datasource, Geography, Metric } from "../../../src/types";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 
-export interface PrecalcDatasourceOptions {
-  /** Alternative path to look for datasources than default if using internal.*/
-  newDatasourcePath?: string;
-  /** Alternative path to look for geographes than default. useful for testing */
-  newGeographyPath?: string;
-  /** Alternative path to store precalc data. useful for testing */
-  newPrecalcPath?: string;
-  /** Alternative dist path. useful for testing */
-  newDstPath?: string;
-  /** Alternative port to fetch data from */
-  port?: number;
-}
-
 /**
  * Precalc one or more datasources for a project, for one or more defined geographies, and return the freshly filtered metrics
  */

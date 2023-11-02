@@ -17,6 +17,7 @@
     "reimport:data": "geoprocessing reimport:data",
     "precalc:data": "start-server-and-test 'http-server data/dist -c-1 -p 8001' http://localhost:8001 precalc:data_",
     "precalc:data_": "geoprocessing precalc:data",
+    "precalc:data:clean": "geoprocessing precalc:data:clean",
     "publish:data": "geoprocessing publish:data",
     "install:scripts": "mkdir -p scripts && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/scripts/* scripts",
     "translation:install": "rm -rf src/i18n/baseLang && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/src/i18n/baseLang src/i18n",

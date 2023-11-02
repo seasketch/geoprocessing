@@ -54,6 +54,16 @@ if (process.argv.length < 3) {
         }
       );
       break;
+    case "precalc:data:clean":
+      spawn(
+        `${__dirname}/../../scripts/dataPrep/precalc-data-clean.sh`,
+        process.argv.slice(2),
+        {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        }
+      );
+      break;
     case "publish:data":
       spawn(
         `${__dirname}/../../scripts/dataPrep/publish-data.sh`,

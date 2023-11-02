@@ -249,11 +249,10 @@ export const precalcMetrics = async (
     geog.geographyId
   );
 
-  createOrUpdatePrecalcMetrics(
-    curMetrics,
-    staleMetricsFilterFn,
-    newPrecalcPath
-  );
+  createOrUpdatePrecalcMetrics(curMetrics, {
+    matcher: staleMetricsFilterFn,
+    filePath: newPrecalcPath,
+  });
 
   return curMetrics;
 };

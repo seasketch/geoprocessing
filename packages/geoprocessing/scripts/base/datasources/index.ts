@@ -8,3 +8,4 @@ export * from "./genVectorConfig";
 export * from "./genRasterConfig";
 export * from "./importRasterDatasource";
 export * from "./importVectorDatasource";
+export * from "./precalcCleanup";

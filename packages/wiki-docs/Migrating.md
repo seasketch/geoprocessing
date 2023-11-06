@@ -57,7 +57,7 @@ export default projectClient;
 
 ### Geographies
 
-Geographies are a new construct, most commonly used for planning boundaries. You are required to define at least one per project and you can have more than one. Projects have always had them, but they were implicit to how data was clipped, which was very limiting.  Geographies are explicit. There is no longer confusion about whether and how to clip datasources to one or more planning boundaries.  You just define what the geography boundaries are, by associating it with a datasource.  Then the precalc command will clip the datasource (whether vector or raster) to each geographies features (intersection) and precompute metrics with what remains (total area, count, sum).  This replaces what was `keyStats` in datasources.json.  Preclac metrics are typically used as the denominator when calculating % sketch overlap in reports.  Geoprocessing functions also clip the current sketch to one or more geographies at runtime when calculating metrics.  These are often used as the numerator when when calculating sketch % overlap in reports.
+Geographies are a new construct, most commonly used for planning boundaries. You are required to define at least one per project and you can have more than one. Projects have always had them, but they were implicitly defined based on how data was clipped, which was both unclear to the report developer and very limiting.  Geographies are explicit. There is no longer confusion about whether and how to clip datasources to one or more planning boundaries.  You just define what the geography boundaries are, by associating it with a datasource.  Then the precalc command will clip the datasource (whether vector or raster) to each geographies features (intersection) and precompute metrics with what remains (total area, count, sum).  This replaces what was `keyStats` in datasources.json.  Preclac metrics are typically used as the denominator when calculating % sketch overlap in reports.  Geoprocessing functions also clip the current sketch to one or more geographies at runtime when calculating metrics.  These are often used as the numerator when when calculating sketch % overlap in reports.
 
 To setup your projects default geography, create a new file `project/geographies.json`.  Choose from one of the options below for your default geography.  Just make sure that the geography is assigned to the `default-boundary` group, and `precalc` is set to `true`
 
@@ -102,7 +102,22 @@ To setup your projects default geography, create a new file `project/geographies
 
 3. If you don't have a planning boundary or want to use the entire world as your planning boundary you can use the world geography which uses the world datasource (see below for how to add this datasource). world is the new default geography for all new `blank` geoprocessing projects.
 
-World datasource published by [global-datasources](https://github.com/seasketch/global-datasources) :
+
+```json
+[{
+  "geographyId": "world",
+  "datasourceId": "world",
+  "display": "World",
+  "groups": ["default-boundary"],
+  "precalc": true
+}]
+```
+
+### Datasources
+
+Based on your geography choice above, add the corresponding datasource for this geography to your `datasources.json` file.
+
+World datasource published by [global-datasources](https://github.com/seasketch/global-datasources):
 ```json
 [{
     "datasourceId": "world",
@@ -126,7 +141,7 @@ World datasource published by [global-datasources](https://github.com/seasketch/
   }]
 ```
 
-Global EEZ datasource (with filters set to for Samoa EEZ)
+Global EEZ datasource  published by [global-datasources](https://github.com/seasketch/global-datasources) (with filters set to for Samoa EEZ)
 
 ```json
 [{
@@ -164,32 +179,6 @@ Global EEZ datasource (with filters set to for Samoa EEZ)
   }]
 ```
 
-### Datasources
-
-Based on your geography choice above, add the appropriate datasources to your `datasources.json` file.
-
-```
-{
-    "datasourceId": "world",
-    "geo_type": "vector",
-    "formats": [
-      "json", "fgb"
-    ],
-    "layerName": "world",
-    "classKeys": [],
-    "url": "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/world.fgb",
-    "propertiesToKeep": [],
-    "metadata": {
-      "name": "World Outline Polygon",
-      "description": "World polygon for default project geography in seasketch geoprocessing proejcts",
-      "version": "1.0",
-      "publisher": "SeaSketch",
-      "publishDate": "20231018",
-      "publishLink": ""
-    },
-    "precalc": false
-  }
-```
 
 Finally, you need to add a `precalc` setting to all other datasources in your `datasources.json` file.  This property is required, and you will see validation errors when running any data commands or smoke tests.
 

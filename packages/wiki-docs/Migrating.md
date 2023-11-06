@@ -9,7 +9,15 @@ Instructions to migrate existing geoprocessing projects to next version.
 ### package.json
 
 - Update package.json to latest 5.x version of geoprocessing library and run `npm install`
-- Add the `precalc:data` and `precalc:data:cleanup` cli commands to `package.json`:
+- Add the `precalc:data` and `precalc:data:clean` cli commands to `package.json`:
+```json
+{
+    "precalc:data": "start-server-and-test 'http-server data/dist -c-1 -p 8001' http://localhost:8001 precalc:data_",
+    "precalc:data_": "geoprocessing precalc:data",
+    "precalc:data:clean": "geoprocessing precalc:data:clean",
+}
+```
+
 - Drop use of web server from `import:data` and `reimport:data`
   - "import:data": "geoprocessing import:data",
   - "reimport:data": "geoprocessing reimport:data",

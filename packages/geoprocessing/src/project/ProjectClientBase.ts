@@ -367,6 +367,11 @@ export class ProjectClientBase implements ProjectClientInterface {
     };
   }
 
+  /**
+   * Simple helper that given MetricGroup, returns a consistent ID string for a percent metric, defaults to metricId + 'Perc' added to the end
+   * @param mg - the MetricGroup
+   * @returns - ID string
+   */
   public getMetricGroupPercId(mg: MetricGroup): string {
     return `${mg.metricId}Perc`;
   }

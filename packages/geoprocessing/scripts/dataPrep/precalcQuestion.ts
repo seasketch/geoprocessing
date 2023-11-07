@@ -13,7 +13,7 @@ export async function precalcQuestion(
       name: "precalc",
       message: questionText
         ? questionText
-        : "Do you want to precalculate summary metrics for this?",
+        : "Do you want to precalculate summary metrics for this datasource? (Typically yes only if reporting sketch % overlap with datasource)",
       default: "yes",
       choices: [
         {

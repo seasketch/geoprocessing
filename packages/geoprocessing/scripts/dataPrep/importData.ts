@@ -62,7 +62,12 @@ void (async function () {
         ...geoTypeAnswer,
         ...inputAnswers,
         ...layerNameAnswer,
-        ...detailedVectorAnswers,
+        ...{
+          ...detailedVectorAnswers,
+          formats: datasourceConfig.importDefaultVectorFormats.concat(
+            detailedVectorAnswers.formats
+          ),
+        },
         ...precalcAnswers,
       });
       return config;
@@ -237,7 +242,7 @@ async function detailedVectorQuestions(
     {
       type: "checkbox",
       name: "formats",
-      message: `The following formats are required: ${datasourceConfig.importDefaultVectorFormats.join(
+      message: `The following formats will automatically be created: ${datasourceConfig.importDefaultVectorFormats.join(
         ", "
       )}. What additional formats would you like created?`,
       choices: datasourceConfig.importExtraVectorFormats.map((name) => ({

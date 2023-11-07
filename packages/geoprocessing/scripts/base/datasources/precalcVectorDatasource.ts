@@ -110,7 +110,9 @@ export async function genVectorMetrics(
           feat.properties[classProperty]
         )
       ) {
-        featureCollClasses[classProperty].push(feat.properties[classProperty]);
+        featureCollClasses[classProperty].push(
+          feat.properties[classProperty].toString() // force string-based index
+        );
       }
     });
   });
@@ -180,7 +182,7 @@ export async function genVectorMetrics(
     >((classesSoFar, feat) => {
       if (!feat.properties) throw new Error("Missing properties");
       if (!datasource.classKeys) throw new Error("Missing classProperty");
-      const curClass = feat.properties[classProperty];
+      const curClass = feat.properties[classProperty].toString(); // force string-based index
       const curCount = classesSoFar[curClass]?.count || 0;
       const curArea = classesSoFar[curClass]?.area || 0;
       const featArea = area(feat);

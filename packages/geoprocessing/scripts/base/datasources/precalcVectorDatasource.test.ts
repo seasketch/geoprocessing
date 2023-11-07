@@ -34,81 +34,6 @@ describe("precalcDatasources", () => {
       fs.mkdirsSync(dstPath);
     });
 
-    test("precalcVectorDatasource - world geog, external datasource", async () => {
-      const dsFilename = "datasources_precalc_vector_test_0.json";
-      const dsFilePath = path.join(dstPath, dsFilename);
-      const datasourceId = "world";
-      const geogFilename = "geographies_precalc_vector_test_0.json";
-      const geogFilePath = path.join(dstPath, geogFilename);
-      const geographyId = "world";
-      const precalcFilename = "precalc_vector_test_0.json";
-      const precalcFilePath = path.join(dstPath, precalcFilename);
-
-      // start with external datasource for geography
-      fs.writeJSONSync(dsFilePath, [
-        {
-          datasourceId,
-          geo_type: "vector",
-          formats: ["json", "fgb"],
-          layerName: "world",
-          classKeys: [],
-          url: "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/world.fgb",
-          propertiesToKeep: [],
-          precalc: true,
-        },
-      ]);
-
-      // Create geography
-      const worldGeog: Geography = {
-        geographyId: geographyId,
-        datasourceId: geographyId,
-        display: geographyId,
-        groups: ["default-boundary"],
-        precalc: true,
-      };
-      writeGeographies([worldGeog], geogFilePath);
-
-      // should fallback to world since datasource has no bboxFilter
-      await precalcDatasources(projectClient, {
-        newDatasourcePath: dsFilePath,
-        newGeographyPath: geogFilePath,
-        newPrecalcPath: precalcFilePath,
-        newDstPath: dstPath,
-        port,
-      });
-      const savedGeos = fs.readJSONSync(geogFilePath);
-      expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-      const validGeos = geographySchema.parse(savedGeos[0]);
-
-      // Verify precalc
-      const metrics = fs.readJSONSync(precalcFilePath);
-      metricsSchema.parse(metrics);
-      expect(metrics.length).toBe(2);
-      metrics.forEach((metric) => {
-        expect(metric.classId).toBe(`${geographyId}-total`);
-        expect(metric.geographyId).toBe(geographyId);
-      });
-
-      const areaMetric = firstMatchingMetric(
-        metrics,
-        (m) => m.metricId === "area"
-      );
-      expect(areaMetric).toBeTruthy();
-
-      const countMetric = firstMatchingMetric(
-        metrics,
-        (m) => m.metricId === "count"
-      );
-      expect(countMetric).toBeTruthy();
-      expect(countMetric.value).toBe(1);
-
-      fs.removeSync(dsFilePath);
-      fs.removeSync(path.join(dstPath, `${datasourceId}.fgb`));
-      fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
-      fs.removeSync(geogFilePath);
-      fs.removeSync(precalcFilePath);
-    }, 20000);
-
     test("precalcVectorDatasource - single geog, internal datasource, single class", async () => {
       const dsFilename = "datasources_precalc_vector_test_1.json";
       const dsFilePath = path.join(dstPath, dsFilename);
@@ -754,13 +679,13 @@ describe("precalcDatasources", () => {
     }, 20000);
 
     test("precalcVectorDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
-      const dsFilename = "datasources_precalc_vector_test_6.json";
+      const dsFilename = "datasources_precalc_vector_test_7.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const internalDatasourceId = "samoa-eez-cross";
       const externalDatasourceId = "global-eez-mr-v12";
-      const geogFilename = "geographies_precalc_vector_test_6.json";
+      const geogFilename = "geographies_precalc_vector_test_7.json";
       const geogFilePath = path.join(dstPath, geogFilename);
-      const precalcFilename = "precalc_vector_test_6.json";
+      const precalcFilename = "precalc_vector_test_7.json";
       const precalcFilePath = path.join(dstPath, precalcFilename);
 
       // start with external datasource for geography
@@ -895,6 +820,160 @@ describe("precalcDatasources", () => {
       fs.removeSync(dsFilePath);
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
+      fs.removeSync(geogFilePath);
+      fs.removeSync(precalcFilePath);
+    }, 20000);
+
+    test("precalcVectorDatasource - world geog, external datasource", async () => {
+      const dsFilename = "datasources_precalc_vector_test_8.json";
+      const dsFilePath = path.join(dstPath, dsFilename);
+      const datasourceId = "world";
+      const geogFilename = "geographies_precalc_vector_test_8.json";
+      const geogFilePath = path.join(dstPath, geogFilename);
+      const geographyId = "world";
+      const precalcFilename = "precalc_vector_test_8.json";
+      const precalcFilePath = path.join(dstPath, precalcFilename);
+
+      // start with external datasource for geography
+      fs.writeJSONSync(dsFilePath, [
+        {
+          datasourceId,
+          geo_type: "vector",
+          formats: ["json", "fgb"],
+          layerName: "world",
+          classKeys: [],
+          url: "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/world.fgb",
+          propertiesToKeep: [],
+          precalc: true,
+        },
+      ]);
+
+      // Create geography
+      const worldGeog: Geography = {
+        geographyId: geographyId,
+        datasourceId: geographyId,
+        display: geographyId,
+        groups: ["default-boundary"],
+        precalc: true,
+      };
+      writeGeographies([worldGeog], geogFilePath);
+
+      // should fallback to world since datasource has no bboxFilter
+      await precalcDatasources(projectClient, {
+        newDatasourcePath: dsFilePath,
+        newGeographyPath: geogFilePath,
+        newPrecalcPath: precalcFilePath,
+        newDstPath: dstPath,
+        port,
+      });
+      const savedGeos = fs.readJSONSync(geogFilePath);
+      expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
+      const validGeos = geographySchema.parse(savedGeos[0]);
+
+      // Verify precalc
+      const metrics = fs.readJSONSync(precalcFilePath);
+      metricsSchema.parse(metrics);
+      expect(metrics.length).toBe(2);
+      metrics.forEach((metric) => {
+        expect(metric.classId).toBe(`${geographyId}-total`);
+        expect(metric.geographyId).toBe(geographyId);
+      });
+
+      const areaMetric = firstMatchingMetric(
+        metrics,
+        (m) => m.metricId === "area"
+      );
+      expect(areaMetric).toBeTruthy();
+
+      const countMetric = firstMatchingMetric(
+        metrics,
+        (m) => m.metricId === "count"
+      );
+      expect(countMetric).toBeTruthy();
+      expect(countMetric.value).toBe(1);
+
+      fs.removeSync(dsFilePath);
+      fs.removeSync(path.join(dstPath, `${datasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
+      fs.removeSync(geogFilePath);
+      fs.removeSync(precalcFilePath);
+    }, 20000);
+
+    test("precalcVectorDatasource - world geog, internal datasource", async () => {
+      const dsFilename = "datasources_precalc_vector_test_9.json";
+      const dsFilePath = path.join(dstPath, dsFilename);
+      const datasourceId = "world";
+      const internalDatasourceId = "ecological_value";
+      const internalFilename = "multi_class_valuability.json";
+      const geogFilename = "geographies_precalc_vector_test_9.json";
+      const geogFilePath = path.join(dstPath, geogFilename);
+      const geographyId = "world";
+      const precalcFilename = "precalc_vector_test_9.json";
+      const precalcFilePath = path.join(dstPath, precalcFilename);
+
+      // start with external datasource for geography
+      fs.writeJSONSync(dsFilePath, [
+        {
+          datasourceId,
+          geo_type: "vector",
+          formats: ["json", "fgb"],
+          layerName: "world",
+          classKeys: [],
+          url: "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/world.fgb",
+          propertiesToKeep: [],
+          precalc: false,
+        },
+      ]);
+
+      // add internal datasource
+      await importDatasource(
+        projectClient,
+        {
+          geo_type: "vector",
+          src: path.join(srcPath, `${internalFilename}`),
+          datasourceId: internalDatasourceId,
+          classKeys: ["Value"],
+          formats: ["fgb", "json"],
+          propertiesToKeep: [],
+          precalc: true,
+        },
+        {
+          newDatasourcePath: dsFilePath,
+          newDstPath: dstPath,
+          doPublish: false,
+        }
+      );
+
+      // Create geography
+      const worldGeog: Geography = {
+        geographyId: geographyId,
+        datasourceId: geographyId,
+        display: geographyId,
+        groups: ["default-boundary"],
+        precalc: true,
+      };
+      writeGeographies([worldGeog], geogFilePath);
+
+      // should fallback to world since datasource has no bboxFilter
+      await precalcDatasources(projectClient, {
+        newDatasourcePath: dsFilePath,
+        newGeographyPath: geogFilePath,
+        newPrecalcPath: precalcFilePath,
+        newDstPath: dstPath,
+        port,
+      });
+      const savedGeos = fs.readJSONSync(geogFilePath);
+      expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
+      const validGeos = geographySchema.parse(savedGeos[0]);
+
+      // Verify precalc
+      const metrics = fs.readJSONSync(precalcFilePath);
+      metricsSchema.parse(metrics);
+      expect(metrics.length).toBe(22);
+
+      fs.removeSync(dsFilePath);
+      fs.removeSync(path.join(dstPath, `${datasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
     }, 20000);

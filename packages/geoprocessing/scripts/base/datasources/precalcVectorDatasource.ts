@@ -14,10 +14,7 @@ import {
   clipMultiMerge,
   createMetric,
   datasourceConfig,
-  isExternalVectorDatasource,
-  isInternalVectorDatasource,
 } from "../../../src";
-import { readDatasourceGeojsonById } from "./datasources";
 import { getFeatures } from "../../../src/dataproviders";
 import { featureCollection } from "@turf/helpers";
 import truncate from "@turf/truncate";
@@ -40,10 +37,20 @@ export async function precalcVectorDatasource<C extends ProjectClientBase>(
   extraOptions: {
     /** Alternative path to store precalc data. useful for testing */
     newDstPath?: string;
+    /** Alternative port to fetch data from */
+    port?: number;
   } = {}
 ): Promise<Metric[]> {
+  // need 8001 for unit tests
+  const url = projectClient.getDatasourceUrl(datasource, {
+    local: true,
+    subPath: extraOptions.newDstPath,
+    port: extraOptions.port || 8001, // use default project port, override such as for tests
+  });
+
   // Create metrics and return to precalc.ts
-  return genVectorMetrics(datasource, geography, geogDs, extraOptions);
+  console.log("precalcing vector datasource", url);
+  return genVectorMetrics(datasource, url, geography, geogDs, extraOptions);
 }
 
 /**
@@ -55,6 +62,8 @@ export async function precalcVectorDatasource<C extends ProjectClientBase>(
 export async function genVectorMetrics(
   /** Input datasource */
   datasource: VectorDatasource,
+  /** Input datasource url */
+  url: string,
   /** Input geography */
   geography: Geography,
   /** Geography datasource to get geography from */
@@ -72,23 +81,11 @@ export async function genVectorMetrics(
 
   const dsFeatureColl: FeatureCollection<Polygon | MultiPolygon> =
     await (async () => {
-      if (isInternalVectorDatasource(datasource)) {
-        // Read local datasource
-        return truncate(
-          readDatasourceGeojsonById(datasource.datasourceId, dstPath),
-          { mutate: true }
-        );
-      } else if (isExternalVectorDatasource(datasource)) {
-        // Fetch external datasource
-        const feats = await getFeatures(datasource, datasource.url);
-        // Make sure only contains polygon or multipolygon in array
-        const validFeats = featuresSchema.parse(feats);
-        return truncate(featureCollection(validFeats), { mutate: true });
-      } else {
-        return featureCollection([]);
-      }
+      const feats = await getFeatures(datasource, url);
+      // Make sure only contains polygon or multipolygon in array
+      const validFeats = featuresSchema.parse(feats); // was erroring on missing properties property
+      return truncate(featureCollection(validFeats), { mutate: true });
     })();
-  // console.log("dsFeatureColl", JSON.stringify(dsFeatureColl));
 
   const geographyFeatureColl = await getGeographyFeatures(
     geography,

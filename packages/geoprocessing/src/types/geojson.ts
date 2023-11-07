@@ -63,7 +63,7 @@ export const featureSchema = z.object({
   type: z.literal('Feature'),
   geometry: polygonSchema.or(multipolygonSchema),
   id: z.string().or(z.number()).optional(),
-  properties: z.record(z.any()).or(z.null())
+  properties: z.record(z.any()).or(z.null()).nullable()
 })
 
 export const featuresSchema = z.array(featureSchema)

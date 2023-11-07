@@ -232,6 +232,7 @@ export const precalcMetrics = async (
     if (isVectorDatasource(ds) && ds.geo_type === "vector") {
       return await precalcVectorDatasource(projectClient, ds, geog, geogDs, {
         newDstPath,
+        port,
       });
     } else if (isRasterDatasource(ds) && ds.geo_type === "raster") {
       return await precalcRasterDatasource(projectClient, ds, geog, geogDs, {

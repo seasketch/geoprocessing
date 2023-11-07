@@ -8,7 +8,7 @@ import { datasourceConfig } from "../../../src/datasources";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 import { hasOwnProperty } from "../../../src";
 
-/** Takes import options and creates full import config */
+/** Takes raster import options or existing datasource and creates full import config */
 export function genRasterConfig<C extends ProjectClientBase>(
   projectClient: C,
   options: ImportRasterDatasourceOptions | RasterDatasource,

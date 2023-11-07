@@ -20,6 +20,7 @@ import { writeGeographies } from "../geographies/geographies";
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";
 const dstPath = "data/out";
+const port = 8080;
 const eezSrc = "eez";
 const eezCrossSrc = "samoa-eez-cross";
 const shelfSrc = "shelf_class";
@@ -32,6 +33,82 @@ describe("precalcDatasources", () => {
       // Ensure test data folder
       fs.mkdirsSync(dstPath);
     });
+
+    test("precalcVectorDatasource - world geog, external datasource", async () => {
+      const dsFilename = "datasources_precalc_vector_test_0.json";
+      const dsFilePath = path.join(dstPath, dsFilename);
+      const datasourceId = "world";
+      const geogFilename = "geographies_precalc_vector_test_0.json";
+      const geogFilePath = path.join(dstPath, geogFilename);
+      const geographyId = "world";
+      const precalcFilename = "precalc_vector_test_0.json";
+      const precalcFilePath = path.join(dstPath, precalcFilename);
+
+      // start with external datasource for geography
+      fs.writeJSONSync(dsFilePath, [
+        {
+          datasourceId,
+          geo_type: "vector",
+          formats: ["json", "fgb"],
+          layerName: "world",
+          classKeys: [],
+          url: "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/world.fgb",
+          propertiesToKeep: [],
+          precalc: true,
+        },
+      ]);
+
+      // Create geography
+      const worldGeog: Geography = {
+        geographyId: geographyId,
+        datasourceId: geographyId,
+        display: geographyId,
+        groups: ["default-boundary"],
+        precalc: true,
+      };
+      writeGeographies([worldGeog], geogFilePath);
+
+      // should fallback to world since datasource has no bboxFilter
+      await precalcDatasources(projectClient, {
+        newDatasourcePath: dsFilePath,
+        newGeographyPath: geogFilePath,
+        newPrecalcPath: precalcFilePath,
+        newDstPath: dstPath,
+        port,
+      });
+      const savedGeos = fs.readJSONSync(geogFilePath);
+      expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
+      const validGeos = geographySchema.parse(savedGeos[0]);
+
+      // Verify precalc
+      const metrics = fs.readJSONSync(precalcFilePath);
+      metricsSchema.parse(metrics);
+      expect(metrics.length).toBe(2);
+      metrics.forEach((metric) => {
+        expect(metric.classId).toBe(`${geographyId}-total`);
+        expect(metric.geographyId).toBe(geographyId);
+      });
+
+      const areaMetric = firstMatchingMetric(
+        metrics,
+        (m) => m.metricId === "area"
+      );
+      expect(areaMetric).toBeTruthy();
+
+      const countMetric = firstMatchingMetric(
+        metrics,
+        (m) => m.metricId === "count"
+      );
+      expect(countMetric).toBeTruthy();
+      expect(countMetric.value).toBe(1);
+
+      fs.removeSync(dsFilePath);
+      fs.removeSync(path.join(dstPath, `${datasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
+      fs.removeSync(geogFilePath);
+      fs.removeSync(precalcFilePath);
+    }, 20000);
+
     test("precalcVectorDatasource - single geog, internal datasource, single class", async () => {
       const dsFilename = "datasources_precalc_vector_test_1.json";
       const dsFilePath = path.join(dstPath, dsFilename);
@@ -52,7 +129,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${eezSrc}.json`),
           datasourceId,
           classKeys: [],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
         },
@@ -76,6 +153,7 @@ describe("precalcDatasources", () => {
         newGeographyPath: geogFilePath,
         newPrecalcPath: precalcFilePath,
         newDstPath: dstPath,
+        port,
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
@@ -129,7 +207,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${eezSrc}.json`),
           datasourceId: geogDatasourceId,
           classKeys: [],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
         },
@@ -146,7 +224,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${shelfSrc}.json`),
           datasourceId: classDatasourceId,
           classKeys: ["Class"],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: ["Class"],
           precalc: true,
         },
@@ -170,6 +248,7 @@ describe("precalcDatasources", () => {
         newGeographyPath: geogFilePath,
         newPrecalcPath: precalcFilePath,
         newDstPath: dstPath,
+        port,
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
@@ -242,7 +321,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${eezSrc}.json`),
           datasourceId: geogDatasourceId,
           classKeys: [],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
         },
@@ -259,7 +338,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${shelfSrc}.json`),
           datasourceId: classDatasourceId1,
           classKeys: ["Class"],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: ["Class"],
           precalc: true,
         },
@@ -283,6 +362,7 @@ describe("precalcDatasources", () => {
         newGeographyPath: geogFilePath,
         newPrecalcPath: precalcFilePath,
         newDstPath: dstPath,
+        port,
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
@@ -296,7 +376,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${deepwaterSrc}.json`),
           datasourceId: classDatasourceId2,
           classKeys: [],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
         },
@@ -313,6 +393,7 @@ describe("precalcDatasources", () => {
         newGeographyPath: geogFilePath,
         newPrecalcPath: precalcFilePath,
         newDstPath: dstPath,
+        port,
       });
       const savedGeos2 = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos2) && savedGeos2.length === 1).toBe(true);
@@ -395,7 +476,8 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${eezSrc}.json`),
           datasourceId: geogDatasourceId,
           classKeys: [],
-          formats: ["json"],
+          formats: ["fgb", "json"],
+
           propertiesToKeep: [],
           precalc: true,
         },
@@ -413,7 +495,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${shelfSrc}.json`),
           datasourceId: classDatasourceId1,
           classKeys: ["Class"],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: ["Class"],
           precalc: true,
         },
@@ -437,6 +519,7 @@ describe("precalcDatasources", () => {
         newGeographyPath: geogFilePath,
         newPrecalcPath: precalcFilePath,
         newDstPath: dstPath,
+        port,
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
@@ -450,7 +533,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${shelfSrcUpdated}.json`),
           datasourceId: classDatasourceId1,
           classKeys: ["Class"],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: ["Class"],
           precalc: true,
         },
@@ -467,6 +550,7 @@ describe("precalcDatasources", () => {
         newGeographyPath: geogFilePath,
         newPrecalcPath: precalcFilePath,
         newDstPath: dstPath,
+        port,
       });
       const savedGeos2 = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos2) && savedGeos2.length === 1).toBe(true);
@@ -558,7 +642,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${eezCrossSrc}.json`),
           datasourceId: internalDatasourceId,
           classKeys: [],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
         },
@@ -625,6 +709,7 @@ describe("precalcDatasources", () => {
         newGeographyPath: geogFilePath,
         newPrecalcPath: precalcFilePath,
         newDstPath: dstPath,
+        port,
       });
 
       // Verify geography file
@@ -661,11 +746,11 @@ describe("precalcDatasources", () => {
       // Slightly larger area value, both samoa
       expect(doubleFilterMetric.value).toEqual(39734709577.15677);
 
-      // fs.removeSync(dsFilePath);
-      // fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
-      // fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
-      // fs.removeSync(geogFilePath);
-      // fs.removeSync(precalcFilePath);
+      fs.removeSync(dsFilePath);
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
+      fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
+      fs.removeSync(geogFilePath);
+      fs.removeSync(precalcFilePath);
     }, 20000);
 
     test("precalcVectorDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
@@ -684,7 +769,7 @@ describe("precalcDatasources", () => {
           datasourceId: externalDatasourceId,
           geo_type: "vector",
           url: `https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/${externalDatasourceId}.fgb`,
-          formats: ["fgb"],
+          formats: ["fgb", "json"],
           classKeys: [],
           idProperty: "GEONAME",
           nameProperty: "GEONAME",
@@ -700,7 +785,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${eezCrossSrc}.json`),
           datasourceId: internalDatasourceId,
           classKeys: [],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
         },
@@ -770,6 +855,7 @@ describe("precalcDatasources", () => {
         newGeographyPath: geogFilePath,
         newPrecalcPath: precalcFilePath,
         newDstPath: dstPath,
+        port,
       });
 
       // Verify geography file
@@ -829,7 +915,7 @@ describe("precalcDatasources", () => {
           datasourceId: externalDatasourceId,
           geo_type: "vector",
           url: `https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/${externalDatasourceId}.fgb`,
-          formats: ["fgb"],
+          formats: ["fgb", "json"],
           classKeys: [],
           idProperty: "GEONAME",
           nameProperty: "GEONAME",
@@ -845,7 +931,7 @@ describe("precalcDatasources", () => {
           src: path.join(srcPath, `${eezCrossSrc}.json`),
           datasourceId: internalDatasourceId,
           classKeys: [],
-          formats: ["json"],
+          formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: false,
         },
@@ -877,6 +963,7 @@ describe("precalcDatasources", () => {
         newGeographyPath: geogFilePath,
         newPrecalcPath: precalcFilePath,
         newDstPath: dstPath,
+        port,
       });
 
       // Verify precalc file was not created

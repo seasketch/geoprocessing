@@ -237,12 +237,13 @@ async function detailedVectorQuestions(
     {
       type: "checkbox",
       name: "formats",
-      message:
-        "What formats should be created?  Suggested formats already selected",
-      choices: datasourceConfig.importSupportedVectorFormats.map((name) => ({
+      message: `The following formats are required: ${datasourceConfig.importDefaultVectorFormats.join(
+        ", "
+      )}. What additional formats would you like created?`,
+      choices: datasourceConfig.importExtraVectorFormats.map((name) => ({
         value: name,
         name: `${name} - ${datasourceFormatDescriptions[name]}`,
-        checked: datasourceConfig.importDefaultVectorFormats.includes(name),
+        checked: false,
       })),
     },
   ]);

@@ -15,7 +15,6 @@ import {
   ProjectClientBase,
   datasourceConfig,
 } from "../../../src";
-import { genRasterConfig } from "./genRasterConfig";
 import bbox from "@turf/bbox";
 
 // @ts-ignore
@@ -42,15 +41,8 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
     port?: number;
   } = {}
 ): Promise<Metric[]> {
-  // Creates vector config from datasources.json
-  const rasterConfig = genRasterConfig(
-    projectClient,
-    datasource,
-    extraOptions.newDstPath
-  );
-
   // need 8001 for unit tests
-  const url = projectClient.getDatasourceUrl(rasterConfig, {
+  const url = projectClient.getDatasourceUrl(datasource, {
     local: true,
     subPath: extraOptions.newDstPath,
     port: extraOptions.port || 8001, // use default project port, override such as for tests

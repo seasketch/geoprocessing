@@ -19,13 +19,10 @@ Instructions to migrate existing geoprocessing projects to next version.
 ```
 
 - Drop use of web server from `import:data` and `reimport:data`
-  - "import:data": "geoprocessing import:data",
-  - "reimport:data": "geoprocessing reimport:data",
-
 ```json
 {
-  "precalc:data": "start-server-and-test 'http-server data/dist -c-1 -p 8001' http://localhost:8001 precalc:data_",
- "precalc:data_": "geoprocessing precalc:data"
+    "import:data": "geoprocessing import:data",
+    "reimport:data": "geoprocessing reimport:data",
 }
 ```
 - The ProjectClient now takes precalc metrics and geographies as input. Update `project/projectClient.ts` to the following:
@@ -151,7 +148,6 @@ Global EEZ datasource  published by [global-datasources](https://github.com/seas
       "fgb",
       "json"
     ],
-    "precalc": true,
     "metadata": {
       "name": "World EEZ v11",
       "description": "World EEZ boundaries and disputed areas",
@@ -175,7 +171,8 @@ Global EEZ datasource  published by [global-datasources](https://github.com/seas
       -15.878383591829206,
       -170.54265693017294,
       -10.960825304544073
-    ]
+    ],
+    "precalc": false,
   }]
 ```
 
@@ -184,11 +181,12 @@ Finally, you need to add a `precalc` setting to all other datasources in your `d
 
 - Add `"precalc": true` to all datasources in `project/datasources.json` that metrics should be precalculated for.  This is typically limited to datasources that you need to precalc the overall summary metric of the datasource (total area, total feature count) so that you can report the % of the total that a sketch overlaps with.  Otherwise you don't need to precalc.
 - Set all other datasources to `"precalc": false`.  This includes global datasources or datasources that are only a source for `geography` features and otherwise aren't used in reports.  Setting these to true will at best just precalculate extra metrics that won't be used.  At worst it will try to fetch entire global datasources and fail at the task, because the necessary filters aren't in place.
-- Create a new file `project/precalc.json` populated with an empty array `[]`
 
 ### Precalc
 
-Once you have your `geographies` and `datasources` properly configured, you're ready to run the `precalc:data` command.  Make sure you have an empty array in 
+Once you have your `geographies` and `datasources` properly configured, you're ready to run the `precalc:data` command.
+
+- Create a new file `project/precalc.json` populated with an empty array `[]`
 
 ```bash
 npm run precalc:data
@@ -198,9 +196,9 @@ This will precompute metrics for all combinations of geographies and datasources
 
 ### Geoprocessing functions
 
-- Update `clipToGeography` function, to allow geographies to use external datasources. Copy the following file in the gp library to your project space to overwrite.
+- Update `clipToGeography` function, to allow geographies to use external datasources. To copy the file from the gp library to your project space, run the following from a terminal in the top-level of your project.
 ```
-cp -r node_modules/@seasketch/geoprocessing/dist/base-project/src/util/clipToGeography.ts src/util/clipToGeography.ts
+mkdir -p src/util && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/src/util/clipToGeography.ts src/util/clipToGeography.ts
 ```
 
 - update all geoprocessing functions to use the following boilerplate:

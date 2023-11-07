@@ -14,6 +14,7 @@ import {
   isExternalVectorDatasource,
   isPolygonFeatureArray,
   getFirstFromParam,
+  DefaultExtraParams,
 } from "@seasketch/geoprocessing";
 import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import bbox from "@turf/bbox";
@@ -22,15 +23,9 @@ import { clipToGeography } from "../util/clipToGeography";
 
 const metricGroup = project.getMetricGroup("boundaryAreaOverlap");
 
-/** Optional caller-provided parameters */
-interface ExtraParams {
-  /** Optional ID(s) of geographyIds to operate on.  Use to constrain function to subregion */
-  geographyIds?: string[];
-}
-
 export async function boundaryAreaOverlap(
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
-  extraParams: ExtraParams = {}
+  extraParams: DefaultExtraParams = {}
 ): Promise<ReportResult> {
   const geographyId = getFirstFromParam("geographyIds", extraParams);
   const curGeography = project.getGeographyById(geographyId, {

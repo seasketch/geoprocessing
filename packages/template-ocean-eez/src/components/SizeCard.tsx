@@ -10,6 +10,7 @@ import {
   sortMetricsDisplayOrder,
   isSketchCollection,
   MetricGroup,
+  GeogProp,
 } from "@seasketch/geoprocessing/client-core";
 import {
   ClassTable,
@@ -63,10 +64,6 @@ const TableStyled = styled(ReportTableStyled)`
     border-right: 1px solid #777;
   }
 `;
-
-export interface GeogProp {
-  geographyId: string;
-}
 
 export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
   const [{ isCollection }] = useSketchProperties();

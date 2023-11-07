@@ -6,14 +6,10 @@ import {
   ValidationError,
   clipToPolygonFeatures,
   DatasourceClipOperation,
+  DefaultExtraParams,
 } from "@seasketch/geoprocessing";
 import project from "../../project";
 import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
-
-interface ExtraParams {
-  /** Array of EEZ's to clip to  */
-  eezNames?: string[];
-}
 
 /**
  * Preprocessor takes a Polygon feature/sketch and returns the portion that
@@ -22,7 +18,7 @@ interface ExtraParams {
  */
 export async function clipToOcean(
   feature: Feature | Sketch,
-  extraParams: ExtraParams = {}
+  extraParams: DefaultExtraParams = {}
 ): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");

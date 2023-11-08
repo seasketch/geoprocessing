@@ -427,9 +427,15 @@ export class ProjectClientBase implements ProjectClientInterface {
           });
 
           // Throw error if metric is unable to be found
-          if (!metric || metric.length !== 1) {
+          if (!metric || metric.length === 0) {
             throw new Error(
               `No matching total metric for ${datasourceId}-${curClass.classId}, ${metricId}, ${geographyId}`
+            );
+          }
+          if (metric.length > 1) {
+            console.log(JSON.stringify(metric));
+            throw new Error(
+              `Unexpectedly found more than one precalc metric for datasource-classId: ${datasourceId}-${curClass.classId}, metric: ${metricId}, geography: ${geographyId}`
             );
           }
 

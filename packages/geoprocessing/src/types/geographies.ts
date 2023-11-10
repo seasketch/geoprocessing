@@ -24,7 +24,7 @@ export const geographySchema = z.object({
       values: z.array(z.string().or(z.number())),
     })
     .optional(),
-  /** Optional, constrain datasource to smaller bbox */
+  /** Optional, constrain geography to only features within a bounding box */
   bboxFilter: bboxSchema.optional(),
 });
 

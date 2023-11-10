@@ -487,15 +487,7 @@ Note, if you had selected `Blank starter project` as your template, it would the
 ? What is the projects maximum latitude (top) in degrees (-180.0 to 180.0)?
 ```
 
-The bounding box can be used to represent the area that users will draw shapes. It can be used as a boundary for clipping, to generate examples sketches, and as a window for fetching from global datasources.
-
-There are a couple of ways you can figure the bounding box extent out:
-
-* If you have a polygon or raster dataset representing the extent of your project, you can lookup the extent in QGIS under [layer properties](https://docs.qgis.org/3.22/en/docs/user_manual/working_with_vector/vector_properties.html#information-properties).
-* Use the [coordinate display](https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=5.538062,47.236312,15.371071,54.954937&tab=1&proj=EPSG:4326&places=2) tool from GeoFabrik to identify the bounding box of your planning area.  Use the values from the `Osmosis Copy` section for the top, bottom, left, and right values.
-* Use Google Maps and click on a location in the bottom left of your planning area.  It will display a coordinate in the order (min latitude, min, longitude).  Enter these numbers one at atime. Then click on a location in the rop right of your planning area.  It will display a coordinate in the order (max latitude, max longitude).  Enter these numbers one at a time.
-
-The reason you will need to define a bounding box is so that any preprocessing or geoprocessing functions that use global datasets can Just keep in mind that this bounding box should encompass the area that users are allowed to draw.
+The answers to these questions default to the extent of the entire world, which is a reasonable place to start.  This can be changed at a later time.
 
 # Open in VSCode Workspace and Explore Structure
 
@@ -521,7 +513,7 @@ VSCode will re-open and you should see all your project files in the left hand f
 
 ## Project Structure
 
-Next, take a minute to learn more about the structure of your new project.  You can revisit this section as you get deeper into things.
+Next, take some time to learn more about the structure of your new project, and look through the various files.  You can revisit this section as you get deeper into things.
 
 ### Configuration Files and Scripts
 
@@ -537,17 +529,21 @@ There are a variety of project configuration files.  Many have been pre-populate
     * `planningAreaId` - the unique identifier of the planning region used by the boundary dataset.  If your planningAreaType is `eez` and you want to change it, you'll find the full list [in github](#https://raw.githubusercontent.com/seasketch/geoprocessing/dev/packages/geoprocessing/scripts/global/datasources/eez_land_union_v3.json), just look at the UNION property for the id to use
     * `planningAreaName` - the name of the planning region (e.g. Micronesia)
     * `externalLinks` - central store of links that you want to populate in your reports.
-  * `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided.  Global datasources can be manually added/edited in this file, but local datasources should use the [import](#import-datasource) process.
-  * `metrics.json` - contains an array of one or more metric groups.  Each group defines a metric to calculate, with one or more data classes, derived from one or more datasources, measuring progress towards a planning objective.  An initial boundaryAreaOverlap metric group is included in the file by default that uses the global eez datasource.
-  * `objectives.json` - contains an array of one or more objectives for your planning process.  A default objective is included for protection of `20%` of the EEZ.
+  * `geographies.json` - contains one or more planning geographies for your project.  If you chose to start with a blank project template, you will have a default geography of the entire world.  If you chose to start with the Ocean EEZ template, you will have a default geography that is the EEZ you chose at creation time.  Geographies must be manually added/edited in this file.  You will then want to re-run `precalc` and `test` to process the changes and make sure they are working as expected. Learn more about [geographies](./Concepts.md#geographies)
+  * `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided.  Global datasources can be manually added/edited in this file, but local datasources should use the [import](#import-datasource) process.  After import, datasources can be manually added/edited in this file.  You will then want to run `reimport:data`, `precalc:data`, `precalc:clean`, and `test` to process the changes and make sure they are working as expected. Learn more about [datasources](./Concepts.md#datasources)
+  * `metrics.json` - contains an array of one or more metric groups.  Each group defines a metric to calculate, with one or more data classes, derived from one or more datasources, measuring progress towards a planning objective.  An initial boundaryAreaOverlap metric group is included in the file by default that uses the global eez datasource.  Learn more about [metrics](./Concepts.md#metrics)
+  * `objectives.json` - contains an array of one or more objectives for your planning process.  A default objective is included for protection of `20%` of the EEZ.  Objectives must be manually added/edited in this file.  Learn more about [objectives](./Concepts.md#objectives)
+  * `precalc.json` - contains precalculated metrics for combinations of geographies and datasources. Specifically it calculates for example the total area/count/sum of the portion of a datasources features that overlap with each geography.  This file should not be manually edited.  If you have custome metrics/precalculations to do, then use a separate file.  Learn more about the [precalc](#precalc-data) command.
 
 The object structure in many of the JSON files, particularly the `project` folder, follow strict naming and structure (schema) that must be maintained or you will get validation errors when running commands.  Adding additional undocumented properties may be possible, but is not tested.  The schemas are defined here:
 
 * [Basic](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/projectBasic.ts)
+* [Geographies](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/geography.ts)
 * [Datasources](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/datasource.ts)
 * [MetricGroup](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/metricGroup.ts)
   * [DataClass](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/dataclass.ts)
 * [Objective](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/objective.ts)
+* [Precalc Metrics](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/metrics.ts)
 
 ### Project Assets
 
@@ -565,7 +561,7 @@ The object structure in many of the JSON files, particularly the `project` folde
     * `i18nSync.ts` - creates an i18nnext instance that synchronously imports all language translations ahead of time.  This is not quite functional, more for research.
     * `supported.ts` - defines all of the supported languages.
 
-A [ProjectClient](https://seasketch.github.io/geoprocessing/api/classes/geoprocessing.ProjectClientBase.html) class is available in `project/projectClients.ts` that you can use in project code to get quick access to all project configuration including methods that ease working with them. This is the bridge that connects project configuration with your code so look for it and use it.
+A [ProjectClient](https://seasketch.github.io/geoprocessing/api/classes/geoprocessing.ProjectClientBase.html) class is available in `project/projectClients.ts` that is used in project code for quick access to all project configuration including methods that ease working with them. This is the bridge that connects configuration with code and is the backbone of every geoprocessing function and report client.
 
 ### Other Files
 
@@ -595,11 +591,42 @@ npx ts-node scripts/genRandomFeature.ts
 
 ## Differences
 
-Look closely at the difference between the example features and sketches and sketch collections. Sketch and sketch collection's are just GeoJSON Feature and FeatureCollection's with some extra attributes.  Sketches and sketch collections are technically not compliant with the GeoJSON spec but they are often passable as such in most tools.
+Look closely at the difference between the example features and the example sketches and sketch collections. Sketch and sketch collections are just GeoJSON Feature and FeatureCollection's with some extra attributes.  That said, sketches and sketch collections are technically not compliant with the GeoJSON spec but they are often passable as such in most tools.
 
 ## Create Custom Sketches
 
 In addition to these scripts, you can create features and sketches using your GIS tool of choice, or draw your own polygons using [geojson.io](https://geojson.io)
+
+# Precalc Data
+
+Once you have geographies and datasources configured, you can precalculate metrics for them.
+
+```bash
+npm run precalc:data
+```
+
+You need to have at least one geography in geographies.json and one datasource in datasources.json with the `precalc` property set to true.  The command will measure (total area, feature count, value sum) the portion of a datasources features that fall within the geography (intersection).
+
+These overall metric values are used almost exclusively for calculating % sketch overlap, they provide the denominator value.  For example, if you have a geography representing the EEZ of a country, and you have a sketch polygon, and you have a datasource representing presence of seagrass.  And you want to know the percentage of seagrass that is within the sketch, relative to how much seagrass is in the whole EEZ boundary.
+
+`seagrass sketch % = seagrass area within sketch / seagrass area within EEZ`
+
+We can and often need to precalculate that denominator for all possible geographies.  That is what the `precalc:data` command does, it precalculates a set of metrics for all datasources against all geographies, where the `precalc` property is set to true in both the datasource and the geography.
+
+Precalc metrics are then imported into a report client, and combined with the sketch overlap metrics returned from the geoprocessing function, to produce a percentage.
+
+Tips for precalculation:
+* You have to re-run `precalc:data` every time you change a geography or datasource.
+* Set `precalc:false` for datasources that are not currently used, or are only used to define a geography (not displayed in reports).  This is why the datasource for the default geography for a project is always set by default to `precalc: false`.
+* If you are using one of the [global-datasources](https://github.com/seasketch/global-datasources) in your project, and you want to use it in reporting % sketch overlap, so you've set `precalc:true`, strongly consider defining a `bboxFilter`.  This will ensure that precalc doesn't have to fetch the entire datasource when precalculating a metric, which can be over 1 Gigabyte in size.  Also consider setting a `propertyFilter` to narrow down to just the features you need.  This filter is applied on the client-side so it won't reduce the number of features you are sending over the wire.
+
+## Precalc Data Cleanup
+
+If you remove a geography/datasource, then in order to remove their precalculated metrics from `precalc.json`, you will need to run the cleanup command.
+
+```bash
+npm run precalc:data:cleanup
+```
 
 # Test your project
 
@@ -611,15 +638,46 @@ npm run test
 
 ## Smoke Tests
 
-Smoke tests, in the context of a geoprocessing project, verify that your preprocessing and geoprocessing function are working, and produce an output, for a given input.  It doesn't ensure that the output is correct, just that something is produced. The input in this case is a suite of features and sketches that you manage.
+Smoke tests, in the context of a geoprocessing project, verify that your preprocessing and geoprocessing function are working, and produce an output, for a given input. It doesn't ensure that the output is correct, just that something is produced. The input in this case is a suite of features and sketches that you manage.
 
 Preprocessing function smoke tests (in this case `src/functions/clipToOceanEezSmoke.test.ts`) will run against every feature in `examples/features` and output the results to `examples/output`.
 
 All geoprocessing function smoke tests (in this case `src/functions/boundaryAreaOverlapSmoke.test.ts`) will run against every feature in `examples/sketches` and output the results to `examples/output`.
 
-This is your change to convince yourself that the smoke tests are outputting the right results.  You will commit the output for smoke tests to the code repository as a source of truth, and if the results change in the future (due to a code change or an input data change or a dependency upgrade) then you can convince yourself again that it's as expected, or something is wrong and needs investigation.  All changes to smoke test output are for a reason and should not be skipped over.
+Smoke tests are your chance to convince yourself that functions are outputting the right results.  This output is committed to the code repository as a source of truth, and if the results change in the future (due to a code change or an input data change or a dependency upgrade) then you will be able to clearly see the difference and convince yourself again that they are correct.  All changes to smoke test output are for a reason and should not be skipped over.
+
+### Default geography
+
+When smoke tests run, they should run for the default geography, without needing to be told so, but you can still override it.  That's why this is the standard boilerplate for a geoprocessing function.
+
+```typescript
+  export async function boundaryAreaOverlap(
+  sketch: Sketch<Polygon> | SketchCollection<Polygon>,
+  extraParams: DefaultExtraParams = {}
+): Promise<ReportResult> {
+  const geographyId = getFirstFromParam("geographyIds", extraParams);
+  const curGeography = project.getGeographyById(geographyId, {
+    fallbackGroup: "default-boundary",
+  });
+```
+
+If you call boundaryAreaOverlap with only a sketch as input (no extraParams), then `getFirstFromParam()` will return `undefined`, so
+`project.getGeographyById` will receive `undefined` and fallback to the geography assigned to the `default-boundary` group, which every project should have at least one, or throw an error.
+
+If you want to run smoke tests against a different geography, just to see what it produces, then you will have to do it explicitly:
+
+```typescript
+const metrics = await boundaryAreaOverlap(sketch, {geographyIds: ['my-other-geography']})
+```
+
+if you use a `GeographySwitcher` UI component in your story, then it will allow you to switch geographies, but the story will still only receive the metrics for the smoke test you ran, which may only have been run for the default geography.  In this situation, the report will load the precalc metrics for the geography you've chosen in the denominator for percentages, but the numerator metrics will always be for the default geography, or whatever geography you passed to your smoke test.
+
+### Storybook
 
 You can view the results of your smoke tests using Storybook.  It's already configured to load all of the smoke test output for each story.
+
+
+
 
 ## Unit Tests
 

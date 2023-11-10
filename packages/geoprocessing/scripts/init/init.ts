@@ -128,7 +128,7 @@ async function init(gpVersion?: string) {
       when: (answers) => answers.planningAreaType === "eez",
       type: "list",
       name: "planningAreaId",
-      message: "What countries EEZ is this for?",
+      message: "What EEZ is this for?",
       choices: eezChoices,
     },
     {
@@ -136,7 +136,7 @@ async function init(gpVersion?: string) {
       type: "list",
       name: "planningAreaNameQuestion",
       message: (answers) =>
-        `Is there a more common name for this planning area to use in reports than ${answers.planningAreaId}?`,
+        `Is there a different name to use for this planning area than ${answers.planningAreaId}?`,
       choices: [
         { value: "yes", name: "Yes" },
         { value: "no", name: "No" },

@@ -1,14 +1,71 @@
 # Changelog
 
-## v5.0.0 ()
+## v5.0.0 (11/10/2023)
 
 ### :boom: Breaking Changes
 
-* `projectClient.getVectorDatasourceUrl()` has been changed to `getDatasourceUrl()`, supporting generating a url for all datasource types
+* `projectClient.getVectorDatasourceUrl()` has been changed to `getDatasourceUrl()`, supporting generating a url for all datasource types, whether local testing or production environment.
+* Refactor dataBucketUrl to take an `options` parameter with new `subPath` for testing.
 * `project/geographies.json` file is required with at least one geography
 * `project/precalc.json` file is required with at least an empty array
+* Add coordinate truncation to `overlapFeatures` and `overlapRaster` toolbox functions.  Defaults to truncating to 6 digits. [#219]
+* New `precalc`` (boolean) option is explicitly required for all datasources.  Must be added to datasources.json
 
 See [v4 to v5 migration guide](https://github.com/seasketch/geoprocessing/wiki/Migrating)
+
+### :rocket: New Feature / Improvement
+
+* Add `precalc:data` command outputting to `project/precalc.json`, replacing `keyStats` in datasources.json.
+* Add `precalc:data:cleanup` command removing stale metrics for datasources and geographies that have been removed.
+* Default to using new `global-eez-mr-v12` published by the new [global-datasources](https://github.com/seasketch/global-datasources) in template-ocean-eez.  This is based on the newly release EEZ version 12 by Marine Regions.
+* Default to using new `world` datasource for basic blank project.
+* Add support for `Geography` type, including `project.getGeographyById`, `project.getGeographyByGroup`.  Adding `geographyId` as a supported MetricDimension.
+* Add `GeographySwitcher` UI component, with story demonstrating how to use it.
+* Add `Tooltip` component, used to offer additional information in tables.
+* Update `getFeatures()` to support fetching from external datasources and using `bboxFilter` and `propertyFilter` defined on the datasource, or passed into the function such as from a geographies bboxFilter or propertyFilter.
+* Add generic `firstMatching()` function that returns the first item that returns true for filter function from an array.
+* Refactor `project.getPrecalcMetrics` to support `geographyId` and to support the scheme of embedding the `datasourceId` into the metrics `classId` using `{datasourceId}-total`.  This allows the appropriate precalc metric to be identified given the datasourceId.
+* Add new boilerplate functions for working with geographies in geoprocessing functions and integrate them into the template examples.  Includes `getFirstFromParam` and `clipToGeography`.
+* Export `DefaultExtraParams` for use in geoprocessing functions, as a boilerplate for receiving extra params from report clients, including `geographyIds`, `countryIds`, `eezNames`.
+* Update project init template-ocean-eez to allow user to select EEZ based on `global-eez-mr-v12`, generating a default geography and datasource with the correct bounding box and property filter.
+* Update `data:import` to always generate flatgeobuf format, and offer geojson as an optional additional format.
+* Update project init template-blank-project to generate default `world` geography, based on the new `world` datasource.
+* Project init bounding box questions now default to extent of the entire world [-90, -180, -90, -180]. [#216, #217]
+* Optimize performance of `flattenBySketchAllClass` function [#218]
+* Add `geographyId` as the top level sort ID for `sortMetrics` and `rekeyMetrics` functions.
+* Add support for `zero` geometries via sketch helpers including `zeroPolygon`, `zeroSketch`, `zeroSketchArray`, `zeroSketchCollection`.  See [zero geometries](https://github.com/seasketch/geoprocessing/blob/dev/packages/wiki-docs/EdgesAndLimits.md#zero-geometries). Used primarily by `clipToGeography`.
+* Support handling use case where no features for a data class overlap with the current geography, by adding support for NaN metric values in `toPercentMetric` and `ClassTable`.  See [zero geography](https://github.com/seasketch/geoprocessing/blob/dev/packages/wiki-docs/EdgesAndLimits.md#zero-geography---no-overlap-with-metricgroup-nan)
+* Add `jsonValueSchema` for validating generic JSON using Zod at runtime.
+
+### :bug: Bug Fix
+
+* Fix converstion of datasource `propertiesToKeep` to support more than one property
+* Fix double counting in `overlapFeatures` sum [#228]
+* Fix SegmentControl to ensure consistent segment width, even if container width is not known at startup.
+* Ensure translations of `extraTerms` from JSON config files are loaded properly in translator.
+* `fgbFetchAll` now falls back to using world bounding box if one not provided.  Previously underlying flatgeobuf library would fail without a bounding box.  Console message is output for every fetch making it clear what bounding box was used and the url.
+
+### :house: Internal
+
+* Upgrade to Typescript 4.9, specifically to get use of `satisfies` operator which allows us to create types with zod from schemas, and ensure that it satisfies another type.  Used by `polygonSchema` and `multipolygonSchema` to ensure zod schema will work with `@types/geojson`.
+* Update to geoblaze v2.2.0
+* Add additional base language support and add base translations - Dutch, Italian, Bulgarian, French (Belgium), Greek, Hindi, Indonesian, Maori, Polish, Romanian, Tongan, Zulu, Swedish, Swedish (Finland), Estonian, Latvian, Lithuanian, Russian, Danish. [#213]
+* Add `keepSmallValues` options to `roundDecimal` whichs ensure that rounding doesn't occur when value is smaller than the number of significant digits of the rounding.  Defaults to false. [#219]
+* Export `importRasterDatasource`, `importVectorDatasource`, and related helper functions (`genVectorConfig`, `genRasterConfig`) from library for projects to roll their own import functions.
+* Change `geographies` to `geographyIds` in functions using `ExtraParams`
+* Add antimeridian crossing rasters for testing
+* Consolidate top-level `data` directory, pointing `start-data` at the top-level so that both `data/in` and `data/out` can be accessed depending on the test.
+* Add `isInternalDatasource` and `isExternalDatasource` helpers for type narrowing purposes such as in data precalc and import.
+* Update `genRasterConfig` and `genVectorConfig` to support either a Datasource or Config as input.
+* Append `geographyId` to metric output for all example geoprocessing functions in templates.
+* Add support for simple `metadata` fields in `datasource`.  Used primarily for third-party external datasources so developer can better reason about which to use and where it comes from.
+
+### :memo: Documentation
+
+* Better document port usage (8001, 8080)
+* Add `Edges and Limits` page for documenting how edge cases and limits of the framework are handled.
+* Update `Tutorials` to cover geographies
+* Update `Concepts` to cover geographiess
 
 ## v4.0.0 (2023-08-21)
 

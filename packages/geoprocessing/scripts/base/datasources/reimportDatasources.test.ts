@@ -15,8 +15,8 @@ import path from "path";
 import fs from "fs-extra";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
-const srcPath = "data/testing";
-const dstPath = "data/testing/output";
+const srcPath = "data/in";
+const dstPath = "data/out";
 
 describe("Reimport datasources", () => {
   describe("reimport - single file, single class", () => {
@@ -39,8 +39,9 @@ describe("Reimport datasources", () => {
           src: path.join(srcPath, `${vectorDatasourceId}.json`),
           datasourceId: vectorDatasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["tif"],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,
@@ -56,10 +57,11 @@ describe("Reimport datasources", () => {
           src: path.join(srcPath, `${rasterDatasourceId}.tif`),
           datasourceId: rasterDatasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["tif"],
           noDataValue: 0,
           band: 1,
           measurementType: "quantitative",
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,

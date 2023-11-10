@@ -141,9 +141,26 @@
   "console": "integratedTerminal",
   "internalConsoleOptions": "neverOpen",
   "port": 9229        
+}, {
+  "type": "node",
+  "request": "launch",
+  "name": "run any ts-node script",
+  "runtimeArgs": [
+      "-r",
+      "ts-node/register/transpile-only",
+  ],
+  "args": [
+      "${workspaceRoot}/packages/geoprocessing/${input:scriptPath}"
+  ]
 }
   ],
   "inputs": [
+    {
+      "type": "promptString",
+      "id": "scriptPath",
+      "description": "",
+      "default": "path/to/script.ts relative to packages/geoprocessing directory"
+    },
     {
       "type": "promptString",
       "id": "testNamePattern",

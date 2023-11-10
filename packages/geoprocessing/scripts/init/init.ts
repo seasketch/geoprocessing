@@ -7,7 +7,7 @@ import awsRegions from "aws-regions";
 import util from "util";
 import { getTemplateQuestion } from "../template/addTemplate";
 import { createProject, CreateProjectMetadata } from "./createProject";
-import { eezCountries } from "../datasources/eez_land_union_v3";
+import { eezColl } from "../global/datasources/mr-eez";
 
 const exec = util.promisify(require("child_process").exec);
 
@@ -22,9 +22,9 @@ async function init(gpVersion?: string) {
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
 
-  const countryChoices = eezCountries.features.map((eez) => ({
-    value: eez.properties.UNION,
-    name: eez.properties.UNION,
+  const eezChoices = eezColl.features.map((eez) => ({
+    value: eez.properties.GEONAME,
+    name: eez.properties.GEONAME,
   }));
 
   const templateQuestion = await getTemplateQuestion("starter-template");
@@ -128,15 +128,15 @@ async function init(gpVersion?: string) {
       when: (answers) => answers.planningAreaType === "eez",
       type: "list",
       name: "planningAreaId",
-      message: "What countries EEZ is this for?",
-      choices: countryChoices,
+      message: "What EEZ is this for?",
+      choices: eezChoices,
     },
     {
       when: (answers) => answers.planningAreaType === "eez",
       type: "list",
       name: "planningAreaNameQuestion",
       message: (answers) =>
-        `Is there a more common name for this planning area to use in reports than ${answers.planningAreaId}?`,
+        `Is there a different name to use for this planning area than ${answers.planningAreaId}?`,
       choices: [
         { value: "yes", name: "Yes" },
         { value: "no", name: "No" },

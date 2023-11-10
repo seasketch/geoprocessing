@@ -1,7 +1,7 @@
 // @ts-ignore
 import { ReadableStream } from "web-streams-polyfill/ponyfill";
 import { takeAsync } from "flatgeobuf/lib/cjs/streams/utils";
-import { BBox, GeometryTypes } from "../types";
+import { BBox, Feature, Geometry } from "../types";
 
 //@ts-ignore
 global["ReadableStream"] = ReadableStream;
@@ -36,11 +36,21 @@ export function fgBoundingBox(box: BBox) {
  * Useful when running a spatial function on the whole set is faster than running
  * one at a time as the deserialize generator provides them
  */
-export async function fgbFetchAll<T = GeometryTypes>(url: string, box?: BBox) {
-  console.log("fgbFetchAll", `url: ${url}`, `box: ${box}`);
+export async function fgbFetchAll<F extends Feature<Geometry>>(
+  url: string,
+  box?: BBox
+) {
+  const fgBox = (() => {
+    if (!box && !Array.isArray(box)) {
+      return fgBoundingBox([-180, -90, 180, 90]); // fallback to entire world
+    } else {
+      return fgBoundingBox(box);
+    }
+  })();
+  console.log("fgbFetchAll", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
   const features = (await takeAsync(
-    deserialize(url, box ? fgBoundingBox(box) : undefined) as AsyncGenerator
-  )) as T[];
+    deserialize(url, fgBox) as AsyncGenerator
+  )) as F[];
   if (!Array.isArray(features))
     throw new Error("Unexpected result from fgbFetchAll");
   return features;

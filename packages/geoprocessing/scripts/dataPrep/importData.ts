@@ -4,14 +4,14 @@ import {
   datasourceFormatDescriptions,
   importVectorDatasourceOptionsSchema,
   ImportVectorDatasourceOptions,
-  Datasources,
+  Datasource,
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
   datasourceConfig,
 } from "../../src";
 import path from "path";
 import { getProjectClient } from "../base/project/projectClient";
-import { publishQuestion } from "./publishQuestion";
+import { precalcQuestion } from "./precalcQuestion";
 
 // This is a standalone script used as a CLI command with a top-level function
 
@@ -21,7 +21,7 @@ const projectClient = getProjectClient(projectPath);
 interface ImportVectorDatasourceAnswers
   extends Pick<
     ImportVectorDatasourceOptions,
-    "src" | "datasourceId" | "layerName" | "geo_type" | "formats"
+    "src" | "datasourceId" | "layerName" | "geo_type" | "formats" | "precalc"
   > {
   classKeys: string;
   propertiesToKeep: string;
@@ -37,12 +37,14 @@ interface ImportRasterDatasourceAnswers
     | "formats"
     | "noDataValue"
     | "measurementType"
+    | "precalc"
   > {}
 
 // Main function, wrapped in an IIFE to avoid top-level await
 void (async function () {
   const datasources = readDatasources();
   const geoTypeAnswer = await geoTypeQuestion(datasources);
+  const precalcAnswers = await precalcQuestion();
 
   const config = await (async () => {
     if (geoTypeAnswer.geo_type === "vector") {
@@ -60,7 +62,13 @@ void (async function () {
         ...geoTypeAnswer,
         ...inputAnswers,
         ...layerNameAnswer,
-        ...detailedVectorAnswers,
+        ...{
+          ...detailedVectorAnswers,
+          formats: datasourceConfig.importDefaultVectorFormats.concat(
+            detailedVectorAnswers.formats
+          ),
+        },
+        ...precalcAnswers,
       });
       return config;
     } else {
@@ -76,16 +84,13 @@ void (async function () {
         ...inputAnswers,
         ...rasterBandAnswer,
         ...detailedRasterAnswers,
+        ...precalcAnswers,
       });
       return config;
     }
   })();
 
-  const publishAnswers = await publishQuestion();
-  await importDatasource(projectClient, config, {
-    doPublish: publishAnswers.publish === "yes" ? true : false,
-    srcBucketUrl: projectClient.dataBucketUrl(),
-  });
+  await importDatasource(projectClient, config, {});
 })();
 
 /** Maps answers object to options */
@@ -122,7 +127,7 @@ function rasterMapper(
 }
 
 async function geoTypeQuestion(
-  datasources: Datasources
+  datasources: Datasource[]
 ): Promise<Pick<ImportVectorDatasourceAnswers, "geo_type">> {
   return inquirer.prompt<Pick<ImportVectorDatasourceAnswers, "geo_type">>([
     {
@@ -144,7 +149,7 @@ async function geoTypeQuestion(
 }
 
 async function inputQuestions(
-  datasources: Datasources
+  datasources: Datasource[]
 ): Promise<Pick<ImportVectorDatasourceAnswers, "src" | "datasourceId">> {
   const datasourceIds = datasources.map((ds) => ds.datasourceId);
   return inquirer.prompt<
@@ -199,7 +204,7 @@ async function rasterBandQuestion(
 }
 
 async function detailedVectorQuestions(
-  datasources: Datasources
+  datasources: Datasource[]
 ): Promise<
   Pick<
     ImportVectorDatasourceAnswers,
@@ -237,19 +242,20 @@ async function detailedVectorQuestions(
     {
       type: "checkbox",
       name: "formats",
-      message:
-        "What formats would you like to publish?  Suggested formats already selected",
-      choices: datasourceConfig.importSupportedVectorFormats.map((name) => ({
+      message: `The following formats will automatically be created: ${datasourceConfig.importDefaultVectorFormats.join(
+        ", "
+      )}. What additional formats would you like created?`,
+      choices: datasourceConfig.importExtraVectorFormats.map((name) => ({
         value: name,
         name: `${name} - ${datasourceFormatDescriptions[name]}`,
-        checked: datasourceConfig.importDefaultVectorFormats.includes(name),
+        checked: false,
       })),
     },
   ]);
 }
 
 async function detailedRasterQuestions(
-  datasources: Datasources
+  datasources: Datasource[]
 ): Promise<
   Pick<
     ImportRasterDatasourceAnswers,

@@ -1,1 +1,0 @@
-The `geoprocessing/data` directory is separate from the geoprocessing library and is a good place to store data files, and to temporarily output data from tests.  Testing bits that you want to get bundled with the library so that project code can import and use it should go into `geoprocessing/src/testing`.

@@ -3,6 +3,7 @@ import { SupportedFormats } from "../types";
 const vectorFormats: SupportedFormats[] = ["fgb", "json", "subdivided"];
 const importSupportedVectorFormats: SupportedFormats[] = ["fgb", "json"];
 const importDefaultVectorFormats: SupportedFormats[] = ["fgb"];
+const importExtraVectorFormats: SupportedFormats[] = ["json"];
 
 const rasterFormats: SupportedFormats[] = ["tif"];
 const importSupportedRasterFormats: SupportedFormats[] = ["tif"];
@@ -17,6 +18,7 @@ export const datasourceConfig = {
   vectorFormats,
   importSupportedVectorFormats,
   importDefaultVectorFormats,
+  importExtraVectorFormats,
   rasterFormats,
   importSupportedRasterFormats,
   importDefaultRasterFormats,

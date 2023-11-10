@@ -18,3 +18,5 @@ export * from "./string";
 export * from "./ts";
 export * from "./units";
 export * from "./valueFormatter";
+export * from "./extraParams";
+export * from "./zeroGeometry";

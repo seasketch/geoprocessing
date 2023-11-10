@@ -1,5 +1,5 @@
 import React from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { nestMetrics } from "../../metrics/helpers";
 import {
   percentWithEdge,
@@ -10,7 +10,7 @@ import {
 import { MetricGroup, Metric, Objective } from "../../types";
 import { Table, Column } from "../table/Table";
 import { LayerToggle } from "../LayerToggle";
-import { CheckCircleFill } from "@styled-icons/bootstrap";
+import { CheckCircleFill, InfoCircleFill } from "@styled-icons/bootstrap";
 import {
   HorizontalStackedBar,
   HorizontalStackedBarProps,
@@ -20,6 +20,7 @@ import { ValueFormatter, valueFormatter } from "../../helpers/valueFormatter";
 import { ReportTableStyled } from "../table/ReportTableStyled";
 import styled from "styled-components";
 import { getMetricGroupObjectiveId } from "../../helpers/metricGroup";
+import { Tooltip } from "../Tooltip";
 
 export const ClassTableStyled = styled(ReportTableStyled)`
   .styled {
@@ -78,6 +79,8 @@ export interface ClassTableProps {
 
 /**
  * Table displaying class metrics, one class per table row.  Having more than one metric per class may yield unexpected results
+ * Returns 0 value in table when faced with a 'missing' metric instead of erroring
+ * Handles "class has no value" NaN situation (common when sketch doesn't overlap with a geography) by overwriting with 0 and adding information circle
  */
 export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   rows,
@@ -136,13 +139,59 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
           accessor: (row) => {
             if (!colConfig.metricId)
               throw new Error("Missing metricId in column config");
-            const value =
-              metricsByClassByMetric[row.classId][colConfig.metricId][0].value;
-            return `${
-              colConfig.valueFormatter
-                ? valueFormatter(value, colConfig.valueFormatter)
-                : value
-            } ${colConfig.valueLabel ? ` ${colConfig.valueLabel}` : ""}`;
+            // Return 0 when faced with a 'missing' metric
+            // Return 0 with a Tooltip when faced with a 'NaN' metric value
+            const value = (() => {
+              if (
+                metricsByClassByMetric[row.classId] &&
+                metricsByClassByMetric[row.classId][colConfig.metricId]
+              ) {
+                return metricsByClassByMetric[row.classId][
+                  colConfig.metricId
+                ][0].value;
+              } else {
+                return 0;
+              }
+            })();
+            const suffix = (() => {
+              if (isNaN(value)) {
+                const tooltipText =
+                  (classesByName[row.classId || "missing"]?.display ||
+                    "This feature class") +
+                  " not found in the selected planning area";
+                return (
+                  <Tooltip
+                    text={tooltipText}
+                    placement="bottom"
+                    offset={{ horizontal: 0, vertical: 5 }}
+                  >
+                    <InfoCircleFill
+                      size={14}
+                      style={{
+                        color: "#83C6E6",
+                      }}
+                    />
+                  </Tooltip>
+                );
+              } else {
+                return <></>;
+              }
+            })();
+
+            const formattedValue = (() => {
+              const finalValue = isNaN(value) ? 0 : value;
+              return colConfig.valueFormatter
+                ? valueFormatter(finalValue, colConfig.valueFormatter)
+                : finalValue;
+            })();
+
+            return (
+              <>
+                {formattedValue}
+                {colConfig.valueLabel ? ` ${colConfig.valueLabel}` : ""}
+                {suffix}
+              </>
+            );
           },
           style,
         };
@@ -153,8 +202,19 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
           accessor: (row, rowIndex) => {
             if (!colConfig.metricId)
               throw new Error("Missing metricId in column config");
-            const value =
-              metricsByClassByMetric[row.classId][colConfig.metricId][0].value;
+            // Return 0 when faced with a 'missing' metric
+            const value = (() => {
+              if (
+                metricsByClassByMetric[row.classId] &&
+                metricsByClassByMetric[row.classId][colConfig.metricId]
+              ) {
+                return metricsByClassByMetric[row.classId][
+                  colConfig.metricId
+                ][0].value;
+              } else {
+                return 0;
+              }
+            })();
             const target = (() => {
               if (!objective) return 0;
               if (Array.isArray(objective)) {
@@ -182,6 +242,11 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
               }
             })();
 
+            const tooltipText =
+              (classesByName[row.classId || "missing"]?.display ||
+                "This feature class") +
+              " not found in the selected planning area";
+
             const chartProps = {
               ...(colConfig.chartOptions ? colConfig.chartOptions : {}),
               rows: [
@@ -197,7 +262,20 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                 {
                   title: (value: number) => (
                     <>
-                      {target && value >= target ? (
+                      {isNaN(value) ? (
+                        <Tooltip
+                          text={tooltipText}
+                          placement="bottom"
+                          offset={{ horizontal: 0, vertical: 5 }}
+                        >
+                          <InfoCircleFill
+                            size={14}
+                            style={{
+                              color: "#83C6E6",
+                            }}
+                          />
+                        </Tooltip>
+                      ) : target && value >= target ? (
                         <CheckCircleFill
                           size={14}
                           style={{ color: "#78c679", paddingRight: 5 }}
@@ -205,7 +283,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                       ) : (
                         <></>
                       )}
-                      {percentWithEdge(value / 100)}
+                      {percentWithEdge(isNaN(value) ? 0 : value / 100)}
                     </>
                   ),
                 },

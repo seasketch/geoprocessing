@@ -19,9 +19,9 @@ If you upgrade your geoprocessing library, the files in `data/bin` will get over
 
 If the escape hatches above aren't enough, it is possible to skip the use of `data:import` entirely.  Consider reserving this for datasource that you want to import directly into your but it won't be easy.
 
-* Write your own script that pre-calculates keyStats
+* Write your own script that pre-calculates metrics for your datasource
 * Amend `project/projectClient.ts` to side-load your own custom datasource record and merge it with what is loaded from `datasources.json`
-* You may The benefit of it is that it creates a datasource record in `project/datasources.json` which can then be referenced in `project/metrics.json`.  These are read in by the `ProjectClient` in `project/projectClient.ts`, which is used by your functions and UI clients.  To do this you can edit `projectClient.ts` to add your own custom datasources outside of the `datasources.json` file and merge them in.  It's up to you to pre-calculate the `keyStats`, and structure it properly if you still want to be able to run `data:publish`
+* You may The benefit of it is that it creates a datasource record in `project/datasources.json` which can then be referenced in `project/metrics.json`.  These are read in by the `ProjectClient` in `project/projectClient.ts`, which is used by your functions and UI clients.  To do this you can edit `projectClient.ts` to add your own custom datasources outside of the `datasources.json` file and merge them in.  It's up to you to pre-calculate datasource metrics, and structure them properly if you still want to be able to run `data:publish`
 
 # I need to extend the base types or code
 

@@ -4,6 +4,7 @@ import {
   Polygon,
   MultiPolygon,
   BBox,
+  Geometry,
 } from "../types";
 import Flatbush from "flatbush";
 import Pbf from "pbf";
@@ -133,7 +134,7 @@ class RBushIndex extends RBush<Feature> {
   }
 }
 
-export class VectorDataSource<T extends Feature> {
+export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
   options: VectorDataSourceOptions;
   metadata?: DataSourceMetadata;
   private url: string;

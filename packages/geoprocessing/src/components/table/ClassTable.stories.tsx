@@ -14,6 +14,7 @@ import {
   categoricalClassMetricsMixedTarget,
   categoricalMetricGroup,
   categoricalMetricGroupMixedTarget,
+  NaNPercMetrics,
 } from "../../testing/fixtures/metrics";
 import { valueFormatter } from "../../helpers/valueFormatter";
 import Translator from "../i18n/TranslatorAsync";
@@ -367,6 +368,36 @@ export const categoricalData = () => {
   );
 };
 
+export const tableWithNanValue = () => {
+  return (
+    <Translator>
+      <ClassTable
+        rows={NaNPercMetrics}
+        metricGroup={categoricalMetricGroup}
+        objective={categoricalSingleObjective}
+        columnConfig={[
+          {
+            type: "class",
+          },
+          {
+            type: "metricValue",
+            metricId: simpleMetricGroup.metricId,
+            valueFormatter: "percent",
+            columnLabel: "% Value",
+          },
+          {
+            type: "metricGoal",
+            valueFormatter: "percent",
+          },
+          {
+            type: "layerToggle",
+          },
+        ]}
+      />
+    </Translator>
+  );
+};
+
 export const valueFormatAndLabel = () => {
   return (
     <Translator>
@@ -432,6 +463,41 @@ export const chartWithIntegratedValueAndTargetPass = () => {
     <Translator>
       <ClassTable
         rows={categoricalClassMetrics}
+        metricGroup={categoricalMetricGroup}
+        objective={categoricalSingleObjective}
+        columnConfig={[
+          {
+            type: "class",
+            width: 30,
+          },
+          {
+            type: "metricChart",
+            metricId: simpleMetricGroup.metricId,
+            valueFormatter: "percent",
+            columnLabel: "Found Within plan",
+            chartOptions: {
+              showTitle: true,
+            },
+            width: 55,
+          },
+        ]}
+      />
+    </Translator>
+  );
+};
+
+export const chartWithNanValue = () => {
+  return (
+    <Translator>
+      <p>
+        Bays and Coast data class in this story has a NaN value. This use case
+        happens when no features for a data class overlap with a given
+        geography. In this scenario a NaN metric value is produced by
+        toPercentMetric(), because the denominator value is zero. ClassTable
+        picks up on this and displays more information to the user()
+      </p>
+      <ClassTable
+        rows={NaNPercMetrics}
         metricGroup={categoricalMetricGroup}
         objective={categoricalSingleObjective}
         columnConfig={[

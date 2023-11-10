@@ -17,18 +17,20 @@ export interface FeatureClipOperation {
   operation: ClipOperations;
 }
 
+export interface DatasourceOptions {
+  /** Fetches features overlapping with bounding box */
+  bbox?: BBox;
+  /** Filter features by property having one or more specific values */
+  propertyFilter?: VectorPropertyFilter;
+  /** Provide if you have subdivided dataset and want to rebuild (union) subdivided polygons based on having same value for this property name */
+  unionProperty?: string;
+}
+
 /** Parameters for clip operation using a datasource */
 export interface DatasourceClipOperation {
   datasourceId: string;
   operation: ClipOperations;
-  options?: {
-    /** Fetches features overlapping with bounding box */
-    bbox?: BBox;
-    /** Filter features by property having one or more specific values */
-    propertyFilter?: VectorPropertyFilter;
-    /** Provide if you have subdivided dataset and want to rebuild (union) subdivided polygons based on having same value for this property name */
-    unionProperty?: string;
-  };
+  options?: DatasourceOptions;
 }
 
 /** Optional parameters for preprocessor function */

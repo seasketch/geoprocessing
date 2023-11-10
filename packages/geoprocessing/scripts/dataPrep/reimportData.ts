@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import { Datasources } from "../../src";
+import { Datasource } from "../../src";
 import { reimportDatasources } from "../base/datasources";
 import { getProjectClient } from "../base/project/projectClient";
 import { publishQuestion } from "./publishQuestion";
@@ -62,7 +62,7 @@ export interface DatasourcesAnswers {
 }
 
 export async function datasourcesQuestion(
-  datasources: Datasources
+  datasources: Datasource[]
 ): Promise<DatasourcesAnswers> {
   const datasourcesQuestion = await getDatasourcesQuestion(datasources);
   const answer = await inquirer.prompt<DatasourcesAnswers>([
@@ -71,7 +71,7 @@ export async function datasourcesQuestion(
   return answer;
 }
 
-export async function getDatasourcesQuestion(datasources: Datasources) {
+export async function getDatasourcesQuestion(datasources: Datasource[]) {
   if (datasources.length === 0) {
     console.error("No datasources found, exiting");
     process.exit();

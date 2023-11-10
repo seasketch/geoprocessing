@@ -16,9 +16,9 @@ What's unique about the geoprocessing framework is it's flexibility.  It's not o
 
 # Where to start
 
-A geoprocessing project starts with a design phase, using something like this [planning tool design template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing).
+A geoprocessing project starts with a design phase, using a [planning tool design template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing).
 
-Here's some core terms and concepts:
+There are a number of terms and concepts to be familiar with:
 
 * `MPA` - [marine protected area].  Protected areas of seas, oceans, estuaries. (https://en.wikipedia.org/wiki/Marine_protected_area)
 
@@ -34,7 +34,9 @@ Here's some core terms and concepts:
 
   * Example - 20% of the EEZ
 
-Datasources are then gathered that can be used to measure progress towards an objective.  For example:
+One or more [Geographies](#geographies) are then defined that define the planning boundaries for the project.  This can be one large overarching boundary for the project, and/or multiple smaller planning boundaries.
+
+[Datasources](#datasources) are then created/gathered to defined the extent of each Geography, and to provide data that measures progress towards an objective.  For example:
 
 * A polygon boundary of a countries Exclusive Economic Zone is used to measure what % of the EEZ a proposed area covers.
 * A coral reef dataset can be used to measure whether a proposed area covers at least 50% of each coral type.
@@ -206,24 +208,168 @@ A [Sketch Collection](https://seasketch.github.io/geoprocessing/api/interfaces/g
 }
 ```
 
-# Objectives
+# Geographies
 
-Each planning [objective](https://github.com/seasketch/geoprocessing/blob/d633b202a855689655032bdb290e036f2733b33d/packages/geoprocessing/src/types/objective.ts) defines a target and 1 or more protection levels that count towards that target. The default protection level is `Fully Protected Area` which means no activities are allowed.  You can learn more about MPA [classification schemes](https://docs.google.com/document/d/1i0baxgK8JEUjtU8mnzFiG5VB_gO8lmxCrAtJ5rltk30/edit?usp=sharing)
+A `Geography` represents one or more geographic boundaries for the project, and is primarily used to define project planning boundaries.  Geographies are contained in `project/geographies.json`.
 
-In the geoprocessing framework, objectives are structured as follows:
+By default, a report will only display results for one geography at a time if the geoprocessing functions are designed to only process one geography at a time.  A `GeographySwitcher` is typically used to provide the ability to switch geographies, which will run the geoprocessing functions with a different geography input.
 
+You could write a geoprocessing function that processes all geographies in one run, you just have to take into consideration the processing time required to complete it.
+
+The default Geography for a new blank project is the entire world.  The default Geography for a new Ocean EEZ project is the EEZ boundary you chose at creation time.
+
+World geography:
 ```json
 {
-  "objectiveId": "eez",
-  "shortDesc": "EEZ Objective",
-  "target": 0.2,
-  "countsToward": {
-      "Fully Protected Area": "yes"
-  }
+  "geographyId": "world",
+  "datasourceId": "world",
+  "display": "World",
+  "groups": ["default-boundary"],
+  "precalc": true
 }
 ```
 
-This is an objective to target protection of at least `20%` of the `eez` boundary, which is defined as the shoreline out to 200 nautical miles.  A proposed area must be classified as a `Fully Protected Area` to count towards this objective.
+EEZ geography:
+```json
+{
+    "geographyId": "world",
+    "datasourceId": "world",
+    "display": "World",
+    "groups": [],
+    "precalc": false
+  },
+  {
+    "geographyId": "eez",
+    "datasourceId": "global-eez-mr-v12",
+    "display": "Samoan EEZ",
+    "propertyFilter": {
+      "property": "GEONAME",
+      "values": [
+        "Samoan Exclusive Economic Zone"
+      ]
+    },
+    "bboxFilter": [
+      -174.51139447157757,
+      -15.878383591829206,
+      -170.54265693017294,
+      -10.960825304544073
+    ],
+    "groups": [
+      "default-boundary"
+    ],
+    "precalc": true
+  }
+```
+
+Each `Geography` points to a [datasource](#datasources), which provides the polygon or multipolygon boundary for that Geography.
+
+The way that Geographies are used in reporting is that sketches and datasources are clipped to these geographies, in order to produce metrics that are representative of that geographic boundary.  Project code is geography-aware at multiple points including:
+
+- preprocessing functions - when sketches should be clipped to a geography beforehand.
+- geoprocessing functions  - when sketches should be clipped to a geography at runtime (common in multi-geography use case)
+- precalc - to calculate overall metrics (total area, count, sum of value) within each geography for each datasource.  These precalc metrics are used in the denominator when calculating a sketches % overlap with a given datasource within a given geography.
+- report clients - to retrieve precalculated metrics, allow the user to potentially switch between geographies, and to pass the current user-selected geography to the geoprocessing functions.
+
+## Geography Properties
+
+* `geographyId` (string) - unique ID of the geography
+* `datasourceId` (string) - unique ID of the datasource containing Geography bondary
+* `display` (string) - display name for the Geography.  Can be used with GeographySwitcher to allow user to select a Geography.
+* `layerId` (string, optional) - unique ID of external layer for visualizing the Geography.  Can be used with LayerSwitcher to send layer toggle event via iFrame.
+* `groups` (string[], optional) - allows geography to identify as a member of one or more ad-hoc groups.  A default geography which identifies the planning boundary must be assigned to the `default-boundary` group.
+* `precalc` (boolean) - whether or not datasources should be precalculated against this geography.
+* `propertyFilter` (object[], optional) - for vector datasources only, defines filter to constrain geography features, matches feature property having one or more specific values.
+  * `property` (string) - name of vector feature property to use in filter
+  * `values` (string | number[]) - one or more values to match on to include features.  For example you could match on one or more EEZ names, or one or more smaller planning boundaries.
+
+* `bboxFilter` ([number, number, number, number]) - constrain geography to only features within a bounding box
+
+# Datasources
+
+A datasource represents a spatial dataset, including what type it is, how to acces it, and optionally some key statistics for the whole dataset (count, sum, area).  Datasources are a combination of `vector` or `raster` and `internal` or `external`.
+
+## Datasource Properties
+
+Base:
+
+* `datasourceId` - unique string identifier for datasource.
+* `geo_type` - vector | raster
+* [formats](https://github.com/seasketch/geoprocessing/blob/d633b20/packages/geoprocessing/src/types/datasource.ts#L11)
+  * [fgb](https://flatgeobuf.org/) - Flatgeobuf. Efficient file and network transfer size.
+  * [json](https://geojson.org/) - GeoJSON. Easy to use and human readable.
+  * [subdivided](https://github.com/seasketch/union-subdivided-polygons) - Subdivided polygons that can be unioned back together. Efficient file and network transfer size
+  * [tif](https://www.cogeo.org/) - Cloud-optimized GeoTiff. Efficient network transfer size.
+
+Vector:
+
+* `layerName` - name of layer within datasource to import, if format support multiple layers.  Otherwise layername should match the `src` dataset name, minus the extension (e.g. eez.shp has layerName of eez)
+* `classKeys`: names of properties that data classes will be created for (e.g. "reef_type" property with name of reef type feature represents.)
+
+Raster:
+
+* `measurementType` - quantitative | categorical
+* `band` - band number to import from source dataset
+* `noDataValue` - value that if assigned to a raster cell, should not be counted as data.
+
+External:
+
+* `url` - url to access the datasource at
+
+Internal:
+
+* `src` - local file path to access the datasource at
+
+## External Datasources
+
+External [vector](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#ExternalVectorDatasource) and [raster](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#ExternalRasterDatasource) datasources are published on the Internet, external to the geoprocessing project and its stack.  This is commonly used for what are called `global` datasets that any geoprocessing project can use.
+
+Global datasets are published independently and available for use in each project.  They include:
+
+* `eez_union_land` (version 3, based on EEZ version 11).  This is the union of world country boundaries and Exclusive Economic Zones (EEZs) which are 200 nautical miles .  This allows a polygon be clipped to the outer EEZ boundary without using the Marine Regions interpretation of the shoreline which can be very coarse - https://marineregions.org/downloads.php
+
+* `osm_land` (latest snapshot at time of download).  Derived from OpenStreetMap ways tagged with natural=coastline.  Uses the OSMCoastline program to assembline a single contigous polygon dataset.
+
+## Internal Vector Datasource
+
+Internal [vector](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#InternalVectorDatasource) datasource have a `src` path as well as optional `layerName` and `classKeys` properties.
+
+This example is for an `eez` boundary datasets, that is imported from the `current-vector` geopackage with layerName `eez_mr_osm`.
+
+```json
+{
+    "datasourceId": "eez",
+    "geo_type": "vector",
+    "formats": [
+      "fgb"
+    ],
+    "layerName": "eez_mr_osm",
+    "classKeys": [],
+    "created": "2022-11-16T23:04:19.554Z",
+    "lastUpdated": "2023-01-19T03:00:30.544Z",
+    "src": "data/src/Analytics/current-vector.gpkg",
+    "propertiesToKeep": []
+  }
+```
+
+## Internal Raster Datasource
+
+An [internal raster datasource]()
+
+```json
+{
+    "datasourceId": "depth_zone_photic",
+    "geo_type": "raster",
+    "formats": [
+        "tif"
+    ],
+    "measurementType": "quantitative",
+    "band": 1,
+    "noDataValue": -3.3999999521443642e+38,
+    "created": "2022-11-21T21:44:08.941Z",
+    "lastUpdated": "2023-01-19T03:00:39.518Z",
+    "src": " data/src/Data_Received/EmLab/offshore/inputs/features/photic_zone.tif"
+}
+```
 
 # Metrics
 
@@ -328,109 +474,21 @@ The following is an example of a single Metric object.
 
 It's a `boundaryAreaOverlap` metric for sketch `abc123`, measuring an overlap of `75066893245.88089 square meters` with the `eez` boundary.  There is no associated group or geography.  The name of the sketch is additionally included for human readability.
 
-# Datasources
+# Objectives
 
-A datasource represents a spatial dataset, including what type it is, how to acces it, and optionally some key statistics for the whole dataset (count, sum, area).  Datasources are a combination of `vector` or `raster` and `internal` or `external`.
+Each planning [objective](https://github.com/seasketch/geoprocessing/blob/d633b202a855689655032bdb290e036f2733b33d/packages/geoprocessing/src/types/objective.ts) defines a target and 1 or more protection levels that count towards that target. The default protection level is `Fully Protected Area` which means no activities are allowed.  You can learn more about MPA [classification schemes](https://docs.google.com/document/d/1i0baxgK8JEUjtU8mnzFiG5VB_gO8lmxCrAtJ5rltk30/edit?usp=sharing)
 
-## Datasource Properties
-
-Base:
-
-* `datasourceId` - unique string identifier for datasource.
-* `geo_type` - vector | raster
-* `keyStats` - Summary stats by key, by class (as defined by `classKeys` property for vector and `measurementType` for raster).  These are automatically calculated on import.
-* [formats](https://github.com/seasketch/geoprocessing/blob/d633b20/packages/geoprocessing/src/types/datasource.ts#L11)
-  * [fgb](https://flatgeobuf.org/) - Flatgeobuf. Efficient file and network transfer size.
-  * [json](https://geojson.org/) - GeoJSON. Easy to use and human readable.
-  * [subdivided](https://github.com/seasketch/union-subdivided-polygons) - Subdivided polygons that can be unioned back together. Efficient file and network transfer size
-  * [tif](https://www.cogeo.org/) - Cloud-optimized GeoTiff. Efficient network transfer size.
-
-Vector:
-
-* `layerName` - name of layer within datasource to import, if format support multiple layers.  Otherwise layername should match the `src` dataset name, minus the extension (e.g. eez.shp has layerName of eez)
-* `classKeys`: names of properties that data classes will be created for (e.g. "reef_type" property with name of reef type feature represents.)
-
-Raster:
-
-* `measurementType` - quantitative | categorical
-* `band` - band number to import from source dataset
-* `noDataValue` - value that if assigned to a raster cell, should not be counted as data.
-* `filterDatasource` - id of a datasource to intersect with the input datasource on import.  Currently only supported for rasters.  This is useful for example if you have a dataset that extends beyond the planning area and you want to filter it to the planning area on import so that keyStats as well as any geoprocessing functions will be based on the filtered set.
-
-External:
-
-* `url` - url to access the datasource at
-
-Internal:
-
-* `src` - local file path to access the datasource at
-
-## External Datasources
-
-External [vector](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#ExternalVectorDatasource) and [raster](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#ExternalRasterDatasource) datasources are published on the Internet, external to the geoprocessing project and its stack.  This is commonly used for what are called `global` datasets that any geoprocessing project can use.
-
-Global datasets are published independently and available for use in each project.  They include:
-
-* `eez_union_land` (version 3, based on EEZ version 11).  This is the union of world country boundaries and Exclusive Economic Zones (EEZs) which are 200 nautical miles .  This allows a polygon be clipped to the outer EEZ boundary without using the Marine Regions interpretation of the shoreline which can be very coarse - https://marineregions.org/downloads.php
-
-* `osm_land` (latest snapshot at time of download).  Derived from OpenStreetMap ways tagged with natural=coastline.  Uses the OSMCoastline program to assembline a single contigous polygon dataset.
-
-## Internal Vector Datasource
-
-Internal [vector](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#InternalVectorDatasource) datasource have a `src` path as well as optional `layerName` and `classKeys` properties.
-
-This example is for an `eez` boundary datasets, that is imported from the `current-vector` geopackage with layerName `eez_mr_osm`.  Based on keyStats there is 1 feature in the datasource with an area of `3,032,525,677,797 square meters`
+In the geoprocessing framework, objectives are structured as follows:
 
 ```json
 {
-    "datasourceId": "eez",
-    "geo_type": "vector",
-    "keyStats": {
-      "total": {
-        "total": {
-          "count": 1,
-          "sum": null,
-          "area": 3032525677797.563
-        }
-      }
-    },
-    "formats": [
-      "fgb"
-    ],
-    "layerName": "eez_mr_osm",
-    "classKeys": [],
-    "created": "2022-11-16T23:04:19.554Z",
-    "lastUpdated": "2023-01-19T03:00:30.544Z",
-    "src": "data/src/Analytics/current-vector.gpkg",
-    "propertiesToKeep": []
+  "objectiveId": "eez",
+  "shortDesc": "EEZ Objective",
+  "target": 0.2,
+  "countsToward": {
+      "Fully Protected Area": "yes"
   }
-```
-
-## Internal Raster Datasource
-
-An [internal raster datasource]()
-
-```json
-{
-    "datasourceId": "depth_zone_photic",
-    "geo_type": "raster",
-    "keyStats": {
-        "total": {
-        "total": {
-            "count": null,
-            "sum": 85,
-            "area": null
-        }
-        }
-    },
-    "formats": [
-        "tif"
-    ],
-    "measurementType": "quantitative",
-    "band": 1,
-    "noDataValue": -3.3999999521443642e+38,
-    "created": "2022-11-21T21:44:08.941Z",
-    "lastUpdated": "2023-01-19T03:00:39.518Z",
-    "src": " data/src/Data_Received/EmLab/offshore/inputs/features/photic_zone.tif"
 }
 ```
+
+This is an objective to target protection of at least `20%` of the `eez` boundary, which is defined as the shoreline out to 200 nautical miles.  A proposed area must be classified as a `Fully Protected Area` to count towards this objective.

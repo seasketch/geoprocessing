@@ -1,5 +1,15 @@
 # Changelog
 
+## v5.0.0 ()
+
+### :boom: Breaking Changes
+
+* `projectClient.getVectorDatasourceUrl()` has been changed to `getDatasourceUrl()`, supporting generating a url for all datasource types
+* `project/geographies.json` file is required with at least one geography
+* `project/precalc.json` file is required with at least an empty array
+
+See [v4 to v5 migration guide](https://github.com/seasketch/geoprocessing/wiki/Migrating)
+
 ## v4.0.0 (2023-08-21)
 
 ### :boom: Breaking Changes

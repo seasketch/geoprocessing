@@ -8,52 +8,60 @@ import {
   ExternalVectorDatasource,
   InternalVectorDatasource,
   Feature,
+  Geometry,
+  VectorDatasource,
 } from "../types";
-import { DatasourceClipOperation } from "../types/dataProcessor";
+import { DatasourceOptions } from "../types/dataProcessor";
 
 /**
  * Returns features for a variety of vector datasources and formats, with additional filter options
- * Currently only supports internal flatgeobuf and external subdivided datasources
  */
-export async function getFeatures(
-  datasource: InternalVectorDatasource | ExternalVectorDatasource,
+export async function getFeatures<F extends Feature<Geometry>>(
+  datasource:
+    | InternalVectorDatasource
+    | ExternalVectorDatasource
+    | VectorDatasource,
   /** url of datasource */
   url: string,
-  options: DatasourceClipOperation["options"] = {}
-): Promise<Feature[]> {
-  let features: Feature[] = [];
+  options: DatasourceOptions = {}
+): Promise<F[]> {
+  const propertyFilter = datasource.propertyFilter || options.propertyFilter;
+  const bboxFilter = datasource.bboxFilter || options.bbox;
+
+  let features: F[] = [];
   if (isInternalVectorDatasource(datasource)) {
-    // internal
-    features = await fgbFetchAll<Feature>(url, options.bbox);
-  } else if (isExternalVectorDatasource(datasource)) {
-    // external
-    if (!options.bbox) {
+    features = await fgbFetchAll<F>(url, bboxFilter);
+  } else if (
+    isExternalVectorDatasource(datasource) &&
+    datasource.formats.includes("subdivided")
+  ) {
+    // prefer subdivided if external
+    if (!bboxFilter) {
       throw new Error(
         `bbox option expected for ExternalVectorDatasource ${datasource.datasourceId}`
       );
     }
     const vectorDs = new VectorDataSource(url);
-
-    // union subdivided polygons
-    if (datasource.formats.includes("subdivided")) {
-      if (options.unionProperty) {
-        features = (
-          await vectorDs.fetchUnion(options.bbox, options.unionProperty)
-        ).features;
-      } else {
-        features = await vectorDs.fetch(options.bbox);
-      }
+    if (options.unionProperty) {
+      const fc = await vectorDs.fetchUnion(bboxFilter, options.unionProperty);
+      features = fc.features as F[];
     } else {
-      throw new Error("Only external subdivided datasources supported");
+      features = (await vectorDs.fetch(bboxFilter)) as F[];
     }
+  } else if (
+    isExternalVectorDatasource(datasource) &&
+    datasource.formats.includes("fgb")
+  ) {
+    // fallback to flatgeobuf
+    features = await fgbFetchAll<F>(url, bboxFilter);
   }
 
   // filter by property value
-  if (options.propertyFilter) {
+  if (propertyFilter) {
     features = features.filter((curFeat) => {
       if (!curFeat.properties) return false;
-      return options.propertyFilter?.values.includes(
-        curFeat.properties[options.propertyFilter.property]
+      return propertyFilter?.values.includes(
+        curFeat.properties[propertyFilter.property]
       );
     });
   }

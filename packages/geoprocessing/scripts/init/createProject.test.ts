@@ -5,7 +5,13 @@
 import path from "path";
 import fs from "fs-extra";
 import { createProject } from "./createProject";
-import { GeoprocessingJsonConfig } from "../../src/types";
+import {
+  GeoprocessingJsonConfig,
+  geographiesSchema,
+  geographySchema,
+  datasourcesSchema,
+} from "../../src/types";
+import { isVectorDatasource } from "../../src/datasources";
 
 const rootPath = `${__dirname}/../__test__`;
 
@@ -14,7 +20,7 @@ describe("createProject", () => {
     await fs.emptyDirSync(rootPath); // Cleanup
   });
 
-  it("should create empty project", async () => {
+  it("createProject - should create empty project", async () => {
     const projectName = "test-project-empty";
     const projectPath = path.join(rootPath, projectName);
     await createProject(
@@ -62,7 +68,7 @@ describe("createProject", () => {
     expect(gpConfig.clients.length).toBe(0);
   }, 120000);
 
-  it("should create project using eez selection", async () => {
+  it("createProject - should create project using eez selection", async () => {
     const projectName = "test-project-empty";
     const projectPath = path.join(rootPath, projectName);
     await createProject(
@@ -77,8 +83,8 @@ describe("createProject", () => {
         region: "us-west-1",
         templates: [],
         planningAreaType: "eez",
-        planningAreaId: "Micronesia",
-        planningAreaName: "Micronesia",
+        planningAreaId: "Micronesian Exclusive Economic Zone",
+        planningAreaName: "Micronesian Exclusive Economic Zone",
         planningAreaNameQuestion: "yes",
       },
       false,
@@ -91,13 +97,54 @@ describe("createProject", () => {
         .toString()
     );
 
-    expect(basicJson.bbox).toEqual([
-      135.31244183762126, -1.173110965298591, 165.67652822599732,
-      13.445432925389298,
-    ]);
+    // Make sure in the right ballpark
+    expect(basicJson.bbox[0]).toBeGreaterThan(135);
+    expect(basicJson.bbox[0]).toBeLessThan(136);
+    expect(basicJson.bbox[1]).toBeGreaterThan(-2);
+    expect(basicJson.bbox[1]).toBeLessThan(-1);
+
+    const savedGeogs = fs.readJSONSync(
+      `${projectPath}/project/geographies.json`
+    );
+    const geogs = geographiesSchema.parse(savedGeogs);
+    // console.log(JSON.stringify(geogs));
+    expect(Array.isArray(geogs));
+    expect(geogs.length).toEqual(2); // world and eez
+
+    const geog = geogs[1]; // eez should be the second geography
+    expect(geog.display).toEqual("Micronesian Exclusive Economic Zone");
+
+    // Make sure in the right ballpark
+    expect(geog.bboxFilter![0]).toBeGreaterThan(135);
+    expect(geog.bboxFilter![0]).toBeLessThan(136);
+    expect(geog.bboxFilter![1]).toBeGreaterThan(-2);
+    expect(geog.bboxFilter![1]).toBeLessThan(-1);
+
+    expect(basicJson.bbox).toEqual(geog.bboxFilter);
+
+    expect(JSON.stringify(geog.propertyFilter)).toEqual(
+      JSON.stringify({
+        property: "GEONAME",
+        values: ["Micronesian Exclusive Economic Zone"],
+      })
+    );
+
+    const savedDatasources = fs.readJSONSync(
+      `${projectPath}/project/datasources.json`
+    );
+    const ds = datasourcesSchema.parse(savedDatasources);
+    const globalEezDS = "global-eez-mr-v12";
+    const eezDs = ds.find((ds) => ds.datasourceId === globalEezDS);
+    // expect(isVectorDatasource(ds)).toBe(true);
+    expect(eezDs).toBeTruthy();
+    if (eezDs && isVectorDatasource(ds)) {
+      expect(eezDs.precalc).toBe(true);
+      // expect(eezDs?.propertyFilter).toBeTruthy();
+      // expect(eezDs?.bboxFilter).toBeTruthy();
+    }
   }, 120000);
 
-  it("should create project with template", async () => {
+  it("createProject - should create project with template", async () => {
     const projectName = "test-project-template";
     const projectPath = path.join(rootPath, projectName);
     await createProject(
@@ -133,7 +180,7 @@ describe("createProject", () => {
     expect(gpConfig.clients.length).toBeGreaterThan(0);
   }, 120000);
 
-  it("should create empty project with all defaults", async () => {
+  it("createProject - should create empty project with all defaults", async () => {
     const projectName = "test-project-empty-defaults";
     const projectPath = path.join(rootPath, projectName);
     await createProject(

@@ -242,6 +242,19 @@ export const categoricalClassMetrics: Metric[] = createMetrics([
   },
 ]);
 
+export const NaNPercMetrics: Metric[] = createMetrics([
+  {
+    classId: "Bays and Coast",
+    value: NaN,
+    metricId: categoricalMetricGroup.metricId,
+  },
+  {
+    classId: "Madracis Reef",
+    value: 0.45532444,
+    metricId: categoricalMetricGroup.metricId,
+  },
+]);
+
 export const longClassMetrics: Metric[] = createMetrics([
   {
     classId: "Bays and Coast",

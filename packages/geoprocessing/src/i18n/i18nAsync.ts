@@ -78,14 +78,15 @@ export function createI18nAsyncInstance(
           //console.log("langResources", langResources);
 
           // Return merged translations
-          if (defaultLang) {
-            // merge in plurals if english, because extractor leaves them blank, so they are managed specially
+          if (isDefault) {
+            // merge in extraTerms if english
             callback(null, {
               ...baseLangResources,
               ...langResources,
               ...extraTerms,
             });
           } else {
+            // otherwise extra terms should already be translated in langResources
             callback(null, {
               ...baseLangResources,
               ...langResources,

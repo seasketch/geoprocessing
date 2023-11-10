@@ -1,12 +1,12 @@
 {
   "bbox": [
-      135.312441837621,
-      -1.17311096529859,
-      165.676528225997,
-      13.4454329253893
-  ],
+    -174.51139447157757,
+    -15.878383591829206,
+    -170.54265693017294,
+    -10.960825304544073
+],
   "planningAreaType": "eez",
-  "planningAreaId": "Micronesia",
-  "planningAreaName": "Micronesia",
+  "planningAreaId": "Samoan Exclusive Economic Zone",
+  "planningAreaName": "Samoa",
   "externalLinks": {}
 }

@@ -42,11 +42,11 @@ export interface SketchClassTableProps {
 
 /**
  * Table displaying sketch class metrics, one table row per sketch
- * @param param0
+ * @param SketchClassTableProps
  * @returns
  */
 export const SketchClassTable: React.FunctionComponent<SketchClassTableProps> =
-  ({ rows, metricGroup: dataGroup, formatPerc: usePerc = false }) => {
+  ({ rows, metricGroup: dataGroup, formatPerc = false }) => {
     const { t } = useTranslation();
 
     const mpaLabel = t("MPA");
@@ -55,8 +55,13 @@ export const SketchClassTable: React.FunctionComponent<SketchClassTableProps> =
       dataGroup.classes.map((curClass) => ({
         Header: curClass.display,
         accessor: (row) => {
-          return usePerc
-            ? percentWithEdge(row[curClass.classId] as number)
+          // if value for class is NaN then use 0 instead (occurs when sketch doesn't overlap with geography e.g. subregion)
+          return formatPerc
+            ? percentWithEdge(
+                isNaN(row[curClass.classId] as number)
+                  ? 0
+                  : (row[curClass.classId] as number)
+              )
             : row[curClass.classId];
         },
       }));

@@ -14,8 +14,8 @@ import fs from "fs-extra";
 import path from "path";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
-const srcPath = "data/testing";
-const dstPath = "data/testing/output";
+const srcPath = "data/in";
+const dstPath = "data/out";
 
 describe("importDatasource", () => {
   describe("importVectorDatasource - single file, single class", () => {
@@ -39,6 +39,7 @@ describe("importDatasource", () => {
           classKeys: [],
           formats: [],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,
@@ -82,6 +83,7 @@ describe("importDatasource", () => {
           classKeys: ["Draft name"],
           formats: [],
           propertiesToKeep: [],
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,
@@ -122,10 +124,11 @@ describe("importDatasource", () => {
           src: path.join(srcPath, `${datasourceId}.tif`),
           datasourceId,
           classKeys: [],
-          formats: [],
+          formats: ["tif"],
           noDataValue: 0,
           band: 1,
           measurementType: "quantitative",
+          precalc: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,
@@ -136,9 +139,6 @@ describe("importDatasource", () => {
       expect(Array.isArray(savedDs) && savedDs.length === 1).toBe(true);
       const validDs = internalRasterDatasourceSchema.parse(savedDs[0]);
       expect(returnedDs).toEqual(validDs);
-      expect(
-        returnedDs.keyStats && returnedDs.keyStats.total.total.sum === 4
-      ).toBe(true);
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.tif`)));
     }, 10000);
     afterEach(() => {

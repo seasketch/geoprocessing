@@ -1,4 +1,5 @@
 import datasources from "./datasources.json";
+import geographies from "./geographies.json";
 import metrics from "./metrics.json";
 import objectives from "./objectives.json";
 import basic from "./basic.json";
@@ -26,7 +27,9 @@ const gp: GeoprocessingJsonConfig = {
 
 const projectClient = new ProjectClientBase({
   datasources,
+  geographies,
   metricGroups: metrics,
+  precalc: [],
   objectives,
   basic,
   package: projectPackage,

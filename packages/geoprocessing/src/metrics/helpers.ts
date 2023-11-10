@@ -28,11 +28,11 @@ import cloneDeep from "lodash/cloneDeep";
 
 /** Properties used in Metric */
 export const MetricProperties = [
-  "metricId",
-  "sketchId",
-  "classId",
-  "groupId",
   "geographyId",
+  "metricId",
+  "classId",
+  "sketchId",
+  "groupId",
   "value",
   "extra",
 ] as const;
@@ -175,7 +175,12 @@ export const isMetric = (metric: any): metric is Metric => {
  */
 export const sortMetrics = (
   metrics: Metric[],
-  sortIds: MetricDimension[] = ["metricId", "classId", "sketchId"]
+  sortIds: MetricDimension[] = [
+    "geographyId",
+    "metricId",
+    "classId",
+    "sketchId",
+  ]
 ) => {
   return metrics.sort((a, b) => {
     return sortIds.reduce((sortResult, idName) => {
@@ -316,45 +321,78 @@ const classSortAlphaDisplay = (a: DataClass, b: DataClass) => {
 };
 
 /**
- * Returns new metrics with their values transformed to percentage of corresponding totals
- * metrics are paired with total based on classId if present, falling back to metricId
- * Deep copies and maintains all other properties from the original metric
+ * Matches numerator metrics with denominator metrics and divides their value,
+ * returning a new array of percent metrics.  If denominator metric has value of 0, returns NaN
+ * Matches on the optional idProperty given, otherwise defaulting to classId
+ * Deep copies and maintains all other properties from the numerator metric
+ * @param numerators array of metrics, to be used as numerators (often sketch metrics)
+ * @param denominators array of metrics, to be used as denominators (often planning region metrics)
+ * @param metricIdOverride optional metricId value to assign to outputted metrics
+ * @param idProperty optional id property to match metric with total metric, defaults to classId
+ * @returns Metric[] of percent values
  */
 export const toPercentMetric = (
-  metrics: Metric[],
-  totals: Metric[],
-  /** Set percent metrics with new metricId.  Defaults to leaving the same */
-  percMetricId?: string
+  numerators: Metric[],
+  denominators: Metric[],
+  options: {
+    metricIdOverride?: string;
+    idProperty?: string;
+  } = {}
 ): Metric[] => {
+  const { metricIdOverride, idProperty = "classId" } = options;
+
+  // Index denominators into precalc totals using idProperty
   const totalsByKey = (() => {
-    return keyBy(totals, (total) =>
-      total.classId ? total.classId : total.metricId
-    );
+    return keyBy(denominators, (total) => String(total[idProperty]));
   })();
-  return metrics.map((curMetric) => {
-    if (!curMetric || curMetric.value === undefined)
-      throw new Error(`Malformed metrics: ${JSON.stringify(curMetric)}`);
 
-    const idProperty = curMetric.classId ? "classId" : "metricId";
-
-    const idValue = curMetric[idProperty];
-    if (!idValue) throw new Error(`Missing total index: ${idValue}`);
-
-    const value = curMetric[idProperty];
-    if (!value)
+  // For each metric in metric group
+  return numerators.map((numerMetric) => {
+    if (!numerMetric || numerMetric.value === undefined)
       throw new Error(
-        `Missing metric id property ${idProperty}, ${JSON.stringify(curMetric)}`
+        `Malformed numerator metric: ${JSON.stringify(numerMetric)}`
       );
-    const totalMetric = totalsByKey[idValue];
-    if (!totalMetric) {
+
+    const idValue = numerMetric[idProperty];
+
+    if (idValue === null || idValue === undefined)
       throw new Error(
-        `Missing total: ${idProperty}: ${JSON.stringify(curMetric)}`
+        `Invalid ${idProperty} found in numerator metric: ${JSON.stringify(
+          numerMetric
+        )}`
+      );
+
+    const denomMetric = totalsByKey[idValue];
+    if (!denomMetric) {
+      throw new Error(
+        `Missing matching denominator metric with ${idProperty} of ${idValue} for numerator: ${JSON.stringify(
+          numerMetric
+        )}`
       );
     }
+    if (denomMetric.value === null || denomMetric.value === undefined) {
+      throw new Error(
+        `Malformed denominator metric: ${JSON.stringify(numerMetric)}`
+      );
+    }
+
+    const value = (() => {
+      // Catch 0 or malformed denominator value and return percent metric with 0 value
+      if (denomMetric.value === 0) {
+        console.log(
+          `Denominator metric with ${idProperty} of ${idValue} has 0 value, returning 0 percent metric`
+        );
+        return NaN;
+      } else {
+        return numerMetric.value / denomMetric.value;
+      }
+    })();
+
+    // Create percent metric
     return {
-      ...cloneDeep(curMetric),
-      value: curMetric.value / totalMetric.value,
-      ...(percMetricId ? { metricId: percMetricId } : {}),
+      ...cloneDeep(numerMetric),
+      value,
+      ...(metricIdOverride ? { metricId: metricIdOverride } : {}),
     };
   });
 };
@@ -437,18 +475,19 @@ export const flattenBySketchAllClass = (
 };
 
 /**
- * Returns one aggregate object for every groupId present in metrics
- * Each object includes following properties:
- * numSketches - count of child sketches in the group
+ * Aggregates metrics by group
+ * @param collection sketch collection metrics are for
+ * @param groupMetrics metrics with assigned groupId (except group total metric) and sketchIds for collection
+ * @param totalMetrics totals by class
+ * @returns one aggregate object for every groupId present in metrics.  Each object includes:
+ * [numSketches] - count of child sketches in the group
  * [classId] - a percValue for each classId present in metrics for group
- * value - sum of value across all classIds present in metrics for group
- * percValue - given sum value across all classIds, contains ratio of total sum across all class IDs
+ * [value] - sum of value across all classIds present in metrics for group
+ * [percValue] - given sum value across all classIds, contains ratio of total sum across all class IDs
  */
 export const flattenByGroupAllClass = (
   collection: SketchCollection | NullSketchCollection,
-  /** Group metrics for collection and its child sketches */
   groupMetrics: Metric[],
-  /** Totals by class */
   totalMetrics: Metric[]
 ): {
   value: number;
@@ -495,7 +534,7 @@ export const flattenByGroupAllClass = (
 
     const groupTotal = firstMatchingMetric(
       totalMetrics,
-      (m) => !m.classId
+      (m) => !m.groupId // null groupId identifies group total metric
     ).value;
     return {
       groupId: curGroupId,

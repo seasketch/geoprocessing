@@ -1,0 +1,7 @@
+[{
+  "geographyId": "world",
+  "datasourceId": "world",
+  "display": "World",
+  "groups": ["default-boundary"],
+  "precalc": true
+}]

@@ -4,6 +4,7 @@ Table of Contents
 * [Tutorials](Tutorials)
 * [Testing](Testing)
 * [Command Line Interface](CLI)
+* [Edge Cases and Limits](EdgesAndLimits)
 * [Tips and Tricks](Tipsandtricks)
 * [Extending](Extending)
 * [Architecture](Architecture)

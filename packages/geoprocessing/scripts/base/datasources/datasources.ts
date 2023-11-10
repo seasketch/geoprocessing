@@ -1,11 +1,20 @@
 import fs from "fs-extra";
 import path from "path";
-import { datasourcesSchema, Datasource, Datasources } from "../../../src/types";
+import {
+  datasourcesSchema,
+  Datasource,
+  FeatureCollection,
+  Polygon,
+  MultiPolygon,
+} from "../../../src/types";
 import {
   isInternalVectorDatasource,
   isInternalRasterDatasource,
   datasourceConfig,
+  getJsonPath,
 } from "../../../src/datasources";
+import { isFeatureCollection } from "../../../src";
+import { globalDatasources } from "../../../src/datasources/global";
 
 /**
  * Manage datasources for a geoprocessing project
@@ -57,22 +66,7 @@ export async function createOrUpdateDatasource(
  */
 export function readDatasources(filePath?: string) {
   // Start with default datasources
-  let pds: Datasources = [
-    {
-      datasourceId: "global-clipping-osm-land",
-      geo_type: "vector",
-      url: "https://d3p1dsef9f0gjr.cloudfront.net/",
-      formats: ["subdivided"],
-      classKeys: [],
-    },
-    {
-      datasourceId: "global-clipping-eez-land-union",
-      geo_type: "vector",
-      url: "https://d3muy0hbwp5qkl.cloudfront.net",
-      formats: ["subdivided"],
-      classKeys: [],
-    },
-  ];
+  let pds: Datasource[] = globalDatasources as Datasource[];
   // Override datasources path
   const finalFilePath =
     filePath && filePath.length > 0
@@ -109,10 +103,32 @@ export function readDatasources(filePath?: string) {
   }
 }
 
-export function writeDatasources(pd: Datasources, filePath?: string) {
+export function writeDatasources(pd: Datasource[], filePath?: string) {
   const finalFilePath =
     filePath && filePath.length > 0
       ? filePath
       : datasourceConfig.defaultDatasourcesPath;
   fs.writeJSONSync(finalFilePath, pd, { spaces: 2 });
+}
+
+/**
+ * Reads in vector datasource geojson as FeatureCollection
+ * @param ds internal vector datasource to load features, with geojson format available
+ * @param dstPath path to directory with datasource
+ * @returns datasource features
+ */
+export function readDatasourceGeojsonById(
+  datasourceId: string,
+  dstPath: string
+) {
+  const jsonPath = getJsonPath(dstPath, datasourceId);
+  if (!fs.existsSync(jsonPath))
+    throw new Error(`GeoJSON form of datasource does not exist at ${jsonPath}`);
+  const polys = fs.readJsonSync(jsonPath);
+  if (isFeatureCollection(polys)) {
+    return polys as FeatureCollection<Polygon | MultiPolygon>;
+  } else
+    throw new Error(
+      `GeoJSON at ${jsonPath} is not a FeatureCollection. Check datasource.`
+    );
 }

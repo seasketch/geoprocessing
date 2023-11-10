@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { Package } from "./package";
 import { GeoprocessingJsonConfig } from "./project";
+import { bboxSchema } from "./geojson";
 
 // Schema and types for representing datasources used in calculating metrics
 
@@ -36,22 +37,49 @@ export const statsSchema = z.object({
 /** Pre-calculated stats by key by class */
 export const classStatsSchema = z.record(statsSchema);
 
-export const keyStatsSchema = z.record(classStatsSchema);
-
 export const baseDatasourceSchema = z.object({
   /** Unique id of datasource in project */
   datasourceId: z.string(),
   /** basic geospatial type */
   geo_type: geoTypesSchema,
-  /** Pre-calculated stats by key by class */
-  keyStats: keyStatsSchema.optional(),
   /** Available formats */
   formats: z.array(supportedFormatsSchema),
+  /** Optional, defines whether or not precalc should be run for this datasource */
+  precalc: z.boolean(),
+  metadata: z
+    .object({
+      /** Human-readable name of datasource */
+      name: z.string(),
+      /** Description of datasource */
+      description: z.string().optional(),
+      /** Publisher-provided version number or ISO 8601 date */
+      version: z.string(),
+      /** Publisher name */
+      publisher: z.string(),
+      /** ISO 8601 publish date */
+      publishDate: z.string(),
+      /** Public URL to access published data */
+      publishLink: z.string(),
+    })
+    .optional(),
 });
 
 /** Properties for vector datasource */
 export const vectorDatasourceSchema = baseDatasourceSchema.merge(
   z.object({
+    /** Optional, name of property containing unique ID value for each vector feature */
+    idProperty: z.string().optional(),
+    /** Optional, name of property containing name for each vector feature */
+    nameProperty: z.string().optional(),
+    /** Optional, constrain datasource features by property having one or more specific values */
+    propertyFilter: z
+      .object({
+        property: z.string(),
+        values: z.array(z.string().or(z.number())),
+      })
+      .optional(),
+    /** Optional, constrain datasource to smaller bbox */
+    bboxFilter: bboxSchema.optional(),
     /** Import - Name of layer within vector datasource to extract */
     layerName: z.string().optional(),
     /** keys to generate classes for.  Vector - property names */
@@ -68,13 +96,11 @@ export const rasterDatasourceSchema = baseDatasourceSchema.merge(
     band: z.number(),
     /** Nodata value */
     noDataValue: z.number().optional(),
-    /** Datasource ID containing polygon to filter pixels to include in raster precalc */
-    filterDatasource: z.string().optional(),
   })
 );
 
 /** Properties for external datasource */
-export const externalSourceSchema = z.object({
+export const externalDatasourceSchema = z.object({
   /** Url if external datasource */
   url: z.string(),
 });
@@ -86,7 +112,7 @@ export const internalImportSchema = z.object({
 });
 
 /** Timestamp properties to ease syncing with local/published datasource files */
-export const internalTimestampSchema = z.object({
+export const internalDatasourceSchema = z.object({
   /** Datasource creation timestamp  */
   created: z.string(),
   /** Datasource updated timestamp */
@@ -104,18 +130,20 @@ export const internalVectorImportSchema = internalImportSchema.merge(
 );
 
 export const internalVectorDatasourceSchema = vectorDatasourceSchema
-  .merge(internalTimestampSchema)
+  .merge(internalDatasourceSchema)
   .merge(internalVectorImportSchema);
 
-export const externalVectorDatasourceSchema =
-  vectorDatasourceSchema.and(externalSourceSchema);
+export const externalVectorDatasourceSchema = vectorDatasourceSchema.and(
+  externalDatasourceSchema
+);
 
 export const internalRasterDatasourceSchema = rasterDatasourceSchema
-  .merge(internalTimestampSchema)
+  .merge(internalDatasourceSchema)
   .merge(internalImportSchema);
 
-export const externalRasterDatasourceSchema =
-  rasterDatasourceSchema.and(externalSourceSchema);
+export const externalRasterDatasourceSchema = rasterDatasourceSchema.and(
+  externalDatasourceSchema
+);
 
 export const datasourceSchema = internalVectorDatasourceSchema
   .or(externalVectorDatasourceSchema)
@@ -129,12 +157,15 @@ export type GeoTypes = z.infer<typeof geoTypesSchema>;
 export type SupportedFormats = z.infer<typeof supportedFormatsSchema>;
 export type Stats = z.infer<typeof statsSchema>;
 export type ClassStats = z.infer<typeof classStatsSchema>;
-export type KeyStats = z.infer<typeof keyStatsSchema>;
 export type BaseDatasource = z.infer<typeof baseDatasourceSchema>;
 
+export type VectorDatasource = z.infer<typeof vectorDatasourceSchema>;
 export type InternalVectorDatasource = z.infer<
   typeof internalVectorDatasourceSchema
 >;
+
+export type RasterDatasource = z.infer<typeof rasterDatasourceSchema>;
+
 export type InternalRasterDatasource = z.infer<
   typeof internalRasterDatasourceSchema
 >;
@@ -145,7 +176,6 @@ export type ExternalRasterDatasource = z.infer<
   typeof externalRasterDatasourceSchema
 >;
 export type Datasource = z.infer<typeof datasourceSchema>;
-export type Datasources = z.infer<typeof datasourcesSchema>;
 
 //// IMPORT DATSOURCE ////
 

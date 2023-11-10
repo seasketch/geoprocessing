@@ -1,17 +1,17 @@
 import {
   Sketch,
   SketchCollection,
+  Polygon,
+  MultiPolygon,
   GeoprocessingHandler,
+  getFirstFromParam,
+  DefaultExtraParams,
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
-import { AllGeoJSON, BBox } from "@turf/helpers";
+import { BBox } from "@turf/helpers";
 import turfArea from "@turf/area";
-
-/** Optional caller-provided parameters */
-interface GeoprocessingParams {
-  /** IDs of one or more sub-regions to operate on */
-  geographyIds?: string[];
-}
+import project from "../../project";
+import { clipToGeography } from "../util/clipToGeography";
 
 export interface AreaResults {
   /** area of the sketch in square meters */
@@ -20,12 +20,19 @@ export interface AreaResults {
 }
 
 async function calculateArea(
-  sketch: Sketch | SketchCollection,
-  extraParams: GeoprocessingParams = {}
+  sketch:
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
+  extraParams: DefaultExtraParams = {}
 ): Promise<AreaResults> {
+  const geographyId = getFirstFromParam("geographyIds", extraParams);
+  const curGeography = project.getGeographyById(geographyId, {
+    fallbackGroup: "default-boundary",
+  });
+  const clippedSketch = await clipToGeography(sketch, curGeography);
   return {
-    area: turfArea(sketch),
-    bbox: bbox(sketch as AllGeoJSON),
+    area: turfArea(clippedSketch),
+    bbox: bbox(clippedSketch),
   };
 }
 

@@ -27,5 +27,15 @@ import fs from "fs-extra";
     });
   });
 
+  if (!project.geographies || !Array.isArray(project.geographies)) {
+    console.log(
+      `Unable to load default geography, run translation:extract again after init`
+    );
+  } else {
+    project.geographies.forEach((geography) => {
+      extraTerms[geography.display] = geography.display;
+    });
+  }
+
   fs.writeJSONSync(`src/i18n/extraTerms.json`, extraTerms, { spaces: 2 });
 })();

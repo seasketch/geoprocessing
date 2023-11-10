@@ -13,24 +13,26 @@ import {
   isInternalVectorDatasource,
   isExternalVectorDatasource,
   isPolygonFeatureArray,
+  getFirstFromParam,
+  DefaultExtraParams,
 } from "@seasketch/geoprocessing";
 import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import bbox from "@turf/bbox";
 import project from "../../project";
+import { clipToGeography } from "../util/clipToGeography";
 
 const metricGroup = project.getMetricGroup("boundaryAreaOverlap");
 
-/** Optional caller-provided parameters */
-interface ExtraParams {
-  /** Optional ID(s) of geographyIds to operate on.  Use to constrain function to subregion */
-  geographyIds?: string[];
-}
-
 export async function boundaryAreaOverlap(
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
-  extraParams: ExtraParams = {}
+  extraParams: DefaultExtraParams = {}
 ): Promise<ReportResult> {
-  const sketchBox = sketch.bbox || bbox(sketch);
+  const geographyId = getFirstFromParam("geographyIds", extraParams);
+  const curGeography = project.getGeographyById(geographyId, {
+    fallbackGroup: "default-boundary",
+  });
+  const clippedSketch = await clipToGeography(sketch, curGeography);
+  const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   // Fetch boundary features indexed by classId
   const polysByBoundary = (
@@ -48,12 +50,8 @@ export async function boundaryAreaOverlap(
         }
 
         // Fetch only the features that overlap the bounding box of the sketch
-        const url = project.getVectorDatasourceUrl(ds);
+        const url = project.getDatasourceUrl(ds);
         const polys = await getFeatures(ds, url, {
-          propertyFilter: {
-            property: "UNION",
-            values: [project.basic.planningAreaId],
-          },
           bbox: sketchBox,
         });
         if (!isPolygonFeatureArray(polys)) {
@@ -76,12 +74,13 @@ export async function boundaryAreaOverlap(
           const overlapResult = await overlapFeatures(
             metricGroup.metricId,
             polysByBoundary[curClass.classId],
-            sketch
+            clippedSketch
           );
           return overlapResult.map(
             (metric): Metric => ({
               ...metric,
               classId: curClass.classId,
+              geographyId: curGeography.geographyId,
             })
           );
         })

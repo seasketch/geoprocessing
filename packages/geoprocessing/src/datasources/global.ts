@@ -1,57 +1,63 @@
-import {
-  Feature,
-  Polygon,
-  Geometry,
-  GeometryCollection,
-  Properties,
-} from "../types";
-import { Datasources } from "../types";
-import { VectorDataSource } from "./VectorDataSource";
-import { getExternalVectorDatasourceById } from "./helpers";
+import { Datasource, Feature, Polygon } from "../types";
 
 export type OsmLandFeature = Feature<Polygon, { gid: number }>;
 export type EezLandUnion = Feature<Polygon, { gid: number; UNION: string }>;
 
-/** Given datasourceId, returns an instantiated VectorDatasource object for it.  Throws Error if datasource does not exist
- * It is up to the caller to pass the specific <Feature> type this datasource contains
- * and to ensure that this datasource has a published VectorDatasource
+/**
+ * Definitive list of global datasources for geoprocessing framework
+ * @todo: fetch from global-datasources repo
  */
-export function getGlobalVectorDatasourceById<
-  T extends Feature<Geometry | GeometryCollection, Properties>
->(datasourceId: string, datasources: Datasources): VectorDataSource<T> {
-  switch (datasourceId) {
-    case "global-clipping-osm-land":
-      return new VectorDataSource<T>(
-        getExternalVectorDatasourceById(
-          "global-clipping-osm-land",
-          datasources
-        ).url
-      );
-    case "global-clipping-eez-land-union":
-      return new VectorDataSource<T>(
-        getExternalVectorDatasourceById(
-          "global-clipping-eez-land-union",
-          datasources
-        ).url
-      );
-    default:
-      throw new Error(`Global datasource ${datasourceId} not found`);
-  }
-}
-
-export const getLandVectorDatasource = (
-  datasources: Datasources
-): VectorDataSource<OsmLandFeature> => {
-  return new VectorDataSource<OsmLandFeature>(
-    getExternalVectorDatasourceById("global-clipping-osm-land", datasources).url
-  );
-};
-
-export const getEezVectorDatasource = (datasources: Datasources) => {
-  return new VectorDataSource<EezLandUnion>(
-    getExternalVectorDatasourceById(
-      "global-clipping-eez-land-union",
-      datasources
-    ).url
-  );
-};
+export const globalDatasources: Datasource[] = [
+  {
+    datasourceId: "global-clipping-osm-land",
+    geo_type: "vector",
+    formats: ["subdivided"],
+    classKeys: [],
+    url: "https://d3p1dsef9f0gjr.cloudfront.net/",
+    idProperty: "gid",
+    nameProperty: "gid",
+    metadata: {
+      name: "OSM Land Polygons WGS84 (not split)",
+      version: "20210405.0",
+      publisher: "Flanders Marine Institute (VLIZ)",
+      publishDate: "20210405",
+      publishLink: "https://osmdata.openstreetmap.de/data/land-polygons.html",
+    },
+    precalc: false,
+  },
+  {
+    datasourceId: "global-clipping-eez-land-union",
+    geo_type: "vector",
+    formats: ["subdivided"],
+    classKeys: [],
+    idProperty: "UNION",
+    nameProperty: "UNION",
+    url: "https://d3muy0hbwp5qkl.cloudfront.net",
+    metadata: {
+      name: "Marine and land zones: the union of world country boundaries and EEZ's",
+      version: "3.0",
+      publisher: "Flanders Marine Institute (VLIZ)",
+      publishDate: "20200317",
+      publishLink: "https://marineregions.org/",
+    },
+    precalc: false,
+  },
+  {
+    datasourceId: "global-eez-mr-v12",
+    geo_type: "vector",
+    formats: ["fgb", "json"],
+    metadata: {
+      name: "World EEZ v11",
+      description: "World EEZ boundaries and disputed areas",
+      version: "11.0",
+      publisher: "Flanders Marine Institute (VLIZ)",
+      publishDate: "2019118",
+      publishLink: "https://marineregions.org/",
+    },
+    classKeys: [],
+    url: "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-mr-v12.fgb",
+    idProperty: "GEONAME",
+    nameProperty: "GEONAME",
+    precalc: false,
+  },
+];

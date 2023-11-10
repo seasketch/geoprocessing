@@ -88,7 +88,7 @@ describe("COG test", () => {
   });
 
   test("quad 10 - q1 full", async () => {
-    const url = "http://127.0.0.1:8080/quad_10_cog.tif";
+    const url = "http://127.0.0.1:8080/data/in/quad_10_cog.tif";
     const raster = await loadCog(url);
 
     const sum = await geoblaze.sum(raster, q1Poly);
@@ -99,7 +99,7 @@ describe("COG test", () => {
   });
 
   test("quad 10 - q2 full", async () => {
-    const url = "http://127.0.0.1:8080/quad_10_cog.tif";
+    const url = "http://127.0.0.1:8080/data/in/quad_10_cog.tif";
     const raster = await loadCog(url);
 
     const sum = await geoblaze.sum(raster, q2Poly);
@@ -110,7 +110,7 @@ describe("COG test", () => {
   });
 
   test("quad 10 - q3 full", async () => {
-    const url = "http://127.0.0.1:8080/quad_10_cog.tif";
+    const url = "http://127.0.0.1:8080/data/in/quad_10_cog.tif";
     const raster = await loadCog(url);
 
     const sum = await geoblaze.sum(raster, q3Poly);
@@ -121,7 +121,7 @@ describe("COG test", () => {
   });
 
   test("quad 10 - q4 full", async () => {
-    const url = "http://127.0.0.1:8080/quad_10_cog.tif";
+    const url = "http://127.0.0.1:8080/data/in/quad_10_cog.tif";
     const raster = await loadCog(url);
 
     const sum = await geoblaze.sum(raster, q4Poly);
@@ -132,19 +132,19 @@ describe("COG test", () => {
   });
 
   test("window box smaller than and within pixel should work properly", async () => {
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/data/in/feature_abyssopelagic_cog.tif";
     const raster = await loadCog(url);
     expect(raster).toBeTruthy();
   });
 
   test("window box 2 smaller than and within pixel should work properly", async () => {
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/data/in/feature_abyssopelagic_cog.tif";
     const raster = await loadCog(url);
     expect(raster).toBeTruthy();
   });
 
   test("two load methods should produce same result", async () => {
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/data/in/feature_abyssopelagic_cog.tif";
 
     const rasterParse = await loadCog(url);
     const rasterLoad = await loadCogWindow(url, {});
@@ -156,7 +156,7 @@ describe("COG test", () => {
   });
 
   test("two load methods should produce same result with polygon", async () => {
-    const url = "http://127.0.0.1:8080/feature_abyssopelagic_cog.tif";
+    const url = "http://127.0.0.1:8080/data/in/feature_abyssopelagic_cog.tif";
 
     const rasterParse = await loadCog(url);
     const rasterLoad = await loadCogWindow(url, {});

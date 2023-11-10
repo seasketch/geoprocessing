@@ -51,11 +51,11 @@ async function bundleBaseProject() {
 
   try {
     await fs.ensureDir(distBaseProjectPath);
-    await $`cp -r ${baseProjectPath}/* ${distBaseProjectPath}`;
-    await $`cp -r ${baseProjectPath}/. ${distBaseProjectPath}`;
+    await $`cp -R -P ${baseProjectPath}/* ${distBaseProjectPath}`;
+    await $`cp -R -P ${baseProjectPath}/. ${distBaseProjectPath}`;
     await $`mv ${distBaseProjectPath}/.gitignore ${distBaseProjectPath}/_gitignore`;
     await $`rm -rf ${distBaseProjectPath}/node_modules`;
-    await $`cp -r ${srcI18nPath}/. ${distI18nPath}`;
+    await $`cp -R -P ${srcI18nPath}/. ${distI18nPath}`;
     await $`mkdir ${distI18nPath}/baseLang`;
     await $`mv ${distI18nPath}/lang/* ${distI18nPath}/baseLang`;
   } catch (err: unknown) {

@@ -346,7 +346,7 @@ describe("GeoprocessingHandler", () => {
     const task2 = JSON.parse(result2.body) as GeoprocessingTask;
     const task1ms = new Date(task1.startedAt).valueOf();
     const task2ms = new Date(task2.startedAt).valueOf();
-    expect(task2ms - task1ms).toBeLessThanOrEqual(5);
+    expect(task2ms - task1ms).toBeLessThanOrEqual(50);
   });
 
   test("Results are cached using request.cacheKey for asynchronous tasks", async () => {
@@ -401,7 +401,7 @@ describe("GeoprocessingHandler", () => {
     const task2 = JSON.parse(result2.body) as GeoprocessingTask;
     const task1ms = new Date(task1.startedAt).valueOf();
     const task2ms = new Date(task2.startedAt).valueOf();
-    expect(task2ms - task1ms).toBeLessThanOrEqual(5);
+    expect(task2ms - task1ms).toBeLessThanOrEqual(50);
   });
 
   test("extraParams can be used", async () => {

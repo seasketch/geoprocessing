@@ -130,15 +130,23 @@ npm run test:scripts:local:matching "/import*Datasource/"
 
 See Jest docs for more info.  The command will match on the name you give within a test() call so choose your name to be unique enough to select the tests you want.  Note that matching tests are run one at a time in order (aka `runInBand` for Jest) so that you get consistent output that you can debug
 
-# Local web server
+# E2E test data on port 8001
 
-A local web server is used to serve test data on port 8080 within many e2e tests.  Test commands will only auto-start a web server if it includes the e2e group and isn't a matcher command.  If you want to run a matcher command that runs e2e tests, then you'll need to start your own web server using the following command:
+Jest starts a web server on localhost port 8001 (see geoprocessing/scripts/jest.config.ts) that serves up the `geoprocessing/scripts/data/out` folder. A number of e2e tests in the scripts folder use this such as `precalcVectorDatasource.test.ts` and `precalcRasterDatasource.test.ts`.
+
+# E2E test data on port 8080
+
+Test commands that include the e2e test group all start a web server on localhost port 8080 (see packages/geoprocessing/package.json).
+
+# Geoprocessing project test data on port 8080
+
+Be aware that geoprocessing projects also have a start-data command and they all use 8080 by default, but fallback to another port if 8080 isn't available without telling you. so your tests may unexpectedly fail with network connection errors, or seemingly more vague errors about "block size" for a Cloud-optimized Geotiff. Just make sure you have a web server started and that you aren't running more than one.  Check other vscode windows for shells running start-data and kill them.
+
+If you want to run a test command that lets you match on a test name like `test:scripts:e2e:matching`, then you'll need to start your own web server using the following command:
 
 ```bash
 npm run start-data
 ```
-
-Be aware that geoprocessing projects also have a start-data command and they all use 8080 by default, but fallback to another port if 8080 isn't available without telling you.  e2e tests will expect to find data on 8080, so your tests may unexpectedly fail with network connection errors, or seemingly more vague errors about "block size" for a Cloud-optimized Geotiff. Just make sure you have a web server started and that you aren't running more than one.  Check other vscode windows for shells running start-data and kill them.
 
 If you use the VSCode launcher to debug tests you will also need to manually start a web server as it will not auto-start them.  Again look for connection or block size errors as a clue.
 

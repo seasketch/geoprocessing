@@ -605,6 +605,8 @@ Once you have geographies and datasources configured, you can precalculate metri
 npm run precalc:data
 ```
 
+Precalc will start a web server on localhost port 8001 that serves up data from `data/dist` access by this command.
+
 You need to have at least one geography in geographies.json and one datasource in datasources.json with the `precalc` property set to true.  The command will measure (total area, feature count, value sum) the portion of a datasources features that fall within the geography (intersection).
 
 These overall metric values are used almost exclusively for calculating % sketch overlap, they provide the denominator value.  For example, if you have a geography representing the EEZ of a country, and you have a sketch polygon, and you have a datasource representing presence of seagrass.  And you want to know the percentage of seagrass that is within the sketch, relative to how much seagrass is in the whole EEZ boundary.
@@ -635,6 +637,8 @@ Now that you have sample sketches and features, you can run the test suite.
 ```bash
 npm run test
 ```
+
+This will start a web server on port 8080 that serves up the `data/dist` folder.  Smoke tests will run geoprocessing functions against all of the sketches and features in the `examples` folder.  `projectClient.getDatasourceUrl` will automatically read data from localhost:8080 instead of the production S3 bucket url using functions like `fgbFetchAll()`, `geoblaze.parse()`.
 
 ## Smoke Tests
 

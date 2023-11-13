@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.0.1 (11/13/2023)
+
+### :bug: Bug Fix
+
+* Lock version of babel-plugin-i18next-extract to 0.9.0, babel cannot find it on `translation:extract` when using 0.9.1
+* Don't follow symlink on recursive copy during project init [#242]
+* Fix translation of form element with label but no label value
+
 ## v5.0.0 (11/10/2023)
 
 ### :boom: Breaking Changes

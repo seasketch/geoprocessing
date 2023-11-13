@@ -26,6 +26,20 @@ const nextContextValue = sampleSketchReportContextValue({
         alternateLanguages: {},
       },
       {
+        label: "Comments with no value",
+        value: null,
+        exportId: "comments",
+        fieldType: "TextArea",
+        valueLabel: null,
+        formElementId: 4757,
+        alternateLanguages: {
+          pt: {
+            label: "Comentários",
+            valueLabel: null,
+          },
+        },
+      },
+      {
         label: "Designation",
         value: "FULLY_PROTECTED",
         exportId: "designation",

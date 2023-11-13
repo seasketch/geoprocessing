@@ -73,11 +73,9 @@ export const SketchAttributesCard = ({
                 }
               }
 
-              // seasketch next - has valueLabel and optional translation
-              if (attr.valueLabel) {
-                // Use label and valueLabel directly
+              // seasketch next - has label and optional translation
+              if (attr.label) {
                 label = attr.label;
-                valueLabel = attr.valueLabel;
 
                 // If language not english, override with translation if available
                 if (i18n.language === "en") {
@@ -88,6 +86,20 @@ export const SketchAttributesCard = ({
                 ) {
                   // Swap in translation
                   label = attr.alternateLanguages[i18n.language].label;
+                }
+              }
+
+              // seasketch next - has valueLabel and optional translation
+              if (attr.valueLabel) {
+                valueLabel = attr.valueLabel;
+
+                // If language not english, override with translation if available
+                if (
+                  i18n.language !== "en" &&
+                  attr.alternateLanguages &&
+                  Object.keys(attr.alternateLanguages).includes(i18n.language)
+                ) {
+                  // Swap in translation
                   valueLabel =
                     attr.alternateLanguages[i18n.language].valueLabel;
                 }

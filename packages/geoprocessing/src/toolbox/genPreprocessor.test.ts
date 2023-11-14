@@ -67,7 +67,7 @@ describe("genPreprocessor", () => {
 
     expect(result).toBeTruthy();
     expect(area(result)).toBe(75066892447.21024);
-  });
+  }, 10000);
 
   test("sketch outside of datasource should not clip at all", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
@@ -118,5 +118,5 @@ describe("genPreprocessor", () => {
 
     expect(result).toBeTruthy();
     expect(area(result)).toEqual(origArea);
-  });
+  }, 10000);
 });

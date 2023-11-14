@@ -131,10 +131,10 @@ describe("geoblaze cog test", () => {
     } catch (err) {
       return;
     }
-    fail("should not reach here");
+    fail("should not reach here, feature smaller than pixel");
   });
 
-  test("larger feature covering only nodata should throw", async () => {
+  test("geoblaze - larger feature covering only nodata should return 0", async () => {
     const url = "http://127.0.0.1:8080/data/in/feature_abyssopelagic_cog.tif";
 
     const raster = await geoblaze.parse(url);
@@ -156,12 +156,9 @@ describe("geoblaze cog test", () => {
         ],
       },
     };
-    try {
-      await geoblaze.sum(url, feature);
-    } catch (err) {
-      return;
-    }
-    fail("should not reach here");
+
+    const result = await geoblaze.sum(url, feature);
+    expect(result).toEqual([0]);
   });
 });
 

@@ -91,7 +91,7 @@ export async function genGeojson(config: ImportVectorDatasourceConfig) {
       ? "-explodecollections"
       : "";
   fs.removeSync(dst);
-  await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON  ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON -wrapdateline ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
 }
 
 /** Convert vector datasource to FlatGeobuf */
@@ -106,5 +106,5 @@ export async function genFlatgeobuf(config: ImportVectorDatasourceConfig) {
       ? "-explodecollections"
       : "";
   fs.removeSync(dst);
-  await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf -wrapdateline -nlt PROMOTE_TO_MULTI ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
 }

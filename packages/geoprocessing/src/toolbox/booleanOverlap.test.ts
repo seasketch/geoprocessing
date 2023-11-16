@@ -1,3 +1,7 @@
+/**
+ * @group unit
+ */
+
 import { booleanOverlap } from "./booleanOverlap";
 import { genSampleSketch } from "../helpers";
 

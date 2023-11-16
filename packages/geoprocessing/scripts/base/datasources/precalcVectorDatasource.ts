@@ -14,6 +14,7 @@ import {
   clipMultiMerge,
   createMetric,
   datasourceConfig,
+  genZodErrorMessage,
 } from "../../../src";
 import { getFeatures } from "../../../src/dataproviders";
 import { featureCollection } from "@turf/helpers";
@@ -75,15 +76,19 @@ export async function genVectorMetrics(
 ): Promise<Metric[]> {
   const dstPath = extraOptions.newDstPath || datasourceConfig.defaultDstPath;
 
-  // console.log(
-  //   `DATASOURCE: ${datasource.datasourceId}}, GEOGRAPHY: ${geography.geographyId}}\n`
-  // );
-
   const dsFeatureColl: FeatureCollection<Polygon | MultiPolygon> =
     await (async () => {
       const feats = await getFeatures(datasource, url);
       // Make sure only contains polygon or multipolygon in array
-      const validFeats = featuresSchema.parse(feats); // was erroring on missing properties property
+      const result = featuresSchema.safeParse(feats);
+      if (!result.success) {
+        console.log(
+          `precalcVectorDatasource - error parsing features for datasource ${datasource.datasourceId}`
+        );
+        const errorMessage = genZodErrorMessage(result.error.issues);
+        throw new Error(errorMessage);
+      }
+      const validFeats = result.data;
       return truncate(featureCollection(validFeats), { mutate: true });
     })();
 

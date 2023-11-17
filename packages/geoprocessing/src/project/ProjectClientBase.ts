@@ -454,7 +454,7 @@ export class ProjectClientBase implements ProjectClientInterface {
 
         if (!metric || !metric.length)
           throw new Error(
-            `Can't find metric for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}`
+            `Can't find precalc metric for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}.  Do you need to run the precalc:data command?`
           );
         if (metric.length > 1)
           throw new Error(

@@ -2,7 +2,7 @@
  * @group unit
  */
 
-import { splitFeature, splitSketch } from "./split";
+import { splitFeatureAntimeridian, splitSketchAntimeridian } from "./split";
 import { feature } from "@turf/helpers";
 import { Feature, Polygon, Sketch } from "../types";
 import { toFeaturePolygonArray, toSketchArray } from "../helpers";
@@ -28,7 +28,7 @@ describe("splitFeature", () => {
         ],
       ],
     });
-    const result = toFeaturePolygonArray(splitFeature(poly));
+    const result = toFeaturePolygonArray(splitFeatureAntimeridian(poly));
 
     // Split into a multipolygon with two polygons
     expect(result.length).toBe(1);
@@ -70,7 +70,7 @@ describe("splitSketch", () => {
         ],
       ],
     });
-    const splitPoly = splitSketch(poly);
+    const splitPoly = splitSketchAntimeridian(poly);
     expect(deepEqual(splitPoly, poly)).toBe(true); // no change
   });
 
@@ -88,7 +88,7 @@ describe("splitSketch", () => {
       ],
     });
     const sc = genSampleSketchCollectionFromSketches([sketch]);
-    const splitSc = splitSketch(sc);
+    const splitSc = splitSketchAntimeridian(sc);
     expect(deepEqual(splitSc, sc)).toBe(true); // no change
   });
 
@@ -105,7 +105,7 @@ describe("splitSketch", () => {
         ],
       ],
     });
-    const result = splitSketch(sketch);
+    const result = splitSketchAntimeridian(sketch);
 
     // Split into a multipolygon with two polygons
     if (isSketch(result)) {
@@ -149,7 +149,7 @@ describe("splitSketch", () => {
       ],
     });
     const sc = genSampleSketchCollectionFromSketches([sketch]);
-    const splitSc = splitSketch(sc);
+    const splitSc = splitSketchAntimeridian(sc);
 
     // Split into a multipolygon with two polygons
     // console.log("BEFORE", JSON.stringify(sc));

@@ -13,5 +13,5 @@ export interface DefaultExtraParams {
 }
 
 export interface GeogProp {
-  geographyId: string;
+  geographyId?: string;
 }

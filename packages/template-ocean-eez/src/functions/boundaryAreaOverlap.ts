@@ -15,7 +15,7 @@ import {
   isPolygonFeatureArray,
   getFirstFromParam,
   DefaultExtraParams,
-  splitSketch,
+  splitSketchAntimeridian,
 } from "@seasketch/geoprocessing";
 import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import bbox from "@turf/bbox";
@@ -32,8 +32,8 @@ export async function boundaryAreaOverlap(
   const curGeography = project.getGeographyById(geographyId, {
     fallbackGroup: "default-boundary",
   });
-  const finalSketch = splitSketch(sketch);
-  const clippedSketch = await clipToGeography(finalSketch, curGeography);
+  const splitSketch = splitSketchAntimeridian(sketch);
+  const clippedSketch = await clipToGeography(splitSketch, curGeography);
   const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   // Fetch boundary features indexed by classId

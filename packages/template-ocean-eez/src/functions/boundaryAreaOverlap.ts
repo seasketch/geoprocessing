@@ -10,12 +10,11 @@ import {
   overlapFeatures,
   rekeyMetrics,
   sortMetrics,
-  isInternalVectorDatasource,
-  isExternalVectorDatasource,
   isPolygonFeatureArray,
   getFirstFromParam,
   DefaultExtraParams,
   splitSketchAntimeridian,
+  isVectorDatasource,
 } from "@seasketch/geoprocessing";
 import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import bbox from "@turf/bbox";
@@ -44,10 +43,7 @@ export async function boundaryAreaOverlap(
           throw new Error(`Missing datasourceId ${curClass.classId}`);
         }
         const ds = project.getDatasourceById(curClass.datasourceId);
-        if (
-          !isInternalVectorDatasource(ds) &&
-          !isExternalVectorDatasource(ds)
-        ) {
+        if (!isVectorDatasource(ds)) {
           throw new Error(`Expected vector datasource for ${ds.datasourceId}`);
         }
 

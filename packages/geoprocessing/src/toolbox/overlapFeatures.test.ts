@@ -8,7 +8,6 @@ import fix from "../testing/fixtures/squareSketches";
 import sk from "../testing/fixtures/sketches";
 import { firstMatchingMetric } from "../metrics";
 import { testWithinPerc } from "../testing";
-import { roundDecimal } from "../helpers";
 
 describe("overlapFeatures", () => {
   test("function is present", () => {
@@ -62,6 +61,15 @@ describe("overlapFeatures", () => {
     const metrics = await overlapFeatures(
       "test",
       [fix.outer],
+      fix.sketchMultiPoly1
+    );
+    expect(metrics[0].value).toBeCloseTo(area(fix.sketchMultiPoly1));
+  });
+
+  test("overlapFeatures - multipolygon both arguments", async () => {
+    const metrics = await overlapFeatures(
+      "test",
+      [fix.sketchMultiPoly1],
       fix.sketchMultiPoly1
     );
     expect(metrics[0].value).toBeCloseTo(area(fix.sketchMultiPoly1));

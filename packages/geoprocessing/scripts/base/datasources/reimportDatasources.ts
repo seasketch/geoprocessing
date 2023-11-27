@@ -15,7 +15,6 @@ import { genGeojson, genFlatgeobuf } from "./importVectorDatasource";
 import { genVectorConfig } from "./genVectorConfig";
 import { genCog } from "./importRasterDatasource";
 import { genRasterConfig } from "./genRasterConfig";
-import { loadCog } from "../../../src/dataproviders/cog";
 import ProjectClientBase from "../../../src/project/ProjectClientBase";
 import { publishDatasource } from "./publishDatasource";
 

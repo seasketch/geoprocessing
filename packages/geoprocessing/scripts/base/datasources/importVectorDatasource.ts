@@ -1,4 +1,8 @@
-import { getJsonPath, getFlatGeobufPath } from "../../../src/datasources";
+import {
+  getJsonPath,
+  getFlatGeobufPath,
+  getGeopackagePath,
+} from "../../../src/datasources";
 import fs from "fs-extra";
 import { $ } from "zx";
 import {
@@ -85,11 +89,7 @@ export async function genGeojson(config: ImportVectorDatasourceConfig) {
   const dst = getJsonPath(config.dstPath, config.datasourceId);
   const query = `SELECT ${genFields(propertiesToKeep)} FROM "${layerName}"`;
   const explodeOption =
-    config.explodeMulti === undefined
-      ? "-explodecollections"
-      : config.explodeMulti === true
-      ? "-explodecollections"
-      : "";
+    config.explodeMulti === true ? "-explodecollections" : "";
   fs.removeSync(dst);
   await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON -wrapdateline ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
 }
@@ -97,14 +97,16 @@ export async function genGeojson(config: ImportVectorDatasourceConfig) {
 /** Convert vector datasource to FlatGeobuf */
 export async function genFlatgeobuf(config: ImportVectorDatasourceConfig) {
   const { src, propertiesToKeep, layerName } = config;
+  const temp = getGeopackagePath(config.dstPath, config.datasourceId);
   const dst = getFlatGeobufPath(config.dstPath, config.datasourceId);
   const query = `SELECT ${genFields(propertiesToKeep)} FROM "${layerName}"`;
   const explodeOption =
-    config.explodeMulti === undefined
-      ? "-explodecollections"
-      : config.explodeMulti === true
-      ? "-explodecollections"
-      : "";
+    config.explodeMulti === true ? "-explodecollections" : "";
   fs.removeSync(dst);
-  await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf -wrapdateline -nlt PROMOTE_TO_MULTI ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  // explode into temp geopackage in case of mixed single and multipolygon to avoide flatgeobuf error
+  await $`ogr2ogr -t_srs "EPSG:4326" -f GPKG -wrapdateline ${explodeOption} -dialect OGRSQL -sql ${query} ${temp} ${src}`;
+  // final conversion to flatgeobuf
+  await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf -wrapdateline ${explodeOption} -dialect OGRSQL ${dst} ${src}`;
+  // remove temp
+  await $`rm ${temp}`;
 }

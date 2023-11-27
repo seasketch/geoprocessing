@@ -9,6 +9,7 @@ import {
   geographySchema,
   firstMatchingMetric,
   metricsSchema,
+  isInternalVectorDatasource,
 } from "../../../src";
 import configFixtures from "../../../src/testing/fixtures/projectConfig";
 import fs from "fs-extra";
@@ -57,6 +58,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: false,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -64,6 +66,14 @@ describe("precalcDatasources", () => {
           doPublish: false,
         }
       );
+
+      // Verify explode option came out false in datasource
+      if (isInternalVectorDatasource(returnedDs)) {
+        expect(returnedDs.explodeMulti).toBe(false);
+      } else {
+        fail("expected internal vector datasource");
+      }
+
       // Create geography
       const eezGeog: Geography = {
         geographyId: geographyId,
@@ -135,6 +145,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -152,6 +163,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: ["Class"],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -249,6 +261,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -266,6 +279,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: ["Class"],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -304,6 +318,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -405,6 +420,7 @@ describe("precalcDatasources", () => {
 
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -423,6 +439,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: ["Class"],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -461,6 +478,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: ["Class"],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -570,6 +588,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -713,6 +732,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -936,6 +956,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,
@@ -1013,6 +1034,7 @@ describe("precalcDatasources", () => {
           formats: ["fgb", "json"],
           propertiesToKeep: [],
           precalc: false,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dsFilePath,

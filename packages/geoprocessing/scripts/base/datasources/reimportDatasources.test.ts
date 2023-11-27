@@ -42,6 +42,7 @@ describe("Reimport datasources", () => {
           formats: ["tif"],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,

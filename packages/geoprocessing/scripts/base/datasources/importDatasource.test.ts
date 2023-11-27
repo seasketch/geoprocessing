@@ -40,6 +40,7 @@ describe("importDatasource", () => {
           formats: [],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,
@@ -84,6 +85,7 @@ describe("importDatasource", () => {
           formats: [],
           propertiesToKeep: [],
           precalc: true,
+          explodeMulti: true,
         },
         {
           newDatasourcePath: dstConfigFilePath,

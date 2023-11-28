@@ -106,7 +106,7 @@ export async function genFlatgeobuf(config: ImportVectorDatasourceConfig) {
   // explode into temp geopackage in case of mixed single and multipolygon to avoide flatgeobuf error
   await $`ogr2ogr -t_srs "EPSG:4326" -f GPKG -wrapdateline ${explodeOption} -dialect OGRSQL -sql ${query} ${temp} ${src}`;
   // final conversion to flatgeobuf
-  await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf -wrapdateline ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf -wrapdateline ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${temp}`;
   // remove temp
   await $`rm ${temp}`;
 }

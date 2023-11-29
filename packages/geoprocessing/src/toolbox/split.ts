@@ -47,7 +47,6 @@ export function splitSketchAntimeridian<G = Polygon | MultiPolygon>(
   const splitFeatures = splitGeojson(cleanFeatures, { mutate: true }) as
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>;
-
   splitFeatures.bbox = bbox(cleanFeatures);
   return splitFeatures;
 }

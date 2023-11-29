@@ -1,3 +1,4 @@
+import bbox from "@turf/bbox";
 import {
   Feature,
   FeatureCollection,
@@ -18,12 +19,17 @@ export function splitFeatureAntimeridian<G = Polygon | MultiPolygon>(
   feature: Feature<G> | FeatureCollection<G>
 ): Feature<Polygon | MultiPolygon> | FeatureCollection<Polygon | MultiPolygon> {
   // Ensure coordinate positions are within -180 to 180 longitude, -90 to 90 latitude
-  const cleanFeatures = cleanCoords(feature) as Feature<Polygon | MultiPolygon>;
-
-  // Split feature on antimeridian.  If it doesn't cross simply returns original polygon
-  return splitGeojson(cleanFeatures) as
+  const cleanFeatures = cleanCoords(feature) as
     | Feature<Polygon | MultiPolygon>
     | FeatureCollection<Polygon | MultiPolygon>;
+  cleanFeatures.bbox = bbox(cleanFeatures);
+
+  // Split feature on antimeridian.  If it doesn't cross simply returns original polygon
+  const splitFeatures = splitGeojson(cleanFeatures) as
+    | Feature<Polygon | MultiPolygon>
+    | FeatureCollection<Polygon | MultiPolygon>;
+  splitFeatures.bbox = bbox(cleanFeatures);
+  return splitFeatures;
 }
 
 /**
@@ -38,7 +44,10 @@ export function splitSketchAntimeridian<G = Polygon | MultiPolygon>(
   const cleanFeatures = cleanCoords(sketch) as Sketch<Polygon | MultiPolygon>;
 
   // Split sketch on antimeridian.  If it doesn't cross simply returns original polygon
-  return splitGeojson(cleanFeatures, { mutate: true }) as
+  const splitFeatures = splitGeojson(cleanFeatures, { mutate: true }) as
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>;
+
+  splitFeatures.bbox = bbox(cleanFeatures);
+  return splitFeatures;
 }

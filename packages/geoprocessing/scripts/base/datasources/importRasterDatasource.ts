@@ -72,11 +72,6 @@ export async function genCog(config: ImportRasterDatasourceConfig) {
   // cloud-optimize
   await $`gdal_translate -b ${config.band} -r nearest --config GDAL_PAM_ENABLED NO --config GDAL_CACHEMAX 500 -co COMPRESS=LZW -co NUM_THREADS=ALL_CPUS -of COG -stats ${warpDst} ${dst}`;
   await $`rm ${warpDst}`;
-  try {
-    await $`rm ${warpDst}.aux.xml`;
-  } catch (err: unknown) {
-    console.log(`${warpDst}.aux.xml not found, skipping`);
-  }
 }
 
 /** Returns a full pathname to a COG given dst path, datasourceID, and optional postfix name */

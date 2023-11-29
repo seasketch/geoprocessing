@@ -5,7 +5,7 @@
 import { splitFeatureAntimeridian, splitSketchAntimeridian } from "./split";
 import { feature } from "@turf/helpers";
 import { Feature, Polygon, Sketch } from "../types";
-import { toFeaturePolygonArray, toSketchArray } from "../helpers";
+import { toFeaturePolygonArray, toJsonFile, toSketchArray } from "../helpers";
 import {
   genSampleSketch,
   genSampleSketchCollectionFromSketches,
@@ -13,6 +13,7 @@ import {
   isSketchCollection,
 } from "../helpers/sketch";
 import deepEqual from "fast-deep-equal";
+import bboxPolygon from "@turf/bbox-polygon";
 
 describe("splitFeature", () => {
   test("splitFeature Polygon antimeridian", async () => {
@@ -33,6 +34,7 @@ describe("splitFeature", () => {
     // Split into a multipolygon with two polygons
     expect(result.length).toBe(1);
     expect(result[0].geometry.type).toBe("MultiPolygon");
+    expect(result[0].bbox).toEqual([-178, -16, 175, -15]); // new bounding box should have been cleaned to be within -180 to 180
     expect(result[0].geometry.coordinates).toEqual([
       [
         [

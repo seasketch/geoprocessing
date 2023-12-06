@@ -6,6 +6,7 @@ import {
   GeoprocessingHandler,
   getFirstFromParam,
   DefaultExtraParams,
+  splitSketchAntimeridian,
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import { BBox } from "@turf/helpers";
@@ -36,10 +37,10 @@ async function calculateArea(
   // Clip to portion of sketch within current geography
   const clippedSketch = await clipToGeography(splitSketch, curGeography);
   // Get bounding box of sketch remainder
-  const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
+  const clippedSketchBox = clippedSketch.bbox || bbox(clippedSketch);
   return {
     area: turfArea(clippedSketch),
-    bbox: sketchBox,
+    bbox: clippedSketchBox,
   };
 }
 

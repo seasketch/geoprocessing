@@ -27,12 +27,17 @@ export async function boundaryAreaOverlap(
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
   extraParams: DefaultExtraParams = {}
 ): Promise<ReportResult> {
+  // Use caller-provided geographyId if provided
   const geographyId = getFirstFromParam("geographyIds", extraParams);
+  // Get geography features, falling back to geography assigned to default-boundary group
   const curGeography = project.getGeographyById(geographyId, {
     fallbackGroup: "default-boundary",
   });
+  // Support sketches crossing antimeridian
   const splitSketch = splitSketchAntimeridian(sketch);
+  // Clip to portion of sketch within current geography
   const clippedSketch = await clipToGeography(splitSketch, curGeography);
+  // Get bounding box of sketch remainder
   const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   // Fetch boundary features indexed by classId
@@ -47,7 +52,7 @@ export async function boundaryAreaOverlap(
           throw new Error(`Expected vector datasource for ${ds.datasourceId}`);
         }
 
-        // Fetch only the features that overlap the bounding box of the sketch
+        // Fetch datasource features overlapping with sketch remainder
         const url = project.getDatasourceUrl(ds);
         const polys = await getFeatures(ds, url, {
           bbox: sketchBox,

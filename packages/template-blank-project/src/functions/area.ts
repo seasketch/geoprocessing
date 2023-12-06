@@ -25,14 +25,21 @@ async function calculateArea(
     | SketchCollection<Polygon | MultiPolygon>,
   extraParams: DefaultExtraParams = {}
 ): Promise<AreaResults> {
+  // Use caller-provided geographyId if provided
   const geographyId = getFirstFromParam("geographyIds", extraParams);
+  // Get geography features, falling back to geography assigned to default-boundary group
   const curGeography = project.getGeographyById(geographyId, {
     fallbackGroup: "default-boundary",
   });
-  const clippedSketch = await clipToGeography(sketch, curGeography);
+  // Support sketches crossing antimeridian
+  const splitSketch = splitSketchAntimeridian(sketch);
+  // Clip to portion of sketch within current geography
+  const clippedSketch = await clipToGeography(splitSketch, curGeography);
+  // Get bounding box of sketch remainder
+  const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
   return {
     area: turfArea(clippedSketch),
-    bbox: bbox(clippedSketch),
+    bbox: sketchBox,
   };
 }
 

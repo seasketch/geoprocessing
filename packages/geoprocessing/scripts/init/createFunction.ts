@@ -10,6 +10,7 @@ import {
   getBaseFunctionPath,
   getProjectFunctionPath,
   getProjectConfigPath,
+  getBlankFunctionPath,
 } from "../util/getPaths";
 
 async function createFunction() {
@@ -111,7 +112,8 @@ export async function makeGeoprocessingHandler(
   // copy geoprocessing function template
   // rename metadata in function definition
   const projectFunctionPath = getProjectFunctionPath(basePath);
-  const functionTemplatePath = `${getBaseFunctionPath()}`;
+  // Copy from template-blank-project
+  const functionTemplatePath = `${getBlankFunctionPath()}`;
   const handlerCode = await fs.readFile(`${functionTemplatePath}/area.ts`);
   const testSmokeCode = await fs.readFile(
     `${functionTemplatePath}/areaSmoke.test.ts`

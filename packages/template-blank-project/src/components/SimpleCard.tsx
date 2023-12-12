@@ -17,11 +17,10 @@ export const SimpleCard = () => {
   return (
     <>
       <ResultsCard
-        title={t("SimpleCard title", "Zone Size")}
+        title={t("SimpleCard title", "Zone Report")}
         functionName="simpleFunction"
       >
         {(data: SimpleResults) => {
-          console.log(data);
           return (
             <>
               <p>
@@ -39,7 +38,7 @@ export const SimpleCard = () => {
                 </Trans>
               </p>
               <p>
-                <Trans i18nKey="SimpleCard ">
+                <Trans i18nKey="SimpleCard temperature message">
                   The present day sea surface temperature within this sketch is{" "}
                   <b>
                     {{ minTemp: roundDecimal(data.minTemp, 1) }} -{" "}

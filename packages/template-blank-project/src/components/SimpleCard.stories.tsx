@@ -1,5 +1,5 @@
 import React from "react";
-import { SizeCard } from "./SizeCard";
+import { SimpleCard } from "./SimpleCard";
 import {
   createReportDecorator,
   sampleSketchReportContextValue,
@@ -10,10 +10,13 @@ const contextValue = sampleSketchReportContextValue({
   visibleLayers: [],
   exampleOutputs: [
     {
-      functionName: "calculateArea",
+      functionName: "simpleFunction",
       sketchName: "My Sketch",
       results: {
-        area: 19384872,
+        area: 92607364669.43335,
+        nearbyEcoregions: ["Marshall Islands", "East Caroline Islands"],
+        minTemp: 28.011158,
+        maxTemp: 30.495605,
       },
     },
   ],
@@ -22,12 +25,12 @@ const contextValue = sampleSketchReportContextValue({
 // Wrap in Translator to allow translations to work in storybook without report client
 export const basic = () => (
   <Translator>
-    <SizeCard />
+    <SimpleCard />
   </Translator>
 );
 
 export default {
-  component: SizeCard,
-  title: "Project/Components/SizeCard",
+  component: SimpleCard,
+  title: "Project/Components/SimpleCard",
   decorators: [createReportDecorator(contextValue)],
 };

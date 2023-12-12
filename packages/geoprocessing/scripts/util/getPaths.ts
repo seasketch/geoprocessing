@@ -45,6 +45,10 @@ export function getBlankFunctionPath() {
   return `${getBlankProjectPath()}/src/functions`;
 }
 
+export function getBlankClientPath() {
+  return `${getBlankProjectPath()}/src/clients`;
+}
+
 //// PROJECT PATHS ////
 
 // Functions that return relative paths to access project assets

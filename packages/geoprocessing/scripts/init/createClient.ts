@@ -5,13 +5,7 @@ import path from "path";
 import chalk from "chalk";
 import { GeoprocessingJsonConfig } from "../../src/types";
 import pascalcase from "pascalcase";
-
-function getTemplateClientPath() {
-  const gpPath = /dist/.test(__dirname)
-    ? `${__dirname}/../../..`
-    : `${__dirname}/../..`;
-  return `${gpPath}/templates/clients`;
-}
+import { getBlankClientPath } from "../util/getPaths";
 
 async function createClient() {
   const answers = await inquirer.prompt([
@@ -49,9 +43,11 @@ export async function makeClient(
   // copy client template
   const fpath = basePath + "src/clients";
   // rename metadata in function definition
-  const templatePath = getTemplateClientPath();
-  const clientCode = await fs.readFile(`${templatePath}/Client.tsx`);
-  const testCode = await fs.readFile(`${templatePath}/Client.stories.tsx`);
+  const templatePath = getBlankClientPath();
+  const clientCode = await fs.readFile(`${templatePath}/SimpleClient.tsx`);
+  const testCode = await fs.readFile(
+    `${templatePath}/SimpleClient.stories.tsx`
+  );
   if (!fs.existsSync(path.join(basePath, "src"))) {
     fs.mkdirSync(path.join(basePath, "src"));
   }
@@ -83,14 +79,14 @@ export async function makeClient(
     `${fpath}/${options.title}.tsx`,
     clientCode
       .toString()
-      .replace(/Client/g, options.title)
-      .replace(/AreaResults/g, resultsType)
+      .replace(/SimpleClient/g, options.title)
+      .replace(/Results/g, resultsType)
       .replace(`"area"`, `"${functionName}"`)
       .replace(`functions/area`, `functions/${functionName}`)
   );
   await fs.writeFile(
     `${fpath}/${options.title}.stories.tsx`,
-    testCode.toString().replace(/Client/g, options.title)
+    testCode.toString().replace(/SimpleClient/g, options.title)
   );
 
   spinner.succeed(`created ${options.title} client in ${fpath}/`);

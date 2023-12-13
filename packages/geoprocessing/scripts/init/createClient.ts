@@ -129,7 +129,10 @@ export async function makeClient(
 
   await fs.writeFile(
     `${projectComponentPath}/${options.title}Card.stories.tsx`,
-    testComponentCode.toString().replace(/SimpleCard/g, options.title)
+    testComponentCode
+      .toString()
+      .replace(/SimpleCard/g, `${options.title}Card`)
+      .replace(`"simpleFunction"`, `"${functionName}"`)
   );
 
   spinner.succeed(`created ${options.title} client in ${projectClientPath}/`);

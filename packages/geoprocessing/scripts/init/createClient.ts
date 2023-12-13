@@ -3,6 +3,7 @@ import ora from "ora";
 import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
+import camelcase from "camelcase";
 import { GeoprocessingJsonConfig } from "../../src/types";
 import pascalcase from "pascalcase";
 import { getBlankProjectPath } from "../util/getPaths";
@@ -21,6 +22,16 @@ async function createClient() {
       type: "input",
       name: "description",
       message: "Describe what this client is for",
+    },
+    {
+      type: "input",
+      name: "functionName",
+      message:
+        "What is the name of geoprocessing function this client will invoke? (in camelCase)",
+      default: "simpleFunction",
+      validate: (value) =>
+        /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
+      transformer: (value) => camelcase(value),
     },
   ]);
   answers.title = pascalcase(answers.title);

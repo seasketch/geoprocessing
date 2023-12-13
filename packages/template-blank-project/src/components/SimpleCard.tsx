@@ -1,8 +1,8 @@
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { ResultsCard } from "@seasketch/geoprocessing/client-ui";
-// Import the results type definition from your functions to type-check your
-// component render functions
+// Import the results type definition from your functions to type-check and
+// access the result in your component render function
 import { SimpleResults } from "../functions/simpleFunction";
 import Translator from "../components/TranslatorAsync";
 import { roundDecimal } from "@seasketch/geoprocessing/client-core";

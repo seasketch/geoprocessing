@@ -8,6 +8,7 @@ import parseGeoraster from "georaster";
 
 // @ts-ignore
 import geoblaze from "geoblaze";
+import { splitSketchAntimeridian } from "../split";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]
@@ -131,10 +132,10 @@ describe("geoblaze cog test", () => {
     } catch (err) {
       return;
     }
-    fail("should not reach here");
+    fail("should not reach here, feature smaller than pixel");
   });
 
-  test("larger feature covering only nodata should throw", async () => {
+  test("geoblaze - larger feature covering only nodata should return 0", async () => {
     const url = "http://127.0.0.1:8080/data/in/feature_abyssopelagic_cog.tif";
 
     const raster = await geoblaze.parse(url);
@@ -156,12 +157,9 @@ describe("geoblaze cog test", () => {
         ],
       },
     };
-    try {
-      await geoblaze.sum(url, feature);
-    } catch (err) {
-      return;
-    }
-    fail("should not reach here");
+
+    const result = await geoblaze.sum(url, feature);
+    expect(result).toEqual([0]);
   });
 });
 
@@ -241,5 +239,79 @@ describe("geoblaze hole test", () => {
     expect(result).toBeTruthy();
     expect(result[0]).toBe(12);
     expect(squareResult[0]).toBe(12);
+  });
+});
+
+describe("geoblaze antimeridian test", () => {
+  test("fiji crossing - should pick X value", async () => {
+    const url = "http://127.0.0.1:8080/data/in/fiji_anticross_random_test.tif";
+    const raster = await geoblaze.parse(url);
+
+    const fijiSketch: Sketch = {
+      id: 22968,
+      bbox: [170.3874, -15.761472, 186.44315, -14.24049],
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [170.387412007, -14.240489787],
+            [186.381385397, -14.390078131],
+            [186.44313819, -15.493856974],
+            [170.480041196, -15.761471484],
+            [170.387412007, -14.240489787],
+          ],
+        ],
+      },
+      properties: {
+        "2852": "Fully Protected",
+        "2853": "fiji-crossing-1",
+        id: "22968",
+        name: "fiji-crossing-1",
+        postId: null,
+        userId: "269",
+        comments: null,
+        userSlug: "Tim",
+        createdAt: "2023-11-16T23:20:54.178483+00:00",
+        updatedAt: "2023-11-16T23:20:54.178483+00:00",
+        designation: "Fully Protected",
+        collectionId: null,
+        isCollection: false,
+        sharedInForum: false,
+        sketchClassId: "175",
+        userAttributes: [
+          {
+            label: "Designation",
+            value: "Fully Protected",
+            exportId: "designation",
+            fieldType: "ComboBox",
+            valueLabel: null,
+            formElementId: 2852,
+            alternateLanguages: {},
+          },
+          {
+            label: "Comments",
+            value: null,
+            exportId: "comments",
+            fieldType: "TextArea",
+            valueLabel: null,
+            formElementId: 2854,
+            alternateLanguages: {},
+          },
+        ],
+      },
+    };
+
+    const sum = await geoblaze.sum(raster);
+    expect(sum[0]).toBe(221);
+
+    // When not split should only pick up the portion within -180 to 180 (left side)
+    const fijiSum = await geoblaze.sum(raster, fijiSketch);
+    expect(fijiSum[0]).toBe(10);
+
+    // When split should pick up both sides, because it's all within -180 to 180
+    const splitSketch = splitSketchAntimeridian(fijiSketch);
+    const fijiCrossSum = await geoblaze.sum(raster, splitSketch);
+    expect(fijiCrossSum[0]).toBe(14);
   });
 });

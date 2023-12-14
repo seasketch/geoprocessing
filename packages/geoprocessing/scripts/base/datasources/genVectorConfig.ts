@@ -18,11 +18,12 @@ export function genVectorConfig<C extends ProjectClientBase>(
       ? options.src
       : "";
 
+  // Add explodeMulti if undefined, to support ExternalVectorDatasource.  Code smell that this is added for external datasource
   const explodeMulti =
     hasOwnProperty(options, "explodeMulti") &&
     typeof options.explodeMulti === "boolean"
       ? options.explodeMulti
-      : false;
+      : true;
 
   // merge to ensure keep at least classKeys
   const propertiesToKeep =

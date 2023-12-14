@@ -33,6 +33,22 @@ export function getBaseFunctionPath() {
   return `${getBaseProjectPath()}/src/functions`;
 }
 
+//// TEMPLATE PATHS ////
+
+export function getBlankProjectPath() {
+  return /dist/.test(__dirname)
+    ? `${__dirname}/../../templates/starter-templates/template-blank-project`
+    : `${__dirname}/../../../templates/starter-templates/template-blank-project`;
+}
+
+export function getBlankFunctionPath() {
+  return `${getBlankProjectPath()}/src/functions`;
+}
+
+export function getBlankClientPath() {
+  return `${getBlankProjectPath()}/src/clients`;
+}
+
 //// PROJECT PATHS ////
 
 // Functions that return relative paths to access project assets

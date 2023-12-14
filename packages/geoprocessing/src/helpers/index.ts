@@ -20,3 +20,4 @@ export * from "./units";
 export * from "./valueFormatter";
 export * from "./extraParams";
 export * from "./zeroGeometry";
+export * from "./zodError";

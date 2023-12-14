@@ -181,10 +181,9 @@ export async function precalcDatasources<C extends ProjectClientBase>(
         successfulGs += 1;
       } catch (e: unknown) {
         if (e instanceof Error) {
-          console.log(e.message);
           console.log(e.stack);
           console.log(
-            `Updating precalc metrics for data ${ds.datasourceId} + geography ${geog.geographyId} failed, moving to next`
+            `Precalculating metrics for datasource ${ds.datasourceId} + geography ${geog.geographyId} failed, moving to next`
           );
           failed += 1;
         }

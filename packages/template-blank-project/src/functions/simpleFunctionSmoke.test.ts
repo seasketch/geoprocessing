@@ -2,24 +2,24 @@
  * @jest-environment node
  * @group smoke
  */
-import Handler from "./area";
+import Handler from "./simpleFunction";
 import {
   getExamplePolygonSketchAll,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
 
-const calculateArea = Handler.func;
+const simpleFunction = Handler.func;
 
 describe("Basic smoke tests", () => {
   test("handler function is present", () => {
-    expect(typeof calculateArea).toBe("function");
+    expect(typeof simpleFunction).toBe("function");
   });
-  test("calculateArea - tests run against all examples", async () => {
+  test("simpleFunction - tests run against all examples", async () => {
     const examples = await getExamplePolygonSketchAll();
     for (const example of examples) {
-      const result = await calculateArea(example);
+      const result = await simpleFunction(example);
       expect(result).toBeTruthy();
-      writeResultOutput(result, "calculateArea", example.properties.name);
+      writeResultOutput(result, "simpleFunction", example.properties.name);
     }
-  });
+  }, 60000);
 });

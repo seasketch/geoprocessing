@@ -3,6 +3,7 @@ import {
   Feature,
   FeatureCollection,
   Polygon,
+  MultiPolygon,
   SketchGeometryTypes,
 } from "../types";
 import { isFeature } from "./geo";
@@ -19,7 +20,9 @@ export function toFeatureArray(input: Feature | FeatureCollection) {
 }
 
 export function toFeaturePolygonArray(
-  input: Feature<Polygon> | FeatureCollection<Polygon>
+  input:
+    | Feature<Polygon | MultiPolygon>
+    | FeatureCollection<Polygon | MultiPolygon>
 ) {
   if (isFeature(input)) {
     return [input];

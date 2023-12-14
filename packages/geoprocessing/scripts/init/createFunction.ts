@@ -10,6 +10,7 @@ import {
   getBaseFunctionPath,
   getProjectFunctionPath,
   getProjectConfigPath,
+  getBlankFunctionPath,
 } from "../util/getPaths";
 
 async function createFunction() {
@@ -37,7 +38,7 @@ async function createFunction() {
       name: "title",
       message: "Title for this function, in camelCase",
       default: (answers) =>
-        answers.type === "preprocessing" ? "clipToOceanEez" : "area",
+        answers.type === "preprocessing" ? "clipToOceanEez" : "simpleFunction",
       validate: (value) =>
         /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
       transformer: (value) => camelcase(value),
@@ -111,10 +112,13 @@ export async function makeGeoprocessingHandler(
   // copy geoprocessing function template
   // rename metadata in function definition
   const projectFunctionPath = getProjectFunctionPath(basePath);
-  const functionTemplatePath = `${getBaseFunctionPath()}`;
-  const handlerCode = await fs.readFile(`${functionTemplatePath}/area.ts`);
+  // Copy from template-blank-project
+  const functionTemplatePath = `${getBlankFunctionPath()}`;
+  const handlerCode = await fs.readFile(
+    `${functionTemplatePath}/simpleFunction.ts`
+  );
   const testSmokeCode = await fs.readFile(
-    `${functionTemplatePath}/areaSmoke.test.ts`
+    `${functionTemplatePath}/simpleFunctionSmoke.test.ts`
   );
   if (!fs.existsSync(path.join(basePath, "src"))) {
     fs.mkdirSync(path.join(basePath, "src"));
@@ -126,9 +130,9 @@ export async function makeGeoprocessingHandler(
     `${projectFunctionPath}/${options.title}.ts`,
     handlerCode
       .toString()
-      .replace(/calculateArea/g, options.title)
+      .replace(/simpleFunction/g, options.title)
       .replace(
-        /CalculateArea/g,
+        /SimpleFunction/g,
         options.title.slice(0, 1).toUpperCase() + options.title.slice(1)
       )
       .replace(/functionName/g, options.title)
@@ -139,8 +143,8 @@ export async function makeGeoprocessingHandler(
     `${projectFunctionPath}/${options.title}Smoke.test.ts`,
     testSmokeCode
       .toString()
-      .replace(/calculateArea/g, options.title)
-      .replace("./area", `./${options.title}`)
+      .replace(/simpleFunction/g, options.title)
+      .replace("./simpleFunction", `./${options.title}`)
   );
   const geoprocessingJson = JSON.parse(
     fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
@@ -162,8 +166,8 @@ export async function makeGeoprocessingHandler(
     console.log(chalk.blue(`\nGeoprocessing function initialized`));
     console.log(`\nNext Steps:
     * Update your function definition in ${`${projectFunctionPath}/${options.title}.ts`}
-    * Test cases go in ${`${projectFunctionPath}/${options.title}.test.ts`}
-    * Populate examples/sketches
+    * Smoke test in ${`${projectFunctionPath}/${options.title}Smoke.test.ts`} will be run the next time you use 'npm test'
+    * Populate examples/sketches folder with sketches for smoke test to run against
   `);
   }
 }
@@ -245,8 +249,8 @@ export async function makePreprocessingHandler(
     console.log(chalk.blue(`\nPreprocessing function initialized`));
     console.log(`\nNext Steps:
     * Update your function definition in ${`${projectFunctionPath}/${options.title}.ts`}
-    * Test cases go in ${`${projectFunctionPath}/${options.title}.test.ts`}
-    * Populate examples/functions
+    * Smoke test in ${`${projectFunctionPath}/${options.title}Smoke.test.ts`} will be run the next time you use 'npm test'
+    * Populate examples/sketches folder with sketches for smoke test to run against
   `);
   }
 }

@@ -1,4 +1,8 @@
-import { getJsonPath, getFlatGeobufPath } from "../../../src/datasources";
+import {
+  getJsonPath,
+  getFlatGeobufPath,
+  getGeopackagePath,
+} from "../../../src/datasources";
 import fs from "fs-extra";
 import { $ } from "zx";
 import {
@@ -85,13 +89,14 @@ export async function genGeojson(config: ImportVectorDatasourceConfig) {
   const dst = getJsonPath(config.dstPath, config.datasourceId);
   const query = `SELECT ${genFields(propertiesToKeep)} FROM "${layerName}"`;
   const explodeOption =
-    config.explodeMulti === undefined
-      ? "-explodecollections"
-      : config.explodeMulti === true
-      ? "-explodecollections"
-      : "";
+    config.explodeMulti === true ? "-explodecollections" : "";
   fs.removeSync(dst);
-  await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON  ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  // explode to Polygon or promote to MultiPolygon, GeoJSON supports mixed geometries but intention is to match what is done for Flatgeobuf for consistency
+  if (config.explodeMulti === true) {
+    await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON -explodeCollections -wrapdateline -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  } else {
+    await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON -nlt PROMOTE_TO_MULTI -wrapdateline -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  }
 }
 
 /** Convert vector datasource to FlatGeobuf */
@@ -99,12 +104,15 @@ export async function genFlatgeobuf(config: ImportVectorDatasourceConfig) {
   const { src, propertiesToKeep, layerName } = config;
   const dst = getFlatGeobufPath(config.dstPath, config.datasourceId);
   const query = `SELECT ${genFields(propertiesToKeep)} FROM "${layerName}"`;
-  const explodeOption =
-    config.explodeMulti === undefined
+  const explodeOrPromote =
+    config.explodeMulti === true
       ? "-explodecollections"
-      : config.explodeMulti === true
-      ? "-explodecollections"
-      : "";
+      : "-nlt PROMOTE_TO_MULTI";
   fs.removeSync(dst);
-  await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf ${explodeOption} -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  // explode to Polygon or promote to MultiPolygon, flatgeobuf does not support mixed geometries
+  if (config.explodeMulti === true) {
+    await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf -explodeCollections -wrapdateline -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  } else {
+    await $`ogr2ogr -t_srs "EPSG:4326" -f FlatGeobuf -nlt PROMOTE_TO_MULTI -wrapdateline -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+  }
 }

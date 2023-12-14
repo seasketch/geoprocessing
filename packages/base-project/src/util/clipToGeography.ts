@@ -16,6 +16,8 @@ import {
   clipMultiMerge,
   zeroSketchArray,
   zeroPolygon,
+  splitFeature,
+  toFeaturePolygonArray,
 } from "@seasketch/geoprocessing";
 import simplify from "@turf/simplify";
 
@@ -23,7 +25,7 @@ import simplify from "@turf/simplify";
  * Clips sketch to geography
  * @param sketch Sketch or SketchCollection
  * @param geography geography to clip sketch to
- * @param simplifyOptions optionally simplify sketch
+ * @param options optionally simplify sketch
  * @param simplifyOptions.tolerance tolerance in meters
  * @param simplifyOptions.highQuality highQuality simplification
  * @returns Sketch | SketchCollection
@@ -32,10 +34,10 @@ import simplify from "@turf/simplify";
 export async function clipToGeography<G extends Polygon | MultiPolygon>(
   sketch: Sketch<G> | SketchCollection<G>,
   geography: Geography,
-  simplifyOptions?: { tolerance?: number; highQuality?: boolean }
+  options?: { tolerance?: number; highQuality?: boolean }
 ): Promise<Sketch<G> | SketchCollection<G>> {
   if (!geography) {
-    if (simplifyOptions) return simplify(sketch, simplifyOptions);
+    if (options) return simplify(sketch, options);
     else return sketch;
   }
 
@@ -85,8 +87,8 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
           `Sketch ${sketch.id} does not intersect with geography ${geography.geographyId}`
         );
       if (intersection) {
-        if (simplifyOptions) {
-          sketch.geometry = simplify(intersection.geometry, simplifyOptions);
+        if (options) {
+          sketch.geometry = simplify(intersection.geometry, options);
         } else {
           sketch.geometry = intersection.geometry;
         }

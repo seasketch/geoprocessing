@@ -1,11 +1,11 @@
 import React from "react";
 import Translator from "../components/TranslatorAsync";
-import { SizeCard } from "../components/SizeCard";
+import { SimpleCard } from "../components/SimpleCard";
 
-export const SizeReport = () => {
+export const SimpleReport = () => {
   return (
     <Translator>
-      <SizeCard />
+      <SimpleCard />
     </Translator>
   );
 };

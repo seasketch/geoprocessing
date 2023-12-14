@@ -66,7 +66,16 @@ export function clipMultiMerge<P = Properties>(
   const geom1 = getGeom(feature1);
   // Combine into one multipoly coordinate array
   const coords2 = (() => {
-    return features2.features.map((poly) => getGeom(poly).coordinates);
+    return features2.features.reduce<MultiPolygon["coordinates"]>(
+      (acc, poly) => {
+        if (poly.geometry.type === "Polygon") {
+          return [...acc, poly.geometry.coordinates];
+        } else {
+          return [...acc, ...poly.geometry.coordinates];
+        }
+      },
+      []
+    );
   })();
   const result = polygonClipping[operation](
     geom1.coordinates as any,

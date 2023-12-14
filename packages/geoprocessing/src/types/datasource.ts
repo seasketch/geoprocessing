@@ -125,7 +125,7 @@ export const internalVectorImportSchema = internalImportSchema.merge(
     /** Import - What to keep in final dataset. Vector - properties, all else removed   */
     propertiesToKeep: z.array(z.string()),
     /** Import - Whether to explode multi-geometries into single e.g. MultiPolygon to Polygon. Defaults to true */
-    explodeMulti: z.boolean().optional(),
+    explodeMulti: z.boolean(),
   })
 );
 

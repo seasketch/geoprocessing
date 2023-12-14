@@ -58,6 +58,7 @@ describe("precalcRasterDatasource", () => {
         formats: ["fgb", "json"],
         propertiesToKeep: [],
         precalc: true,
+        explodeMulti: true,
       },
       {
         newDatasourcePath: dsFilePath,
@@ -443,6 +444,7 @@ describe("precalcRasterDatasource", () => {
         formats: ["fgb", "json"],
         propertiesToKeep: [],
         precalc: false,
+        explodeMulti: true,
       },
       {
         newDatasourcePath: dsFilePath,

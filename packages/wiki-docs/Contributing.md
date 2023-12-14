@@ -184,7 +184,13 @@ Making changes to framework CLI commands for example such as `init`, `build`, `i
 
 - Create unit or end-to-end tests in the geoprocessing framework for functions behind the CLI command
 - Create unit or end-to-end tests in templates (template-blank-project, template-ocean-eez).  Consider that users will also then get these tests when they install the template.
-- Publish an alpha or experimental release of geoprocessing library and [init]](#project-init-with-non-latest-version) a project with it, or update an existing project to use the new version (via package.json version).
+- Run `npm run prepare` from the `packages/geoprocessing` folder to do a build into the `packages/geoprocessing/dist` folder, which includes the CLI commands.
+- To test the `init` commands, in your terminal you'll need to `cd` to the `packages` directory alongside `geoprocessing`.  Then run the following and be sure to cleanup when you're done with testing:
+  - `node node_modules/@seasketch/geoprocessing/dist/scripts/init/init.js`
+- You can then test all the other CLI commands on this initialized proejct, or one of the existing sibling packages (base-project, template-ocean-eez, template-blank-project).  Just `cd` into the sibling package, say `packages/base-project`, then run one of the following and be sure to cleanup when you're done with testing:
+  - `node node_modules/@seasketch/geoprocessing/dist/scripts/init/createClient.js`
+  - `node node_modules/@seasketch/geoprocessing/dist/scripts/init/createReport.js`
+- Once you've done everything that you can locally, you can publish an alpha or [experimental](#experimental-releases) release of geoprocessing library and [init](#project-init-with-non-latest-version) a project with it, or update an existing project to use the new version (via package.json version).
 - If you want to avoid publishing, you can create an [example project](#init-example-project) in the geoprocessing folder and then deploy it.  You can then plug it into a SeaSketch sketch class and test using it, or run a [local client dev server](#running-local-client-dev-server) if you want to debug your report clients more directly outside of an iframe.
 
 ## Init example project

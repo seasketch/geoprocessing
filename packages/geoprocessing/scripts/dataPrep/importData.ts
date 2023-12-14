@@ -12,6 +12,7 @@ import {
 import path from "path";
 import { getProjectClient } from "../base/project/projectClient";
 import { precalcQuestion } from "./precalcQuestion";
+import { explodeQuestion } from "./explodeQuestion";
 
 // This is a standalone script used as a CLI command with a top-level function
 
@@ -21,7 +22,13 @@ const projectClient = getProjectClient(projectPath);
 interface ImportVectorDatasourceAnswers
   extends Pick<
     ImportVectorDatasourceOptions,
-    "src" | "datasourceId" | "layerName" | "geo_type" | "formats" | "precalc"
+    | "src"
+    | "datasourceId"
+    | "layerName"
+    | "geo_type"
+    | "formats"
+    | "precalc"
+    | "explodeMulti"
   > {
   classKeys: string;
   propertiesToKeep: string;
@@ -45,6 +52,7 @@ void (async function () {
   const datasources = readDatasources();
   const geoTypeAnswer = await geoTypeQuestion(datasources);
   const precalcAnswers = await precalcQuestion();
+  const explodeAnswers = await explodeQuestion();
 
   const config = await (async () => {
     if (geoTypeAnswer.geo_type === "vector") {
@@ -69,6 +77,7 @@ void (async function () {
           ),
         },
         ...precalcAnswers,
+        ...explodeAnswers,
       });
       return config;
     } else {

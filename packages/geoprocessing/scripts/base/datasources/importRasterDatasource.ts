@@ -67,14 +67,11 @@ export async function genCog(config: ImportRasterDatasourceConfig) {
   const { src } = config;
   const warpDst = getCogPath(config.dstPath, config.datasourceId, "_4326");
   const dst = getCogPath(config.dstPath, config.datasourceId);
-  await $`gdalwarp -t_srs "EPSG:4326" ${src} ${warpDst}`;
-  await $`gdal_translate -b ${config.band} -r nearest -of COG -stats ${warpDst} ${dst}`;
+  // reproject
+  await $`gdalwarp -t_srs "EPSG:4326" --config GDAL_PAM_ENABLED NO --config GDAL_CACHEMAX 500 -wm 500 -multi -wo NUM_THREADS=ALL_CPUS ${src} ${warpDst}`;
+  // cloud-optimize
+  await $`gdal_translate -b ${config.band} -r nearest --config GDAL_PAM_ENABLED NO --config GDAL_CACHEMAX 500 -co COMPRESS=LZW -co NUM_THREADS=ALL_CPUS -of COG -stats ${warpDst} ${dst}`;
   await $`rm ${warpDst}`;
-  try {
-    await $`rm ${warpDst}.aux.xml`;
-  } catch (err: unknown) {
-    console.log(`${warpDst}.aux.xml not found, skipping`);
-  }
 }
 
 /** Returns a full pathname to a COG given dst path, datasourceID, and optional postfix name */

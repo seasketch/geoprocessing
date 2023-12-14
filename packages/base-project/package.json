@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/base-project",
-  "version": "5.0.1",
+  "version": "6.0.0",
   "description": "initial user-installed project",
   "main": "src/index.js",
   "private": true,
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.21.0",
-    "@seasketch/geoprocessing": "^5.0.1",
+    "@seasketch/geoprocessing": "^6.0.0",
     "@types/request": "^2.48.8",
     "babel-plugin-i18next-extract": "0.9.0",
     "request": "^2.88.2"

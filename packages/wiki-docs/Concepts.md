@@ -568,3 +568,17 @@ Just like Sketches, `vector` datasources that you import and use in preprocessin
 `Raster` datasources do not need to be split.  They are expected to be within -180 to 180 degrees.  This means that data does not go off the `left` side of the world into less than -180 territory.  And data does not go off the `right` side of the world into greater than 180 territory.  So if you have a raster that covers the entire country of Fiji, you will end up with raster cells on both sides of the world, with no data in between.  Thankfully, the `geoblaze` raster analysis library is smart enough to not fetch all the empty data in between when you are analyzing a Sketch that is split onto both sides of the world.
 
 ![Antimeridian QGIS Raster](img/antimeridian-qgis-raster.png "Antimeridian QGIS Raster")
+
+## Splitting Bounding Boxes
+
+If a Feature or Sketch polygon crosses the antimeridian then so will it's bounding box.  And the bounding box of a Sketch is used to fetch from a datasource only the features/raster cells that overlap with that bounding box.  And if that bounding box extends across the 180 degree longitude line, then it won't return features or a raster for the portion less than -180, or greater than 180, you will only get the portion inside that range.
+
+Here's an example of a bounding box crossing the Fiji EEZ.  The bounding box extends greater than 180, and if you call `getFeatures(eezDatasource, bbox)` with it you will not get the right side of the Fiji EEZ.
+
+![Antimeridian Underfetch](img/antimeridian-under-fetch.png "Antimeridian Underfetch")
+
+The current (naive) `solution` is to re-calculate the bounding box after splitting a polygon Sketch.  This will produce a bounding box with `clean` coordinates that are within -180 to 180.  The problem is that the bounding box extends from -180 all the way to 180.  For example, if you take the Fiji bounding box example from above and split it, the bounding box of that is a long thin bounding box across the entire world.  And if you call `getFeatures(eezDatasource, cleanBbox)` with it, you will get all of the EEZ polygons across that long thin band.  This works but it is inefficient for datasources larger than your planning area so be careful.
+
+![Antimeridian Overfetch](img/antimeridian-over-fetch.png "Antimeridian Overfetch")
+
+A better solution, [not yet implemented](https://github.com/seasketch/geoprocessing/issues/250), would be to split the bounding box into two, just like we do with polygons.  You would then need to call `getFeatures` for each bounding box and de-duplicate where features overlap with both bounding boxes, using a unique ID property.

@@ -155,8 +155,6 @@ describe("splitSketch", () => {
     const splitSc = splitSketchAntimeridian(sc);
 
     // Split into a multipolygon with two polygons
-    // console.log("BEFORE", JSON.stringify(sc));
-    // console.log("AFTER", JSON.stringify(splitSc));
     if (isSketchCollection(splitSc)) {
       expect(splitSc.features[0].geometry.type).toBe("MultiPolygon");
       expect(deepEqual(sc.properties, splitSc.properties)).toBe(true);

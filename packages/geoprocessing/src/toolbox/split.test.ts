@@ -17,6 +17,7 @@ import bboxPolygon from "@turf/bbox-polygon";
 
 describe("splitFeature", () => {
   test("splitFeature Polygon antimeridian", async () => {
+    // This polygon crosses, it is to the left of -180, and to the right up to 175
     const poly: Feature<Polygon> = feature({
       type: "Polygon",
       coordinates: [

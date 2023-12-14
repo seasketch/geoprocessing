@@ -577,7 +577,7 @@ Here's an example of a bounding box crossing the Fiji EEZ.  The bounding box ext
 
 ![Antimeridian Underfetch](img/antimeridian-under-fetch.png "Antimeridian Underfetch")
 
-The current (naive) `solution` is to re-calculate the bounding box after splitting a polygon Sketch.  This will produce a bounding box with `clean` coordinates that are within -180 to 180.  The problem is that the bounding box extends from -180 all the way to 180.  For example, if you take the Fiji bounding box example from above and split it, the bounding box of that is a long thin bounding box across the entire world.  And if you call `getFeatures(eezDatasource, cleanBbox)` with it, you will get all of the EEZ polygons across that long thin band.  This works but it is inefficient for datasources larger than your planning area so be careful.
+The current (naive) `solution` is to re-calculate the bounding box after splitting a polygon Sketch.  This will produce a bounding box with `clean` coordinates that are within -180 to 180.  The problem is that this produces one long bounding box that extends from -180 all the way to 180.  For example, if you take the Fiji bounding box from above and "clean" it, you get the bounding box below.  And if you call `getFeatures(eezDatasource, cleanBbox)` with it, you will get all of the EEZ polygons across that long thin band.  This works, if you filter out features after the face, but it is inefficient to send extra features over the network so be careful and watch the execution time of your geoprocessing functions.
 
 ![Antimeridian Overfetch](img/antimeridian-over-fetch.png "Antimeridian Overfetch")
 

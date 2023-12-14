@@ -166,7 +166,7 @@ export async function makeGeoprocessingHandler(
     console.log(chalk.blue(`\nGeoprocessing function initialized`));
     console.log(`\nNext Steps:
     * Update your function definition in ${`${projectFunctionPath}/${options.title}.ts`}
-    * Smoke test in ${`${projectFunctionPath}/${options.title}Smoke.test.ts`} will be included the next time you run 'npm test'
+    * Smoke test in ${`${projectFunctionPath}/${options.title}Smoke.test.ts`} will be run the next time you use 'npm test'
     * Populate examples/sketches folder with sketches for smoke test to run against
   `);
   }
@@ -249,7 +249,7 @@ export async function makePreprocessingHandler(
     console.log(chalk.blue(`\nPreprocessing function initialized`));
     console.log(`\nNext Steps:
     * Update your function definition in ${`${projectFunctionPath}/${options.title}.ts`}
-    * Smoke test in ${`${projectFunctionPath}/${options.title}Smoke.test.ts`} will be included the next time you run 'npm test'
+    * Smoke test in ${`${projectFunctionPath}/${options.title}Smoke.test.ts`} will be run the next time you use 'npm test'
     * Populate examples/sketches folder with sketches for smoke test to run against
   `);
   }

@@ -98,12 +98,10 @@ export async function makeClient(
   // Swap user-provided metadata into client files
   const functions = geoprocessingJson.geoprocessingFunctions;
   let functionName = "simpleFunction";
-  console.log("options", JSON.stringify(options));
+
   if (options.functionName) {
-    console.log("functionName assign 1");
     functionName = options.functionName; // expected to be in geoprocessing.json
   } else if (functions && functions.length) {
-    console.log("functionName assign 2");
     functionName = path.basename(functions[0]).split(".")[0];
   }
 
@@ -141,8 +139,6 @@ export async function makeClient(
       .replace(`functions/simpleFunction`, `functions/${functionName}`)
   );
 
-  console.log("options.title", options.title);
-  console.log("functionName", functionName);
   await fs.writeFile(
     `${projectComponentPath}/${options.title}Card.stories.tsx`,
     testComponentCode
@@ -155,7 +151,8 @@ export async function makeClient(
   if (interactive) {
     console.log(chalk.blue(`\nGeoprocessing client initialized`));
     console.log(`\nNext Steps:
-    * Update your client definition in ${`${projectClientPath}/${options.title}.tsx`}
+    * Update your report client in ${`${projectClientPath}/${options.title}.tsx`} and ${`${projectComponentPath}/${options.title}Card.tsx`}
+    * View your report client using 'npm start-storybook' with smoke test output for all geoprocessing functions
   `);
   }
 }

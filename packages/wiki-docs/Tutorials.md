@@ -12,26 +12,12 @@ These tutorials will teach you the fundamentals of creating and deploying a seas
 
 # Tutorial List
 
+Get started:
 * [Initial system setup](#initial-system-setup)
 * [Setup an existing geoprocessing project](#setup-an-exising-geoprocessing-project)
 * [Create a new geoprocessing project](#create-a-new-geoprocessing-project)
-* [Open in VSCode Workspace and Explore Structure](#open-in-vscode-workspace-and-explore-structure)
-* [First Project Build](#first-project-build)
-* [Generate Examples](#generate-examples)
-* [Test Your Project](#test-your-project)
-* [Link project data](#link-project-data)
-* [Import datasource](#import-datasource)
-* [Setup Language Translation](#setup-language-translation)
-* [Deploy your project](#deploy-your-project)
-* [Publish a datasource](#publish-a-datasource)
-* [Creating a SeaSketch Project and Exporting Test Sketches](#creating-seasketch-project-and-exporting-test-sketches)
-* [View Reports in Storybook](#view-reports-in-storybook)
-* [Integrating Your Project With SeaSketch](#integrating-your-project-with-seasketch)
-* [Debugging](#debugging)
-* [Upgrading](#upgrading)
-* [Subdividing Large Datasets](#subdividing-large-datasets)
-* [Advanced Storybook Usage](#advanced-storybook-usage)
-* [Passing Extra Parameters To Functions](#passing-extra-parameters-to-functions)
+
+See sidebar for additional tutorials
 
 # Assumptions
 
@@ -1392,14 +1378,6 @@ Once you add your example sketches and collections to this folder, you can `npm 
 
 It's now possible for you to quickly create examples that cover common as well as specific use cases. For example are you sure your geoprocessing function works with both Sketches and Sketch Collections? Then include examples of both types. Maybe even include Sketches that overlap outside the planning area to make sure error conditions are handled appropriately.  Or create a giant sketch that covers the entire planning area to make sure your reports are picking up all of the data and % overlap metrics are 100% or very close.  Does your geoprocessing project handle overlapping sketches within a collection properly?  Create all kinds of overlap scenarios.
 
-# View Reports in Storybook
-
-Now that you've run your smoke tests and generated example output for your functions, you can run your project storybook and view the results of those functions in your reports.
-
-```bash
-npm run start-storybook
-```
-
 # Integrating Your Project with SeaSketch
 
 Once you've deployed your project, you will find a file called `cdk.outputs` which contains the URL to the service manifest for your project.
@@ -1416,40 +1394,209 @@ If your sketch class is a collection then you only need to assign it a report cl
 
 This should give you the sense that you can create different report clients for different sketch classes within the same project.  Or even make reports for sketch collections completely different from reports for individual sketches.
 
-# Updating reports
+# View Reports in Storybook
 
-Over time you will want to make changes to your reports.  Here's some best practices for doing that.
+[Storybook](https://storybook.js.org/) allows you to view exactly what your reports will look like, for each of the example sketches you've added to your project.  You can debug them in your browser environment of choice and make sure they work properly before taking the time to publish and them in SeaSketch.
 
-## Updating Datasource
+First, when you run the test suite, it runs each geoprocessing function against each of the sample sketches you've added to the `examples` folder.  Now you can start storybook and view each of the registered report clients.
 
-* When updating a datasource, be sure to take it all the way through the process so that there's no confusion about which step you are on.  It's easy to leave things in an incomplete state without it being obvious.
+```bash
+npm test
+npm run start-storybook
+```
+
+# Creating a geoprocessing function
+
+To create a new geoprocessing functions simply run:
+
+```bash
+npm run create:function
+```
+
+Enter some information about this function:
+```
+? Function type Geoprocessing - For sketch reports
+? Title for this function, in camelCase simpleFunction
+? Describe what this function does Calculates area overlap with coral cover dataset
+? Choose an execution mode Async - Better for long-running processes
+```
+
+The command should then return the following output:
+```
+✔ created simpleFunction function in src/functions/
+
+Geoprocessing function initialized
+
+Next Steps:
+  * Update your function definition in src/functions/simpleFunction.ts
+  * Smoke test in simpleFunctionSmoke.test.ts will be run the next time you execut 'npm test'
+  * Populate examples/sketches folder with sketches for smoke test to run against
+```
+
+The function will have been added to `geoprocessing.json` in the `geoprocessingFunctions` section.
+
+The geoprocessing function file starts off with boilerplate code every geoprocessing function should have.  It then includes an example of loading both vector data and raster data from [global datasources](https://github.com/seasketch/global-datasources) and calculating some simple stats, and returning a `Result` payload. To explain in more detail:
+
+First a Typescript interface is defined that defines the shape of the data that the geoprocessing function will return.  This defines an `object` with properties `area` and `nearbyEcoregions`, `minTemp`, and `maxTemp`.
+```typescript
+export interface SimpleResults {
+  /** area of sketch within geography in square meters */
+  area: number;
+  /** list of ecoregions within bounding box of sketch  */
+  nearbyEcoregions: string[];
+  /** minimum surface temperature within sketch */
+  minTemp: number;
+  /** maximum surface temperature within sketch */
+  maxTemp: number;
+}
+```
+
+Then comes the actual geoprocessing function, which accepts a `sketch` as its first parameters.  It can be either a single Sketch Polygon/Multipolygon, or a SketchCollection containing Polygons/MultiPolygons.  The second parameter is `extraParams`, which is an object that may contain [one or more identifiers] passed by the report client when invoking the geoprocessing function (https://seasketch.github.io/geoprocessing/api/interfaces/geoprocessing.DefaultExtraParams.html)
+
+```typescript
+async function yourFunction(
+  sketch:
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
+  extraParams: DefaultExtraParams = {}
+): Promise<AreaResults> {
+```
+
+First, the function will get any `geographyIds` that may have been passed by the report client via `extraParams` to specify which geography to run the function for.  It will then use `getGeographyById` to get the geography object with that id from `geographies.json`.  If the `geographyId` is undefined, then it will return the default geography.
+```typescript
+  // Use caller-provided geographyId if provided
+  const geographyId = getFirstFromParam("geographyIds", extraParams);
+  // Get geography features, falling back to geography assigned to default-boundary group
+  const curGeography = project.getGeographyById(geographyId, {
+    fallbackGroup: "default-boundary",
+  });
+```
+
+Next, the function will handle the situation where the `sketch` crosses the 180 degree antimeridian (essentially the dateline) by calling `splitSketchAntimeridian`.  If the sketch crosses the antimeridian, it will clean (adjust) the coordinates to all be within -180 to 180 degrees.  Then it will split the sketch into two pieces, one on the left side of the antimeridan, one on the right side.  This splitting is required by many spatial libraries to perform operations on the sketch.  Vector datasources are also split on import for this reason.
+```typescript
+  // Support sketches crossing antimeridian
+  const splitSketch = splitSketchAntimeridian(sketch);
+```
+
+After that, the sketch is clipped to the current geography, so that only the portion of the sketch that is within the geography remains.
+```typescript
+// Clip to portion of sketch within current geography
+  const clippedSketch = await clipToGeography(splitSketch, curGeography);
+```
+
+Now we get to the core of what this particularly geoprocessing function is designed to do.  Think of this as a starting point that you can adapt to meet your needs.
+
+First, we'll fetch the [Marine Ecoregions of the World](https://github.com/seasketch/global-datasources?tab=readme-ov-file#marine-ecoregions-of-the-world) polygon features that overlap with the bounding box of the `clippedSketch`.  Then reduce this down to an array of ecoregion names.  You could take this further to reduce down to only the ecoregions that intersect with the sketch.
+```typescript
+  // Fetch eez features overlapping sketch bbox
+  const ds = project.getExternalVectorDatasourceById("meow-ecos");
+  const url = project.getDatasourceUrl(ds);
+  const eezFeatures = await getFeatures(ds, url, {
+    bbox: clippedSketch.bbox || bbox(clippedSketch),
+  });
+
+  // Reduce to list of ecoregion names
+  const regionNames = eezFeatures.reduce<Record<string, string>>(
+    (regionsSoFar, curFeat) => {
+      if (curFeat.properties && ds.idProperty) {
+        const regionName = curFeat.properties[ds.idProperty];
+        return { ...regionsSoFar, [regionName]: regionName };
+      } else {
+        return { ...regionsSoFar, unknown: "unknown" };
+      }
+    },
+    {}
+  );
+```
+
+Next, we'll fetch all the [minimum](https://github.com/seasketch/global-datasources?tab=readme-ov-file#biooracle-present-day-surface-temperature-maximum) and [maximum](https://github.com/seasketch/global-datasources?tab=readme-ov-file#biooracle-present-day-surface-temperature-maximum) surface temperature measurements within the `clippedSketch` and then calculate the single minimum and maximum values.
+
+```typescript
+  const minDs = project.getRasterDatasourceById("bo-present-surface-temp-min");
+  const minUrl = project.getDatasourceUrl(minDs);
+  const minRaster = await loadCog(minUrl);
+  const minResult = await geoblaze.min(minRaster, clippedSketch);
+  const minTemp = minResult[0]; // extract value from band 1
+
+  const maxDs = project.getRasterDatasourceById("bo-present-surface-temp-max");
+  const maxUrl = project.getDatasourceUrl(maxDs);
+  const maxRaster = await loadCog(maxUrl);
+  const maxResult = await geoblaze.max(maxRaster, clippedSketch);
+  const maxTemp = maxResult[0]; // extract value from band 1
+  ```
+
+The final step of the function is always to return the result payload back to the report client
+```typescript
+  return {
+    area: turfArea(clippedSketch),
+    nearbyEcoregions: Object.keys(regionNames),
+    minTemp,
+    maxTemp,
+  };
+```
+
+At the bottom of the file, the geoprocessing function is wrapped into a `GeoprocessingHandler` which is what gets exported by the file.  This handler provides what the geoprocessing function needs to run in an AWS Lambda environemnt, specifically to be called via REST API by a report client, receive input parameters and send back function results.  It also lets you fine tune the hardware characteristics of the Lambda to meet performance requirements at the lowest cost.  Specifically, you can increase the memory available to the Lambda up to `10240` KB, which will also increase the cpu size and number.  You can also increase the timeout up `900` seconds or 15 minutes for long running analysis, though `180` - `300` seconds is probably the longest amount a user is willing to wait.  You will want to use an `async` function over `sync` if the function runs for more than say 5 seconds with a typical payload.  The `title` and `description` fields are published in the projects service manifest to list what functions are available.
+
+```typescript
+export default new GeoprocessingHandler(calculateArea, {
+  title: "calculateArea",
+  description: "Function description",
+  timeout: 60, // seconds
+  memory: 1024, // megabytes
+  executionMode: "async",
+  // Specify any Sketch Class form attributes that are required
+  requiresProperties: [],
+});
+```
+
+To publish your new function:
+* Add it to the top-level `geoprocessing.json` file under the `geoprocessingFunctions` section.
+* Build and publish your project as normal.
+
+## Creating a Report Client
+
+To create a new report client simply run:
+
+```bash
+npm run create:client
+```
+
+Enter some information about this report client:
+```
+? Name for this client, in PascalCase ReefReport
+? Describe what this client is for calculating reef overlap
+? What is the name of geoprocessing function this client will invoke? (in camelCase) reefAreaOverlap
+```
+
+The command should then return the following output:
+```
+✔ created ReefReport client in src/clients/
+
+Geoprocessing client initialized
+
+Next Steps:
+    * Update your client definition in src/clients/ReefReport.tsx
+    * View your report client using 'npm start-storybook' with smoke test output for all geoprocessing functions
+```
+
+Assuming you named your client the default `SimpleReport`, it will have been been added to `geoprocessing.json` in the `clients` section.  A `SimpleReport.tsx` file will have been added to `src/clients` folder.  It is responsible for rendering your new `SimpleCard` component from the `src/components` folder and wrapping it in a language `Translator`. Think of the Card component as one section of a report.  It executes a geoprocessing function and renders the results in a way that is readable to the user.  You can add one or more Cards to your Report client.  If your report gets too long, you can split it into multiple ReportPages.  See the [TabReport](https://github.com/seasketch/geoprocessing/blob/dev/packages/template-blank-project/src/clients/TabReport.tsx) example of how to add a `SegmentControl` with multiple pages. 
+
+`SimpleReport.stories.tsx` and `SimpleCard.stories.tsx` files will both be included that allows you to view your Report and Card components in [storybook](#view-reports-in-storybook) to dial in how they should render for every example sketch and their smoke test output.
+
+After adding a report client, be sure to properly setup user displayed text for [translation](#making-report-strings-translatable).  You'll need to follow the full workflow to extract the english translation and add the translations for other languages.
+
+## Updating a datasource
+
+* When updating a datasource, you should try to take it all the way through the process of `import`, `precalc`, and `publish` so that there's no confusion about which step you are on.  It's easy to leave things in an incomplete state and its not obvious when you pick it back up.
   * Edit/update your data in data/src
   * Run `npm run reimport:data`, choose your source datasource and choose to not publish right away.  `data/dist` will now contain your updated datasource file(s).
+  * Run `npm run precalc:data`, choose the datasource to precalculate stats for.
   * `npm test` to run your smoke tests which read data from `data/dist` and make sure the geoprocessing function results change as you would expect based on the data changes.  Are you expecting result values to go up or down?  Stay about or exactly the same?  Try not to accept changes that you don't understand.
   * Add additional sketches or features to your smoke tests as needed.  Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this.  Convince yourself the results are correct.
   * Publish your updated datasets with `npm run publish:data`.
-  * Clear the cache for all reports that use this datasource with `npm run clear-resuts` and type the name of your geoprocessing function (e.g. `boundaryAreaOverlap`).  You can also opt to just clear results for all reports with `npm run clear-all-results`.  Cached results are cleared one record at a time in dynamodb so this can take quite a while.  In fact, the process can run out of memory and suddenly die.  In this case, you can simply rerun the clear command and it will continue.  Eventually you will get through them all.
+  * Clear the cache for all reports that use this datasource with `npm run clear-results` and type the name of your geoprocessing function (e.g. `boundaryAreaOverlap`).  You can also opt to just clear results for all reports with `npm run clear-all-results`.  Cached results are cleared one record at a time in dynamodb so this can take quite a while.  In fact, the process can run out of memory and suddenly die.  In this case, you can simply rerun the clear command and it will continue.  Eventually you will get through them all.
   * Test your reports in SeaSketch.  Any sketches you exported should produce the same numbers.  Test with any really big sketches, make sure your data updates haven't reached any new limit.  This can happen if your updated data is much larger, has more features, higher resolution, etc.
 
-## Updating report clients
-
-* Make code changes to your report clients
-* If adding a new ResultsCard, be sure to link it into the appropriate report client such as a top-level `MpaTabReport`.
-* If adding a new top-level report client, be sure to add it to geoprocessing.json or you will get an error in production that a report client with this name doesn't exist.  Also create a story for it to test in storybook.
-* Run storybook and confirm reports look and behave as expected for all relevant scenarios (single sketch, sketch collection, different sizes and levels of protection, etc.)
-* `npm run build`
-* `npm run deploy`
-* Commit code changes and push to Github
-
-## Updating geoprocessing functions
-
-* Make code changes to your geoprocessing functions
-* If adding a new geoprocessing function, be sure to add it to geoprocessing.json or you will get an error in production that it can't find the function.
-* Add a smoke test alongside your geoprocessing function.
-* `npm test` to run your smoke tests which read data from `data/dist` and make sure the geoprocessing function results change as you would expect based on the data changes.  Are you expecting result values to go up or down?  Stay about or exactly the same?  Try not to accept changes that you don't understand.
-* Add additional sketches or features to your smoke tests as needed.  Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this.  Convince yourself the results are correct.
-* `npm run build`
-* `npm run deploy`
 
 # Custom Sketch Attributes
 

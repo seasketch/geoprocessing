@@ -91,8 +91,8 @@ async function simpleFunction(
 export default new GeoprocessingHandler(simpleFunction, {
   title: "simpleFunction",
   description: "Function description",
-  timeout: 2, // seconds
-  memory: 256, // megabytes
+  timeout: 60, // seconds
+  memory: 1024, // megabytes
   executionMode: "async",
   // Specify any Sketch Class form attributes that are required
   requiresProperties: [],

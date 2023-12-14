@@ -500,7 +500,7 @@ When a Sketch polygon or multipolygon has coordinates that are on both sides of 
 References
 - [https://macwright.com/2016/09/26/the-180th-meridian](https://macwright.com/2016/09/26/the-180th-meridian)
 
-Example of Polygon crossing over the "right" edge of the world at 180 degree longitude.
+Example of Polygon on the "right" side of the world, crossing over the antimeridian at 180 degrees longitude going from 170 to 186.
 ```json
 {
   "type": "Polygon",
@@ -531,18 +531,18 @@ Example of Polygon crossing over the "right" edge of the world at 180 degree lon
 }
 ```
 
-Example of Polygon crossing over the "left" edge of the world at -180 degrees longitude
+Example of Polygon on the "left" side of the world, crossing over the antimeridian at -180 degrees longitude, going from -175 to -188.
 
 ```json
 {
   "type": "Polygon",
   "coordinates": [
     [
-      [175, -16],
-      [-178, -16],
-      [-178, -15],
-      [175, -15],
-      [175, -16],
+      [-175, -16],
+      [-188, -16],
+      [-188, -15],
+      [-175, -15],
+      [-175, -16],
     ],
   ],
 }

@@ -22,11 +22,11 @@ describe("splitFeature", () => {
       type: "Polygon",
       coordinates: [
         [
-          [175, -16],
-          [-178, -16],
-          [-178, -15],
-          [175, -15],
-          [175, -16],
+          [-175, -16],
+          [-188, -16],
+          [-188, -15],
+          [-175, -15],
+          [-175, -16],
         ],
       ],
     });
@@ -35,24 +35,24 @@ describe("splitFeature", () => {
     // Split into a multipolygon with two polygons
     expect(result.length).toBe(1);
     expect(result[0].geometry.type).toBe("MultiPolygon");
-    expect(result[0].bbox).toEqual([-178, -16, 175, -15]); // new bounding box should have been cleaned to be within -180 to 180
+    expect(result[0].bbox).toEqual([-175, -16, 172, -15]); // new bounding box should have been cleaned to be within -180 to 180
     expect(result[0].geometry.coordinates).toEqual([
       [
         [
-          [180, -15],
-          [175, -15],
-          [175, -16],
-          [180, -16],
-          [180, -15],
+          [-180, -15],
+          [-175, -15],
+          [-175, -16],
+          [-180, -16],
+          [-180, -15],
         ],
       ],
       [
         [
-          [-180, -16],
-          [-178, -16],
-          [-178, -15],
-          [-180, -15],
-          [-180, -16],
+          [180, -16],
+          [172, -16],
+          [172, -15],
+          [180, -15],
+          [180, -16],
         ],
       ],
     ]);

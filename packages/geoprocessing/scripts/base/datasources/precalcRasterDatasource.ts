@@ -14,6 +14,7 @@ import {
   BBox,
   ProjectClientBase,
   datasourceConfig,
+  getRasterBoxSpherical,
 } from "../../../src";
 import bbox from "@turf/bbox";
 
@@ -83,7 +84,7 @@ export async function genRasterMetrics(
   const dstPath = extraOptions.newDstPath || datasourceConfig.defaultDstPath;
 
   // console.log(
-  //   `DATASOURCE: ${datasource.datasourceId}}, GEOGRAPHY: ${geography.geographyId}}\n`
+  //   `DATASOURCE: ${datasource.datasourceId}, GEOGRAPHY: ${geography.geographyId}\n`
   // );
 
   // Reads in geography vector data as FeatureCollection
@@ -95,7 +96,7 @@ export async function genRasterMetrics(
   );
   // console.log("geographyFeatureColl", JSON.stringify(geographyFeatureColl));
 
-  const rasterBbox: BBox = [raster.xmin, raster.ymin, raster.xmax, raster.ymax];
+  const rasterBbox: BBox = getRasterBoxSpherical(raster);
 
   // If there's no overlap between geography and raster, return empty metric
   if (!bboxOverlap(bbox(geographyFeatureColl), rasterBbox)) {

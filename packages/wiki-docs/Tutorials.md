@@ -379,7 +379,7 @@ MacOS:
 Now we'll create a new project using `geoprocessing init`.
 
 ```sh
-npx @seasketch/geoprocessing init
+npx @seasketch/geoprocessing@latest init
 ```
 
 This command uses `npx`, which comes with `npm` and allows you to execute commands in a package.  In this case it will fetch the `geoprocessing` library from the `npm` repository and run the `geoprocessing init` command to create a new project.

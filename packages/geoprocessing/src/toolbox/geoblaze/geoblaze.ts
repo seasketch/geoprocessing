@@ -2,7 +2,7 @@ import { Polygon, Histogram } from "../../types";
 import { Feature, MultiPolygon, FeatureCollection, BBox } from "@turf/helpers";
 import geoblaze, { Georaster } from "geoblaze";
 import reprojectGeoJSONPlugable from "reproject-geojson/pluggable.js";
-import proj4 from "proj4";
+import proj4 from "../proj4";
 import { reproject } from "bbox-fns";
 
 /**
@@ -71,10 +71,6 @@ export const toRasterProjection = (
     return feat;
   } else if (raster.projection === 6933) {
     const { forward } = proj4("EPSG:4326", "EPSG:6933");
-    proj4.defs(
-      "EPSG:6933",
-      "+proj=cea +lat_ts=30 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +type=crs"
-    );
     return reprojectGeoJSONPlugable(feat, {
       reproject: forward,
     });
@@ -95,10 +91,6 @@ export const getRasterBoxSpherical = (raster: Georaster) => {
     return bbox;
   } else if (raster.projection === 6933) {
     // Reproject back to spherical coordinates
-    proj4.defs(
-      "EPSG:6933",
-      "+proj=cea +lat_ts=30 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +type=crs"
-    );
     const { inverse } = proj4("EPSG:4326", "EPSG:6933");
     const rasterBbox: BBox = reproject(
       [raster.xmin, raster.ymin, raster.xmax, raster.ymax],

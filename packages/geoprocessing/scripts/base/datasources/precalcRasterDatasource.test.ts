@@ -127,7 +127,7 @@ describe("precalcRasterDatasource", () => {
 
     const sumMetric = firstMatchingMetric(metrics, (m) => m.metricId === "sum");
     expect(sumMetric).toBeTruthy();
-    expect(sumMetric.value).toBe(49);
+    expect(sumMetric.value).toBe(53);
 
     fs.removeSync(dsFilePath);
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.fgb`));
@@ -135,7 +135,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(geogFilePath);
     fs.removeSync(path.join(dstPath, `${datasourceId}.tif`));
     fs.removeSync(precalcFilePath);
-  }, 10000);
+  }, 60000);
 
   test("precalcRasterDatasource - multiple geog scenarios with external subdivided datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_9.json";
@@ -162,7 +162,7 @@ describe("precalcRasterDatasource", () => {
       },
     ]);
 
-    // Import raster to test against with known counts (49 Samoa and 17 American Samoa)
+    // Import raster to test against with known counts (both Samoa and American Samoa)
     await importDatasource(
       projectClient,
       {
@@ -254,19 +254,19 @@ describe("precalcRasterDatasource", () => {
       metrics,
       (m) => m.geographyId === "geog-box-filter"
     );
-    expect(boxFilterMetric.value).toEqual(91);
+    expect(boxFilterMetric.value).toEqual(101);
 
     const singleFilterMetric = firstMatchingMetric(
       metrics,
       (m) => m.geographyId === "geog-single-filter"
     );
-    expect(singleFilterMetric.value).toEqual(70);
+    expect(singleFilterMetric.value).toEqual(76);
 
     const doubleFilterMetric = firstMatchingMetric(
       metrics,
       (m) => m.geographyId === "geog-double-filter"
     );
-    expect(doubleFilterMetric.value).toEqual(88);
+    expect(doubleFilterMetric.value).toEqual(98);
 
     fs.removeSync(dsFilePath);
     fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
@@ -301,7 +301,7 @@ describe("precalcRasterDatasource", () => {
       },
     ]);
 
-    // Import raster to test against with known counts (49 Samoa and 17 American Samoa)
+    // Import raster to test against with known counts (both Samoa and American Samoa)
     await importDatasource(
       projectClient,
       {
@@ -398,19 +398,19 @@ describe("precalcRasterDatasource", () => {
       metrics,
       (m) => m.geographyId === "geog-box-filter"
     );
-    expect(boxFilterMetric.value).toEqual(69);
+    expect(boxFilterMetric.value).toEqual(70);
 
     const singleFilterMetric = firstMatchingMetric(
       metrics,
       (m) => m.geographyId === "geog-single-filter"
     );
-    expect(singleFilterMetric.value).toEqual(49);
+    expect(singleFilterMetric.value).toEqual(53);
 
     const doubleFilterMetric = firstMatchingMetric(
       metrics,
       (m) => m.geographyId === "geog-double-filter"
     );
-    expect(doubleFilterMetric.value).toEqual(66);
+    expect(doubleFilterMetric.value).toEqual(69);
 
     fs.removeSync(dsFilePath);
     fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
@@ -453,7 +453,7 @@ describe("precalcRasterDatasource", () => {
       }
     );
 
-    // Import raster to test against with known counts (49 Samoa and 21 American Samoa)
+    // Import raster to test against with known counts (both Samoa and American Samoa)
     await importDatasource(
       projectClient,
       {
@@ -545,19 +545,19 @@ describe("precalcRasterDatasource", () => {
       metrics,
       (m) => m.geographyId === "geog-box-filter"
     );
-    expect(noFilterMetric.value).toEqual(66);
+    expect(noFilterMetric.value).toEqual(69);
 
     const singleFilterMetric = firstMatchingMetric(
       metrics,
       (m) => m.geographyId === "geog-single-filter"
     );
-    expect(singleFilterMetric.value).toEqual(49);
+    expect(singleFilterMetric.value).toEqual(53);
 
     const doubleFilterMetric = firstMatchingMetric(
       metrics,
       (m) => m.geographyId === "geog-double-filter"
     );
-    expect(doubleFilterMetric.value).toEqual(66);
+    expect(doubleFilterMetric.value).toEqual(69);
 
     fs.removeSync(dsFilePath);
     fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));

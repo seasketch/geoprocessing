@@ -68,7 +68,7 @@ export async function genCog(config: ImportRasterDatasourceConfig) {
   const warpDst = getCogPath(config.dstPath, config.datasourceId, "_4326");
   const dst = getCogPath(config.dstPath, config.datasourceId);
   // reproject
-  await $`gdalwarp -t_srs "EPSG:4326" --config GDAL_PAM_ENABLED NO --config GDAL_CACHEMAX 500 -wm 500 -multi -wo NUM_THREADS=ALL_CPUS ${src} ${warpDst}`;
+  await $`gdalwarp -t_srs "EPSG:6933" --config GDAL_PAM_ENABLED NO --config GDAL_CACHEMAX 500 -wm 500 -multi -wo NUM_THREADS=ALL_CPUS ${src} ${warpDst}`;
   // cloud-optimize
   await $`gdal_translate -b ${config.band} -r nearest --config GDAL_PAM_ENABLED NO --config GDAL_CACHEMAX 500 -co COMPRESS=LZW -co NUM_THREADS=ALL_CPUS -of COG -stats ${warpDst} ${dst}`;
   await $`rm ${warpDst}`;

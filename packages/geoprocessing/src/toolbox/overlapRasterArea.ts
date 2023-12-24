@@ -3,7 +3,7 @@ import { isSketchCollection, roundDecimal } from "../helpers";
 import { createMetric } from "../metrics";
 import { featureEach } from "@turf/meta";
 import { MultiPolygon } from "@turf/helpers";
-import { getSum } from "./geoblaze";
+import { getArea } from "./geoblaze";
 
 // @ts-ignore
 import { Georaster } from "geoblaze";
@@ -14,11 +14,10 @@ interface OverlapRasterOptions {
 }
 
 /**
- * Returns metrics representing sketch overlap with raster.
+ * Returns area of sketch overlap with raster as a metric object.
  * If sketch collection, then calculate overlap for all child sketches also
- * @deprecated  - switch to overlapRasterSum
  */
-export async function overlapRaster(
+export async function overlapRasterArea(
   /** metricId value to assign to each measurement */
   metricId: string,
   /** Cloud-optimized geotiff to calculate overlap with, loaded via loadCog or geoblaze.parse() */
@@ -40,7 +39,7 @@ export async function overlapRaster(
 
   featureEach(sketch, async (feat) => {
     // accumulate geoblaze sum promises and features so we can create metrics later
-    sumPromises.push(getSum(raster, feat));
+    sumPromises.push(getArea(raster, feat));
     sumFeatures.push(feat);
   });
 
@@ -63,7 +62,7 @@ export async function overlapRaster(
 
   if (isSketchCollection(sketch)) {
     // Push collection with accumulated sumValue
-    const collSumValue = await getSum(raster, sketch);
+    const collSumValue = await getArea(raster, sketch);
     sketchMetrics.push(
       createMetric({
         metricId,

@@ -15,6 +15,7 @@ import {
   ProjectClientBase,
   datasourceConfig,
   getRasterBoxSpherical,
+  getArea,
 } from "../../../src";
 import bbox from "@turf/bbox";
 
@@ -113,12 +114,20 @@ export async function genRasterMetrics(
 
   // Creates metric for simple continous raster
   if (datasource.measurementType === "quantitative") {
+    const sumValue = await getSum(raster, geographyFeatureColl);
+    const areaValue = await getArea(raster, geographyFeatureColl);
     return [
       createMetric({
         geographyId: geography.geographyId,
         classId: datasource.datasourceId + "-total",
         metricId: "sum",
-        value: await getSum(raster, geographyFeatureColl),
+        value: sumValue,
+      }),
+      createMetric({
+        geographyId: geography.geographyId,
+        classId: datasource.datasourceId + "-total",
+        metricId: "area",
+        value: areaValue,
       }),
     ];
   }

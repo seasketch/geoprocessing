@@ -14,11 +14,10 @@ interface OverlapRasterOptions {
 }
 
 /**
- * Returns metrics representing sketch overlap with raster.
+ * Returns sum of cells overlapping sketch with raster as a metric object
  * If sketch collection, then calculate overlap for all child sketches also
- * @deprecated  - switch to overlapRasterSum
  */
-export async function overlapRaster(
+export async function overlapRasterSum(
   /** metricId value to assign to each measurement */
   metricId: string,
   /** Cloud-optimized geotiff to calculate overlap with, loaded via loadCog or geoblaze.parse() */

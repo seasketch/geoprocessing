@@ -161,7 +161,7 @@
     "flatgeobuf": "3.17.4",
     "fs-extra": "^9.1.0",
     "fuzzy-tools": "^1.2.0",
-    "geoblaze": "2.5.0",
+    "geoblaze": "2.6.0",
     "geobuf": "^3.0.1",
     "geojson": "^0.5.0",
     "geojson-antimeridian-cut": "^0.1.0",

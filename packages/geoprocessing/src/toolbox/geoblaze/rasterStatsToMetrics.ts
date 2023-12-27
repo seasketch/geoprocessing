@@ -11,7 +11,8 @@ import { createMetric } from "../../metrics";
 export const rasterStatsToMetrics = (
   statsObjects: StatsObject[],
   options: {
-    metricExtra?: Partial<Metric>;
+    /** Properties to append to metric extra */
+    metricPartial?: Partial<Metric>;
     truncate?: boolean;
     /** If multi-band raster, metric property name that raster bands are organized.  defaults to classID */
     bandMetricProperty?: MetricDimension;
@@ -20,11 +21,11 @@ export const rasterStatsToMetrics = (
   } = {}
 ): Metric[] => {
   const {
-    metricExtra = {},
-    truncate = false,
+    metricPartial = {},
+    truncate = true,
     bandMetricProperty = "classId",
     bandMetricValues = [...Array(statsObjects.length).keys()].map(
-      (x) => `band ${x}`
+      (x) => `band-${x}`
     ),
   } = options;
   let metrics: Metric[] = [];
@@ -38,7 +39,7 @@ export const rasterStatsToMetrics = (
           value: truncate
             ? roundDecimal(value, 6, { keepSmallValues: true })
             : value,
-          ...metricExtra,
+          ...metricPartial,
           [bandMetricProperty]: bandMetricValues[band],
         })
       );

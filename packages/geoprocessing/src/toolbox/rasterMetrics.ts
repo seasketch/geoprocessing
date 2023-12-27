@@ -1,14 +1,6 @@
-import {
-  Sketch,
-  SketchCollection,
-  Polygon,
-  Metric,
-  StatsObject,
-  MetricDimension,
-} from "../types";
-import { isSketchCollection } from "../helpers";
+import { Feature, Metric, StatsObject, MetricDimension } from "../types";
+import { isFeatureCollection, isSketch, isSketchCollection } from "../helpers";
 import { featureEach } from "@turf/meta";
-import { MultiPolygon } from "@turf/helpers";
 import { RasterStatsOptions, rasterStats } from "./geoblaze";
 import { rasterStatsToMetrics } from "./geoblaze/rasterStatsToMetrics";
 
@@ -16,16 +8,13 @@ import { rasterStatsToMetrics } from "./geoblaze/rasterStatsToMetrics";
 import { Georaster } from "geoblaze";
 
 interface OverlapRasterOptions extends RasterStatsOptions {
-  /** single sketch or sketch collection filter to overlap with raster when calculating metrics. */
-  sketch?:
-    | Sketch<Polygon | MultiPolygon>
-    | SketchCollection<Polygon | MultiPolygon>;
   /** Truncates results to 6 digits, defaults to true */
   truncate?: boolean;
   /** If multi-band raster, metric property name that raster bands are organized by e.g. classID */
   bandMetricProperty?: MetricDimension;
   /** If multi-band raster, object mapping band number (starting with 0 index) to unique ID value eg. { 0: 'mangroves', 1: 'coral' }.  Defaults to 'band 1', 'band 2'  */
   bandMetricValues?: string[];
+  includeChildMetrics?: boolean;
 }
 
 /**
@@ -38,58 +27,80 @@ export async function rasterMetrics(
   options: OverlapRasterOptions = {}
 ): Promise<Metric[]> {
   const {
-    sketch = options.sketch,
+    feature = options.feature,
     bandMetricProperty,
     bandMetricValues,
+    includeChildMetrics = true,
     ...statOptions
   } = options;
   let metrics: Metric[] = [];
 
-  // Sketch level metrics
+  // Feature/Sketch level metrics
   const promises: Promise<StatsObject[]>[] = [];
-  const sketches: Sketch[] = [];
-  if (sketch) {
-    featureEach(sketch, async (curSketch) => {
-      // accumulate sketches and sketch level stat promises
-      promises.push(
-        rasterStats(raster, {
-          feature: options?.feature,
-          ...(statOptions ?? {}),
-        })
-      );
-      sketches.push(curSketch);
-    });
+  const features: Feature[] = [];
 
-    // convert sketch level stats to metrics
-    (await Promise.all(promises)).forEach((curStats, index) => {
-      const curMetrics = rasterStatsToMetrics(curStats, {
-        bandMetricProperty,
-        bandMetricValues,
-        metricExtra: {
-          sketchId: sketches[index].properties.id,
-          extra: {
-            sketchName: sketches[index].properties.name,
-          },
-        },
+  if (feature) {
+    if (includeChildMetrics) {
+      featureEach(feature, async (curSketch) => {
+        // accumulate individual feature/sketch level stat promises
+        promises.push(
+          rasterStats(raster, {
+            feature: options?.feature,
+            ...(statOptions ?? {}),
+          })
+        );
+        features.push(curSketch);
       });
-      metrics = metrics.concat(curMetrics);
-    });
+
+      // convert individual feature/sketch level stats to metrics
+      (await Promise.all(promises)).forEach((curStats, index) => {
+        const curFeature = features[index];
+        const metricPartial: Partial<Metric> = (() => {
+          if (isSketch(curFeature)) {
+            return {
+              sketchId: curFeature.properties.id,
+              extra: {
+                sketchName: curFeature.properties.name,
+              },
+            };
+          } else {
+            return {};
+          }
+        })();
+        const curMetrics = rasterStatsToMetrics(curStats, {
+          metricPartial,
+          bandMetricProperty,
+          bandMetricValues,
+        });
+        metrics = metrics.concat(curMetrics);
+      });
+    }
 
     // SketchCollection level metrics
-    if (isSketchCollection(sketch)) {
+    if (isFeatureCollection(feature)) {
       const collStats = await rasterStats(raster, {
         feature: options?.feature,
         ...(statOptions ?? {}),
       });
+
+      const metricPartial: Partial<Metric> = (() => {
+        if (isSketchCollection(feature)) {
+          return {
+            sketchId: feature.properties.id,
+            extra: {
+              sketchName: feature.properties.name,
+              isCollection: true,
+            },
+          };
+        } else {
+          return {};
+        }
+      })();
+
       const collMetrics = rasterStatsToMetrics(collStats, {
+        metricPartial,
         bandMetricProperty,
         bandMetricValues,
-        metricExtra: {
-          sketchId: sketch.properties.id,
-          extra: {
-            sketchName: sketch.properties.name,
-          },
-        },
       });
       metrics = metrics.concat(collMetrics);
     }

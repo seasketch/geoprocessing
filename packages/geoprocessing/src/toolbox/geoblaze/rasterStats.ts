@@ -1,4 +1,9 @@
-import { Polygon, GEOBLAZE_RASTER_STATS } from "../../types";
+import {
+  Polygon,
+  GEOBLAZE_RASTER_STATS,
+  Sketch,
+  SketchCollection,
+} from "../../types";
 import { Feature, MultiPolygon, FeatureCollection } from "@turf/helpers";
 import geoblaze, { Georaster } from "geoblaze";
 import { StatsObject, CalcStatsOptions } from "../../types/geoblaze";
@@ -9,9 +14,12 @@ import { toRasterProjection, defaultStatValues } from "./geoblaze";
  * @extends CalcStatsOptions - options passed on to calcStats and calc-stats package. See See https://github.com/DanielJDufour/calc-stats/tree/main?tab=readme-ov-file#advanced-usage
  */
 export interface RasterStatsOptions extends CalcStatsOptions {
+  /** single sketch or sketch collection filter to overlap with raster when calculating metrics. */
   feature?:
     | Feature<Polygon | MultiPolygon>
-    | FeatureCollection<Polygon | MultiPolygon>;
+    | FeatureCollection<Polygon | MultiPolygon>
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>;
   /** undocumented filter function (how different from filter option above?), for example a => a > 0 will filter out pixels greater than zero such that 'valid' is number of valid pixels greater than 0 */
   filterFn?: (cellValue: number) => boolean;
 }

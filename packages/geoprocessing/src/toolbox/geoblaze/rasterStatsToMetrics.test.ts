@@ -14,7 +14,21 @@ describe("rasterStatsToMetrics", () => {
     expect(metrics[0]).toEqual({
       metricId: "sum",
       value: 1,
-      classId: "band 0",
+      classId: "band-0",
+      groupId: null,
+      geographyId: null,
+      sketchId: null,
+    });
+  });
+
+  test("rasterStatsToMetrics - default sum truncate", async () => {
+    const stats: StatsObject[] = [{ sum: 1.920482389239823 }];
+    const metrics = rasterStatsToMetrics(stats);
+    expect(metrics.length).toEqual(1);
+    expect(metrics[0]).toEqual({
+      metricId: "sum",
+      value: 1.920482,
+      classId: "band-0",
       groupId: null,
       geographyId: null,
       sketchId: null,
@@ -24,7 +38,7 @@ describe("rasterStatsToMetrics", () => {
   test("rasterStatsToMetrics - default sum with extra", async () => {
     const stats: StatsObject[] = [{ sum: 5 }];
     const metrics = rasterStatsToMetrics(stats, {
-      metricExtra: {
+      metricPartial: {
         sketchId: "foo",
         extra: {
           a: "b",
@@ -36,7 +50,7 @@ describe("rasterStatsToMetrics", () => {
       deepEqual(metrics[0], {
         metricId: "sum",
         value: 5,
-        classId: "band 0",
+        classId: "band-0",
         groupId: null,
         geographyId: null,
         sketchId: "foo",
@@ -64,7 +78,7 @@ describe("rasterStatsToMetrics", () => {
     expect(metrics.length).toEqual(2);
     metrics.forEach((m, i) => {
       expect(m.value).toEqual(stats[i][m.metricId]);
-      expect(m.classId).toEqual(`band ${i}`);
+      expect(m.classId).toEqual(`band-${i}`);
     });
   });
 

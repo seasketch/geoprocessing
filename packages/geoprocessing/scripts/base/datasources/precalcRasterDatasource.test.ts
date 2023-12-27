@@ -110,20 +110,18 @@ describe("precalcRasterDatasource", () => {
     metricsSchema.parse(metrics);
 
     // Should create metrics for both the geography datasource and the raster datasource
-    expect(metrics.length).toBe(4);
+    expect(metrics.length).toBe(5);
 
-    const areaMetric = firstMatchingMetric(
-      metrics,
-      (m) => m.metricId === "area"
-    );
-    expect(areaMetric).toBeTruthy();
+    const areaMetrics = metrics.filter((m) => m.metricId === "area");
+    // vector ds area and raster ds area
+    expect(areaMetrics.length).toEqual(2);
 
     const countMetric = firstMatchingMetric(
       metrics,
-      (m) => m.metricId === "count"
+      (m) => m.metricId === "valid"
     );
     expect(countMetric).toBeTruthy();
-    expect(countMetric.value).toBe(1);
+    expect(countMetric.value).toBe(53);
 
     const sumMetric = firstMatchingMetric(metrics, (m) => m.metricId === "sum");
     expect(sumMetric).toBeTruthy();
@@ -248,7 +246,7 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(6); // because precalc false for geog datasource
+    expect(metrics.length).toBe(9); // because precalc false for geog datasource
 
     const boxFilterSumMetric = firstMatchingMetric(
       metrics,
@@ -406,7 +404,7 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(6); // because precalc false for geog datasource
+    expect(metrics.length).toBe(9); // because precalc false for geog datasource
 
     const boxFilterMetric = firstMatchingMetric(
       metrics,
@@ -552,7 +550,7 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(6); // because precalc false for geog datasource
+    expect(metrics.length).toBe(9); // because precalc false for geog datasource
 
     // check each metric for expected value
     const noFilterMetric = firstMatchingMetric(

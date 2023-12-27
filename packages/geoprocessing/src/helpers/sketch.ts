@@ -169,6 +169,10 @@ export const isSketchCollection = (
     hasOwnProperty(collection, "properties") &&
     isObject(collection.properties) &&
     hasOwnProperty(collection.properties as Record<string, any>, "name") &&
+    hasOwnProperty(
+      collection.properties as Record<string, any>,
+      "sketchClassId"
+    ) &&
     collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true)
   );
 };

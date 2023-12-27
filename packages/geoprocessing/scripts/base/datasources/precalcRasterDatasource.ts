@@ -111,6 +111,12 @@ export async function precalcRasterMetrics(
       createMetric({
         geographyId: geography.geographyId,
         classId: datasource.datasourceId + "-total",
+        metricId: "count",
+        value: 0,
+      }),
+      createMetric({
+        geographyId: geography.geographyId,
+        classId: datasource.datasourceId + "-total",
         metricId: "sum",
         value: 0,
       }),
@@ -128,7 +134,7 @@ export async function precalcRasterMetrics(
     const metrics = (
       await rasterMetrics(raster, {
         feature: geographyFeatureColl,
-        stats: ["valid", "sum", "area"],
+        stats: ["valid", "count", "sum", "area"],
         includeChildMetrics: false,
       })
     ).map((m) => ({

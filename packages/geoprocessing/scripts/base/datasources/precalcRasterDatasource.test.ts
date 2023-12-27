@@ -110,7 +110,7 @@ describe("precalcRasterDatasource", () => {
     metricsSchema.parse(metrics);
 
     // Should create metrics for both the geography datasource and the raster datasource
-    expect(metrics.length).toBe(5);
+    expect(metrics.length).toBe(6);
 
     const areaMetrics = metrics.filter((m) => m.metricId === "area");
     // vector ds area and raster ds area
@@ -246,7 +246,7 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(9); // because precalc false for geog datasource
+    expect(metrics.length).toBe(12); // because precalc false for geog datasource
 
     const boxFilterSumMetric = firstMatchingMetric(
       metrics,
@@ -404,7 +404,7 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(9); // because precalc false for geog datasource
+    expect(metrics.length).toBe(12); // because precalc false for geog datasource
 
     const boxFilterMetric = firstMatchingMetric(
       metrics,
@@ -550,7 +550,7 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(9); // because precalc false for geog datasource
+    expect(metrics.length).toBe(12); // because precalc false for geog datasource
 
     // check each metric for expected value
     const noFilterMetric = firstMatchingMetric(

@@ -146,6 +146,7 @@
     "bbox-fns": "^0.19.0",
     "bytes": "^3.1.0",
     "canonicalize": "^2.0.0",
+    "cd": "^0.3.3",
     "chalk": "^4.1.1",
     "classnames": "^2.2.6",
     "cli-progress": "^3.9.0",

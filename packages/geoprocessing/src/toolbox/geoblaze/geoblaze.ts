@@ -5,6 +5,23 @@ import reprojectGeoJSONPlugable from "reproject-geojson/pluggable.js";
 import proj4 from "../proj4";
 import { reproject } from "bbox-fns";
 
+export const defaultStatValues = {
+  count: 0,
+  invalid: 0,
+  max: null,
+  mean: null,
+  median: null,
+  min: null,
+  mode: null,
+  product: null,
+  range: null,
+  sum: 0,
+  std: null,
+  valid: 0,
+  variance: null,
+  uniques: 0,
+};
+
 /**
  * Returns sum of value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
  */
@@ -39,7 +56,6 @@ export const getArea = async (
   let area = 0;
   const finalFeat = toRasterProjection(raster, feat);
   try {
-    // const result = await geoblaze.sum(raster, finalFeat);
     // undocumented shortcut lets you pass a test/filter function to stats
     const result = await geoblaze.stats(
       raster,

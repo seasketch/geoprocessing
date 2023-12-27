@@ -25,7 +25,7 @@ export const rasterStats = async (
   raster: Georaster,
   options: RasterStatsOptions = {}
 ) => {
-  let { stats = ["sum"], feature, filterFn, ...restCalcOptions } = options;
+  const { stats = ["sum"], feature, filterFn, ...restCalcOptions } = options;
   // If area is included in stats list, then also include valid stat which is needed to calculate area later
   const finalStatNames = [...stats];
   if (stats.includes("area")) finalStatNames.push("valid");

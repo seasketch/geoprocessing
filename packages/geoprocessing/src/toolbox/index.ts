@@ -10,3 +10,4 @@ export * from "./genPreprocessor";
 export * from "./geoblaze";
 export * from "./cleanCoords";
 export * from "./split";
+export * from "./rasterMetrics";

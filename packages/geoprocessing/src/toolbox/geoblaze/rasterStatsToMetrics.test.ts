@@ -14,7 +14,7 @@ describe("rasterStatsToMetrics", () => {
     expect(metrics[0]).toEqual({
       metricId: "sum",
       value: 1,
-      classId: null,
+      classId: "band 0",
       groupId: null,
       geographyId: null,
       sketchId: null,
@@ -36,7 +36,7 @@ describe("rasterStatsToMetrics", () => {
       deepEqual(metrics[0], {
         metricId: "sum",
         value: 5,
-        classId: null,
+        classId: "band 0",
         groupId: null,
         geographyId: null,
         sketchId: "foo",
@@ -58,12 +58,27 @@ describe("rasterStatsToMetrics", () => {
     });
   });
 
-  test("rasterStatsToMetrics - multiple bands", async () => {
+  test("rasterStatsToMetrics - multiple bands default", async () => {
     const stats: StatsObject[] = [{ sum: 1 }, { sum: 2 }];
     const metrics = rasterStatsToMetrics(stats);
     expect(metrics.length).toEqual(2);
     metrics.forEach((m, i) => {
       expect(m.value).toEqual(stats[i][m.metricId]);
+      expect(m.classId).toEqual(`band ${i}`);
+    });
+  });
+
+  test("rasterStatsToMetrics - multiple bands override", async () => {
+    const stats: StatsObject[] = [{ sum: 1 }, { sum: 2 }];
+    const bandGroups = ["mangroves", "coral"];
+    const metrics = rasterStatsToMetrics(stats, {
+      bandMetricProperty: "groupId",
+      bandMetricValues: bandGroups,
+    });
+    expect(metrics.length).toEqual(2);
+    metrics.forEach((m, i) => {
+      expect(m.value).toEqual(stats[i][m.metricId]);
+      expect(m.groupId).toEqual(bandGroups[i]);
     });
   });
 });

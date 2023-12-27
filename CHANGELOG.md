@@ -1,5 +1,24 @@
 # Changelog
 
+## v6.1.0 unreleased
+
+This release focuses on raster improvements
+
+* Precalc now calculates 4 metrics for every datasource and geography combination: `count`, `valid`, `sum`, and `area`.
+
+### :boom: Breaking Changes
+
+### :rocket: New Feature / Improvement
+
+### :bug: Bug Fix
+
+### :house: Internal
+
+* Upgrade to geoblaze 2.6 which adds performance improvement to all calculations
+
+### :memo: Documentation
+
+
 ## v6.0.0 (2023-12-14)
 
 ### :boom: Breaking Changes

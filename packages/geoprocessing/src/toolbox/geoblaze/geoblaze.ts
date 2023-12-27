@@ -45,7 +45,7 @@ export const getSum = async (
 };
 
 /**
- * Returns area of cells with value greater than 0 overlapping with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
+ * Returns area of valid cells (not nodata) overlapping with feature.  If no valid cells found, returns 0.
  */
 export const getArea = async (
   raster: Georaster,
@@ -57,12 +57,9 @@ export const getArea = async (
   const finalFeat = toRasterProjection(raster, feat);
   try {
     // undocumented shortcut lets you pass a test/filter function to stats
-    const result = await geoblaze.stats(
-      raster,
-      finalFeat,
-      { stats: ["valid"] },
-      (a) => a > 0
-    );
+    const result = await geoblaze.stats(raster, finalFeat, {
+      stats: ["valid"],
+    });
     area = parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
   } catch (err) {
     console.log(

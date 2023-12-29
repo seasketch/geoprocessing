@@ -2,22 +2,42 @@
 
 ## v6.1.0 unreleased
 
-This release focuses on raster improvements
+This release focuses on raster improvements including a switch to a [global equal area projection](https://epsg.io/6933) for raster analysis, and support for calculating raster `area` overlap and 10 others in addition to the existing `sum` metric.  See the full list on the [Concepts](https://github.com/seasketch/geoprocessing/wiki/Concepts#metrics) page.
 
-* Precalc now calculates 4 metrics for every datasource and geography combination: `count`, `valid`, `sum`, and `area`.
-
-### :boom: Breaking Changes
+Precalc now calculates 4 metrics for every datasource and geography combination: `count`, `valid`, `sum`, and `area`.
 
 ### :rocket: New Feature / Improvement
+
+* Use equal area projection EPSG:6933 for rasters internally, reprojecting on import.
+* Add `getRasterBoxSpherical()` function providing bounding box of equal area raster in lat/lon coordinates.
+* Add `toRasterProjection()` function that reprojects a feature (such as a Sketch or a Geography polygon) to the projection of the raster.
+* Add high-level `overlapRasterArea()` and `overlapRasterSum()` toolbox functions
+* Add high-level `rasterMetrics()` toolbox function that uses `rasterStats()` function and converts to metric objects.
+* Add low-level `getArea()` and `getSum()` toolbox functions
+* Add low-level `rasterStats()` toolbox function with access to 12 raster stats including `area()` calculation.  Returns metrics for all bands with band number in the class ID.
+* Add low-level `rasterStatsToMetrics()` function for converting from geoblaze stats objects to `Metric` objects.
+
+### :wastebasket: Deprecated code
+
+* overlapRaster - replaced with `rasterMetrics` which is multi-band capable
+* overlapArea - use a Geography with overlapFeatures
+* overlapSubarea - use a Geography with overlapFeatures
+* flattenSketchAllId - unused
+* toShortSketches - unused
+* getSketchCollectionChildIds - unused
 
 ### :bug: Bug Fix
 
 ### :house: Internal
 
-* Upgrade to geoblaze 2.6 which adds performance improvement to all calculations
+* Upgrade to geoblaze 2.6 which adds performance improvements in all use cases
+* Migrate template-blank-project raster function to use `rasterStats()`
+* Add Proj.4 wrapper that loads EPSG:6933 projection.
 
 ### :memo: Documentation
 
+# Update antimeridian section of Concept page
+# Update tutorial to instruct user to install geoprocessing with latest flag
 
 ## v6.0.0 (2023-12-14)
 

@@ -615,20 +615,18 @@ export const flattenByGroupSketchAllClass = (
   return sketchRows;
 };
 
-//// DEPRECATED
-
 /**
- * UNUSED
  * Given sketch collection, returns IDs of sketches in the collection
+ * @deprecated
  */
 export const getSketchCollectionChildIds = (
   collection: SketchCollection | NullSketchCollection
 ) => collection.features.map((sk) => sk.properties.id);
 
 /**
- * UNUSED
  * Returns an array of shorthand sketches (id + name) given a Sketch or SketchCollection.
  * Includes a shorthand of parent collection also
+ * @deprecated
  */
 export const toShortSketches = (
   input: Sketch | SketchCollection | NullSketch | NullSketchCollection
@@ -648,13 +646,13 @@ export const toShortSketches = (
 };
 
 /**
- * UNUSED
  * Returns one aggregate object for every sketch ID present in metrics,
  * with additional property for each unique value for idProperty present for sketch.
  * Example - idProperty of 'classId', and two classes are present in metrics of 'classA', and 'classB'
  * then each flattened object will have two extra properties per sketch, .classA and .classB, each with the first metric value for that sketch/idProperty found
  * @param metrics - metrics with assigned sketch
  * @param extraIdProperty - optional second id property to cross flatten with idProperty.  Properties will be keyed extraId_idProperty
+ * @deprecated
  */
 export const flattenSketchAllId = (
   metrics: Metric[],

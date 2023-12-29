@@ -17,6 +17,7 @@ import { ValidationError } from "../types";
 /**
  * Assuming sketches are within some outer boundary with size outerArea,
  * calculates the area of each sketch and the proportion of outerArea they take up.
+ * @deprecated - using geographies will clip your datasources and you can just use overlapFeatures
  */
 export async function overlapArea(
   /** Metric identifier */
@@ -175,6 +176,7 @@ export async function overlapArea(
  * Returns area stats for sketch input after performing overlay operation against a subarea feature.
  * Includes both area overlap and percent area overlap metrics, because calculating percent later would be too complicated
  * For sketch collections, dissolve is used when calculating total sketch area to prevent double counting
+ * @deprecated - using geographies will clip your datasources and you can just use overlapFeatures
  */
 export async function overlapSubarea(
   /** Metric identifier */

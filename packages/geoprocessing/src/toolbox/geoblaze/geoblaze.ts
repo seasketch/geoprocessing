@@ -19,7 +19,6 @@ export const defaultStatValues = {
   std: null,
   valid: 0,
   variance: null,
-  uniques: 0,
 };
 
 /**

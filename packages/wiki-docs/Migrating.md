@@ -4,6 +4,17 @@ Instructions to migrate existing geoprocessing projects to next version.
 
 [NPM](https://www.npmjs.com/package/@seasketch/geoprocessing) is the source of truth for each version.
 
+## 6.0 to 6.1
+
+- Run `reimport:data` to ensure that all raster datasources in `data/dist` are in an equal area projection.
+- Run `precalc:data` for all raster datasources to precalculate additional metrics including `sum`, `area`, `valid`, `count`.
+- Run `publish:data` for all raster datasources to ensure equal area version is published to S3 storage.
+- Migrate geoprocessing functions from `overlapRaster()` (now deprecated) to `rasterMetrics()` as you have time, and need to calculate additional stats like area.  `rasterStats()` and `getArea()` are available as lower level alternatives for constructing your own functions.
+
+## 5.x to 6.x
+
+- Add `explodeMulti: true` to all vector datasources in `project/datasources.json`.  You can set this to false if you know for sure you need to maintain multipolygons in the datasource.  Otherwise breaking them up can speed up geoprocessing function by not fetching an operating on extra polygons outside the bounding box of a sketch.
+
 ## 4.x to 5.x
 
 ### package.json

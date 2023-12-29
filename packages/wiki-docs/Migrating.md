@@ -10,6 +10,7 @@ Instructions to migrate existing geoprocessing projects to next version.
 - Run `precalc:data` for all raster datasources to precalculate additional metrics including `sum`, `area`, `valid`, `count`.
 - Run `publish:data` for all raster datasources to ensure equal area version is published to S3 storage.
 - Migrate geoprocessing functions from `overlapRaster()` (now deprecated) to `rasterMetrics()` as you have time, and need to calculate additional stats like area.  `rasterStats()` and `getArea()` are available as lower level alternatives for constructing your own functions.
+- any use of the deprecated `loadCogWindow()` should be replaced with the newer `loadCog()`.  The former doesnt' appear to work correctly with functions like `rasterStats()` and `rasterMetrics()`.
 
 ## 5.x to 6.x
 

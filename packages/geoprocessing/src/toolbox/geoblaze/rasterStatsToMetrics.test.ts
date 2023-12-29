@@ -95,4 +95,32 @@ describe("rasterStatsToMetrics", () => {
       expect(m.groupId).toEqual(bandGroups[i]);
     });
   });
+
+  test("rasterStatsToMetrics - metricId override", async () => {
+    const stats: StatsObject[] = [{ sum: 1 }];
+    const metrics = rasterStatsToMetrics(stats, { metricId: "coral" });
+    expect(metrics.length).toEqual(1);
+    expect(metrics[0]).toEqual({
+      metricId: "coral",
+      value: 1,
+      classId: "band-0",
+      groupId: null,
+      geographyId: null,
+      sketchId: null,
+    });
+  });
+
+  test("rasterStatsToMetrics - metricIdPrefix", async () => {
+    const stats: StatsObject[] = [{ sum: 1 }];
+    const metrics = rasterStatsToMetrics(stats, { metricIdPrefix: "coral-" });
+    expect(metrics.length).toEqual(1);
+    expect(metrics[0]).toEqual({
+      metricId: "coral-sum",
+      value: 1,
+      classId: "band-0",
+      groupId: null,
+      geographyId: null,
+      sketchId: null,
+    });
+  });
 });

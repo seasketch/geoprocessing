@@ -8,6 +8,10 @@ import { rasterStatsToMetrics } from "./geoblaze/rasterStatsToMetrics";
 import { Georaster } from "geoblaze";
 
 interface OverlapRasterOptions extends RasterStatsOptions {
+  /** Optional metricId to be assigned.  Don't use if you are calculating more than one stat because you won't be able to tell them apart */
+  metricId?: string;
+  /** Optional caller-provided prefix to add to metricId in addition to stat name e.g. 'coral' with metrics of 'sum', 'count', 'area' will generate metric IDs of 'coral-sum', 'coral-count', 'coral-area' */
+  metricIdPrefix?: string;
   /** Truncates results to 6 digits, defaults to true */
   truncate?: boolean;
   /** If multi-band raster, metric property name that raster bands are organized by e.g. classID */
@@ -27,6 +31,8 @@ export async function rasterMetrics(
   options: OverlapRasterOptions = {}
 ): Promise<Metric[]> {
   const {
+    metricId,
+    metricIdPrefix,
     feature = options.feature,
     bandMetricProperty,
     bandMetricValues,
@@ -68,6 +74,8 @@ export async function rasterMetrics(
           }
         })();
         const curMetrics = rasterStatsToMetrics(curStats, {
+          metricId,
+          metricIdPrefix,
           metricPartial,
           bandMetricProperty,
           bandMetricValues,
@@ -98,6 +106,8 @@ export async function rasterMetrics(
       })();
 
       const collMetrics = rasterStatsToMetrics(collStats, {
+        metricId,
+        metricIdPrefix,
         metricPartial,
         bandMetricProperty,
         bandMetricValues,
@@ -110,6 +120,8 @@ export async function rasterMetrics(
       ...(statOptions ?? {}),
     });
     const wholeMetrics = rasterStatsToMetrics(wholeStats, {
+      metricId,
+      metricIdPrefix,
       bandMetricProperty,
       bandMetricValues,
     });

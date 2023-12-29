@@ -11,6 +11,10 @@ import { createMetric } from "../../metrics";
 export const rasterStatsToMetrics = (
   statsObjects: StatsObject[],
   options: {
+    /** Optional metricId to be assigned.  Don't use if you are calculating more than one stat because you won't be able to tell them apart */
+    metricId?: string;
+    /** Optional caller-provided prefix to add to metricId in addition to stat name e.g. 'coral' with metrics of 'sum', 'count', 'area' will generate metric IDs of 'coral-sum', 'coral-count', 'coral-area' */
+    metricIdPrefix?: string;
     /** Properties to append to metric extra */
     metricPartial?: Partial<Metric>;
     truncate?: boolean;
@@ -21,6 +25,8 @@ export const rasterStatsToMetrics = (
   } = {}
 ): Metric[] => {
   const {
+    metricId,
+    metricIdPrefix = "",
     metricPartial = {},
     truncate = true,
     bandMetricProperty = "classId",
@@ -35,7 +41,7 @@ export const rasterStatsToMetrics = (
       const value = curStats[statName];
       metrics.push(
         createMetric({
-          metricId: statName,
+          metricId: metricId ?? `${metricIdPrefix}${statName}`,
           value: truncate
             ? roundDecimal(value, 6, { keepSmallValues: true })
             : value,

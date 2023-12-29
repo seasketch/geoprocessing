@@ -33,6 +33,53 @@ describe("rasterMetrics tests", () => {
     const metrics = await rasterMetrics(raster);
     expect(metrics.length).toBe(1);
     expect(metrics[0].value).toBe(4);
+    expect(metrics[0].metricId).toEqual("sum");
+  });
+
+  test("rasterMetrics - metricId override", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [0, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await rasterMetrics(raster, { metricId: "coral" });
+    expect(metrics.length).toBe(1);
+    expect(metrics[0].value).toBe(4);
+    expect(metrics[0].metricId).toEqual("coral");
+  });
+
+  test("rasterMetrics - metricId prefix", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [0, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await rasterMetrics(raster, { metricIdPrefix: "coral-" });
+    expect(metrics.length).toBe(1);
+    expect(metrics[0].value).toBe(4);
+    expect(metrics[0].metricId).toEqual("coral-sum");
   });
 
   test("rasterMetrics - default sum truncate", async () => {

@@ -8,13 +8,13 @@ import {
 } from "../../../src/types";
 import {
   createMetric,
-  getSum,
   getHistogram,
   bboxOverlap,
   BBox,
   ProjectClientBase,
   datasourceConfig,
   getRasterBoxSpherical,
+  rasterMetrics,
 } from "../../../src";
 import bbox from "@turf/bbox";
 
@@ -51,7 +51,7 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
   console.log("precalcing raster datasource", url);
   const raster: Georaster = await geoblaze.parse(url);
 
-  const rasterMetrics = await genRasterMetrics(
+  const rasterMetrics = await precalcRasterMetrics(
     raster,
     datasource,
     geography,
@@ -69,7 +69,7 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
  * @param geography Geography to calculate metrics for
  * @returns Metric[]
  */
-export async function genRasterMetrics(
+export async function precalcRasterMetrics(
   raster: Georaster,
   datasource: RasterDatasource,
   /** Input geography */
@@ -100,12 +100,30 @@ export async function genRasterMetrics(
 
   // If there's no overlap between geography and raster, return empty metric
   if (!bboxOverlap(bbox(geographyFeatureColl), rasterBbox)) {
-    console.log("No overlap -- returning 0 sum");
+    console.log("No overlap -- returning 0 value stats");
     return [
       createMetric({
         geographyId: geography.geographyId,
         classId: datasource.datasourceId + "-total",
+        metricId: "valid",
+        value: 0,
+      }),
+      createMetric({
+        geographyId: geography.geographyId,
+        classId: datasource.datasourceId + "-total",
+        metricId: "count",
+        value: 0,
+      }),
+      createMetric({
+        geographyId: geography.geographyId,
+        classId: datasource.datasourceId + "-total",
         metricId: "sum",
+        value: 0,
+      }),
+      createMetric({
+        geographyId: geography.geographyId,
+        classId: datasource.datasourceId + "-total",
+        metricId: "area",
         value: 0,
       }),
     ];
@@ -113,17 +131,21 @@ export async function genRasterMetrics(
 
   // Creates metric for simple continous raster
   if (datasource.measurementType === "quantitative") {
-    return [
-      createMetric({
-        geographyId: geography.geographyId,
-        classId: datasource.datasourceId + "-total",
-        metricId: "sum",
-        value: await getSum(raster, geographyFeatureColl),
-      }),
-    ];
+    const metrics = (
+      await rasterMetrics(raster, {
+        feature: geographyFeatureColl,
+        stats: ["valid", "count", "sum", "area"],
+        includeChildMetrics: false,
+      })
+    ).map((m) => ({
+      ...m,
+      geographyId: geography.geographyId,
+      classId: datasource.datasourceId + "-total",
+    }));
+    return metrics;
   }
 
-  // Creates metrics for categorical raster (histogram, count by class)
+  // Creates metrics for categorical raster (histogram, count valid cells by class)
   if (datasource.measurementType === "categorical") {
     const metrics: Metric[] = [];
     const histogram = (await getHistogram(raster)) as Histogram;
@@ -134,7 +156,7 @@ export async function genRasterMetrics(
         createMetric({
           geographyId: geography.geographyId,
           classId: datasource.datasourceId + "-" + curClass,
-          metricId: "count",
+          metricId: "valid",
           value: histogram[curClass],
         })
       );

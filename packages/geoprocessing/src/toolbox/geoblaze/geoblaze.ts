@@ -5,6 +5,22 @@ import reprojectGeoJSONPlugable from "reproject-geojson/pluggable.js";
 import proj4 from "../proj4";
 import { reproject } from "bbox-fns";
 
+export const defaultStatValues = {
+  count: 0,
+  invalid: 0,
+  max: null,
+  mean: null,
+  median: null,
+  min: null,
+  mode: null,
+  product: null,
+  range: null,
+  sum: 0,
+  std: null,
+  valid: 0,
+  variance: null,
+};
+
 /**
  * Returns sum of value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
  */
@@ -25,6 +41,31 @@ export const getSum = async (
     );
   }
   return sum;
+};
+
+/**
+ * Returns area of valid cells (not nodata) overlapping with feature.  If no valid cells found, returns 0.
+ */
+export const getArea = async (
+  raster: Georaster,
+  feat?:
+    | Feature<Polygon | MultiPolygon>
+    | FeatureCollection<Polygon | MultiPolygon>
+) => {
+  let area = 0;
+  const finalFeat = toRasterProjection(raster, feat);
+  try {
+    // undocumented shortcut lets you pass a test/filter function to stats
+    const result = await geoblaze.stats(raster, finalFeat, {
+      stats: ["valid"],
+    });
+    area = parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
+  } catch (err) {
+    console.log(
+      "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry"
+    );
+  }
+  return area;
 };
 
 /**

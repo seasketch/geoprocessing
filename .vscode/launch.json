@@ -78,6 +78,22 @@
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
   }, {
+    "name": "geoprocessing - debug e2e tests with pattern",
+    "type": "node",
+    "request": "launch",
+    "cwd": "${workspaceFolder}/packages/geoprocessing",
+    "runtimeArgs": [
+      "--inspect-brk",
+      "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
+      "--runInBand",
+      "--group=e2e",
+      "-t",
+      "${input:testNamePattern}"
+    ],
+    "console": "integratedTerminal",
+    "internalConsoleOptions": "neverOpen",
+    "port": 9229        
+  }, {
       "name": "geoprocessing scripts- debug tests",
       "type": "node",
       "request": "launch",

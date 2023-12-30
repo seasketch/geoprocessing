@@ -110,20 +110,18 @@ describe("precalcRasterDatasource", () => {
     metricsSchema.parse(metrics);
 
     // Should create metrics for both the geography datasource and the raster datasource
-    expect(metrics.length).toBe(3);
+    expect(metrics.length).toBe(6);
 
-    const areaMetric = firstMatchingMetric(
-      metrics,
-      (m) => m.metricId === "area"
-    );
-    expect(areaMetric).toBeTruthy();
+    const areaMetrics = metrics.filter((m) => m.metricId === "area");
+    // vector ds area and raster ds area
+    expect(areaMetrics.length).toEqual(2);
 
     const countMetric = firstMatchingMetric(
       metrics,
-      (m) => m.metricId === "count"
+      (m) => m.metricId === "valid"
     );
     expect(countMetric).toBeTruthy();
-    expect(countMetric.value).toBe(1);
+    expect(countMetric.value).toBe(53);
 
     const sumMetric = firstMatchingMetric(metrics, (m) => m.metricId === "sum");
     expect(sumMetric).toBeTruthy();
@@ -248,25 +246,39 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(3); // because precalc false for geog datasource
+    expect(metrics.length).toBe(12); // because precalc false for geog datasource
 
-    const boxFilterMetric = firstMatchingMetric(
+    const boxFilterSumMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-box-filter"
+      (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum"
     );
-    expect(boxFilterMetric.value).toEqual(101);
+    expect(boxFilterSumMetric.value).toEqual(101);
 
-    const singleFilterMetric = firstMatchingMetric(
+    const boxFilterAreaMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-single-filter"
+      (m) => m.geographyId === "geog-box-filter" && m.metricId === "area"
     );
-    expect(singleFilterMetric.value).toEqual(76);
+    expect(boxFilterAreaMetric.value).toEqual(2617017582.013417); // Very close to QGIS calculated value
 
-    const doubleFilterMetric = firstMatchingMetric(
+    const singleFilterSumMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-double-filter"
+      (m) => m.geographyId === "geog-single-filter" && m.metricId === "sum"
     );
-    expect(doubleFilterMetric.value).toEqual(98);
+    expect(singleFilterSumMetric.value).toEqual(76);
+
+    const singleFilterAreaMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.geographyId === "geog-single-filter" && m.metricId === "area"
+    );
+    expect(singleFilterAreaMetric.value).toBeCloseTo(
+      (2617017582.013417 / 101) * 76
+    );
+
+    const doubleFilterSumMetric = firstMatchingMetric(
+      metrics,
+      (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum"
+    );
+    expect(doubleFilterSumMetric.value).toEqual(98);
 
     fs.removeSync(dsFilePath);
     fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));
@@ -392,23 +404,23 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(3); // because precalc false for geog datasource
+    expect(metrics.length).toBe(12); // because precalc false for geog datasource
 
     const boxFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-box-filter"
+      (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum"
     );
     expect(boxFilterMetric.value).toEqual(70);
 
     const singleFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-single-filter"
+      (m) => m.geographyId === "geog-single-filter" && m.metricId === "sum"
     );
     expect(singleFilterMetric.value).toEqual(53);
 
     const doubleFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-double-filter"
+      (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum"
     );
     expect(doubleFilterMetric.value).toEqual(69);
 
@@ -538,24 +550,24 @@ describe("precalcRasterDatasource", () => {
     // Verify precalc
     const metrics = fs.readJSONSync(precalcFilePath);
     metricsSchema.parse(metrics);
-    expect(metrics.length).toBe(3); // because precalc false for geog datasource
+    expect(metrics.length).toBe(12); // because precalc false for geog datasource
 
     // check each metric for expected value
     const noFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-box-filter"
+      (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum"
     );
     expect(noFilterMetric.value).toEqual(69);
 
     const singleFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-single-filter"
+      (m) => m.geographyId === "geog-single-filter" && m.metricId === "sum"
     );
     expect(singleFilterMetric.value).toEqual(53);
 
     const doubleFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-double-filter"
+      (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum"
     );
     expect(doubleFilterMetric.value).toEqual(69);
 

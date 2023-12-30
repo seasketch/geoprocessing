@@ -373,24 +373,56 @@ An [internal raster datasource]()
 
 # Metrics
 
-## Metric Types
+## What can be measured?
 
-There are 6 [types](https://github.com/seasketch/geoprocessing/blob/d633b202a855689655032bdb290e036f2733b33d/packages/geoprocessing/src/types/metricGroup.ts#L6) of metrics provided out-of-the-box and they all came out of the need to measure the overlap between a feature (usually a sketch) and another set of features (represented by a class of data, whether vector or raster).  Defining metric types allows the framework to look at a metric measurement and know how to work with and display it in reports.
+Vector:
 
-* `areaOverlap` - the area of overlap between features and a sketch.
-  * Example - a sketch overlaps with 100,000 square meters of a countries EEZ boundary.  The areaOverlap is `100000`.
-* `areaOverlapPerc` - the percent of the total area of all features that a sketch overlaps with.
-  * Example - assume there are 100 features totaling 1000 square meters and a sketch overlaps with 250 square meters of those meters, then the % overlap value is `25%`.
-* `countOverlap` - count of features that a sketch overlaps with.
-  * Example - a sketch overlaps with 5 known dive areas.  The `countOverlap` is `5`.
-* `countOverlapPerc` - percentage of count of all features that a sketch overlaps with.
-  * Example - a sketch overlaps with 5 of 25 known dive areas.  The `countOverlapPerc` is `20%`.
-  * Example - you have a raster for presence/absence of coral reef and there are 100 total raster cells that have coral reef.  Your sketch overlaps with 20 of them.  The count % overlap is 20%.
-* `valueOverlap` - sum of value of features that a sketch overlaps with.
-  * Example - vector features representing ocean use areas, each with a property representing the number of people that use that area.  The `valueOverlap` if a sketch overlaps with 5 areas, with number of people that use each varying from 500-1500 might sum to `5000`.
-  * Example - raster representing commercial tuna fishing value.  The `valueOverlap` if a sketch overlap with 5 cells yielding a total value of `5`.
-* `valueOverlapPerc` - percentage of sum value of all features that a sketch overlaps with.
-  * Example - raster representing commercial tuna fishing value.  The sum of all raster cells is the total value of the commercial tuna fishery is `500`, and each raster cell represent a portion of the value of the fishery. The `valueOverlapPerc` if a sketch overlaps with 5 cells yielding a total value of `5` is 5/500 or `1%`.
+```typescript
+/** Area of vector features in square meters */
+area: number;
+/** Number of vector features */
+count: number;
+```
+
+High-level toolbox functions include: `overlapFeatures()`
+
+Raster:
+
+```typescript
+/** Number of cells that are not nodata */
+valid?: number;
+/** Number of nodata cells in raster */
+invalid?: number;
+/** Total number of cells in raster, valid or invalid */
+count?: number;
+/** Area of valid cells in raster in square meters */
+area?: number;
+/** Minimum value of valid cells in raster */
+min?: Nullable<number>;
+/** Maximum value of any one valid cell in raster */
+max?: Nullable<number>;
+/** Mean average value of valid cells in raster */
+mean?: Nullable<number>;
+/** Median average value of valid cells in raster */
+median?: Nullable<number>;
+/** Mode of valid cells in raster */
+mode?: Nullable<number>;
+/** Different between min and max value */
+range?: Nullable<number>;
+/** Sum of all valid cennls in raster */
+sum?: number;
+/** Standard deviation of valid cells in raster */
+std?: Nullable<number>;
+/** Statistical measurement of spread between values in raster */
+variance?: Nullable<number>;
+**/
+```
+
+High level toolbox functions include: `rasterMetrics()` (multi-band capable), and the now-deprecated `overlapRaster()`, `overlapRasterClass` (not multi-band capable)
+
+Low level toolbox functions include: `rasterStats()` (multi-band capable) as well as `getSum()`, `getArea` (not multi-band capable)
+
+If these don't meet your needs, you can create your own raster functions by using `geoblaze` library methods directly, or by copying and modifying a function like `getSum`, which knows how to generate and return an array of `Metric` objects, and adapt it to meet your needs.
 
 ## Metric Group
 
@@ -398,11 +430,11 @@ A [MetricGroup](https://github.com/seasketch/geoprocessing/blob/dev/packages/geo
 
 * [DataClass](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/dataclass.ts#L8) - represents a single class of data.  It ties it to an underlying datasource, and holds attributes used for displaying the class in user interfaces.
 
-The following is an example of a MetricGroup:
+The following is an example of a MetricGroup object containing an array of DataClass objects:
 
 ```json
 {
-    "metricId": "boundaryAreaOverlap",
+    "metricId": "boundary-area",
     "type": "areaOverlap",
     "classes": [
         {
@@ -446,21 +478,21 @@ A metric value is a quantifiable measure of something, a single measurement.  In
 * `value` - the numeric value of the measurement.
 * `extra` - additional properties that can be added as needed.
 
-A Metric can also use one or more standard [dimensions](https://github.com/seasketch/geoprocessing/blob/d633b20/packages/geoprocessing/src/types/metrics.ts#L5) for [stratifying](https://en.wikipedia.org/wiki/Stratified_sampling) data:
+A Metric has properties for  one or more standard [dimensions](https://github.com/seasketch/geoprocessing/blob/d633b20/packages/geoprocessing/src/types/metrics.ts#L5). These are used for [stratifying](https://en.wikipedia.org/wiki/Stratified_sampling) data.  A `null` value for an individual metric object property indicates the dimension does not apply.
 
 * `sketchId` - optional id of sketch this measurement is for.
 * `classId` - optional id of data class that this metric is for.
-  * Example - boundary overlap metrics may be categorized by boundary type (e.g. eez, offshore, nearshore).
+  * Example - boundary overlap metrics may be categorized by boundary type (e.g. eez, offshore, nearshore).  This ID can often be used to represent informal geographic boundaries instead of formal `Geographies` like with `geographyId`
 * `groupId` - optional id of group that this metric is for.  Groups are typically not defined by the datasource, but by the planning process.
   * Example - protections levels, where all of the sketches in a collection may be grouped by the protection level they achieve (low, high, full) and their metrics combined into an aggregate value for each level.
-* `geographyId` - optional id of a geographic unit that this metric is for.  A classId can and is usually used for geographic boundaries also, so this is typically reserved for a situation where you want to stratify by two different sets of geographic boundaries.
+* `geographyId` - optional id of a `Geography` that this metric is for.
   * Example - you want to stratify by multiple jurisdictional boundaries (eez, nearshore, offshore) and you also want to stratify by multiple distinct environmental regions defined by natural clusterings of depth, species, seabottom, etc. (region 1, region 2, region 3).  This allows you to answer for example how much does a sketch overlap with areas that are nearshore and environmental region 1?  You can use classId for the jurisdictional boundaries and `groupId` for the environmental regions.
 
 The following is an example of a single Metric object.
 
 ```json
 {
-    "metricId": "boundaryAreaOverlap",
+    "metricId": "boundary-area",
     "sketchId": "abc123",
     "classId": "eez",
     "groupId": null,
@@ -472,7 +504,7 @@ The following is an example of a single Metric object.
 }
 ```
 
-It's a `boundaryAreaOverlap` metric for sketch `abc123`, measuring an overlap of `75066893245.88089 square meters` with the `eez` boundary.  There is no associated group or geography.  The name of the sketch is additionally included for human readability.
+It's a metric measuring the area of boundaries for sketch `abc123`, measuring an overlap of `75066893245.88089 square meters` with the `eez` boundary.  There is no associated group or geography.  The name of the sketch is additionally included for human readability.
 
 # Objectives
 

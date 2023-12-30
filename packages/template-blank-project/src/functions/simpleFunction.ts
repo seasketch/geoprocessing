@@ -7,6 +7,7 @@ import {
   getFirstFromParam,
   DefaultExtraParams,
   splitSketchAntimeridian,
+  rasterStats,
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import turfArea from "@turf/area";
@@ -71,14 +72,22 @@ async function simpleFunction(
   const minDs = project.getRasterDatasourceById("bo-present-surface-temp-min");
   const minUrl = project.getDatasourceUrl(minDs);
   const minRaster = await loadCog(minUrl);
-  const minResult = await geoblaze.min(minRaster, clippedSketch);
-  const minTemp = minResult[0]; // extract value from band 1
+  const minResult = await rasterStats(minRaster, {
+    feature: clippedSketch,
+    stats: ["min"],
+  });
+  const minTemp = minResult[0].min; // extract value from band 1
 
   const maxDs = project.getRasterDatasourceById("bo-present-surface-temp-max");
   const maxUrl = project.getDatasourceUrl(maxDs);
   const maxRaster = await loadCog(maxUrl);
-  const maxResult = await geoblaze.max(maxRaster, clippedSketch);
-  const maxTemp = maxResult[0]; // extract value from band 1
+  const maxResult = await rasterStats(maxRaster, {
+    feature: clippedSketch,
+    stats: ["max"],
+  });
+  const maxTemp = maxResult[0].max; // extract value from band 1
+
+  if (!minTemp || !maxTemp) throw new Error("Missing minTemp or maxTemp");
 
   return {
     area: turfArea(clippedSketch),

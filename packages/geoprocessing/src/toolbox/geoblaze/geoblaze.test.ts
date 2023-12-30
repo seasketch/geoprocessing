@@ -3,54 +3,12 @@
  * @group e2e
  */
 import { Polygon, Sketch, Feature } from "../../types";
-import { genSampleSketch } from "../../helpers";
 import parseGeoraster from "georaster";
+import testData from "./test/testData";
 
 // @ts-ignore
 import geoblaze from "geoblaze";
 import { splitSketchAntimeridian } from "../split";
-
-// bbox  - [xmin, ymin, xmax, ymax]
-// pixel - [left, bottom, right, top]
-
-const quad1Poly: Sketch<Polygon> = genSampleSketch({
-  type: "Polygon",
-  coordinates: [
-    [
-      [-2, 2],
-      [-2, 18],
-      [-18, 18],
-      [-18, 2],
-      [-2, 2],
-    ],
-  ],
-});
-
-const quad2Poly: Sketch<Polygon> = genSampleSketch({
-  type: "Polygon",
-  coordinates: [
-    [
-      [2, 2],
-      [2, 18],
-      [18, 18],
-      [18, 2],
-      [2, 2],
-    ],
-  ],
-});
-
-const allQuadPoly: Sketch<Polygon> = genSampleSketch({
-  type: "Polygon",
-  coordinates: [
-    [
-      [-18, -18],
-      [-18, 18],
-      [18, 18],
-      [18, -18],
-      [-18, -18],
-    ],
-  ],
-});
 
 describe("geoblaze basics", () => {
   test("simple in-memory raster sum test", async () => {
@@ -70,7 +28,7 @@ describe("geoblaze basics", () => {
         pixelHeight: 10,
       }
     );
-    const sum = geoblaze.sum(raster, quad2Poly)[0];
+    const sum = geoblaze.sum(raster, testData.quad2Poly)[0];
     expect(sum).toBe(1);
   });
 });
@@ -80,7 +38,7 @@ describe("geoblaze cog test", () => {
     const url = "http://127.0.0.1:8080/data/in/quad_10_cog.tif";
     const raster = await geoblaze.parse(url);
 
-    const sum = await geoblaze.sum(raster, quad1Poly);
+    const sum = await geoblaze.sum(raster, testData.quad1Poly);
     expect(raster).toBeTruthy();
     expect(raster.pixelHeight).toBe(10);
     expect(raster.pixelWidth).toBe(10);
@@ -89,13 +47,13 @@ describe("geoblaze cog test", () => {
 
   test("quad 10 - should pick up q2 value with direct load of url", async () => {
     const url = "http://127.0.0.1:8080/data/in/quad_10_cog.tif";
-    const sum = await geoblaze.sum(url, quad2Poly);
+    const sum = await geoblaze.sum(url, testData.quad2Poly);
     expect(sum[0]).toBe(1);
   });
 
   test("quad 10 - should pick up all quad values with direct load of url", async () => {
     const url = "http://127.0.0.1:8080/data/in/quad_10_cog.tif";
-    const sum = await geoblaze.sum(url, allQuadPoly);
+    const sum = await geoblaze.sum(url, testData.allQuadPoly);
     expect(sum[0]).toBe(4);
   });
 

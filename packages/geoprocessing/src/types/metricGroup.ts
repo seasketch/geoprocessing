@@ -3,23 +3,13 @@ import { z } from "zod";
 
 //// METRIC GROUP SCHEMA ////
 
-const METRIC_TYPES = [
-  "areaOverlap",
-  "areaOverlapPerc",
-  "countOverlap",
-  "countOverlapPerc",
-  "valueOverlap",
-  "valueOverlapPerc",
-] as const;
-export const metricTypesSchema = z.enum(METRIC_TYPES);
-
 /**
  * Defines a metric in combination with a datasource, with one or more data classes */
 export const metricGroupSchema = z.object({
   /** Unique id of metric in project*/
   metricId: z.string(),
   /** Metric type */
-  type: metricTypesSchema,
+  type: z.string(),
   /** Datasource to generate metrics from */
   datasourceId: z.string().optional(),
   /** Optional datasource class key used to source classIds  */

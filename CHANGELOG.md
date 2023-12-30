@@ -6,6 +6,8 @@ This release focuses on raster improvements including a switch to a [global equa
 
 Precalc now calculates 4 metrics for every datasource and geography combination: `count`, `valid`, `sum`, and `area`.
 
+See [Migrating](https://github.com/seasketch/geoprocessing/wiki/Migrating) page for steps to upgrade.
+
 ### :rocket: New Feature / Improvement
 
 * Use equal area projection EPSG:6933 for rasters internally, reprojecting on import.

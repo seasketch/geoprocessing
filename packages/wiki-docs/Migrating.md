@@ -10,6 +10,7 @@ Instructions to migrate existing geoprocessing projects to next version.
 - Run `precalc:data` for all raster datasources to precalculate additional metrics including `sum`, `area`, `valid`, `count`.
 - Run `publish:data` for all raster datasources to ensure equal area version is published to S3 storage.
 - Migrate geoprocessing functions from `overlapRaster()` (now deprecated) to `rasterMetrics()` as you have time, and need to calculate additional stats like area.  `rasterStats()` and `getArea()` are available as lower level alternatives for constructing your own functions.
+- any use of geoblaze directly, that passes a polygon feature for overlap, must reproject the feature to an equal area projection first, using `toRasterProjection`.  See [getSum](https://github.com/seasketch/geoprocessing/blob/5b2c3dd1381343733e0908d91c22d51597151f1b/packages/geoprocessing/src/toolbox/geoblaze/geoblaze.ts#L34) for an example.
 - any use of the deprecated `loadCogWindow()` should be replaced with the newer `loadCog()`.  The former doesnt' appear to work correctly with functions like `rasterStats()` and `rasterMetrics()`.
 
 ## 5.x to 6.x

@@ -51,7 +51,7 @@ export async function rasterMetrics(
         // accumulate individual feature/sketch level stat promises
         promises.push(
           rasterStats(raster, {
-            feature: options?.feature,
+            feature: curSketch,
             ...(statOptions ?? {}),
           })
         );

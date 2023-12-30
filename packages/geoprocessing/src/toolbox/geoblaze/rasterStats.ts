@@ -8,6 +8,7 @@ import { Feature, MultiPolygon, FeatureCollection } from "@turf/helpers";
 import geoblaze, { Georaster } from "geoblaze";
 import { StatsObject, CalcStatsOptions } from "../../types/geoblaze";
 import { toRasterProjection, defaultStatValues } from "./geoblaze";
+import cloneDeep from "lodash/cloneDeep";
 
 /**
  * options accepted by rasterStats
@@ -22,6 +23,8 @@ export interface RasterStatsOptions extends CalcStatsOptions {
     | SketchCollection<Polygon | MultiPolygon>;
   /** undocumented filter function (how different from filter option above?), for example a => a > 0 will filter out pixels greater than zero such that 'valid' is number of valid pixels greater than 0 */
   filterFn?: (cellValue: number) => boolean;
+  /** Optional number of bands in the raster, defaults to 1, used to initialize zero values */
+  numBands?: number;
 }
 
 /**
@@ -33,7 +36,13 @@ export const rasterStats = async (
   raster: Georaster,
   options: RasterStatsOptions = {}
 ) => {
-  const { stats = ["sum"], feature, filterFn, ...restCalcOptions } = options;
+  const {
+    numBands = 1,
+    stats = ["sum"],
+    feature,
+    filterFn,
+    ...restCalcOptions
+  } = options;
   // If area is included in stats list, then also include valid stat which is needed to calculate area later
   const finalStatNames = [...stats];
   if (stats.includes("area")) finalStatNames.push("valid");
@@ -41,6 +50,15 @@ export const rasterStats = async (
   const projectedFeat = toRasterProjection(raster, feature);
   let statsByBand: StatsObject[] = [];
   let finalStats: StatsObject[] = [];
+
+  // Build array of default stat values, that can be returned if raster can't be accessed or returns nothing
+  let defaultStats: StatsObject[] = [];
+  for (let i = 0; i < numBands; i++) {
+    defaultStats[i] = {};
+    for (let j = 0; j < stats.length; j++) {
+      defaultStats[i][stats[j]] = defaultStatValues[stats[j]];
+    }
+  }
 
   try {
     statsByBand = (await geoblaze.stats(
@@ -86,6 +104,7 @@ export const rasterStats = async (
     console.log(
       "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry"
     );
+    return defaultStats;
   }
   return finalStats;
 };

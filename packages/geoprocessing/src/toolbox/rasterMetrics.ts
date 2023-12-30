@@ -45,13 +45,16 @@ export async function rasterMetrics(
   const promises: Promise<StatsObject[]>[] = [];
   const features: Feature[] = [];
 
+  const numBands = bandMetricValues ? Object.keys(bandMetricValues).length : 1;
+
   if (feature) {
     if (includeChildMetrics) {
       featureEach(feature, async (curSketch) => {
         // accumulate individual feature/sketch level stat promises
         promises.push(
           rasterStats(raster, {
-            feature: options?.feature,
+            feature: curSketch,
+            numBands,
             ...(statOptions ?? {}),
           })
         );
@@ -88,6 +91,7 @@ export async function rasterMetrics(
     if (isFeatureCollection(feature)) {
       const collStats = await rasterStats(raster, {
         feature: options?.feature,
+        numBands,
         ...(statOptions ?? {}),
       });
 
@@ -117,6 +121,7 @@ export async function rasterMetrics(
   } else {
     // Whole raster metrics (no sketch)
     const wholeStats = await rasterStats(raster, {
+      numBands,
       ...(statOptions ?? {}),
     });
     const wholeMetrics = rasterStatsToMetrics(wholeStats, {

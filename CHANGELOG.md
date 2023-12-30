@@ -1,6 +1,6 @@
 # Changelog
 
-## v6.1.0 unreleased
+## v6.1.0 (2023/12/29)
 
 This release focuses on raster improvements including a switch to a [global equal area projection](https://epsg.io/6933) for raster analysis, and support for calculating raster `area` overlap and 10 others in addition to the existing `sum` metric.  See the full list on the [Concepts](https://github.com/seasketch/geoprocessing/wiki/Concepts#metrics) page.
 
@@ -36,8 +36,8 @@ Precalc now calculates 4 metrics for every datasource and geography combination:
 
 ### :memo: Documentation
 
-# Update antimeridian section of Concept page
-# Update tutorial to instruct user to install geoprocessing with latest flag
+* Update antimeridian section of Concept page
+* Update tutorial to instruct user to install geoprocessing with latest flag
 
 ## v6.0.0 (2023-12-14)
 

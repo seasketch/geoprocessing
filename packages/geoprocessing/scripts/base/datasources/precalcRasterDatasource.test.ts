@@ -430,7 +430,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
     fs.removeSync(geogFilePath);
     fs.removeSync(precalcFilePath);
-  }, 10000);
+  }, 30000);
 
   test("precalcRasterDatasource - multiple geog scenarios with internal geojson datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_7.json";

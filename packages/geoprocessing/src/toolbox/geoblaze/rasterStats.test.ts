@@ -118,14 +118,15 @@ describe("rasterStats", () => {
 
     const statsByBand = await rasterStats(multiBandRaster, {
       feature: testData.outsideQuadPoly,
-      stats: ["sum", "count", "min", "max", "mode", "invalid", "valid"],
+      stats: ["sum", "count", "min", "max", "mode", "invalid", "valid", "area"],
     });
 
     const stats = statsByBand[0];
     const statNames = Object.keys(stats);
-    expect(statNames.length).toEqual(7);
+    expect(statNames.length).toEqual(8);
     statNames.forEach((statName) => {
-      expect(stats[statName]).toEqual(defaultStatValues[statName]);
+      if (statName === "area") expect(stats[statName]).toEqual(0);
+      else expect(stats[statName]).toEqual(defaultStatValues[statName]);
     });
     // should return zero values for each stat if no feature overlap
   });

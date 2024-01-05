@@ -56,7 +56,8 @@ export const rasterStats = async (
   for (let i = 0; i < numBands; i++) {
     defaultStats[i] = {};
     for (let j = 0; j < stats.length; j++) {
-      defaultStats[i][stats[j]] = defaultStatValues[stats[j]];
+      if (stats[j] === "area") defaultStats[i][stats[j]] = 0;
+      else defaultStats[i][stats[j]] = defaultStatValues[stats[j]];
     }
   }
 

@@ -2,8 +2,12 @@
  * @group unit
  */
 
-import { overlapAreaGroupMetrics } from "./overlapGroupMetrics";
-import { SketchCollection, Polygon, Metric } from "../types";
+import {
+  overlapAreaGroupMetrics,
+  overlapRasterGroupMetrics,
+} from "./overlapGroupMetrics";
+import { SketchCollection, Polygon, Metric, Sketch } from "../types";
+import parseGeoraster from "georaster";
 
 const sketch: SketchCollection<Polygon> = {
   type: "FeatureCollection",
@@ -136,16 +140,16 @@ const areaMetrics: Metric[] = [
 ];
 const STUDY_REGION_AREA_SQ_METERS = 1_000_000_000_000;
 
+const metricToLevel = (sketchMetric: Metric) => {
+  return sketchIdToGroupId[sketchMetric.sketchId!];
+};
+
 describe("overlapAreaGroupMetrics", () => {
   test("function is present", () => {
     expect(typeof overlapAreaGroupMetrics).toBe("function");
   });
 
   test("overlapAreaGroupMetrics - protection level", async () => {
-    const metricToLevel = (sketchMetric: Metric) => {
-      return sketchIdToGroupId[sketchMetric.sketchId!];
-    };
-
     const metrics = await overlapAreaGroupMetrics({
       metricId: "areaOverlap",
       groupIds: protectionLevels,
@@ -191,6 +195,90 @@ describe("overlapAreaGroupMetrics", () => {
         curLevelMetric.groupId === "Highly Protected Area" ||
         curLevelMetric.groupId === "Moderately Protected Area"
       ) {
+        expect(curLevelMetric.value).toBeGreaterThan(0);
+      } else {
+        expect(curLevelMetric.value).toBe(0);
+      }
+    });
+  });
+
+  test("function is present", () => {
+    expect(typeof overlapRasterGroupMetrics).toBe("function");
+  });
+
+  test("overlapRasterGroupMetrics", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 1],
+          [1, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+
+    const wholePoly: Sketch<Polygon> = {
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [2, 2],
+            [2, 20],
+            [20, 20],
+            [20, 2],
+            [2, 2],
+          ],
+        ],
+      },
+      properties: {
+        id: "62055aac9557604f3e5f6d3e",
+        name: "VitoriaNorth",
+        updatedAt: "2022-02-10T18:34:52.380Z",
+        createdAt: "2022-02-10T18:34:20.755Z",
+        sketchClassId: "5f46dd53017aa0388f5f87c5",
+        isCollection: false,
+        userAttributes: [],
+      },
+    };
+
+    const rasterMetrics = [
+      {
+        metricId: "rasterOverlap",
+        value: 4,
+        classId: "eez",
+        groupId: null,
+        geographyId: null,
+        sketchId: "62055aac9557604f3e5f6d3e",
+        extra: { sketchName: "VitoriaNorth" },
+      },
+    ];
+
+    const metrics = await overlapRasterGroupMetrics({
+      metricId: "rasterOverlap",
+      groupIds: protectionLevels,
+      sketch: wholePoly,
+      metricToGroup: metricToLevel,
+      metrics: rasterMetrics,
+      featuresByClass: { eez: raster },
+    });
+
+    // Test collection level metrics.  Expect one metric per protection level
+    expect(metrics.length).toEqual(protectionLevels.length);
+
+    // Only "High Protection" should have a value > 0
+    protectionLevels.forEach((level) => {
+      const curLevelMetrics = metrics.filter((m) => m.groupId === level);
+      expect(curLevelMetrics.length).toBe(1);
+      const curLevelMetric = curLevelMetrics[0];
+      if (curLevelMetric.groupId === "Highly Protected Area") {
         expect(curLevelMetric.value).toBeGreaterThan(0);
       } else {
         expect(curLevelMetric.value).toBe(0);

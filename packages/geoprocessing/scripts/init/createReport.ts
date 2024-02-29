@@ -4,8 +4,11 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 import camelcase from "camelcase";
-import { ExecutionMode, metricsSchema } from "../../src/types";
-import { GeoprocessingJsonConfig } from "../../src/types";
+import {
+  ExecutionMode,
+  metricGroupsSchema,
+  GeoprocessingJsonConfig,
+} from "../../src/types";
 import {
   getBlankComponentPath,
   getBlankFunctionPath,
@@ -64,7 +67,7 @@ const createReport = async () => {
     const rawMetrics = fs.readJSONSync(
       `${getProjectConfigPath("")}/metrics.json`
     );
-    const metrics = metricsSchema.parse(rawMetrics);
+    const metrics = metricGroupsSchema.parse(rawMetrics);
     const titleChoiceQuestion = {
       type: "list",
       name: "title",

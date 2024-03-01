@@ -19,7 +19,9 @@ import {
   getProjectFunctionPath,
 } from "../util/getPaths";
 
+// CLI questions
 const createReport = async () => {
+  // Report type, description, and execution mode
   const answers = await inquirer.prompt([
     {
       type: "list",
@@ -62,35 +64,33 @@ const createReport = async () => {
     },
   ]);
 
-  // Get title of report either from metrics.json or user input
+  // Title of report
   if (answers.type === "raster" || answers.type === "vector") {
+    // For raster and vector overlap reports, we need to know which metric group to report on
     const rawMetrics = fs.readJSONSync(
       `${getProjectConfigPath("")}/metrics.json`
     );
     const metrics = metricGroupsSchema.parse(rawMetrics);
+    const geoprocessingJson = JSON.parse(
+      fs.readFileSync("./geoprocessing.json").toString()
+    ) as GeoprocessingJsonConfig;
+    const gpFunctions = geoprocessingJson.geoprocessingFunctions || [];
+
+    // Only allow creation of reports for unused metric groups (prevents overwriting)
     const titleChoiceQuestion = {
       type: "list",
       name: "title",
       message: "Select the metric group to report on",
-      choices: metrics.map((metric) => metric.metricId),
+      choices: metrics
+        .map((metric) => metric.metricId)
+        .filter(
+          (metricId) => !gpFunctions.includes(`src/functions/${metricId}.ts`)
+        ),
     };
     const { title } = await inquirer.prompt([titleChoiceQuestion]);
     answers.title = title;
-
-    if (answers.type === "raster") {
-      const statQuestion = {
-        type: "list",
-        name: "stat",
-        message: "Statistic to calculate",
-        choices: ["sum", "count", "area"],
-      };
-      const { stat } = await inquirer.prompt([statQuestion]);
-      answers.stat = stat;
-    } else {
-      // Vector
-      answers.stat = "area";
-    }
-  } else if (answers.type === "blank") {
+  } else {
+    // User inputs title
     const titleQuestion = {
       type: "input",
       name: "title",
@@ -102,6 +102,21 @@ const createReport = async () => {
     };
     const { title } = await inquirer.prompt([titleQuestion]);
     answers.title = title;
+  }
+
+  // Stat to calculate
+  if (answers.type === "raster") {
+    const statQuestion = {
+      type: "list",
+      name: "stat",
+      message: "Statistic to calculate",
+      choices: ["sum", "count", "area"],
+    };
+    const { stat } = await inquirer.prompt([statQuestion]);
+    answers.stat = stat;
+  } else if (answers.type === "vector") {
+    // For vector overlap reports, use area stat
+    answers.stat = "area";
   }
 
   return answers;
@@ -153,6 +168,7 @@ export async function makeReport(
     fs.mkdirSync(path.join(basePath, "src", "components"));
   }
 
+  // Get defaults to replace
   const defaultFuncName =
     options.type === "raster"
       ? "rasterFunction"
@@ -176,6 +192,7 @@ export async function makeReport(
       : /BlankCard/g;
   const blankCompRegex = /BlankCard/g;
 
+  // Load code templates
   const funcCode = await fs.readFile(
     `${templateFuncPath}/${defaultFuncName}.ts`
   );
@@ -185,6 +202,7 @@ export async function makeReport(
   );
   const storiesComponentCode = await fs.readFile(templateCompStoriesPath);
 
+  // User inputs to replace defaults
   const funcName = options.title;
   const compName = funcName.charAt(0).toUpperCase() + funcName.slice(1);
 
@@ -262,7 +280,6 @@ export { createReport };
 interface ReportOptions {
   type: string;
   stat?: string;
-  sumProperty?: string;
   title: string;
   executionMode: ExecutionMode;
   description: string;

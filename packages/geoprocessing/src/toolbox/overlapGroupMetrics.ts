@@ -44,7 +44,7 @@ export async function overlapRasterGroupMetrics(options: {
   metricToGroup: (sketchMetric: Metric) => string;
   /** The metrics to group */
   metrics: Metric[];
-  /** Raster to overlap, keyed by class ID, use empty array if overlapArea operation */
+  /** Raster to overlap, keyed by class ID */
   featuresByClass: Record<string, Georaster>;
   /** only generate metrics for groups that sketches match to, rather than all */
   onlyPresentGroups?: boolean;

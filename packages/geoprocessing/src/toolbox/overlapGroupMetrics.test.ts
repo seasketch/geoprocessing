@@ -4,10 +4,12 @@
 
 import {
   overlapAreaGroupMetrics,
+  overlapFeaturesGroupMetrics,
   overlapRasterGroupMetrics,
 } from "./overlapGroupMetrics";
-import { SketchCollection, Polygon, Metric, Sketch } from "../types";
+import { SketchCollection, Polygon, Metric, Sketch, Feature } from "../types";
 import parseGeoraster from "georaster";
+import { toFeaturePolygonArray } from "../helpers";
 
 const sketch: SketchCollection<Polygon> = {
   type: "FeatureCollection",
@@ -200,6 +202,57 @@ describe("overlapAreaGroupMetrics", () => {
         expect(curLevelMetric.value).toBe(0);
       }
     });
+  });
+
+  test("function is present", () => {
+    expect(typeof overlapFeaturesGroupMetrics).toBe("function");
+  });
+
+  test("overlapFeaturesGroupMetrics", async () => {
+    const featMetrics: Metric[] = [
+      {
+        metricId: "test",
+        value: 46020431.777366,
+        classId: "world",
+        groupId: null,
+        geographyId: null,
+        sketchId: "62055aac9557604f3e5f6d3e",
+        extra: { sketchName: "VitoriaNorth" },
+      },
+      {
+        metricId: "test",
+        value: 10335615.29727,
+        classId: "world",
+        groupId: null,
+        geographyId: null,
+        sketchId: "62055ac19557604f3e5f6d43",
+        extra: { sketchName: "VitoriaSouth" },
+      },
+      {
+        metricId: "test",
+        value: 56356047.074636,
+        classId: "world",
+        groupId: null,
+        geographyId: null,
+        sketchId: "62055ac79557604f3e5f6d44",
+        extra: { sketchName: "Vitoria", isCollection: true },
+      },
+    ];
+    const features = toFeaturePolygonArray(sketch);
+    const featuresByClass: Record<string, Feature<Polygon>[]> = {
+      world: features as Feature<Polygon>[],
+    };
+
+    const metrics = await overlapFeaturesGroupMetrics({
+      metricId: "featuresOverlap",
+      groupIds: protectionLevels,
+      sketch,
+      metricToGroup: metricToLevel,
+      metrics: featMetrics,
+      featuresByClass: featuresByClass,
+    });
+
+    expect(metrics.length).toEqual(protectionLevels.length);
   });
 
   test("function is present", () => {

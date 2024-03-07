@@ -1,6 +1,6 @@
-import { getExampleFeatures, writeResultOutput } from ".";
-import { Feature } from "@turf/helpers";
-import { ValidationError } from "../../src";
+import { getExampleFeatures, writeResultOutput } from "./index.js";
+import { Feature } from "geojson";
+import { ValidationError } from "../../src/index.js";
 import booleanValid from "@turf/boolean-valid";
 
 /**

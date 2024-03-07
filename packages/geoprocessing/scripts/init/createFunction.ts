@@ -3,15 +3,15 @@ import ora from "ora";
 import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
-import { ExecutionMode, projectSchema } from "../../src/types";
+import { ExecutionMode, projectSchema } from "../../src/types/index.js";
 import camelcase from "camelcase";
-import { GeoprocessingJsonConfig } from "../../src/types";
+import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import {
   getBaseFunctionPath,
   getProjectFunctionPath,
   getProjectConfigPath,
   getBlankFunctionPath,
-} from "../util/getPaths";
+} from "../util/getPaths.js";
 
 async function createFunction() {
   const rawBasic = fs.readJSONSync(`${getProjectConfigPath("")}/basic.json`);

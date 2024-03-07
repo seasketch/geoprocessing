@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
-import { CircleProps, StyledCircle } from "../../components/Circle";
-import styled from "styled-components";
+import { CircleProps, StyledCircle } from "../../components/Circle.js";
+import { styled } from "styled-components";
 
 const StyledClassCircle = styled(StyledCircle)`
   border: 3px solid white;

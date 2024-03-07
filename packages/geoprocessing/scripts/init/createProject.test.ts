@@ -2,16 +2,20 @@
  * @group scripts/project
  */
 
-import path from "path";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import fs from "fs-extra";
-import { createProject } from "./createProject";
+import { createProject } from "./createProject.js";
 import {
   GeoprocessingJsonConfig,
   geographiesSchema,
   geographySchema,
   datasourcesSchema,
-} from "../../src/types";
-import { isVectorDatasource } from "../../src/datasources";
+} from "../../src/types/index.js";
+import { isVectorDatasource } from "../../src/datasources/index.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const rootPath = `${__dirname}/../__test__`;
 

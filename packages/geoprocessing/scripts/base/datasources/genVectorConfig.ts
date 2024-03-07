@@ -3,9 +3,9 @@ import {
   ImportVectorDatasourceOptions,
   ImportVectorDatasourceConfig,
   VectorDatasource,
-} from "../../../src/types";
-import { datasourceConfig } from "../../../src/datasources";
-import { ProjectClientBase, hasOwnProperty } from "../../../src";
+} from "../../../src/types/index.js";
+import { datasourceConfig } from "../../../src/datasources/index.js";
+import { ProjectClientBase, hasOwnProperty } from "../../../src/index.js";
 
 /** Takes vector import options or existing datasource and creates full import config */
 export function genVectorConfig<C extends ProjectClientBase>(

@@ -21,8 +21,8 @@ import {
   importVectorDatasourceOptionsSchema,
   rasterDatasourceSchema,
   RasterDatasource,
-} from "../types";
-import { DataClass } from "../types";
+} from "../types/index.js";
+import { DataClass } from "../types/index.js";
 import path from "path";
 
 /**

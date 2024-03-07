@@ -1,6 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { GeoprocessingProject } from "../types";
-import { Manifest } from "../../scripts/manifest";
+import { GeoprocessingProject } from "../types/index.js";
+import { Manifest } from "../../scripts/manifest.js";
 // @ts-ignore
 import manifestRaw from "./manifest.json";
 const manifest = manifestRaw as Manifest;
@@ -15,7 +15,7 @@ export const projectMetadata = async (
     ...projectInfo
   } = manifest;
   const uri = `https://${event.headers["Host"]}/prod/`;
-  const project: GeoprocessingProject = {
+  const project: Partial<GeoprocessingProject> = {
     ...projectInfo,
     ...(process.env.clientDistributionUrl
       ? {

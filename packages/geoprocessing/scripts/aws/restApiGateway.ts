@@ -1,5 +1,5 @@
 import { RestApi, Cors, LambdaIntegration } from "aws-cdk-lib/aws-apigateway";
-import { GeoprocessingStack } from "./GeoprocessingStack";
+import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import { RemovalPolicy } from "aws-cdk-lib";
 
 /**

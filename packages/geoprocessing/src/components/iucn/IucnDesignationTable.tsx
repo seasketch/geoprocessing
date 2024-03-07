@@ -1,9 +1,9 @@
 import React from "react";
-import { iucnCategoriesMap, IucnCategory } from "../../iucn";
-import { Table, Column } from "../table/Table";
-import { IucnLevelPill } from "./IucnLevelPill";
-import { Pill } from "../Pill";
-import { ReportTableStyled } from "../table/ReportTableStyled";
+import { iucnCategoriesMap, IucnCategory } from "../../iucn/index.js";
+import { Table, Column } from "../table/Table.js";
+import { IucnLevelPill } from "./IucnLevelPill.js";
+import { Pill } from "../Pill.js";
+import { ReportTableStyled } from "../table/ReportTableStyled.js";
 import { useTranslation } from "react-i18next";
 
 export const IucnDesignationTable = () => {

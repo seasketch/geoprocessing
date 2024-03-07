@@ -1,6 +1,6 @@
 import React from "react";
-import { ObjectiveStatus } from "./ObjectiveStatus";
-import { ReportDecorator, CardDecorator } from "./storybook";
+import { ObjectiveStatus } from "./ObjectiveStatus.js";
+import { ReportDecorator, CardDecorator } from "./storybook/index.js";
 
 export default {
   component: ObjectiveStatus,

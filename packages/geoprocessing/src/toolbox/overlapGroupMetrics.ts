@@ -5,7 +5,7 @@ import {
   MultiPolygon,
   SketchCollection,
   Metric,
-} from "../types";
+} from "../types/index.js";
 import {
   genSampleSketchCollection,
   keyBy,
@@ -13,13 +13,13 @@ import {
   isSketchCollection,
   groupBy,
   clip,
-} from "../helpers";
-import { createMetric } from "../metrics";
-import { overlapFeatures } from "./overlapFeatures";
-import { overlapArea } from "./overlapArea";
+} from "../helpers/index.js";
+import { createMetric } from "../metrics/index.js";
+import { overlapFeatures } from "./overlapFeatures.js";
+import { overlapArea } from "./overlapArea.js";
 import flatten from "@turf/flatten";
 import { featureCollection } from "@turf/helpers";
-import cloneDeep from "lodash/cloneDeep";
+import cloneDeep from "lodash/cloneDeep.js";
 
 type OverlapGroupOperation = (
   metricId: string,

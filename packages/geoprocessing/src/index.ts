@@ -5,16 +5,16 @@
  * @packageDocumentation
  */
 
-export * from "./aws";
-export * from "./datasources";
-export * from "./helpers";
-export * from "./iucn";
-export * from "./metrics";
-export * from "./rbcs";
-export * from "./toolbox";
-export * from "./types";
-export * from "./testing";
-export * from "./project";
-export * from "./util";
+export * from "./aws/index.js";
+export * from "./datasources/index.js";
+export * from "./helpers/index.js";
+export * from "./iucn/index.js";
+export * from "./metrics/index.js";
+export * from "./rbcs/index.js";
+export * from "./toolbox/index.js";
+export * from "./types/index.js";
+export * from "./testing/index.js";
+export * from "./project/index.js";
+export * from "./util/index.js";
 
 export { default as version } from "../package.json";

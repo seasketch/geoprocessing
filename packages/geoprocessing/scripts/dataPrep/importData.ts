@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import { importDatasource, readDatasources } from "../base/datasources";
+import { importDatasource, readDatasources } from "../base/datasources/index.js";
 import {
   datasourceFormatDescriptions,
   importVectorDatasourceOptionsSchema,
@@ -8,11 +8,11 @@ import {
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
   datasourceConfig,
-} from "../../src";
+} from "../../src/index.js";
 import path from "path";
-import { getProjectClient } from "../base/project/projectClient";
-import { precalcQuestion } from "./precalcQuestion";
-import { explodeQuestion } from "./explodeQuestion";
+import { getProjectClient } from "../base/project/projectClient.js";
+import { precalcQuestion } from "./precalcQuestion.js";
+import { explodeQuestion } from "./explodeQuestion.js";
 
 // This is a standalone script used as a CLI command with a top-level function
 

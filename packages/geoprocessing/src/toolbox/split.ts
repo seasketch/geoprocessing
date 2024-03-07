@@ -1,13 +1,14 @@
 import bbox from "@turf/bbox";
 import {
+  Geometry,
   Feature,
   FeatureCollection,
   MultiPolygon,
   Polygon,
   Sketch,
   SketchCollection,
-} from "../types";
-import { cleanCoords } from "./cleanCoords";
+} from "../types/index.js";
+import { cleanCoords } from "./cleanCoords.js";
 import splitGeojson from "geojson-antimeridian-cut";
 
 /**
@@ -15,7 +16,9 @@ import splitGeojson from "geojson-antimeridian-cut";
  * @param feature
  * @returns
  */
-export function splitFeatureAntimeridian<G = Polygon | MultiPolygon>(
+export function splitFeatureAntimeridian<
+  G extends Geometry = Polygon | MultiPolygon
+>(
   feature: Feature<G> | FeatureCollection<G>
 ): Feature<Polygon | MultiPolygon> | FeatureCollection<Polygon | MultiPolygon> {
   // Ensure coordinate positions are within -180 to 180 longitude, -90 to 90 latitude

@@ -1,8 +1,14 @@
-import { Polygon, Histogram } from "../../types";
-import { Feature, MultiPolygon, FeatureCollection, BBox } from "@turf/helpers";
+import {
+  Polygon,
+  Histogram,
+  Feature,
+  MultiPolygon,
+  FeatureCollection,
+  BBox,
+} from "../../types/index.js";
 import geoblaze, { Georaster } from "geoblaze";
 import reprojectGeoJSONPlugable from "reproject-geojson/pluggable.js";
-import proj4 from "../proj4";
+import proj4 from "../proj4.js";
 import { reproject } from "bbox-fns";
 
 export const defaultStatValues = {

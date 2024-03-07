@@ -1,9 +1,14 @@
-import { Sketch, SketchCollection, Polygon, Metric } from "../types";
-import { isSketchCollection, roundDecimal } from "../helpers";
-import { createMetric } from "../metrics";
+import {
+  Sketch,
+  SketchCollection,
+  Polygon,
+  Metric,
+  MultiPolygon,
+} from "../types/index.js";
+import { isSketchCollection, roundDecimal } from "../helpers/index.js";
+import { createMetric } from "../metrics/index.js";
 import { featureEach } from "@turf/meta";
-import { MultiPolygon } from "@turf/helpers";
-import { getSum } from "./geoblaze";
+import { getSum } from "./geoblaze/index.js";
 
 // @ts-ignore
 import { Georaster } from "geoblaze";

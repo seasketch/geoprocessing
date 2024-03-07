@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import { styled, keyframes } from "styled-components";
 
 const fill = keyframes`
   0% {
@@ -13,7 +13,7 @@ interface Props {
   duration: number;
 }
 
-export const ProgressBar = styled.div`
+export const ProgressBar = styled.div<Props>`
   background: #ddd;
   height: 4px;
   background: linear-gradient(90deg, #ddd 50%, white 50%);
@@ -22,7 +22,7 @@ export const ProgressBar = styled.div`
   animation: ${fill} linear;
   animation-iteration-count: once;
   /* animation-timing-function: ease-in-out; */
-  animation-duration: ${(props: Props) => props.duration + "s"};
+  animation-duration: ${(props) => props.duration + "s"};
   position: relative;
 `;
 

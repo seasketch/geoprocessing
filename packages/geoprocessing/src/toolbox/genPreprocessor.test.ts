@@ -4,10 +4,10 @@
  */
 
 import area from "@turf/area";
-import project from "../testing/project";
-import { genClipLoader } from "../dataproviders";
-import { Sketch } from "../types";
-import { genPreprocessor } from "./genPreprocessor";
+import project from "../testing/project/index.js";
+import { genClipLoader } from "../dataproviders/index.js";
+import { Sketch } from "../types/index.js";
+import { genPreprocessor } from "./genPreprocessor.js";
 
 // import micronesia eez from global subdivided
 describe("genPreprocessor", () => {

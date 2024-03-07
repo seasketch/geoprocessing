@@ -1,9 +1,12 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
-import path from "path";
 import util from "util";
-import { GeoprocessingJsonConfig, Package } from "../../src/types";
+import { GeoprocessingJsonConfig, Package } from "../../src/types/index.js";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const exec = util.promisify(require("child_process").exec);
 
 export interface TemplateMetadata {

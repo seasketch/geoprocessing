@@ -1,5 +1,5 @@
 import path from "path";
-import { GeoprocessingStack } from "./GeoprocessingStack";
+import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import { RemovalPolicy, Duration } from "aws-cdk-lib";
 import { Bucket, BlockPublicAccess } from "aws-cdk-lib/aws-s3";
 import {

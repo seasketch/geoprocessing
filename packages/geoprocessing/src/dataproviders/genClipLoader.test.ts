@@ -3,8 +3,8 @@
  * @group unit
  */
 
-import project from "../testing/project";
-import { genClipLoader } from "./genClipLoader";
+import project from "../testing/project/index.js";
+import { genClipLoader } from "./genClipLoader.js";
 
 // import micronesia eez from global subdivided
 describe("genClipLoader", () => {

@@ -3,17 +3,17 @@
  * @group unit
  */
 
-import { SketchCollection, NullSketchCollection } from "../types";
+import { SketchCollection, NullSketchCollection } from "../types/index.js";
 import {
   includeVirtualSketch,
   isTruthyAttributeValue,
-} from "./includeVirtualSketch";
+} from "./includeVirtualSketch.js";
 import {
   getUserAttribute,
   isSketchCollection,
   genSketch,
   genSketchCollection,
-} from "./sketch";
+} from "./sketch.js";
 import { polygon } from "@turf/helpers";
 
 describe("isTrueAttributeValue", () => {

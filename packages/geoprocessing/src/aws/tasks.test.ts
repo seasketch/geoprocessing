@@ -1,5 +1,5 @@
-import { createMetric, isMetricArray, isMetricPack } from "../metrics";
-import TaskModel from "./tasks";
+import { createMetric, isMetricArray, isMetricPack } from "../metrics/helpers.js";
+import TaskModel from "./tasks.js";
 import { DynamoDB } from "aws-sdk";
 import deepEqual from "fast-deep-equal";
 

@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
-import { geographiesSchema, Geographies } from "../../../src/types";
-import { geographyConfig } from "../../../src/geographies/config";
+import { geographiesSchema, Geographies } from "../../../src/types/index.js";
+import { geographyConfig } from "../../../src/geographies/config.js";
 
 /**
  * Manage geographies for a geoprocessing project

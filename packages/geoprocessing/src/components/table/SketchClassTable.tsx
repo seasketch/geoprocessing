@@ -1,11 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { percentWithEdge } from "../../helpers";
-import { MetricGroup } from "../../types";
-import { Column, Table } from "./Table";
+import { percentWithEdge } from "../../helpers/index.js";
+import { MetricGroup } from "../../types/index.js";
+import { Column, Table } from "./Table.js";
 
-import styled from "styled-components";
-import { SmallReportTableStyled } from "./SmallReportTableStyled";
+import { styled } from "styled-components";
+import { SmallReportTableStyled } from "./SmallReportTableStyled.js";
 
 /**
  * Style component for SketchClassTable

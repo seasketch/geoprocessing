@@ -4,17 +4,17 @@ import {
   SeaSketchReportingVisibleLayersChangeEvent,
   SeaSketchReportingToggleLayerVisibilityEvent,
   SeaSketchReportingToggleLanguageEvent,
-} from "../types/service";
+} from "../types/service.js";
 
-import { SketchProperties } from "../types/sketch";
-import { ReportContext } from "../context";
+import { SketchProperties } from "../types/sketch.js";
+import { ReportContext } from "../context/index.js";
 import ReactDOM from "react-dom";
 import {
   seaSketchReportingMessageEventType,
   seaSketchReportingVisibleLayersChangeEvent,
   seaSketchReportingLanguageChangeEvent,
-} from "../helpers/service";
-import { ReportTextDirection } from "./i18n/ReportTextDirection";
+} from "../helpers/service.js";
+import { ReportTextDirection } from "./i18n/ReportTextDirection.js";
 
 const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);

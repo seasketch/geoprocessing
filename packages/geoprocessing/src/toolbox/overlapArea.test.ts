@@ -2,12 +2,12 @@
  * @group unit
  */
 
-import { firstMatchingMetric } from "../metrics";
-import { overlapArea, overlapSubarea } from "./overlapArea";
+import { firstMatchingMetric } from "../metrics/index.js";
+import { overlapArea, overlapSubarea } from "./overlapArea.js";
 import area from "@turf/area";
-import fix from "../testing/fixtures/squareSketches";
-import { testWithinPerc } from "../testing";
-import { ValidationError } from "../types";
+import fix from "../testing/fixtures/squareSketches.js";
+import { testWithinPerc } from "../testing/index.js";
+import { ValidationError } from "../types/index.js";
 
 describe("overlapArea", () => {
   test("function is present", () => {

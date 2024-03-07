@@ -1,6 +1,6 @@
 import { S3 } from "aws-sdk";
 import fs from "fs";
-import { Manifest } from "../manifest";
+import { Manifest } from "../manifest.js";
 import path from "path";
 
 const PROJECT_PATH = process.env.PROJECT_PATH;

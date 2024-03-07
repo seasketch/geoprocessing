@@ -1,5 +1,5 @@
-import ProjectClientBase from "./ProjectClientBase";
-import configFixtures from "../../src/testing/fixtures/projectConfig";
+import ProjectClientBase from "./ProjectClientBase.js";
+import configFixtures from "../../src/testing/fixtures/projectConfig.js";
 
 describe("ProjectClientBase", () => {
   test("ProjectClientBase should accept and return config", async () => {

@@ -1,7 +1,12 @@
-const fs = require("fs-extra");
-const path = require("path");
+import fs from 'fs-extra'
 import { $ } from "zx";
-import { TemplateType } from "../template";
+import { TemplateType } from "../template/index.js";
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+console.log('dirname', __dirname)
+
 $.verbose = false;
 
 const packagesPath = path.join(__dirname, "..", "..", "..");
@@ -16,6 +21,7 @@ const distPath = path.join(__dirname, "..", "..", "dist");
  * Copy assets to dist for project use. e.g. project start-storybook looks for img assets in dist
  */
 async function bundleAssets() {
+
   const assetsPath = path.join(__dirname, "..", "..", "src", "assets");
   const distAssetsPath = path.join(distPath, "src", "assets");
 

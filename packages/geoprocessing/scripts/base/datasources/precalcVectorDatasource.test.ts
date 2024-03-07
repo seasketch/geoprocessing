@@ -10,13 +10,13 @@ import {
   firstMatchingMetric,
   metricsSchema,
   isInternalVectorDatasource,
-} from "../../../src";
-import configFixtures from "../../../src/testing/fixtures/projectConfig";
+} from "../../../src/index.js";
+import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
 import fs from "fs-extra";
 import path from "path";
-import { precalcDatasources } from "./precalcDatasources";
-import { importDatasource } from "./importDatasource";
-import { writeGeographies } from "../geographies/geographies";
+import { precalcDatasources } from "./precalcDatasources.js";
+import { importDatasource } from "./importDatasource.js";
+import { writeGeographies } from "../geographies/geographies.js";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";

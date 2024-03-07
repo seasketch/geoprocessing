@@ -3,7 +3,7 @@
  * @group unit
  */
 
-import { roundDecimal } from "./number";
+import { roundDecimal } from "./number.js";
 
 describe("number", () => {
   test("number - roundDecimal with 6 digit precision", () => {

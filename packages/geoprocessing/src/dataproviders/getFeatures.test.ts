@@ -3,11 +3,8 @@
  * @group unit
  */
 
-import { getFeatures } from "./getFeatures";
-import project from "../testing/project";
-import { toJsonFile } from "../helpers";
-import { featureCollection } from "@turf/helpers";
-import { ExternalVectorDatasource } from "../types";
+import { getFeatures } from "./getFeatures.js";
+import project from "../testing/project/index.js";
 
 // import micronesia eez from global subdivided
 describe("getFeatures", () => {

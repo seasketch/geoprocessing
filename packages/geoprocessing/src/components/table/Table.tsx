@@ -1,9 +1,10 @@
 import React, { ReactElement, useMemo, ReactNode } from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
-import styled from "styled-components";
-import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
-import DataDownload, { DataDownloadProps } from "../DataDownload";
-import Toolbar from "../Toolbar";
+import { styled } from "styled-components";
+import { ChevronLeft } from "@styled-icons/bootstrap/ChevronLeft/ChevronLeft.esm.js";
+import { ChevronRight } from "@styled-icons/bootstrap/ChevronRight/ChevronRight.esm.js";
+import DataDownload, { DataDownloadProps } from "../DataDownload.js";
+import Toolbar from "../Toolbar.js";
 
 import { TableOptions } from "react-table";
 

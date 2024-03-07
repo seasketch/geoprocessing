@@ -3,9 +3,9 @@
  * @group scripts/e2e
  */
 
-import { Metric, ProjectClientBase } from "../../../src";
-import { precalcCleanup } from "./precalcCleanup";
-import configFixtures from "../../../src/testing/fixtures/projectConfig";
+import { Metric, ProjectClientBase } from "../../../src/index.js";
+import { precalcCleanup } from "./precalcCleanup.js";
+import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
 
 describe("precalcCleanup", () => {
   test("precalcCleanup - should not drop", () => {

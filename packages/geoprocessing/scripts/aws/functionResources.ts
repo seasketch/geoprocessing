@@ -1,4 +1,4 @@
-import { GeoprocessingStack } from "./GeoprocessingStack";
+import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import { Duration } from "aws-cdk-lib";
 import { Function, Code } from "aws-cdk-lib/aws-lambda";
 import {
@@ -7,19 +7,19 @@ import {
   Role,
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
-import { SyncFunctionWithMeta, AsyncFunctionWithMeta } from "./types";
+import { SyncFunctionWithMeta, AsyncFunctionWithMeta } from "./types.js";
 import {
   ProcessingFunctionMetadata,
   GeoprocessingFunctionMetadata,
-} from "../manifest";
+} from "../manifest.js";
 
-import config from "./config";
+import config from "./config.js";
 import {
   GpProjectFunctions,
   GpSocketFunctions,
   GpDynamoTables,
   GpPublicBuckets,
-} from "./types";
+} from "./types.js";
 
 export interface CreateFunctionOptions {
   clientDistributionUrl?: string;

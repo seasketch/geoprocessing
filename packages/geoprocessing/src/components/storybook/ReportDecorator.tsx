@@ -1,6 +1,6 @@
 import React from "react";
-import { ReportContextValue } from "../../context";
-import { ReportStoryLayout } from "./ReportStoryLayout";
+import { ReportContextValue } from "../../context/index.js";
+import { ReportStoryLayout } from "./ReportStoryLayout.js";
 
 /**
  * Decorator that renders a story into ReportStoryLayout.

@@ -5,9 +5,9 @@ import fuzzy from "fuzzy-tools";
 import autocomplete from "inquirer-autocomplete-prompt";
 import awsRegions from "aws-regions";
 import util from "util";
-import { getTemplateQuestion } from "../template/addTemplate";
-import { createProject, CreateProjectMetadata } from "./createProject";
-import { eezColl } from "../global/datasources/mr-eez";
+import { getTemplateQuestion } from "../template/addTemplate.js";
+import { createProject, CreateProjectMetadata } from "./createProject.js";
+import { eezColl } from "../global/datasources/mr-eez.js";
 
 const exec = util.promisify(require("child_process").exec);
 

@@ -2,9 +2,9 @@
  * @group unit
  */
 
-import { cleanCoords } from "./cleanCoords";
+import { cleanCoords } from "./cleanCoords.js";
 import { feature, featureCollection } from "@turf/helpers";
-import { Feature, Polygon } from "../types";
+import { Feature, Polygon } from "../types/index.js";
 
 describe("cleanCoords", () => {
   test("cleanCoords Polygon", async () => {

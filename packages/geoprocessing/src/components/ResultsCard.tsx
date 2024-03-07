@@ -1,12 +1,12 @@
 import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import Card, { CardProps } from "./Card";
-import { useFunction } from "../hooks/useFunction";
-import styled from "styled-components";
-import Skeleton from "./Skeleton";
-import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
-import { ReportError } from "./ReportError";
-import { GeoprocessingRequestParams } from "../types";
+import Card, { CardProps } from "./Card.js";
+import { useFunction } from "../hooks/useFunction.js";
+import { styled } from "styled-components";
+import Skeleton from "./Skeleton.js";
+import { ProgressBar, ProgressBarWrapper } from "./ProgressBar.js";
+import { ReportError } from "./ReportError.js";
+import { GeoprocessingRequestParams } from "../types/index.js";
 
 export interface ResultsCardProps<T> extends CardProps {
   functionName: string;

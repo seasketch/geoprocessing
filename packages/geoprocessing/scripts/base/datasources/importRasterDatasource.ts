@@ -5,13 +5,13 @@ import {
   InternalRasterDatasource,
   ImportRasterDatasourceOptions,
   ImportRasterDatasourceConfig,
-} from "../../../src/types";
-import { getDatasetBucketName } from "../../../src/datasources";
-import { genRasterConfig } from "./genRasterConfig";
-import { createOrUpdateDatasource } from "./datasources";
-import { publishDatasource } from "./publishDatasource";
+} from "../../../src/types/index.js";
+import { getDatasetBucketName } from "../../../src/datasources/index.js";
+import { genRasterConfig } from "./genRasterConfig.js";
+import { createOrUpdateDatasource } from "./datasources.js";
+import { publishDatasource } from "./publishDatasource.js";
 
-import ProjectClientBase from "../../../src/project/ProjectClientBase";
+import ProjectClientBase from "../../../src/project/ProjectClientBase.js";
 
 export async function importRasterDatasource<C extends ProjectClientBase>(
   projectClient: C,

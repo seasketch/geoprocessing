@@ -1,8 +1,8 @@
 import React from "react";
-import { Geography } from "../types";
-import { GeographySwitcher } from "./GeographySwitcher";
-import Translator from "./i18n/TranslatorAsync";
-import { createReportDecorator } from "./storybook/ReportDecorator";
+import { Geography } from "../types/index.js";
+import { GeographySwitcher } from "./GeographySwitcher.js";
+import Translator from "./i18n/TranslatorAsync.js";
+import { createReportDecorator } from "./storybook/ReportDecorator.js";
 
 export default {
   component: GeographySwitcher,

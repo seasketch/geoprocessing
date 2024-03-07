@@ -2,18 +2,17 @@
  * @group unit
  */
 
-import { splitFeatureAntimeridian, splitSketchAntimeridian } from "./split";
+import { splitFeatureAntimeridian, splitSketchAntimeridian } from "./split.js";
 import { feature } from "@turf/helpers";
-import { Feature, Polygon, Sketch } from "../types";
-import { toFeaturePolygonArray, toJsonFile, toSketchArray } from "../helpers";
+import { Feature, Polygon, Sketch } from "../types/index.js";
+import { toFeaturePolygonArray, toJsonFile, toSketchArray } from "../helpers/index.js";
 import {
   genSampleSketch,
   genSampleSketchCollectionFromSketches,
   isSketch,
   isSketchCollection,
-} from "../helpers/sketch";
+} from "../helpers/sketch.js";
 import deepEqual from "fast-deep-equal";
-import bboxPolygon from "@turf/bbox-polygon";
 
 describe("splitFeature", () => {
   test("splitFeature Polygon antimeridian", async () => {

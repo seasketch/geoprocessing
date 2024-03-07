@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { render, act as domAct } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import { useFunction } from "./useFunction";
-import { ReportContext, ReportContextValue } from "../context";
+import { useFunction } from "./useFunction.js";
+import { ReportContext, ReportContextValue } from "../context/index.js";
 import { v4 as uuid } from "uuid";
-import { SketchProperties } from "../types";
-import { GeoprocessingTaskStatus, GeoprocessingTask } from "../aws/tasks";
+import { SketchProperties } from "../types/index.js";
+import { GeoprocessingTaskStatus, GeoprocessingTask } from "../aws/tasks.js";
 import { renderHook, act } from "@testing-library/react-hooks";
 
 // @ts-ignore

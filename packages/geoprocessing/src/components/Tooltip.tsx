@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 import { usePopper } from "react-popper";
 import popper from "@popperjs/core";
 

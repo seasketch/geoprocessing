@@ -1,16 +1,13 @@
-import { GeoprocessingStack } from "./GeoprocessingStack";
+import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import { WebSocketApi, WebSocketStage } from "@aws-cdk/aws-apigatewayv2-alpha";
 import { WebSocketLambdaIntegration } from "@aws-cdk/aws-apigatewayv2-integrations-alpha";
-import { RemovalPolicy, Stack } from "aws-cdk-lib";
-import { CfnAccount } from "aws-cdk-lib/aws-apigateway";
-import config from "./config";
-import { CfnIntegration, CfnStage } from "aws-cdk-lib/aws-apigatewayv2";
+import { Stack } from "aws-cdk-lib";
+import config from "./config.js";
+import { CfnStage } from "aws-cdk-lib/aws-apigatewayv2";
 import {
   PolicyStatement,
   Effect,
   ServicePrincipal,
-  Role,
-  ManagedPolicy,
 } from "aws-cdk-lib/aws-iam";
 import { Function } from "aws-cdk-lib/aws-lambda";
 

@@ -1,6 +1,6 @@
 import { Point, Polygon, Feature, BBox } from "geojson";
-import { Georaster } from "./georaster";
-import { Nullable } from "./base";
+import { Georaster } from "./georaster.js";
+import { Nullable } from "./base.js";
 
 type GeoblazeBBox = {
   xmin: number;

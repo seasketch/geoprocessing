@@ -6,8 +6,8 @@ import {
   fullColor,
   highColor,
   IucnActivityRankId,
-} from "../../iucn";
-import styled from "styled-components";
+} from "../../iucn/index.js";
+import { styled } from "styled-components";
 import { useTranslation } from "react-i18next";
 
 const MatrixStyled = styled.div`

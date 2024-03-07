@@ -1,4 +1,4 @@
-import { ISO8601DateTime } from "./base";
+import { ISO8601DateTime } from "./base.js";
 import {
   Polygon,
   MultiPolygon,
@@ -7,7 +7,7 @@ import {
   Feature,
   BBox,
   FeatureCollection,
-} from "./geojson";
+} from "./geojson.js";
 
 export type SketchGeometryTypes = Polygon | MultiPolygon | LineString | Point;
 

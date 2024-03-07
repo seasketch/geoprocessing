@@ -1,5 +1,9 @@
 // copied and modified from create-react-app
 // https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/scripts/test.js
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default function () {
   // Do this as the first thing so that any code reading it knows the right env.

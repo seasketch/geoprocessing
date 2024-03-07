@@ -1,6 +1,6 @@
-import { precalcCleanup } from "../base/datasources/";
-import { getProjectClient } from "../base/project/projectClient";
-import { writePrecalcMetrics } from "../base/datasources/precalc";
+import { precalcCleanup } from "../base/datasources/index.js";
+import { getProjectClient } from "../base/project/projectClient.js";
+import { writePrecalcMetrics } from "../base/datasources/precalc.js";
 
 // This is a standalone script used as a CLI command with a top-level function
 

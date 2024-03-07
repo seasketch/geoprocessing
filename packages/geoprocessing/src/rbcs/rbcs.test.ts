@@ -2,8 +2,8 @@
  * @group unit
  */
 
-import { classifyZone, rbcsConstants, classifyMPA } from "./rbcs";
-import { Zone } from "./types";
+import { classifyZone, rbcsConstants, classifyMPA } from "./rbcs.js";
+import { Zone } from "./types.js";
 
 const gearTypes = rbcsConstants.GEAR_TYPES;
 const aquaculture = rbcsConstants.AQUACULTURE_AND_BOTTOM_EXPLOITATION;

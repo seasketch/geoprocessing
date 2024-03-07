@@ -1,5 +1,5 @@
-import { JSONValue, jsonSchema } from "./base";
-import { MetricProperties } from "../metrics/helpers";
+import { JSONValue, jsonSchema } from "./base.js";
+import { MetricProperties } from "../metrics/helpers.js";
 import { z } from "zod";
 
 /** Dimensions used in Metric */

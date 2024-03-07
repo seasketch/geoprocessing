@@ -6,15 +6,15 @@ import {
   FeatureCollection,
   Polygon,
   MultiPolygon,
-} from "../../../src/types";
+} from "../../../src/types/index.js";
 import {
   isInternalVectorDatasource,
   isInternalRasterDatasource,
   datasourceConfig,
   getJsonPath,
-} from "../../../src/datasources";
-import { isFeatureCollection } from "../../../src";
-import { globalDatasources } from "../../../src/datasources/global";
+} from "../../../src/datasources/index.js";
+import { isFeatureCollection } from "../../../src/index.js";
+import { globalDatasources } from "../../../src/datasources/global.js";
 
 /**
  * Manage datasources for a geoprocessing project

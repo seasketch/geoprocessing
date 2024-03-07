@@ -10,8 +10,8 @@ import {
   hasClients,
   getSyncFunctionMetadata,
   getAsyncFunctionMetadata,
-} from "./manifest";
-import createTestProjectManifest from "./testing/createTestProjectManifest";
+} from "./manifest.js";
+import createTestProjectManifest from "./testing/createTestProjectManifest.js";
 
 describe("manifest helpers", () => {
   test("manifest has no clients", async () => {

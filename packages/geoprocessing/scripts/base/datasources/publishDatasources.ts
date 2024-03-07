@@ -1,20 +1,20 @@
-import { readDatasources } from "./datasources";
+import { readDatasources } from "./datasources.js";
 import {
   Datasource,
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
   ImportVectorDatasourceOptions,
   importVectorDatasourceOptionsSchema,
-} from "../../../src/types";
+} from "../../../src/types/index.js";
 import {
   isInternalRasterDatasource,
   isInternalVectorDatasource,
   getDatasetBucketName,
-} from "../../../src/datasources";
-import { genVectorConfig } from "./genVectorConfig";
-import { genRasterConfig } from "./genRasterConfig";
-import ProjectClientBase from "../../../src/project/ProjectClientBase";
-import { publishDatasource } from "./publishDatasource";
+} from "../../../src/datasources/index.js";
+import { genVectorConfig } from "./genVectorConfig.js";
+import { genRasterConfig } from "./genRasterConfig.js";
+import ProjectClientBase from "../../../src/project/ProjectClientBase.js";
+import { publishDatasource } from "./publishDatasource.js";
 
 /**
  * Import a dataset into the project.  Must be a src file that OGR or GDAL can read.

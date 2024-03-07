@@ -1,9 +1,9 @@
 import React from "react";
-import SketchAttributesCard from "./SketchAttributesCard";
-import { sampleSketchReportContextValue } from "../context";
-import Translator from "./i18n/TranslatorAsync";
-import ReportDecorator from "./storybook/ReportDecorator";
-import { ReportContext } from "../context/ReportContext";
+import SketchAttributesCard from "./SketchAttributesCard.js";
+import { sampleSketchReportContextValue } from "../context/index.js";
+import Translator from "./i18n/TranslatorAsync.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
+import { ReportContext } from "../context/ReportContext.js";
 
 const mappings = {
   ACTIVITIES: {

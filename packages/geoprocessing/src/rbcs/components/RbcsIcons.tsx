@@ -1,8 +1,8 @@
 import React from "react";
-import { PointyCircle, TwoColorPointyCircle } from "./PointyCircle";
-import { getIndexIconPerc } from "../helpers";
-import { roundDecimal } from "../../helpers";
-import { rbcsScores } from "../rbcs";
+import { PointyCircle, TwoColorPointyCircle } from "./PointyCircle.js";
+import { getIndexIconPerc } from "../helpers.js";
+import { roundDecimal } from "../../helpers/index.js";
+import { rbcsScores } from "../rbcs.js";
 
 export interface RbcsIconProps {
   value: number;

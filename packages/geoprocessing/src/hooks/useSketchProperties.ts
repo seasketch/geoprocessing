@@ -1,6 +1,6 @@
-import { SketchProperties, UserAttribute } from "../types";
+import { SketchProperties, UserAttribute } from "../types/index.js";
 import { useContext } from "react";
-import { ReportContext } from "../context";
+import { ReportContext } from "../context/index.js";
 
 function useSketchProperties(): [
   SketchProperties,

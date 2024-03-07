@@ -1,4 +1,4 @@
-import { SupportedFormats } from "../types";
+import { SupportedFormats } from "../types/index.js";
 
 const vectorFormats: SupportedFormats[] = ["fgb", "json", "subdivided"];
 const importSupportedVectorFormats: SupportedFormats[] = ["fgb", "json"];

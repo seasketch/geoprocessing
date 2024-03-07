@@ -1,6 +1,7 @@
 import { randomPolygon } from "@turf/random";
 import { featureReduce } from "@turf/meta";
-import { BBox, featureCollection, Polygon } from "@turf/helpers";
+import { featureCollection } from "@turf/helpers";
+import { BBox, Polygon } from "../types/geojson.js";
 
 /**
  * Generates random polygons within provided bounds.  numPolygons defaults to 300, max_radial_length to 0.5

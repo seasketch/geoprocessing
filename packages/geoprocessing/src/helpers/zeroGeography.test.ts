@@ -3,8 +3,8 @@
  * @group unit
  */
 
-import { zeroSketchCollection } from "./zeroGeometry";
-import sk from "../testing/fixtures/sketches";
+import { zeroSketchCollection } from "./zeroGeometry.js";
+import sk from "../testing/fixtures/sketches.js";
 
 describe("zero polygon", () => {
   test("zeroSketch", () => {

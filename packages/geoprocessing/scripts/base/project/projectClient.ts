@@ -1,4 +1,4 @@
-import { ProjectClientBase } from "../../../src/project";
+import { ProjectClientBase } from "../../../src/project/index.js";
 import fs from "fs-extra";
 import path from "path";
 

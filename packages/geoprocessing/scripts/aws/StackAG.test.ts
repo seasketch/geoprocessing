@@ -3,12 +3,15 @@
  */
 
 import { App } from "aws-cdk-lib";
-import path from "path";
 import "@aws-cdk/assert/jest";
-import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack";
-import config from "./config";
-import createTestProjectManifest from "../testing/createTestProjectManifest";
-import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle";
+import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
+import config from "./config.js";
+import createTestProjectManifest from "../testing/createTestProjectManifest.js";
+import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const rootPath = `${__dirname}/../__test__`;
 const projectName = "async-geoprocessor-only";

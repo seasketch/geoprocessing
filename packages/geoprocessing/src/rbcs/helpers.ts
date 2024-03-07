@@ -1,4 +1,4 @@
-import { MpaClassification, Zone } from "./types";
+import { MpaClassification, Zone } from "./types.js";
 import {
   rbcsMpaProtectionLevels,
   rbcsScores,
@@ -6,7 +6,7 @@ import {
   classifyMPA,
   RegBasedClassificationMetric,
   RbcsMpaProtectionLevel,
-} from ".";
+} from "./index.js";
 
 import {
   Sketch,
@@ -14,7 +14,7 @@ import {
   NullSketch,
   NullSketchCollection,
   Metric,
-} from "../types";
+} from "../types/index.js";
 import {
   isSketchCollection,
   isNullSketchCollection,
@@ -23,8 +23,8 @@ import {
   getUserAttribute,
   keyBy,
   getSketchFeatures,
-} from "../helpers";
-import { createMetric } from "../metrics";
+} from "../helpers/index.js";
+import { createMetric } from "../metrics/index.js";
 
 /**
  * Type guard for checking string is one of supported objective IDs

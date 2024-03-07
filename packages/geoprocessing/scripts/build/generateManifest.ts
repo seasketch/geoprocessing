@@ -1,8 +1,8 @@
-import { Manifest } from "../manifest";
-import { PreprocessingBundle, GeoprocessingBundle } from "../types";
-import { GeoprocessingJsonConfig } from "../../src/types";
-import slugify from "slugify";
-import { Package } from "../../src/types";
+import { Manifest } from "../manifest.js";
+import { PreprocessingBundle, GeoprocessingBundle } from "../types.js";
+import { GeoprocessingJsonConfig } from "../../src/types/index.js";
+import slugify from "../../src/util/slugify.js"
+import { Package } from "../../src/types/index.js";
 
 /**
  * Compiles project assets into a single Manifest

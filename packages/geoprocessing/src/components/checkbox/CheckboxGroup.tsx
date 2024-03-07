@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
-import styled from "styled-components";
-import { Checkbox } from "./types";
+import { styled } from "styled-components";
+import { Checkbox } from "./types.js";
 
 const CheckboxStyled = styled.input`
   margin: 3px 10px;

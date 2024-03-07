@@ -1,6 +1,10 @@
 #!/usr/bin/env node
-import runTests from "./testing/runner";
+import runTests from "./testing/runner.js";
 import { spawn } from "child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 if (process.argv.length < 3) {
   throw new Error("Missing command");

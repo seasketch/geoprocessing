@@ -1,4 +1,4 @@
-import { percentWithEdge, roundDecimal } from "../helpers";
+import { percentWithEdge, roundDecimal } from "../helpers/index.js";
 
 const NumberFormatter = new Intl.NumberFormat("en", { style: "decimal" });
 

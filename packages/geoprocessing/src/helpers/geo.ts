@@ -6,7 +6,7 @@ import {
   LineString,
   Point,
   FeatureCollection,
-} from "../types/geojson";
+} from "../types/geojson.js";
 
 /**
  * Check if object is a Feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Feature

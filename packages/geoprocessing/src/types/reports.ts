@@ -1,4 +1,4 @@
-import { Metric, MetricGroup, NullSketch, NullSketchCollection } from ".";
+import { Metric, MetricGroup, NullSketch, NullSketchCollection } from "./index.js";
 
 /** Represents a single report, with one or more metrics */
 export interface Report {

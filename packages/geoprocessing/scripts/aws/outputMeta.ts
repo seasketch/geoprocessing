@@ -1,5 +1,5 @@
 import { CfnOutput } from "aws-cdk-lib";
-import { GeoprocessingStack } from "./GeoprocessingStack";
+import { GeoprocessingStack } from "./GeoprocessingStack.js";
 
 export function genOutputMeta(stack: GeoprocessingStack) {
   // Output notable values

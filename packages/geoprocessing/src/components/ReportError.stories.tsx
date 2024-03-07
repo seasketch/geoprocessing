@@ -1,7 +1,7 @@
 import React from "react";
-import { ReportError } from "./ReportError";
-import ReportDecorator from "./storybook/ReportDecorator";
-import Card from "./Card";
+import { ReportError } from "./ReportError.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
+import Card from "./Card.js";
 
 export default {
   component: ReportError,

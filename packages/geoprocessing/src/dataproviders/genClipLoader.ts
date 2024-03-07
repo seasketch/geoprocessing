@@ -1,13 +1,13 @@
 import bbox from "@turf/bbox";
-import { Feature, MultiPolygon, Polygon } from "../types";
+import { Feature, MultiPolygon, Polygon } from "../types/index.js";
 import {
   isExternalVectorDatasource,
   isInternalVectorDatasource,
-} from "../datasources";
-import { isPolygonFeatureArray } from "../helpers";
-import { ProjectClientInterface } from "../project";
-import { getFeatures } from "./getFeatures";
-import { DatasourceClipOperation } from "../types/dataProcessor";
+} from "../datasources/index.js";
+import { isPolygonFeatureArray } from "../helpers/index.js";
+import { ProjectClientInterface } from "../project/index.js";
+import { getFeatures } from "./getFeatures.js";
+import { DatasourceClipOperation } from "../types/dataProcessor.js";
 
 /**
  * Given a project client and 1 or more clip operations, returns a function that when called

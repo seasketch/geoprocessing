@@ -14,9 +14,9 @@ import {
   isMetricArray,
   rekeyMetrics,
   MetricProperties,
-} from "./helpers";
-import { NullSketch, NullSketchCollection, Metric } from "../types";
-import { toPercentMetric } from "../../client-core";
+} from "./helpers.js";
+import { NullSketch, NullSketchCollection, Metric } from "../types/index.js";
+import { toPercentMetric } from "../../client-core.js";
 import deepEqual from "fast-deep-equal";
 
 const metricName = "metric1";

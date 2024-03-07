@@ -1,6 +1,6 @@
 import React from "react";
-import { PointyCircle, TwoColorPointyCircle } from "./PointyCircle";
-import { ReportDecorator, CardDecorator } from "../../components/storybook";
+import { PointyCircle, TwoColorPointyCircle } from "./PointyCircle.js";
+import { ReportDecorator, CardDecorator } from "../../components/storybook/index.js";
 
 export default {
   component: PointyCircle,

@@ -2,8 +2,9 @@
  * @group unit
  */
 
-import { booleanOverlap } from "./booleanOverlap";
-import { genSampleSketch } from "../helpers";
+import { booleanOverlap } from "./booleanOverlap.js";
+import { genSampleSketch } from "../helpers/index.js";
+import { Polygon } from "../types/geojson.js"
 
 const pointSketch = genSampleSketch({
   type: "Point",
@@ -44,7 +45,7 @@ const lineSketchD = genSampleSketch({
   ],
 });
 
-const polySketchA = genSampleSketch({
+const polySketchA = genSampleSketch<Polygon>({
   type: "Polygon",
   coordinates: [
     [
@@ -57,7 +58,7 @@ const polySketchA = genSampleSketch({
   ],
 });
 
-const polySketchB = genSampleSketch({
+const polySketchB = genSampleSketch<Polygon>({
   type: "Polygon",
   coordinates: [
     [
@@ -70,7 +71,7 @@ const polySketchB = genSampleSketch({
   ],
 });
 
-const polySketchC = genSampleSketch({
+const polySketchC = genSampleSketch<Polygon>({
   type: "Polygon",
   coordinates: [
     [
@@ -83,7 +84,7 @@ const polySketchC = genSampleSketch({
   ],
 });
 
-const polySketchD = genSampleSketch({
+const polySketchD = genSampleSketch<Polygon>({
   type: "Polygon",
   coordinates: [
     [

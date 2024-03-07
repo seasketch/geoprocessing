@@ -2,7 +2,7 @@
  * @group unit
  */
 
-import { getIucnCategoryForActivities } from "./helpers";
+import { getIucnCategoryForActivities } from "./helpers.js";
 
 describe("IUCN protection level", () => {
   test("no allowed activity returns None category", async () => {

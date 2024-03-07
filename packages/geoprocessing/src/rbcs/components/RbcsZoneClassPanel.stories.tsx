@@ -1,6 +1,6 @@
 import React from "react";
-import { ReportDecorator, CardDecorator } from "../../components/storybook";
-import { RbcsZoneClassPanel } from "./RbcsZoneClassPanel";
+import { ReportDecorator, CardDecorator } from "../../components/storybook/index.js";
+import { RbcsZoneClassPanel } from "./RbcsZoneClassPanel.js";
 
 export default {
   component: RbcsZoneClassPanel,

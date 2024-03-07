@@ -1,9 +1,9 @@
 import React, { ComponentType } from "react";
 import { storiesOf } from "@storybook/react";
-import { TestExampleOutput } from "./src/context";
-import { SketchProperties } from "./src/types";
+import { TestExampleOutput } from "./src/context/index.js";
+import { SketchProperties } from "./src/types/index.js";
 import { v4 as uuid } from "uuid";
-import { ReportStoryLayout } from "./src/components/storybook/ReportStoryLayout";
+import { ReportStoryLayout } from "./src/components/storybook/ReportStoryLayout.js";
 const examples = require("./src/storybook/examples-loader.js");
 
 /**

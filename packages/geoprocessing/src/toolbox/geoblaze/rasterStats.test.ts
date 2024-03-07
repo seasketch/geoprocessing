@@ -2,12 +2,12 @@
  * @jest-environment node
  * @group e2e
  */
-import { rasterStats } from "./rasterStats";
+import { rasterStats } from "./rasterStats.js";
 //@ts-ignore
 import geoblaze from "geoblaze";
-import testData from "./test/testData";
+import testData from "./test/testData.js";
 import parseGeoraster from "georaster";
-import { defaultStatValues } from "./geoblaze";
+import { defaultStatValues } from "./geoblaze.js";
 
 describe("rasterStats", () => {
   test("rasterStats - default sum", async () => {

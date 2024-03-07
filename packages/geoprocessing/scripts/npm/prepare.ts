@@ -1,7 +1,11 @@
-const fs = require("fs-extra");
-const path = require("path");
+import fs from "fs-extra";
 import { $ } from "zx";
-import { TemplateType } from "../template";
+import { TemplateType } from "../template/index.js";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 $.verbose = false;
 
 const packagesPath = path.join(__dirname, "..", "..", "..");

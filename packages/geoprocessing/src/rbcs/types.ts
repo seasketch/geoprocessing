@@ -1,5 +1,4 @@
-import { ObjectiveAnswer, Objective } from "../types";
-import { Metric } from "../types";
+import { ObjectiveAnswer, Objective, Metric } from "../types/index.js";
 
 export type ZoneId = number;
 export type ZoneName = string;

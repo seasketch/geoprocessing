@@ -5,14 +5,14 @@ import {
   MultiPolygon,
   Polygon,
   Metric,
-} from "../types";
-import { isSketchCollection, toSketchArray, clip } from "../helpers";
-import { createMetric } from "../metrics";
+} from "../types/index.js";
+import { isSketchCollection, toSketchArray, clip } from "../helpers/index.js";
+import { createMetric } from "../metrics/index.js";
 import { featureCollection } from "@turf/helpers";
 import { featureEach } from "@turf/meta";
 import turfArea from "@turf/area";
 import simplify from "@turf/simplify";
-import { ValidationError } from "../types";
+import { ValidationError } from "../types/index.js";
 
 /**
  * Assuming sketches are within some outer boundary with size outerArea,

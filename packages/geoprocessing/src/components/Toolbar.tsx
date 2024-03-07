@@ -1,5 +1,5 @@
 import React, { ReactNode, FC } from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 import classnames from "classnames";
 
 export interface ToolbarProps {

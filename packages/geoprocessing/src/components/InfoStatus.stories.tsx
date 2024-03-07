@@ -1,7 +1,7 @@
 import React from "react";
-import Card from "./Card";
-import { InfoStatus } from "./InfoStatus";
-import ReportDecorator from "./storybook/ReportDecorator";
+import Card from "./Card.js";
+import { InfoStatus } from "./InfoStatus.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
 
 export default {
   component: InfoStatus,

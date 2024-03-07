@@ -2,15 +2,15 @@
  * @jest-environment node
  * @group scripts/e2e
  */
-import { reimportDatasources } from "./reimportDatasources";
+import { reimportDatasources } from "./reimportDatasources.js";
 import {
   internalVectorDatasourceSchema,
   internalRasterDatasourceSchema,
   datasourcesSchema,
   ProjectClientBase,
-} from "../../../src";
-import configFixtures from "../../../src/testing/fixtures/projectConfig";
-import { importDatasource } from "./importDatasource";
+} from "../../../src/index.js";
+import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
+import { importDatasource } from "./importDatasource.js";
 import path from "path";
 import fs from "fs-extra";
 

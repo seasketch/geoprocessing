@@ -1,6 +1,6 @@
-import { ProjectClientConfig } from "../../project";
-import { globalDatasources } from "../../datasources/global";
-import cloneDeep from "lodash/cloneDeep";
+import { ProjectClientConfig } from "../../project/index.js";
+import { globalDatasources } from "../../datasources/global.js";
+import cloneDeep from "lodash/cloneDeep.js";
 
 /**
  * Basic starter config with only default global datasources, no geographies or precalc metrics

@@ -2,9 +2,9 @@
  * @group unit
  */
 
-import { firstMatchingMetric } from "../metrics";
-import { area } from "./area";
-import fix from "../testing/fixtures/squareSketches";
+import { firstMatchingMetric } from "../metrics/index.js";
+import { area } from "./area.js";
+import fix from "../testing/fixtures/squareSketches.js";
 
 describe("area", () => {
   test("function is present", () => {

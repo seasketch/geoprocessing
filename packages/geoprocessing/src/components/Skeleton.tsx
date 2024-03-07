@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 // styled-components are needed here to use the ::before pseudo selector
 export const Skeleton = styled.div`

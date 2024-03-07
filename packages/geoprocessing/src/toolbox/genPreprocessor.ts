@@ -1,12 +1,12 @@
-import { clip, isPolygonFeature } from "../helpers";
-import { clipMultiMerge } from "../helpers";
-import { ValidationError, Feature, Polygon, MultiPolygon } from "../types";
+import { clip, isPolygonFeature } from "../helpers/index.js";
+import { clipMultiMerge } from "../helpers/index.js";
+import { ValidationError, Feature, Polygon, MultiPolygon } from "../types/index.js";
 
 import area from "@turf/area";
 import { featureCollection as fc } from "@turf/helpers";
 import flatten from "@turf/flatten";
 import kinks from "@turf/kinks";
-import { ClipOptions, FeatureClipOperation } from "../types/dataProcessor";
+import { ClipOptions, FeatureClipOperation } from "../types/dataProcessor.js";
 
 /**
  * Returns a preprocessor function given clipLoader function

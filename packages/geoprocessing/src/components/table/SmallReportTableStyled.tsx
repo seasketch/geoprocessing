@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { ReportTableStyled } from "./ReportTableStyled";
+import { styled } from "styled-components";
+import { ReportTableStyled } from "./ReportTableStyled.js";
 
 export const SmallReportTableStyled = styled(ReportTableStyled)`
   .styled {

@@ -1,8 +1,8 @@
-import { Feature, Metric, StatsObject, MetricDimension } from "../types";
-import { isFeatureCollection, isSketch, isSketchCollection } from "../helpers";
+import { Feature, Metric, StatsObject, MetricDimension } from "../types/index.js";
+import { isFeatureCollection, isSketch, isSketchCollection } from "../helpers/index.js";
 import { featureEach } from "@turf/meta";
-import { RasterStatsOptions, rasterStats } from "./geoblaze";
-import { rasterStatsToMetrics } from "./geoblaze/rasterStatsToMetrics";
+import { RasterStatsOptions, rasterStats } from "./geoblaze/index.js";
+import { rasterStatsToMetrics } from "./geoblaze/rasterStatsToMetrics.js";
 
 // @ts-ignore
 import { Georaster } from "geoblaze";

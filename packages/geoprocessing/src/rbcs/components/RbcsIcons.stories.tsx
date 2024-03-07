@@ -1,6 +1,6 @@
 import React from "react";
-import { ReportDecorator, CardDecorator } from "../../components/storybook";
-import { RbcsIcon, RbcsZoneRegIcon } from "./RbcsIcons";
+import { ReportDecorator, CardDecorator } from "../../components/storybook/index.js";
+import { RbcsIcon, RbcsZoneRegIcon } from "./RbcsIcons.js";
 
 export default {
   component: RbcsIcon,

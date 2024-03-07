@@ -1,4 +1,4 @@
-import { toSketchArray } from "./sketch";
+import { toSketchArray } from "./sketch.js";
 import {
   genSampleSketch,
   genSampleSketchCollection,
@@ -6,7 +6,7 @@ import {
   genSampleNullSketchCollection,
   getUserAttribute,
   getJsonUserAttribute,
-} from "../helpers";
+} from "../helpers/index.js";
 import { randomPolygon } from "@turf/random";
 
 const polySketch = genSampleSketch(randomPolygon(1).features[0].geometry);

@@ -1,7 +1,7 @@
 import React from "react";
-import useSketchProperties from "../hooks/useSketchProperties";
+import useSketchProperties from "../hooks/useSketchProperties.js";
 import { Trans, useTranslation } from "react-i18next";
-import Card from "./Card";
+import Card from "./Card.js";
 
 export interface SketchAttributesCardProps {
   title?: string;

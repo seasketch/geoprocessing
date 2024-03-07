@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
-import { generateManifest } from "./generateManifest";
-import { GeoprocessingJsonConfig } from "../../src/types";
-import { PreprocessingBundle, GeoprocessingBundle } from "../types";
-import { getHandlerFilenameFromSrcPath } from "../util/handler";
-import { Package } from "../../src/types";
+import { generateManifest } from "./generateManifest.js";
+import { GeoprocessingJsonConfig } from "../../src/types/index.js";
+import { PreprocessingBundle, GeoprocessingBundle } from "../types.js";
+import { getHandlerFilenameFromSrcPath } from "../util/handler.js";
+import { Package } from "../../src/types/index.js";
 
 // Inspect project file contents and generate manifest file
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");

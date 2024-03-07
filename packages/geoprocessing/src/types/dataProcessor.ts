@@ -1,4 +1,4 @@
-import { Feature, Polygon, BBox } from "../types";
+import { Feature, Polygon, BBox } from "../types/index.js";
 
 // Where datasources meet data providers meet preprocessors/geoprocessors
 

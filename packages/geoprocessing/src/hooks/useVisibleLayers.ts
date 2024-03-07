@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ReportContext } from "../context";
+import { ReportContext } from "../context/index.js";
 
 function useVisibleLayers(): [string[], (layerId: string) => void] {
   const context = useContext(ReportContext);

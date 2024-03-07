@@ -1,14 +1,14 @@
-import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
+import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks.js";
 import { useState, useContext, useEffect } from "react";
-import { useDeepEqualMemo } from "./useDeepEqualMemo";
-import { ReportContext } from "../context";
+import { useDeepEqualMemo } from "./useDeepEqualMemo.js";
+import { ReportContext } from "../context/index.js";
 import {
   GeoprocessingRequest,
   GeoprocessingProject,
   GeoprocessingRequestParams,
-} from "../types";
-import { runTask, finishTask, genTaskCacheKey } from "../clients/tasks";
-import cloneDeep from "lodash/cloneDeep";
+} from "../types/index.js";
+import { runTask, finishTask, genTaskCacheKey } from "../clients/tasks.js";
+import cloneDeep from "lodash/cloneDeep.js";
 
 interface PendingRequest {
   functionName: string;

@@ -1,4 +1,4 @@
-import { randomInt, randomFloat } from "../../helpers/randomData";
+import { randomInt, randomFloat } from "../../helpers/randomData.js";
 
 let fixtures = {};
 

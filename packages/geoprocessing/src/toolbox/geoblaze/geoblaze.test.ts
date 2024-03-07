@@ -2,13 +2,13 @@
  * @jest-environment node
  * @group e2e
  */
-import { Polygon, Sketch, Feature } from "../../types";
+import { Polygon, Sketch, Feature } from "../../types/index.js";
 import parseGeoraster from "georaster";
-import testData from "./test/testData";
+import testData from "./test/testData.js";
 
 // @ts-ignore
 import geoblaze from "geoblaze";
-import { splitSketchAntimeridian } from "../split";
+import { splitSketchAntimeridian } from "../split.js";
 
 describe("geoblaze basics", () => {
   test("simple in-memory raster sum test", async () => {

@@ -1,11 +1,11 @@
 import React from "react";
-import { Objective } from "../../types/objective";
-import { getMinYesCountMap, getKeys, keyBy } from "../../helpers";
+import { Objective } from "../../types/objective.js";
+import { getMinYesCountMap, getKeys, keyBy } from "../../helpers/index.js";
 import {
   rbcsAnchoringActivities,
   rbcsAquacultureActivities,
   rbcsGearTypes,
-} from "../rbcs";
+} from "../rbcs.js";
 
 export interface RbcsLearnMoreProps {
   objectives: Objective[];

@@ -1,7 +1,7 @@
 import { createInstance } from "i18next";
 import { initReactI18next } from "react-i18next";
 import extraTerms from "./extraTerms.json";
-import languages from "./supported";
+import languages from "./supported.js";
 
 const defaultLang = "en";
 

@@ -1,9 +1,9 @@
 import { config } from "aws-sdk";
-import bundleFeatures from "./bundleFeatures";
+import bundleFeatures from "./bundleFeatures.js";
 import ora from "ora";
 import program from "commander";
 import { createPool } from "slonik";
-import printSizeHistogram from "./printSizeHistogram";
+import printSizeHistogram from "./printSizeHistogram.js";
 import inquirer from "inquirer";
 import {
   getDataSourceVersion,
@@ -14,10 +14,10 @@ import {
   invalidateCloudfrontDistribution,
   CloudfrontDistributionDetails,
   scheduleObjectsForDeletion,
-} from "./aws";
-import { BBox } from "@turf/helpers";
+} from "./aws.js";
+import { BBox } from "geojson";
 import prettyBytes from "pretty-bytes";
-import { createIndexes } from "./indexes";
+import { createIndexes } from "./indexes.js";
 
 const DEFAULT_FLATBUSH_NODE_SIZE = 9;
 const DEFAULT_COMPOSITE_INDEX_SIZE_TARGET = 80_000;

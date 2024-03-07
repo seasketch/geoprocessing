@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Dropdown, { DropdownProps } from "./Dropdown";
-import { SimpleButtonStyled } from "./buttons/SimpleButton";
-import styled from "styled-components";
+import Dropdown, { DropdownProps } from "./Dropdown.js";
+import { SimpleButtonStyled } from "./buttons/SimpleButton.js";
+import { styled } from "styled-components";
 import { Parser, transforms } from "json2csv";
-import useSketchProperties from "../hooks/useSketchProperties";
-import { CloudDownload } from "@styled-icons/boxicons-solid";
-import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical/ThreeDotsVertical";
+import useSketchProperties from "../hooks/useSketchProperties.js";
+import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical/ThreeDotsVertical.esm.js";
+import { CloudArrowDown } from "@styled-icons/bootstrap/CloudArrowDown/CloudArrowDown.esm.js";
 import { useTranslation } from "react-i18next";
 
 // Strictly limit format and data types accepted
@@ -133,7 +133,7 @@ export const DataDownload = ({
       aria-disabled={!data || data.length === 0}
     >
       <DownloadButtonStyled>
-        <CloudDownload color="#999" size="20" style={{ paddingRight: 5 }} />
+        <CloudArrowDown color="#999" size="20" style={{ paddingRight: 5 }} />
         <span style={{ verticalAlign: "middle" }}>{dOption.label}</span>
       </DownloadButtonStyled>
     </a>

@@ -3,9 +3,9 @@ import {
   ReportContext,
   ReportContextValue,
   sampleSketchReportContextValue,
-} from "../../context";
-import { LanguageSwitcher } from "../i18n/LanguageSwitcher";
-import { ReportTextDirection } from "../i18n/ReportTextDirection";
+} from "../../context/index.js";
+import { LanguageSwitcher } from "../i18n/LanguageSwitcher.js";
+import { ReportTextDirection } from "../i18n/ReportTextDirection.js";
 
 const containerStyle = {
   height: "auto",

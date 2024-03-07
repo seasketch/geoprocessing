@@ -1,3 +1,3 @@
-export * from "./ReportDecorator";
-export * from "./CardDecorator";
-export * from "./ReportStoryLayout";
+export * from "./ReportDecorator.js";
+export * from "./CardDecorator.js";
+export * from "./ReportStoryLayout.js";

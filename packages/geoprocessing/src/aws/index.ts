@@ -1,3 +1,3 @@
-export * from "./GeoprocessingHandler";
-export * from "./PreprocessingHandler";
-export * from "./tasks";
+export * from "./GeoprocessingHandler.js";
+export * from "./PreprocessingHandler.js";
+export * from "./tasks.js";

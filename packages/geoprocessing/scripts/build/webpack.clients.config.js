@@ -1,8 +1,13 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 const fs = require("fs");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) {

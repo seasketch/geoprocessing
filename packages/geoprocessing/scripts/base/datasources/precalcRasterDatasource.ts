@@ -5,7 +5,7 @@ import {
   Geography,
   VectorDatasource,
   RasterDatasource,
-} from "../../../src/types";
+} from "../../../src/types/index.js";
 import {
   createMetric,
   getHistogram,
@@ -15,12 +15,12 @@ import {
   datasourceConfig,
   getRasterBoxSpherical,
   rasterMetrics,
-} from "../../../src";
+} from "../../../src/index.js";
 import bbox from "@turf/bbox";
 
 // @ts-ignore
 import geoblaze from "geoblaze";
-import { getGeographyFeatures } from "../geographies/helpers";
+import { getGeographyFeatures } from "../geographies/helpers.js";
 
 /**
  * Returns Metric array for raster datasource and geography

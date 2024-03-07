@@ -1,4 +1,4 @@
-import { Geography } from "../types";
+import { Geography } from "../types/index.js";
 import React, { ChangeEventHandler } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -17,7 +17,7 @@ export const GeographySwitcher: React.FunctionComponent<GeographySwitcherProps> 
       <select onChange={changeGeography} value={curGeographyId}>
         {geographies.map((geography) => {
           /* i18next-extract-disable-next-line */
-          const transString = t(geography.display);
+          const transString = t(geography.display || "");
           return (
             <option key={geography.geographyId} value={geography.geographyId}>
               {transString}

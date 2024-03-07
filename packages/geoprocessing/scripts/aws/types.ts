@@ -1,4 +1,4 @@
-import { ProcessingFunctionMetadata } from "../manifest";
+import { ProcessingFunctionMetadata } from "../manifest.js";
 import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Function } from "aws-cdk-lib/aws-lambda";

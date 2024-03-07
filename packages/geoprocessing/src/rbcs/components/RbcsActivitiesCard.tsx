@@ -1,6 +1,6 @@
 import React from "react";
-import { SketchAttributesCard } from "../../components";
-import { rbcsConstants } from "../rbcs";
+import { SketchAttributesCard } from "../../components/index.js";
+import { rbcsConstants } from "../rbcs.js";
 
 export const RbcsActivitiesCard = () => {
   const mappings = {

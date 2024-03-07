@@ -1,8 +1,8 @@
 import React, { FC, useState, useRef } from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 import { usePopper } from "react-popper";
 import popper from "@popperjs/core";
-import useClickOutside from "../hooks/useClickOutside";
+import useClickOutside from "../hooks/useClickOutside.js";
 
 export interface DropdownContainerProps {
   /* Whether dropdown contain is rendered (open) or not */

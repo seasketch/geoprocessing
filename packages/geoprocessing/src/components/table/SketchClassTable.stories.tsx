@@ -1,12 +1,12 @@
 import React from "react";
-import { SketchClassTable } from "./SketchClassTable";
-import { ReportDecorator, CardDecorator } from "../storybook";
-import { ReportContext } from "../../context";
+import { SketchClassTable } from "./SketchClassTable.js";
+import { ReportDecorator, CardDecorator } from "../storybook/index.js";
+import { ReportContext } from "../../context/index.js";
 import {
   simpleMetricGroup,
   simpleSketchClassAggMetrics,
   simpleSketchClassAggMetricsPerc,
-} from "../../testing/fixtures/metrics";
+} from "../../testing/fixtures/metrics.js";
 
 export default {
   component: SketchClassTable,

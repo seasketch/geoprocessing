@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { WatersBackgroundSimple } from "./WatersBackgroundSimple";
+import { WatersBackgroundSimple } from "./WatersBackgroundSimple.js";
 
 /** Label type accepted by WatersDiagram to set translatable text labels  */
 interface Label {

@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
-import styled from "styled-components";
-import Toolbar, { ToolbarProps } from "./Toolbar";
-import DataDownload, { DataDownloadProps } from "./DataDownload";
+import { styled } from "styled-components";
+import Toolbar, { ToolbarProps } from "./Toolbar.js";
+import DataDownload, { DataDownloadProps } from "./DataDownload.js";
 
 export interface DataDownloadToolbarProps
   extends DataDownloadProps,

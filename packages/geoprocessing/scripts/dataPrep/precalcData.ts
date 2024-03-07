@@ -1,10 +1,10 @@
 import inquirer from "inquirer";
-import { Datasource, Geography } from "../../src";
+import { Datasource, Geography } from "../../src/index.js";
 import {
   PrecalcDatasourceOptions,
   precalcDatasources,
-} from "../base/datasources";
-import { getProjectClient } from "../base/project/projectClient";
+} from "../base/datasources/index.js";
+import { getProjectClient } from "../base/project/projectClient.js";
 
 // This is a standalone script used as a CLI command with a top-level function
 

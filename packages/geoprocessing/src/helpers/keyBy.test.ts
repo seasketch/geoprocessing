@@ -1,4 +1,4 @@
-import { keyBy } from "./keyBy";
+import { keyBy } from "./keyBy.js";
 
 const list = [
   { name: "foo", id: 1 },

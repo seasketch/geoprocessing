@@ -1,7 +1,7 @@
 import React from "react";
-import Card from "./Card";
-import { Circle, GroupCircle } from "./Circle";
-import ReportDecorator from "./storybook/ReportDecorator";
+import Card from "./Card.js";
+import { Circle, GroupCircle } from "./Circle.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
 
 export default {
   component: Circle,

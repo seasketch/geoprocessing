@@ -3,17 +3,17 @@ import {
   Geography,
   featuresSchema,
   VectorDatasource,
-} from "../../../src/types";
+} from "../../../src/types/index.js";
 import {
   FeatureCollection,
   MultiPolygon,
   isExternalVectorDatasource,
   isInternalVectorDatasource,
-} from "../../../src";
+} from "../../../src/index.js";
 import { featureCollection } from "@turf/helpers";
 import truncate from "@turf/truncate";
-import { readDatasourceGeojsonById } from "../datasources";
-import { getFeatures } from "../../../src/dataproviders";
+import { readDatasourceGeojsonById } from "../datasources/index.js";
+import { getFeatures } from "../../../src/dataproviders/index.js";
 
 /**
  * Given geography and its datasource, returns geography features with additional filter options

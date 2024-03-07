@@ -1,7 +1,7 @@
 import React from "react";
-import { ReportDecorator, CardDecorator } from "../../components/storybook";
-import { RbcsMpaClassPanel } from "./RbcsMpaClassPanel";
-import { getMpaClassificationName } from "../helpers";
+import { ReportDecorator, CardDecorator } from "../../components/storybook/index.js";
+import { RbcsMpaClassPanel } from "./RbcsMpaClassPanel.js";
+import { getMpaClassificationName } from "../helpers.js";
 
 export default {
   component: RbcsMpaClassPanel,

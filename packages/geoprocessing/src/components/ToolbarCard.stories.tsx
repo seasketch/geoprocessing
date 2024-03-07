@@ -1,7 +1,7 @@
 import React from "react";
-import ToolbarCard from "./ToolbarCard";
-import ReportDecorator from "./storybook/ReportDecorator";
-import { SimpleButton } from "./buttons";
+import ToolbarCard from "./ToolbarCard.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
+import { SimpleButton } from "./buttons/index.js";
 
 export default {
   component: ToolbarCard,

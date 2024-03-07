@@ -1,4 +1,4 @@
-import LocalFileServer from "./base/util/localServer";
+import LocalFileServer from "./base/util/localServer.js";
 
 module.exports = async function (globalConfig, projectConfig) {
   const dstPath = "data/out";

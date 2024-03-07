@@ -1,7 +1,7 @@
 import React from "react";
-import { SegmentControl } from "./SegmentControl";
-import { createReportDecorator } from "./storybook/ReportDecorator";
-import Translator from "./i18n/TranslatorAsync";
+import { SegmentControl } from "./SegmentControl.js";
+import { createReportDecorator } from "./storybook/ReportDecorator.js";
+import Translator from "./i18n/TranslatorAsync.js";
 
 export const tabOne = () => (
   <Translator>

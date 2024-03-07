@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
-import { SimpleButton } from "./buttons";
-import Toolbar from "./Toolbar";
+import Toolbar from "./Toolbar.js";
 
 export interface ToolbarCardProps {
   /** Card body elements */

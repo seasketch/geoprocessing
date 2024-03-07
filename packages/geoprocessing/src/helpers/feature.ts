@@ -1,12 +1,13 @@
 import { featureCollection, polygon } from "@turf/helpers";
 import {
-  Feature,
-  FeatureCollection,
+  Geometry,
   Polygon,
   MultiPolygon,
+  Feature,
+  FeatureCollection,
   SketchGeometryTypes,
-} from "../types";
-import { isFeature } from "./geo";
+} from "../types/index.js";
+import { isFeature } from "./geo.js";
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
 
@@ -35,7 +36,7 @@ export function toFeaturePolygonArray(
  * Returns a Feature with given features geometry and properties. Reasonable defaults are given for properties not provided
  * Default geometry is a square from 0,0 to 1,1
  */
-export const genFeature = <G = SketchGeometryTypes>(
+export const genFeature = <G extends Geometry = SketchGeometryTypes>(
   options: {
     feature?: Feature<G>;
     name?: string;
@@ -62,7 +63,11 @@ export const genFeature = <G = SketchGeometryTypes>(
       id,
       name,
     },
-    bbox: feature.bbox || bbox(feature.geometry),
+    bbox: feature.bbox
+      ? feature.bbox
+      : feature.geometry
+      ? bbox(feature.geometry)
+      : undefined,
   };
 };
 
@@ -72,7 +77,7 @@ export const genFeature = <G = SketchGeometryTypes>(
  * The geometry type of the returned collection will match the one passed in
  * Properties of features are retained
  */
-export const genFeatureCollection = <G = SketchGeometryTypes>(
+export const genFeatureCollection = <G extends Geometry = SketchGeometryTypes>(
   features: Feature<G>[],
   options: {
     name?: string;

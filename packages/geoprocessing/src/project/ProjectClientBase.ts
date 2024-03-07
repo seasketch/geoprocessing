@@ -48,7 +48,7 @@ import {
   getRasterDatasourceById,
   ExternalRasterDatasource,
   getExternalRasterDatasourceById,
-} from "..";
+} from "../index.js";
 
 export interface ProjectClientConfig {
   basic: any;

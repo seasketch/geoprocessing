@@ -6,9 +6,9 @@
  * @packageDocumentation
  */
 
-export * from "./src/components";
+export * from "./src/components/index.js";
 // Fixes interface export issue with webpack - https://github.com/webpack/webpack/issues/7378#issuecomment-683894656
-export type { FilterSelectTableOptions } from "./src/components/table/FilterSelectTable";
-export * from "./src/context";
-export * from "./src/hooks";
-export * from "./src/clients";
+export type { FilterSelectTableOptions } from "./src/components/table/FilterSelectTable.js";
+export * from "./src/context/index.js";
+export * from "./src/hooks/index.js";
+export * from "./src/clients/index.js";

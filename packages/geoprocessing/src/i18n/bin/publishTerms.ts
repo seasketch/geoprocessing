@@ -4,7 +4,7 @@ import fs from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
 import config from "../config.json";
-import languages from "../supported";
+import languages from "../supported.js";
 import extraTerms from "../extraTerms.json";
 
 const post = promisify(request.post);

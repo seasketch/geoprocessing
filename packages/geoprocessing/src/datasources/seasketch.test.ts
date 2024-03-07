@@ -1,9 +1,9 @@
 // @ts-ignore
 import fetchMock from "fetch-mock-jest";
-import { fetchGeoJSON } from "./seasketch";
-import { isSketch } from "../helpers";
-import { Sketch } from "../index";
-import { SketchProperties } from "../types";
+import { fetchGeoJSON } from "./seasketch.js";
+import { isSketch } from "../helpers/index.js";
+import { Sketch } from "../index.js";
+import { SketchProperties } from "../types/index.js";
 
 const exampleSketch: Sketch = {
   type: "Feature",

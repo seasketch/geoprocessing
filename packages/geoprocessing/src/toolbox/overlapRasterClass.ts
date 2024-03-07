@@ -5,12 +5,12 @@ import {
   Georaster,
   Metric,
   MetricDimension,
-} from "../types";
-import { isSketchCollection } from "../helpers";
-import { createMetric } from "../metrics";
-import { MultiPolygon } from "@turf/helpers";
-import { Histogram } from "../types/georaster";
-import { getHistogram } from "./geoblaze";
+  MultiPolygon,
+} from "../types/index.js";
+import { isSketchCollection } from "../helpers/index.js";
+import { createMetric } from "../metrics/index.js";
+import { Histogram } from "../types/georaster.js";
+import { getHistogram } from "./geoblaze/index.js";
 import { featureEach } from "@turf/meta";
 
 /**

@@ -2,8 +2,8 @@
 // SPDX-License
 
 import { ApiGatewayManagementApi, AWSError } from "aws-sdk";
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
-import { PromiseResult } from "aws-sdk/lib/request";
+import { DocumentClient } from "aws-sdk/clients/dynamodb.js";
+import { PromiseResult } from "aws-sdk/lib/request.js";
 
 /**
  * Posts message to socket connection

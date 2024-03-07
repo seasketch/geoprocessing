@@ -2,21 +2,21 @@ import {
   GeoprocessingHandlerOptions,
   Sketch,
   SketchCollection,
+  Geometry,
   Feature,
   FeatureCollection,
   Polygon,
   LineString,
   Point,
-  GeoprocessingRequest,
   JSONValue,
   GeoprocessingRequestModel,
-} from "../types";
+} from "../types/index.js";
 import TaskModel, {
   commonHeaders,
   GeoprocessingTask,
   GeoprocessingTaskStatus,
-} from "./tasks";
-import { fetchGeoJSON } from "../datasources/seasketch";
+} from "./tasks.js";
+import { fetchGeoJSON } from "../datasources/seasketch.js";
 import {
   Context,
   APIGatewayProxyResult,
@@ -54,7 +54,7 @@ const WSS_STAGE = process.env.WSS_STAGE || "";
  */
 export class GeoprocessingHandler<
   T = JSONValue,
-  G = Polygon | LineString | Point,
+  G extends Geometry = Polygon | LineString | Point,
   P extends Record<string, JSONValue> = Record<string, JSONValue>
 > {
   func: (

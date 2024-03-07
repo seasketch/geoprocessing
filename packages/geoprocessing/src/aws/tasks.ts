@@ -6,8 +6,8 @@ import {
   isMetricPack,
   packMetrics,
   unpackMetrics,
-} from "../metrics";
-import cloneDeep from "lodash/cloneDeep";
+} from "../metrics/index.js";
+import cloneDeep from "lodash/cloneDeep.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",

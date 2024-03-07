@@ -1,3 +1,3 @@
-export * from "./writeResultOutput";
-export * from "./getExamples";
-export * from "./polygonPreprocessorSmokeTest";
+export * from "./writeResultOutput.js";
+export * from "./getExamples.js";
+export * from "./polygonPreprocessorSmokeTest.js";

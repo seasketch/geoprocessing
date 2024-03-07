@@ -10,7 +10,7 @@ import {
   SketchMap,
   FeatureMap,
   SketchGeometryTypes,
-} from "../../src/types";
+} from "../../src/types/index.js";
 import path from "path";
 import {
   isSketch,
@@ -26,7 +26,7 @@ import {
   isLineStringSketchCollection,
   isPointSketchCollection,
   isFeature,
-} from "../../src/helpers";
+} from "../../src/helpers/index.js";
 
 /**
  * Reads all files from examples/sketches for testing. Run from project root

@@ -5,7 +5,7 @@
 import { config } from "aws-sdk";
 jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
 const fetchMock = require("node-fetch");
-import { getDataSourceVersion } from "./aws";
+import { getDataSourceVersion } from "./aws.js";
 
 const NAME = "dataset-name";
 const PKGNAME = "seasketchgeoprocessing-data-sources";

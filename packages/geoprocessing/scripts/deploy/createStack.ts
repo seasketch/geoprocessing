@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { App, Tags } from "aws-cdk-lib";
-import { Manifest } from "../manifest";
-import { GeoprocessingStack } from "../aws/GeoprocessingStack";
+import { Manifest } from "../manifest.js";
+import { GeoprocessingStack } from "../aws/GeoprocessingStack.js";
 
 if (!process.env.PROJECT_PATH) {
   throw new Error("PROJECT_PATH env var not specified");

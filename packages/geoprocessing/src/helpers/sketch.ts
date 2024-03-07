@@ -5,7 +5,8 @@ import {
   Polygon,
   MultiPolygon,
   LineString,
-} from "../types/geojson";
+  Geometry,
+} from "../types/geojson.js";
 
 import {
   Sketch,
@@ -15,22 +16,22 @@ import {
   NullSketchCollection,
   SketchProperties,
   UserAttribute,
-} from "../types/sketch";
+} from "../types/sketch.js";
 
 import { featureCollection, polygon } from "@turf/helpers";
 
-import { hasOwnProperty, isObject } from "./native";
+import { hasOwnProperty, isObject } from "./native.js";
 import {
   isFeature,
   isFeatureCollection,
   collectionHasGeometry,
   isMultiPolygonFeature,
   isPolygonFeature,
-} from "./geo";
+} from "./geo.js";
 
 import { v4 as uuid } from "uuid";
 import bbox from "@turf/bbox";
-import { ReportContextValue } from "../context";
+import { ReportContextValue } from "../context/index.js";
 /**
  * UserAttributes are those filled in via the attributes form specified as
  * part of a SketchClass. This getter function is easier to use than searching
@@ -291,7 +292,7 @@ export const genSampleUserAttributes = (): UserAttribute[] => {
  * Returns a Sketch with given features geometry and properties. Reasonable defaults are given for properties not provided
  * Default geometry is a square from 0,0 to 1,1
  */
-export const genSketch = <G = SketchGeometryTypes>(
+export const genSketch = <G extends Geometry = SketchGeometryTypes>(
   options: {
     feature?: Feature<G>;
     name?: string;
@@ -331,7 +332,7 @@ export const genSketch = <G = SketchGeometryTypes>(
       updatedAt,
       name,
     },
-    bbox: bbox(feature.geometry),
+    bbox: feature.geometry ? bbox(feature.geometry) : undefined,
   };
 };
 
@@ -341,7 +342,7 @@ export const genSketch = <G = SketchGeometryTypes>(
  * The geometry type of the returned collection will match the one passed in
  * Properties of sketches are retained
  */
-export const genSketchCollection = <G = SketchGeometryTypes>(
+export const genSketchCollection = <G extends Geometry = SketchGeometryTypes>(
   sketches: Sketch<G>[],
   options: {
     name?: string;
@@ -393,7 +394,7 @@ export const genSketchCollection = <G = SketchGeometryTypes>(
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
 export const genSampleSketch = <
-  G = Polygon | MultiPolygon | LineString | String
+  G extends Geometry = Polygon | MultiPolygon | LineString
 >(
   geometry: G,
   name?: string
@@ -433,7 +434,7 @@ export const genSampleNullSketch = (name?: string): NullSketch => ({
  * The geometry type of the returned collection will match the one passed in
  * @param geometry
  */
-export const genSampleSketchCollection = <G = Polygon | LineString | String>(
+export const genSampleSketchCollection = <G extends Geometry = Polygon>(
   fc: FeatureCollection<G>,
   name?: string
 ): SketchCollection<G> => {
@@ -462,7 +463,7 @@ export const genSampleSketchCollection = <G = Polygon | LineString | String>(
  * @param geometry
  */
 export const genSampleSketchCollectionFromSketches = <
-  G = Polygon | LineString | String
+  G extends Geometry = Polygon | LineString
 >(
   sketches: Sketch<G>[],
   name?: string

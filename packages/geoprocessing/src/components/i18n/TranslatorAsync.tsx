@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
-import { createI18nAsyncInstance } from "../../i18n/i18nAsync";
-import { useLanguage } from "../../hooks/useLanguage";
+import { createI18nAsyncInstance } from "../../i18n/i18nAsync.js";
+import { useLanguage } from "../../hooks/useLanguage.js";
 
 // Load translations and pass to react-i18next
 const i18nInstance = createI18nAsyncInstance();

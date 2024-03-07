@@ -1,6 +1,6 @@
 import React from "react";
-import { PointyCircle } from "./PointyCircle";
-import { RbcsIcon } from "./RbcsIcons";
+import { PointyCircle } from "./PointyCircle.js";
+import { RbcsIcon } from "./RbcsIcons.js";
 
 export interface RbcsMpaClassPanelProps {
   value: number;

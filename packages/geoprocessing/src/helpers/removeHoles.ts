@@ -1,6 +1,10 @@
-import { Sketch, SketchCollection } from "../types";
-import { MultiPolygon, Polygon } from "@turf/helpers";
-import { isMultiPolygonSketch, isPolygonSketch } from "./sketch";
+import {
+  Sketch,
+  SketchCollection,
+  MultiPolygon,
+  Polygon,
+} from "../types/index.js";
+import { isMultiPolygonSketch, isPolygonSketch } from "./sketch.js";
 
 export function removeSketchPolygonHoles(
   sketch: Sketch<Polygon | MultiPolygon>

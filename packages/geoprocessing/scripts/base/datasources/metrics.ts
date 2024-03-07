@@ -1,9 +1,9 @@
 import fs from "fs-extra";
 import path from "path";
-import { metricsSchema } from "../../../src/types";
-import { precalcConfig } from "../../../src/precalc/config";
-import { Metric } from "../../../src/types";
-import { sortMetrics, rekeyMetrics } from "../../../src/metrics/helpers";
+import { metricsSchema } from "../../../src/types/index.js";
+import { precalcConfig } from "../../../src/precalc/config.js";
+import { Metric } from "../../../src/types/index.js";
+import { sortMetrics, rekeyMetrics } from "../../../src/metrics/helpers.js";
 
 /**
  * Manage a metrics datasource

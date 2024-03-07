@@ -1,5 +1,5 @@
 import program from "commander";
-import { init } from "./init";
+import { init } from "./init.js";
 
 program
   .command("init")

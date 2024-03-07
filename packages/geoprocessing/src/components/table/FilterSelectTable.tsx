@@ -1,8 +1,8 @@
 import React, { ReactElement } from "react";
-import Table, { TableOptions, Column, Row } from "./Table";
-import CheckboxGroup from "../checkbox/CheckboxGroup";
-import useCheckboxes from "../../hooks/useCheckboxes";
-import styled from "styled-components";
+import Table, { TableOptions, Column, Row } from "./Table.js";
+import CheckboxGroup from "../checkbox/CheckboxGroup.js";
+import useCheckboxes from "../../hooks/useCheckboxes.js";
+import { styled } from "styled-components";
 
 /** Custom table data filter */
 export interface FilterSelectOption<D extends object = {}> {

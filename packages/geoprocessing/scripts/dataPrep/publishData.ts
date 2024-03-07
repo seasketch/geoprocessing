@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
-import { Datasource } from "../../src";
-import { publishDatasources } from "../base/datasources";
-import { getProjectClient } from "../base/project/projectClient";
+import { Datasource } from "../../src/index.js";
+import { publishDatasources } from "../base/datasources/index.js";
+import { getProjectClient } from "../base/project/projectClient.js";
 
 export interface PublishAnswers {
   publish: "yes" | "no";

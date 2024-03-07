@@ -1,8 +1,8 @@
 import React from "react";
-import { HorizontalStackedBar, RowConfig } from "./HorizontalStackedBar";
-import { ReportDecorator, CardDecorator } from "../storybook/";
-import { VerticalSpacer } from "../VerticalSpacer";
-import { valueFormatter } from "../../helpers/valueFormatter";
+import { HorizontalStackedBar, RowConfig } from "./HorizontalStackedBar.js";
+import { ReportDecorator, CardDecorator } from "../storybook/index.js";
+import { VerticalSpacer } from "../VerticalSpacer.js";
+import { valueFormatter } from "../../helpers/valueFormatter.js";
 
 export default {
   component: HorizontalStackedBar,

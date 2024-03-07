@@ -3,11 +3,11 @@ import {
   ImportRasterDatasourceOptions,
   importVectorDatasourceOptionsSchema,
   importRasterDatasourceOptionsSchema,
-} from "../../../src/types";
+} from "../../../src/types/index.js";
 
-import { importVectorDatasource } from "./importVectorDatasource";
-import { importRasterDatasource } from "./importRasterDatasource";
-import { ProjectClientBase } from "../../../src";
+import { importVectorDatasource } from "./importVectorDatasource.js";
+import { importRasterDatasource } from "./importRasterDatasource.js";
+import { ProjectClientBase } from "../../../src/index.js";
 
 /**
  * Import a dataset into the project.  Must be a src file that OGR or GDAL can read.

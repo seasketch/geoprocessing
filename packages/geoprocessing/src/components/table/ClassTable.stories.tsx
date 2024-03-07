@@ -1,8 +1,8 @@
 import React from "react";
-import { ClassTable } from "./ClassTable";
-import { defaultReportContext } from "../../context";
-import { CardDecorator, createReportDecorator } from "../storybook/";
-import { createMetric } from "../../metrics";
+import { ClassTable } from "./ClassTable.js";
+import { defaultReportContext } from "../../context/index.js";
+import { CardDecorator, createReportDecorator } from "../storybook/index.js";
+import { createMetric } from "../../metrics/index.js";
 import {
   longClassMetrics,
   simpleClassMetrics,
@@ -15,9 +15,9 @@ import {
   categoricalMetricGroup,
   categoricalMetricGroupMixedTarget,
   NaNPercMetrics,
-} from "../../testing/fixtures/metrics";
-import { valueFormatter } from "../../helpers/valueFormatter";
-import Translator from "../i18n/TranslatorAsync";
+} from "../../testing/fixtures/metrics.js";
+import { valueFormatter } from "../../helpers/valueFormatter.js";
+import Translator from "../i18n/TranslatorAsync.js";
 
 export default {
   component: ClassTable,

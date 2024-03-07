@@ -2,9 +2,8 @@ import {
   GeoprocessingProject,
   GeoprocessingServiceMetadata,
   PreprocessingServiceMetadata,
-} from "../src/types";
-import { VectorDataSourceDetails } from "../src";
-import { getHandlerFilenameFromSrcPath } from "./util/handler";
+} from "../src/types/index.js";
+import { VectorDataSourceDetails } from "../src/index.js";
 
 /**
  * Select metadata of GeoprocessingBundle for manifest

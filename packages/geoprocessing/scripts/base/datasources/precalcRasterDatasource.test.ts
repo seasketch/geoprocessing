@@ -9,13 +9,13 @@ import {
   firstMatchingMetric,
   geographySchema,
   metricsSchema,
-} from "../../../src";
+} from "../../../src/index.js";
 import fs from "fs-extra";
 import path from "path";
-import { precalcDatasources } from "./precalcDatasources";
-import { importDatasource } from "./importDatasource";
-import { writeGeographies } from "../geographies/geographies";
-import configFixtures from "../../../src/testing/fixtures/projectConfig";
+import { precalcDatasources } from "./precalcDatasources.js";
+import { importDatasource } from "./importDatasource.js";
+import { writeGeographies } from "../geographies/geographies.js";
+import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";

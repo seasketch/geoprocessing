@@ -2,7 +2,8 @@ import bbox from "@turf/bbox";
 import bboxPolygon from "@turf/bbox-polygon";
 import explode from "@turf/explode";
 import distance from "@turf/distance";
-import { AllGeoJSON, BBox } from "@turf/helpers";
+import { AllGeoJSON } from "@turf/helpers";
+import { BBox } from "../types/geojson.js";
 
 /**
  * Returns the maximum width of the geojson or bbox

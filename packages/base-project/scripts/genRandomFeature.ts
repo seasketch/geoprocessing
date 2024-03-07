@@ -8,6 +8,10 @@ import {
   genRandomPolygons,
   Polygon,
 } from "@seasketch/geoprocessing";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * genRandomFeature script - generates random feature within the bounding box of the project.  Not guaranteed to be within the EEZ boundary

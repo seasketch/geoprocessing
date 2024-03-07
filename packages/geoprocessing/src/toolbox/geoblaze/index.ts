@@ -1,3 +1,3 @@
-export * from "./geoblaze";
-export * from "./rasterStats";
-export * from "./rasterStatsToMetrics";
+export * from "./geoblaze.js";
+export * from "./rasterStats.js";
+export * from "./rasterStatsToMetrics.js";

@@ -1,6 +1,6 @@
-import { Metric, MetricDimension, StatsObject } from "../../types";
-import { roundDecimal } from "../../helpers";
-import { createMetric } from "../../metrics";
+import { Metric, MetricDimension, StatsObject } from "../../types/index.js";
+import { roundDecimal } from "../../helpers/index.js";
+import { createMetric } from "../../metrics/index.js";
 
 /**
  * Converts an array of geoblaze raster StatsObjects to an array of Metrics

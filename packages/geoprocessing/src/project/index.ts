@@ -1,1 +1,1 @@
-export * from "./ProjectClientBase";
+export * from "./ProjectClientBase.js";

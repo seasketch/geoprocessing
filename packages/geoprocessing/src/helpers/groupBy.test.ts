@@ -1,4 +1,4 @@
-import { groupBy } from "./groupBy";
+import { groupBy } from "./groupBy.js";
 
 const list = [
   { name: "foo", id: 1 },

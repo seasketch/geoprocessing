@@ -6,8 +6,8 @@ import {
 import {
   PreprocessingHandlerOptions,
   GeoprocessingHandlerOptions,
-} from "../src/types";
-import { VectorDataSourceDetails } from "../src";
+} from "../src/types/index.js";
+import { VectorDataSourceDetails } from "../src/index.js";
 
 /**
  * Signature for top-level lambda function which invokes the GP function and

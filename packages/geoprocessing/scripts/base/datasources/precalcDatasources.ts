@@ -1,21 +1,21 @@
-import { readDatasources } from "./datasources";
+import { readDatasources } from "./datasources.js";
 import {
   Metric,
   Datasource,
   Geography,
   VectorDatasource,
-} from "../../../src/types";
+} from "../../../src/types/index.js";
 import {
   firstMatching,
   isRasterDatasource,
   isVectorDatasource,
-} from "../../../src/datasources";
-import ProjectClientBase from "../../../src/project/ProjectClientBase";
-import { readGeographies } from "../geographies/geographies";
-import { createOrUpdatePrecalcMetrics } from "./precalc";
-import { precalcVectorDatasource } from "./precalcVectorDatasource";
-import { precalcRasterDatasource } from "./precalcRasterDatasource";
-import cloneDeep from "lodash/cloneDeep";
+} from "../../../src/datasources/index.js";
+import ProjectClientBase from "../../../src/project/ProjectClientBase.js";
+import { readGeographies } from "../geographies/geographies.js";
+import { createOrUpdatePrecalcMetrics } from "./precalc.js";
+import { precalcVectorDatasource } from "./precalcVectorDatasource.js";
+import { precalcRasterDatasource } from "./precalcRasterDatasource.js";
+import cloneDeep from "lodash/cloneDeep.js";
 
 export interface PrecalcDatasourceOptions {
   /** Alternative path to look for datasources than default if using internal.*/

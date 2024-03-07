@@ -2,8 +2,8 @@
  * @group unit
  */
 
-import { overlapAreaGroupMetrics } from "./overlapGroupMetrics";
-import { SketchCollection, Polygon, Metric } from "../types";
+import { overlapAreaGroupMetrics } from "./overlapGroupMetrics.js";
+import { SketchCollection, Polygon, Metric } from "../types/index.js";
 
 const sketch: SketchCollection<Polygon> = {
   type: "FeatureCollection",

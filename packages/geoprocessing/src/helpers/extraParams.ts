@@ -1,4 +1,4 @@
-import { DefaultExtraParams } from "../types";
+import { DefaultExtraParams } from "../types/index.js";
 
 /**
  * Returns first element from param object at paramName key.  Parameter can be string or array of strings

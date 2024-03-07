@@ -1,1 +1,1 @@
-export * from "./genRandomPolygons";
+export * from "./genRandomPolygons.js";

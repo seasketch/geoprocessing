@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { ReportPage } from "./ReportPage";
-import ReportDecorator from "./storybook/ReportDecorator";
-import { SegmentControl } from "./SegmentControl";
+import { ReportPage } from "./ReportPage.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
+import { SegmentControl } from "./SegmentControl.js";
 
 export default {
   component: ReportPage,

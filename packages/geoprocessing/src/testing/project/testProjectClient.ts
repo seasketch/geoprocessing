@@ -4,7 +4,7 @@ import metrics from "./metrics.json";
 import objectives from "./objectives.json";
 import basic from "./basic.json";
 
-import { ProjectClientBase, GeoprocessingJsonConfig, Package } from "../../";
+import { ProjectClientBase, GeoprocessingJsonConfig, Package } from "../../index.js";
 
 const projectPackage: Package = {
   name: "test-project",

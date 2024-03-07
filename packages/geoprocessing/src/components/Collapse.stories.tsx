@@ -1,6 +1,6 @@
 import React from "react";
-import { Collapse } from "../components/Collapse";
-import { ReportDecorator, Card } from ".";
+import { Collapse } from "../components/Collapse.js";
+import { ReportDecorator, Card } from "./index.js";
 
 export default {
   component: Collapse,

@@ -3,13 +3,13 @@
  * @group scripts/e2e
  */
 
-import { importDatasource } from "./importDatasource";
+import { importDatasource } from "./importDatasource.js";
 import {
   ProjectClientBase,
   internalVectorDatasourceSchema,
   internalRasterDatasourceSchema,
-} from "../../../src";
-import configFixtures from "../../../src/testing/fixtures/projectConfig";
+} from "../../../src/index.js";
+import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
 import fs from "fs-extra";
 import path from "path";
 

@@ -1,4 +1,4 @@
-import { TemplateMetadata, copyTemplates } from "../template/addTemplate";
+import { TemplateMetadata, copyTemplates } from "../template/addTemplate.js";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
@@ -9,13 +9,13 @@ import {
   projectSchema,
   geographiesSchema,
   datasourcesSchema,
-} from "../../src/types";
+} from "../../src/types/index.js";
 import util from "util";
-import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths";
-import { getBbox } from "../global/datasources/mr-eez";
+import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths.js";
+import { getBbox } from "../global/datasources/mr-eez.js";
 import { $ } from "zx";
-import { globalDatasources } from "../../src/datasources/global";
-import { isVectorDatasource } from "../../src";
+import { globalDatasources } from "../../src/datasources/global.js";
+import { isVectorDatasource } from "../../src/index.js";
 
 $.verbose = false;
 

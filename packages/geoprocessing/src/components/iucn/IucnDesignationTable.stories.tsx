@@ -1,8 +1,8 @@
 import React from "react";
-import { IucnDesignationTable } from "./IucnDesignationTable";
-import { Card } from "../Card";
-import { ReportDecorator } from "../storybook/ReportDecorator";
-import Translator from "../i18n/TranslatorAsync";
+import { IucnDesignationTable } from "./IucnDesignationTable.js";
+import { Card } from "../Card.js";
+import { ReportDecorator } from "../storybook/ReportDecorator.js";
+import Translator from "../i18n/TranslatorAsync.js";
 
 export default {
   component: IucnDesignationTable,

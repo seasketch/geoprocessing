@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { GroupPill } from "../Pill";
+import { GroupPill } from "../Pill.js";
 
 export interface IucnLevelPillProps {
   level: string;

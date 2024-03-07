@@ -4,9 +4,9 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 import camelcase from "camelcase";
-import { GeoprocessingJsonConfig } from "../../src/types";
+import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import pascalcase from "pascalcase";
-import { getBlankProjectPath } from "../util/getPaths";
+import { getBlankProjectPath } from "../util/getPaths.js";
 
 async function createClient() {
   const answers = await inquirer.prompt([

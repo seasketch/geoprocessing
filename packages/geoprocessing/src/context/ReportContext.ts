@@ -1,5 +1,5 @@
 import React from "react";
-import { SketchProperties, GeoprocessingProject } from "../types";
+import { SketchProperties } from "../types/index.js";
 
 /**
  * Provides necessary context to ReportClient components, particularly for

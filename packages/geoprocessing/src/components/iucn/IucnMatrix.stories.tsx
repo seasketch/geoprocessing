@@ -1,8 +1,8 @@
 import React from "react";
-import { IucnMatrix } from "./IucnMatrix";
-import { Card } from "../Card";
-import { ReportDecorator } from "../storybook/ReportDecorator";
-import Translator from "../i18n/TranslatorAsync";
+import { IucnMatrix } from "./IucnMatrix.js";
+import { Card } from "../Card.js";
+import { ReportDecorator } from "../storybook/ReportDecorator.js";
+import Translator from "../i18n/TranslatorAsync.js";
 
 export default {
   component: IucnMatrix,

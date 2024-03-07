@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import ResultsCard from "./ResultsCard";
-import ReportDecorator, {
+import ResultsCard from "./ResultsCard.js";
+import {
   createReportDecorator,
-} from "./storybook/ReportDecorator";
-import { ReportContext, sampleSketchReportContextValue } from "../context";
-import Skeleton from "./Skeleton";
-import { LayerToggle } from "../../client-ui";
-import { Collapse } from "./Collapse";
-import fixtures from "../testing/fixtures";
-import DataDownload from "./DataDownload";
-import ToolbarCard from "./ToolbarCard";
+} from "./storybook/ReportDecorator.js";
+import { ReportContext, sampleSketchReportContextValue } from "../context/index.js";
+import Skeleton from "./Skeleton.js";
+import { LayerToggle } from "../../client-ui.js";
+import { Collapse } from "./Collapse.js";
+import fixtures from "../testing/fixtures/index.js";
+import DataDownload from "./DataDownload.js";
+import ToolbarCard from "./ToolbarCard.js";
 
 const contextValue = sampleSketchReportContextValue({
   visibleLayers: [],

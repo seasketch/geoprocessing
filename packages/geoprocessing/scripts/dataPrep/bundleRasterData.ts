@@ -12,7 +12,7 @@ import {
   invalidateCloudfrontDistribution,
   CloudfrontDistributionDetails,
   scheduleObjectsForDeletion,
-} from "./aws";
+} from "./aws.js";
 
 program
   .command("bundle-rasters <datasource-name>")

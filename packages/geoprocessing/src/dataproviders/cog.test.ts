@@ -2,13 +2,12 @@
  * @jest-environment node
  * @group e2e
  */
-import { loadCog, loadCogWindow } from "./cog";
-import { Feature, Polygon, Sketch } from "../types";
-import { genSampleSketch } from "../helpers";
+import { loadCog, loadCogWindow } from "./cog.js";
+import { Feature, Polygon, Sketch } from "../types/index.js";
+import { genSampleSketch } from "../helpers/index.js";
 // @ts-ignore
 import geoblaze from "geoblaze";
 import parseGeoraster from "georaster";
-import bbox from "@turf/bbox";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]

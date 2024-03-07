@@ -86,7 +86,7 @@ export const getHistogram = async (
 ): Promise<Histogram> => {
   let histogram = {};
   try {
-    histogram = await geoblaze.histogram(raster, feat, options)[0];
+    histogram = (await geoblaze.histogram(raster, feat, options))[0];
   } catch (err) {
     console.log(
       "overlapRaster geoblaze.histogram threw, there must not be any cells with value overlapping the geometry"

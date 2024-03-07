@@ -15,6 +15,7 @@ import {
   datasourceConfig,
   getRasterBoxSpherical,
   rasterMetrics,
+  toRasterProjection,
 } from "../../../src";
 import bbox from "@turf/bbox";
 
@@ -148,7 +149,8 @@ export async function precalcRasterMetrics(
   // Creates metrics for categorical raster (histogram, count valid cells by class)
   if (datasource.measurementType === "categorical") {
     const metrics: Metric[] = [];
-    const histogram = (await getHistogram(raster)) as Histogram;
+    const projectedFeat = toRasterProjection(raster, geographyFeatureColl);
+    const histogram = (await getHistogram(raster, projectedFeat)) as Histogram;
     if (!histogram) throw new Error("Histogram not returned");
 
     Object.keys(histogram).forEach((curClass) => {

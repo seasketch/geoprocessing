@@ -22,7 +22,8 @@
     "scripts": {
         "build:core": "tsc",
         "build:scripts": "cd scripts && tsc",
-        "test": "jest --group=-e2e && npm run test:scripts",
+        "test": "vitest",
+        "test:old": "jest --group=-e2e && npm run test:scripts",
         "test:local": "start-server-and-test start-data 8080 'jest --runInBand && npm run test:scripts:local'",
         "test:matching": "jest --group=-e2e --runInBand -t",
         "test:e2e": "start-server-and-test start-data 8080 'jest --runInBand --group=e2e'",
@@ -40,7 +41,7 @@
         "start-typedoc": "npx typedoc --watch --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none",
         "build-typedoc": "npx typedoc --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none",
         "build-docs": "npm run build-typedoc && npm run build-storybook",
-        "prepare": "npm run build:core && npm run build:scripts && npm run _prepare",
+        "preparez": "npm run build:core && npm run build:scripts && npm run _prepare",
         "_prepare": "npx tsx scripts/npm/prepare.ts",
         "start-data": "http-server . -c-1",
         "watch": "tsc --watch",
@@ -239,8 +240,11 @@
         "eslint-plugin-unicorn": "^51.0.1",
         "identity-obj-proxy": "^3.0.0",
         "jest-docblock": "^27.5.1",
+        "jsdom": "^24.0.0",
         "mock-socket": "^9.0.3",
-        "typedoc": "^0.24.8"
+        "typedoc": "^0.24.8",
+        "vite": "^5.1.5",
+        "vitest": "^1.3.1"
     },
     "optionalDependencies": {
         "bufferutil": "^4.0.1",

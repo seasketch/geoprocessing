@@ -1,5 +1,5 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
 import parseGeoraster from "georaster";

@@ -1,5 +1,5 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group scripts/e2e
  */
 

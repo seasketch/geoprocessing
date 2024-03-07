@@ -97,7 +97,7 @@ If your test file has dependencies (like Geoblaze for example) that requires a f
 
 ```javascript
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group e2e
  */
 ```

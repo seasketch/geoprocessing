@@ -1,5 +1,5 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group e2e
  */
 import { Polygon, Sketch, Feature } from "../../types/index.js";

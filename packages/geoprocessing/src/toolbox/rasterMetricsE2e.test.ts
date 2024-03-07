@@ -1,11 +1,16 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group e2e
  */
 import { rasterMetrics } from "./rasterMetrics.js";
 //@ts-ignore
 import geoblaze from "geoblaze";
-import { MultiPolygon, Polygon, Sketch, SketchCollection } from "../types/index.js";
+import {
+  MultiPolygon,
+  Polygon,
+  Sketch,
+  SketchCollection,
+} from "../types/index.js";
 
 describe("rasterMetrics", () => {
   test("rasterMetrics - special", async () => {

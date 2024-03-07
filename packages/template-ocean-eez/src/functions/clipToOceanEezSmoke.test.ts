@@ -1,5 +1,5 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group smoke
  */
 import handler, { clipToOceanEez } from "./clipToOceanEez";

@@ -1,5 +1,5 @@
 module.exports = {
-  name: "scripts",
+  // name: "scripts",
   displayName: "GP Scripts",
   roots: ["."],
   testPathIgnorePatterns: ["/__test__/"],
@@ -7,4 +7,9 @@ module.exports = {
   globalSetup: "./jest.setup.ts",
   globalTeardown: "./jest.teardown.ts",
   runner: "groups",
+  transform: {},
+  extensionsToTreatAsEsm: [".ts", ".tsx"],
+  moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+  },
 };

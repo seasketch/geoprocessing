@@ -1,5 +1,5 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group e2e
  */
 import { rasterStats } from "./rasterStats.js";

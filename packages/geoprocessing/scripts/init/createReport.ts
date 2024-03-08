@@ -75,17 +75,24 @@ const createReport = async () => {
       fs.readFileSync("./geoprocessing.json").toString()
     ) as GeoprocessingJsonConfig;
     const gpFunctions = geoprocessingJson.geoprocessingFunctions || [];
+    const availableMetricGroups = metrics
+      .map((metric) => metric.metricId)
+      .filter(
+        (metricId) => !gpFunctions.includes(`src/functions/${metricId}.ts`)
+      );
+    if (!availableMetricGroups.length) {
+      console.log(
+        "No available metric groups - create a metric group to continue"
+      );
+      return;
+    }
 
     // Only allow creation of reports for unused metric groups (prevents overwriting)
     const titleChoiceQuestion = {
       type: "list",
       name: "title",
       message: "Select the metric group to report on",
-      choices: metrics
-        .map((metric) => metric.metricId)
-        .filter(
-          (metricId) => !gpFunctions.includes(`src/functions/${metricId}.ts`)
-        ),
+      choices: availableMetricGroups,
     };
     const { title } = await inquirer.prompt([titleChoiceQuestion]);
     answers.title = title;
@@ -106,14 +113,38 @@ const createReport = async () => {
 
   // Stat to calculate
   if (answers.type === "raster") {
-    const statQuestion = {
+    const measurementTypeQuestion = {
       type: "list",
-      name: "stat",
-      message: "Statistic to calculate",
-      choices: ["sum", "count", "area"],
+      name: "measurementType",
+      message: "Type of raster data",
+      choices: [
+        {
+          value: "quantitative",
+          name: "Quantitative - Continuous variable across the raster",
+        },
+        {
+          value: "categorical",
+          name: "Categorical - Discrete values representing different classes",
+        },
+      ],
     };
-    const { stat } = await inquirer.prompt([statQuestion]);
-    answers.stat = stat;
+    const { measurementType } = await inquirer.prompt([
+      measurementTypeQuestion,
+    ]);
+    answers.measurementType = measurementType;
+
+    if (answers.measurementType === "quantitative") {
+      const statQuestion = {
+        type: "list",
+        name: "stat",
+        message: "Statistic to calculate",
+        choices: ["sum", "count", "area"],
+      };
+      const { stat } = await inquirer.prompt([statQuestion]);
+      answers.stat = stat;
+    } else {
+      answers.stat = "valid";
+    }
   } else if (answers.type === "vector") {
     // For vector overlap reports, use area stat
     answers.stat = "area";

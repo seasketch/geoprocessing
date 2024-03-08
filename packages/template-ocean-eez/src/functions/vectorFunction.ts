@@ -118,7 +118,7 @@ export async function vectorFunction(
 export default new GeoprocessingHandler(vectorFunction, {
   title: "vectorFunction",
   description: "Function description",
-  timeout: 60, // seconds
+  timeout: 500, // seconds
   memory: 1024, // megabytes
   executionMode: "async",
   // Specify any Sketch Class form attributes that are required

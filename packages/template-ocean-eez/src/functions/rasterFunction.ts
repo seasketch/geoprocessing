@@ -72,8 +72,12 @@ export async function rasterFunction(
         const overlapResult = await rasterMetrics(raster, {
           metricId: metricGroup.metricId,
           feature: clippedSketch,
-          stats: ["sum"],
+          ...(ds.measurementType === "quantitative" && { stats: ["sum"] }),
+          ...(ds.measurementType === "categorical" && {
+            category: curClass.classId,
+          }),
         });
+
         return overlapResult.map(
           (metrics): Metric => ({
             ...metrics,
@@ -99,7 +103,7 @@ export async function rasterFunction(
 export default new GeoprocessingHandler(rasterFunction, {
   title: "rasterFunction",
   description: "Function description",
-  timeout: 60, // seconds
+  timeout: 500, // seconds
   memory: 1024, // megabytes
   executionMode: "async",
   // Specify any Sketch Class form attributes that are required

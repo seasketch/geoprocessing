@@ -5,7 +5,9 @@ export default defineConfig({
   test: {
     name: "src",
     root: "./src",
-    environment: "jsdom",
+    // include: ["**/*.{test}.?(c|m)[jt]s?(x)"],
+    exclude: ["src/components/**"],
+    environment: "node",
     globals: true,
   },
 });

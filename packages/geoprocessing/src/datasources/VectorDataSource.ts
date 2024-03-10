@@ -9,12 +9,15 @@ import Flatbush from "flatbush";
 import Pbf from "pbf";
 import geobuf from "geobuf";
 import { LRUCache } from "mnemonist";
-import RBush from "rbush";
+import rbushDefault from "rbush";
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
 import isHostedOnLambda from "../util/isHostedOnLambda.js";
 import "../util/fetchPolyfill";
 import { union } from "union-subdivided-polygons";
+
+import { defaultImport } from "default-import";
+const RBush = await defaultImport(rbushDefault);
 
 // import { recombineTree } from "./recombine";
 
@@ -120,7 +123,6 @@ export interface Node {
   children?: Node[];
 }
 
-//@ts-ignore
 class RBushIndex extends RBush<Feature> {
   toBBox(feature: Feature) {
     const [minX, minY, maxX, maxY] = feature.bbox!;
@@ -307,7 +309,6 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
             }
             feature.properties = feature.properties || {};
             feature.properties._url = url;
-            //@ts-ignore
             this.tree.insert(feature);
           }
           this.pendingRequests.delete(key);
@@ -336,13 +337,11 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
 
   private async removeFeaturesFromIndex(features: Array<Feature>) {
     for (const feature of features) {
-      //@ts-ignore
       this.tree.remove(feature);
     }
   }
 
   async clear() {
-    //@ts-ignore
     this.tree.clear();
     for (const key of this.pendingRequests.keys()) {
       const { abortController } = this.pendingRequests.get(key)!;
@@ -436,7 +435,6 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
         .slice(0, this.options.cacheSize)
         .map((id) => this.fetchBundle(id))
     ).then(() => {
-      //@ts-ignore
       const features = this.tree.search({
         minX: bbox[0],
         minY: bbox[1],
@@ -470,7 +468,6 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     // console.time("retrieval and processing");
     // debug(`Searching index`, bbox);
 
-    //@ts-ignore
     let features = this.tree.search({
       minX: bbox[0],
       minY: bbox[1],

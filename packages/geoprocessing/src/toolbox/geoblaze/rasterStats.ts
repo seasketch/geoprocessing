@@ -135,5 +135,6 @@ export const rasterStats = async (
     );
     return defaultStats;
   }
+
   return finalStats;
 };

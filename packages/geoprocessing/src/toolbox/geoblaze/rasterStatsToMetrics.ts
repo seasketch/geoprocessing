@@ -1,6 +1,7 @@
 import { Metric, MetricDimension, StatsObject } from "../../types";
 import { roundDecimal } from "../../helpers";
 import { createMetric } from "../../metrics";
+import { object } from "zod";
 
 /**
  * Converts an array of geoblaze raster StatsObjects to an array of Metrics
@@ -46,18 +47,36 @@ export const rasterStatsToMetrics = (
       const value = curStats[statName];
 
       if (categorical) {
-        categoryClassValues?.forEach((curClass) => {
-          metrics.push(
-            createMetric({
-              metricId: "valid" ?? `${metricIdPrefix}valid`,
-              value: truncate
-                ? roundDecimal(value[curClass], 6, { keepSmallValues: true })
-                : value[curClass],
-              ...metricPartial,
-              [bandMetricProperty]: bandMetricValues[band],
+        categoryClassValues
+          ? categoryClassValues.forEach((curClass) => {
+              metrics.push(
+                createMetric({
+                  metricId: "valid" ?? `${metricIdPrefix}valid`,
+                  value: truncate
+                    ? roundDecimal(value[curClass], 6, {
+                        keepSmallValues: true,
+                      })
+                    : value[curClass],
+                  ...metricPartial,
+                  [bandMetricProperty]: bandMetricValues[band],
+                  classId: curClass,
+                })
+              );
             })
-          );
-        });
+          : Object.keys(value).forEach((curClass) => {
+              metrics.push(
+                createMetric({
+                  metricId: "valid" ?? `${metricIdPrefix}valid`,
+                  value: truncate
+                    ? roundDecimal(value[curClass], 6, {
+                        keepSmallValues: true,
+                      })
+                    : value[curClass],
+                  ...metricPartial,
+                  [bandMetricProperty]: bandMetricValues[band],
+                })
+              );
+            });
       } else {
         metrics.push(
           createMetric({

@@ -84,6 +84,7 @@ export async function rasterMetrics(
             return {};
           }
         })();
+
         const curMetrics = rasterStatsToMetrics(curStats, {
           metricId,
           metricIdPrefix,
@@ -140,6 +141,7 @@ export async function rasterMetrics(
       categoryClassValues,
       ...(statOptions ?? {}),
     });
+
     const wholeMetrics = rasterStatsToMetrics(wholeStats, {
       metricId,
       metricIdPrefix,

@@ -157,7 +157,7 @@ export async function precalcRasterMetrics(
     ).map((m) => ({
       ...m,
       geographyId: geography.geographyId,
-      classId: datasource.datasourceId + "-total",
+      classId: datasource.datasourceId + "-" + m.classId,
     }));
     return metrics;
   }

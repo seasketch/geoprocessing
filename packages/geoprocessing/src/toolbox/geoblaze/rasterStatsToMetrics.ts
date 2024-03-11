@@ -1,7 +1,6 @@
 import { Metric, MetricDimension, StatsObject } from "../../types";
 import { roundDecimal } from "../../helpers";
 import { createMetric } from "../../metrics";
-import { object } from "zod";
 
 /**
  * Converts an array of geoblaze raster StatsObjects to an array of Metrics

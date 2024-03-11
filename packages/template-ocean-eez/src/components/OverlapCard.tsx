@@ -66,6 +66,12 @@ export const OverlapCard: React.FunctionComponent<GeogProp> = (props) => {
         });
         const metrics = [...valueMetrics, ...percentMetrics];
 
+        const objectives = (() => {
+          const objectives = project.getMetricGroupObjectives(metricGroup, t);
+          if (!objectives.length) return undefined;
+          else return objectives;
+        })();
+
         return (
           <ReportError>
             <p>
@@ -78,6 +84,7 @@ export const OverlapCard: React.FunctionComponent<GeogProp> = (props) => {
             <ClassTable
               rows={metrics}
               metricGroup={metricGroup}
+              objective={objectives}
               columnConfig={[
                 {
                   columnLabel: " ",

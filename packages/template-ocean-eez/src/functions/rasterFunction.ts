@@ -74,7 +74,8 @@ export async function rasterFunction(
           feature: clippedSketch,
           ...(ds.measurementType === "quantitative" && { stats: ["sum"] }),
           ...(ds.measurementType === "categorical" && {
-            category: curClass.classId,
+            categorical: true,
+            categoryClassValues: [curClass.classId],
           }),
         });
 

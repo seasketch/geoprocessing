@@ -22,6 +22,8 @@ export const rasterStatsToMetrics = (
     bandMetricProperty?: MetricDimension;
     /** If multi-band raster, array of indexed by band number to assign to bandMetricsProperty ['mangroves','coral']. ['band 1','band 2]  */
     bandMetricValues?: string[];
+    categorical?: boolean;
+    categoryClassValues?: string[];
   } = {}
 ): Metric[] => {
   const {
@@ -33,22 +35,41 @@ export const rasterStatsToMetrics = (
     bandMetricValues = [...Array(statsObjects.length).keys()].map(
       (x) => `band-${x}`
     ),
+    categorical = false,
+    categoryClassValues,
   } = options;
   let metrics: Metric[] = [];
+
   statsObjects.forEach((curStats, band) => {
     const statNames = Object.keys(curStats);
     statNames.forEach((statName) => {
       const value = curStats[statName];
-      metrics.push(
-        createMetric({
-          metricId: metricId ?? `${metricIdPrefix}${statName}`,
-          value: truncate
-            ? roundDecimal(value, 6, { keepSmallValues: true })
-            : value,
-          ...metricPartial,
-          [bandMetricProperty]: bandMetricValues[band],
-        })
-      );
+
+      if (categorical) {
+        categoryClassValues?.forEach((curClass) => {
+          metrics.push(
+            createMetric({
+              metricId: "valid" ?? `${metricIdPrefix}valid`,
+              value: truncate
+                ? roundDecimal(value[curClass], 6, { keepSmallValues: true })
+                : value[curClass],
+              ...metricPartial,
+              [bandMetricProperty]: bandMetricValues[band],
+            })
+          );
+        });
+      } else {
+        metrics.push(
+          createMetric({
+            metricId: metricId ?? `${metricIdPrefix}${statName}`,
+            value: truncate
+              ? roundDecimal(value, 6, { keepSmallValues: true })
+              : value,
+            ...metricPartial,
+            [bandMetricProperty]: bandMetricValues[band],
+          })
+        );
+      }
     });
   });
   return metrics;

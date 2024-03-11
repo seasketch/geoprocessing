@@ -8,6 +8,7 @@ import { Feature, MultiPolygon, FeatureCollection } from "@turf/helpers";
 import geoblaze, { Georaster } from "geoblaze";
 import { StatsObject, CalcStatsOptions } from "../../types/geoblaze";
 import { toRasterProjection, defaultStatValues } from "./geoblaze";
+import { forEach } from "lodash";
 
 /**
  * options accepted by rasterStats
@@ -25,7 +26,8 @@ export interface RasterStatsOptions extends CalcStatsOptions {
   /** Optional number of bands in the raster, defaults to 1, used to initialize zero values */
   numBands?: number;
   /** For categorical rasters, category is equal to the classId in metricGroup */
-  category?: string;
+  categorical?: boolean;
+  categoryClassValues?: string[];
 }
 
 /**
@@ -43,7 +45,8 @@ export const rasterStats = async (
     stats = ["sum"],
     feature,
     filterFn,
-    category = "",
+    categorical = false,
+    categoryClassValues,
     ...restCalcOptions
   } = options;
 
@@ -53,9 +56,9 @@ export const rasterStats = async (
   // If area is included in stats list, then also include valid stat which is needed to calculate area later
   if (stats.includes("area")) statsToCalculate.push("valid");
   // If categorical raster, only calculate valid stat
-  if (category) {
-    statsToCalculate = ["valid"];
-    statsToPublish = ["valid"];
+  if (categorical) {
+    statsToCalculate = ["histogram"];
+    statsToPublish = ["histogram"];
   }
 
   const projectedFeat = toRasterProjection(raster, feature);
@@ -74,14 +77,20 @@ export const rasterStats = async (
 
   try {
     // If categorical raster, use histogram to calculate valid cells
-    statsByBand = category
+    statsByBand = categorical
       ? (
           await geoblaze.histogram(raster, projectedFeat, {
             scaleType: "nominal",
           })
-        ).map((h: any) => ({
-          valid: h[category],
-        }))
+        ).map((h: any) => {
+          let hist = {};
+          if (!categoryClassValues || categoryClassValues.length === 0) {
+            return { histogram: h };
+          } else {
+            categoryClassValues.forEach((c) => (hist[c] = h[c] ?? 0));
+            return { histogram: hist };
+          }
+        })
       : ((await geoblaze.stats(
           raster,
           projectedFeat,
@@ -109,16 +118,14 @@ export const rasterStats = async (
         (soFar, curStat) => {
           const rawValue = statBand[curStat];
           const curValue =
-            rawValue !== undefined &&
-            isNaN(rawValue) === false &&
-            typeof rawValue === "number"
-              ? rawValue
-              : defaultStatValues[curStat];
+            rawValue === undefined ||
+            (!categorical && (isNaN(rawValue) || typeof rawValue !== "number"))
+              ? defaultStatValues[curStat]
+              : rawValue;
           return { ...soFar, [curStat]: curValue };
         },
         {}
       );
-
       // Transfer calculated stats if valid number
       finalStats.push(finalStatsBand);
     });

@@ -2,6 +2,7 @@
  * @vitest-environment node
  * @group unit
  */
+import { describe, test, expect } from "vitest";
 import fix from "../testing/fixtures/sketches.js";
 import parseGeoraster from "georaster";
 import { overlapRasterSum } from "./overlapRasterSum.js";

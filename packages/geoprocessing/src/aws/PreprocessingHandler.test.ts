@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import { PreprocessingHandler } from "./PreprocessingHandler.js";
 import { ValidationError } from "../types/index.js";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";

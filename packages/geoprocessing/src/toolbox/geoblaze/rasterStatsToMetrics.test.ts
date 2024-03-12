@@ -2,6 +2,7 @@
  * @vitest-environment node
  * @group unit
  */
+import { describe, test, expect } from "vitest";
 import { rasterStatsToMetrics } from "./rasterStatsToMetrics.js";
 import { StatsObject } from "../../types/index.js";
 import deepEqual from "fast-deep-equal";

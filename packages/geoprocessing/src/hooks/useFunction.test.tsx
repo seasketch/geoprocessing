@@ -1,6 +1,7 @@
+import { describe, test, expect, vi } from "vitest";
 import React, { useState } from "react";
 import { render, act as domAct } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom/vitest";
 import { useFunction } from "./useFunction.js";
 import { ReportContext, ReportContextValue } from "../context/index.js";
 import { v4 as uuid } from "uuid";
@@ -57,7 +58,7 @@ beforeEach(() => {
 });
 
 test("useFunction won't accept unrecognizable responses", async () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   fetchMock.getOnce(
     "*",
     {},
@@ -70,7 +71,7 @@ test("useFunction won't accept unrecognizable responses", async () => {
   });
   expect(result.current.loading).toBe(true);
   await act(async () => {
-    jest.runAllTimers();
+    vi.runAllTimers();
   });
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
   expect(result.current.loading).toBe(false);
@@ -78,7 +79,7 @@ test("useFunction won't accept unrecognizable responses", async () => {
 });
 
 test("useFunction unsets loading prop and sets task upon completion of job (executionMode=sync)", async () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   const id = uuid();
   fetchMock.getOnce(
     "*",
@@ -104,7 +105,7 @@ test("useFunction unsets loading prop and sets task upon completion of job (exec
 
   expect(result.current.loading).toBe(true);
   await act(async () => {
-    jest.runAllTimers();
+    vi.runAllTimers();
   });
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
   expect(result.current.loading).toBe(false);
@@ -115,7 +116,7 @@ test("useFunction unsets loading prop and sets task upon completion of job (exec
 });
 
 test("useFunction handles errors thrown within geoprocessing function", async () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   const id = uuid();
   fetchMock.getOnce(
     "*",
@@ -138,7 +139,7 @@ test("useFunction handles errors thrown within geoprocessing function", async ()
   });
   expect(result.current.loading).toBe(true);
   await act(async () => {
-    jest.runAllTimers();
+    vi.runAllTimers();
   });
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
   expect(result.current.loading).toBe(false);
@@ -200,7 +201,7 @@ function sleep(ms: number) {
 }
 
 test("changing ReportContext.geometryUri fetches new results", async () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   const id = uuid();
   fetchMock.getOnce(
     "*",
@@ -227,7 +228,7 @@ test("changing ReportContext.geometryUri fetches new results", async () => {
   );
   expect(getByRole("alert")).toHaveTextContent("loading...");
   await domAct(async () => {
-    jest.runAllTimers();
+    vi.runAllTimers();
   });
   // expect(fetchMock.calls("https://example.com/project").length).toBe(1);
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
@@ -302,7 +303,7 @@ const MultiCardTestReport = () => {
 };
 
 test("useFunction called multiple times with the same arguments will only fetch once", async () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   const id = uuid();
   fetchMock.getOnce(
     "*",
@@ -331,7 +332,7 @@ test("useFunction called multiple times with the same arguments will only fetch 
     expect(el).toHaveTextContent("loading...");
   }
   await domAct(async () => {
-    jest.runAllTimers();
+    vi.runAllTimers();
   });
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
   expect(getAllByText(/Task Complete/i).length).toBe(2);
@@ -343,7 +344,7 @@ test("useFunction called multiple times with the same arguments will only fetch 
 });
 
 test("useFunction uses a local cache for repeat requests", async () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   const id = uuid();
   const sketchProperties = makeSketchProperties(id);
   fetchMock.getOnce(
@@ -372,7 +373,7 @@ test("useFunction uses a local cache for repeat requests", async () => {
   );
   expect(getByRole("alert")).toHaveTextContent("loading...");
   await domAct(async () => {
-    jest.runAllTimers();
+    vi.runAllTimers();
   });
   expect(getAllByText(/Task Complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "plenty");
@@ -385,7 +386,7 @@ test("useFunction uses a local cache for repeat requests", async () => {
     </TestContainer>
   );
   await domAct(async () => {
-    jest.runAllTimers();
+    vi.runAllTimers();
   });
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
 });
@@ -403,7 +404,7 @@ test("Returns error if ReportContext does not include required values", () => {
 });
 
 test("Exposes error to client if project metadata can't be fetched", async () => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   fetchMock.get("https://example.com/project", 500, { overwriteRoutes: true });
   useFunction.reset();
   const { result } = renderHook(() => useFunction("calcFoo"), {
@@ -421,7 +422,7 @@ test("Exposes error to client if project metadata can't be fetched", async () =>
     ),
   });
   await act(async () => {
-    jest.runAllTimers();
+    vi.runAllTimers();
   });
   expect(result.current.error).toContain("metadata");
 });

@@ -2,9 +2,10 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import { booleanOverlap } from "./booleanOverlap.js";
 import { genSampleSketch } from "../helpers/index.js";
-import { Polygon } from "../types/geojson.js"
+import { Polygon } from "../types/geojson.js";
 
 const pointSketch = genSampleSketch({
   type: "Point",

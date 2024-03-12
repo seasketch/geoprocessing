@@ -2,6 +2,7 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import { firstMatchingMetric } from "../metrics/index.js";
 import { overlapArea, overlapSubarea } from "./overlapArea.js";
 import area from "@turf/area";

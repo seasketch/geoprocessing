@@ -3,6 +3,7 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import project from "../testing/project/index.js";
 import { genClipLoader } from "./genClipLoader.js";
 

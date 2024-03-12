@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import { toSketchArray } from "./sketch.js";
 import {
   genSampleSketch,

@@ -139,7 +139,7 @@ describe("splitSketch", () => {
         ],
       ]);
     } else {
-      fail("Should not get here");
+      throw new Error("Should not get here");
     }
   });
 
@@ -185,7 +185,7 @@ describe("splitSketch", () => {
         ],
       ]);
     } else {
-      fail("Should not reach here");
+      throw new Error("Should not reach here");
     }
   });
 });

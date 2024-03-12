@@ -3,6 +3,7 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import area from "@turf/area";
 import project from "../testing/project/index.js";
 import { genClipLoader } from "../dataproviders/index.js";

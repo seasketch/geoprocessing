@@ -2,6 +2,7 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import { overlapFeatures } from "./overlapFeatures.js";
 import area from "@turf/area";
 import fix from "../testing/fixtures/squareSketches.js";

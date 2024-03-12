@@ -3,6 +3,7 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import { getFeatures } from "./getFeatures.js";
 import project from "../testing/project/index.js";
 

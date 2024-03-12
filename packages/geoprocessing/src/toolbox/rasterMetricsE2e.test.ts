@@ -2,6 +2,7 @@
  * @vitest-environment node
  * @group e2e
  */
+import { describe, test, expect } from "vitest";
 import { rasterMetrics } from "./rasterMetrics.js";
 //@ts-ignore
 import geoblaze from "geoblaze";

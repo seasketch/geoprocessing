@@ -1,8 +1,14 @@
+import { describe, test, expect } from "vitest";
 import { GeoprocessingHandler } from "./GeoprocessingHandler.js";
 import Tasks, { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks.js";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { v4 as uuid } from "uuid";
-import { Sketch, SketchCollection, Feature, FeatureCollection } from "../types/index.js";
+import {
+  Sketch,
+  SketchCollection,
+  Feature,
+  FeatureCollection,
+} from "../types/index.js";
 // @ts-ignore
 import fetchMock from "fetch-mock-jest";
 import deepEqual from "fast-deep-equal";

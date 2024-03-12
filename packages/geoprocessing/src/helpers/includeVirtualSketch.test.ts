@@ -3,6 +3,7 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import { SketchCollection, NullSketchCollection } from "../types/index.js";
 import {
   includeVirtualSketch,

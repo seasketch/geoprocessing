@@ -22,6 +22,7 @@ interface OverlapRasterOptions extends RasterStatsOptions {
   includeChildMetrics?: boolean;
   /** If categorical raster, get categoryClassValues (in metric group as classIds) from raster histogram */
   categorical?: boolean;
+  categoryMetricProperty?: MetricDimension;
   categoryClassValues?: string[];
 }
 
@@ -42,6 +43,7 @@ export async function rasterMetrics(
     bandMetricValues,
     includeChildMetrics = true,
     categorical = false,
+    categoryMetricProperty,
     categoryClassValues,
     ...statOptions
   } = options;
@@ -92,7 +94,8 @@ export async function rasterMetrics(
           bandMetricProperty,
           bandMetricValues,
           categorical,
-          categoryClassValues,
+          categoryMetricProperty,
+          categoryMetricValues: categoryClassValues,
         });
         metrics = metrics.concat(curMetrics);
       });
@@ -129,7 +132,8 @@ export async function rasterMetrics(
         bandMetricProperty,
         bandMetricValues,
         categorical,
-        categoryClassValues,
+        categoryMetricProperty,
+        categoryMetricValues: categoryClassValues,
       });
       metrics = metrics.concat(collMetrics);
     }
@@ -141,6 +145,7 @@ export async function rasterMetrics(
       categoryClassValues,
       ...(statOptions ?? {}),
     });
+    console.log(wholeStats);
 
     const wholeMetrics = rasterStatsToMetrics(wholeStats, {
       metricId,
@@ -148,7 +153,8 @@ export async function rasterMetrics(
       bandMetricProperty,
       bandMetricValues,
       categorical,
-      categoryClassValues,
+      categoryMetricProperty,
+      categoryMetricValues: categoryClassValues,
     });
     metrics = metrics.concat(wholeMetrics);
   }

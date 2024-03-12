@@ -8,14 +8,12 @@ import {
 } from "../../../src/types";
 import {
   createMetric,
-  getHistogram,
   bboxOverlap,
   BBox,
   ProjectClientBase,
   datasourceConfig,
   getRasterBoxSpherical,
   rasterMetrics,
-  toRasterProjection,
 } from "../../../src";
 import bbox from "@turf/bbox";
 

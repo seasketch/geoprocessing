@@ -18,12 +18,16 @@ export const rasterStatsToMetrics = (
     /** Properties to append to metric extra */
     metricPartial?: Partial<Metric>;
     truncate?: boolean;
-    /** If multi-band raster, metric property name that raster bands are organized.  defaults to classID */
+    /** If multi-band raster, metric property name that raster bands are organized. Defaults to groupId */
     bandMetricProperty?: MetricDimension;
     /** If multi-band raster, array of indexed by band number to assign to bandMetricsProperty ['mangroves','coral']. ['band 1','band 2]  */
     bandMetricValues?: string[];
+    /** If categorical raster, set to true */
     categorical?: boolean;
-    categoryClassValues?: string[];
+    /** If categorical raster, metric property name that categories are organized. Defaults to classId */
+    categoryMetricProperty?: MetricDimension;
+    /** If categorical raster, array of values to create metrics for */
+    categoryMetricValues?: string[];
   } = {}
 ): Metric[] => {
   const {
@@ -31,14 +35,19 @@ export const rasterStatsToMetrics = (
     metricIdPrefix = "",
     metricPartial = {},
     truncate = true,
-    bandMetricProperty = "classId",
+    bandMetricProperty = "groupId",
     bandMetricValues = [...Array(statsObjects.length).keys()].map(
       (x) => `band-${x}`
     ),
     categorical = false,
-    categoryClassValues,
+    categoryMetricProperty = "classId",
+    categoryMetricValues: categoryClassValues,
   } = options;
   let metrics: Metric[] = [];
+  if (bandMetricProperty === categoryMetricProperty)
+    throw new Error(
+      "bandMetricProperty and categoryMetricProperty cannot be the same"
+    );
 
   statsObjects.forEach((curStats, band) => {
     const statNames = Object.keys(curStats);
@@ -47,32 +56,33 @@ export const rasterStatsToMetrics = (
 
       if (categorical) {
         categoryClassValues
-          ? categoryClassValues.forEach((curClass) => {
+          ? categoryClassValues.forEach((category) => {
               metrics.push(
                 createMetric({
                   metricId: "valid" ?? `${metricIdPrefix}valid`,
                   value: truncate
-                    ? roundDecimal(value[curClass], 6, {
+                    ? roundDecimal(value[category], 6, {
                         keepSmallValues: true,
                       })
-                    : value[curClass],
+                    : value[category],
                   ...metricPartial,
                   [bandMetricProperty]: bandMetricValues[band],
-                  classId: curClass,
+                  [categoryMetricProperty]: category,
                 })
               );
             })
-          : Object.keys(value).forEach((curClass) => {
+          : Object.keys(value).forEach((category) => {
               metrics.push(
                 createMetric({
                   metricId: "valid" ?? `${metricIdPrefix}valid`,
                   value: truncate
-                    ? roundDecimal(value[curClass], 6, {
+                    ? roundDecimal(value[category], 6, {
                         keepSmallValues: true,
                       })
-                    : value[curClass],
+                    : value[category],
                   ...metricPartial,
                   [bandMetricProperty]: bandMetricValues[band],
+                  [categoryMetricProperty]: category,
                 })
               );
             });

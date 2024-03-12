@@ -22,10 +22,10 @@
     "scripts": {
         "build:core": "tsc",
         "build:scripts": "cd scripts && tsc",
-        "test": "jest --group=-e2e && npm run test:scripts",
+        "test": "vitest run -c vitest.config.js",
         "test:node": "glob -c \"node --import tsx --test-name-pattern='multipolygon' --test\" \"./src/**/*.node.test.ts\"",
         "test:local": "start-server-and-test start-data 8080 'vitest run && npm run test:scripts:local'",
-        "test:matching": "vitest run -t",
+        "test:matching": "vitest run -c vitest.config.js -t",
         "test:e2e": "start-server-and-test start-data 8080 'jest --runInBand --group=e2e'",
         "test:e2e:matching": "jest --runInBand --group=e2e -t",
         "test:watch": "jest --watch",
@@ -227,13 +227,16 @@
         "zx": "^4.3.0"
     },
     "devDependencies": {
+        "@testing-library/jest-dom": "^6.4.2",
         "@types/finalhandler": "^1.2.0",
+        "@vitejs/plugin-react": "^4.2.1",
         "eslint": "^8.57.0",
         "eslint-plugin-unicorn": "^51.0.1",
         "identity-obj-proxy": "^3.0.0",
         "mock-socket": "^9.0.3",
         "typedoc": "^0.24.8",
-        "vite": "^5.1.5"
+        "vite": "^5.1.5",
+        "vitest": "^1.3.1"
     },
     "optionalDependencies": {
         "bufferutil": "^4.0.1",

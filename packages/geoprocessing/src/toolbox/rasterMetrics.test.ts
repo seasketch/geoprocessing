@@ -80,9 +80,10 @@ describe("rasterMetrics tests", () => {
     );
     const metrics = await rasterMetrics(raster, {
       categorical: true,
-      categoryClassValues: ["1"],
+      categoryMetricValues: ["1"],
     });
     expect(metrics.length).toBe(1);
+    expect(metrics[0].classId).toBe("1");
     expect(metrics[0].value).toBe(2);
     expect(metrics[0].metricId).toEqual("valid");
   });
@@ -107,7 +108,7 @@ describe("rasterMetrics tests", () => {
     const metrics = await rasterMetrics(raster, {
       feature: fix.topRightPoly,
       categorical: true,
-      categoryClassValues: ["1"],
+      categoryMetricValues: ["1"],
     });
     expect(metrics.length).toBe(1);
     expect(metrics[0].value).toBe(0);

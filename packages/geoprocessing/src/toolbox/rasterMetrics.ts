@@ -6,7 +6,6 @@ import { rasterStatsToMetrics } from "./geoblaze/rasterStatsToMetrics";
 
 // @ts-ignore
 import { Georaster } from "geoblaze";
-import { createMetric } from "../metrics";
 
 interface OverlapRasterOptions extends RasterStatsOptions {
   /** Optional metricId to be assigned.  Don't use if you are calculating more than one stat because you won't be able to tell them apart */
@@ -20,10 +19,12 @@ interface OverlapRasterOptions extends RasterStatsOptions {
   /** If multi-band raster, object mapping band number (starting with 0 index) to unique ID value eg. { 0: 'mangroves', 1: 'coral' }.  Defaults to 'band 1', 'band 2'  */
   bandMetricValues?: string[];
   includeChildMetrics?: boolean;
-  /** If categorical raster, get categoryClassValues (in metric group as classIds) from raster histogram */
+  /** If categorical raster, set to true */
   categorical?: boolean;
+  /** If categorical raster, metric property name that categories are organized. Defaults to classId */
   categoryMetricProperty?: MetricDimension;
-  categoryClassValues?: string[];
+  /** If categorical raster, array of values to create metrics for */
+  categoryMetricValues?: string[];
 }
 
 /**
@@ -43,8 +44,8 @@ export async function rasterMetrics(
     bandMetricValues,
     includeChildMetrics = true,
     categorical = false,
-    categoryMetricProperty,
-    categoryClassValues,
+    categoryMetricProperty = "classId",
+    categoryMetricValues,
     ...statOptions
   } = options;
   let metrics: Metric[] = [];
@@ -64,7 +65,8 @@ export async function rasterMetrics(
             feature: curSketch,
             numBands,
             categorical,
-            categoryClassValues,
+            categoryMetricProperty,
+            categoryMetricValues,
             ...(statOptions ?? {}),
           })
         );
@@ -95,7 +97,7 @@ export async function rasterMetrics(
           bandMetricValues,
           categorical,
           categoryMetricProperty,
-          categoryMetricValues: categoryClassValues,
+          categoryMetricValues,
         });
         metrics = metrics.concat(curMetrics);
       });
@@ -107,7 +109,8 @@ export async function rasterMetrics(
         feature: options?.feature,
         numBands,
         categorical,
-        categoryClassValues,
+        categoryMetricProperty,
+        categoryMetricValues,
         ...(statOptions ?? {}),
       });
 
@@ -133,7 +136,7 @@ export async function rasterMetrics(
         bandMetricValues,
         categorical,
         categoryMetricProperty,
-        categoryMetricValues: categoryClassValues,
+        categoryMetricValues,
       });
       metrics = metrics.concat(collMetrics);
     }
@@ -142,10 +145,10 @@ export async function rasterMetrics(
     const wholeStats = await rasterStats(raster, {
       numBands,
       categorical,
-      categoryClassValues,
+      categoryMetricProperty,
+      categoryMetricValues,
       ...(statOptions ?? {}),
     });
-    console.log(wholeStats);
 
     const wholeMetrics = rasterStatsToMetrics(wholeStats, {
       metricId,
@@ -154,7 +157,7 @@ export async function rasterMetrics(
       bandMetricValues,
       categorical,
       categoryMetricProperty,
-      categoryMetricValues: categoryClassValues,
+      categoryMetricValues,
     });
     metrics = metrics.concat(wholeMetrics);
   }

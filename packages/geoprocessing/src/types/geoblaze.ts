@@ -27,7 +27,7 @@ export const GEOBLAZE_RASTER_STATS: ReadonlyArray<string> = [
 export type GEOBLAZE_RASTER_STAT = typeof GEOBLAZE_RASTER_STATS[number];
 
 /** Additional raster stats calculated by geoprocessing library */
-export const EXTRA_RASTER_STATS: ReadonlyArray<string> = ["area"];
+export const EXTRA_RASTER_STATS: ReadonlyArray<string> = ["area", "histogram"];
 export type EXTRA_RASTER_STAT = typeof EXTRA_RASTER_STATS[number];
 
 /** Combined raster stats supported by geoprocessing library */

@@ -3,12 +3,12 @@ import {
   GEOBLAZE_RASTER_STATS,
   Sketch,
   SketchCollection,
+  MetricDimension,
 } from "../../types";
 import { Feature, MultiPolygon, FeatureCollection } from "@turf/helpers";
 import geoblaze, { Georaster } from "geoblaze";
 import { StatsObject, CalcStatsOptions } from "../../types/geoblaze";
 import { toRasterProjection, defaultStatValues } from "./geoblaze";
-import { forEach } from "lodash";
 
 /**
  * options accepted by rasterStats
@@ -25,9 +25,12 @@ export interface RasterStatsOptions extends CalcStatsOptions {
   filterFn?: (cellValue: number) => boolean;
   /** Optional number of bands in the raster, defaults to 1, used to initialize zero values */
   numBands?: number;
-  /** For categorical rasters, category is equal to the classId in metricGroup */
+  /** If categorical raster, set to true */
   categorical?: boolean;
-  categoryClassValues?: string[];
+  /** If categorical raster, metric property name that categories are organized. Defaults to classId */
+  categoryMetricProperty?: MetricDimension;
+  /** If categorical raster, array of values to create metrics for */
+  categoryMetricValues?: string[];
 }
 
 /**
@@ -46,7 +49,8 @@ export const rasterStats = async (
     feature,
     filterFn,
     categorical = false,
-    categoryClassValues,
+    categoryMetricProperty = "classId",
+    categoryMetricValues,
     ...restCalcOptions
   } = options;
 
@@ -84,10 +88,10 @@ export const rasterStats = async (
           })
         ).map((h: any) => {
           let hist = {};
-          if (!categoryClassValues || categoryClassValues.length === 0) {
+          if (!categoryMetricValues || categoryMetricValues.length === 0) {
             return { histogram: h };
           } else {
-            categoryClassValues.forEach((c) => (hist[c] = h[c] ?? 0));
+            categoryMetricValues.forEach((c) => (hist[c] = h[c] ?? 0));
             return { histogram: hist };
           }
         })

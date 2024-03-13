@@ -13,7 +13,7 @@ import RBush from "rbush";
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
 import isHostedOnLambda from "../util/isHostedOnLambda.js";
-import "../util/fetchPolyfill";
+import "../util/fetchPolyfill.js";
 import { union } from "union-subdivided-polygons";
 
 // import { recombineTree } from "./recombine";

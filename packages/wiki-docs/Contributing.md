@@ -309,7 +309,7 @@ Assuming the current GP version is say 0.15.0, and you've made 5 commits to the 
 If you want to work on a feature outside of dev in a feature branch, and publish it and test it, you can publish it as an `experiment`.  Make sure that you publish it from a feature branch, typically with the same name you will give your experiment.
 
 ```sh
-EXPERIMENT_ID=my_branch_name npm run publish:experimental:canary
+npm run publish:experimental:canary
 ```
 
 Assuming your branch name is `node16-webpack5`, the current GP version is 0.15.0, and your feature branch is 28 commits ahead of the last release tag, this should publish a minor release called `0.15.1-experimental-node16-webpack5.28`. As you push more commits to your experimental branch, you can publish again at any time and the commit number will increment so that there isn't a name collision.

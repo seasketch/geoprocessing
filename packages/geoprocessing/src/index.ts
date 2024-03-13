@@ -17,4 +17,4 @@ export * from "./testing/index.js";
 export * from "./project/index.js";
 export * from "./util/index.js";
 
-export { default as version } from "../package.json";
+export { default as version } from "../package.json"  assert { type: "json" };

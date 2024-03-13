@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
-// @ts-ignore
-import licenses from "spdx-license-ids";
+import licenses from "spdx-license-ids/index.json" assert { type: "json" };
+
 import fuzzy from "fuzzy-tools";
 import autocomplete from "inquirer-autocomplete-prompt";
 import awsRegions from "aws-regions";

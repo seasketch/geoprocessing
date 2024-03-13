@@ -1,6 +1,7 @@
 import bbox from "@turf/bbox";
 import { FeatureCollection, Polygon } from "../../../src/types/index.js";
-import eezPrecalc from "./mr-eez-precalc.json";
+//@ts-ignore
+import eezPrecalc from "./mr-eez-precalc.json" assert { type: "json" };
 
 /** Marine Regions EEZ */
 export type MR_EEZ_FC = FeatureCollection<

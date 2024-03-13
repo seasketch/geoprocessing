@@ -2,8 +2,9 @@
   "name": "@seasketch/base-project",
   "version": "6.1.2",
   "description": "initial user-installed project",
-  "main": "src/index.js",
   "private": true,
+  "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "start-data": "http-server data/dist -c-1",
     "__test": "geoprocessing test",

@@ -56,7 +56,9 @@ async function publishEnglish() {
     tags: string[];
     comment: string;
     obsolete?: boolean;
-  }[] = data.result.terms.filter((t) => t.context === config.remoteContext);
+  }[] = data.result.terms.filter(
+    (t: any) => t.context === config.remoteContext
+  );
 
   const termsToAdd: {
     term: string;
@@ -272,7 +274,9 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       tags: string[];
       comment: string;
       obsolete?: boolean;
-    }[] = data.result.terms.filter((t) => t.context === config.remoteContext);
+    }[] = data.result.terms.filter(
+      (t: any) => t.context === config.remoteContext
+    );
 
     // Read terms for current namespace from current language translation file.
     // If file doesn't exist, then stub it out

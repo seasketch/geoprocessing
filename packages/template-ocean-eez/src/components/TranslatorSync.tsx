@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
-import { createI18nSyncInstance } from "../i18n/i18nSync";
+import { createI18nSyncInstance } from "../i18n/i18nSync.js";
 import { useLanguage } from "@seasketch/geoprocessing/client-ui";
 
 // Load translations and pass to react-i18next

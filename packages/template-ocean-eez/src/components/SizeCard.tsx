@@ -8,7 +8,6 @@ import {
   valueFormatter,
   toPercentMetric,
   sortMetricsDisplayOrder,
-  isSketchCollection,
   MetricGroup,
   GeogProp,
 } from "@seasketch/geoprocessing/client-core";
@@ -23,10 +22,10 @@ import {
   ToolbarCard,
   DataDownload,
 } from "@seasketch/geoprocessing/client-ui";
-import styled from "styled-components";
-import project from "../../project";
+import { styled } from "styled-components";
+import project from "../../project/projectClient.js";
 import { Metric, squareMeterToKilometer } from "@seasketch/geoprocessing";
-import Translator from "../components/TranslatorAsync";
+import Translator from "../components/TranslatorAsync.js";
 import { Trans, useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
 

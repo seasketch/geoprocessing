@@ -4,7 +4,7 @@
     "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
     "type": "module",
     "main": "dist/src/index.js",
-    "module": "dist/es/index.js",
+    "module": "dist/src/index.js",
     "exports": {
         "./package.json": "./package.json",
         ".": {
@@ -15,7 +15,8 @@
         "./client-core": "./dist/client-core.js",
         "./dataproviders": "./dist/dataproviders.js",
         "./storybook": "./dist/storybook.js",
-        "./scripts": "./dist/scripts/index.js"
+        "./scripts": "./dist/scripts/index.js",
+        "./scripts/testing": "./dist/scripts/testing/index.js"
     },
     "types": "dist/src/index.d.ts",
     "readme": "https://github.com/seasketch/geoprocessing#readme",

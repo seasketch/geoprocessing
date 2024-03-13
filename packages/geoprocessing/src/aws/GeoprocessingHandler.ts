@@ -63,8 +63,8 @@ export class GeoprocessingHandler<
       | FeatureCollection<G>
       | Sketch<G>
       | SketchCollection<G>,
-    /** Additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
-    extraParams: P
+    /** Optional additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
+    extraParams?: P
   ) => Promise<T>;
   options: GeoprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda

@@ -22,12 +22,12 @@ import {
   APIGatewayProxyResult,
   APIGatewayProxyEvent,
 } from "aws-lambda";
-import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
+import awsSdk from "aws-sdk";
 import { unescape } from "querystring";
+import WebSocket from "ws";
 
-const Lambda = new LambdaClient();
-const Db = new DynamoDB.DocumentClient();
-const WebSocket = require("ws");
+const Lambda = new awsSdk.Lambda();
+const Db = new awsSdk.DynamoDB.DocumentClient();
 
 const NODE_ENV = process.env.NODE_ENV;
 const TASKS_TABLE = process.env.TASKS_TABLE;

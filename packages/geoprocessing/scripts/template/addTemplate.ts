@@ -5,9 +5,11 @@ import util from "util";
 import { GeoprocessingJsonConfig, Package } from "../../src/types/index.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import * as child from "child_process";
+import { pathToFileURL } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const exec = util.promisify(require("child_process").exec);
+const exec = util.promisify(child.exec);
 
 export interface TemplateMetadata {
   templates: string | string[];
@@ -108,7 +110,8 @@ async function addTemplate(projectPath?: string) {
   }
 }
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  // module was not imported but called directly
   addTemplate();
 }
 
@@ -312,12 +315,16 @@ export async function copyTemplates(
   // Install new dependencies
   if (interactive && !skipInstall) {
     spinner.start("installing new dependencies with npm");
-    const { stderr, stdout, error } = await exec("npm install", {
-      cwd: projectPath,
-    });
-    if (error) {
-      console.log(error);
-      process.exit();
+    try {
+      await exec("npm install", {
+        cwd: projectPath,
+      });
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        console.log(e.message);
+        console.log(e.stack);
+        process.exit();
+      }
     }
     spinner.succeed("installed new dependencies");
   }

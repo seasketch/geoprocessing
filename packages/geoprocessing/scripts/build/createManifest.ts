@@ -27,18 +27,18 @@ const projectPkg: Package = JSON.parse(
 /**
  * Given full path to source geoprocessing function, requires and returns its pre-generated handler module
  */
-function getHandlerModule(srcFuncPath: string) {
+async function getHandlerModule(srcFuncPath: string) {
   const name = getHandlerFilenameFromSrcPath(srcFuncPath);
   const p = path.join(buildPath, name.replace(`.js`, ""));
-  return require(p);
+  return await import(p);
 }
 
 const preprocessingBundles: PreprocessingBundle[] =
   config.preprocessingFunctions &&
-  config.preprocessingFunctions.map(getHandlerModule);
+  (await Promise.all(config.preprocessingFunctions.map(getHandlerModule)));
 const geoprocessingBundles: GeoprocessingBundle[] =
   config.geoprocessingFunctions &&
-  config.geoprocessingFunctions.map(getHandlerModule);
+  (await Promise.all(config.geoprocessingFunctions.map(getHandlerModule)));
 
 const manifest = generateManifest(
   config,

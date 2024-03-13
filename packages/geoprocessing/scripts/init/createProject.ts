@@ -16,10 +16,11 @@ import { getBbox } from "../global/datasources/mr-eez.js";
 import { $ } from "zx";
 import { globalDatasources } from "../../src/datasources/global.js";
 import { isVectorDatasource } from "../../src/index.js";
+import * as child from "child_process";
 
 $.verbose = false;
 
-const exec = util.promisify(require("child_process").exec);
+const exec = util.promisify(child.exec);
 
 export interface CreateProjectMetadata extends TemplateMetadata {
   name: string;
@@ -363,22 +364,23 @@ export async function createProject(
   // Install dependencies including adding GP.
   if (interactive) {
     spinner.start("installing dependencies with npm");
-    const { stderr, stdout, error } = await exec(`npm install`, {
-      cwd: metadata.name,
-    });
-    if (error) {
-      console.log(error);
-      process.exit();
+    try {
+      await exec(`npm install`, {
+        cwd: metadata.name,
+      });
+      spinner.succeed("installed dependencies");
+      spinner.start("extracting translations");
+      await exec(`npm run translation:extract`, {
+        cwd: metadata.name,
+      });
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        console.log(e.message);
+        console.log(e.stack);
+        process.exit();
+      }
     }
-    spinner.succeed("installed dependencies");
-    spinner.start("extracting translations");
-    const { extractError } = await exec(`npm run translation:extract`, {
-      cwd: metadata.name,
-    });
-    if (extractError) {
-      console.log(extractError);
-      process.exit();
-    }
+
     spinner.succeed("extracted initial translations");
   }
   if (interactive) {

@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-$.verbose = false;
+$.verbose = true;
 
 const packagesPath = path.join(__dirname, "..", "..", "..");
 const distPath = path.join(__dirname, "..", "..", "dist");

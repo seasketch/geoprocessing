@@ -61,6 +61,33 @@ describe("rasterMetrics tests", () => {
     expect(metrics[1].value).toBe(1);
   });
 
+  test("rasterMetrics - default categorical with metricId override", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [0, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+    const metrics = await rasterMetrics(raster, {
+      categorical: true,
+      metricId: "boundaryAreaOverlap",
+    });
+    expect(metrics.length).toBe(2);
+    expect(metrics[0].value).toBe(2);
+    expect(metrics[1].value).toBe(1);
+    expect(metrics[0].metricId).toBe("boundaryAreaOverlap");
+  });
+
   test("rasterMetrics - default categorical with category", async () => {
     const raster = await parseGeoraster(
       [
@@ -85,7 +112,7 @@ describe("rasterMetrics tests", () => {
     expect(metrics.length).toBe(1);
     expect(metrics[0].classId).toBe("1");
     expect(metrics[0].value).toBe(2);
-    expect(metrics[0].metricId).toEqual("valid");
+    expect(metrics[0].metricId).toEqual("histogram");
   });
 
   test("rasterMetrics - default sum with sketch", async () => {
@@ -112,7 +139,7 @@ describe("rasterMetrics tests", () => {
     });
     expect(metrics.length).toBe(1);
     expect(metrics[0].value).toBe(0);
-    expect(metrics[0].metricId).toEqual("valid");
+    expect(metrics[0].metricId).toEqual("histogram");
   });
 
   test("rasterMetrics - metricId override", async () => {

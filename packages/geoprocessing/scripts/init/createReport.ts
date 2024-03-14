@@ -80,12 +80,10 @@ const createReport = async () => {
       .filter(
         (metricId) => !gpFunctions.includes(`src/functions/${metricId}.ts`)
       );
-    if (!availableMetricGroups.length) {
-      console.log(
-        "No available metric groups - create a metric group to continue"
+    if (!availableMetricGroups.length)
+      throw new Error(
+        "All existing metric groups have reports. Either create a new metric group or delete an existing report, then try again."
       );
-      return;
-    }
 
     // Only allow creation of reports for unused metric groups (prevents overwriting)
     const titleChoiceQuestion = {

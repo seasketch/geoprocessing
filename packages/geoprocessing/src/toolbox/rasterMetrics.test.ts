@@ -59,6 +59,7 @@ describe("rasterMetrics tests", () => {
     expect(metrics.length).toBe(2);
     expect(metrics[0].value).toBe(2);
     expect(metrics[1].value).toBe(1);
+    expect(metrics[0].metricId).toBe("valid");
   });
 
   test("rasterMetrics - default categorical with metricId override", async () => {
@@ -112,7 +113,7 @@ describe("rasterMetrics tests", () => {
     expect(metrics.length).toBe(1);
     expect(metrics[0].classId).toBe("1");
     expect(metrics[0].value).toBe(2);
-    expect(metrics[0].metricId).toEqual("histogram");
+    expect(metrics[0].metricId).toEqual("valid");
   });
 
   test("rasterMetrics - default sum with sketch", async () => {
@@ -139,7 +140,7 @@ describe("rasterMetrics tests", () => {
     });
     expect(metrics.length).toBe(1);
     expect(metrics[0].value).toBe(0);
-    expect(metrics[0].metricId).toEqual("histogram");
+    expect(metrics[0].metricId).toEqual("valid");
   });
 
   test("rasterMetrics - metricId override", async () => {

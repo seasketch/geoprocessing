@@ -59,7 +59,7 @@ export const rasterStatsToMetrics = (
           ? categoryClassValues.forEach((category) => {
               metrics.push(
                 createMetric({
-                  metricId: metricId ?? `${metricIdPrefix}${statName}`,
+                  metricId: metricId ?? `${metricIdPrefix}valid`,
                   value: truncate
                     ? roundDecimal(value[category], 6, {
                         keepSmallValues: true,
@@ -74,7 +74,7 @@ export const rasterStatsToMetrics = (
           : Object.keys(value).forEach((category) => {
               metrics.push(
                 createMetric({
-                  metricId: metricId ?? `${metricIdPrefix}${statName}`,
+                  metricId: metricId ?? `${metricIdPrefix}valid`,
                   value: truncate
                     ? roundDecimal(value[category], 6, {
                         keepSmallValues: true,

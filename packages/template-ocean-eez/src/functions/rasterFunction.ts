@@ -75,7 +75,7 @@ export async function rasterFunction(
           ...(ds.measurementType === "quantitative" && { stats: ["sum"] }),
           ...(ds.measurementType === "categorical" && {
             categorical: true,
-            categoryClassValues: [curClass.classId],
+            categoryMetricValues: [curClass.classId],
           }),
         });
 

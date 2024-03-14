@@ -41,7 +41,7 @@ export const rasterStatsToMetrics = (
     ),
     categorical = false,
     categoryMetricProperty = "classId",
-    categoryMetricValues: categoryClassValues,
+    categoryMetricValues,
   } = options;
   let metrics: Metric[] = [];
   if (bandMetricProperty === categoryMetricProperty)
@@ -55,8 +55,8 @@ export const rasterStatsToMetrics = (
       const value = curStats[statName];
 
       if (categorical) {
-        categoryClassValues
-          ? categoryClassValues.forEach((category) => {
+        categoryMetricValues
+          ? categoryMetricValues.forEach((category) => {
               metrics.push(
                 createMetric({
                   metricId: metricId ?? `${metricIdPrefix}valid`,

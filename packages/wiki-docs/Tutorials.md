@@ -17,6 +17,13 @@ Get started:
 - [Initial system setup](#initial-system-setup)
 - [Setup an existing geoprocessing project](#setup-an-exising-geoprocessing-project)
 - [Create a new geoprocessing project](#create-a-new-geoprocessing-project)
+- Additional Tutorials
+  - [Creating a geoprocessing function](#creating-a-geoprocessing-function)
+  - [Creating a report client](#creating-a-report-client)
+  - [Updating a datasource](#updating-a-datasource)
+  - [Custom sketch attributes](#custom-sketch-attributes)
+  - [Extra parameters](#adding-and-passing-extra-parameters)
+  - [Subdividing large datasets](#subdividing-large-datasets)
 
 See sidebar for additional tutorials
 
@@ -990,7 +997,7 @@ Our example `reefextent` data is a simple vector file. We can set classId to be 
 }
 ```
 
-### Metric group for data source with multiple classes
+### Metric group for vector data source with multiple classes
 
 Our example data `benthic` is a single file with different habitats defined by a `class` parameter. While there were many types of habitats, we may want to only focus on Sand, Rubble, and Rock. In this case, `classKey` must be `class` and `classIds` have to match the features in the vector file. My metric group would look like this:
 
@@ -1052,6 +1059,82 @@ You can have classes from multiple data sources in one metric group. If we wante
       "classKey": "class",
       "display": "Rubble",
       "datasourceId": "benthic"
+    }
+  ]
+}
+```
+
+### Metric group with quantitative raster data sources
+
+An example of a metric group `fishingEffort` which displays multiple quantitative raster data files. This report has been made using [Global Fishing Watch Apparent Fishing Effort data](https://globalfishingwatch.org/dataset-and-code-fishing-effort/), which reports fishing effort in hours. To calculate for the sum of fishing effort within our plan, we would use `type = valueOverlap`.
+
+```json
+{
+  "metricId": "fishingEffort",
+  "type": "valueOverlap",
+  "classes": [
+    {
+      "datasourceId": "all-fishing",
+      "classId": "all-fishing",
+      "display": "All Fishing 2019-2022"
+    },
+    {
+      "datasourceId": "drifting-longlines",
+      "classId": "drifting-longlines",
+      "display": "Drifting Longline"
+    },
+    {
+      "datasourceId": "pole-and-line",
+      "classId": "pole-and-line",
+      "display": "Pole and Line"
+    },
+    {
+      "datasourceId": "set-longlines",
+      "classId": "set-longlines",
+      "display": "Set Longline"
+    },
+    {
+      "datasourceId": "fixed-gear",
+      "classId": "fixed-gear",
+      "display": "Fixed Gear"
+    }
+  ]
+}
+```
+
+### Metric group with categorical raster data sources
+
+An example of a metric group `fishRichness` which displays a categorical raster `fishRichness.tif`. The raster data displays the number of key fish species present in each raster cell -- from 1 to 5 species. `classId` should be set to the corresponding numerical value within the raster.
+
+```json
+{
+  "metricId": "fishRichness",
+  "type": "countOverlap",
+  "classes": [
+    {
+      "datasourceId": "fishRichness",
+      "classId": "1",
+      "display": "1 species"
+    },
+    {
+      "datasourceId": "fishRichness",
+      "classId": "2",
+      "display": "2 species"
+    },
+    {
+      "datasourceId": "fishRichness",
+      "classId": "3",
+      "display": "3 species"
+    },
+    {
+      "datasourceId": "fishRichness",
+      "classId": "4",
+      "display": "4 species"
+    },
+    {
+      "datasourceId": "fixed-gear",
+      "classId": "5",
+      "display": "5 species"
     }
   ]
 }
@@ -1560,15 +1643,16 @@ After adding a report client, be sure to properly setup user displayed text for 
 
 ## Updating A Datasource
 
-- When updating a datasource, you should try to take it all the way through the process of `import`, `precalc`, and `publish` so that there's no confusion about which step you are on. It's easy to leave things in an incomplete state and its not obvious when you pick it back up.
-  - Edit/update your data in data/src
-  - Run `npm run reimport:data`, choose your source datasource and choose to not publish right away. `data/dist` will now contain your updated datasource file(s).
-  - Run `npm run precalc:data`, choose the datasource to precalculate stats for.
-  - `npm test` to run your smoke tests which read data from `data/dist` and make sure the geoprocessing function results change as you would expect based on the data changes. Are you expecting result values to go up or down? Stay about or exactly the same? Try not to accept changes that you don't understand.
-  - Add additional sketches or features to your smoke tests as needed. Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this. Convince yourself the results are correct.
-  - Publish your updated datasets with `npm run publish:data`.
-  - Clear the cache for all reports that use this datasource with `npm run clear-results` and type the name of your geoprocessing function (e.g. `boundaryAreaOverlap`). You can also opt to just clear results for all reports with `npm run clear-all-results`. Cached results are cleared one record at a time in dynamodb so this can take quite a while. In fact, the process can run out of memory and suddenly die. In this case, you can simply rerun the clear command and it will continue. Eventually you will get through them all.
-  - Test your reports in SeaSketch. Any sketches you exported should produce the same numbers. Test with any really big sketches, make sure your data updates haven't reached any new limit. This can happen if your updated data is much larger, has more features, higher resolution, etc.
+When updating a datasource, you should try to take it all the way through the process of `import`, `precalc`, and `publish` so that there's no confusion about which step you are on. It's easy to leave things in an incomplete state and its not obvious when you pick it back up.
+
+- Edit/update your data in data/src
+- Run `npm run reimport:data`, choose your source datasource and choose to not publish right away. `data/dist` will now contain your updated datasource file(s).
+- Run `npm run precalc:data`, choose the datasource to precalculate stats for.
+- `npm test` to run your smoke tests which read data from `data/dist` and make sure the geoprocessing function results change as you would expect based on the data changes. Are you expecting result values to go up or down? Stay about or exactly the same? Try not to accept changes that you don't understand.
+- Add additional sketches or features to your smoke tests as needed. Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this. Convince yourself the results are correct.
+- Publish your updated datasets with `npm run publish:data`.
+- Clear the cache for all reports that use this datasource with `npm run clear-results` and type the name of your geoprocessing function (e.g. `boundaryAreaOverlap`). You can also opt to just clear results for all reports with `npm run clear-all-results`. Cached results are cleared one record at a time in dynamodb so this can take quite a while. In fact, the process can run out of memory and suddenly die. In this case, you can simply rerun the clear command and it will continue. Eventually you will get through them all.
+- Test your reports in SeaSketch. Any sketches you exported should produce the same numbers. Test with any really big sketches, make sure your data updates haven't reached any new limit. This can happen if your updated data is much larger, has more features, higher resolution, etc.
 
 ## Custom Sketch Attributes
 

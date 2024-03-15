@@ -18,7 +18,7 @@ rm -rf .build
 mkdir .build
 
 # Create lambda handler functions
-npx webpack --config scripts/build/webpack.functions.config.js
+npx webpack --config scripts/build/webpack.functions.config.cjs
 # Create json representation of service endpoints and resources
 NODE_PATH=$PROJECT_PATH/node_modules node dist/scripts/build/createManifest.js
 # Copy to the project's .build directory

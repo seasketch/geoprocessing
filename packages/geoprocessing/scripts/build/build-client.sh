@@ -1,4 +1,5 @@
 export PROJECT_PATH=$(pwd)
+export NODE_OPTIONS=--openssl-legacy-provider
 set -e
 echo ""
 echo "Building client..."
@@ -14,7 +15,7 @@ else
 fi
 # Build client
 rm -rf .build-web
-npx webpack --config scripts/build/webpack.clients.config.js
+npx webpack --config scripts/build/webpack.clients.config.cjs
 mv .build-web $PROJECT_PATH/
 cp src/assets/favicon.ico $PROJECT_PATH/.build-web/
 echo ""

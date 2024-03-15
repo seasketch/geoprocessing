@@ -1,14 +1,22 @@
 /**
- * @returns all clients as a single CommonJS module for bundling by webpack
+ * @returns all clients as a single module for bundling by webpack
  */
-module.exports = (options, loaderContext) => {
+
+const code = `export default {
+  ${options.clients
+    .map((client) => {
+      console.log("client", client.source);
+      return `"${client.name}": await import("${client.source}")`;
+    })
+    .join(",\n")}
+}`;
+
+console.log(code);
+
+const loader = (options, loaderContext) => {
   return {
-    code: `module.exports = {
-      ${options.clients
-        .map((client) => {
-          return `"${client.name}": require("${client.source}").default`;
-        })
-        .join(",\n")}
-    }`,
+    code,
   };
 };
+
+export default loader;

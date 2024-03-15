@@ -2,6 +2,7 @@
 // https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/scripts/test.js
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import jest from "jest";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -18,7 +19,6 @@ export default function () {
     throw err;
   });
 
-  const jest = require("jest");
   let argv = process.argv.slice(2);
 
   const resolve = require("resolve");

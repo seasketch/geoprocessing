@@ -1,16 +1,8 @@
-import path from "path";
-import fs from "fs-extra";
-import { fileURLToPath } from "url";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import WebpackBundleAnalyzer from "webpack-bundle-analyzer";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
-const pathName = require.resolve("vue.runtime.esm.js");
-
-const BundleAnalyzerPlugin = WebpackBundleAnalyzer.BundleAnalyzerPlugin;
+const fs = require("fs-extra");
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) {
@@ -41,12 +33,12 @@ if (fs.existsSync(topLevelNMPath)) {
 
 console.log("modulePaths", modulePaths);
 
-export default {
+module.exports = {
   mode: "production",
-  entry: "./src/components/App.tsx",
-  output: {
-    filename: "main.js",
-    path: path.resolve(__dirname, "../../.build-web/"),
+  devServer: {
+    static: path.join(PROJECT_PATH, ".build-web"),
+    compress: true,
+    port: 8080,
   },
   node: {
     fs: "empty",
@@ -61,6 +53,11 @@ export default {
   performance: {
     maxAssetSize: 300_000,
     maxEntrypointSize: 300_000,
+  },
+  entry: "./src/components/App.tsx",
+  output: {
+    filename: "main.js",
+    path: path.resolve(__dirname, "../../.build-web/"),
   },
   devtool: "source-map",
   resolve: {
@@ -86,7 +83,7 @@ export default {
             presets: [
               [
                 require.resolve("@babel/preset-env"),
-                { debug: true, targets: ["> 0.25%", "not dead", "not IE 11"] },
+                { targets: { node: "14" } },
               ],
               require.resolve("@babel/preset-typescript"),
               require.resolve("@babel/preset-react"),
@@ -104,7 +101,6 @@ export default {
           {
             loader: `val-loader`,
             options: {
-              // bundle report clients (UI components) into array
               clients: geoprocessing.clients.map((c) => {
                 c.source = path.join(PROJECT_PATH, c.source);
                 return c;

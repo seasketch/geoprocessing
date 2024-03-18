@@ -8,7 +8,6 @@ import {
 } from "../../../src/types";
 import {
   createMetric,
-  getHistogram,
   bboxOverlap,
   BBox,
   ProjectClientBase,
@@ -147,21 +146,17 @@ export async function precalcRasterMetrics(
 
   // Creates metrics for categorical raster (histogram, count valid cells by class)
   if (datasource.measurementType === "categorical") {
-    const metrics: Metric[] = [];
-    const histogram = (await getHistogram(raster)) as Histogram;
-    if (!histogram) throw new Error("Histogram not returned");
-
-    Object.keys(histogram).forEach((curClass) => {
-      metrics.push(
-        createMetric({
-          geographyId: geography.geographyId,
-          classId: datasource.datasourceId + "-" + curClass,
-          metricId: "valid",
-          value: histogram[curClass],
-        })
-      );
-    });
-
+    const metrics = (
+      await rasterMetrics(raster, {
+        feature: geographyFeatureColl,
+        includeChildMetrics: false,
+        categorical: true,
+      })
+    ).map((m) => ({
+      ...m,
+      geographyId: geography.geographyId,
+      classId: datasource.datasourceId + "-" + m.classId,
+    }));
     return metrics;
   }
 

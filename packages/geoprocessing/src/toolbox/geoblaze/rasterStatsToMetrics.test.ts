@@ -14,8 +14,8 @@ describe("rasterStatsToMetrics", () => {
     expect(metrics[0]).toEqual({
       metricId: "sum",
       value: 1,
-      classId: "band-0",
-      groupId: null,
+      classId: null,
+      groupId: "band-0",
       geographyId: null,
       sketchId: null,
     });
@@ -28,8 +28,8 @@ describe("rasterStatsToMetrics", () => {
     expect(metrics[0]).toEqual({
       metricId: "sum",
       value: 1.920482,
-      classId: "band-0",
-      groupId: null,
+      classId: null,
+      groupId: "band-0",
       geographyId: null,
       sketchId: null,
     });
@@ -50,8 +50,8 @@ describe("rasterStatsToMetrics", () => {
       deepEqual(metrics[0], {
         metricId: "sum",
         value: 5,
-        classId: "band-0",
-        groupId: null,
+        classId: null,
+        groupId: "band-0",
         geographyId: null,
         sketchId: "foo",
         extra: {
@@ -78,7 +78,7 @@ describe("rasterStatsToMetrics", () => {
     expect(metrics.length).toEqual(2);
     metrics.forEach((m, i) => {
       expect(m.value).toEqual(stats[i][m.metricId]);
-      expect(m.classId).toEqual(`band-${i}`);
+      expect(m.groupId).toEqual(`band-${i}`);
     });
   });
 
@@ -103,8 +103,8 @@ describe("rasterStatsToMetrics", () => {
     expect(metrics[0]).toEqual({
       metricId: "coral",
       value: 1,
-      classId: "band-0",
-      groupId: null,
+      classId: null,
+      groupId: "band-0",
       geographyId: null,
       sketchId: null,
     });
@@ -117,8 +117,8 @@ describe("rasterStatsToMetrics", () => {
     expect(metrics[0]).toEqual({
       metricId: "coral-sum",
       value: 1,
-      classId: "band-0",
-      groupId: null,
+      classId: null,
+      groupId: "band-0",
       geographyId: null,
       sketchId: null,
     });

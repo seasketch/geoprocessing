@@ -32,7 +32,7 @@ describe("getFeatures", () => {
     );
     expect(feats.length).toEqual(1);
     expect(feats[0].properties?.["UNION"]).toEqual("Micronesia");
-  }, 10000);
+  }, 60000);
 
   test("should successfully fetch from external subdivided land datasource", async () => {
     const landDatasource = project.getExternalVectorDatasourceById(
@@ -52,7 +52,7 @@ describe("getFeatures", () => {
       }
     );
     expect(feats.length).toEqual(1050);
-  }, 5000);
+  }, 60000);
 
   test("getFeatures - fetch subdivided with bbox crossing antimeridian greater than 180", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
@@ -69,7 +69,7 @@ describe("getFeatures", () => {
     );
     // toJsonFile(featureCollection(feats), "SUB_FIJI_OUTSIDE_SUB.json");
     expect(feats.length).toEqual(4); // Only returns left side of antimeridian
-  }, 10000);
+  }, 60000);
 
   test("getFeatures - fetch subdivided with bbox crossing antimeridian within 180", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
@@ -86,7 +86,7 @@ describe("getFeatures", () => {
     );
     // toJsonFile(featureCollection(feats), "SUB_FIJI_INSIDE_SUB.json");
     expect(feats.length).toEqual(29); // Returns eez features across entire world crossing
-  }, 10000);
+  }, 60000);
 
   // The same behavior is observed when using a flatgeobuf datasource, they just take a lot more time to run
 

@@ -1,7 +1,3 @@
-/**
- * @vitest-environment node
- * @group e2e
- */
 import { Polygon, Sketch } from "../../../types/index.js";
 import { genSampleSketch } from "../../../helpers/index.js";
 

@@ -18,10 +18,16 @@ export const rasterStatsToMetrics = (
     /** Properties to append to metric extra */
     metricPartial?: Partial<Metric>;
     truncate?: boolean;
-    /** If multi-band raster, metric property name that raster bands are organized.  defaults to classID */
+    /** If multi-band raster, metric property name that raster bands are organized. Defaults to groupId */
     bandMetricProperty?: MetricDimension;
     /** If multi-band raster, array of indexed by band number to assign to bandMetricsProperty ['mangroves','coral']. ['band 1','band 2]  */
     bandMetricValues?: string[];
+    /** If categorical raster, set to true */
+    categorical?: boolean;
+    /** If categorical raster, metric property name that categories are organized. Defaults to classId */
+    categoryMetricProperty?: MetricDimension;
+    /** If categorical raster, array of values to create metrics for */
+    categoryMetricValues?: string[];
   } = {}
 ): Metric[] => {
   const {
@@ -29,26 +35,69 @@ export const rasterStatsToMetrics = (
     metricIdPrefix = "",
     metricPartial = {},
     truncate = true,
-    bandMetricProperty = "classId",
+    bandMetricProperty = "groupId",
     bandMetricValues = [...Array(statsObjects.length).keys()].map(
       (x) => `band-${x}`
     ),
+    categorical = false,
+    categoryMetricProperty = "classId",
+    categoryMetricValues,
   } = options;
   let metrics: Metric[] = [];
+  if (bandMetricProperty === categoryMetricProperty)
+    throw new Error(
+      "bandMetricProperty and categoryMetricProperty cannot be the same"
+    );
+
   statsObjects.forEach((curStats, band) => {
     const statNames = Object.keys(curStats);
     statNames.forEach((statName) => {
       const value = curStats[statName];
-      metrics.push(
-        createMetric({
-          metricId: metricId ?? `${metricIdPrefix}${statName}`,
-          value: truncate
-            ? roundDecimal(value, 6, { keepSmallValues: true })
-            : value,
-          ...metricPartial,
-          [bandMetricProperty]: bandMetricValues[band],
-        })
-      );
+
+      if (categorical) {
+        categoryMetricValues
+          ? categoryMetricValues.forEach((category) => {
+              metrics.push(
+                createMetric({
+                  metricId: metricId ?? `${metricIdPrefix}valid`,
+                  value: truncate
+                    ? roundDecimal(value[category], 6, {
+                        keepSmallValues: true,
+                      })
+                    : value[category],
+                  ...metricPartial,
+                  [bandMetricProperty]: bandMetricValues[band],
+                  [categoryMetricProperty]: category,
+                })
+              );
+            })
+          : Object.keys(value).forEach((category) => {
+              metrics.push(
+                createMetric({
+                  metricId: metricId ?? `${metricIdPrefix}valid`,
+                  value: truncate
+                    ? roundDecimal(value[category], 6, {
+                        keepSmallValues: true,
+                      })
+                    : value[category],
+                  ...metricPartial,
+                  [bandMetricProperty]: bandMetricValues[band],
+                  [categoryMetricProperty]: category,
+                })
+              );
+            });
+      } else {
+        metrics.push(
+          createMetric({
+            metricId: metricId ?? `${metricIdPrefix}${statName}`,
+            value: truncate
+              ? roundDecimal(value, 6, { keepSmallValues: true })
+              : value,
+            ...metricPartial,
+            [bandMetricProperty]: bandMetricValues[band],
+          })
+        );
+      }
     });
   });
   return metrics;

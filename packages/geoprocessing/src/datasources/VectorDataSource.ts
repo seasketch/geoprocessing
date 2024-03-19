@@ -8,12 +8,13 @@ import {
 import Flatbush from "flatbush";
 import Pbf from "pbf";
 import geobuf from "geobuf";
-import { LRUCache } from "mnemonist";
 import rbushDefault from "rbush";
+import mnemonist from "mnemonist";
+
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
 import isHostedOnLambda from "../util/isHostedOnLambda.js";
-import "../util/fetchPolyfill";
+import "../util/fetchPolyfill.js";
 import { union } from "union-subdivided-polygons";
 
 import { defaultImport } from "default-import";
@@ -36,8 +37,6 @@ export interface VectorDataSourceDetails {
 }
 
 let sources: VectorDataSourceDetails[] = [];
-
-// const debug = require("debug")("VectorDataSource");
 
 export interface VectorDataSourceOptions {
   /**
@@ -144,7 +143,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
   private initError?: Error;
   private bundleIndex?: Flatbush;
   private pendingRequests: Map<string, PendingRequest>;
-  private cache: LRUCache<number, FeatureCollection>;
+  private cache: mnemonist.LRUCache<number, FeatureCollection>;
   private tree: RBushIndex;
   private dissolvedFeatureCache?: DissolvedFeatureCache;
   private needsRewinding?: boolean;
@@ -162,7 +161,11 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     this.options = { ...DEFAULTS, ...options };
     this.url = url.replace(/\/$/, "");
     this.pendingRequests = new Map();
-    this.cache = new LRUCache(Uint32Array, Array, this.options.cacheSize);
+    this.cache = new mnemonist.LRUCache(
+      Uint32Array,
+      Array,
+      this.options.cacheSize
+    );
     this.tree = new RBushIndex();
     sources.push({
       url: this.url,

@@ -2,7 +2,7 @@
  * @vitest-environment node
  * @group smoke
  */
-import { boundaryAreaOverlap } from "./boundaryAreaOverlap";
+import { boundaryAreaOverlap } from "./boundaryAreaOverlap.js";
 import {
   getExamplePolygonSketchAll,
   writeResultOutput,

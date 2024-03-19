@@ -12,6 +12,7 @@ import {
   getProjectConfigPath,
   getBlankFunctionPath,
 } from "../util/getPaths.js";
+import { pathToFileURL } from "url";
 
 async function createFunction() {
   const rawBasic = fs.readJSONSync(`${getProjectConfigPath("")}/basic.json`);
@@ -96,7 +97,8 @@ async function createFunction() {
   }
 }
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  // module was not imported but called directly
   createFunction();
 }
 

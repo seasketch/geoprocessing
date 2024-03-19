@@ -2,7 +2,7 @@
  * @vitest-environment node
  * @group smoke
  */
-import Handler from "./simpleFunction";
+import Handler from "./simpleFunction.js";
 import {
   getExamplePolygonSketchAll,
   writeResultOutput,

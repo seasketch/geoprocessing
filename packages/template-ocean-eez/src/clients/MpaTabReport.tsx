@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { SegmentControl, ReportPage } from "@seasketch/geoprocessing/client-ui";
-import ViabilityPage from "../components/ViabilityPage";
-import RepresentationPage from "../components/RepresentationPage";
+import ViabilityPage from "../components/ViabilityPage.js";
+import RepresentationPage from "../components/RepresentationPage.js";
 import { useTranslation } from "react-i18next";
-import { Translator } from "../components/TranslatorAsync";
+import { Translator } from "../components/TranslatorAsync.js";
 
 const enableAllTabs = false;
 

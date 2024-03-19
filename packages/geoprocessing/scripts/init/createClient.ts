@@ -7,6 +7,7 @@ import camelcase from "camelcase";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import pascalcase from "pascalcase";
 import { getBlankProjectPath } from "../util/getPaths.js";
+import { pathToFileURL } from "url";
 
 async function createClient() {
   const answers = await inquirer.prompt([
@@ -38,7 +39,8 @@ async function createClient() {
   await makeClient(answers, true, "");
 }
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  // module was not imported but called directly
   createClient();
 }
 

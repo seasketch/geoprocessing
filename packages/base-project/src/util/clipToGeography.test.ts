@@ -3,8 +3,8 @@
  * @group unit
  */
 
-import { clipToGeography } from "./clipToGeography";
-import project from "../../project";
+import { clipToGeography } from "./clipToGeography.js";
+import project from "../../project/projectClient.js";
 import bbox from "@turf/bbox";
 import area from "@turf/area";
 import { Polygon, Sketch, genSampleSketch } from "@seasketch/geoprocessing";

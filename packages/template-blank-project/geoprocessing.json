@@ -7,9 +7,9 @@
     "description":  "Report suite with tab navigation",
     "source": "src/clients/TabReport.tsx"
   },{
-    "name": "SizeReport",
+    "name": "SimpleReport",
     "description":  "Sketch size",
-    "source": "src/clients/SizeReport.tsx"
+    "source": "src/clients/SimpleReport.tsx"
   }],
   "preprocessingFunctions": [
     "src/functions/clipToLand.ts",

@@ -8,7 +8,7 @@ import {
   DatasourceClipOperation,
   DefaultExtraParams,
 } from "@seasketch/geoprocessing";
-import project from "../../project";
+import project from "../../project/projectClient.js";
 import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
 
 /**
@@ -48,7 +48,7 @@ export async function clipToOceanEez(
     options: {
       propertyFilter: {
         property: "UNION",
-        values: extraParams?.eezs || [project.basic.planningAreaId] || [],
+        values: extraParams?.eezNames || [project.basic.planningAreaId] || [],
       },
     },
   };

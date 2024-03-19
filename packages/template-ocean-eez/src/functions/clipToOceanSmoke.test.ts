@@ -2,7 +2,7 @@
  * @vitest-environment node
  * @group smoke
  */
-import handler, { clipToOcean } from "./clipToOcean";
+import handler, { clipToOcean } from "./clipToOcean.js";
 import { polygonPreprocessorSmokeTest } from "@seasketch/geoprocessing/scripts/testing";
 
 polygonPreprocessorSmokeTest(clipToOcean, handler.options.title, {

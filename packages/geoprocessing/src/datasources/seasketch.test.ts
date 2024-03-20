@@ -39,10 +39,10 @@ test.skip("Basic extraction from request", async () => {
 });
 
 test.skip("Fetch sketch from a server", async () => {
-  fetchMock.get(
-    "https://seasketch.org/p/1/sketch/1234abcd?token=paralabrax",
-    JSON.stringify(exampleSketch)
-  );
+  // fetchMock.get(
+  //   "https://seasketch.org/p/1/sketch/1234abcd?token=paralabrax",
+  //   JSON.stringify(exampleSketch)
+  // );
   const sketch = await fetchGeoJSON({
     geometryUri: "https://seasketch.org/p/1/sketch/1234abcd?token=paralabrax",
   });

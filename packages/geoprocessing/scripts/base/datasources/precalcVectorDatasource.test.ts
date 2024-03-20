@@ -71,7 +71,7 @@ describe("precalcDatasources", () => {
       if (isInternalVectorDatasource(returnedDs)) {
         expect(returnedDs.explodeMulti).toBe(false);
       } else {
-        fail("expected internal vector datasource");
+        throw new Error("expected internal vector datasource");
       }
 
       // Create geography

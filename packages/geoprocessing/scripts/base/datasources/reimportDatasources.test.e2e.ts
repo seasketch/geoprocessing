@@ -1,7 +1,3 @@
-/**
- * @vitest-environment node
- * @group scripts/e2e
- */
 import { reimportDatasources } from "./reimportDatasources.js";
 import {
   internalVectorDatasourceSchema,

@@ -1,7 +1,8 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
+import { describe, test, expect } from "vitest";
 import parseGeoraster from "georaster";
 import { rasterMetrics } from "./rasterMetrics.js";
 import fix from "../testing/fixtures/sketches.js";

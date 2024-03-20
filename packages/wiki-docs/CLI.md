@@ -36,7 +36,7 @@ Testing uses [Storybook](https://storybook.js.org/), [Jest](https://jestjs.io/) 
 
 ```typescript
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group smoke
  */
 ```

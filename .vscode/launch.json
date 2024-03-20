@@ -19,6 +19,16 @@
         "internalConsoleOptions": "neverOpen",
         "port": 9229        
     }, {
+      "type": "node",
+      "request": "launch",
+      "name": "geoprocessing - debug current test file",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "smartStep": true,
+      "console": "integratedTerminal"
+    }, {
       "name": "geoprocessing - debug tests with pattern",
       "type": "node",
       "request": "launch",
@@ -28,6 +38,18 @@
         "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
         "-t",
         "${input:testNamePattern}"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229        
+    }, {
+      "name": "geoprocessing - debug tests with pattern - node test runner",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/geoprocessing",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "glob -c \"node --import tsx --test-name-pattern='${input:testNamePattern}' --test\" \"./src/**/*.node.test.ts\""
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",

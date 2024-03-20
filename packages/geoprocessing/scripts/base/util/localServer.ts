@@ -2,8 +2,6 @@ import http from "http";
 import finalhandler from "finalhandler";
 import serveStatic from "serve-static";
 
-// Switch to parseGeoraster
-
 export function startLocalServer(
   options: { path: string; port: number } = { path: "./", port: 8001 }
 ) {
@@ -16,7 +14,7 @@ export function startLocalServer(
 }
 
 /**
- * Local file server, for quick programmatic use (e.g. load raster with geoblaze), then close
+ * Local file server, for quickly serving static files
  */
 export default class LocalFileServer {
   private _server: http.Server;

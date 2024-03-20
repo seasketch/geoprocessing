@@ -22,7 +22,6 @@
   },
   "files.exclude": {},
   "git.ignoreLimitWarning": true,
-  "jest.rootPath": "packages/geoprocessing",
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#004b99",
     "activityBar.activeBorder": "#ff007d",

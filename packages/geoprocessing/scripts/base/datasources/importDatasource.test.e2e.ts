@@ -1,8 +1,3 @@
-/**
- * @jest-environment node
- * @group scripts/e2e
- */
-
 import { importDatasource } from "./importDatasource.js";
 import {
   ProjectClientBase,

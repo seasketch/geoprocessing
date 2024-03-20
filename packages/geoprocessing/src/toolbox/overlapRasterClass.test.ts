@@ -1,8 +1,14 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
-import { Polygon, MultiPolygon, Sketch, SketchCollection } from "../types/index.js";
+import { describe, test, expect } from "vitest";
+import {
+  Polygon,
+  MultiPolygon,
+  Sketch,
+  SketchCollection,
+} from "../types/index.js";
 import { genSampleSketch } from "../helpers/index.js";
 import parseGeoraster from "georaster";
 import { overlapRasterClass } from "./overlapRasterClass.js";

@@ -1,3 +1,4 @@
+import { test, expect } from "vitest";
 import React from "react";
 import { render } from "@testing-library/react";
 import SketchAttributesCard from "./SketchAttributesCard.js";

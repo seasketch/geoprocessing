@@ -1,5 +1,6 @@
+import { describe, test, expect, vi } from "vitest";
 import React from "react";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom/vitest";
 import { ReportContext } from "../context/index.js";
 import { renderHook, act } from "@testing-library/react-hooks";
 import useSketchProperties from "./useSketchProperties.js";

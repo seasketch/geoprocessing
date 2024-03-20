@@ -11,7 +11,7 @@ const viteConfig = defineViteConfig({
 
 const vitestConfig = defineVitestConfig({
   test: {
-    name: "src-unit",
+    name: "src-browser",
     root: "./src",
     include: [
       "**/components/*.{test,spec}.?(c|m)[jt]s?(x)",

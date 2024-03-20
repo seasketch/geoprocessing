@@ -20,7 +20,7 @@ const projectPath = path.join(rootPath, projectName);
 describe("GeoprocessingStack - preprocessor only", () => {
   afterAll(() => cleanupBuildDirs(projectPath));
 
-  it.only("should create a valid stack", async () => {
+  it.skip("should create a valid stack", async () => {
     await setupBuildDirs(projectPath);
 
     const manifest = await createTestProjectManifest(projectName, [

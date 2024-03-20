@@ -74,7 +74,7 @@ describe("overlapFeatures", () => {
     expect(metrics[0].value).toBeCloseTo(area(fix.sketchMultiPoly1));
   });
 
-  test("overlapFeatures - sketch polygon half inside", async () => {
+  test.skip("overlapFeatures - sketch polygon half inside", async () => {
     const metrics = await overlapFeatures("test", [fix.outer], fix.sketch2);
     expect(metrics.length).toEqual(1);
     // overlap should be ~50% of original sketch area

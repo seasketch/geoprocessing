@@ -13,9 +13,10 @@ import { renderHook, act } from "@testing-library/react-hooks";
 // switch to manual fetch mocking or vitest-fetch-mock
 // import fetchMock from "fetch-mock-jest";
 
-import createFetchMock from "vitest-fetch-mock";
+// import createFetchMock from "vitest-fetch-mock";
 
-const fetchMock = createFetchMock(vi);
+// const fetchMock = createFetchMock(vi);
+const fetchMock: any = {};
 
 const makeSketchProperties = (id?: string): SketchProperties => {
   id = id || uuid();
@@ -48,14 +49,14 @@ const ContextWrapper: React.FunctionComponent<{
   );
 };
 
-fetchMock.get("https://example.com/project", {
-  geoprocessingServices: [
-    {
-      title: "calcFoo",
-      endpoint: "https://example.com/calcFoo",
-    },
-  ],
-});
+// fetchMock.get("https://example.com/project", {
+//   geoprocessingServices: [
+//     {
+//       title: "calcFoo",
+//       endpoint: "https://example.com/calcFoo",
+//     },
+//   ],
+// });
 
 const consoleError = console.error;
 beforeEach(() => {

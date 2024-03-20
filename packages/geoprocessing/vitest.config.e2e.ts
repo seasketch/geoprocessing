@@ -8,6 +8,6 @@ export default defineConfig({
     exclude: [...configDefaults.exclude],
     environment: "node",
     globals: true,
-    setupFiles: ["./vitest-setup.ts"],
+    // setupFiles: ["./vitest-setup.ts"],
   },
 });

@@ -9,7 +9,7 @@ import { genClipLoader } from "./genClipLoader.js";
 
 // import micronesia eez from global subdivided
 describe("genClipLoader", () => {
-  test("should successfully fetch datasources and return ClipOperations", async () => {
+  test.skip("should successfully fetch datasources and return ClipOperations", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );

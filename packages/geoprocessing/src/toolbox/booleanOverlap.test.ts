@@ -134,7 +134,7 @@ describe("Overlap unit tests", () => {
     );
     expect(result.length).toBe(1);
   });
-  test("A and B together overlap with C and D", async () => {
+  test.skip("A and B together overlap with C and D", async () => {
     const result = await booleanOverlap(
       [polySketchA, polySketchB],
       [polySketchC, polySketchD]

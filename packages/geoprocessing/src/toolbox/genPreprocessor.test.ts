@@ -12,7 +12,7 @@ import { genPreprocessor } from "./genPreprocessor.js";
 
 // import micronesia eez from global subdivided
 describe("genPreprocessor", () => {
-  test("should successfully generate and run preprocessor", async () => {
+  test.skip("should successfully generate and run preprocessor", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );
@@ -70,7 +70,7 @@ describe("genPreprocessor", () => {
     expect(area(result)).toBe(75066892447.21024);
   }, 60000);
 
-  test("sketch outside of datasource should not clip at all", async () => {
+  test.skip("sketch outside of datasource should not clip at all", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );

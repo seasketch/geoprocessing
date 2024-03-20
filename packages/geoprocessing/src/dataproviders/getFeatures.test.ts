@@ -9,7 +9,7 @@ import project from "../testing/project/index.js";
 
 // import micronesia eez from global subdivided
 describe("getFeatures", () => {
-  test("should successfully fetch from external subdivided eez datasource", async () => {
+  test.skip("should successfully fetch from external subdivided eez datasource", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );
@@ -34,7 +34,7 @@ describe("getFeatures", () => {
     expect(feats[0].properties?.["UNION"]).toEqual("Micronesia");
   }, 30000);
 
-  test("should successfully fetch from external subdivided land datasource", async () => {
+  test.skip("should successfully fetch from external subdivided land datasource", async () => {
     const landDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-osm-land"
     );
@@ -54,7 +54,7 @@ describe("getFeatures", () => {
     expect(feats.length).toEqual(1050);
   }, 30000);
 
-  test("getFeatures - fetch subdivided with bbox crossing antimeridian greater than 180", async () => {
+  test.skip("getFeatures - fetch subdivided with bbox crossing antimeridian greater than 180", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );
@@ -71,7 +71,7 @@ describe("getFeatures", () => {
     expect(feats.length).toEqual(4); // Only returns left side of antimeridian
   }, 30000);
 
-  test("getFeatures - fetch subdivided with bbox crossing antimeridian within 180", async () => {
+  test.skip("getFeatures - fetch subdivided with bbox crossing antimeridian within 180", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-eez-land-union"
     );

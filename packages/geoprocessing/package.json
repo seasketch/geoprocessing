@@ -23,7 +23,8 @@
     "scripts": {
         "build:core": "tsc",
         "build:scripts": "cd scripts && tsc",
-        "test": "npm run test:node",
+        "test": "npm run test:node && npm run test:browser && npm run test:scripts",
+        "test:local": "npm run test && npm run test:e2e && npm run test:scripts:e2e",
         "test:node": "vitest run -c vitest.config.node.js",
         "test:node:matching": "vitest run -c vitest.config.node.js -t",
         "test:browser": "vitest run -c vitest.config.browser.js",

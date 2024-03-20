@@ -238,8 +238,8 @@
         "jsdom": "^24.0.0",
         "mock-socket": "^9.0.3",
         "typedoc": "^0.24.8",
-        "vite": "^5.1.5",
-        "vitest": "^1.3.1",
+        "vite": "^5.1.6",
+        "vitest": "^1.4.0",
         "vitest-fetch-mock": "^0.2.2"
     },
     "optionalDependencies": {

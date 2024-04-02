@@ -1,12 +1,11 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { parseCLI, startVitest } from "vitest/node";
 import { configDefaults } from "vitest/config";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
+/**
+ * Manually parse user-provided CLI arguments from geoprocessing test command and run vitest
+ */
 export default async function () {
-  // build vitest command, adding user-provided arguments after "--"
+  // build vitest command from user-provided arguments after "--"
   const argv = ["vitest", ...process.argv.slice(2)];
   const { filter, options } = parseCLI(argv);
 

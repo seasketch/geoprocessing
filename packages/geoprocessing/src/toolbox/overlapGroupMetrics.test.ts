@@ -2,6 +2,7 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import { overlapAreaGroupMetrics } from "./overlapGroupMetrics.js";
 import { SketchCollection, Polygon, Metric } from "../types/index.js";
 

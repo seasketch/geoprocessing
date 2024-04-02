@@ -47,7 +47,7 @@
       "./node_modules/@types",
       "./node_modules/@seasketch/geoprocessing/node_modules/@types",
     ],                                        /* List of folders to include type definitions from. */
-    // "types": [],                           /* Type declaration files to be included in compilation. */
+    "types": ["vitest/globals"],                           /* Type declaration files to be included in compilation. */
     "allowSyntheticDefaultImports": true,  /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
     // "esModuleInterop": true,                  /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
     // "preserveSymlinks": true,              /* Do not resolve the real path of symlinks. */
@@ -67,18 +67,5 @@
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     "resolveJsonModule": true
   },
-  "exclude": ["cdk.out", "node_modules"],
-  "ts-node": {
-    // It is faster to skip typechecking.
-    // Remove if you want ts-node to do typechecking.
-    "transpileOnly": true,
-    "files": true,
-    "compilerOptions": {
-      "esModuleInterop": true,
-      "module": "commonjs",
-      // compilerOptions specified here will override those declared below,
-      // but *only* in ts-node.  Useful if you want ts-node and tsc to use
-      // different options with a single tsconfig.json.
-    }
-  },
+  "exclude": ["cdk.out", "node_modules"]
 }

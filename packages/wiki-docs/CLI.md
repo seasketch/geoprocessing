@@ -36,15 +36,14 @@ Testing uses [Storybook](https://storybook.js.org/), [Jest](https://jestjs.io/) 
 
 ```typescript
 /**
- * @jest-environment node
- * @group smoke
+ * @vitest-environment node
  */
 ```
 
 * `test:unit:matching` - executes unit tests matching the given substring.
 
   * You will need to run `start-data` command manually before running this command if your functions accesses datasources published by this project (not global datasources).
-  * See Jest [--testNamePattern](https://jestjs.io/docs/cli#--testnamepatternregex)
+  * See Vitest [-t](https://vitest.dev/guide/cli#options)
   * e.g. `npm run test:smoke:matching boundaryAreaOverlapSmoke` where smoke test is coded as follows
 
 ```typescript

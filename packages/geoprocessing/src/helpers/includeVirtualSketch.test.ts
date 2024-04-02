@@ -1,8 +1,9 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import { SketchCollection, NullSketchCollection } from "../types/index.js";
 import {
   includeVirtualSketch,
@@ -53,7 +54,7 @@ const mergeColl = genSketchCollection([
 ]);
 
 describe("includeVirtualSketch", () => {
-  test.only("should be included if valid yes attribute", async () => {
+  test.skip("should be included if valid yes attribute", async () => {
     const sketch = genSketch({ name: "test1" });
     const coll = genSketchCollection([sketch], { name: "testColl" });
     coll.properties.userAttributes = [

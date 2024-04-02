@@ -2,6 +2,7 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
 import { cleanCoords } from "./cleanCoords.js";
 import { feature, featureCollection } from "@turf/helpers";
 import { Feature, Polygon } from "../types/index.js";

@@ -23,6 +23,7 @@ export function includeVirtualSketch<G extends SketchGeometryTypes>(
       ...sketchColl,
       features: [...sketchColl.features, ...mergeSketchColl.features],
     };
+    console.log(bbox(finalSketch));
     finalSketch.bbox = bbox(finalSketch);
     return finalSketch;
   } else {

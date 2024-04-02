@@ -1,7 +1,8 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group e2e
  */
+import { describe, test, expect } from "vitest";
 import { Polygon, Sketch, Feature } from "../../types/index.js";
 import parseGeoraster from "georaster";
 import testData from "./test/testData.js";
@@ -90,7 +91,7 @@ describe("geoblaze cog test", () => {
     } catch (err) {
       return;
     }
-    fail("should not reach here, feature smaller than pixel");
+    throw new Error("should not reach here, feature smaller than pixel");
   });
 
   test("geoblaze - larger feature covering only nodata should return 0", async () => {

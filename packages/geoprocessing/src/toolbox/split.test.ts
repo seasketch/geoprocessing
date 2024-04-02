@@ -2,10 +2,16 @@
  * @group unit
  */
 
+import { describe, test, expect } from "vitest";
+
 import { splitFeatureAntimeridian, splitSketchAntimeridian } from "./split.js";
 import { feature } from "@turf/helpers";
 import { Feature, Polygon, Sketch } from "../types/index.js";
-import { toFeaturePolygonArray, toJsonFile, toSketchArray } from "../helpers/index.js";
+import {
+  toFeaturePolygonArray,
+  toJsonFile,
+  toSketchArray,
+} from "../helpers/index.js";
 import {
   genSampleSketch,
   genSampleSketchCollectionFromSketches,
@@ -133,7 +139,7 @@ describe("splitSketch", () => {
         ],
       ]);
     } else {
-      fail("Should not get here");
+      throw new Error("Should not get here");
     }
   });
 
@@ -179,7 +185,7 @@ describe("splitSketch", () => {
         ],
       ]);
     } else {
-      fail("Should not reach here");
+      throw new Error("Should not reach here");
     }
   });
 });

@@ -24,7 +24,8 @@
     "request": "^2.88.2",
     "start-server-and-test": "^1.15.4",
     "styled-components": "^6.1.8",
-    "ts-node": "^10.9.1"
+    "tsx": "^4.7.1",
+    "vitest": "^1.4.0"
   },
   "engines": {
     "node": ">=16.0.0",
@@ -41,8 +42,8 @@
     "publish:experimental:canary": "BRANCH_NAME=`git rev-parse --symbolic-full-name --abbrev-ref HEAD`; if [ $BRANCH_NAME != \"dev\" -a $BRANCH_NAME != \"main\" ] ; then CI=1 lerna publish --force-publish --canary --preid experimental-${BRANCH_NAME} --dist-tag=experimental-${BRANCH_NAME} ; fi",
     "e2e_test": "./packages/geoprocessing/scripts/testing/initTestProjects.mjs",
     "prepare": "husky install",
-    "translation:publish": "npx ts-node packages/geoprocessing/src/i18n/bin/publishTerms.ts",
-    "translation:import": "npx ts-node packages/geoprocessing/src/i18n/bin/importTerms.ts",
+    "translation:publish": "npx tsx packages/geoprocessing/src/i18n/bin/publishTerms.ts",
+    "translation:import": "npx tsx packages/geoprocessing/src/i18n/bin/importTerms.ts",
     "translation:sync": "npm run translation:extract && npm run translation:publish && npm run translation:import",
     "translation:extract": "rm -rf packages/geoprocessing/src/i18n/lang/en && mkdir -p packages/geoprocessing/src/i18n/lang/en && NODE_ENV=development npx babel 'packages/geoprocessing/src/**/*.{ts,tsx}' 'packages/template-blank-project/src/**/*.{ts,tsx}' 'packages/template-ocean-eez/src/**/*.{ts,tsx}' > /dev/null && mv extractedTranslations/en packages/geoprocessing/src/i18n/lang && rm -rf extractedTranslations && echo 'Translations extracted to packages/geoprocessing/src/lang/en'"
   },

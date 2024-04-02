@@ -1,8 +1,3 @@
-/**
- * @jest-environment node
- * @group scripts/e2e
- */
-
 import { Metric } from "../../../src/index.js";
 import { staleMetricsFilterFnFactory } from "./precalcDatasources.js";
 

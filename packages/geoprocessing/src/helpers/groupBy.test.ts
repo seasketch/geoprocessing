@@ -1,3 +1,4 @@
+import { describe, test, expect } from "vitest";
 import { groupBy } from "./groupBy.js";
 
 const list = [

@@ -8,7 +8,8 @@
     "moduleResolution": "nodenext",            /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
     "allowSyntheticDefaultImports": true,  /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["vitest/globals"],                           /* Type declaration files to be included in compilation. */
   },
   "exclude": ["cdk.out", "node_modules"]
 }

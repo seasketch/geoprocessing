@@ -179,6 +179,7 @@
         "i18next-browser-languagedetector": "^7.0.1",
         "inquirer": "^8.2.6",
         "inquirer-autocomplete-prompt": "^2.0.0",
+        "jsdom": "^24.0.0",
         "json2csv": "^5.0.6",
         "lodash": "^4.17.21",
         "mnemonist": "^0.38.3",
@@ -239,7 +240,6 @@
         "eslint": "^8.57.0",
         "eslint-plugin-unicorn": "^51.0.1",
         "identity-obj-proxy": "^3.0.0",
-        "jsdom": "^24.0.0",
         "mock-socket": "^9.0.3",
         "typedoc": "^0.24.8"
     },

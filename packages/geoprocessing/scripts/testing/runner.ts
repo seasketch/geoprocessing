@@ -21,5 +21,5 @@ export default async function () {
     globals: true,
   };
 
-  startVitest("test", filter, options);
+  startVitest("test", filter, { ...defaultOptions, ...options });
 }

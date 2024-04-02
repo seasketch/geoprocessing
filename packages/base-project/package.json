@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "start-data": "http-server data/dist -c-1",
-    "__test": "geoprocessing test",
+    "__test": "TEST_DIR=$(pwd) geoprocessing test",
     "test": "npm run test:unit",
     "test:unit": "npm run __test -- --group=unit --passWithNoTests",
     "test:unit:matching": "npm run __test -- --runInBand --group=unit --passWithNoTests -t",

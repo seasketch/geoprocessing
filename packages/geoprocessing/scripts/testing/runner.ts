@@ -9,13 +9,13 @@ export default async function () {
   const argv = ["vitest", ...process.argv.slice(2)];
   console.log("dirname", __dirname);
   console.log("args", JSON.stringify(argv));
-  console.log("process.env", process.env.VITE_TEST_DIR);
+  console.log("process.env", process.env.TEST_ROOT);
 
   const { filter, options } = parseCLI(argv);
 
   const defaultOptions = {
     name: "node-tests",
-    root: process.env.VITE_TEST_DIR,
+    root: process.env.TEST_ROOT,
     exclude: [...configDefaults.exclude],
     environment: "jsdom",
     globals: true,

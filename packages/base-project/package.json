@@ -8,7 +8,7 @@
   "scripts": {
     "start-data": "http-server data/dist -c-1",
     "__test": "TEST_ROOT=$(pwd) geoprocessing test",
-    "test": "npm run __test",
+    "test": "start-server-and-test start-data 8080 'npm run __test'",
     "test:matching": "npm run __test -- -t",
     "add:template": "geoprocessing add:template",
     "import:data": "geoprocessing import:data",

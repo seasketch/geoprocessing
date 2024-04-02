@@ -147,8 +147,8 @@
       "request": "launch",
       "name": "translation - debug importTerms",
       "runtimeArgs": [
-          "-r",
-          "ts-node/register",
+          "--import",
+          "tsx",
       ],
       "args": [
           "${workspaceRoot}/packages/geoprocessing/src/i18n/bin/importTerms.ts"
@@ -158,8 +158,8 @@
     "request": "launch",
     "name": "translation - debug publishTerms",
     "runtimeArgs": [
-        "-r",
-        "ts-node/register",
+        "--import",
+        "tsx",
     ],
     "args": [
         "${workspaceRoot}/packages/geoprocessing/src/i18n/bin/publishTerms.ts"
@@ -184,8 +184,8 @@
   "request": "launch",
   "name": "run any ts-node script",
   "runtimeArgs": [
-      "-r",
-      "ts-node/register/transpile-only",
+      "--import",
+      "tsx",
   ],
   "args": [
       "${workspaceRoot}/packages/geoprocessing/${input:scriptPath}"

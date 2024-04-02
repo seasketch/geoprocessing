@@ -67,18 +67,6 @@
       "resolveJsonModule": true
     },
     "exclude": ["docs", "./templates/**/*", "node_modules", 
-                "dist", "scripts", "cdk.out", "vitest*"],
-    "ts-node": {
-      // Set to false if you want ts-node to do typechecking (slower).
-      "transpileOnly": true,
-      "files": true,
-      "experimentalResolver": true,
-      "compilerOptions": {
-        // compilerOptions specified here will override those declared below,
-        // but *only* in ts-node.  Useful if you want ts-node and tsc to use
-        // different options with a single tsconfig.json.
-        "module": "nodenext"
-      }
-    }
+                "dist", "scripts", "cdk.out", "vitest*"]
   }
   

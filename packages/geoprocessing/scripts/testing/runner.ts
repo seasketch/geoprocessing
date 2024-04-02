@@ -6,7 +6,7 @@ import { configDefaults } from "vitest/config";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default async function () {
-  const argv = process.argv.slice(2);
+  const argv = ["vitest", ...process.argv.slice(2)];
   console.log("dirname", __dirname);
   console.log("args", JSON.stringify(argv));
   console.log("process.env", process.env.VITE_TEST_DIR);

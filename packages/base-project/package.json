@@ -42,11 +42,11 @@
     "@seasketch/geoprocessing"
   ],
   "dependencies": {
-    "@turf/area": "^6.5.0",
-    "@turf/bbox": "^6.5.0",
-    "@turf/bbox-clip": "^6.5.0",
-    "@turf/boolean-valid": "^6.5.0",
-    "@turf/simplify": "^6.5.0",
+    "@turf/area": "7.0.0-alpha.113",
+    "@turf/bbox": "7.0.0-alpha.113",
+    "@turf/bbox-clip": "7.0.0-alpha.113",
+    "@turf/boolean-valid": "7.0.0-alpha.113",
+    "@turf/simplify": "7.0.0-alpha.113",
     "geojson-antimeridian-cut": "^0.1.0",
     "react-i18next": "^12.2.0"
   },

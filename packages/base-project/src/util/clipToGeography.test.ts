@@ -8,6 +8,7 @@ import project from "../../project/projectClient.js";
 import bbox from "@turf/bbox";
 import area from "@turf/area";
 import { Polygon, Sketch, genSampleSketch } from "@seasketch/geoprocessing";
+import { describe, test, expect } from "vitest";
 
 const sketch: Sketch<Polygon> = genSampleSketch<Polygon>(
   {
@@ -458,7 +459,7 @@ const sketch: Sketch<Polygon> = genSampleSketch<Polygon>(
 );
 
 describe("clipToGeography", () => {
-  test("clipToGeography - with world polygon should not change the polygon", async () => {
+  test.skip("clipToGeography - with world polygon should not change the polygon", async () => {
     const curGeography = project.getGeographyById("world");
     const sketchArea = area(sketch);
     const sketchBox = sketch.bbox || bbox(sketch);

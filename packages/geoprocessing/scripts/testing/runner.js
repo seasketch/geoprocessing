@@ -1,8 +1,5 @@
-// copied and modified from create-react-app
-// https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/scripts/test.js
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-
 import { parseCLI, startVitest } from "vitest/node";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

@@ -1,0 +1,39 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "World boundary",
+          "description": "World"
+        },
+        "geometry": {
+          "coordinates": [
+            [
+              [
+                -179,
+                89
+              ],
+              [
+                -179,
+                -89
+              ],
+              [
+                179,
+                -89
+              ],
+              [
+                179,
+                89
+              ],
+              [
+                -179,
+                89
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        }
+      }
+    ]
+  }

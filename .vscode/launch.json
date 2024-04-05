@@ -12,7 +12,7 @@
         "cwd": "${workspaceFolder}/packages/geoprocessing",
         "runtimeArgs": [
           "--inspect-brk",
-          "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/vitest",
+          "${workspaceRoot}/node_modules/.bin/vitest",
           "-c",
           "vitest.config.node.js"
         ],
@@ -36,7 +36,7 @@
       "cwd": "${workspaceFolder}/packages/geoprocessing",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/vitest",
+        "${workspaceRoot}/node_modules/.bin/vitest",
         "-c",
         "vitest.config.node.js",
         "-t",
@@ -53,7 +53,7 @@
       "cwd": "${workspaceFolder}/packages/geoprocessing",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/vitest",
+        "${workspaceRoot}/node_modules/.bin/vitest",
         "-c",
         "vitest.config.scripts.node.js"
       ],
@@ -67,7 +67,7 @@
     "cwd": "${workspaceFolder}/packages/geoprocessing",
     "runtimeArgs": [
       "--inspect-brk",
-      "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/vitest",
+      "${workspaceRoot}/node_modules/.bin/vitest",
       "-c",
       "vitest.config.scripts.node.js",
       "-t",
@@ -83,7 +83,7 @@
       "cwd": "${workspaceFolder}/packages/geoprocessing",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/vitest",
+        "${workspaceRoot}/node_modules/.bin/vitest",
         "-c",
         "vitest.config.e2e.js"
       ],
@@ -97,7 +97,7 @@
     "cwd": "${workspaceFolder}/packages/geoprocessing",
     "runtimeArgs": [
       "--inspect-brk",
-      "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/vitest",
+      "${workspaceRoot}/node_modules/.bin/vitest",
       "-c",
       "vitest.config.e2e.js",
       "-t",

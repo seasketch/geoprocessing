@@ -15,23 +15,21 @@ describe("getFeatures", () => {
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const feats = await getFeatures(
-      eezDatasource,
-      project.getDatasourceUrl(eezDatasource, { format: "fgb" }),
-      {
-        bbox: [
-          135.312441837621, -1.17311096529859, 165.676528225997,
-          13.4454329253893,
-        ],
-        // Without this filter, GUAM would also be included
-        propertyFilter: {
-          property: "UNION",
-          values: ["Micronesia"],
-        },
-      }
-    );
+    const url = project.getDatasourceUrl(eezDatasource, { format: "fgb" });
+    console.log("url", url);
+    const feats = await getFeatures(eezDatasource, url, {
+      bbox: [
+        135.312441837621, -1.17311096529859, 165.676528225997, 13.4454329253893,
+      ],
+      // Without this filter, GUAM would also be included
+      propertyFilter: {
+        property: "UNION",
+        values: ["Micronesia"],
+      },
+    });
     expect(feats.length).toEqual(1);
     expect(feats[0].properties?.["UNION"]).toEqual("Micronesia");
+    expect(1).toEqual(1);
   }, 30000);
 
   test.skip("should successfully fetch from external subdivided land datasource", async () => {

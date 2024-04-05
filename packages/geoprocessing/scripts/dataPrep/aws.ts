@@ -31,7 +31,7 @@ export async function getDataSourceVersion(
     const url = objectUrl(name, "metadata.json");
     const res = await fetch(url);
     if (res.ok) {
-      const metadata = await res.json();
+      const metadata: any = await res.json();
       return {
         currentVersion: metadata.version,
         lastPublished: new Date(metadata.published),

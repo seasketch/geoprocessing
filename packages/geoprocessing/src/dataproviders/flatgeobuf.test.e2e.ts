@@ -8,7 +8,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import * as url from "url";
 
-test.skip("flatgeobuf - internal world fgb", async () => {
+test("flatgeobuf - internal world fgb", async () => {
   const str = canonicalize([
     {
       type: "Feature",
@@ -36,7 +36,7 @@ test.skip("flatgeobuf - internal world fgb", async () => {
   expect(canonicalize(features)).toEqual(str);
 });
 
-test.skip("flatgeobuf - file countries fgb", async () => {
+test("flatgeobuf - file countries fgb", async () => {
   const str = canonicalize([
     {
       type: "Feature",
@@ -61,7 +61,7 @@ test.skip("flatgeobuf - file countries fgb", async () => {
 
   const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
-  const filePath = path.join(__dirname, "../../data/in/world_slim.fgb");
+  const filePath = path.join(__dirname, "../../data/in/countries.fgb");
   console.log(filePath);
   const data = readFileSync(filePath);
   const view = new Uint8Array(data.buffer);
@@ -69,6 +69,13 @@ test.skip("flatgeobuf - file countries fgb", async () => {
 
   expect(fc.features.length).toEqual(179);
 });
+
+test.skip("flatgeobuf - external world fgb", async () => {
+  const url =
+    "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/world.fgb";
+  const features = await fgbFetchAll(url)
+  expect(features.length).toEqual(1);
+}, 20000);
 
 // test("flatgeobuf - external world fgb", async () => {
 //   const url =

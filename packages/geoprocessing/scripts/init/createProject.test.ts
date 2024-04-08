@@ -14,10 +14,9 @@ import {
   datasourcesSchema,
 } from "../../src/types/index.js";
 import { isVectorDatasource } from "../../src/datasources/index.js";
+import { describe, it, expect, afterAll } from "vitest"
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const rootPath = `${__dirname}/../__test__`;
+const rootPath = `${import.meta.dirname}/../__test__`;
 
 describe("createProject", () => {
   afterAll(async () => {

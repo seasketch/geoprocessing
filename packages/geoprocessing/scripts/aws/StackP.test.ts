@@ -9,11 +9,9 @@ import config from "./config.js";
 import createTestProjectManifest from "../testing/createTestProjectManifest.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { describe, it, expect, afterAll } from "vitest"
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const rootPath = `${__dirname}/../__test__`;
+const rootPath = `${import.meta.dirname}/../__test__`;
 const projectName = "preprocessor-only";
 const projectPath = path.join(rootPath, projectName);
 

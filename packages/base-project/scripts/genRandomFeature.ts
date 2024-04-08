@@ -11,8 +11,6 @@ import {
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 /**
  * genRandomFeature script - generates random feature within the bounding box of the project.  Not guaranteed to be within the EEZ boundary
  * @param outdir - the output director to write features to.  Defaults to examples/features/
@@ -37,7 +35,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
     }
   })();
 
-  const outdir = process.argv[4] || `${__dirname}/../examples/features/`;
+  const outdir = process.argv[4] || `${import.meta.dirname}/../examples/features/`;
 
   const outfile = `${outdir}${name}.json`;
 

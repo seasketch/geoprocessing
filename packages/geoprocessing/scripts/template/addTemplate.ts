@@ -4,11 +4,9 @@ import fs from "fs-extra";
 import util from "util";
 import { GeoprocessingJsonConfig, Package } from "../../src/types/index.js";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import * as child from "child_process";
 import { pathToFileURL } from "url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const exec = util.promisify(child.exec);
 
 export interface TemplateMetadata {
@@ -22,7 +20,7 @@ function getTemplatesPath(templateType: TemplateType): string {
   // published bundle path exists if this is being run from the published geoprocessing package
   // (e.g. via geoprocessing init or add:template)
   const publishedBundlePath = path.join(
-    __dirname,
+    import.meta.dirname,
     "..",
     "..",
     "templates",
@@ -33,7 +31,7 @@ function getTemplatesPath(templateType: TemplateType): string {
     return publishedBundlePath;
   } else {
     // Use src templates
-    return path.join(__dirname, "..", "..", "..");
+    return path.join(import.meta.dirname, "..", "..", "..");
   }
 }
 
@@ -45,7 +43,7 @@ export async function getTemplateQuestion(templateType: TemplateType) {
   if (templateNames.length === 0) {
     console.error(`No add-on templates currently available`);
     console.log("template path:", templatesPath);
-    console.log("add:template running from:", __dirname);
+    console.log("add:template running from:", import.meta.dirname);
     console.log("CLI running from:", process.cwd());
     process.exit();
   }

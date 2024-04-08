@@ -11,9 +11,7 @@ import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const rootPath = `${__dirname}/../__test__`;
+const rootPath = `${import.meta.dirname}/../__test__`;
 const projectName = "async-geoprocessor-only";
 const projectPath = path.join(rootPath, projectName);
 

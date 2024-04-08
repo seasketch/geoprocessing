@@ -1,13 +1,11 @@
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { describe, it, expect, afterAll } from "vitest"
 
 const fs = require("fs");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) {
@@ -49,13 +47,13 @@ module.exports = {
   entry: "./src/components/App.tsx",
   output: {
     filename: "main.js",
-    path: path.resolve(__dirname, "../../.build-web/"),
+    path: path.resolve(import.meta.dirname, "../../.build-web/"),
   },
   devtool: "source-map",
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
     modules: [
-      path.resolve(__dirname, "../../node_modules"),
+      path.resolve(import.meta.dirname, "../../node_modules"),
       path.join(PROJECT_PATH, "node_modules"),
     ],
   },
@@ -63,7 +61,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: pkg.name,
       hash: true,
-      template: path.resolve(__dirname, "index.html"),
+      template: path.resolve(import.meta.dirname, "index.html"),
     }),
     ...(process.env.ANALYZE_CLIENTS ? [new BundleAnalyzerPlugin()] : []),
   ],

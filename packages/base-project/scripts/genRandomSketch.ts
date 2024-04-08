@@ -11,8 +11,6 @@ import {
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 /**
  * genRandomSketch script - generates random sketch within the bounding box of the project.  Not guaranteed to be within the EEZ boundary
  * @param outdir - the output director to write sketches to.  Defaults to examples/sketches/
@@ -37,7 +35,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
     }
   })();
 
-  const outdir = process.argv[4] || `${__dirname}/../examples/sketches/`;
+  const outdir = process.argv[4] || `${import.meta.dirname}/../examples/sketches/`;
 
   const outfile = `${outdir}${name}.json`;
 

@@ -1,7 +1,4 @@
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const fs = require("fs");
 const path = require("path");
@@ -10,7 +7,7 @@ const BundleAnalyzerPlugin =
 const ThreadsPlugin = require("threads-plugin");
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
-const GP_ROOT = path.join(__dirname, "../../");
+const GP_ROOT = path.join(import.meta.dirname, "../../");
 if (!PROJECT_PATH) {
   throw new Error("process.env.PROJECT_PATH not set");
 }
@@ -112,7 +109,7 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js"],
     modules: [
       "node_modules", // search per default but add a couple more paths below
-      path.resolve(__dirname, "../../node_modules"),
+      path.resolve(import.meta.dirname, "../../node_modules"),
       path.join(PROJECT_PATH, "node_modules"),
     ],
   },

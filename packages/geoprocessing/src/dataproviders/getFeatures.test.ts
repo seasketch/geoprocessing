@@ -32,7 +32,7 @@ describe("getFeatures", () => {
     expect(1).toEqual(1);
   }, 30000);
 
-  test.skip("should successfully fetch from external subdivided land datasource", async () => {
+  test("should successfully fetch from external subdivided land datasource", async () => {
     const landDatasource = project.getExternalVectorDatasourceById(
       "global-clipping-osm-land"
     );

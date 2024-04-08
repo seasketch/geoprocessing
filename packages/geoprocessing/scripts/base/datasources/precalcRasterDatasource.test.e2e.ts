@@ -11,6 +11,7 @@ import { precalcDatasources } from "./precalcDatasources.js";
 import { importDatasource } from "./importDatasource.js";
 import { writeGeographies } from "../geographies/geographies.js";
 import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
+import { describe, beforeEach, expect, test } from "vitest"
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";

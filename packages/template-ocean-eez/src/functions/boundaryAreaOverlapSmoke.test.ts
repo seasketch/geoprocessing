@@ -9,10 +9,10 @@ import {
 import { describe, test, expect } from "vitest";
 
 describe("Basic smoke tests", () => {
-  test.skip("handler function is present", () => {
+  test("handler function is present", () => {
     expect(typeof boundaryAreaOverlap).toBe("function");
   });
-  test.skip("boundaryAreaOverlapSmoke - tests run against all examples", async () => {
+  test("boundaryAreaOverlapSmoke - tests run against all examples", async () => {
     const examples = await getExamplePolygonSketchAll();
     for (const example of examples) {
       const result = await boundaryAreaOverlap(example);

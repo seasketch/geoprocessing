@@ -14,7 +14,7 @@ describe("Basic smoke tests", () => {
   test("handler function is present", () => {
     expect(typeof simpleFunction).toBe("function");
   });
-  test.skip("simpleFunction - tests run against all examples", async () => {
+  test("simpleFunction - tests run against all examples", async () => {
     const examples = await getExamplePolygonSketchAll();
     for (const example of examples) {
       const result = await simpleFunction(example);

@@ -459,7 +459,7 @@ const sketch: Sketch<Polygon> = genSampleSketch<Polygon>(
 );
 
 describe("clipToGeography", () => {
-  test.skip("clipToGeography - with world polygon should not change the polygon", async () => {
+  test("clipToGeography - with world polygon should not change the polygon", async () => {
     const curGeography = project.getGeographyById("world");
     const sketchArea = area(sketch);
     const sketchBox = sketch.bbox || bbox(sketch);

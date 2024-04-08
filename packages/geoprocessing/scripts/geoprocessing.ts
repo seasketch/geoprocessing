@@ -86,6 +86,12 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
+    case "create:report":
+      spawn("node", [`${__dirname}/init/createReport.js`], {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      });
+      break;
     case "build:lambda":
       spawn(`${import.meta.dirname}/../../scripts/build/build.sh`, {
         cwd: process.cwd(),

@@ -19,6 +19,12 @@ interface OverlapRasterOptions extends RasterStatsOptions {
   /** If multi-band raster, object mapping band number (starting with 0 index) to unique ID value eg. { 0: 'mangroves', 1: 'coral' }.  Defaults to 'band 1', 'band 2'  */
   bandMetricValues?: string[];
   includeChildMetrics?: boolean;
+  /** If categorical raster, set to true */
+  categorical?: boolean;
+  /** If categorical raster, metric property name that categories are organized. Defaults to classId */
+  categoryMetricProperty?: MetricDimension;
+  /** If categorical raster, array of values to create metrics for */
+  categoryMetricValues?: string[];
 }
 
 /**
@@ -37,6 +43,9 @@ export async function rasterMetrics(
     bandMetricProperty,
     bandMetricValues,
     includeChildMetrics = true,
+    categorical = false,
+    categoryMetricProperty = "classId",
+    categoryMetricValues,
     ...statOptions
   } = options;
   let metrics: Metric[] = [];
@@ -55,6 +64,9 @@ export async function rasterMetrics(
           rasterStats(raster, {
             feature: curSketch,
             numBands,
+            categorical,
+            categoryMetricProperty,
+            categoryMetricValues,
             ...(statOptions ?? {}),
           })
         );
@@ -76,12 +88,16 @@ export async function rasterMetrics(
             return {};
           }
         })();
+
         const curMetrics = rasterStatsToMetrics(curStats, {
           metricId,
           metricIdPrefix,
           metricPartial,
           bandMetricProperty,
           bandMetricValues,
+          categorical,
+          categoryMetricProperty,
+          categoryMetricValues,
         });
         metrics = metrics.concat(curMetrics);
       });
@@ -92,6 +108,9 @@ export async function rasterMetrics(
       const collStats = await rasterStats(raster, {
         feature: options?.feature,
         numBands,
+        categorical,
+        categoryMetricProperty,
+        categoryMetricValues,
         ...(statOptions ?? {}),
       });
 
@@ -115,6 +134,9 @@ export async function rasterMetrics(
         metricPartial,
         bandMetricProperty,
         bandMetricValues,
+        categorical,
+        categoryMetricProperty,
+        categoryMetricValues,
       });
       metrics = metrics.concat(collMetrics);
     }
@@ -122,13 +144,20 @@ export async function rasterMetrics(
     // Whole raster metrics (no sketch)
     const wholeStats = await rasterStats(raster, {
       numBands,
+      categorical,
+      categoryMetricProperty,
+      categoryMetricValues,
       ...(statOptions ?? {}),
     });
+
     const wholeMetrics = rasterStatsToMetrics(wholeStats, {
       metricId,
       metricIdPrefix,
       bandMetricProperty,
       bandMetricValues,
+      categorical,
+      categoryMetricProperty,
+      categoryMetricValues,
     });
     metrics = metrics.concat(wholeMetrics);
   }

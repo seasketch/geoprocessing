@@ -1,0 +1,19 @@
+{
+  "metrics": [],
+  "sketch": {
+    "type": "Feature",
+    "properties": {
+      "name": "fsm-east-west",
+      "updatedAt": "2022-11-17T10:02:53.645Z",
+      "sketchClassId": "123abc",
+      "id": "abc123"
+    },
+    "bbox": [
+      149.3384476090506,
+      7.033915089905491,
+      167.1102326219892,
+      7.671995147373664
+    ],
+    "geometry": null
+  }
+}

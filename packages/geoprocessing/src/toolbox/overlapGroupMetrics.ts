@@ -5,6 +5,7 @@ import {
   MultiPolygon,
   SketchCollection,
   Metric,
+  Georaster
 } from "../types/index.js";
 import {
   genSampleSketchCollection,
@@ -13,19 +14,60 @@ import {
   isSketchCollection,
   groupBy,
   clip,
+  isPolygonFeatureArray
 } from "../helpers/index.js";
-import { createMetric } from "../metrics/index.js";
+import { createMetric, firstMatchingMetric } from "../metrics/index.js";
 import { overlapFeatures } from "./overlapFeatures.js";
 import { overlapArea } from "./overlapArea.js";
 import flatten from "@turf/flatten";
 import { featureCollection } from "@turf/helpers";
 import cloneDeep from "lodash/cloneDeep.js";
+import { rasterMetrics } from "./rasterMetrics.js";
 
 type OverlapGroupOperation = (
   metricId: string,
-  features: Feature<Polygon>[],
+  features: Feature<Polygon>[] | Georaster,
   sc: SketchCollection<Polygon>
 ) => Promise<number>;
+
+/**
+ * Generate overlap group metrics using rasterMetrics operation
+ */
+export async function overlapRasterGroupMetrics(options: {
+  /** Caller-provided metric ID */
+  metricId: string;
+  /** Group identifiers - will generate group metric for each, even if result in zero value, so pre-filter if want to limit */
+  groupIds: string[];
+  /** Sketch - single or collection */
+  sketch: Sketch<Polygon> | SketchCollection<Polygon>;
+  /** Function that given sketch metric and group name, returns true if sketch is in the group, otherwise false */
+  metricToGroup: (sketchMetric: Metric) => string;
+  /** The metrics to group */
+  metrics: Metric[];
+  /** Raster to overlap, keyed by class ID */
+  featuresByClass: Record<string, Georaster>;
+  /** only generate metrics for groups that sketches match to, rather than all */
+  onlyPresentGroups?: boolean;
+}): Promise<Metric[]> {
+  return overlapGroupMetrics({
+    ...options,
+    operation: async (
+      metricId: string,
+      features: Georaster | Feature<Polygon>[],
+      sc: SketchCollection<Polygon>
+    ) => {
+      if (isPolygonFeatureArray(features)) throw new Error(`Expected raster`);
+      const overallGroupMetrics = await rasterMetrics(features, {
+        metricId: metricId,
+        feature: sc,
+      });
+      return firstMatchingMetric(
+        overallGroupMetrics,
+        (m) => !!m.extra?.isCollection
+      ).value;
+    },
+  });
+}
 
 /**
  * Generate overlap group metrics using overlapFeatures operation
@@ -50,9 +92,12 @@ export async function overlapFeaturesGroupMetrics(options: {
     ...options,
     operation: async (
       metricId: string,
-      features: Feature<Polygon>[],
+      features: Feature<Polygon>[] | Georaster,
       sc: SketchCollection<Polygon>
     ) => {
+      if (!isPolygonFeatureArray(features))
+        throw new Error(`Expected feature array`);
+
       const overallGroupMetrics = await overlapFeatures(
         metricId,
         features,
@@ -91,7 +136,7 @@ export async function overlapAreaGroupMetrics(options: {
     featuresByClass: { [options.classId]: [] },
     operation: async (
       metricId: string,
-      features: Feature<Polygon>[],
+      features: Feature<Polygon>[] | Georaster,
       sc: SketchCollection<Polygon>
     ) => {
       // Calculate just the overall area sum for group
@@ -130,7 +175,9 @@ export async function overlapGroupMetrics(options: {
   /** The metrics to group */
   metrics: Metric[];
   /** features to overlap, keyed by class ID, use empty array if overlapArea operation */
-  featuresByClass: Record<string, Feature<Polygon>[]>;
+  featuresByClass:
+    | Record<string, Feature<Polygon>[]>
+    | Record<string, Georaster>;
   /** overlap operation, defaults to overlapFeatures */
   operation: OverlapGroupOperation;
   /** only generate metrics for groups that sketches match to, rather than all groupIds */
@@ -226,7 +273,7 @@ const getClassGroupMetrics = async (options: {
   groups: string[];
   groupId: string;
   metricId: string;
-  features: Feature<Polygon>[];
+  features: Feature<Polygon>[] | Georaster;
   operation: OverlapGroupOperation;
 }): Promise<Metric[]> => {
   const {
@@ -338,7 +385,7 @@ const getReducedGroupAreaOverlap = async (options: {
   /** sketches in other groups that take precedence and overlap must be removed.  */
   higherGroupSketches: Sketch<Polygon>[];
   /** polygon features to overlap with */
-  features: Feature<Polygon>[];
+  features: Feature<Polygon>[] | Georaster;
   operation: OverlapGroupOperation;
 }) => {
   const { metricId, groupSketches, higherGroupSketches, features, operation } =

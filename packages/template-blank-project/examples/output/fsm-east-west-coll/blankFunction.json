@@ -1,0 +1,49 @@
+{
+  "metrics": [],
+  "sketch": {
+    "properties": {
+      "id": "fsm-east-west-coll",
+      "name": "fsm-east-west-coll",
+      "createdAt": "2023-01-10T17:20:33.668529+00:00",
+      "updatedAt": "2023-01-10T17:21:07.432889+00:00",
+      "description": null,
+      "collectionId": null,
+      "isCollection": true,
+      "sketchClassId": "119",
+      "userAttributes": [
+        {
+          "label": "Description",
+          "value": null,
+          "exportId": "description",
+          "fieldType": "TextArea"
+        },
+        {
+          "label": "Author(s)",
+          "value": null,
+          "exportId": "authors",
+          "fieldType": "TextArea"
+        }
+      ],
+      "include_12-24_nm_contiguous_zone": true
+    },
+    "bbox": [
+      149.3384476090506,
+      7.033915089905491,
+      167.1102326219892,
+      7.671995147373664
+    ],
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "fsm-east-west",
+          "updatedAt": "2022-11-17T10:02:53.645Z",
+          "sketchClassId": "123abc",
+          "id": "abc123"
+        },
+        "geometry": null
+      }
+    ]
+  }
+}

@@ -48,6 +48,24 @@ export function getBlankClientPath() {
   return `${getBlankProjectPath()}/src/clients`;
 }
 
+export function getBlankComponentPath() {
+  return `${getBlankProjectPath()}/src/components`;
+}
+
+export function getOceanEEZProjectPath() {
+  return /dist/.test(__dirname)
+    ? `${__dirname}/../../templates/starter-templates/template-ocean-eez`
+    : `${__dirname}/../../../templates/starter-templates/template-ocean-eez`;
+}
+
+export function getOceanEEZFunctionPath() {
+  return `${getOceanEEZProjectPath()}/src/functions`;
+}
+
+export function getOceanEEZComponentPath() {
+  return `${getOceanEEZProjectPath()}/src/components`;
+}
+
 //// PROJECT PATHS ////
 
 // Functions that return relative paths to access project assets
@@ -59,6 +77,10 @@ export function getProjectPath(basePath: string = ".") {
 
 export function getProjectFunctionPath(basePath: string = ".") {
   return getProjectPath(basePath) + "src/functions";
+}
+
+export function getProjectComponentPath(basePath: string = ".") {
+  return getProjectPath(basePath) + "src/components";
 }
 
 export function getProjectConfigPath(basePath: string = ".") {

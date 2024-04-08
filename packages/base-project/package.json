@@ -25,6 +25,7 @@
     "translation:sync": "npm run translation:extract && npm run translation:publish && npm run translation:import",
     "create:function": "geoprocessing create:function",
     "create:client": "geoprocessing create:client",
+    "create:report": "geoprocessing create:report",
     "start:client": "geoprocessing start:client",
     "synth": "geoprocessing synth",
     "bootstrap": "geoprocessing bootstrap",

@@ -51,10 +51,6 @@
         "run_tests": "dist/scripts/testing/runner.js",
         "geoprocessing": "dist/scripts/geoprocessing.js"
     },
-    "sideEffects": [
-        "./src/util/fetchPolyfill.ts",
-        "./dist/src/util/fetchPolyfill.js"
-    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/seasketch/geoprocessing.git"
@@ -234,6 +230,7 @@
     "devDependencies": {
         "@testing-library/jest-dom": "^6.4.2",
         "@types/finalhandler": "^1.2.0",
+        "esbuild": "0.20.2",
         "eslint": "^8.57.0",
         "eslint-plugin-unicorn": "^51.0.1",
         "identity-obj-proxy": "^3.0.0",

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
-# Setup env vars and build directories
+# Setup env vars and create empty build directories
 export PROJECT_PATH=$(pwd)
 set -e
-echo "Building lambda functions..."
 echo ""
 rm -rf .build
 mkdir .build
@@ -17,10 +16,8 @@ fi
 rm -rf .build
 mkdir .build
 
-# Create lambda handler functions
-npx webpack --config scripts/build/webpack.functions.config.js
-# Create json representation of service endpoints and resources
-NODE_PATH=$PROJECT_PATH/node_modules node dist/scripts/build/createManifest.js
+# Create lambda functions and manifest
+NODE_PATH=$PROJECT_PATH/node_modules npx tsx scripts/build/build.ts
 # Copy to the project's .build directory
 cp -R .build/* $PROJECT_PATH/.build/
 # Copy node_modules related to handlers

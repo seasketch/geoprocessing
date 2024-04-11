@@ -106,7 +106,8 @@ console.log('Building support lambda functions...\n')
 const otherFunctions = ['src/aws/serviceHandlers.ts', 'src/sockets/sendmessage.ts', 'src/sockets/connect.ts', 'src/sockets/disconnect.ts']
 
 await Promise.all(otherFunctions.map(async functionPath => {
-  const bundledPath = functionPath.replace('.ts', '.js')
+  const bundledName = path.basename(functionPath).replace('.ts', '.js')
+  const bundledPath = path.join(destBuildPath, bundledName)
   console.log(`${bundledPath}`)
   const buildResult = await esbuild.build({
     entryPoints: [functionPath],

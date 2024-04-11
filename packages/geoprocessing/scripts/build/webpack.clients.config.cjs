@@ -1,10 +1,9 @@
-import path from "node:path";
-import fs from 'fs'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import BundleAnalyzerPlugin from "webpack-bundle-analyzer/lib/BundleAnalyzerPlugin.js"
-import { createRequire } from 'node:module';
-
-const require = createRequire(import.meta.url);
+const webpack = require('webpack')
+const fs = require("fs");
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) {
@@ -22,13 +21,27 @@ if (!geoprocessing.clients && !geoprocessing.clients.length) {
   throw new Error("No clients found in geoprocessing.json");
 }
 
-const clients = geoprocessing.clients.map((c) => {
-  c.source = path.join(PROJECT_PATH, c.source).replace('.tsx', '.jsx');
-  return c;
-})
-console.log('clients', clients)
+let modulePaths = [
+  PROJECT_PATH,
+  path.resolve(__dirname, "../../node_modules"),
+  path.join(PROJECT_PATH, "node_modules"),
+];
 
-export default {
+// if monorepo environment, need to add top-level workspace node_modules path too
+const topLevelNMPath = path.resolve(__dirname, "../../../../node_modules");
+if (fs.existsSync(topLevelNMPath)) {
+  modulePaths.push(topLevelNMPath);
+}
+
+console.log("Project paths to search for client imports:", modulePaths, "\n");
+
+const reportClients = JSON.stringify(geoprocessing.clients.reduce((clientSoFar, curClient) => {
+  return { [curClient.name]: curClient.source, ...clientSoFar };
+}, {}))
+
+console.log("Report clients to bundle from geoprocessing.json:", reportClients, "\n")
+
+module.exports = {
   mode: "production",
   devServer: {
     static: path.join(PROJECT_PATH, ".build-web"),
@@ -49,15 +62,17 @@ export default {
   entry: "./src/components/App.tsx",
   output: {
     filename: "main.js",
-    path: path.resolve(import.meta.dirname, "../../.build-web/"),
+    path: path.resolve(__dirname, "../../.build-web/"),
   },
   devtool: "source-map",
   resolve: {
-    extensions: [".ts", ".tsx", ".js"],
-    modules: [
-      path.resolve(import.meta.dirname, "../../node_modules"),
-      path.join(PROJECT_PATH, "node_modules"),
-    ],
+    fullySpecified: false,
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
+    extensionAlias: {
+      '.js': ['.js', '.ts'],
+      '.jsx': ['.jsx', '.tsx'],
+  },
+    modules: modulePaths,
     fallback: {
       fs: false,
     },
@@ -66,7 +81,10 @@ export default {
     new HtmlWebpackPlugin({
       title: pkg.name,
       hash: true,
-      template: path.resolve(import.meta.dirname, "index.html"),
+      template: path.resolve(__dirname, "index.html"),
+    }),
+    new webpack.DefinePlugin({
+      "REPORT_CLIENTS": reportClients
     }),
     ...(process.env.ANALYZE_CLIENTS ? [new BundleAnalyzerPlugin()] : []),
   ],
@@ -81,7 +99,7 @@ export default {
             presets: [
               [
                 require.resolve("@babel/preset-env"),
-                { targets: { node: "14" } },
+                { debug: false, targets: ["> 0.25%", "not dead", "not IE 11"] },
               ],
               require.resolve("@babel/preset-typescript"),
               require.resolve("@babel/preset-react"),
@@ -93,17 +111,21 @@ export default {
           },
         },
       },
-      {
-        test: /client-loader.js$/,
-        use: [
-          {
-            loader: `val-loader`,
-            options: {
-              clients,
-            },
-          },
-        ],
-      },
+      // {
+      //   test: /client-loader.js$/,
+      //   use: [
+      //     {
+      //       loader: `val-loader`,
+      //       options: {
+      //         clients: geoprocessing.clients.map((c) => {
+      //           c.source = path.join(PROJECT_PATH, c.source);
+      //           console.log('client source', c.source)
+      //           return c;
+      //         }),
+      //       },
+      //     },
+      //   ],
+      // },
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
@@ -114,7 +136,7 @@ export default {
           {
             loader: "file-loader",
             options: {
-              esModule: true,
+              esModule: false,
             },
           },
         ],

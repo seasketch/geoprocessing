@@ -1,4 +1,5 @@
 export PROJECT_PATH=$(pwd)
+export NODE_OPTIONS=--openssl-legacy-provider
 set -e
 echo ""
 echo "Starting client dev server..."
@@ -11,5 +12,5 @@ else
   # production reporting tool
   cd node_modules/@seasketch/geoprocessing
 fi
-DEBUG='express:*' npx webpack serve --config scripts/build/webpack.clients.config.js --mode="development" --client-logging verbose --progress --watch-files "${PROJECT_PATH}/src"
+DEBUG='express:*' npx webpack serve --config scripts/build/webpack.clients.config.cjs --mode="development" --client-logging verbose --progress --watch-files "${PROJECT_PATH}/src"
 echo ""

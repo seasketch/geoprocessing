@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Setup env vars and build directories
 export PROJECT_PATH=$(pwd)
+export NODE_OPTIONS=--openssl-legacy-provider
 set -e
 echo "Building lambda functions..."
 echo ""
@@ -18,7 +19,7 @@ rm -rf .build
 mkdir .build
 
 # Create lambda handler functions
-npx webpack --config scripts/build/webpack.functions.config.js
+node --trace-deprecation node_modules/webpack/bin/webpack.js --config scripts/build/webpack.functions.config.cjs
 # Create json representation of service endpoints and resources
 NODE_PATH=$PROJECT_PATH/node_modules node dist/scripts/build/createManifest.js
 # Copy to the project's .build directory

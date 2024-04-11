@@ -14,9 +14,30 @@ import {
   seaSketchReportingVisibleLayersChangeEvent,
   seaSketchReportingLanguageChangeEvent,
 } from "../helpers/service.js";
-import { ReportTextDirection } from "./i18n/ReportTextDirection.js";
+import { ReportTextDirection } from "./i18n/ReportTextDirection.jsx";
 
-const REPORTS = require("./client-loader");
+// const REPORTS = require("./client-loader.js");
+const REPORTS = []
+
+//@ts-ignore
+console.log('REPORT_CLIENTS', REPORT_CLIENTS)
+//@ts-ignore
+// const REPORTS = await Promise.all(Object.keys(REPORT_CLIENTS).map(clientName => {
+//   // @ts-ignore  
+//   const clientPath = `${REPORT_CLIENTS[clientName].replace('src/', '../')}`
+//     console.log('loading', clientPath)
+//     return import(
+//         /* webpackChunkName: "reportClient" */ `${clientPath}`
+//     )
+// }))
+    
+    // Need to make report client available at entry point?
+//     const REPORTS = {
+//       /* webpackChunkName: "reportClient" */
+//       MpaTabReport: import('../../../example-project/src/clients/MpaTabReport.jsx')
+//     }
+console.log('REPORTS', REPORTS)
+
 const searchParams = new URLSearchParams(window.location.search);
 const service = searchParams.get("service");
 const frameId = searchParams.get("frameId") || window.name;
@@ -158,12 +179,17 @@ const App = () => {
   }, [initialized, reportContext]);
 
   if (reportContext) {
-    const Report = REPORTS[reportContext.clientName];
+    //@ts-ignore
+    const clientPath = `${REPORT_CLIENTS[reportContext.clientName.replace('src/clients', '').replace('.tsx', '')]}`
+    console.log(clientPath)
+    const Report = React.lazy(() => import(`src/clients/${clientPath}.tsx`));
+    // const Report = REPORTS[reportContext.clientName];
+    console.log('Report', Report)
     if (!Report)
       throw new Error(
         `Report client ${
           reportContext.clientName
-        } not found in bundle.  Did you forget to add it to geoprocessing.json? Options are ${Object.keys(
+        } not found.  Did you forget to add it to geoprocessing.json? Options are ${Object.keys(
           REPORTS
         ).join(", ")}`
       );

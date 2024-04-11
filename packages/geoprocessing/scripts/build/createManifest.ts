@@ -29,7 +29,7 @@ const projectPkg: Package = JSON.parse(
  */
 async function getHandlerModule(srcFuncPath: string) {
   const name = getHandlerFilenameFromSrcPath(srcFuncPath);
-  const p = path.join(buildPath, name.replace(`.js`, ""));
+  const p = path.join(buildPath, name)
   return await import(p);
 }
 

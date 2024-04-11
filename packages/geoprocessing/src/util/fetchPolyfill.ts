@@ -23,4 +23,4 @@ if (globalThis) {
   globalThis.Response = Response
 }
 
-import "abortcontroller-polyfill/dist/polyfill-patch-fetch"
+import "abortcontroller-polyfill/dist/polyfill-patch-fetch.js"

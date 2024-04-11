@@ -5,7 +5,7 @@ const BundleAnalyzerPlugin =
 const ThreadsPlugin = require("threads-plugin");
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
-const GP_ROOT = path.join(import.meta.dirname, "../../");
+const GP_ROOT = path.join(__dirname, "../../");
 if (!PROJECT_PATH) {
   throw new Error("process.env.PROJECT_PATH not set");
 }
@@ -33,6 +33,7 @@ function generateHandler(funcPath) {
     GP_ROOT,
     `.build/${handlerFilename.split(".").slice(0, -1).join(".")}Handler.ts`
   );
+  console.log('writing to', handlerPath)
   fs.writeFileSync(
     handlerPath,
     `
@@ -63,12 +64,14 @@ if (
 
 const handlerFunctions = [];
 geoprocessing.preprocessingFunctions &&
-  geoprocessing.preprocessingFunctions.forEach((funcPath) =>
+  geoprocessing.preprocessingFunctions.forEach((funcPath) => {
     handlerFunctions.push(generateHandler(funcPath))
+  }
   );
 geoprocessing.geoprocessingFunctions &&
-  geoprocessing.geoprocessingFunctions.forEach((funcPath) =>
+  geoprocessing.geoprocessingFunctions.forEach((funcPath) => {
     handlerFunctions.push(generateHandler(funcPath))
+  }
   );
 
 module.exports = {
@@ -105,9 +108,13 @@ module.exports = {
   devtool: "source-map",
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
+    extensionAlias: {
+      '.js': ['.js', '.ts'],
+      '.jsx': ['.jsx', '.tsx'],
+    },
     modules: [
       "node_modules", // search per default but add a couple more paths below
-      path.resolve(import.meta.dirname, "../../node_modules"),
+      path.resolve(__dirname, "../../node_modules"),
       path.join(PROJECT_PATH, "node_modules"),
     ],
   },
@@ -119,13 +126,14 @@ module.exports = {
     maxEntrypointSize: 500000,
     hints: "warning",
   },
-  externals: function (context, request, callback) {
+  externals: [function ({ context, request }, callback) {
     if (externals.indexOf(request) !== -1) {
       return callback(null, "commonjs " + request);
-    } else {
-      return callback();
     }
-  },
+
+    // Continue without externalizing the import
+    callback();
+  }],
   module: {
     rules: [
       {
@@ -144,6 +152,8 @@ module.exports = {
             plugins: [
               "@babel/plugin-proposal-optional-chaining",
               "@babel/plugin-proposal-nullish-coalescing-operator",
+              [require.resolve("@babel/plugin-syntax-import-attributes"),
+              {deprecatedAssertSyntax: true}]
             ],
           },
         },

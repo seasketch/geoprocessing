@@ -6,8 +6,9 @@
  * @packageDocumentation
  */
 
-// Base types
+// Types
 export * from "./src/types/index.js";
+export * from "./src/types/metrics.js";
 
 // Helpers - not all of them
 export * from "./src/helpers/geo.js";
@@ -26,6 +27,7 @@ export * from "./src/metrics/helpers.js";
 export * from "./src/iucn/helpers.js";
 export * from "./src/iucn/iucnProtectionLevel.js";
 export * from "./src/rbcs/index.js";
+export * from "./src/project/index.js";
 
 // Testing
 export * from "./src/testing/index.js";

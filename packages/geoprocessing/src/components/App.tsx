@@ -36,7 +36,7 @@ export interface AppProps {
   reports: Record<string, React.LazyExoticComponent<() => React.JSX.Element>>;
 }
 
-const App = ({ reports }: AppProps) => {
+export const App = ({ reports }: AppProps) => {
   // Maintain report context in app state
   const [reportContext, setReportContext] =
     useState<ReportContextState | null>(null);

@@ -5,6 +5,7 @@ import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import { Package } from "../../src/types/index.js";
 import { htmlPlugin } from "@craftamap/esbuild-plugin-html";
 import inlineImage from "esbuild-plugin-inline-image";
+import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
 
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 
@@ -64,11 +65,12 @@ const buildResult = await esbuild.build({
   bundle: true,
   outdir: destBuildPath,
   format: "esm",
-  sourcemap: true,
+  minify: true,
+  sourcemap: "linked",
   metafile: true,
+  treeShaking: true,
   logLevel: "info",
-  external: ["node-fetch", "geoblaze"],
-  // splitting: true,
+  external: [],
   define: {
     "process.env.REPORT_CLIENTS": JSON.stringify(reportClients),
     "process.env.GP_VERSION": JSON.stringify(packageGp.version),
@@ -76,11 +78,18 @@ const buildResult = await esbuild.build({
   plugins: [
     //@ts-ignore
     inlineImage(),
+    nodeModulesPolyfillPlugin({
+      modules: {
+        fs: "empty",
+      },
+    }),
     htmlPlugin({
       files: [
         {
           entryPoints: ["src/components/Root.tsx"],
           filename: "index.html",
+          scriptLoading: "module",
+          hash: true,
         },
       ],
     }),

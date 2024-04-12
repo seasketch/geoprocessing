@@ -233,6 +233,7 @@
         "@types/finalhandler": "^1.2.0",
         "esbuild": "0.20.2",
         "esbuild-plugin-inline-image": "^0.0.9",
+        "esbuild-plugins-node-modules-polyfill": "^1.6.3",
         "eslint": "^8.57.0",
         "eslint-plugin-unicorn": "^51.0.1",
         "identity-obj-proxy": "^3.0.0",

@@ -12,7 +12,7 @@ import path from "path";
 import { precalcDatasources } from "./precalcDatasources.js";
 import { importDatasource } from "./importDatasource.js";
 import { writeGeographies } from "../geographies/geographies.js";
-import { expect, describe, test, beforeEach } from 'vitest'
+import { expect, describe, test, beforeEach } from "vitest";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";

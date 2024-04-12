@@ -7,9 +7,7 @@ import {
   Geometry,
 } from "../types/index.js";
 import { GeoprocessingRequest } from "../types/index.js";
-import isHostedOnLambda from "../util/isHostedOnLambda.js";
-import "../util/fetchPolyfill.js";
-
+import isHostedOnLambda from "./isHostedOnLambda.js";
 // Seasketch client
 
 /**

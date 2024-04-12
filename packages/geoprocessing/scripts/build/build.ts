@@ -25,11 +25,11 @@ const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
 );
 
-const pkgGeo: Package = JSON.parse(
+const packageGp: Package = JSON.parse(
   fs.readFileSync("./package.json").toString()
 );
 
-const projectPkg: Package = JSON.parse(
+const packageProject: Package = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
 );
 
@@ -86,10 +86,10 @@ const geoprocessingBundles: GeoprocessingBundle[] =
 
 const manifest = generateManifest(
   geoprocessing,
-  projectPkg,
+  packageProject,
   preprocessingBundles,
   geoprocessingBundles,
-  pkgGeo.version
+  packageGp.version
 );
 const manifestPath = path.join(srcBuildPath, "manifest.json")
 console.log(`\nCreating service manifest ${manifestPath}\n`)

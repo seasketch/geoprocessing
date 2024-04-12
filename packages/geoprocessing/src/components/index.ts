@@ -9,7 +9,9 @@ export * from "./chart/index.js";
 export * from "./diagram/index.js";
 export * from "./iucn/index.js";
 export * from "./table/index.js";
+export * from "./i18n/index.js";
 
+export * from "./App.js";
 export * from "./Card.js";
 export * from "./Circle.js";
 export * from "./Collapse.js";

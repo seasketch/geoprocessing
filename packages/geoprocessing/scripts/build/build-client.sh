@@ -1,20 +1,18 @@
 export PROJECT_PATH=$(pwd)
 set -e
 echo ""
-echo "Building client..."
-echo ""
 rm -rf .build-web
 # Determine correct path. Need to be in @seasketch/geoprocessing root
 if test -f "../geoprocessing/scripts/build/build-client.sh"; then
   # in monorepo
-  cd ../geoprocessing
+  # cd ../geoprocessing
+  npx tsx ../geoprocessing/scripts/build/buildClient.ts
+  cp ../geoprocessing/src/assets/favicon.ico $PROJECT_PATH/.build-web/
 else
   # production reporting tool
-  cd node_modules/@seasketch/geoprocessing
+  # cd node_modules/@seasketch/geoprocessing
+  npx tsx node_modules/@seasketch/geoprocessing/scripts/build/buildClient.ts
+  cp node_modules/@seasketch/geoprocessing/src/assets/favicon.ico $PROJECT_PATH/.build-web/
 fi
-# Build client
-rm -rf .build-web
-npx webpack --config scripts/build/webpack.clients.config.js
-mv .build-web $PROJECT_PATH/
-cp src/assets/favicon.ico $PROJECT_PATH/.build-web/
+
 echo ""

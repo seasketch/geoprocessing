@@ -1,8 +1,4 @@
-import {
-  getJsonPath,
-  getFlatGeobufPath,
-  getGeopackagePath,
-} from "../../../src/datasources/index.js";
+import { getJsonPath, getFlatGeobufPath } from "./pathUtils.js";
 import fs from "fs-extra";
 import { $ } from "zx";
 import {

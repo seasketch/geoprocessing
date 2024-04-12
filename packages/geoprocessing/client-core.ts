@@ -20,6 +20,7 @@ export * from "./src/helpers/sketch.js";
 export * from "./src/helpers/units.js";
 export * from "./src/helpers/ts.js";
 export * from "./src/helpers/valueFormatter.js";
+export * from "./src/helpers/service.js";
 
 export * from "./src/metrics/helpers.js";
 export * from "./src/iucn/helpers.js";

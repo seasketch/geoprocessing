@@ -1,7 +1,6 @@
 export * from "./bboxOverlap.js";
 export * from "./chunk.js";
 export * from "./clip.js";
-export * from "./fs.js";
 export * from "./feature.js";
 export * from "./geo.js";
 export * from "./groupBy.js";
@@ -21,3 +20,4 @@ export * from "./valueFormatter.js";
 export * from "./extraParams.js";
 export * from "./zeroGeometry.js";
 export * from "./zodError.js";
+export * from "./service.js";

@@ -32,36 +32,52 @@ if (
   throw new Error("No functions found in geoprocessing.json");
 }
 
-console.log("Building report clients:");
+console.log("Bundling report clients:");
 
-// await Promise.all(geoprocessing.clients.map(async client => {
-//   const clientPath = path.join(PROJECT_PATH, client.source)
-//   console.log('clientPath', clientPath)
-//   const bundledPath = path.join(destBuildPath, client.source).replace('.ts', '.js')
-//   console.log('bundledPath', `${bundledPath}`)
-//   const buildResult = await esbuild.build({
-//     entryPoints: [clientPath],
-//     bundle: true,
-//     outfile: bundledPath,
-//     format: 'esm',
-//     sourcemap: false,
-//   })
-//   if (buildResult.errors.length > 0 || buildResult.warnings.length > 0) {
-//     console.log(JSON.stringify(buildResult, null, 2))
-//   }
-// }))
-
-// const appPath = path.join(PROJECT_PATH, "src/components/App.tsx")
-// console.log('appPath', appPath)
-// const bundledPath = path.join(destBuildPath, 'main.js')
-// console.log('bundledPath', `${bundledPath}`)
 const reportClients = geoprocessing.clients.reduce((clientSoFar, curClient) => {
   return { [curClient.name]: curClient.source, ...clientSoFar };
 }, {});
 Object.values(reportClients).forEach((clientPath) => console.log(clientPath));
 
+// Generate top-level ReportApp.tsx
+
+const clientImportStr = geoprocessing.clients
+  .map(
+    (c) => `
+reportClients["${c.name}"] = React.lazy(
+  () => import("../${c.source}")
+);
+`
+  )
+  .join("");
+
+fs.writeFileSync(
+  path.join(PROJECT_PATH, ".build-web/ReportApp.tsx"),
+  `
+  import React, { Suspense, lazy } from "react";
+  import ReactDOM from "react-dom";
+  import { App } from "@seasketch/geoprocessing/client-ui";
+
+  const ReportApp = () => {
+    const reportClients: Record<
+      string,
+      React.LazyExoticComponent<() => React.JSX.Element>
+    > = {};
+    ${clientImportStr}
+
+    return (
+      <Suspense fallback={<div>Loading reports...</div>}>
+        <App reports={reportClients} />
+      </Suspense>
+    );
+  };
+
+  ReactDOM.render(<ReportApp />, document.body);
+`
+);
+
 const buildResult = await esbuild.build({
-  entryPoints: ["src/components/Root.tsx"],
+  entryPoints: [".build-web/ReportApp.tsx"],
   bundle: true,
   outdir: destBuildPath,
   format: "esm",
@@ -86,7 +102,7 @@ const buildResult = await esbuild.build({
     htmlPlugin({
       files: [
         {
-          entryPoints: ["src/components/Root.tsx"],
+          entryPoints: [".build-web/ReportApp.tsx"],
           filename: "index.html",
           scriptLoading: "module",
           hash: true,

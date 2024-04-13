@@ -2,6 +2,7 @@ export PROJECT_PATH=$(pwd)
 set -e
 echo ""
 rm -rf .build-web
+mkdir .build-web
 # Determine correct path. Need to be in @seasketch/geoprocessing root
 if test -f "../geoprocessing/scripts/build/build-client.sh"; then
   # in monorepo

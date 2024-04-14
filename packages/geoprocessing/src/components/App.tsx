@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import {
   SeaSketchReportingMessageEvent,
   SeaSketchReportingVisibleLayersChangeEvent,
@@ -8,7 +8,6 @@ import {
 
 import { SketchProperties } from "../types/sketch.js";
 import { ReportContext } from "../context/index.js";
-import ReactDOM from "react-dom";
 import {
   seaSketchReportingMessageEventType,
   seaSketchReportingVisibleLayersChangeEvent,
@@ -16,7 +15,6 @@ import {
 } from "../helpers/service.js";
 import { ReportTextDirection } from "./i18n/ReportTextDirection.js";
 
-const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);
 const service = searchParams.get("service");
 const frameId = searchParams.get("frameId") || window.name;
@@ -34,7 +32,11 @@ export interface ReportContextState {
   toggleLayerVisibility: (layerId: string) => void;
 }
 
-const App = () => {
+export interface AppProps {
+  reports: Record<string, React.LazyExoticComponent<() => React.JSX.Element>>;
+}
+
+export const App = ({ reports }: AppProps) => {
   // Maintain report context in app state
   const [reportContext, setReportContext] =
     useState<ReportContextState | null>(null);
@@ -158,15 +160,7 @@ const App = () => {
   }, [initialized, reportContext]);
 
   if (reportContext) {
-    const Report = REPORTS[reportContext.clientName];
-    if (!Report)
-      throw new Error(
-        `Report client ${
-          reportContext.clientName
-        } not found in bundle.  Did you forget to add it to geoprocessing.json? Options are ${Object.keys(
-          REPORTS
-        ).join(", ")}`
-      );
+    const Report = reports[reportContext.clientName];
     return (
       <ReportContext.Provider
         value={{
@@ -175,7 +169,9 @@ const App = () => {
         }}
       >
         <ReportTextDirection>
-          <Report />
+          <Suspense fallback={<div>Loading2...</div>}>
+            <Report />
+          </Suspense>
         </ReportTextDirection>
       </ReportContext.Provider>
     );
@@ -184,4 +180,4 @@ const App = () => {
   }
 };
 
-ReactDOM.render(<App />, document.body);
+export default App;

@@ -1,6 +1,6 @@
 import { takeAsync } from "flatgeobuf/lib/mjs/streams/utils.js";
 import { BBox, Feature, Geometry } from "../types/index.js";
-import "../util/fetchPolyfill.js";
+import "./fetchPolyfill.js";
 
 import { deserialize } from "flatgeobuf/lib/mjs/geojson.js";
 

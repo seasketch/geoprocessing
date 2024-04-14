@@ -13,8 +13,7 @@ import mnemonist from "mnemonist";
 
 import bbox from "@turf/bbox";
 import { featureCollection as fc } from "@turf/helpers";
-import isHostedOnLambda from "../util/isHostedOnLambda.js";
-import "../util/fetchPolyfill.js";
+import isHostedOnLambda from "./isHostedOnLambda.js";
 import { union } from "union-subdivided-polygons";
 
 import { defaultImport } from "default-import";

@@ -10,7 +10,8 @@ import { Package } from "../../src/types/index.js";
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 
 const projectPath = process.env.PROJECT_PATH;
-const buildPath = path.join("..", "..", "..", ".build");
+// assume lambda wrapper functions are in project .build directory
+const buildPath = path.join(projectPath, ".build");
 
 const config: GeoprocessingJsonConfig = JSON.parse(
   fs.readFileSync(path.join(projectPath, "geoprocessing.json")).toString()
@@ -29,7 +30,7 @@ const projectPkg: Package = JSON.parse(
  */
 async function getHandlerModule(srcFuncPath: string) {
   const name = getHandlerFilenameFromSrcPath(srcFuncPath);
-  const p = path.join(buildPath, name.replace(`.js`, ""));
+  const p = path.join(buildPath, name);
   return await import(p);
 }
 
@@ -47,7 +48,9 @@ const manifest = generateManifest(
   geoprocessingBundles,
   pkgGeo.version
 );
+const manifestPath = path.join(buildPath, "manifest.json")
+console.log(`Creating service manifest ${manifestPath}`)
 fs.writeFileSync(
-  path.join(".build", "manifest.json"),
+  manifestPath,
   JSON.stringify(manifest, null, "  ")
 );

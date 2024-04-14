@@ -9,9 +9,9 @@ import { feature } from "@turf/helpers";
 import { Feature, Polygon, Sketch } from "../types/index.js";
 import {
   toFeaturePolygonArray,
-  toJsonFile,
   toSketchArray,
 } from "../helpers/index.js";
+import { toJsonFile } from "../helpers/fs.js"
 import {
   genSampleSketch,
   genSampleSketchCollectionFromSketches,

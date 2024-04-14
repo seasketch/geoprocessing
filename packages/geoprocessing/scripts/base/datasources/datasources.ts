@@ -11,8 +11,8 @@ import {
   isInternalVectorDatasource,
   isInternalRasterDatasource,
   datasourceConfig,
-  getJsonPath,
 } from "../../../src/datasources/index.js";
+import { getJsonPath } from "./pathUtils.js";
 import { isFeatureCollection } from "../../../src/index.js";
 import { globalDatasources } from "../../../src/datasources/global.js";
 

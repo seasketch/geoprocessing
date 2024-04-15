@@ -6,7 +6,8 @@ import {
   getExamplePolygonSketchAll,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
-import { blankFunction } from "./blankFunction";
+import { describe, test, expect } from "vitest";
+import { blankFunction } from "./blankFunction.js";
 
 describe("Basic smoke tests", () => {
   test("handler function is present", () => {

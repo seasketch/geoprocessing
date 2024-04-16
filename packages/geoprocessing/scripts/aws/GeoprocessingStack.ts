@@ -28,7 +28,7 @@ import {
   setupWebSocketFunctionAccess,
 } from "./socketApiGateway.js";
 import { RestApi } from "aws-cdk-lib/aws-apigateway";
-import { WebSocketApi } from "@aws-cdk/aws-apigatewayv2-alpha";
+import { WebSocketApi } from "aws-cdk-lib/aws-apigatewayv2";
 import {
   GpPublicBuckets,
   GpProjectFunctions,

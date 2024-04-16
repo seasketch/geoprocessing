@@ -3,7 +3,7 @@ import { Duration } from "aws-cdk-lib";
 
 const config = {
   STAGE_NAME: "prod",
-  NODE_RUNTIME: Runtime.NODEJS_16_X,
+  NODE_RUNTIME: Runtime.NODEJS_20_X,
   SYNC_LAMBDA_TIMEOUT: 10, // seconds
   ASYNC_LAMBDA_START_TIMEOUT: 5,
   ASYNC_LAMBDA_RUN_TIMEOUT: 60,

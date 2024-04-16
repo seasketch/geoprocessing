@@ -28,6 +28,8 @@ export interface CreateFunctionOptions {
 }
 import path from "path";
 
+const GP_ROOT = process.env.GP_ROOT;
+
 /**
  * Create Lambda function constructs
  */
@@ -65,7 +67,7 @@ export const createSocketFunctions = (
   if (stack.hasAsyncFunctions()) {
     const subscribe = new Function(stack, "GpSubscribeHandler", {
       runtime: config.NODE_RUNTIME,
-      code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+      code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
       handler: "connect.connectHandler",
       functionName: `gp-${stack.props.projectName}-subscribe`,
       memorySize: config.SOCKET_HANDLER_MEMORY,
@@ -75,7 +77,7 @@ export const createSocketFunctions = (
 
     const unsubscribe = new Function(stack, "GpUnsubscribeHandler", {
       runtime: config.NODE_RUNTIME,
-      code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+      code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
       handler: "disconnect.disconnectHandler",
       functionName: `gp-${stack.props.projectName}-unsubscribe`,
       memorySize: config.SOCKET_HANDLER_MEMORY,
@@ -85,7 +87,7 @@ export const createSocketFunctions = (
 
     const send = new Function(stack, "GpSendHandler", {
       runtime: config.NODE_RUNTIME,
-      code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+      code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
       handler: "sendmessage.sendHandler",
       functionName: `gp-${stack.props.projectName}-send`,
       memorySize: config.SOCKET_HANDLER_MEMORY,

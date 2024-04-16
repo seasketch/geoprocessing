@@ -70,6 +70,7 @@ await Promise.all(
   })
 );
 
+// package.json with type: module, needed in the build directory containing handlers in order to enable ESM runtime in lambda
 fs.writeJSONSync(
   path.join(destBuildPath, "package.json"),
   {

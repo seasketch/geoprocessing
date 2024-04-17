@@ -32,7 +32,7 @@ if (
   throw new Error("No functions found in geoprocessing.json");
 }
 
-console.log("Bundling report clients:");
+console.log("Found report clients in geoprocessing.json:");
 
 const reportClients = geoprocessing.clients.reduce((clientSoFar, curClient) => {
   return { [curClient.name]: curClient.source, ...clientSoFar };

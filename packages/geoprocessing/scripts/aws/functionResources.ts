@@ -49,7 +49,9 @@ export const createFunctions = (
 const createRootFunction = (stack: GeoprocessingStack): Function => {
   return new Function(stack, "GpServiceRootFunction", {
     runtime: config.NODE_RUNTIME,
-    code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+    code: Code.fromAsset(
+      path.join(stack.props.projectPath, ".build", "serviceHandlers")
+    ),
     functionName: `gp-${stack.props.projectName}-metadata`,
     handler: "serviceHandlers.projectMetadata",
   });
@@ -67,7 +69,9 @@ export const createSocketFunctions = (
   if (stack.hasAsyncFunctions()) {
     const subscribe = new Function(stack, "GpSubscribeHandler", {
       runtime: config.NODE_RUNTIME,
-      code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+      code: Code.fromAsset(
+        path.join(stack.props.projectPath, ".build", "connect")
+      ),
       handler: "connect.connectHandler",
       functionName: `gp-${stack.props.projectName}-subscribe`,
       memorySize: config.SOCKET_HANDLER_MEMORY,
@@ -77,7 +81,9 @@ export const createSocketFunctions = (
 
     const unsubscribe = new Function(stack, "GpUnsubscribeHandler", {
       runtime: config.NODE_RUNTIME,
-      code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+      code: Code.fromAsset(
+        path.join(stack.props.projectPath, ".build", "disconnect")
+      ),
       handler: "disconnect.disconnectHandler",
       functionName: `gp-${stack.props.projectName}-unsubscribe`,
       memorySize: config.SOCKET_HANDLER_MEMORY,
@@ -87,7 +93,9 @@ export const createSocketFunctions = (
 
     const send = new Function(stack, "GpSendHandler", {
       runtime: config.NODE_RUNTIME,
-      code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+      code: Code.fromAsset(
+        path.join(stack.props.projectPath, ".build", "sendmessage")
+      ),
       handler: "sendmessage.sendHandler",
       functionName: `gp-${stack.props.projectName}-send`,
       memorySize: config.SOCKET_HANDLER_MEMORY,
@@ -119,10 +127,15 @@ const createSyncFunctions = (
   return syncFunctionMetas.map(
     (functionMeta: ProcessingFunctionMetadata, index: number) => {
       const rootPointer = getHandlerPointer(functionMeta);
+      const pkgName = getHandlerPkgName(functionMeta);
       const functionName = `gp-${stack.props.projectName}-sync-${functionMeta.title}`;
+      const codePath = path.join(stack.props.projectPath, ".build", pkgName);
+      // console.log("codePath", codePath);
+      // console.log("rootPointer", rootPointer);
+
       const func = new Function(stack, `${functionMeta.title}GpSyncHandler`, {
         runtime: config.NODE_RUNTIME,
-        code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+        code: Code.fromAsset(codePath),
         handler: rootPointer,
         functionName,
         memorySize: functionMeta.memory,
@@ -150,6 +163,7 @@ const createAsyncFunctions = (
   return asyncFunctionMetas.map(
     (functionMeta: GeoprocessingFunctionMetadata, index: number) => {
       const rootPointer = getHandlerPointer(functionMeta);
+      const pkgName = getHandlerPkgName(functionMeta);
       const startFunctionName = `gp-${stack.props.projectName}-async-${functionMeta.title}-start`;
       const runFunctionName = `gp-${stack.props.projectName}-async-${functionMeta.title}-run`;
 
@@ -162,7 +176,9 @@ const createAsyncFunctions = (
         `${functionMeta.title}GpAsyncHandlerStart`,
         {
           runtime: config.NODE_RUNTIME,
-          code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+          code: Code.fromAsset(
+            path.join(stack.props.projectPath, ".build", pkgName)
+          ),
           handler: rootPointer,
           functionName: startFunctionName,
           memorySize: functionMeta.memory,
@@ -184,7 +200,9 @@ const createAsyncFunctions = (
         `${functionMeta.title}GpAsyncHandlerRun`,
         {
           runtime: config.NODE_RUNTIME,
-          code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+          code: Code.fromAsset(
+            path.join(stack.props.projectPath, ".build", pkgName)
+          ),
 
           handler: rootPointer,
           functionName: runFunctionName,
@@ -227,4 +245,13 @@ export function getHandlerPointer(funcMeta: ProcessingFunctionMetadata) {
   return `${funcMeta.handlerFilename
     .replace(/\.js$/, "")
     .replace(/\.ts$/, "")}Handler.handler`;
+}
+
+/**
+ * Returns build package name to look for handler
+ */
+export function getHandlerPkgName(funcMeta: ProcessingFunctionMetadata) {
+  return `${funcMeta.handlerFilename
+    .replace(/\.js$/, "")
+    .replace(/\.ts$/, "")}`;
 }

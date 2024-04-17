@@ -56,9 +56,11 @@ export function createI18nAsyncInstance(
           let baseLangResources = {};
           try {
             baseLangResources = await import(
-              /* webpackChunkName: "baseLang" */ `${baseLangPath}/${
+              `${baseLangPath}/${
                 isDefault ? defaultLang : curLanguage
-              }/${namespace}.json`
+              }/${namespace}.json`, {
+                assert: { type: 'json' }
+              }
             );
           } catch (error: unknown) {
             console.info(
@@ -70,9 +72,11 @@ export function createI18nAsyncInstance(
           let langResources = {};
           if (langPath !== undefined) {
             langResources = await import(
-              /* webpackChunkName: "localLang" */ `${langPath}/${
+              `${langPath}/${
                 isDefault ? defaultLang : curLanguage
-              }/${namespace}.json`
+              }/${namespace}.json`, {
+                assert: { type: 'json' }
+              }
             );
           }
           //console.log("langResources", langResources);

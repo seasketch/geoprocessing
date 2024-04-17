@@ -49,11 +49,24 @@ const functionPaths = [
 console.log("Bundling functions found in geoprocessing.json...\n");
 
 await Promise.all(
-  functionPaths.map(async (funcPath) => {
-    const handlerPath = generateHandler(funcPath, srcBuildPath, PROJECT_PATH);
-    const bundledPath = handlerPath
-      .replace("Handler", "")
-      .replace(".ts", ".js");
+  functionPaths.map(async (functionPath) => {
+    const handlerPath = generateHandler(
+      functionPath,
+      srcBuildPath,
+      PROJECT_PATH
+    );
+    const bundledName = `${path.basename(functionPath)}`.replace(
+      ".ts",
+      "Handler.mjs"
+    );
+    const functionName = bundledName.replace(".mjs", "");
+    const pkgPath = path
+      .join(destBuildPath, functionName)
+      .replace("Handler", "");
+    const bundledPath = path.join(pkgPath, bundledName);
+
+    fs.mkdirSync(pkgPath);
+
     const buildResult = await esbuild.build({
       entryPoints: [handlerPath],
       bundle: true,
@@ -62,11 +75,30 @@ await Promise.all(
       format: "esm",
       logLevel: "info",
       sourcemap: false,
-      external: ["aws-cdk-lib", "aws-sdk"],
+      // external: ["aws-cdk-lib", "aws-sdk"],
+      banner: {
+        // workaround require bug https://github.com/evanw/esbuild/pull/2067#issuecomment-1324171716
+        js: "import { createRequire } from 'module'; const require = createRequire(import.meta.url);",
+      },
     });
+
     if (buildResult.errors.length > 0 || buildResult.warnings.length > 0) {
       console.log(JSON.stringify(buildResult, null, 2));
     }
+
+    // package.json with type: module, needed in the build directory containing handlers in order to enable ESM runtime in lambda
+    // WRITE A FUNCTION THAT GENERATES PACKAGE.JSON that points to handler
+    fs.writeJSONSync(
+      path.join(pkgPath, "package.json"),
+      {
+        name: bundledName,
+        type: "module",
+        description: "This package will be treated as an ES module.",
+        version: "1.0",
+        main: bundledName,
+      },
+      { spaces: 2 }
+    );
   })
 );
 
@@ -98,7 +130,8 @@ await Promise.all(
   otherFunctions.map(async (functionPath) => {
     const bundledName = path.basename(functionPath).replace(".ts", ".mjs");
     const functionName = bundledName.replace(".mjs", "");
-    const bundledPath = path.join(destBuildPath, bundledName);
+    const bundledPath = path.join(destBuildPath, functionName, bundledName);
+    const pkgPath = path.join(destBuildPath, functionName);
 
     const buildResult = await esbuild.build({
       entryPoints: [functionPath],
@@ -117,6 +150,19 @@ await Promise.all(
     if (buildResult.errors.length > 0 || buildResult.warnings.length > 0) {
       console.log(JSON.stringify(buildResult, null, 2));
     }
+
+    // package.json with type: module (to enable ESM) and entry point to lambda hander
+    fs.writeJSONSync(
+      path.join(pkgPath, "package.json"),
+      {
+        name: bundledName,
+        type: "module",
+        description: "This package will be treated as an ES module.",
+        version: "1.0",
+        main: bundledName,
+      },
+      { spaces: 2 }
+    );
   })
 );
 
@@ -152,3 +198,8 @@ const manifest = generateManifest(
 const manifestPath = path.join(destBuildPath, "manifest.json");
 console.log(`\nCreating service manifest ${manifestPath}\n`);
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, "  "));
+
+fs.copyFileSync(
+  manifestPath,
+  path.join(destBuildPath, "serviceHandlers", "manifest.json")
+);

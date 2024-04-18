@@ -18,8 +18,8 @@
     "precalc:data:clean": "geoprocessing precalc:data:clean",
     "publish:data": "geoprocessing publish:data",
     "install:scripts": "mkdir -p scripts && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/scripts/* scripts",
-    "translation:install": "rm -rf src/i18n/baseLang && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/src/i18n/baseLang src/i18n",
-    "translation:extract": "rm -rf src/i18n/lang/en && NODE_ENV=development npx babel 'src/**/*.{ts,tsx}' > /dev/null && mv extractedTranslations/en src/i18n/lang/en && rm -rf extractedTranslations && npx tsx scripts/extractExtraTerms.ts && echo 'Translations extracted to src/lang/en and src/i18n/extraTerms.json'",
+    "translation:install": "npx tsx scripts/translationInstall.ts",
+    "translation:extract": "npx tsx scripts/translationExtract.ts",
     "translation:publish": "npx tsx src/i18n/bin/publishTerms.ts",
     "translation:import": "npx tsx src/i18n/bin/importTerms.ts",
     "translation:sync": "npm run translation:extract && npm run translation:publish && npm run translation:import",
@@ -56,7 +56,8 @@
     "@seasketch/geoprocessing": "^6.1.2",
     "@types/request": "^2.48.8",
     "babel-plugin-i18next-extract": "0.9.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "zx": "^8.0.2"
   },
   "repositoryUrl": "",
   "author": "",

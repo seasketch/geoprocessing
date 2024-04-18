@@ -50,23 +50,27 @@ console.log("Bundling functions found in geoprocessing.json...\n");
 
 await Promise.all(
   functionPaths.map(async (functionPath) => {
+    // generate function (lambda handler) that wraps the preprocessing or geoprocessing function
+    // the handler is the entry point for the lmabda and receives the event (payload) from the API gateway
+    // and passes it on
     const handlerPath = generateHandler(
       functionPath,
       srcBuildPath,
       PROJECT_PATH
     );
-    const bundledName = `${path.basename(functionPath)}`.replace(
+    const handlerDestPath = `${path.basename(functionPath)}`.replace(
       ".ts",
       "Handler.mjs"
     );
-    const functionName = bundledName.replace(".mjs", "");
-    const pkgPath = path
-      .join(destBuildPath, functionName)
-      .replace("Handler", "");
-    const bundledPath = path.join(pkgPath, bundledName);
+
+    // Build a local npm package for the function
+    const pkgName = handlerDestPath.replace(".mjs", "");
+    const pkgPath = path.join(destBuildPath, pkgName).replace("Handler", "");
+    const bundledPath = path.join(pkgPath, handlerDestPath);
 
     fs.mkdirSync(pkgPath);
 
+    // Build esm bundle with all dependencies
     const buildResult = await esbuild.build({
       entryPoints: [handlerPath],
       bundle: true,
@@ -91,11 +95,11 @@ await Promise.all(
     fs.writeJSONSync(
       path.join(pkgPath, "package.json"),
       {
-        name: bundledName,
+        name: handlerDestPath,
         type: "module",
         description: "This package will be treated as an ES module.",
         version: "1.0",
-        main: bundledName,
+        main: handlerDestPath,
       },
       { spaces: 2 }
     );

@@ -223,7 +223,7 @@
         "ws": "^7.3.0",
         "zod": "^3.19.1",
         "zod-error": "^1.5.0",
-        "zx": "^4.3.0"
+        "zx": "^8.0.2"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^6.4.2",

@@ -88,8 +88,9 @@ const buildResult = await esbuild.build({
   logLevel: "info",
   external: [],
   define: {
-    "process.env.REPORT_CLIENTS": JSON.stringify(reportClients),
     "process.env.GP_VERSION": JSON.stringify(packageGp.version),
+    "process.env.LAMBDA_TASK_ROOT": "false",
+    "process.env.AWS_EXECUTION_ENV": "false",
   },
   plugins: [
     //@ts-ignore
@@ -97,7 +98,6 @@ const buildResult = await esbuild.build({
     nodeModulesPolyfillPlugin({
       modules: {
         fs: "empty",
-        process: "empty",
       },
     }),
     htmlPlugin({

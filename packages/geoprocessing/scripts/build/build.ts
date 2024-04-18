@@ -155,6 +155,14 @@ await Promise.all(
       console.log(JSON.stringify(buildResult, null, 2));
     }
 
+    if (buildResult.metafile) {
+      // use https://bundle-buddy.com/esbuild to analyze
+      await fs.writeFile(
+        `esbuild-metafile-lambda.json`,
+        JSON.stringify(buildResult.metafile)
+      );
+    }
+
     // package.json with type: module (to enable ESM) and entry point to lambda hander
     fs.writeJSONSync(
       path.join(pkgPath, "package.json"),

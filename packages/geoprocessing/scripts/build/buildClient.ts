@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs-extra";
 import path from "path";
 import * as esbuild from "esbuild";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
@@ -114,4 +114,12 @@ const buildResult = await esbuild.build({
 });
 if (buildResult.errors.length > 0 || buildResult.warnings.length > 0) {
   console.log(JSON.stringify(buildResult, null, 2));
+}
+
+if (buildResult.metafile) {
+  // use https://bundle-buddy.com/esbuild to analyze
+  await fs.writeFile(
+    `esbuild-metafile-client.json`,
+    JSON.stringify(buildResult.metafile)
+  );
 }

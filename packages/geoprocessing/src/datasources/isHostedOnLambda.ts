@@ -1,4 +1,4 @@
-// Check if code seems to be currently executing in Lambda environment
+// Check if code is currently executing in Lambda environment
 const hasProcess = (() => {
   if (!process) return false;
   if (

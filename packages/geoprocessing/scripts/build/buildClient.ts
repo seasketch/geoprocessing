@@ -98,6 +98,9 @@ const buildResult = await esbuild.build({
       modules: {
         fs: "empty",
       },
+      globals: {
+        process: true,
+      },
     }),
     htmlPlugin({
       files: [

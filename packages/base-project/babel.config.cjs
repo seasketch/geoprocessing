@@ -19,6 +19,7 @@ module.exports = {
         keyAsDefaultValueForDerivedKeys: true,
       },
     ],
+    "@babel/plugin-syntax-import-attributes",
   ],
   overrides: [
     { test: /\.js$/, presets: common },

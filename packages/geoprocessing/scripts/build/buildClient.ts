@@ -97,9 +97,7 @@ const buildResult = await esbuild.build({
     nodeModulesPolyfillPlugin({
       modules: {
         fs: "empty",
-      },
-      globals: {
-        process: true,
+        process: "empty",
       },
     }),
     htmlPlugin({

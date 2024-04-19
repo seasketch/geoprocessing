@@ -12,14 +12,9 @@ import { generateHandler } from "./generateHandler.js";
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
-const GP_ROOT = path.join(import.meta.dirname, "../../");
+// const GP_ROOT = path.join(import.meta.dirname, "../../");
 
-const srcBuildPath = path.join(GP_ROOT, ".build");
 const destBuildPath = path.join(PROJECT_PATH, ".build");
-
-if (!fs.existsSync(srcBuildPath)) {
-  fs.mkdirSync(srcBuildPath);
-}
 
 if (!fs.existsSync(destBuildPath)) {
   fs.mkdirSync(destBuildPath);
@@ -59,7 +54,7 @@ await Promise.all(
     // and passes it on
     const handlerPath = generateHandler(
       path.join(PROJECT_PATH, functionPath),
-      srcBuildPath
+      destBuildPath
     );
     const handlerDestPath = `${path.basename(functionPath)}`.replace(
       ".ts",
@@ -194,7 +189,7 @@ await Promise.all(
  */
 async function getHandlerModule(srcFuncPath: string) {
   const name = getHandlerFilenameFromSrcPath(srcFuncPath);
-  const p = path.join(srcBuildPath, name);
+  const p = path.join(destBuildPath, name);
   return await import(p);
 }
 

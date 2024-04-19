@@ -21,9 +21,3 @@ mkdir $PROJECT_PATH/.build
 
 # Create lambda functions and manifest
 ANALYZE=$ANALYZE NOMINIFY=$NOMINIFY NODE_PATH=$PROJECT_PATH/node_modules npx tsx scripts/build/build.ts
-if test -d ".build"; then
-  # Copy to the project's .build directory
-  cp -R .build/* $PROJECT_PATH/.build/
-fi
-# Cleanup 
-rm -rf .build

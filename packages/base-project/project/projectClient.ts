@@ -7,7 +7,7 @@ import basic from "./basic.json" assert { type: "json" };
 import projectPackage from "../package.json" assert { type: "json" };
 import gp from "../geoprocessing.json" assert { type: "json" };
 
-import { ProjectClientBase } from "@seasketch/geoprocessing";
+import { ProjectClientBase } from "@seasketch/geoprocessing/client-core";
 
 const projectClient = new ProjectClientBase({
   datasources,

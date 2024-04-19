@@ -16,6 +16,9 @@ fi
 rm -rf .build
 mkdir .build
 
+rm -rf $PROJECT_PATH/.build
+mkdir $PROJECT_PATH/.build
+
 # Create lambda functions and manifest
 ANALYZE=$ANALYZE NOMINIFY=$NOMINIFY NODE_PATH=$PROJECT_PATH/node_modules npx tsx scripts/build/build.ts
 # Copy to the project's .build directory

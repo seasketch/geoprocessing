@@ -21,6 +21,10 @@ if (!fs.existsSync(srcBuildPath)) {
   fs.mkdirSync(srcBuildPath);
 }
 
+if (!fs.existsSync(destBuildPath)) {
+  fs.mkdirSync(destBuildPath);
+}
+
 const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
   fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
 );

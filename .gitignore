@@ -14,4 +14,5 @@ packages/example-*/
 report.*
 test-projects
 **/.env
-packages/*/src/i18n
+packages/base-project/src/i18n
+packages/template-*/src/i18n

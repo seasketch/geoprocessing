@@ -77,7 +77,7 @@ async function publishEnglish() {
   const localTerms = {
     ...fs.readJsonSync(
       path.join(
-        __dirname,
+        import.meta.dirname,
         `../lang/en/${config.localNamespace.replace(":", "/")}.json`
       )
     ),
@@ -282,7 +282,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
     // If file doesn't exist, then stub it out
     const localTerms = (() => {
       const localTermPath = path.join(
-        __dirname,
+        import.meta.dirname,
         `../lang/${curLang.code}/${config.localNamespace.replace(
           ":",
           "/"
@@ -308,7 +308,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       if (
         fs.existsSync(
           path.join(
-            __dirname,
+            import.meta.dirname,
             `../baseLang/${curLang.code}/${config.localNamespace.replace(
               ":",
               "/"
@@ -318,7 +318,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       ) {
         return fs.readJsonSync(
           path.join(
-            __dirname,
+            import.meta.dirname,
             `../baseLang/${curLang.code}/${config.localNamespace.replace(
               ":",
               "/"

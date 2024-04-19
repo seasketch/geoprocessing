@@ -137,6 +137,8 @@ await Promise.all(
     const bundledPath = path.join(destBuildPath, functionName, bundledName);
     const pkgPath = path.join(destBuildPath, functionName);
 
+    const minify = !!process.env.MINIFY || true;
+
     const buildResult = await esbuild.build({
       entryPoints: [functionPath],
       bundle: true,
@@ -144,6 +146,8 @@ await Promise.all(
       platform: "node",
       format: "esm",
       logLevel: "info",
+      minify,
+      treeShaking: true,
       metafile: true,
       sourcemap: false,
       external: ["aws-cdk-lib"], // keep aws-sdk until migrate to v3 built into lambda

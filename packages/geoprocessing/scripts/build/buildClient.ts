@@ -76,12 +76,15 @@ fs.writeFileSync(
 `
 );
 
+const minify = !!process.env.MINIFY || true;
+console.log("MINIFY!!!", minify);
+
 const buildResult = await esbuild.build({
   entryPoints: [".build-web/ReportApp.tsx"],
   bundle: true,
   outdir: destBuildPath,
   format: "esm",
-  minify: true,
+  minify,
   sourcemap: "linked",
   metafile: true,
   treeShaking: true,

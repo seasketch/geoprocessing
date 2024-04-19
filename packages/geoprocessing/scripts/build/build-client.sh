@@ -9,12 +9,12 @@ cp -r src/i18n/baseLang .build-web
 if test -f "../geoprocessing/scripts/build/build-client.sh"; then
   # in monorepo
   # cd ../geoprocessing
-  ANALYZE=$ANALYZE npx tsx ../geoprocessing/scripts/build/buildClient.ts
+  ANALYZE=$ANALYZE MINIFY=$MINIFY npx tsx ../geoprocessing/scripts/build/buildClient.ts
   cp ../geoprocessing/src/assets/favicon.ico $PROJECT_PATH/.build-web/
 else
   # production reporting tool
   # cd node_modules/@seasketch/geoprocessing
-  ANALYZE=$ANALYZE npx tsx node_modules/@seasketch/geoprocessing/scripts/build/buildClient.ts
+  ANALYZE=$ANALYZE MINIFY=$MINIFY npx tsx node_modules/@seasketch/geoprocessing/scripts/build/buildClient.ts
   cp node_modules/@seasketch/geoprocessing/src/assets/favicon.ico $PROJECT_PATH/.build-web/
 fi
 

@@ -58,9 +58,8 @@ await Promise.all(
     // the handler is the entry point for the lmabda and receives the event (payload) from the API gateway
     // and passes it on
     const handlerPath = generateHandler(
-      functionPath,
-      srcBuildPath,
-      PROJECT_PATH
+      path.join(PROJECT_PATH, functionPath),
+      srcBuildPath
     );
     const handlerDestPath = `${path.basename(functionPath)}`.replace(
       ".ts",

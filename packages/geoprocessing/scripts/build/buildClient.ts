@@ -116,8 +116,9 @@ if (buildResult.errors.length > 0 || buildResult.warnings.length > 0) {
   console.log(JSON.stringify(buildResult, null, 2));
 }
 
-if (buildResult.metafile) {
+if (buildResult.metafile && process.env.ANALYZE) {
   // use https://bundle-buddy.com/esbuild to analyze
+  console.log("Metafile output to esbuild-metafile-client.json");
   await fs.writeFile(
     `esbuild-metafile-client.json`,
     JSON.stringify(buildResult.metafile)

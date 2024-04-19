@@ -137,7 +137,7 @@ await Promise.all(
     const bundledPath = path.join(destBuildPath, functionName, bundledName);
     const pkgPath = path.join(destBuildPath, functionName);
 
-    const minify = !!process.env.MINIFY || true;
+    const minify = process.env.NOMINIFY ? false : true;
 
     const buildResult = await esbuild.build({
       entryPoints: [functionPath],
@@ -146,7 +146,7 @@ await Promise.all(
       platform: "node",
       format: "esm",
       logLevel: "info",
-      minify,
+      minify: minify,
       treeShaking: true,
       metafile: true,
       sourcemap: false,

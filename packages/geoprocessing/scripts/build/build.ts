@@ -160,7 +160,7 @@ await Promise.all(
       // use https://bundle-buddy.com/esbuild to analyze
       console.log("Metafile output to esbuild-metafile-lambda.json");
       await fs.writeFile(
-        `esbuild-metafile-lambda.json`,
+        `${PROJECT_PATH}/esbuild-metafile-lambda.json`,
         JSON.stringify(buildResult.metafile)
       );
     }

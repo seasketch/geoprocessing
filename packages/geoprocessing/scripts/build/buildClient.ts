@@ -120,7 +120,7 @@ if (buildResult.metafile && process.env.ANALYZE) {
   // use https://bundle-buddy.com/esbuild to analyze
   console.log("Metafile output to esbuild-metafile-client.json");
   await fs.writeFile(
-    `esbuild-metafile-client.json`,
+    `${PROJECT_PATH}/esbuild-metafile-client.json`,
     JSON.stringify(buildResult.metafile)
   );
 }

@@ -23,7 +23,7 @@ mkdir $PROJECT_PATH/.build
 ANALYZE=$ANALYZE NOMINIFY=$NOMINIFY NODE_PATH=$PROJECT_PATH/node_modules npx tsx scripts/build/build.ts
 # Copy to the project's .build directory
 cp -R .build/* $PROJECT_PATH/.build/
-# Copy node_modules related to handlers
+# Copy node_modules
 mkdir $PROJECT_PATH/.build/node_modules
 npx copy-node-modules $PROJECT_PATH $PROJECT_PATH/.build/
 # Cleanup 

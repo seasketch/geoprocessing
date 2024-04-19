@@ -53,6 +53,7 @@ export const createClientResources = (stack: GeoprocessingStack) => {
           {
             s3OriginSource: {
               s3BucketSource: clientBucket,
+              originAccessIdentity,
             },
             behaviors: [{ isDefaultBehavior: true }],
           },

@@ -55,31 +55,44 @@ export function createI18nAsyncInstance(
           // Load translations
           let baseLangResources = {};
           try {
-            baseLangResources = await import(
+            const { default: data } = await import(
               `${baseLangPath}/${
                 isDefault ? defaultLang : curLanguage
               }/${namespace}.json`, {
                 assert: { type: 'json' }
               }
             );
+            baseLangResources = data
           } catch (error: unknown) {
             console.info(
-              `Warning: failed to find base lang resource.  If this is not a gp project, then this is expected.`
+              `Warning: failed to find base lang resource.  This is expected if you are loading the core geoprocessing library directly (storybook) instead of a GP project.`
             );
           }
-          //console.log("baseLangResources", baseLangResources);
+          // console.log("baseLangResources", baseLangResources);
 
           let langResources = {};
           if (langPath !== undefined) {
-            langResources = await import(
-              `${langPath}/${
-                isDefault ? defaultLang : curLanguage
-              }/${namespace}.json`, {
-                assert: { type: 'json' }
+            try {
+              if (!isDefault) {
+                const { default: data } = await import(
+                  `${langPath}/${
+                    isDefault ? defaultLang : curLanguage
+                  }/${namespace}.json`, {
+                    assert: { type: 'json' }
+                  }
+                );
+                langResources = data
+              } else {
+                langResources = {}
               }
-            );
+            } catch (error: unknown) {
+              console.info(
+                `Warning: failed to find lang resource.`
+              );
+            }
           }
-          //console.log("langResources", langResources);
+          // console.log("langResources", langResources);
+          // console.log("extraTerms", extraTerms)
 
           // Return merged translations
           if (isDefault) {

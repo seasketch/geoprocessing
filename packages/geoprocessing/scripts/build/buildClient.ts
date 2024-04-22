@@ -52,7 +52,7 @@ reportClients["${c.name}"] = React.lazy(
   .join("");
 
 fs.writeFileSync(
-  path.join(PROJECT_PATH, ".build-web/ReportApp.tsx"),
+  path.join(destBuildPath, "ReportApp.tsx"),
   `
   import React, { Suspense, lazy } from "react";
   import ReactDOM from "react-dom";
@@ -79,7 +79,7 @@ fs.writeFileSync(
 const minify = process.env.NOMINIFY ? false : true;
 
 const buildResult = await esbuild.build({
-  entryPoints: [".build-web/ReportApp.tsx"],
+  entryPoints: [`${destBuildPath}/ReportApp.tsx`],
   bundle: true,
   outdir: destBuildPath,
   format: "esm",
@@ -91,8 +91,6 @@ const buildResult = await esbuild.build({
   external: [],
   define: {
     "process.env.GP_VERSION": JSON.stringify(packageGp.version),
-    "process.env.LAMBDA_TASK_ROOT": "false",
-    "process.env.AWS_EXECUTION_ENV": "false",
   },
   plugins: [
     //@ts-ignore
@@ -105,7 +103,7 @@ const buildResult = await esbuild.build({
     htmlPlugin({
       files: [
         {
-          entryPoints: [".build-web/ReportApp.tsx"],
+          entryPoints: [`${destBuildPath}/ReportApp.tsx`],
           filename: "index.html",
           scriptLoading: "module",
           hash: true,

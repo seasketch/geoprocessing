@@ -3,14 +3,13 @@ import path from "path";
 import * as esbuild from "esbuild";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import { Package } from "../../src/types/index.js";
-import { htmlPlugin } from "@craftamap/esbuild-plugin-html";
 import inlineImage from "esbuild-plugin-inline-image";
 import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
+import { v4 as uuid } from "uuid";
 
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 
-const PROJECT_PATH = process.env.PROJECT_PATH;
-const GP_ROOT = path.join(import.meta.dirname, "../../");
+const PROJECT_PATH = process.env.PROJECT_PATH || "UNDEFINED";
 const destBuildPath = path.join(PROJECT_PATH, ".build-web");
 
 const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
@@ -100,25 +99,36 @@ const buildResult = await esbuild.build({
         fs: "empty",
       },
     }),
-    htmlPlugin({
-      files: [
-        {
-          entryPoints: [`${destBuildPath}/ReportApp.tsx`],
-          filename: "index.html",
-          scriptLoading: "module",
-          hash: true,
-        },
-      ],
-    }),
   ],
 });
 if (buildResult.errors.length > 0 || buildResult.warnings.length > 0) {
   console.log(JSON.stringify(buildResult, null, 2));
+  throw new Error();
 }
+
+console.log("Generating index.html");
+fs.writeFileSync(
+  path.join(destBuildPath, "index.html"),
+  `
+  <!doctype html>
+  <html>
+    <head>
+      <meta charset="utf-8"/>
+      <title>global-datasources</title>
+      <style>
+        html, body {margin: 0px; background-color:#efefef;padding: 4px;padding-top: 0px;}
+      </style>
+    </head>
+    <body>
+      <script src="ReportApp.js?${uuid()}"></script>
+    </body>
+  </html>
+`
+);
 
 if (buildResult.metafile && process.env.ANALYZE) {
   // use https://bundle-buddy.com/esbuild to analyze
-  console.log("Metafile output to esbuild-metafile-client.json");
+  console.log("Generating metafile esbuild-metafile-client.json");
   await fs.writeFile(
     `${PROJECT_PATH}/esbuild-metafile-client.json`,
     JSON.stringify(buildResult.metafile)

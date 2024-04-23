@@ -106,18 +106,6 @@ const nextContextValue = sampleSketchReportContextValue({
   },
 });
 
-export const legacy = () => (
-  <Translator>
-    <SketchAttributesCard title="Attributes Legacy" mappings={mappings} />
-  </Translator>
-);
-
-export const next = () => (
-  <Translator>
-    <SketchAttributesCard title="Attributes Next" />
-  </Translator>
-);
-
 export default {
   component: SketchAttributesCard,
   title: "Components/Card/SketchAttributesCard",

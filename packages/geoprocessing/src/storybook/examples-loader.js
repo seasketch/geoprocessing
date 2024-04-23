@@ -1,4 +1,6 @@
+// loaded via webpack val-loader
 const EXAMPLES = options.examplesPath;
+
 const fs = require("fs");
 const path = require("path");
 

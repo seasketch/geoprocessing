@@ -11,16 +11,23 @@ if (process.argv.length < 3) {
       runTests();
       break;
     case "init":
-      spawn("node", [`${import.meta.dirname}/init/bin.js`, ...process.argv.slice(2)], {
-        cwd: process.cwd(),
-        stdio: "inherit",
-      });
+      spawn(
+        "node",
+        [`${import.meta.dirname}/init/bin.js`, ...process.argv.slice(2)],
+        {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        }
+      );
       break;
     case "init:testProjects":
-      spawn(`${import.meta.dirname}/../../scripts/testing/initTestProjects.sh`, {
-        cwd: process.cwd(),
-        stdio: "inherit",
-      });
+      spawn(
+        `${import.meta.dirname}/../../scripts/testing/initTestProjects.sh`,
+        {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        }
+      );
       break;
     case "add:template":
       spawn("node", [`${import.meta.dirname}/template/addTemplate.js`], {
@@ -134,7 +141,7 @@ if (process.argv.length < 3) {
         stdio: "inherit",
       });
       break;
-    case "start-storybook":
+    case "storybook":
       spawn(`${import.meta.dirname}/../../scripts/start-storybook.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
@@ -159,7 +166,10 @@ if (process.argv.length < 3) {
     case "bundle-rasters":
       spawn(
         "node",
-        [`${import.meta.dirname}/dataPrep/bundleRasterData.js`, ...process.argv.slice(2)],
+        [
+          `${import.meta.dirname}/dataPrep/bundleRasterData.js`,
+          ...process.argv.slice(2),
+        ],
         {
           cwd: process.cwd(),
           stdio: "inherit",

@@ -39,7 +39,7 @@ module.exports = {
   ],
   framework: "@storybook/react",
   core: {
-    builder: "webpack4",
+    builder: "@storybook/builder-vite",
   },
   features: {
     postcss: false,
@@ -47,47 +47,5 @@ module.exports = {
   typescript: {
     check: true,
     reactDocgen: "none",
-  },
-  webpackFinal: async (config) => {
-    /// stub fs to avoid not found error
-    // webpack 5 only, enable when webpack 5 works
-    // config.resolve.fallback.fs = false;
-    // webpack 4 only, disable when webpack 4 dropped
-    config.node = { fs: "empty" };
-
-    // allow ts files to be picked up in project path
-    config.resolve.extensions.push(".ts", ".tsx");
-    // configure ts files in project path to be transpiled too
-    config.module.rules.push({
-      test: /\.(ts|tsx)$/,
-      use: [
-        {
-          // bab
-          loader: require.resolve("babel-loader"),
-          options: {
-            plugins: [
-              "@babel/plugin-proposal-numeric-separator",
-              "@babel/plugin-proposal-optional-chaining",
-              "@babel/plugin-proposal-nullish-coalescing-operator",
-            ],
-          },
-        },
-      ],
-    });
-    // load project example sketches and smoke test output
-    if (process.env.PROJECT_PATH) {
-      config.module.rules.push({
-        test: /storybook\/examples-loader.js$/,
-        use: [
-          {
-            loader: `val-loader`,
-            options: {
-              examplesPath: path.join(process.env.PROJECT_PATH, "examples"),
-            },
-          },
-        ],
-      });
-    }
-    return config;
   },
 };

@@ -9,4 +9,4 @@ else
   # production reporting tool
   cd node_modules/@seasketch/geoprocessing
 fi
-npm run start-storybook
+npm run storybook

@@ -191,22 +191,16 @@ async function datasourceIdQuestion(
 async function layerNameQuestion(
   srcPath: string
 ): Promise<Pick<ImportVectorDatasourceAnswers, "layerName">> {
-  const { stdout } = await $`ogrinfo ${srcPath}`;
-    
-  const layerRegex = /^\d+: (.+) \(/gm;
-  const layerNames: string[] = [];
-  
-  for (const match of stdout.matchAll(layerRegex)) {
-    const [, layerName] = match;
-    layerNames.push(layerName);
-  }
+  const { stdout } = await $`ogrinfo -json ${srcPath}`;
+  const layers = JSON.parse(stdout).layers.map(layer => layer.name);
+  if (!layers.length) throw new Error(`No layers in vector, check validity of file.`)
 
   return inquirer.prompt<Pick<ImportVectorDatasourceAnswers, "layerName">>([
     {
       type: 'list',
       name: 'layerName',
       message: 'Select layer to import',
-      choices: layerNames.map((layer) => ({
+      choices: layers.map((layer) => ({
         value: layer,
         name: layer,
       })),
@@ -224,18 +218,8 @@ async function detailedVectorQuestions(
     "classKeys" | "propertiesToKeep" | "formats"
   >
 > {
-  const { stdout } = await $`ogrinfo -so -nocount -noextent -nogeomtype ${srcPath} ${layerName}`;
-
-  const fieldRegex = /([a-zA-Z0-9_]+):/g;
-  const excludeFields = ['INFO', 'name', 'WKT', 'mapping'];
-  const fields: string[] = [];
-
-  for (const match of stdout.matchAll(fieldRegex)) {
-    const [, fieldName] = match;
-    if (!excludeFields.includes(fieldName)) {
-      fields.push(fieldName);
-    }
-  }
+  const { stdout } = await $`ogrinfo -json -so -nocount -noextent -nogeomtype ${srcPath} ${layerName}`;
+  const fields = JSON.parse(stdout).layers.find(layer => layer.name === layerName).fields.map(field => field.name);
 
   return inquirer.prompt<
     Pick<
@@ -246,7 +230,7 @@ async function detailedVectorQuestions(
     {
       type: 'checkbox',
       name: 'classKeys',
-      message: 'Select feature properties that you want to group metrics by',
+      message: fields.length > 0 ? 'Select feature properties that you want to group metrics by' : 'No feature properties found in the vector layer. Press enter to continue.',
       choices: fields.map((field) => ({
         value: field,
         name: field,
@@ -255,7 +239,7 @@ async function detailedVectorQuestions(
     {
       type: 'checkbox',
       name: 'propertiesToKeep',
-      message: 'Select additional feature properties to keep in final datasource',
+      message: fields.length > 0 ? 'Select additional feature properties to keep in final datasource' : 'No feature properties found in the vector layer. Press enter to continue.',
       choices: fields.map((field) => ({
         value: field,
         name: field,

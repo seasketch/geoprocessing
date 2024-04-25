@@ -59,7 +59,7 @@ export function createI18nAsyncInstance(
               `${baseLangPath}/${
                 isDefault ? defaultLang : curLanguage
               }/${namespace}.json`, {
-                assert: { type: 'json' }
+                with: { type: 'json' }
               }
             );
             baseLangResources = data
@@ -78,7 +78,7 @@ export function createI18nAsyncInstance(
                   `${langPath}/${
                     isDefault ? defaultLang : curLanguage
                   }/${namespace}.json`, {
-                    assert: { type: 'json' }
+                    with: { type: 'json' }
                   }
                 );
                 langResources = data

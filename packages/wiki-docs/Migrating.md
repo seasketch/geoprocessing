@@ -50,15 +50,15 @@ npm update @seasketch/geoprocessing@latest
 - The ProjectClient now takes precalc metrics and geographies as input. Update `project/projectClient.ts` to the following:
 
 ```typescript
-import datasources from "./datasources.json" assert { type: "json" };
-import metrics from "./metrics.json" assert { type: "json" };
-import precalc from "./precalc.json" assert { type: "json" };
-import objectives from "./objectives.json" assert { type: "json" };
-import geographies from "./geographies.json" assert { type: "json" };
-import basic from "./basic.json" assert { type: "json" };
-import projectPackage from "../package.json" assert { type: "json" };
-import gp from "../geoprocessing.json" assert { type: "json" };
-import { ProjectClientBase } from "@seasketch/geoprocessing" assert { type: "json" };
+import datasources from "./datasources.json" with { type: "json" };
+import metrics from "./metrics.json" with { type: "json" };
+import precalc from "./precalc.json" with { type: "json" };
+import objectives from "./objectives.json" with { type: "json" };
+import geographies from "./geographies.json" with { type: "json" };
+import basic from "./basic.json" with { type: "json" };
+import projectPackage from "../package.json" with { type: "json" };
+import gp from "../geoprocessing.json" with { type: "json" };
+import { ProjectClientBase } from "@seasketch/geoprocessing" with { type: "json" };
 
 const projectClient = new ProjectClientBase({
   datasources,

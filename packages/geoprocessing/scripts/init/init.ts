@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import licenses from "spdx-license-ids/index.json" assert { type: "json" };
+import licenses from "spdx-license-ids/index.json" with { type: "json" };
 
 import fuzzy from "fuzzy-tools";
 import autocomplete from "inquirer-autocomplete-prompt";

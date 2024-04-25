@@ -18,4 +18,4 @@ export * from "./project/index.js";
 export * from "./util/index.js";
 export * from "./context/index.js"
 
-export { default as version } from "../package.json"  assert { type: "json" };
+export { default as version } from "../package.json"  with { type: "json" };

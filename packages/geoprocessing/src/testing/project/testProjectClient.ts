@@ -1,8 +1,8 @@
-import datasources from "./datasources.json" assert { type: "json" };
-import geographies from "./geographies.json" assert { type: "json" };
-import metrics from "./metrics.json" assert { type: "json" };
-import objectives from "./objectives.json" assert { type: "json" };
-import basic from "./basic.json" assert { type: "json" };
+import datasources from "./datasources.json" with { type: "json" };
+import geographies from "./geographies.json" with { type: "json" };
+import metrics from "./metrics.json" with { type: "json" };
+import objectives from "./objectives.json" with { type: "json" };
+import basic from "./basic.json" with { type: "json" };
 
 import { ProjectClientBase, GeoprocessingJsonConfig, Package } from "../../index.js";
 

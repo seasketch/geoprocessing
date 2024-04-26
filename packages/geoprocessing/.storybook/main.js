@@ -66,9 +66,9 @@ module.exports = {
           loader: require.resolve("babel-loader"),
           options: {
             plugins: [
-              "@babel/plugin-proposal-numeric-separator",
-              "@babel/plugin-proposal-optional-chaining",
-              "@babel/plugin-proposal-nullish-coalescing-operator",
+              "@babel/plugin-transform-numeric-separator",
+              "@babel/plugin-transform-optional-chaining",
+              "@babel/plugin-transform-nullish-coalescing-operator",
             ],
           },
         },

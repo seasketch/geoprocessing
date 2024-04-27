@@ -78,10 +78,6 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
       </p>
       <p>Zones are classified based on the following decision tree:</p>
       <p>
-        <img
-          src={require("../../assets/img/zone_classification.jpg")}
-          style={{ maxWidth: "100%" }}
-        />
         <a
           target="_blank"
           href="https://www.sciencedirect.com/science/article/pii/S0308597X16300197"
@@ -142,20 +138,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
         Zones, then each of your MPAs will be scored as having a single Zone
         with the activities of the MPA.
       </p>
-      <p>
-        <img
-          src={require("../../assets/img/mpa_classification.jpg")}
-          style={{ maxWidth: "100%" }}
-        />
-        (
-        <a
-          target="_blank"
-          href="https://www.sciencedirect.com/science/article/pii/S0308597X16300197"
-        >
-          image source
-        </a>
-        )
-      </p>
+      <p></p>
       <p>
         This system of assigning protection based on perceived impact is called
         the{" "}

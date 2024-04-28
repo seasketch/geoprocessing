@@ -121,7 +121,7 @@ export function ResultsCard<T>({
       <Card {...cardProps}>
         {skeleton || <DefaultSkeleton />}
         <ProgressBarWrapper>
-          <ProgressBar duration={taskEstimate} />
+          <ProgressBar $duration={taskEstimate} />
         </ProgressBarWrapper>
       </Card>
     );

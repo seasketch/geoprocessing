@@ -10,11 +10,11 @@ const fill = keyframes`
 `;
 
 interface Props {
-  duration: number;
+  $duration: number;
 }
 
 export const ProgressBar = styled.div.attrs<Props>((props) => ({
-  duration: 1,
+  $duration: 1,
 }))`
   background: #ddd;
   height: 4px;
@@ -24,7 +24,7 @@ export const ProgressBar = styled.div.attrs<Props>((props) => ({
   animation: ${fill} linear;
   animation-iteration-count: once;
   /* animation-timing-function: ease-in-out; */
-  animation-duration: ${(props) => props.duration + "s"};
+  animation-duration: ${(props) => props.$duration + "s"};
   position: relative;
 `;
 

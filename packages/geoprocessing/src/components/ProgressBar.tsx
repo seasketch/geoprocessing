@@ -13,7 +13,9 @@ interface Props {
   duration: number;
 }
 
-export const ProgressBar = styled.div<Props>`
+export const ProgressBar = styled.div.attrs<Props>((props) => ({
+  duration: 1,
+}))`
   background: #ddd;
   height: 4px;
   background: linear-gradient(90deg, #ddd 50%, white 50%);

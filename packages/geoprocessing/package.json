@@ -216,6 +216,7 @@
         "uuid": "^8.3.2",
         "val-loader": "^2.1.2",
         "vite": "^5.2.10",
+        "vite-plugin-node-polyfills": "^0.21.0",
         "vitest": "^1.5.2",
         "vitest-fetch-mock": "^0.2.2",
         "web-streams-polyfill": "4.0.0",

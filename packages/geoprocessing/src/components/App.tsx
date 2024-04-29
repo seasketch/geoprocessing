@@ -169,7 +169,7 @@ export const App = ({ reports }: AppProps) => {
         }}
       >
         <ReportTextDirection>
-          <Suspense fallback={<div>Loading2...</div>}>
+          <Suspense fallback={<div>Loading...</div>}>
             <Report />
           </Suspense>
         </ReportTextDirection>

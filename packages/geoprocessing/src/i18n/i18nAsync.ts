@@ -56,9 +56,12 @@ export function createI18nAsyncInstance(
           let baseLangResources = {};
           try {
             const { default: data } = await import(
+              /* @vite-ignore */
               `${baseLangPath}/${
                 isDefault ? defaultLang : curLanguage
-              }/${namespace}.json`, {
+              }/${namespace}.json`, 
+              /* @vite-ignore */
+              {
                 with: { type: 'json' }
               }
             );
@@ -75,9 +78,11 @@ export function createI18nAsyncInstance(
             try {
               if (!isDefault) {
                 const { default: data } = await import(
+                  /* @vite-ignore */
                   `${langPath}/${
                     isDefault ? defaultLang : curLanguage
-                  }/${namespace}.json`, {
+                  }/${namespace}.json`,
+                  /* @vite-ignore */{
                     with: { type: 'json' }
                   }
                 );

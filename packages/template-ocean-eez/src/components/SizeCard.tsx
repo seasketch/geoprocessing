@@ -128,7 +128,7 @@ export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
               <Collapse title={t("Learn more")}>
                 <p>
                   <img
-                    src={require("../assets/img/territorial_waters.png")}
+                    src={require("/assets/img/territorial_waters.png")}
                     style={{ maxWidth: "100%" }}
                   />
                   <a

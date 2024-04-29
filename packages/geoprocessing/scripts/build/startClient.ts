@@ -1,12 +1,8 @@
 import fs from "fs-extra";
 import path from "path";
-// import * as esbuild from "esbuild";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import { Package } from "../../src/types/index.js";
-// import inlineImage from "esbuild-plugin-inline-image";
-// import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
-import { v4 as uuid } from "uuid";
-import { build } from "vite";
+import { createServer } from "vite";
 import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
@@ -103,55 +99,17 @@ fs.writeFileSync(
 
 const minify = process.env.NOMINIFY ? false : true;
 
-const buildResult = await build({
+const server = await createServer({
+  // any valid user config options, plus `mode` and `configFile`
   root: destBuildPath,
-  base: "/",
   plugins: [react(), nodePolyfills()],
   publicDir: path.join(PROJECT_PATH, "src", "assets"),
-  // add inline image
-  build: {
-    sourcemap: true,
-    minify,
-    outDir: path.join(destBuildPath, "dist"),
-    emptyOutDir: false,
+  server: {
+    port: 8080,
+    open: true,
   },
 });
+await server.listen();
 
-// const buildResult = await esbuild.build({
-//   entryPoints: [`${destBuildPath}/ReportApp.tsx`],
-//   bundle: true,
-//   outdir: destBuildPath,
-//   format: "esm",
-//   minify: minify,
-//   sourcemap: "linked",
-//   metafile: true,
-//   treeShaking: true,
-//   logLevel: "info",
-//   external: [],
-//   define: {
-//     "process.env.GP_VERSION": JSON.stringify(packageGp.version),
-//   },
-//   plugins: [
-//     //@ts-ignore
-//     inlineImage(),
-//     nodeModulesPolyfillPlugin({
-//       modules: {
-//         fs: "empty",
-//       },
-//     }),
-//   ],
-// });
-
-// if (buildResult.errors.length > 0 || buildResult.warnings.length > 0) {
-//   console.log(JSON.stringify(buildResult, null, 2));
-//   throw new Error();
-// }
-
-// if (buildResult.metafile && process.env.ANALYZE) {
-//   // use https://bundle-buddy.com/esbuild to analyze
-//   console.log("Generating metafile esbuild-metafile-client.json");
-//   await fs.writeFile(
-//     `${PROJECT_PATH}/esbuild-metafile-client.json`,
-//     JSON.stringify(buildResult.metafile)
-//   );
-// }
+server.printUrls();
+server.bindCLIShortcuts({ print: true });

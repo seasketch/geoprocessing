@@ -6,7 +6,6 @@ mkdir .build-web
 
 # Determine path to @seasketch/geoprocessing root.  Running script from gp folder will use its dependencies
 GP_PATH=GP_NOT_FOUND
-export PROJECT_RELATIVE_PATH_BACK=NOT_AVAILABLE
 if test -f "../geoprocessing/scripts/build/build-client.sh"; then
   # in monorepo
   GP_PATH=../geoprocessing

@@ -6,7 +6,7 @@ import { styled } from "styled-components";
 import Skeleton from "./Skeleton.js";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar.js";
 import { ReportError } from "./ReportError.js";
-import { GeoprocessingRequestParams } from "../types/index.js";
+import { GeoprocessingRequestParams } from "../types/service.js";
 
 export interface ResultsCardProps<T> extends CardProps {
   functionName: string;

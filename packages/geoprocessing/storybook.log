@@ -1,0 +1,14 @@
+npm ERR! code 1
+npm ERR! path /home/twelch/src/geoprocessing/packages/geoprocessing
+npm ERR! command failed
+npm ERR! command sh -c npm run build:core && npm run build:scripts && npm run _prepare
+npm ERR! > @seasketch/geoprocessing@6.1.2 build:core
+npm ERR! > tsc
+npm ERR! 
+npm ERR! storybook.tsx(2,10): error TS2305: Module '"@storybook/react"' has no exported member 'storiesOf'.
+npm ERR! npm ERR! Lifecycle script `build:core` failed with error: 
+npm ERR! npm ERR! Error: command failed 
+npm ERR! npm ERR!   in workspace: @seasketch/geoprocessing@6.1.2 
+npm ERR! npm ERR!   at location: /home/twelch/src/geoprocessing/packages/geoprocessing
+
+npm ERR! A complete log of this run can be found in: /home/twelch/.npm/_logs/2024-04-29T21_58_45_371Z-debug-0.log

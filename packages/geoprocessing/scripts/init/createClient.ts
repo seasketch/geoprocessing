@@ -154,7 +154,7 @@ export async function makeClient(
     console.log(chalk.blue(`\nGeoprocessing client initialized`));
     console.log(`\nNext Steps:
     * Update your report client in ${`${projectClientPath}/${options.title}.tsx`} and ${`${projectComponentPath}/${options.title}Card.tsx`}
-    * View your report client using 'npm start-storybook' with smoke test output for all geoprocessing functions
+    * View your report client using 'npm run storybook' with smoke test output for all geoprocessing functions
   `);
   }
 }

@@ -34,7 +34,7 @@
     "build": "geoprocessing build:lambda && geoprocessing build:client",
     "build:client": "geoprocessing build:client",
     "build:lambda": "geoprocessing build:lambda",
-    "start-storybook": "geoprocessing start-storybook",
+    "storybook": "geoprocessing storybook",
     "url": "geoprocessing url",
     "clear-results": "geoprocessing clear-results",
     "clear-all-results": "geoprocessing clear-all-results"

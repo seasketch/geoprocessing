@@ -202,14 +202,14 @@ export async function makeReport(
     options.type === "raster"
       ? "rasterFunction"
       : options.type === "vector"
-      ? "vectorFunction"
-      : "blankFunction";
+        ? "vectorFunction"
+        : "blankFunction";
   const defaultFuncRegex =
     options.type === "raster"
       ? /rasterFunction/g
       : options.type === "vector"
-      ? /vectorFunction/g
-      : /blankFunction/g;
+        ? /vectorFunction/g
+        : /blankFunction/g;
   const blankFuncRegex = /blankFunction/g;
   const defaultCompName =
     options.type === "raster" || options.type === "vector"
@@ -299,7 +299,7 @@ export async function makeReport(
     console.log(`\nNext Steps:
     * Add your new <${compName} /> component to your reports by adding it to Viability.tsx or Representation.tsx
     * Run 'npm test' to run smoke tests against your new function
-    * View your report using 'npm start-storybook' with smoke test output
+    * View your report using 'npm storybook' with smoke test output
   `);
   }
 }

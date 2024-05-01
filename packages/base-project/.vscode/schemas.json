@@ -426,8 +426,8 @@
   },
   "oneOf": [
     { "$ref": "#/definitions/basicSchema" },
-    { "$ref": "#/definitions/metricsSchema" },
     { "$ref": "#/definitions/objectivesSchema" },
+    { "$ref": "#/definitions/metricsSchema" },
     { "$ref": "#/definitions/geographiesSchema" },
     { "$ref": "#/definitions/datasourcesSchema" }
   ]

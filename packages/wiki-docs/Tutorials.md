@@ -723,7 +723,6 @@ Importing a vector dataset into your project will:
 - Calculates overall statistics including total area, and area by group property
 - Output the result to the `data/dist` directory, ready for testing
 - Add datasource to `project/datasource.json`
-- Optionally, publish the datasource.
 
 Start the import process and it will ask you a series of questions, press Enter after each one, and look to see if a default answer is provided that is sufficient:
 
@@ -732,48 +731,41 @@ npm run import:data
 ? Type of data? Vector
 ```
 
-If you want to use your data in analytics, respond `Yes` to allow precalculation.
-
-```bash
-? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource) Yes
-```
-
-By default mulitpolygons are split into polygons to analysis, which works well in most circumstances.
-
-```bash
-? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons
-to fetch) Yes
-```
-
 Assuming you are using the [FSM data](#Example-data-for-tutorial) from Allen Coral Atlas available now in your `data/src` directory. Let's import the `reefextent` vector data from the geopackage.
 
 ```bash
 ? Enter path to src file (with filename) data/src/reefextent.gpkg
 ```
 
+Select the name of the vector layer you want to import. The example reef extent data named `Micronesian Exclusive Economic Zone` in `reefextent.gpkg`
+
+```bash
+? Select layer to import Micronesian Exclusive Economic Zone
+```
+
 Choose a datasource name that is different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
 
 ```bash
-? Choose unique datasource name (use letters,numbers, -, _ to ensure will work) reefextent
+? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename reefextent
 ```
 
-A layer name must be specified if the datasource can store multiple layers. If your dataset can only store one datasource such as a shapefile or a GeoJSON file, then the layer name should just be the name of the file (minus the extension). You can use the QGIS project file in the example data to view the available layers in the geopackage. The example reef extent data named `Micronesian Exclusive Economic Zone` in `reefextent.gpkg`
+If your dataset contains one or more properties that classify the vector features into one or more categories, and you want to report on those categories in your reports, then you can enter those properties now as a comma-separated list. For example a coral reef dataset containing a `type` property that identifies the type of coral present in each polygon. In the case of our EEZ dataset, there are no properties like this so press Enter to continue without.
 
 ```bash
-? Enter layer name, defaults to filename (reefextent) Micronesian Exclusive Economic Zone
+? Select feature properties that you want to group metrics by (Press <space> to select, <a> to toggle all, <i> to invert selection)
 ```
 
-If your dataset contains one or more properties that classify the vector features into one or more categories, and you want to report on those categories in your reports, then you can enter those properties now as a comma-separated list. For example a coral reef dataset containing a `type` propertie that identifies the type of coral present in each polygon. In the case of our EEZ dataset, there are no properties like this so this question is left blank.
+By default, all extraneous properties will be removed from your vector dataset on import in order to make it as small as possible. Any additional properties that you want to keep in should be specified in this next question. If there are none, just press Enter.
 
 ```bash
-? Enter feature property names that you want to group metrics by (
-separated by a comma e.g. prop1,prop2,prop3)
+? Select additional feature properties to keep in final datasource (Press <space> to select, <a> to toggle all, <i> to invert selection)
 ```
 
-By default, all extraneous properties will be removed from your vector dataset on import in order to make it as small as possible. Any additional properties that you want to keep in should be specified in this next question. If there are none, just leave it blank.
+Mulitpolygons can be split into polygons for analysis, which can help report performance.
 
 ```bash
-? Enter additional feature property names to keep in final datasource (separated by a comma e.g. prop1,prop2,prop3). All others will be filtered out
+? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons
+to fetch) Yes
 ```
 
 Typically you only need to published Flatgeobuf data, which is cloud-optimized so that geoprocessing functions can fetch features for just the window of data they need (such as the bounding box of a sketch). Flatgeobuf is automatically created. GeoJSON is also available if you want to be able to import data directly in your geoprocessing function typescript files, or inspect the data using a human readable format. Just press enter if you are happy with the default.
@@ -783,13 +775,10 @@ Typically you only need to published Flatgeobuf data, which is cloud-optimized s
  ◯ json - GeoJSON
 ```
 
-You can import and then publish your data to AWS all in one step, but typically I default to `No` here so that I can ensure it's imported properly and precalculation runs properly. If you answer yes, you must have already done your first deploy of the project, or else the `datasets` bucket won't exist. You will also need to have your `awscli` setup properly IAM user account credentials.
+If you want to use your data in analytics, respond `Yes` to allow precalculation.
 
 ```bash
-? Do you want to publish the datasource to S3 cloud storage? (Use
-arrow keys)
-  Yes
-❯ No
+? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource) Yes
 ```
 
 At this point the import will proceed and various log output will be generated. Once complete you will find:
@@ -827,7 +816,7 @@ If the import fails, try again double checking everything. It is most likely one
 What if you have a vector file with multiple classes you want to group metrics by? The other [downloaded example data](#Example-data-for-tutorial) `benthic.gpkg` separates different benthic habitats (Sand, Seagrass, Coral) by a `class` parameter. The import for this datasource looks as follows:
 
 ```bash
-npm run import:data -> Vector -> Yes -> Yes -> data/src/benthic.gpkg -> benthic -> Micronesian Exclusive Economic Zone -> class -> {none} -> {none}
+npm run import:data -> Vector -> data/src/benthic.gpkg -> Micronesian Exclusive Economic Zone -> benthic -> class -> {none} -> Yes -> {none} -> Yes
 ```
 
 The resulting `datasource.json` entry will look as follows:
@@ -862,7 +851,6 @@ Importing a raster dataset into your project will:
 - Calculates overall statistics including total count and if categorical raster, a count per category
 - Output the result to the `data/dist` directory, ready for testing
 - Add datasource to `project/datasource.json`
-- Optionally, publish the datasource.
 
 Start the import process and it will ask you a series of questions, press Enter after each one, and look to see if a default answer is provided that is sufficient:
 
@@ -880,13 +868,13 @@ Assuming you are using the [FSM example data](#link-project-data) package and it
 Choose a datasource name that is different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
 
 ```bash
-? Choose unique datasource name (use letters, numbers, -, _ to ensure will work) octocorals
+? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename octocorals
 ```
 
-If the raster has more than one band of data, choose the band you want to extract. Defaults to band 1, which is what you want if there is only one band anyway.
+If the raster has more than one band of data, select the band you want to import.
 
 ```bash
-? Enter band number to import, defaults to 1
+? Enter band number to import 1
 ```
 
 Choose what the raster data represents
@@ -896,28 +884,6 @@ Choose what the raster data represents
 ```bash
 ❯ Quantitative - values represent amounts, measurement of single thing
   Categorical - values represent groups
-```
-
-Choose a data format to publish. The one and only raster data format supported is a cloud-optimized GeoTIFF so press Enter and accept the default value here.
-
-```bash
-? What formats would you like publish?  Suggested formats already selected
-❯◉ tif - Cloud Optimized GeoTiff
-```
-
-Raster formats often support a `nodata` value, which is a value that if assigned to a cell, should not be counted as data. In the case of the octocorals raster, the nodata value is a very very small negative number. The `+38' portion of this number is a shorthand way of saying add 38 zeros to the end. In the future this value can be automatically read and used, but for now You can find this value by checking the layer properties in QGIS and copying it over verbatim.
-
-```bash
-? Enter nodata value for raster or leave blank -3.3999999521443642e+38
-```
-
-You can import and then publish your data to AWS all in one step, but typically I default to `No` here so that I can ensure it's imported properly and precalculation runs properly. If you answer yes, you must have already done your first deploy of the project, or else the `datasets` bucket won't exist. You will also need to have your `awscli` setup properly IAM user account credentials.
-
-```bash
-? Do you want to publish the datasource to S3 cloud storage? (Use
-arrow keys)
-  Yes
-❯ No
 ```
 
 At this point the import will proceed and various log output will be generated.

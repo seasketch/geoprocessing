@@ -303,10 +303,12 @@ async function detailedRasterQuestions(
     },
   ]);
   
+  const noDataValue = JSON.parse(stdout).bands.find(b => b.band === answers.band).noDataValue
+  
   return {
     ...answers, 
     formats: ["tif"], 
-    noDataValue: JSON.parse(stdout).bands.find(b => b.band === answers.band).noDataValue
+    noDataValue: isNaN(noDataValue) ? -9999 : noDataValue
   };
 }
 

@@ -21,7 +21,7 @@ void (async function () {
   if (reimportAllAnswers.reimportAll === "yes") {
     await reimportDatasources(projectClient, {});
   } else {
-    const dsAnswers = await datasourcesQuestion(projectClient.datasources);
+    const dsAnswers = await datasourcesQuestion(internalDatasources);
     await reimportDatasources(projectClient, {
       matcher: dsAnswers.datasources,
     });
@@ -34,7 +34,7 @@ export async function reimportAllQuestion(
   return inquirer.prompt<Pick<ReimportAnswers, "reimportAll">>([
     {
       type: "list",
-      name: "publish",
+      name: "reimportAll",
       message: `Do you want to reimport all ${numDs} datasources at once?`,
       default: "no",
       choices: [

@@ -47,7 +47,6 @@ describe("Reimport datasources", () => {
         {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
-          doPublish: false,
         }
       );
 
@@ -67,14 +66,12 @@ describe("Reimport datasources", () => {
         {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
-          doPublish: false,
         }
       );
 
       const reimportDss = await reimportDatasources(projectClient, {
         newDatasourcePath: dstConfigFilePath,
         newDstPath: dstPath,
-        doPublish: false,
       });
 
       expect(reimportDss.length).toBe(2);

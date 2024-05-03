@@ -142,7 +142,7 @@ if (process.argv.length < 3) {
       });
       break;
     case "storybook":
-      spawn(`${import.meta.dirname}/../../scripts/storybook.sh`, {
+      spawn(`${import.meta.dirname}/../../scripts/storybook/storybook.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });

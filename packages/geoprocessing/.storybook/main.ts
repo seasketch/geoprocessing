@@ -1,21 +1,51 @@
 import type { StorybookConfig } from "@storybook/react-vite";
 
-import { join, dirname } from "path";
+import path from "path";
+import fs from "fs";
 
 /**
  * This function is used to resolve the absolute path of a package.
  * It is needed in projects that use Yarn PnP or are set up within a monorepo.
  */
 function getAbsolutePath(value: string): any {
-  return dirname(require.resolve(join(value, "package.json")));
+  return path.dirname(require.resolve(path.join(value, "package.json")));
 }
+
+const storyPaths = ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"];
+
+if (process.env.PROJECT_PATH) {
+  // Add project stories to search path
+  if (fs.existsSync(path.join(process.env.PROJECT_PATH, "src/clients"))) {
+    console.log("Clients path found (src/clients), adding to stories");
+    storyPaths.push(
+      `${path.join(process.env.PROJECT_PATH, "src/clients")}/**/*.stories.tsx`
+    );
+    storyPaths.push(
+      `${path.join(process.env.PROJECT_PATH, "src/clients")}/**/.story-cache/*.stories.@(js|jsx|mjs|ts|tsx)`
+    );
+  } else {
+    console.log("Clients path not found (src/clients), skipping");
+  }
+  if (fs.existsSync(path.join(process.env.PROJECT_PATH, "src/components"))) {
+    console.log("Components path found (src/components), adding to stories");
+    storyPaths.push(
+      path.join(process.env.PROJECT_PATH, "src/components") +
+        "/**/*.stories.tsx"
+    );
+    storyPaths.push(
+      `${path.join(process.env.PROJECT_PATH, "src/components")}/**/.story-cache/*.stories.@(js|jsx|mjs|ts|tsx)`
+    );
+  } else {
+    console.log("Components path not found (src/components), skipping");
+  }
+}
+
 const config: StorybookConfig = {
-  stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  stories: storyPaths,
   addons: [
-    getAbsolutePath("@storybook/addon-onboarding"),
     getAbsolutePath("@storybook/addon-links"),
     getAbsolutePath("@storybook/addon-essentials"),
-    getAbsolutePath("@chromatic-com/storybook"),
+
     getAbsolutePath("@storybook/addon-interactions"),
   ],
   framework: {

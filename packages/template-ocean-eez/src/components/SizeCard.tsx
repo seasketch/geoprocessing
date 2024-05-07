@@ -327,7 +327,7 @@ const genNetworkSizeTable = (
       Header: " ",
       accessor: (row) => <b>{sketchesById[row.sketchId].properties.name}</b>,
     },
-    ...classColumns,
+    ...(classColumns as Column<any>[]),
   ];
 
   return (

@@ -53,9 +53,9 @@ export function getBlankComponentPath() {
 }
 
 export function getOceanEEZProjectPath() {
-  return /dist/.test(__dirname)
-    ? `${__dirname}/../../templates/starter-templates/template-ocean-eez`
-    : `${__dirname}/../../../templates/starter-templates/template-ocean-eez`;
+  return /dist/.test(import.meta.dirname)
+    ? `${import.meta.dirname}/../../templates/starter-templates/template-ocean-eez`
+    : `${import.meta.dirname}/../../../templates/starter-templates/template-ocean-eez`;
 }
 
 export function getOceanEEZFunctionPath() {

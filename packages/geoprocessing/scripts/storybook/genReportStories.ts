@@ -23,6 +23,15 @@ if (!fs.existsSync(outputDir)) {
 
 const storyDir = path.join(PROJECT_PATH, "src");
 
+// delete old story cache directories
+
+const cachePaths = await globby(path.join(storyDir, "**/.story-cache"), {
+  onlyDirectories: true,
+});
+cachePaths.forEach((cachePath) => {
+  fs.rmSync(cachePath, { recursive: true });
+});
+
 // load report story configs
 const storyPaths = await globby(
   path.join(storyDir, "**/*.example-stories.ts"),
@@ -153,9 +162,6 @@ for (const storyConfig of storyConfigs) {
     `;
 
     fs.ensureDirSync(storyOutDir);
-    if (fs.existsSync(storyOutPath)) {
-      fs.rmSync(storyOutPath); // delete old story if it exists
-    }
     fs.writeFileSync(storyOutPath, story);
   }
 }

@@ -127,10 +127,10 @@ export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
               )}
               <Collapse title={t("Learn more")}>
                 <p>
-                  <img
-                    src={require("/assets/img/territorial_waters.png")}
+                  {/* <img
+                    src={require("../assets/img/territorial_waters.png")}
                     style={{ maxWidth: "100%" }}
-                  />
+                  /> */}
                   <a
                     target="_blank"
                     href="https://en.wikipedia.org/wiki/Territorial_waters"

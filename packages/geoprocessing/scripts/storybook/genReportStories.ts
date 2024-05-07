@@ -24,9 +24,12 @@ if (!fs.existsSync(outputDir)) {
 const storyDir = path.join(PROJECT_PATH, "src");
 
 // load report story configs
-const storyPaths = await globby(path.join(storyDir, "**/*.report-stories.ts"), {
-  onlyFiles: true,
-});
+const storyPaths = await globby(
+  path.join(storyDir, "**/*.example-stories.ts"),
+  {
+    onlyFiles: true,
+  }
+);
 const storyConfigs: GpStoryConfig[] = [];
 for (const storyPath of storyPaths) {
   try {
@@ -95,10 +98,9 @@ for (const storyConfig of storyConfigs) {
       );
       continue;
     }
-    const importFromCacheStr = `../${storyConfig.componentPath}`.replace(
-      ".ts",
-      ".js"
-    );
+    const importFromCacheStr = `../${storyConfig.componentPath}`
+      .replace(".ts", ".js")
+      .replace(".tsx", ".js");
 
     const storyTitleSplit = storyConfig.title.split("/");
     // extract story name from title
@@ -136,7 +138,7 @@ for (const storyConfig of storyConfigs) {
         exampleOutputs: ${JSON.stringify(exampleOutputs, null, 2)}
       });
 
-      export const ${sketch.properties.name} = () => (
+      export const ${sketch.properties.name.replaceAll("-", "_")} = () => (
         <Translator>
           <${storyConfig.componentName} />
         </Translator>
@@ -145,6 +147,7 @@ for (const storyConfig of storyConfigs) {
       export default {
         component: ${storyConfig.componentName},
         title: '${storyConfig.title}',
+        name: '${sketch.properties.name}',
         decorators: [createReportDecorator(contextValue)],
       };
     `;

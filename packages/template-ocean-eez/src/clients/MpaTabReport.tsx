@@ -7,7 +7,7 @@ import { Translator } from "../components/TranslatorAsync.js";
 
 const enableAllTabs = false;
 
-const MpaTabReport = () => {
+const BaseReport = () => {
   const { t } = useTranslation();
   const viabilityId = "viability";
   const representationId = "representation";
@@ -35,11 +35,11 @@ const MpaTabReport = () => {
   );
 };
 
-export default function () {
+export const MpaTabReport = () => {
   // Translator must be in parent FunctionComponent in order for ReportClient to use useTranslate hook
   return (
     <Translator>
-      <MpaTabReport />
+      <BaseReport />
     </Translator>
   );
-}
+};

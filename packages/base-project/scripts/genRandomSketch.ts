@@ -8,8 +8,6 @@ import {
   FeatureCollection,
   Polygon,
 } from "@seasketch/geoprocessing";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 /**
  * genRandomSketch script - generates random sketch within the bounding box of the project.  Not guaranteed to be within the EEZ boundary
@@ -35,7 +33,8 @@ import { fileURLToPath } from "node:url";
     }
   })();
 
-  const outdir = process.argv[4] || `${import.meta.dirname}/../examples/sketches/`;
+  const outdir =
+    process.argv[4] || `${import.meta.dirname}/../examples/sketches/`;
 
   const outfile = `${outdir}${name}.json`;
 

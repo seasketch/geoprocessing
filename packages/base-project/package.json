@@ -58,6 +58,7 @@
     "@types/request": "^2.48.12",
     "babel-plugin-i18next-extract": "0.10.0",
     "request": "^2.88.2",
+    "vite": "^5.2.10",
     "zx": "^8.0.2"
   },
   "repositoryUrl": "",

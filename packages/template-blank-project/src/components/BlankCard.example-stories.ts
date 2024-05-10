@@ -5,5 +5,5 @@ export const storyConfig = defineGpStories({
   componentName: "BlankCard",
   /** Relative path to React component from this config file */
   componentPath: "./BlankCard.tsx",
-  title: "Project/Reports/BlankCard",
+  title: "Project/Components/BlankCard",
 });

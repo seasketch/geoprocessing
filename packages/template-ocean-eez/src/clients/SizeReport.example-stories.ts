@@ -5,5 +5,5 @@ export const storyConfig = defineGpStories({
   componentName: "SizeReport",
   /** Relative path to React component from this config file */
   componentPath: "./SizeReport.tsx",
-  title: "Project/Reports/SizeReport",
+  title: "Project/ReportClients/SizeReport",
 });

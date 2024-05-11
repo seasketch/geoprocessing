@@ -2,14 +2,14 @@ import React from "react";
 import { styled } from "styled-components";
 
 export interface StyledHorizontalStackedBarProps {
-  rowTotals: number[];
-  blockGroupColors: (string | undefined)[];
-  showTitle: boolean;
-  target?: number;
-  barHeight?: number;
-  titleWidth?: number;
-  targetLabelPosition?: "top" | "bottom";
-  targetLabelStyle?: "normal" | "tight";
+  $rowTotals: number[];
+  $blockGroupColors: (string | undefined)[];
+  $showTitle: boolean;
+  $target?: number;
+  $barHeight?: number;
+  $titleWidth?: number;
+  $targetLabelPosition?: "top" | "bottom";
+  $targetLabelStyle?: "normal" | "tight";
 }
 
 const defaults = {
@@ -49,7 +49,7 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
   .title {
     font-size: 0.9em;
     width: ${(props) =>
-      props.titleWidth ? props.titleWidth : defaults.titleWidth}%;
+      props.$titleWidth ? props.$titleWidth : defaults.titleWidth}%;
     padding-right: 5px;
     text-align: right;
     color: #666;
@@ -64,9 +64,9 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
     }
     to {
       width: ${(props) =>
-        props.showTitle
-          ? props.titleWidth
-            ? props.titleWidth
+        props.$showTitle
+          ? props.$titleWidth
+            ? props.$titleWidth
             : defaults.titleWidth
           : 92}%;
     }
@@ -78,9 +78,9 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
       }
       to {
         width: ${(props) =>
-          props.showTitle
-            ? props.titleWidth
-              ? props.titleWidth
+          props.$showTitle
+            ? props.$titleWidth
+              ? props.$titleWidth
               : defaults.titleWidth
             : 92}%;
       }
@@ -106,7 +106,7 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    height: ${(props) => props.barHeight || defaults.barHeight}px;
+    height: ${(props) => props.$barHeight || defaults.barHeight}px;
     color: #333;
     font-size: 0.75em;
     float: left;
@@ -114,7 +114,9 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
     position: relative;
     overflow: hidden;
     opacity: 1;
-    transition: opacity, 0.3s ease;
+    transition:
+      opacity,
+      0.3s ease;
     cursor: pointer;
   }
 
@@ -149,14 +151,14 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
   .zero-marker {
     position: absolute;
     left: -1.5px;
-    height: ${(props) => (props.barHeight || defaults.barHeight) * 1.5}px;
+    height: ${(props) => (props.$barHeight || defaults.barHeight) * 1.5}px;
     width: 1.5px;
     background-color: #aaa;
-    top: -${(props) => (props.barHeight || defaults.barHeight) * 0.25}px;
+    top: -${(props) => (props.$barHeight || defaults.barHeight) * 0.25}px;
   }
 
   ${(props) =>
-    props.rowTotals.map(
+    props.$rowTotals.map(
       (total, index) =>
         `
         .row-${index} .total-label {
@@ -167,7 +169,7 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
           text-shadow: 0 0 2px #FFF, 0 0 2px #FFF, 0 0 2px #FFF, 0 0 2px #FFF, 0 0 2px #FFF, 0 0 2px #FFF, 0 0 2px #FFF, 0 0 2px #FFF;
           font-weight: bold;
           color: #666;
-          height: ${props.barHeight || defaults.barHeight}px;
+          height: ${props.$barHeight || defaults.barHeight}px;
           display: flex;
           align-items: center;
         }
@@ -175,14 +177,14 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
     )}
 
   ${(props) =>
-    props.target
+    props.$target
       ? `
         .marker-label {
           position: absolute;
-          ${props.targetLabelPosition || "top"}: ${
-          props.targetLabelStyle === "normal" ? "-15" : "-12"
-        }px;
-          left: ${props.target ? props.target : 0}%;
+          ${props.$targetLabelPosition || "top"}: ${
+            props.$targetLabelStyle === "normal" ? "-15" : "-12"
+          }px;
+          left: ${props.$target ? props.$target : 0}%;
           width: 100px;
           text-align: left;
           font-size: 0.7em;
@@ -191,8 +193,8 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
       
         .marker {
           position: absolute;
-          left: ${props.target}%;
-          height: ${(props.barHeight || defaults.barHeight) + 4}px;
+          left: ${props.$target}%;
+          height: ${(props.$barHeight || defaults.barHeight) + 4}px;
           width: 3px;
           background-color: #000;
           opacity: 0.35;
@@ -203,7 +205,7 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
       : ""}
 
   ${(props) =>
-    props.blockGroupColors.map(
+    props.$blockGroupColors.map(
       (blockGroupColor, index) =>
         `
       .legend li:nth-of-type(${index + 1}):before {
@@ -266,139 +268,137 @@ export interface HorizontalStackedBarProps {
 /**
  * Horizontal stacked bar chart component
  */
-export const HorizontalStackedBar: React.FunctionComponent<HorizontalStackedBarProps> =
-  ({
-    rows,
-    rowConfigs,
-    max = 100,
-    barHeight,
-    titleWidth,
-    showLegend = true,
-    showTitle = true,
-    showTotalLabel = true,
-    showTargetLabel = true,
-    targetLabelPosition = "top",
-    targetLabelStyle = "normal",
-    target,
-    blockGroupNames,
-    valueFormatter,
-    targetValueFormatter,
-    targetReachedColor,
-    ...rest
-  }) => {
-    const numBlockGroups = rows[0].length;
-    const blockGroupStyles =
-      rest.blockGroupStyles && rest.blockGroupStyles.length >= numBlockGroups
-        ? rest.blockGroupStyles
-        : [
-            { backgroundColor: "blue" },
-            { backgroundColor: "green" },
-            { backgroundColor: "gray" },
-          ];
-    const rowTotals = rows.reduce<number[]>((rowSumsSoFar, row) => {
-      return [...rowSumsSoFar, sumRow(row)];
-    }, []);
+export const HorizontalStackedBar: React.FunctionComponent<
+  HorizontalStackedBarProps
+> = ({
+  rows,
+  rowConfigs,
+  max = 100,
+  barHeight,
+  titleWidth,
+  showLegend = true,
+  showTitle = true,
+  showTotalLabel = true,
+  showTargetLabel = true,
+  targetLabelPosition = "top",
+  targetLabelStyle = "normal",
+  target,
+  blockGroupNames,
+  valueFormatter,
+  targetValueFormatter,
+  targetReachedColor,
+  ...rest
+}) => {
+  const numBlockGroups = rows[0].length;
+  const blockGroupStyles =
+    rest.blockGroupStyles && rest.blockGroupStyles.length >= numBlockGroups
+      ? rest.blockGroupStyles
+      : [
+          { backgroundColor: "blue" },
+          { backgroundColor: "green" },
+          { backgroundColor: "gray" },
+        ];
+  const rowTotals = rows.reduce<number[]>((rowSumsSoFar, row) => {
+    return [...rowSumsSoFar, sumRow(row)];
+  }, []);
 
-    const rowRems = rowTotals.map((rowTotal) => {
-      const rem = max - rowTotal;
-      if (rem < -0.001)
-        console.warn(
-          `Row sum of ${rowTotal} is greater than max: ${max}. Check your input data`
-        );
-    });
+  const rowRems = rowTotals.map((rowTotal) => {
+    const rem = max - rowTotal;
+    if (rem < -0.001)
+      console.warn(
+        `Row sum of ${rowTotal} is greater than max: ${max}. Check your input data`
+      );
+  });
 
-    return (
-      <StyledHorizontalStackedBar
-        rowTotals={rowTotals}
-        target={target}
-        barHeight={barHeight}
-        showTitle={showTitle}
-        titleWidth={titleWidth}
-        blockGroupColors={blockGroupStyles
-          .map((style) => style.backgroundColor)
-          .slice(0, numBlockGroups)}
-        targetLabelPosition={targetLabelPosition}
-        targetLabelStyle={targetLabelStyle}
-      >
-        <>
-          <div className="graphic">
-            {rows.map((row, rowNumber) => {
-              const titleProp = rowConfigs[rowNumber].title;
-              const titleValue = (() => {
-                if (typeof titleProp === "function") {
-                  return titleProp;
-                } else {
-                  return () => titleProp;
-                }
-              })();
-              const targetReached = target && rowTotals[rowNumber] >= target;
-              return (
-                <div
-                  key={`row-${rowNumber}`}
-                  className={`row row-${rowNumber}`}
-                >
-                  {showTitle && (
-                    <div className="title">
-                      {titleValue(rowTotals[rowNumber])}
+  return (
+    <StyledHorizontalStackedBar
+      $rowTotals={rowTotals}
+      $target={target}
+      $barHeight={barHeight}
+      $showTitle={showTitle}
+      $titleWidth={titleWidth}
+      $blockGroupColors={blockGroupStyles
+        .map((style) => style.backgroundColor)
+        .slice(0, numBlockGroups)}
+      $targetLabelPosition={targetLabelPosition}
+      $targetLabelStyle={targetLabelStyle}
+    >
+      <>
+        <div className="graphic">
+          {rows.map((row, rowNumber) => {
+            const titleProp = rowConfigs[rowNumber].title;
+            const titleValue = (() => {
+              if (typeof titleProp === "function") {
+                return titleProp;
+              } else {
+                return () => titleProp;
+              }
+            })();
+            const targetReached = target && rowTotals[rowNumber] >= target;
+            return (
+              <div key={`row-${rowNumber}`} className={`row row-${rowNumber}`}>
+                {showTitle && (
+                  <div className="title">
+                    {titleValue(rowTotals[rowNumber])}
+                  </div>
+                )}
+                <div className="chart">
+                  {row.map((blockGroup, blockGroupNumber) =>
+                    blockGroup.map((blockValue, blockNumber) => (
+                      <span
+                        key={`${blockGroupNumber}${blockNumber}`}
+                        style={{
+                          width: `${blockValue}%`,
+                          ...blockGroupStyles[blockGroupNumber],
+                          ...(targetReached && targetReachedColor
+                            ? { backgroundColor: targetReachedColor }
+                            : {}),
+                        }}
+                        className={`block-group-${blockGroupNumber} block-${blockNumber} block`}
+                      ></span>
+                    ))
+                  )}
+                  <div className="zero-marker" />
+                  {target && (
+                    <>
+                      <div className="marker" />
+                      {showTargetLabel && rowNumber === 0 && (
+                        <div className="marker-label">
+                          {targetValueFormatter
+                            ? targetValueFormatter(target)
+                            : "Target"}
+                        </div>
+                      )}
+                    </>
+                  )}
+                  {showTotalLabel && (
+                    <div className="total-label">
+                      {valueFormatter
+                        ? valueFormatter(rowTotals[rowNumber])
+                        : rowTotals[rowNumber]}
                     </div>
                   )}
-                  <div className="chart">
-                    {row.map((blockGroup, blockGroupNumber) =>
-                      blockGroup.map((blockValue, blockNumber) => (
-                        <span
-                          key={`${blockGroupNumber}${blockNumber}`}
-                          style={{
-                            width: `${blockValue}%`,
-                            ...blockGroupStyles[blockGroupNumber],
-                            ...(targetReached && targetReachedColor
-                              ? { backgroundColor: targetReachedColor }
-                              : {}),
-                          }}
-                          className={`block-group-${blockGroupNumber} block-${blockNumber} block`}
-                        ></span>
-                      ))
-                    )}
-                    <div className="zero-marker" />
-                    {target && (
-                      <>
-                        <div className="marker" />
-                        {showTargetLabel && rowNumber === 0 && (
-                          <div className="marker-label">
-                            {targetValueFormatter
-                              ? targetValueFormatter(target)
-                              : "Target"}
-                          </div>
-                        )}
-                      </>
-                    )}
-                    {showTotalLabel && (
-                      <div className="total-label">
-                        {valueFormatter
-                          ? valueFormatter(rowTotals[rowNumber])
-                          : rowTotals[rowNumber]}
-                      </div>
-                    )}
-                  </div>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
+        </div>
 
-          {showLegend && (
-            <div className="x-axis">
-              <ul className="legend">
-                {blockGroupNames
-                  .slice(0, numBlockGroups)
-                  .map((blockGroupName, blockGroupNameIndex) => (
-                    <li key={blockGroupNameIndex}>{blockGroupName}</li>
-                  ))}
-              </ul>
-            </div>
-          )}
-        </>
-      </StyledHorizontalStackedBar>
-    );
-  };
+        {showLegend && (
+          <div className="x-axis">
+            <ul className="legend">
+              {blockGroupNames
+                .slice(0, numBlockGroups)
+                .map((blockGroupName, blockGroupNameIndex) => (
+                  <li key={blockGroupNameIndex}>{blockGroupName}</li>
+                ))}
+            </ul>
+          </div>
+        )}
+      </>
+    </StyledHorizontalStackedBar>
+  );
+};
 
 /** Sum row values */
 const sumRow = (row: HorizontalStackedBarRow): number =>

@@ -10,5 +10,4 @@ else
   cd node_modules/@seasketch/geoprocessing
 fi
 
-PROJECT_PATH=$PROJECT_PATH npx tsx scripts/storybook/genReportStories.ts
 npm run storybook

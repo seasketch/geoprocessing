@@ -34,6 +34,7 @@
     "build:client": "geoprocessing build:client",
     "build:lambda": "geoprocessing build:lambda",
     "storybook": "PROJECT_PATH=$(pwd) npx tsx .storybook/genReportStories.ts && storybook dev -p 6006",
+    "storybook:install": "npx tsx scripts/translationInstall.ts",
     "url": "geoprocessing url",
     "clear-results": "geoprocessing clear-results",
     "clear-all-results": "geoprocessing clear-all-results"

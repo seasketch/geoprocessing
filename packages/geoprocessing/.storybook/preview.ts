@@ -11,7 +11,7 @@ const preview: Preview = {
     options: {
       storySort: {
         method: "",
-        order: ["Project", "Components"],
+        order: ["Project", ["ReportClients", "Components"]],
         locales: "",
       },
     },

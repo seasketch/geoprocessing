@@ -16,6 +16,7 @@
     "src/functions/clipToOcean.ts"
   ],
   "geoprocessingFunctions": [
-    "src/functions/area.ts"
+    "src/functions/simpleFunction.ts",
+    "src/functions/blankFunction.ts"
   ]
 }

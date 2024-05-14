@@ -4,3 +4,4 @@ node_modules
 data/src
 data/dist/**
 src/i18n
+.story-cache

@@ -7,11 +7,11 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2015",
-    "module": "commonjs"
+    "target": "ES2022",
+    "module": "nodenext"
   },
   "typeRoots": [
     "../node_modules/@types",
   ],
-  "exclude": ["templates/**/*", "node_modules", "dist", "testing/*.mjs"],
+  "exclude": ["templates/**/*", "node_modules", "dist", "testing/*.mjs", "**/*.test.*"],
 }

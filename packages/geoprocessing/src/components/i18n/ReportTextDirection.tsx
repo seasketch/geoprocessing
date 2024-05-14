@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { useLanguage } from "../../hooks";
+import { useLanguage } from "../../hooks/index.js";
 
 /** Controls text direction for report based on current language */
 export const ReportTextDirection: React.FunctionComponent<{

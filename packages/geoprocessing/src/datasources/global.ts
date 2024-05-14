@@ -1,4 +1,4 @@
-import { Datasource, Feature, Polygon } from "../types";
+import { Datasource, Feature, Polygon } from "../types/index.js";
 
 export type OsmLandFeature = Feature<Polygon, { gid: number }>;
 export type EezLandUnion = Feature<Polygon, { gid: number; UNION: string }>;

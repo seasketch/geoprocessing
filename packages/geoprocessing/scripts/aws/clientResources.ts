@@ -1,5 +1,5 @@
 import path from "path";
-import { GeoprocessingStack } from "./GeoprocessingStack";
+import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import { RemovalPolicy, Duration } from "aws-cdk-lib";
 import { Bucket, BlockPublicAccess } from "aws-cdk-lib/aws-s3";
 import {
@@ -53,6 +53,7 @@ export const createClientResources = (stack: GeoprocessingStack) => {
           {
             s3OriginSource: {
               s3BucketSource: clientBucket,
+              originAccessIdentity,
             },
             behaviors: [{ isDefaultBehavior: true }],
           },
@@ -65,7 +66,9 @@ export const createClientResources = (stack: GeoprocessingStack) => {
      * Runs cloudfront invalidation on changes
      */
     new BucketDeployment(stack, "ClientBucketDeploy", {
-      sources: [Source.asset(path.join(stack.props.projectPath, ".build-web"))],
+      sources: [
+        Source.asset(path.join(stack.props.projectPath, ".build-web", "dist")),
+      ],
       destinationBucket: clientBucket,
       distribution: clientDistribution,
       distributionPaths: ["/*"],

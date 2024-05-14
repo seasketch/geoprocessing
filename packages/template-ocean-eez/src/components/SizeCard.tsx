@@ -8,7 +8,6 @@ import {
   valueFormatter,
   toPercentMetric,
   sortMetricsDisplayOrder,
-  isSketchCollection,
   MetricGroup,
   GeogProp,
 } from "@seasketch/geoprocessing/client-core";
@@ -23,12 +22,17 @@ import {
   ToolbarCard,
   DataDownload,
 } from "@seasketch/geoprocessing/client-ui";
-import styled from "styled-components";
-import project from "../../project";
-import { Metric, squareMeterToKilometer } from "@seasketch/geoprocessing";
-import Translator from "../components/TranslatorAsync";
+import {
+  Metric,
+  squareMeterToKilometer,
+} from "@seasketch/geoprocessing/client-core";
+import { styled } from "styled-components";
+import project from "../../project/projectClient.js";
+import Translator from "../components/TranslatorAsync.js";
 import { Trans, useTranslation } from "react-i18next";
 import { TFunction } from "i18next";
+
+import watersImgUrl from "../assets/img/territorial_waters.png";
 
 const Number = new Intl.NumberFormat("en", { style: "decimal" });
 
@@ -125,10 +129,7 @@ export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
               )}
               <Collapse title={t("Learn more")}>
                 <p>
-                  <img
-                    src={require("../assets/img/territorial_waters.png")}
-                    style={{ maxWidth: "100%" }}
-                  />
+                  {<img src={watersImgUrl} style={{ maxWidth: "100%" }} />}
                   <a
                     target="_blank"
                     href="https://en.wikipedia.org/wiki/Territorial_waters"
@@ -325,7 +326,7 @@ const genNetworkSizeTable = (
       Header: " ",
       accessor: (row) => <b>{sketchesById[row.sketchId].properties.name}</b>,
     },
-    ...classColumns,
+    ...(classColumns as Column<any>[]),
   ];
 
   return (

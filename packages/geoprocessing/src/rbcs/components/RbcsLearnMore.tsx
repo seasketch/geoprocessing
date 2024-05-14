@@ -1,11 +1,11 @@
 import React from "react";
-import { Objective } from "../../types/objective";
-import { getMinYesCountMap, getKeys, keyBy } from "../../helpers";
+import { Objective } from "../../types/objective.js";
+import { getMinYesCountMap, getKeys, keyBy } from "../../helpers/index.js";
 import {
   rbcsAnchoringActivities,
   rbcsAquacultureActivities,
   rbcsGearTypes,
-} from "../rbcs";
+} from "../rbcs.js";
 
 export interface RbcsLearnMoreProps {
   objectives: Objective[];
@@ -78,10 +78,6 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
       </p>
       <p>Zones are classified based on the following decision tree:</p>
       <p>
-        <img
-          src={require("../../assets/img/zone_classification.jpg")}
-          style={{ maxWidth: "100%" }}
-        />
         <a
           target="_blank"
           href="https://www.sciencedirect.com/science/article/pii/S0308597X16300197"
@@ -143,10 +139,6 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
         with the activities of the MPA.
       </p>
       <p>
-        <img
-          src={require("../../assets/img/mpa_classification.jpg")}
-          style={{ maxWidth: "100%" }}
-        />
         (
         <a
           target="_blank"

@@ -3,8 +3,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { ResultsCard } from "@seasketch/geoprocessing/client-ui";
 // Import the results type definition from your functions to type-check and
 // access the result in your component render function
-import { SimpleResults } from "../functions/simpleFunction";
-import Translator from "../components/TranslatorAsync";
+import { SimpleResults } from "../functions/simpleFunction.js";
+import Translator from "../components/TranslatorAsync.js";
 import { roundDecimal } from "@seasketch/geoprocessing/client-core";
 
 const Number = new Intl.NumberFormat("en", { style: "decimal" });

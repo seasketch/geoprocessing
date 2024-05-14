@@ -1,6 +1,6 @@
-import { precalcConfig } from "../../../src/precalc/config";
-import { Metric } from "../../../src/types";
-import { readMetrics, writeMetrics, createOrUpdateMetrics } from "./metrics";
+import { precalcConfig } from "../../../src/precalc/config.js";
+import { Metric } from "../../../src/types/index.js";
+import { readMetrics, writeMetrics, createOrUpdateMetrics } from "./metrics.js";
 
 // Extends metrics datasource
 

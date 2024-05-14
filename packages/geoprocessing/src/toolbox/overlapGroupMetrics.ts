@@ -5,8 +5,8 @@ import {
   MultiPolygon,
   SketchCollection,
   Metric,
-  Georaster,
-} from "../types";
+  Georaster
+} from "../types/index.js";
 import {
   genSampleSketchCollection,
   keyBy,
@@ -14,15 +14,15 @@ import {
   isSketchCollection,
   groupBy,
   clip,
-  isPolygonFeatureArray,
-} from "../helpers";
-import { createMetric, firstMatchingMetric } from "../metrics";
-import { overlapFeatures } from "./overlapFeatures";
-import { overlapArea } from "./overlapArea";
+  isPolygonFeatureArray
+} from "../helpers/index.js";
+import { createMetric, firstMatchingMetric } from "../metrics/index.js";
+import { overlapFeatures } from "./overlapFeatures.js";
+import { overlapArea } from "./overlapArea.js";
 import flatten from "@turf/flatten";
 import { featureCollection } from "@turf/helpers";
-import cloneDeep from "lodash/cloneDeep";
-import { rasterMetrics } from "./rasterMetrics";
+import cloneDeep from "lodash/cloneDeep.js";
+import { rasterMetrics } from "./rasterMetrics.js";
 
 type OverlapGroupOperation = (
   metricId: string,

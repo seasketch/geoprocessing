@@ -1,5 +1,6 @@
-import { MetricGroup } from "../types/metricGroup";
-import { keyBy } from "./keyBy";
+import { describe, test, expect } from "vitest";
+import { MetricGroup } from "../types/metricGroup.js";
+import { keyBy } from "./keyBy.js";
 
 /**
  * Returns the top-level objective assigned for the given MetricGroup.

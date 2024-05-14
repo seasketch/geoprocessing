@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { Package } from "./package";
-import { GeoprocessingJsonConfig } from "./project";
-import { bboxSchema } from "./geojson";
+import { Package } from "./package.js";
+import { GeoprocessingJsonConfig } from "./project.js";
+import { bboxSchema } from "./geojson.js";
 
 // Schema and types for representing datasources used in calculating metrics
 

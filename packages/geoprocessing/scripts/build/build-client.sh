@@ -1,20 +1,22 @@
 export PROJECT_PATH=$(pwd)
 set -e
 echo ""
-echo "Building client..."
-echo ""
 rm -rf .build-web
-# Determine correct path. Need to be in @seasketch/geoprocessing root
+mkdir .build-web
+
+# Determine path to @seasketch/geoprocessing root.  Running script from gp folder will use its dependencies
+GP_PATH=GP_NOT_FOUND
 if test -f "../geoprocessing/scripts/build/build-client.sh"; then
   # in monorepo
-  cd ../geoprocessing
+  GP_PATH=../geoprocessing
 else
   # production reporting tool
-  cd node_modules/@seasketch/geoprocessing
+  GP_PATH=node_modules/@seasketch/geoprocessing
 fi
-# Build client
-rm -rf .build-web
-npx webpack --config scripts/build/webpack.clients.config.js
-mv .build-web $PROJECT_PATH/
-cp src/assets/favicon.ico $PROJECT_PATH/.build-web/
+
+cd "$GP_PATH"
+
+ANALYZE=$ANALYZE NOMINIFY=$NOMINIFY npx tsx scripts/build/buildClient.ts
+cp ./src/assets/favicon.ico $PROJECT_PATH/.build-web/dist/assets
+
 echo ""

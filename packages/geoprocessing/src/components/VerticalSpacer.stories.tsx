@@ -1,6 +1,6 @@
 import React from "react";
-import { VerticalSpacer } from "./VerticalSpacer";
-import { CardDecorator, ReportDecorator } from "./storybook";
+import { VerticalSpacer } from "./VerticalSpacer.js";
+import { CardDecorator, ReportDecorator } from "./storybook/index.js";
 
 export default {
   component: VerticalSpacer,

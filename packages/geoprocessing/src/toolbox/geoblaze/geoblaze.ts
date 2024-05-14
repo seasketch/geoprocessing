@@ -1,9 +1,15 @@
-import { Polygon, Histogram } from "../../types";
-import { Feature, MultiPolygon, FeatureCollection, BBox } from "@turf/helpers";
+import {
+  Polygon,
+  Histogram,
+  Feature,
+  MultiPolygon,
+  FeatureCollection,
+  BBox,
+} from "../../types/index.js";
 import geoblaze, { Georaster } from "geoblaze";
 import reprojectGeoJSONPlugable from "reproject-geojson/pluggable.js";
-import proj4 from "../proj4";
-import { reproject } from "bbox-fns";
+import proj4 from "../proj4.js";
+import bboxFns from "bbox-fns";
 
 export const defaultStatValues = {
   count: 0,
@@ -133,7 +139,7 @@ export const getRasterBoxSpherical = (raster: Georaster) => {
   } else if (raster.projection === 6933) {
     // Reproject back to spherical coordinates
     const { inverse } = proj4("EPSG:4326", "EPSG:6933");
-    const rasterBbox: BBox = reproject(
+    const rasterBbox: BBox = bboxFns.reproject(
       [raster.xmin, raster.ymin, raster.xmax, raster.ymax],
       inverse
     );

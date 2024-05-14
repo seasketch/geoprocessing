@@ -1,12 +1,14 @@
-import { SketchCollection } from "../../types";
-import { genSampleSketch } from "../../helpers";
+import {
+  SketchCollection,
+  Feature,
+  MultiPolygon,
+  Polygon,
+} from "../../types/index.js";
+import { genSampleSketch } from "../../helpers/index.js";
 import {
   feature,
-  Feature,
   featureCollection,
-  MultiPolygon,
   multiPolygon,
-  Polygon,
   polygon,
 } from "@turf/helpers";
 import area from "@turf/area";

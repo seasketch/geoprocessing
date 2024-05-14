@@ -2,13 +2,251 @@
 
 Instructions to migrate existing geoprocessing projects to next version.
 
-When you create a geoprocessing project, it will be pinned to a specific version of the geoprocessing library in package.json. You can update to the latest by running:
+[NPM](https://www.npmjs.com/package/@seasketch/geoprocessing) is the source of truth for each version.
+
+When you create a geoprocessing project, it will be pinned to a specific version of the geoprocessing library in package.json. If all you need to do is update to the latest version you can run:
 
 ```bash
 npm update @seasketch/geoprocessing@latest
 ```
 
-[NPM](https://www.npmjs.com/package/@seasketch/geoprocessing) is the source of truth for each version.
+But in many cases you will need to do some manual migration steps
+
+## 6.x to 7.x
+
+Numerous updates are required, including a number of breaking changes.  See the fsm-reports [conversion] for a complete example.
+
+Notable changes:
+- Testing framework switched from Jest to Vite
+- Use of new Node features (e.g. switch from __dirname to import.meta.dirname)
+- Switch to ES Module structure requiring code modifications
+
+### Upgrade dev environment
+
+If you're using `geoprocessing-devcontainer` to develop in a Docker environment, you will need to update this repo and the underlying `geoprocessing-workspace` docker image to the latest.  First, make sure Docker Desktop is running, then:
+
+```bash
+cd geoprocessing-devcontainer
+git pull
+docker pull seasketch/geoprocessing-workspace
+```
+
+You should now be able to start a Docker container shell using the latest image and test that everything is up to date
+
+```bash
+sudo docker run -it --entrypoint /bin/bash seasketch/geoprocessing-workspace
+
+(base) vscode ➜ / $ node -v
+v20.12.1
+(base) vscode ➜ / $ npm -v
+10.5.0
+(base) vscode ➜ / $ gdalinfo --version
+GDAL 3.8.5, released 2024/04/02
+```
+
+Exit back out of this shell when done
+
+The latest version of the `geoprocessing-workspace` will only work with geoprocessing 7.x projects.  This is due to a change in how GDAL produces flatgeobuf files.  If you suddenly see errors of `"Not a FlatGeobuf file"` when trying to read your file, this is likely the reason. In order to continue to develop older 6.x and lower geoprocessing projects you will need to start your devcontainer using the `local-dev-pre-7x` environment.  This is pinned to an older version of the docker image - `seasketch/geoprocessing-workspace:sha-69bb889`
+
+If you're maintaining your own development environment then you should look to have at least the following versions at minimum:
+- Node 20.12.1
+- NPM 10.5.0
+- GDAL 3.5.0
+
+### Upgrade project dependencies
+
+- Upgrade geoprocessing library to the latest 7.x version found on [NPM](https://www.npmjs.com/package/@seasketch/geoprocessing)
+- In your project source codes package.json, review and update `scripts`, `dependencies` and `devDependencies` using [base-project](https://github.com/seasketch/geoprocessing/blob/dev/packages/base-project/package.json) as a guide. Using anything other than the exact version of dependencies found in base-project may have unexpected results.
+- Run `npm install`
+
+### Upgrade package scripts
+
+- Update scripts object to the following:
+
+```json
+{
+  "scripts": {
+    "start-data": "http-server data/dist -c-1",
+    "__test": "TEST_ROOT=$(pwd) geoprocessing test",
+    "test": "start-server-and-test start-data 8080 'npm run __test'",
+    "test:matching": "npm run __test -- -t",
+    "add:template": "geoprocessing add:template",
+    "import:data": "geoprocessing import:data",
+    "reimport:data": "geoprocessing reimport:data",
+    "precalc:data": "start-server-and-test 'http-server data/dist -c-1 -p 8001' http://localhost:8001 precalc:data_",
+    "precalc:data_": "geoprocessing precalc:data",
+    "precalc:data:clean": "geoprocessing precalc:data:clean",
+    "publish:data": "geoprocessing publish:data",
+    "install:scripts": "mkdir -p scripts && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/scripts/* scripts",
+    "translation:install": "npx tsx scripts/translationInstall.ts",
+    "translation:extract": "npx tsx scripts/translationExtract.ts",
+    "translation:publish": "npx tsx src/i18n/bin/publishTerms.ts",
+    "translation:import": "npx tsx src/i18n/bin/importTerms.ts",
+    "translation:sync": "npm run translation:extract && npm run translation:publish && npm run translation:import",
+    "create:function": "geoprocessing create:function",
+    "create:client": "geoprocessing create:client",
+    "create:report": "geoprocessing create:report",
+    "start:client": "geoprocessing start:client",
+    "synth": "geoprocessing synth",
+    "bootstrap": "geoprocessing bootstrap",
+    "deploy": "geoprocessing deploy",
+    "destroy": "geoprocessing destroy",
+    "build": "geoprocessing build:lambda && geoprocessing build:client",
+    "build:client": "geoprocessing build:client",
+    "build:lambda": "geoprocessing build:lambda",
+    "storybook:install": "npx tsx scripts/storybookInstall.ts",
+    "storybook": "geoprocessing storybook",
+    "url": "geoprocessing url",
+    "clear-results": "geoprocessing clear-results",
+    "clear-all-results": "geoprocessing clear-all-results",
+    "prepare": "npm run translation:install"
+  }
+}
+```
+
+### Upgrade project scripts
+
+Update the project `scripts` directory.  This includes replacement of source files to be ESM and Node v20 compliant.  If you have customized any of the scripts, you will need to look at the git changes and figure out how to re-merge your work.
+
+`npm run install:scripts`
+
+### Upgrade translations
+
+Update the project `src/i18n` directory.  This includes update of base translations and replacement of source files to be ESM and Node v20 compliant.  Also switches to using Vite for dynamic import of translations using `import.meta.glob`  If you have customized any of the scripts, you will need to look at the git changes and figure out how to re-merge your work.
+
+`npm run translation:install`
+
+### Update tsconfig.json
+
+Change to the following.  This supports use of ES Module (ESM) structure in your project and use of the ESM runtime by the Node instead of Common JS (CJS).  It also ensures that transpiling from Typescript at `build` time produces ESM code.  This means that geoprocessing functions will run as ESM code in the lambdas and report clients as ESM in the browser.  Modern Javascript from end-to-end.  Also imports 3rd party types for Vite and Vitest for use in project.
+
+```javascript
+{
+  "compilerOptions": {
+    "target": "es2022",               /* Specify ECMAScript target version*/
+    "module": "nodenext",             /* Specify module code generation */
+    "jsx": "react",                   /* Specify JSX code generation */
+    "strict": true,                   /* Enable all strict type-checking options. */
+    "moduleResolution": "nodenext",   /* Specify module resolution strategy */
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@seasketch/geoprocessing/node_modules/@types",
+    ],                                              /* List of folders to include type definitions from. */
+    "types": ["vitest/globals", "vite/client"],     /* Type declaration files to be included in compilation. */
+    "allowSyntheticDefaultImports": true,           /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
+    "forceConsistentCasingInFileNames": true,       /* Disallow inconsistently-cased references to the same file. */
+    "resolveJsonModule": true
+  },
+  "exclude": ["cdk.out", "node_modules"] /* Files to exclude from compilation */
+}
+```
+
+### Add Storybook
+
+Storybook is now run using configuration kept in project space.  This is installed with every new project but to add now just run `npm run storybook:install` to install to the `.storybook` directory.  This command should have been added when you updated your package.json file.
+
+### Convert project to ES Modules
+
+This is the biggest breaking change.  You will need to modify your 
+
+In package.json:
+- Add `"type": "module",`
+
+Then reload your VSCode window to make sure it picks up that your project is now an "ES Module" project.  You can do this with `Cmd-Shift-P` on Mac or `Ctrl-Shift-P` on Windows and then start typing `reload` and select the `Developer: Reload Window` option.  Or just exit and restart the VSCode app as you normally would.
+
+Now update all of your projects source files to be ESM and Node v20 compliant.  VSCode should give you hints along the way, so basically just click through all the source files looking for red squiggle underlined text.  You will focus in the `src` directory.
+  - For each import of a local module (e.g. `import project from ../project`), use a full explicit path and include a `.js` extension on the end, even if you are importing a `.ts` file.  The example would become `import project from ../project/projectClient.js`.
+  - NodeJS when using the ES Module engine now requires explicit paths to code files.  No longer can you import a module from a directory (e.g. `import foo from ./my/directory`) and expect it will look for an index.js file.  You have to change this to`import foo form ./my/directory/index.js`.
+  `__dirname` built-in must be changed to `import.meta.dirname`
+
+### Migrate asset imports
+
+`require` is no longer allowed for importing images and other static assets.  Vite expects you to import the assets [directly](https://vitejs.dev/guide/assets#importing-asset-as-url) as urls.  SizeCard.tsx is one component installed by default with projects that will need to be updated.
+
+Change:
+```typescript
+<img
+  src={require("../assets/img/territorial_waters.png")}
+  style={{ maxWidth: "100%" }}
+/>
+```
+to:
+```typescript
+import watersImgUrl from "../assets/img/territorial_waters.png";
+...
+{<img src={watersImgUrl} style={{ maxWidth: "100%" }} />}
+```
+
+At this point, VSCode will complain about your image import, it doesn't support importing anything other than code and JSON files by default.  The code bundler now used by your project, Vite, knows how to do this however, you just need to load its capabilities by creating a file called `vite-env.d.ts` at the top-level of your project with the following:
+
+```
+/// <reference types="vite/client" />
+// Add Vite types to project
+// https://vitejs.dev/guide/features.html#client-types
+```
+
+### Other Changes
+
+- Change .nvmrc file value to 20
+- Rename babel.config.js to babel.config.cjs.  This babel config is used only by the translation library.
+- update project/projectClient.ts with type assertion syntax
+
+```typescript
+import datasources from "./datasources.json" with { type: "json" };
+import metrics from "./metrics.json" with { type: "json" };
+import precalc from "./precalc.json" with { type: "json" };
+import objectives from "./objectives.json" with { type: "json" };
+import geographies from "./geographies.json" with { type: "json" };
+import basic from "./basic.json" with { type: "json" };
+import projectPackage from "../package.json" with { type: "json" };
+import gp from "../geoprocessing.json" with { type: "json" };
+
+import { ProjectClientBase } from "@seasketch/geoprocessing/client-core";
+
+const projectClient = new ProjectClientBase({
+  datasources,
+  metricGroups: metrics,
+  precalc,
+  objectives,
+  geographies,
+  basic,
+  package: projectPackage,
+  geoprocessing: gp,
+});
+export default projectClient;
+```
+
+### Migrate styled-components
+
+- If you have report components that use styled-components for its styling, you will need to change all code imports of `styled-components` from 
+```typescript
+import styled from "styled-components"
+```
+to use of the named export
+
+```typescript
+import { styled } from "styled-components"
+```
+
+- Also when you run storybook or load your reports in production you may start to see React console warnings about extra attributes being present.
+
+`React does not recognize the rowTotals prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase rowtotals instead. If you accidentally passed it from a parent component, remove it from the DOM element.
+
+The solution is to switch to using `transient` prop names, or component prop names that start with a dollar sign (e.g. `$rowTotals` instead of `rowTotals`).  Styled-components will automatically filter these props out before passing to React to render them as element attributes in the browser.
+  - https://jakemccambley.medium.com/transient-props-in-styled-components-3105f16cb91f
+
+# Stop importing directly from @seasketch/geoprocessing in report clients
+
+- Report client code must no longer import from geoprocessing libraries top level entry point `@seasketch/geoprocessing` or you may see a "require is not defined" error or other errors related to Node specific modules not found.  The solution is to switch from for example:
+```typescript
+import { ProjectClientBase } from "@seasketch/geoprocessing";
+```
+to:
+```typescript
+import { ProjectClientBase } from "@seasketch/geoprocessing/client-core";
+```
+
+The use of the top-level entry point has persisted in some code because the previous Webpack code bundler did some extra magic to not let Node modules be bundled into report client browser code.  The new Vite code bundler does not do this magic and leaves it to you to track your imports.  The geoprocessing library offers both the `client-core` and `client-ui` entry points which should be used.  These should offer everything you need.
 
 ## 6.0 to 6.1
 
@@ -50,15 +288,15 @@ npm update @seasketch/geoprocessing@latest
 - The ProjectClient now takes precalc metrics and geographies as input. Update `project/projectClient.ts` to the following:
 
 ```typescript
-import datasources from "./datasources.json";
-import metrics from "./metrics.json";
-import precalc from "./precalc.json";
-import objectives from "./objectives.json";
-import geographies from "./geographies.json";
-import basic from "./basic.json";
-import projectPackage from "../package.json";
-import gp from "../geoprocessing.json";
-import { ProjectClientBase } from "@seasketch/geoprocessing";
+import datasources from "./datasources.json" with { type: "json" };
+import metrics from "./metrics.json" with { type: "json" };
+import precalc from "./precalc.json" with { type: "json" };
+import objectives from "./objectives.json" with { type: "json" };
+import geographies from "./geographies.json" with { type: "json" };
+import basic from "./basic.json" with { type: "json" };
+import projectPackage from "../package.json" with { type: "json" };
+import gp from "../geoprocessing.json" with { type: "json" };
+import { ProjectClientBase } from "@seasketch/geoprocessing" with { type: "json" };
 
 const projectClient = new ProjectClientBase({
   datasources,

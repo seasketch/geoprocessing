@@ -1,8 +1,8 @@
 import React from "react";
-import { RbcsObjective, RbcsMpaProtectionLevel } from "../types";
-import { OBJECTIVE_YES, OBJECTIVE_NO } from "../../types";
-import { percentWithEdge } from "../../helpers";
-import { ObjectiveStatus } from "../../components";
+import { RbcsObjective, RbcsMpaProtectionLevel } from "../types.js";
+import { OBJECTIVE_YES, OBJECTIVE_NO } from "../../types/index.js";
+import { percentWithEdge } from "../../helpers/index.js";
+import { ObjectiveStatus } from "../../components/index.js";
 
 export type RbcsMpaObjectiveRenderMsgFunction = (
   objective: RbcsObjective,

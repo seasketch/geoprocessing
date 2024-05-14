@@ -2,41 +2,52 @@ import {
   GeoprocessingHandlerOptions,
   Sketch,
   SketchCollection,
+  Geometry,
   Feature,
   FeatureCollection,
   Polygon,
   LineString,
   Point,
-  GeoprocessingRequest,
   JSONValue,
   GeoprocessingRequestModel,
-} from "../types";
+} from "../types/index.js";
 import TaskModel, {
   commonHeaders,
   GeoprocessingTask,
   GeoprocessingTaskStatus,
-} from "./tasks";
-import { fetchGeoJSON } from "../datasources/seasketch";
+} from "./tasks.js";
+import { fetchGeoJSON } from "../datasources/seasketch.js";
 import {
   Context,
   APIGatewayProxyResult,
   APIGatewayProxyEvent,
 } from "aws-lambda";
-import { DynamoDB, Lambda as LambdaClient } from "aws-sdk";
+import awsSdk from "aws-sdk";
 import { unescape } from "querystring";
+import WebSocket from "ws";
 
-const Lambda = new LambdaClient();
-const Db = new DynamoDB.DocumentClient();
-const WebSocket = require("ws");
+const Lambda = new awsSdk.Lambda();
+const Db = new awsSdk.DynamoDB.DocumentClient();
 
-const NODE_ENV = process.env.NODE_ENV;
-const TASKS_TABLE = process.env.TASKS_TABLE;
-const ESTIMATES_TABLE = process.env.ESTIMATES_TABLE;
-const ASYNC_REQUEST_TYPE = process.env.ASYNC_REQUEST_TYPE;
-const RUN_HANDLER_FUNCTION_NAME = process.env.RUN_HANDLER_FUNCTION_NAME;
-const WSS_REF = process.env.WSS_REF || "";
-const WSS_REGION = process.env.WSS_REGION || "";
-const WSS_STAGE = process.env.WSS_STAGE || "";
+let NODE_ENV = "";
+let TASKS_TABLE = "";
+let ESTIMATES_TABLE = "";
+let ASYNC_REQUEST_TYPE = "";
+let RUN_HANDLER_FUNCTION_NAME = "";
+let WSS_REF = "";
+let WSS_REGION = "";
+let WSS_STAGE = "";
+
+if (process) {
+  NODE_ENV = process.env.NODE_ENV || "";
+  TASKS_TABLE = process.env.TASKS_TABLE || "";
+  ESTIMATES_TABLE = process.env.ESTIMATES_TABLE || "";
+  ASYNC_REQUEST_TYPE = process.env.ASYNC_REQUEST_TYPE || "";
+  RUN_HANDLER_FUNCTION_NAME = process.env.RUN_HANDLER_FUNCTION_NAME || "";
+  WSS_REF = process.env.WSS_REF || "";
+  WSS_REGION = process.env.WSS_REGION || "";
+  WSS_STAGE = process.env.WSS_STAGE || "";
+}
 
 /**
  * Manages the task of executing a geoprocessing function within an AWS Lambda function.
@@ -54,7 +65,7 @@ const WSS_STAGE = process.env.WSS_STAGE || "";
  */
 export class GeoprocessingHandler<
   T = JSONValue,
-  G = Polygon | LineString | Point,
+  G extends Geometry = Polygon | LineString | Point,
   P extends Record<string, JSONValue> = Record<string, JSONValue>
 > {
   func: (
@@ -63,8 +74,8 @@ export class GeoprocessingHandler<
       | FeatureCollection<G>
       | Sketch<G>
       | SketchCollection<G>,
-    /** Additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
-    extraParams: P
+    /** Optional additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
+    extraParams?: P
   ) => Promise<T>;
   options: GeoprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
@@ -230,27 +241,29 @@ export class GeoprocessingHandler<
     ) {
       // Execute the gp function immediately and if sync executionMode then resolve a promise with complete task result
       // if async then send socket message with task id for client to get result
-      process.removeAllListeners("uncaughtException");
-      process.removeAllListeners("unhandledRejection");
-      process.on("uncaughtException", async (error) => {
-        console.error(error);
-        await Tasks.fail(
-          task,
-          error?.message?.toString() ||
-            error?.toString() ||
-            "Uncaught exception"
-        );
-        process.exit();
-      });
+      if (process) {
+        process.removeAllListeners("uncaughtException");
+        process.removeAllListeners("unhandledRejection");
+        process.on("uncaughtException", async (error) => {
+          console.error(error);
+          await Tasks.fail(
+            task,
+            error?.message?.toString() ||
+              error?.toString() ||
+              "Uncaught exception"
+          );
+          process.exit();
+        });
 
-      process.on("unhandledRejection", async (error) => {
-        console.error(error);
-        await Tasks.fail(
-          task,
-          error?.toString() || "Unhandled promise rejection"
-        );
-        process.exit();
-      });
+        process.on("unhandledRejection", async (error) => {
+          console.error(error);
+          await Tasks.fail(
+            task,
+            error?.toString() || "Unhandled promise rejection"
+          );
+          process.exit();
+        });
+      }
       try {
         const featureSet = await fetchGeoJSON<G>(request);
         const extraParams = request.extraParams as unknown as P;

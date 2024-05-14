@@ -1,16 +1,22 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
-import { Polygon, MultiPolygon, Sketch, SketchCollection } from "../types";
-import { genSampleSketch } from "../helpers";
+import { describe, test, expect } from "vitest";
+import {
+  Polygon,
+  MultiPolygon,
+  Sketch,
+  SketchCollection,
+} from "../types/index.js";
+import { genSampleSketch } from "../helpers/index.js";
 import parseGeoraster from "georaster";
-import { overlapRasterClass } from "./overlapRasterClass";
-import { DataClass } from "../types";
-import { classIdMapping } from "../datasources";
+import { overlapRasterClass } from "./overlapRasterClass.js";
+import { DataClass } from "../types/index.js";
+import { classIdMapping } from "../datasources/index.js";
 import bbox from "@turf/bbox";
 import { featureCollection } from "@turf/helpers";
-import fix from "../testing/fixtures/sketches";
+import fix from "../testing/fixtures/sketches.js";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]

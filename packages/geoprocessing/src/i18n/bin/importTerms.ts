@@ -5,7 +5,7 @@ import fs from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
 import config from "../config.json";
-import { Translations } from "./publishTerms";
+import { Translations } from "./publishTerms.js";
 
 const post = promisify(request.post);
 const get = promisify(request.get);
@@ -48,7 +48,7 @@ const get = promisify(request.get);
   console.log(
     `Importing strings with context '${config.remoteContext}' to namespace '${config.localNamespace}'`
   );
-  const { statusCode, body } = await post({
+  const { body } = await post({
     url: `https://api.poeditor.com/v2/languages/list`,
     form: {
       api_token: process.env.POEDITOR_API_TOKEN,
@@ -93,7 +93,7 @@ const get = promisify(request.get);
     const translationsResponse = await get(data.result.url);
     const remoteTranslations = JSON.parse(translationsResponse.body);
 
-    const localePath = path.join(__dirname, "../lang", curLang.code);
+    const localePath = path.join(import.meta.dirname, "../lang", curLang.code);
 
     const localTranslationsPath = `${localePath}/${config.localNamespace}.json`;
     const localTranslations: Translations = (() => {

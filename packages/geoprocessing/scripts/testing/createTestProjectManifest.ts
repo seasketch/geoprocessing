@@ -1,17 +1,17 @@
-import { generateManifest } from "../build/generateManifest";
+import { generateManifest } from "../build/generateManifest.js";
 import {
   Package,
   Feature,
   FeatureCollection,
   Point,
   GeoprocessingJsonConfig,
-} from "../../src/types";
-import { PreprocessingHandler, GeoprocessingHandler } from "../../src";
-import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src";
+} from "../../src/types/index.js";
+import { PreprocessingHandler, GeoprocessingHandler } from "../../src/index.js";
+import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src/index.js";
 import { point } from "@turf/helpers";
-import { PreprocessingBundle, GeoprocessingBundle } from "../types";
-import { Manifest } from "../manifest";
-import { TestComponentTypes } from "./types";
+import { PreprocessingBundle, GeoprocessingBundle } from "../types.js";
+import { Manifest } from "../manifest.js";
+import { TestComponentTypes } from "./types.js";
 
 /**
  * Creates project core assets in-memory, with the components requested, and returns the resulting manifest

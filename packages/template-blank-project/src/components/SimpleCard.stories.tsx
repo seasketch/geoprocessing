@@ -1,10 +1,10 @@
 import React from "react";
-import { SimpleCard } from "./SimpleCard";
+import { SimpleCard } from "./SimpleCard.js";
 import {
   createReportDecorator,
   sampleSketchReportContextValue,
 } from "@seasketch/geoprocessing/client-ui";
-import Translator from "../components/TranslatorAsync";
+import Translator from "../components/TranslatorAsync.js";
 
 const contextValue = sampleSketchReportContextValue({
   visibleLayers: [],

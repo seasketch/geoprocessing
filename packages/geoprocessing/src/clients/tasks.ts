@@ -1,11 +1,11 @@
-import { GeoprocessingTask } from "../aws/tasks";
+import { GeoprocessingTask } from "../aws/tasks.js";
 import {
   GeoprocessingRequest,
   GeoprocessingRequestParams,
   SketchProperties,
-} from "../types";
+} from "../types/index.js";
 import md5 from "spark-md5";
-import canonicalize from "canonicalize";
+import canonicalize from "../util/canonicalize.js";
 
 /**
  * Generates a cache key for a geoprocessing request, given sketch properties and optional extra parameters (must be JSON compatible object)

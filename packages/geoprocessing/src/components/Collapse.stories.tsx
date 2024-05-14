@@ -1,6 +1,7 @@
 import React from "react";
-import { Collapse } from "../components/Collapse";
-import { ReportDecorator, Card } from ".";
+import { Collapse } from "../components/Collapse.js";
+import { Card } from "./Card.js";
+import { ReportDecorator } from "./storybook/ReportDecorator.jsx";
 
 export default {
   component: Collapse,

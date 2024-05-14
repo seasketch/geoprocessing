@@ -1,12 +1,12 @@
 /**
- * @jest-environment node
- * @group smoke
+ * @vitest-environment node
  */
-import Handler from "./simpleFunction";
+import Handler from "./simpleFunction.js";
 import {
   getExamplePolygonSketchAll,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
+import { describe, test, expect } from "vitest";
 
 const simpleFunction = Handler.func;
 

@@ -4,11 +4,10 @@ import {
   GeoprocessingRequestModel,
   Sketch,
   SketchCollection,
-} from "../types";
-import { GeoprocessingRequest } from "../types";
-import isHostedOnLambda from "../util/isHostedOnLambda";
-import "../util/fetchPolyfill";
-
+  Geometry,
+} from "../types/index.js";
+import { GeoprocessingRequest } from "../types/index.js";
+import isHostedOnLambda from "./isHostedOnLambda.js";
 // Seasketch client
 
 /**
@@ -16,7 +15,7 @@ import "../util/fetchPolyfill";
  * @param request
  * @returns the JSON with geometry type optionally specified by request
  */
-export const fetchGeoJSON = async <G>(
+export const fetchGeoJSON = async <G extends Geometry>(
   request: GeoprocessingRequest<G> | GeoprocessingRequestModel<G>
 ): Promise<
   Feature<G> | FeatureCollection<G> | Sketch<G> | SketchCollection<G>

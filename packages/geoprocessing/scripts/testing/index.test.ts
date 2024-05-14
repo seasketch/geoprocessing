@@ -16,7 +16,7 @@ import {
   getExamplePolygonAllSketchAll,
   getExampleMultiPolygonSketches,
   getExamplePolygonAllSketches,
-} from "./index";
+} from "./index.js";
 
 // examples are loaded from fixture folder in packages/geoprocessing/examples
 describe("Example load utilities", () => {

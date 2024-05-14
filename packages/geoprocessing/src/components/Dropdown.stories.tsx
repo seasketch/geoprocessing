@@ -1,7 +1,7 @@
 import React from "react";
-import Card from "./Card";
-import { SimpleButton } from "./buttons/SimpleButton";
-import Dropdown from "./Dropdown";
+import Card from "./Card.js";
+import { SimpleButton } from "./buttons/SimpleButton.js";
+import Dropdown from "./Dropdown.js";
 
 export default {
   component: Card,

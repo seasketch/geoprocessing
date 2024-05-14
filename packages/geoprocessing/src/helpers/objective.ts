@@ -3,11 +3,10 @@ import {
   ObjectiveId,
   ClassificationId,
   OBJECTIVE_YES,
-} from "../types/objective";
-import { groupBy } from "./groupBy";
-import { keyBy } from "./keyBy";
+} from "../types/objective.js";
+import { keyBy } from "./keyBy.js";
 
-import { getKeys } from "./ts";
+import { getKeys } from "./ts.js";
 
 /** find and return objectives from passed objectives */
 export const getObjectiveById = (

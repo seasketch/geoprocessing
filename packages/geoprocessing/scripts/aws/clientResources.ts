@@ -66,7 +66,9 @@ export const createClientResources = (stack: GeoprocessingStack) => {
      * Runs cloudfront invalidation on changes
      */
     new BucketDeployment(stack, "ClientBucketDeploy", {
-      sources: [Source.asset(path.join(stack.props.projectPath, ".build-web"))],
+      sources: [
+        Source.asset(path.join(stack.props.projectPath, ".build-web", "dist")),
+      ],
       destinationBucket: clientBucket,
       distribution: clientDistribution,
       distributionPaths: ["/*"],

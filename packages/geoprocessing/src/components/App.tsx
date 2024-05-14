@@ -18,9 +18,6 @@ import { ReportTextDirection } from "./i18n/ReportTextDirection.js";
 const searchParams = new URLSearchParams(window.location.search);
 const service = searchParams.get("service");
 const frameId = searchParams.get("frameId") || window.name;
-if (!service) {
-  throw new Error("App must be loaded with `service` query string parameter");
-}
 
 export interface ReportContextState {
   clientName: string;
@@ -37,9 +34,14 @@ export interface AppProps {
 }
 
 export const App = ({ reports }: AppProps) => {
+  if (!service) {
+    throw new Error("App must be loaded with `service` query string parameter");
+  }
+
   // Maintain report context in app state
-  const [reportContext, setReportContext] =
-    useState<ReportContextState | null>(null);
+  const [reportContext, setReportContext] = useState<ReportContextState | null>(
+    null
+  );
   const [initialized, setInitialized] = useState(false);
 
   /**
@@ -169,7 +171,7 @@ export const App = ({ reports }: AppProps) => {
         }}
       >
         <ReportTextDirection>
-          <Suspense fallback={<div>Loading2...</div>}>
+          <Suspense fallback={<div>Loading...</div>}>
             <Report />
           </Suspense>
         </ReportTextDirection>

@@ -18,7 +18,7 @@ import {
   toNullSketchArray,
   toPercentMetric,
 } from "@seasketch/geoprocessing/client-core";
-import project from "../../project";
+import project from "../../project/projectClient.js";
 
 /**
  * OverlapCard component

@@ -16,3 +16,4 @@ test-projects
 **/.env
 packages/base-project/src/i18n
 packages/template-*/src/i18n
+.story-cache

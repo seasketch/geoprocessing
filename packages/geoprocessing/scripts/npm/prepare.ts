@@ -14,10 +14,16 @@ const distPath = path.join(import.meta.dirname, "..", "..", "dist");
 // console.log("distTemplatesPath", distTemplatesPath);
 
 /**
- * Copy assets to dist for project use. e.g. project start-storybook looks for img assets in dist
+ * Copy assets to dist for project use. e.g. project storybook looks for img assets in dist
  */
 async function bundleAssets() {
-  const assetsPath = path.join(import.meta.dirname, "..", "..", "src", "assets");
+  const assetsPath = path.join(
+    import.meta.dirname,
+    "..",
+    "..",
+    "src",
+    "assets"
+  );
   const distAssetsPath = path.join(distPath, "src", "assets");
 
   // Delete old assets if they exist

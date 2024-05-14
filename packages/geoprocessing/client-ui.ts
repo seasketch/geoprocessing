@@ -1,7 +1,7 @@
 /**
  * `client-ui` provides all of the core React UI components for geoprocessing
  * projects, including the building blocks for creating custom UI components
- * needed by a project. Run the `start-storybook` command to explore them
+ * needed by a project. Run the `storybook` command to explore them
  * interactively.
  * @packageDocumentation
  */

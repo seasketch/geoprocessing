@@ -9,7 +9,7 @@
     "allowSyntheticDefaultImports": true,  /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     "resolveJsonModule": true,
-    "types": ["vitest/globals"],                           /* Type declaration files to be included in compilation. */
+    "types": ["vitest/globals", "vite/client"],                           /* Type declaration files to be included in compilation. */
   },
   "exclude": ["cdk.out", "node_modules"]
 }

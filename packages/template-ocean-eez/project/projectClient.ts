@@ -7,12 +7,12 @@ import basic from "./basic.json" with { type: "json" };
 import projectPackage from "../package.json" with { type: "json" };
 import gp from "../geoprocessing.json" with { type: "json" };
 
-import { ProjectClientBase } from "@seasketch/geoprocessing";
+import { ProjectClientBase } from "@seasketch/geoprocessing/client-core";
 
 const projectClient = new ProjectClientBase({
   datasources,
   metricGroups: metrics,
-  precalc: precalc,
+  precalc,
   objectives,
   geographies,
   basic,

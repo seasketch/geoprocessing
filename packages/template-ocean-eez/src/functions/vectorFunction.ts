@@ -12,7 +12,7 @@ import {
   overlapFeatures,
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
-import project from "../../project";
+import project from "../../project/projectClient.js";
 import {
   Metric,
   ReportResult,
@@ -20,7 +20,7 @@ import {
   sortMetrics,
   toNullSketch,
 } from "@seasketch/geoprocessing/client-core";
-import { clipToGeography } from "../util/clipToGeography";
+import { clipToGeography } from "../util/clipToGeography.js";
 import { fgbFetchAll } from "@seasketch/geoprocessing/dataproviders";
 
 /**

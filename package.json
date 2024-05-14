@@ -29,8 +29,8 @@
     "vitest": "^1.5.2"
   },
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.5.0"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "scripts": {
     "clean": "git clean -fdx",
@@ -42,7 +42,7 @@
     "publish:alpha:canary": "CI=1 lerna publish --force-publish --canary --preid alpha --dist-tag=alpha",
     "publish:experimental:canary": "BRANCH_NAME=`git rev-parse --symbolic-full-name --abbrev-ref HEAD`; if [ $BRANCH_NAME != \"dev\" -a $BRANCH_NAME != \"main\" ] ; then CI=1 lerna publish --force-publish --canary --preid experimental-${BRANCH_NAME} --dist-tag=experimental-${BRANCH_NAME} ; fi",
     "e2e_test": "./packages/geoprocessing/scripts/testing/initTestProjects.mjs",
-    "prepare": "husky",
+    "prepare": "npx husky",
     "translation:publish": "npx tsx packages/geoprocessing/src/i18n/bin/publishTerms.ts",
     "translation:import": "npx tsx packages/geoprocessing/src/i18n/bin/importTerms.ts",
     "translation:sync": "npm run translation:extract && npm run translation:publish && npm run translation:import",

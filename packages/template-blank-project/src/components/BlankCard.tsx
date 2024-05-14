@@ -6,7 +6,7 @@ import {
   useSketchProperties,
 } from "@seasketch/geoprocessing/client-ui";
 import { GeogProp, ReportResult } from "@seasketch/geoprocessing/client-core";
-import project from "../../project";
+import project from "../../project/projectClient.js";
 
 /**
  * BlankCard component

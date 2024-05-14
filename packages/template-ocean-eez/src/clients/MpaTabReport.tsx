@@ -35,6 +35,7 @@ const BaseReport = () => {
   );
 };
 
+// Named export loaded by storybook
 export const MpaTabReport = () => {
   // Translator must be in parent FunctionComponent in order for ReportClient to use useTranslate hook
   return (
@@ -43,3 +44,6 @@ export const MpaTabReport = () => {
     </Translator>
   );
 };
+
+// Default export lazy-loaded by top-level ReportApp
+export default MpaTabReport;

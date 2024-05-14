@@ -27,11 +27,14 @@ const BaseReport = () => {
   );
 };
 
+// Named export loaded by storybook
 export const TabReport = () => {
-  // Translator must be in parent FunctionComponent to have access to useTranslate hook
   return (
     <Translator>
       <BaseReport />
     </Translator>
   );
 };
+
+// Default export lazy-loaded by top-level ReportApp
+export default TabReport;

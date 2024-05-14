@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import ResultsCard from "./ResultsCard.js";
+import { createReportDecorator } from "./storybook/ReportDecorator.js";
 import {
-  createReportDecorator,
-} from "./storybook/ReportDecorator.js";
-import { ReportContext, sampleSketchReportContextValue } from "../context/index.js";
+  ReportContext,
+  sampleSketchReportContextValue,
+} from "../context/index.js";
 import Skeleton from "./Skeleton.js";
-import { LayerToggle } from "../../client-ui.js";
+import { LayerToggle } from "./LayerToggle.js";
 import { Collapse } from "./Collapse.js";
 import fixtures from "../testing/fixtures/index.js";
 import DataDownload from "./DataDownload.js";

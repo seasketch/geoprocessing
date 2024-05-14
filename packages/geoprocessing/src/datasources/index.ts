@@ -5,3 +5,4 @@ export * from "./global.js";
 export * from "./formats.js";
 export * from "./config.js";
 export * from "./global.js";
+export * from "./pathUtils.js";

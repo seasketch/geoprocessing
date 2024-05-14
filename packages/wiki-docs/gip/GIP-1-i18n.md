@@ -241,7 +241,7 @@ If your project needs to add a new language that is not already supported, follo
 
 ## Test report translations
 
-When you run `start-storybook`, the story displayed will include a language switcher. If you created your project using a starter template, strings that are displayed in the user interface are already pre-translated and the top-level report client already includes a story with a `Translator` component. You should be able to change the language and the interface will update for all supported languages.
+When you run `storybook`, the story displayed will include a language switcher. If you created your project using a starter template, strings that are displayed in the user interface are already pre-translated and the top-level report client already includes a story with a `Translator` component. You should be able to change the language and the interface will update for all supported languages.
 
 ![Language Switcher](img/StoryTranslation.png "Language Switcher")
 

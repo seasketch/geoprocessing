@@ -11,7 +11,7 @@
 - `npm install` - installs dependencies and runs postinstall scripts for all packages using `lerna bootstrap`
 - `npm test` - runs test suite for all packages
 - `npm run clean` - clean up build artifacts by recursively removing files and directories not under version control including git ignored files.
-- `npm run start-storybook` - start the storybook server and opn UI component library in your browser.  Auto-refreshes on update.
+- `npm run storybook` - start the storybook server and opn UI component library in your browser.  Auto-refreshes on update.
 ...and many more listed below
 
 The geoprocessing code repository is setup as a "monorepo" managed by [Lerna](https://github.com/lerna/lerna).  It contains multiple `packages` including the core `geoprocessing` library, and then multiple user-installable `templates`.  These templates are bundled into the core library at build time.
@@ -167,7 +167,7 @@ As you build report functions, using console logging or inspecting with a VSCode
 
 # Storybook components
 
-The framework has it's own storybook project that can be launched using `npm run start-storybook`. These components and their stories can be found under `packages/geoprocessing/src/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.
+The framework has it's own storybook project that can be launched using `npm run storybook`. These components and their stories can be found under `packages/geoprocessing/src/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.
 
 # Make and Test Modifications
 

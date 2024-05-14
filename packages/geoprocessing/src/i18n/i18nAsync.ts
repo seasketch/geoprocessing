@@ -6,11 +6,9 @@ import languages from "./supported.js";
 const defaultLang = "en";
 
 /**
- * Returns an instance of i18n that lazy loads translations using dynamic
- * import from passed langPath, defaults to './lang' which gp projects will
- * have by default.  This function will save bandwidth if there
- * are lots of translations and languages to support, but it takes time
- * to load and is more sophisticated, using a webpack magic chunk comment.
+ * Returns an instance of i18n that lazy loads translations using passed langPath,
+ * defaults to './lang' which gp projects will have by default.
+ * JSON language modules are bundled using Vite's glob import.
  *
  * Each call to this function returns an independent instance allowing
  * for multiple instances of i18n to be used in the same application.
@@ -32,6 +30,10 @@ export function createI18nAsyncInstance(
 ) {
   const { langPath = "./lang", baseLangPath = "./baseLang" } = options;
   const instance = createInstance();
+
+  const baseLangModules = import.meta.glob(`./baseLang/*/translation.json`);
+  const langModules = import.meta.glob(`./lang/*/translation.json`);
+
   instance
     .use({
       type: "backend",
@@ -51,44 +53,33 @@ export function createI18nAsyncInstance(
 
         const isDefault =
           language.toLowerCase() === "en" || /en-/i.test(language);
+
+        const langToLoad = isDefault ? defaultLang : curLanguage;
+
         (async () => {
           // Load translations
           let baseLangResources = {};
           try {
-            const { default: data } = await import(
-              `${baseLangPath}/${
-                isDefault ? defaultLang : curLanguage
-              }/${namespace}.json`, {
-                with: { type: 'json' }
-              }
-            );
-            baseLangResources = data
+            const baseLangToLoadPath = `${baseLangPath}/${langToLoad}/${namespace}.json`;
+            const curModule = baseLangModules[baseLangToLoadPath];
+            baseLangResources = (await curModule()) as Record<string, string>;
           } catch (error: unknown) {
-            console.info(
-              `Warning: failed to find base lang resource.  This is expected if you are loading the core geoprocessing library directly (storybook) instead of a GP project.`
-            );
+            console.info(`Warning: failed to find base lang resource.`);
           }
-          // console.log("baseLangResources", baseLangResources);
+          // console.log("baseLangResourcez", baseLangResources);
 
           let langResources = {};
           if (langPath !== undefined) {
             try {
               if (!isDefault) {
-                const { default: data } = await import(
-                  `${langPath}/${
-                    isDefault ? defaultLang : curLanguage
-                  }/${namespace}.json`, {
-                    with: { type: 'json' }
-                  }
-                );
-                langResources = data
+                const langToLoadPath = `${langPath}/${langToLoad}/${namespace}.json`;
+                const curModule = langModules[langToLoadPath];
+                langResources = (await curModule()) as Record<string, string>;
               } else {
-                langResources = {}
+                langResources = {};
               }
             } catch (error: unknown) {
-              console.info(
-                `Warning: failed to find lang resource.`
-              );
+              console.info(`Warning: failed to find lang resource.`);
             }
           }
           // console.log("langResources", langResources);

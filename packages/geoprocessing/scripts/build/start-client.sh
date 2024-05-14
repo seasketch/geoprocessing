@@ -16,6 +16,6 @@ fi
 
 cd "$GP_PATH"
 
-ANALYZE=$ANALYZE NOMINIFY=$NOMINIFY npx tsx scripts/build/startClient.ts
+NOMINIFY=$NOMINIFY npx tsx scripts/build/startClient.ts
 
 echo ""

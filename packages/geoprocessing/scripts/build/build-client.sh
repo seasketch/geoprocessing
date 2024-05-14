@@ -16,7 +16,7 @@ fi
 
 cd "$GP_PATH"
 
-ANALYZE=$ANALYZE NOMINIFY=$NOMINIFY npx tsx scripts/build/buildClient.ts
+NOMINIFY=$NOMINIFY npx tsx scripts/build/buildClient.ts
 cp ./src/assets/favicon.ico $PROJECT_PATH/.build-web/dist/assets
 
 echo ""

@@ -4,9 +4,10 @@ import fs from "fs-extra";
 import path from "path";
 import chalk from "chalk";
 import camelcase from "camelcase";
-import { GeoprocessingJsonConfig } from "../../src/types";
+import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import pascalcase from "pascalcase";
-import { getBlankProjectPath } from "../util/getPaths";
+import { getBlankProjectPath } from "../util/getPaths.js";
+import { pathToFileURL } from "url";
 
 async function createClient() {
   const answers = await inquirer.prompt([
@@ -38,7 +39,8 @@ async function createClient() {
   await makeClient(answers, true, "");
 }
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  // module was not imported but called directly
   createClient();
 }
 
@@ -152,7 +154,7 @@ export async function makeClient(
     console.log(chalk.blue(`\nGeoprocessing client initialized`));
     console.log(`\nNext Steps:
     * Update your report client in ${`${projectClientPath}/${options.title}.tsx`} and ${`${projectComponentPath}/${options.title}Card.tsx`}
-    * View your report client using 'npm start-storybook' with smoke test output for all geoprocessing functions
+    * View your report client using 'npm run storybook' with smoke test output for all geoprocessing functions
   `);
   }
 }

@@ -576,14 +576,14 @@ In order to create and test out the functions and report clients installed with 
 `genRandomSketch` - generates a random Sketch polygon within the extent of your planning area, which are most commonly used as input to geoprocessing functions. Run it without any arguments to generate a single Sketch polygon in the `examples/sketches` directory of your project. Run it with an argument of `10` and it will generate a SketchCollection with 10 random Sketch polygons.
 
 ```bash
-npx ts-node scripts/genRandomSketch.ts
-npx ts-node scripts/genRandomSketch.ts 10
+npx tsx scripts/genRandomSketch.ts
+npx tsx scripts/genRandomSketch.ts 10
 ```
 
 `genRandomFeature` - generates random Feature Polygons within the extent of your planning area, which are most commonly used as input to preprocessing functions. Run it without any arguments to generate a single Sketch polygon in the `examples/features` directory of your project.
 
 ```bash
-npx ts-node scripts/genRandomFeature.ts
+npx tsx scripts/genRandomFeature.ts
 ```
 
 ### Differences
@@ -1252,7 +1252,7 @@ If you've used template-ocean-eez and selected an EEZ, the default geography is 
 You can view the results of your smoke tests using Storybook. It's already configured to load all of the smoke test output for each story.
 
 ```bash
-npm run start-storybook
+npm run storybook
 ```
 
 Check out [advanced storybook usage](#advanced-storybook-usage) when necessary.
@@ -1632,7 +1632,7 @@ Geoprocessing client initialized
 
 Next Steps:
     * Update your client definition in src/clients/ReefReport.tsx
-    * View your report client using 'npm start-storybook' with smoke test output for all geoprocessing functions
+    * View your report client using 'npm storybook' with smoke test output for all geoprocessing functions
 ```
 
 Assuming you named your client the default `SimpleReport`, it will have been been added to `geoprocessing.json` in the `clients` section. A `SimpleReport.tsx` file will have been added to `src/clients` folder. It is responsible for rendering your new `SimpleCard` component from the `src/components` folder and wrapping it in a language `Translator`. Think of the Card component as one section of a report. It executes a geoprocessing function and renders the results in a way that is readable to the user. You can add one or more Cards to your Report client. If your report gets too long, you can split it into multiple ReportPages. See the [TabReport](https://github.com/seasketch/geoprocessing/blob/dev/packages/template-blank-project/src/clients/TabReport.tsx) example of how to add a `SegmentControl` with multiple pages.

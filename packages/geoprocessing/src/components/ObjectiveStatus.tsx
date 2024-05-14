@@ -4,8 +4,8 @@ import {
   XCircleFill,
   QuestionCircleFill,
 } from "@styled-icons/bootstrap";
-import { ObjectiveAnswer } from "../types/objective";
-import styled from "styled-components";
+import { ObjectiveAnswer } from "../types/objective.js";
+import { styled } from "styled-components";
 
 export interface ObjectiveStatusProps {
   status: ObjectiveAnswer;

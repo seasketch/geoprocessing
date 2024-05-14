@@ -1,28 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import {
   SeaSketchReportingMessageEvent,
   SeaSketchReportingVisibleLayersChangeEvent,
   SeaSketchReportingToggleLayerVisibilityEvent,
   SeaSketchReportingToggleLanguageEvent,
-} from "../types/service";
+} from "../types/service.js";
 
-import { SketchProperties } from "../types/sketch";
-import { ReportContext } from "../context";
-import ReactDOM from "react-dom";
+import { SketchProperties } from "../types/sketch.js";
+import { ReportContext } from "../context/index.js";
 import {
   seaSketchReportingMessageEventType,
   seaSketchReportingVisibleLayersChangeEvent,
   seaSketchReportingLanguageChangeEvent,
-} from "../helpers/service";
-import { ReportTextDirection } from "./i18n/ReportTextDirection";
+} from "../helpers/service.js";
+import { ReportTextDirection } from "./i18n/ReportTextDirection.js";
 
-const REPORTS = require("./client-loader");
 const searchParams = new URLSearchParams(window.location.search);
 const service = searchParams.get("service");
 const frameId = searchParams.get("frameId") || window.name;
-if (!service) {
-  throw new Error("App must be loaded with `service` query string parameter");
-}
 
 export interface ReportContextState {
   clientName: string;
@@ -34,10 +29,19 @@ export interface ReportContextState {
   toggleLayerVisibility: (layerId: string) => void;
 }
 
-const App = () => {
+export interface AppProps {
+  reports: Record<string, React.LazyExoticComponent<() => React.JSX.Element>>;
+}
+
+export const App = ({ reports }: AppProps) => {
+  if (!service) {
+    throw new Error("App must be loaded with `service` query string parameter");
+  }
+
   // Maintain report context in app state
-  const [reportContext, setReportContext] =
-    useState<ReportContextState | null>(null);
+  const [reportContext, setReportContext] = useState<ReportContextState | null>(
+    null
+  );
   const [initialized, setInitialized] = useState(false);
 
   /**
@@ -158,15 +162,7 @@ const App = () => {
   }, [initialized, reportContext]);
 
   if (reportContext) {
-    const Report = REPORTS[reportContext.clientName];
-    if (!Report)
-      throw new Error(
-        `Report client ${
-          reportContext.clientName
-        } not found in bundle.  Did you forget to add it to geoprocessing.json? Options are ${Object.keys(
-          REPORTS
-        ).join(", ")}`
-      );
+    const Report = reports[reportContext.clientName];
     return (
       <ReportContext.Provider
         value={{
@@ -175,7 +171,9 @@ const App = () => {
         }}
       >
         <ReportTextDirection>
-          <Report />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Report />
+          </Suspense>
         </ReportTextDirection>
       </ReportContext.Provider>
     );
@@ -184,4 +182,4 @@ const App = () => {
   }
 };
 
-ReactDOM.render(<App />, document.body);
+export default App;

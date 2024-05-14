@@ -1,8 +1,7 @@
 /**
- * @jest-environment node
- * @group smoke
+ * @vitest-environment node
  */
-import handler, { clipToLand } from "./clipToLand";
+import handler, { clipToLand } from "./clipToLand.js";
 import { polygonPreprocessorSmokeTest } from "@seasketch/geoprocessing/scripts/testing";
 
 polygonPreprocessorSmokeTest(clipToLand, handler.options.title, {

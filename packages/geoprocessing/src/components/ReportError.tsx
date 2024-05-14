@@ -1,6 +1,6 @@
 import React from "react";
-import Card from "./Card";
-import styled from "styled-components";
+import Card from "./Card.js";
+import { styled } from "styled-components";
 import { useTranslation } from "react-i18next";
 
 // styled-components are needed here to use the ::before pseudo selector

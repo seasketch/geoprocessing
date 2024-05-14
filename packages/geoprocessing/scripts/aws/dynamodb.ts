@@ -1,7 +1,7 @@
-import { GeoprocessingStack } from "./GeoprocessingStack";
+import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import { RemovalPolicy } from "aws-cdk-lib";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
-import { GpDynamoTables } from "./types";
+import { GpDynamoTables } from "./types.js";
 import { Function } from "aws-cdk-lib/aws-lambda";
 
 /**

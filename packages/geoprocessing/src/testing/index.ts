@@ -1,2 +1,2 @@
-export * from "./testWithinPerc";
-export { default as fixtures } from "./fixtures";
+export * from "./testWithinPerc.js";
+export { default as fixtures } from "./fixtures/index.js";

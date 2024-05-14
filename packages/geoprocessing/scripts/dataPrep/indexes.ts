@@ -1,6 +1,6 @@
-import { BBox } from "../../src/types";
+import { BBox } from "../../src/types/index.js";
 import Flatbush from "flatbush";
-import expand from "./expand";
+import expand from "./expand.js";
 
 export interface CompositeIndexDetails {
   length: number;

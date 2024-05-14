@@ -1,1 +1,1 @@
-export * from "./WatersDiagram";
+export * from "./WatersDiagram.js";

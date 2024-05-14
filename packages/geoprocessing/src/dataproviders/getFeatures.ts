@@ -2,16 +2,16 @@ import {
   isExternalVectorDatasource,
   isInternalVectorDatasource,
   VectorDataSource,
-} from "../datasources";
-import { fgbFetchAll } from "./flatgeobuf";
+} from "../datasources/index.js";
+import { fgbFetchAll } from "./flatgeobuf.js";
 import {
   ExternalVectorDatasource,
   InternalVectorDatasource,
   Feature,
   Geometry,
   VectorDatasource,
-} from "../types";
-import { DatasourceOptions } from "../types/dataProcessor";
+} from "../types/index.js";
+import { DatasourceOptions } from "../types/dataProcessor.js";
 
 /**
  * Returns features for a variety of vector datasources and formats, with additional filter options
@@ -33,7 +33,7 @@ export async function getFeatures<F extends Feature<Geometry>>(
     features = await fgbFetchAll<F>(url, bboxFilter);
   } else if (
     isExternalVectorDatasource(datasource) &&
-    datasource.formats.includes("subdivided")
+    datasource.formats && datasource.formats.includes("subdivided")
   ) {
     // prefer subdivided if external
     if (!bboxFilter) {
@@ -50,7 +50,7 @@ export async function getFeatures<F extends Feature<Geometry>>(
     }
   } else if (
     isExternalVectorDatasource(datasource) &&
-    datasource.formats.includes("fgb")
+    datasource.formats && datasource.formats.includes("fgb")
   ) {
     // fallback to flatgeobuf
     features = await fgbFetchAll<F>(url, bboxFilter);

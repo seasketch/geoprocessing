@@ -1,9 +1,5 @@
-/**
- * @jest-environment node
- * @group e2e
- */
-import { Polygon, Sketch } from "../../../types";
-import { genSampleSketch } from "../../../helpers";
+import { Polygon, Sketch } from "../../../types/index.js";
+import { genSampleSketch } from "../../../helpers/index.js";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]

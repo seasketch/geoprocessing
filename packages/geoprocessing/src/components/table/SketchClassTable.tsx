@@ -1,11 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { percentWithEdge } from "../../helpers";
-import { MetricGroup } from "../../types";
-import { Column, Table } from "./Table";
+import { percentWithEdge } from "../../helpers/index.js";
+import { MetricGroup } from "../../types/index.js";
+import { Column, Table } from "./Table.js";
 
-import styled from "styled-components";
-import { SmallReportTableStyled } from "./SmallReportTableStyled";
+import { styled } from "styled-components";
+import { SmallReportTableStyled } from "./SmallReportTableStyled.js";
 
 /**
  * Style component for SketchClassTable
@@ -45,48 +45,49 @@ export interface SketchClassTableProps {
  * @param SketchClassTableProps
  * @returns
  */
-export const SketchClassTable: React.FunctionComponent<SketchClassTableProps> =
-  ({ rows, metricGroup: dataGroup, formatPerc = false }) => {
-    const { t } = useTranslation();
+export const SketchClassTable: React.FunctionComponent<
+  SketchClassTableProps
+> = ({ rows, metricGroup: dataGroup, formatPerc = false }) => {
+  const { t } = useTranslation();
 
-    const mpaLabel = t("MPA");
+  const mpaLabel = t("MPA");
 
-    const classColumns: Column<Record<string, string | number>>[] =
-      dataGroup.classes.map((curClass) => ({
-        Header: curClass.display,
-        accessor: (row) => {
-          // if value for class is NaN then use 0 instead (occurs when sketch doesn't overlap with geography e.g. subregion)
-          return formatPerc
-            ? percentWithEdge(
-                isNaN(row[curClass.classId] as number)
-                  ? 0
-                  : (row[curClass.classId] as number)
-              )
-            : row[curClass.classId];
-        },
-      }));
-
-    const columns: Column<Record<string, string | number>>[] = [
-      {
-        Header: mpaLabel,
-        accessor: (row) => {
-          return <div style={{ width: 120 }}>{row.sketchName}</div>;
-        },
+  const classColumns: Column<Record<string, string | number>>[] =
+    dataGroup.classes.map((curClass) => ({
+      Header: curClass.display,
+      accessor: (row) => {
+        // if value for class is NaN then use 0 instead (occurs when sketch doesn't overlap with geography e.g. subregion)
+        return formatPerc
+          ? percentWithEdge(
+              isNaN(row[curClass.classId] as number)
+                ? 0
+                : (row[curClass.classId] as number)
+            )
+          : row[curClass.classId];
       },
-      ...classColumns,
-    ];
+    }));
 
-    return (
-      <SketchClassTableStyled>
-        <Table
-          className="styled"
-          columns={columns}
-          data={rows.sort((a, b) =>
-            (a.sketchName as string).localeCompare(b.sketchName as string)
-          )}
-        />
-      </SketchClassTableStyled>
-    );
-  };
+  const columns: Column<Record<string, string | number>>[] = [
+    {
+      Header: mpaLabel,
+      accessor: (row) => {
+        return <div style={{ width: 120 }}>{row.sketchName}</div>;
+      },
+    },
+    ...(classColumns as Column<any>[]),
+  ];
+
+  return (
+    <SketchClassTableStyled>
+      <Table
+        className="styled"
+        columns={columns}
+        data={rows.sort((a, b) =>
+          (a.sketchName as string).localeCompare(b.sketchName as string)
+        )}
+      />
+    </SketchClassTableStyled>
+  );
+};
 
 export default SketchClassTable;

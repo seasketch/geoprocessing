@@ -1,5 +1,5 @@
-import { isSketchCollection } from "./sketch";
-import { SketchGeometryTypes, SketchCollection } from "../types";
+import { isSketchCollection } from "./sketch.js";
+import { SketchGeometryTypes, SketchCollection } from "../types/index.js";
 
 import bbox from "@turf/bbox";
 
@@ -23,6 +23,7 @@ export function includeVirtualSketch<G extends SketchGeometryTypes>(
       ...sketchColl,
       features: [...sketchColl.features, ...mergeSketchColl.features],
     };
+    console.log(bbox(finalSketch));
     finalSketch.bbox = bbox(finalSketch);
     return finalSketch;
   } else {

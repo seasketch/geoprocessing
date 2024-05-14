@@ -1,7 +1,8 @@
+import { test, expect } from "vitest";
 import React from "react";
 import { render } from "@testing-library/react";
-import SketchAttributesCard from "./SketchAttributesCard";
-import { ReportContext } from "../context";
+import SketchAttributesCard from "./SketchAttributesCard.js";
+import { ReportContext } from "../context/index.js";
 
 test("SketchAttributesCard renders all userAttributes", () => {
   const { getByRole, getByText, getAllByText } = render(

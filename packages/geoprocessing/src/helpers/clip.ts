@@ -3,21 +3,22 @@
  */
 
 import polygonClipping from "polygon-clipping";
+import { multiPolygon, polygon } from "@turf/helpers";
 import {
   Feature,
-  multiPolygon,
   MultiPolygon,
-  polygon,
   Polygon,
-  Position,
-  Properties,
   FeatureCollection,
-} from "@turf/helpers";
+  Position,
+  GeoJsonProperties,
+} from "../types/geojson.js";
 import { geomEach } from "@turf/meta";
 import { getGeom } from "@turf/invariant";
-import { ValidationError } from "../types";
+import { ValidationError } from "../types/index.js";
 
-export function clip<P = Properties>(
+export function clip<
+  P extends GeoJsonProperties | undefined = GeoJsonProperties
+>(
   features: FeatureCollection<Polygon | MultiPolygon>,
   operation: "union" | "intersection" | "xor" | "difference",
   options: {
@@ -47,7 +48,9 @@ export function clip<P = Properties>(
  * Performs clip by merging features2 coords into a single multipolygon.
  * Useful when you need features2 to be seen as a single unit when clipping feature1 (e.g. intersection)
  */
-export function clipMultiMerge<P = Properties>(
+export function clipMultiMerge<
+  P extends GeoJsonProperties | undefined = GeoJsonProperties
+>(
   feature1: Feature<Polygon | MultiPolygon>,
   features2: FeatureCollection<Polygon | MultiPolygon>,
   operation: "union" | "intersection" | "xor" | "difference",
@@ -66,6 +69,7 @@ export function clipMultiMerge<P = Properties>(
   const geom1 = getGeom(feature1);
   // Combine into one multipoly coordinate array
   const coords2 = (() => {
+    //@ts-ignore
     return features2.features.reduce<MultiPolygon["coordinates"]>(
       (acc, poly) => {
         if (poly.geometry.type === "Polygon") {

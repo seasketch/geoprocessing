@@ -11,7 +11,7 @@
 - `npm install` - installs dependencies and runs postinstall scripts for all packages using `lerna bootstrap`
 - `npm test` - runs test suite for all packages
 - `npm run clean` - clean up build artifacts by recursively removing files and directories not under version control including git ignored files.
-- `npm run start-storybook` - start the storybook server and opn UI component library in your browser.  Auto-refreshes on update.
+- `npm run storybook` - start the storybook server and opn UI component library in your browser.  Auto-refreshes on update.
 ...and many more listed below
 
 The geoprocessing code repository is setup as a "monorepo" managed by [Lerna](https://github.com/lerna/lerna).  It contains multiple `packages` including the core `geoprocessing` library, and then multiple user-installable `templates`.  These templates are bundled into the core library at build time.
@@ -85,7 +85,7 @@ Test groups:
 - `e2e`: end-to-end tests that test larger parts of the system. May make network calls, make system calls, or expect a web server on a specific port.  These tests may take longer, or only run locally, and therefore are often excluded by a test command, or not run in CI.  Be aware of this and have a regiment of running e2e tests.
 - `smoke`: tests that make sure a functions/components main functionality is working (e.g. reference to hardware that doesn't smoke when you turn it on).  The core geoprocessing library doesn't really have tests with this group name but it could, opting to just call them unit tests, but in project-space, every geoprocessing function has an accompanying smoke test, and suite of sketches for running against to verify successful output.
 
-To assign a test file to a specific group, add the following comment to the header of your test file.  Jest will only run the test if the `unit` group is included in the test run (by default all groups will be included unless you specifically whitelist or blacklist
+If your test is a unit test, then name it with the `.test.ts` extension like `myModule.test.ts`.  If your test is an end-to-end test, meaning it makes network calls, requires a test data server to be running, or is a higher-level test of many lower-level modules, then name it with the `.e2e.test.ts` extension like `myModule.e2e.test.ts`.
 
 ```javascript
 /**
@@ -97,8 +97,7 @@ If your test file has dependencies (like Geoblaze for example) that requires a f
 
 ```javascript
 /**
- * @jest-environment node
- * @group e2e
+ * @vitest-environment node
  */
 ```
 
@@ -168,7 +167,7 @@ As you build report functions, using console logging or inspecting with a VSCode
 
 # Storybook components
 
-The framework has it's own storybook project that can be launched using `npm run start-storybook`. These components and their stories can be found under `packages/geoprocessing/src/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.
+The framework has it's own storybook project that can be launched using `npm run storybook`. These components and their stories can be found under `packages/geoprocessing/src/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.
 
 # Make and Test Modifications
 
@@ -309,7 +308,7 @@ Assuming the current GP version is say 0.15.0, and you've made 5 commits to the 
 If you want to work on a feature outside of dev in a feature branch, and publish it and test it, you can publish it as an `experiment`.  Make sure that you publish it from a feature branch, typically with the same name you will give your experiment.
 
 ```sh
-EXPERIMENT_ID=my_branch_name npm run publish:experimental:canary
+npm run publish:experimental:canary
 ```
 
 Assuming your branch name is `node16-webpack5`, the current GP version is 0.15.0, and your feature branch is 28 commits ahead of the last release tag, this should publish a minor release called `0.15.1-experimental-node16-webpack5.28`. As you push more commits to your experimental branch, you can publish again at any time and the commit number will increment so that there isn't a name collision.

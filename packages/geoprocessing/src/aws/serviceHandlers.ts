@@ -1,13 +1,14 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { GeoprocessingProject } from "../types";
-import { Manifest } from "../../scripts/manifest";
-// @ts-ignore
-import manifestRaw from "./manifest.json";
-const manifest = manifestRaw as Manifest;
+import { GeoprocessingProject } from "../types/index.js";
+import { Manifest } from "../../scripts/manifest.js";
+import fs from 'fs-extra'
 
 export const projectMetadata = async (
   event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
+
+  const manifest = await fs.readJson('./manifest.json') as Manifest
+
   const {
     preprocessingFunctions,
     geoprocessingFunctions,
@@ -15,7 +16,7 @@ export const projectMetadata = async (
     ...projectInfo
   } = manifest;
   const uri = `https://${event.headers["Host"]}/prod/`;
-  const project: GeoprocessingProject = {
+  const project: Partial<GeoprocessingProject> = {
     ...projectInfo,
     ...(process.env.clientDistributionUrl
       ? {

@@ -1,6 +1,6 @@
-import { JSONValue } from "./base";
-import { Polygon, LineString, Point, Feature } from "./geojson";
-import { Sketch, SketchProperties } from "./sketch";
+import { JSONValue } from "./base.js";
+import { Polygon, LineString, Point, Feature } from "./geojson.js";
+import { Sketch, SketchProperties } from "./sketch.js";
 
 interface ClientCode {
   uri: string; // public bundle location

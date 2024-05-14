@@ -1,2 +1,2 @@
-import project from "./projectClient";
+import project from "./projectClient.js";
 export default project;

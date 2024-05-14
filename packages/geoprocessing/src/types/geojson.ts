@@ -1,23 +1,16 @@
 import { z } from 'zod'
 import {
   FeatureCollection,
-  Feature,
-  Geometry,
-  Properties,
-  BBox,
-  Point,
-  LineString,
   Polygon,
   MultiPolygon,
-  GeometryTypes,
-} from "@turf/helpers";
+} from "geojson";
 
 // Re-export GeoJSON type declaractions for easy import by user project
 export type {
   FeatureCollection,
   Feature,
   Geometry,
-  Properties,
+  GeoJsonProperties,
   GeometryCollection,
   BBox,
   Point,
@@ -25,8 +18,8 @@ export type {
   MultiLineString,
   Polygon,
   MultiPolygon,
-  GeometryTypes,
-} from "@turf/helpers";
+  Position
+} from "geojson";
 
 // zod schemas
 

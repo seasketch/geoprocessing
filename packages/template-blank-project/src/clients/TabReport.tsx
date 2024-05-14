@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SegmentControl, ReportPage } from "@seasketch/geoprocessing/client-ui";
-import { ViabilityPage } from "../components/ViabilityPage";
-import Translator from "../components/TranslatorAsync";
+import { ViabilityPage } from "../components/ViabilityPage.js";
+import Translator from "../components/TranslatorAsync.js";
 
 const enableAllTabs = false;
-const TabReport = () => {
+const BaseReport = () => {
   const { t } = useTranslation();
   const viabilityId = "viability";
   const segments = [{ id: viabilityId, label: t("Viability") }];
@@ -27,11 +27,14 @@ const TabReport = () => {
   );
 };
 
-export default function () {
-  // Translator must be in parent FunctionComponent to have access to useTranslate hook
+// Named export loaded by storybook
+export const TabReport = () => {
   return (
     <Translator>
-      <TabReport />
+      <BaseReport />
     </Translator>
   );
-}
+};
+
+// Default export lazy-loaded by top-level ReportApp
+export default TabReport;

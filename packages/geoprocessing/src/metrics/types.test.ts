@@ -1,5 +1,5 @@
-import { createMetric } from "./helpers";
-import { Metric } from "../types";
+import { createMetric } from "./helpers.js";
+import { Metric } from "../types/index.js";
 
 // Collection-level metrics, by class
 const areaMetrics: Metric[] = [

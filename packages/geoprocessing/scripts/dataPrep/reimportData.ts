@@ -1,8 +1,8 @@
 import inquirer from "inquirer";
-import { Datasource } from "../../src";
-import { reimportDatasources } from "../base/datasources";
-import { getProjectClient } from "../base/project/projectClient";
-import { publishQuestion } from "./publishQuestion";
+import { Datasource } from "../../src/index.js";
+import { reimportDatasources } from "../base/datasources/index.js";
+import { getProjectClient } from "../base/project/projectClient.js";
+import { publishQuestion } from "./publishQuestion.js";
 
 export interface ReimportAnswers {
   publish: "yes" | "no";

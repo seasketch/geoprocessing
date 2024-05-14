@@ -1,15 +1,13 @@
-/**
- * @group unit
- */
-
+import { describe, test, expect } from "vitest";
 import {
   overlapAreaGroupMetrics,
   overlapFeaturesGroupMetrics,
   overlapRasterGroupMetrics,
-} from "./overlapGroupMetrics";
-import { SketchCollection, Polygon, Metric, Sketch, Feature } from "../types";
+} from "./overlapGroupMetrics.js";
+import { SketchCollection, Polygon, Metric, Sketch, Feature } from "../types/index.js";
 import parseGeoraster from "georaster";
-import { toFeaturePolygonArray } from "../helpers";
+import { toFeaturePolygonArray } from "../helpers/index.js";
+
 
 const sketch: SketchCollection<Polygon> = {
   type: "FeatureCollection",

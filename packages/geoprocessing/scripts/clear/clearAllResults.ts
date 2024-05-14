@@ -1,6 +1,6 @@
-import { DocumentClient, ScanInput } from "aws-sdk/clients/dynamodb";
+import { DocumentClient, ScanInput } from "aws-sdk/clients/dynamodb.js";
 import { StackProps } from "aws-cdk-lib";
-import { AWSError, config } from "aws-sdk";
+import awsSdk from "aws-sdk";
 
 import fs from "fs";
 import path from "path";
@@ -23,7 +23,7 @@ export async function clearResults() {
 
 //@ts-ignore
 async function doScan(
-  err: AWSError,
+  err: awsSdk.AWSError,
   data: DocumentClient.ScanOutput,
   docClient: DocumentClient,
   tableName: string
@@ -82,7 +82,7 @@ export async function clearCachedResults() {
   let projectName = packageJson.name;
 
   let regionName = geoprocessingJson.region;
-  config.update({
+  awsSdk.config.update({
     region: regionName,
   });
 

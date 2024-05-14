@@ -1,8 +1,8 @@
 import React from "react";
-import { WatersDiagram } from "./WatersDiagram";
-import Translator from "../i18n/TranslatorAsync";
-import { ReportDecorator } from "../storybook";
-import Card from "../Card";
+import { WatersDiagram } from "./WatersDiagram.js";
+import Translator from "../i18n/TranslatorAsync.js";
+import { ReportDecorator } from "../storybook/index.js";
+import Card from "../Card.js";
 
 export default {
   component: WatersDiagram,

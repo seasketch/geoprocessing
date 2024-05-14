@@ -1,9 +1,9 @@
 import React from "react";
-import { RbcsMpaObjectiveStatus } from "./RbcsMpaObjectiveStatus";
-import { ReportDecorator, CardDecorator } from "../../components/storybook";
-import { percentWithEdge, getKeys } from "../../helpers";
-import { RbcsObjective, RbcsMpaProtectionLevel } from "../types";
-import { OBJECTIVE_YES, OBJECTIVE_NO } from "../../types";
+import { RbcsMpaObjectiveStatus } from "./RbcsMpaObjectiveStatus.js";
+import { ReportDecorator, CardDecorator } from "../../components/storybook/index.js";
+import { percentWithEdge, getKeys } from "../../helpers/index.js";
+import { RbcsObjective, RbcsMpaProtectionLevel } from "../types.js";
+import { OBJECTIVE_YES, OBJECTIVE_NO } from "../../types/index.js";
 
 export default {
   component: RbcsMpaObjectiveStatus,

@@ -1,6 +1,6 @@
 import React from "react";
-import useVisibleLayers from "../hooks/useVisibleLayers";
-import { Layer } from "@styled-icons/boxicons-solid/Layer/Layer";
+import useVisibleLayers from "../hooks/useVisibleLayers.js";
+import { Stack } from "@styled-icons/bootstrap/Stack/Stack.esm.js";
 
 export function LayerToggle({
   layerId,
@@ -34,7 +34,7 @@ export function LayerToggle({
     >
       {!simple && (
         <>
-          <Layer
+          <Stack
             className="toggle-button"
             size={24}
             style={{ marginRight: 10, color: "#A4CEDE" }}
@@ -122,7 +122,7 @@ export function LayerToggle({
           className="translate-x-0 pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
         >
           {simple && (
-            <Layer size="15" color={on === true ? "#6FC2DE" : "#AAA"} />
+            <Stack size="15" color={on === true ? "#6FC2DE" : "#AAA"} />
           )}
         </span>
       </button>

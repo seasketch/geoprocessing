@@ -11,7 +11,7 @@ import {
   MetricIdTypes,
   GroupMetricSketchAgg,
   MetricDimensions,
-} from "../types";
+} from "../types/index.js";
 
 import {
   groupBy,
@@ -21,10 +21,10 @@ import {
   isNullSketch,
   isNullSketchCollection,
   hasOwnProperty,
-} from "../helpers";
+} from "../helpers/index.js";
 
-import reduce from "lodash/reduce";
-import cloneDeep from "lodash/cloneDeep";
+import reduce from "lodash/reduce.js";
+import cloneDeep from "lodash/cloneDeep.js";
 
 /** Properties used in Metric */
 export const MetricProperties = [

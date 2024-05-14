@@ -4,7 +4,7 @@ import fs from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
 import config from "../config.json";
-import languages from "../supported";
+import languages from "../supported.js";
 import extraTerms from "../extraTerms.json";
 
 const post = promisify(request.post);
@@ -56,7 +56,9 @@ async function publishEnglish() {
     tags: string[];
     comment: string;
     obsolete?: boolean;
-  }[] = data.result.terms.filter((t) => t.context === config.remoteContext);
+  }[] = data.result.terms.filter(
+    (t: any) => t.context === config.remoteContext
+  );
 
   const termsToAdd: {
     term: string;
@@ -75,7 +77,7 @@ async function publishEnglish() {
   const localTerms = {
     ...fs.readJsonSync(
       path.join(
-        __dirname,
+        import.meta.dirname,
         `../lang/en/${config.localNamespace.replace(":", "/")}.json`
       )
     ),
@@ -272,13 +274,15 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       tags: string[];
       comment: string;
       obsolete?: boolean;
-    }[] = data.result.terms.filter((t) => t.context === config.remoteContext);
+    }[] = data.result.terms.filter(
+      (t: any) => t.context === config.remoteContext
+    );
 
     // Read terms for current namespace from current language translation file.
     // If file doesn't exist, then stub it out
     const localTerms = (() => {
       const localTermPath = path.join(
-        __dirname,
+        import.meta.dirname,
         `../lang/${curLang.code}/${config.localNamespace.replace(
           ":",
           "/"
@@ -304,7 +308,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       if (
         fs.existsSync(
           path.join(
-            __dirname,
+            import.meta.dirname,
             `../baseLang/${curLang.code}/${config.localNamespace.replace(
               ":",
               "/"
@@ -314,7 +318,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       ) {
         return fs.readJsonSync(
           path.join(
-            __dirname,
+            import.meta.dirname,
             `../baseLang/${curLang.code}/${config.localNamespace.replace(
               ":",
               "/"

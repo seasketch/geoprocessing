@@ -31,7 +31,7 @@ git pull
 docker pull seasketch/geoprocessing-workspace
 ```
 
-You should now be able to start a Docker container using the latest image and test that everything is up to date
+You should now be able to start a Docker container shell using the latest image and test that everything is up to date
 
 ```bash
 sudo docker run -it --entrypoint /bin/bash seasketch/geoprocessing-workspace
@@ -43,6 +43,8 @@ v20.12.1
 (base) vscode ➜ / $ gdalinfo --version
 GDAL 3.8.5, released 2024/04/02
 ```
+
+Exit back out of this shell when done
 
 The latest version of the `geoprocessing-workspace` will only work with geoprocessing 7.x projects.  This is due to a change in how GDAL produces flatgeobuf files.  If you suddenly see errors of `"Not a FlatGeobuf file"` when trying to read your file, this is likely the reason. In order to continue to develop older 6.x and lower geoprocessing projects you will need to start your devcontainer using the `local-dev-pre-7x` environment.  This is pinned to an older version of the docker image - `seasketch/geoprocessing-workspace:sha-69bb889`
 
@@ -116,9 +118,9 @@ Update the project `src/i18n` directory.  This includes update of base translati
 
 ### Update tsconfig.json
 
-Change to the following.  This supports use of ES Module (ESM) structure in your project and use of the ESM engine by the Node runtime.  It also ensures that transpiling from Typescript at `build` time produces ESM code.  This means that geoprocessing functions will run as ESM code in the lambdas and report clients as ESM in the browser.  Modern Javascript from end-to-end.  Also imports 3rd party types for Vite and Vitest for use in project.
+Change to the following.  This supports use of ES Module (ESM) structure in your project and use of the ESM runtime by the Node instead of Common JS (CJS).  It also ensures that transpiling from Typescript at `build` time produces ESM code.  This means that geoprocessing functions will run as ESM code in the lambdas and report clients as ESM in the browser.  Modern Javascript from end-to-end.  Also imports 3rd party types for Vite and Vitest for use in project.
 
-```json
+```javascript
 {
   "compilerOptions": {
     "target": "es2022",               /* Specify ECMAScript target version*/

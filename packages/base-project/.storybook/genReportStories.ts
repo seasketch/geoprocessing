@@ -3,6 +3,7 @@ import path from "path";
 import { globby } from "globby";
 import { Sketch } from "@seasketch/geoprocessing/client-core";
 import { GpStoryConfig } from "./types.js";
+import { v4 as uuid } from "uuid";
 
 // Not currently used, project space responsible for its own storybook+vite setup
 
@@ -18,7 +19,10 @@ if (!fs.existsSync(sketchDir)) {
 
 const outputDir = path.join(PROJECT_PATH, "examples", "output");
 if (!fs.existsSync(outputDir)) {
-  throw new Error(`Example output path ${outputDir} does not exist`);
+  console.error(
+    `Example output path ${outputDir} does not exist.  Have you added to examples/sketches and run the test suite?`
+  );
+  process.exit();
 }
 
 const storyDir = path.join(PROJECT_PATH, "src");
@@ -151,8 +155,12 @@ for (const storyConfig of storyConfigs) {
       import Translator from "${path.join(PROJECT_PATH, "src", "components", "TranslatorAsync.js")}";
 
       const contextValue = sampleSketchReportContextValue({
+        exampleOutputs: ${JSON.stringify(exampleOutputs, null, 2)},
+        sketchProperties: ${JSON.stringify(sketch.properties, null, 2)},
+        projectUrl: "https://example.com/project",
+        geometryUri: 'https://localhost/${uuid()}',
         visibleLayers: [],
-        exampleOutputs: ${JSON.stringify(exampleOutputs, null, 2)}
+        language: "en"
       });
 
       export const ${sketch.properties.name.replace(/-/g, "_")} = () => (

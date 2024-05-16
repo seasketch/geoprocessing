@@ -159,7 +159,7 @@
 }, {
   "type": "node",
   "request": "launch",
-  "name": "run any ts-node script",
+  "name": "run any typescript script using tsx",
   "runtimeArgs": [
       "--import",
       "tsx",

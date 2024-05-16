@@ -75,5 +75,10 @@
   "Viability": "Viabilidad",
   "(Not answered)": "(No contestado)",
   "% Within Plan": "% dentro del plan",
-  "Results not found": "Resultados no encontrados"
+  "Results not found": "Resultados no encontrados",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "Zona económica exclusiva\n(0-200 millas náuticas)",
+  "Land": "Tierra",
+  "Nearshore\n(0-12 nautical miles)": "Cerca de la costa\n(0-12 millas náuticas)",
+  "Offshore\n(12-200 nautical miles)": "Costa afuera\n(12-200 millas náuticas)",
+  "Shoreline": "Orilla"
 }

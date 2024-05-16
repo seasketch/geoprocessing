@@ -75,5 +75,10 @@
   "Description": "وصف",
   "(Not answered)": "(بلا جواب)",
   "% Within Plan": "٪ ضمن الخطة",
-  "Results not found": "لم يتم العثور على النتائج"
+  "Results not found": "لم يتم العثور على النتائج",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "المنطقة الاقتصادية الخالصة\n(0-200 ميل بحري)",
+  "Land": "أرض",
+  "Nearshore\n(0-12 nautical miles)": "بالقرب من الشاطئ\n(0-12 ميل بحري)",
+  "Offshore\n(12-200 nautical miles)": "البحرية\n(12-200 ميل بحري)",
+  "Shoreline": "الخط الساحلي"
 }

@@ -1,5 +1,8 @@
 import React from "react";
-import { ReportDecorator, CardDecorator } from "../../components/storybook/index.js";
+import {
+  ReportDecorator,
+  CardDecorator,
+} from "../../components/storybook/index.js";
 import { RbcsZoneClassPanel } from "./RbcsZoneClassPanel.js";
 
 export default {
@@ -11,9 +14,9 @@ export default {
 export const simple = () => (
   <>
     <>
-      {Array.from({ length: 8 }, (v, i) => (
-        <RbcsZoneClassPanel value={i + 1} />
-      ))}
+      {Array.from({ length: 8 }, (v, i) => {
+        return <RbcsZoneClassPanel key={i} value={i + 1} />;
+      })}
     </>
   </>
 );

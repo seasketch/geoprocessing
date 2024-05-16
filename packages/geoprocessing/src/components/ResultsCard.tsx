@@ -8,12 +8,13 @@ import { ProgressBar, ProgressBarWrapper } from "./ProgressBar.js";
 import { ReportError } from "./ReportError.js";
 import { GeoprocessingRequestParams } from "../types/service.js";
 
-export interface ResultsCardProps<T> extends CardProps {
+export interface ResultsCardProps<T> {
   functionName: string;
   children: (results: T) => ReactNode;
   skeleton?: ReactNode;
   title?: string | ReactNode;
   titleStyle?: React.CSSProperties;
+  style?: object;
   /** Assumes caller will provide card in children to use results (e.g. ToolbarCard with DataDownload). Shows a simple card until loading complete */
   useChildCard?: boolean;
   /** Additional runtime parameters from report client for geoprocessing function. */

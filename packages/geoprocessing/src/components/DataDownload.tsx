@@ -126,7 +126,7 @@ export const DataDownload = ({
     <a
       key={index}
       download={`${fullFilename}.${dOption.extension}`}
-      href={data && data.length > 0 ? dOption.url : "javascript:;"}
+      href={data && data.length > 0 ? dOption.url : "#"}
       aria-disabled={!data || data.length === 0}
     >
       <DownloadButtonStyled>

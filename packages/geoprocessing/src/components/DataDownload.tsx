@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 // Strictly limit format and data types accepted
 const SUPPORTED_FORMATS = ["json", "csv"] as const;
-export type SUPPORTED_FORMAT = typeof SUPPORTED_FORMATS[number];
+export type SUPPORTED_FORMAT = (typeof SUPPORTED_FORMATS)[number];
 export type StringOrNumber = string | number;
 
 export interface DataFormatters {
@@ -87,9 +87,6 @@ export const DataDownload = ({
       const [{ name }] = useSketchProperties();
       return name;
     } catch (error) {
-      console.info(
-        `ReportContext is not available. sketchName not added for "${filename}"`
-      );
       return "";
     }
   })();

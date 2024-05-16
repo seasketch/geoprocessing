@@ -7,7 +7,7 @@ import { ReportContext, ReportContextValue } from "../context/index.js";
 import { v4 as uuid } from "uuid";
 import { SketchProperties } from "../types/index.js";
 import { GeoprocessingTaskStatus, GeoprocessingTask } from "../aws/tasks.js";
-import { renderHook, act } from "@testing-library/react-hooks";
+import { renderHook, act } from "@testing-library/react";
 
 // @ts-ignore
 // switch to manual fetch mocking or vitest-fetch-mock
@@ -156,9 +156,9 @@ test.skip("useFunction handles errors thrown within geoprocessing function", asy
 
 test.skip("throws error if ReportContext is not set", async () => {
   const { result } = renderHook(() => useFunction("calcFoo"));
-  expect(result && result.error).toBeTruthy();
-  if (!result || !result.error) return;
-  expect(result.error.message).toContain("ReportContext");
+  expect(result && result.current.error).toBeTruthy();
+  if (!result || !result.current.error) return;
+  expect(result.current.error).toContain("ReportContext");
 });
 
 const TestReport = () => {
@@ -180,7 +180,11 @@ const TestReport = () => {
   );
 };
 
-const TestContainer: React.FunctionComponent = (props) => {
+interface TestContainerProps {
+  children: React.ReactNode;
+}
+
+const TestContainer: React.FC<TestContainerProps> = (props) => {
   const [sketchId, setSketchId] = useState(1);
   return (
     <ReportContext.Provider

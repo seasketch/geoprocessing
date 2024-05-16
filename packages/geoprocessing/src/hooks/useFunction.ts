@@ -295,9 +295,10 @@ export const useFunction = <ResultType>(
         (output) => output.functionName === functionTitle
       );
       if (!data && !context.simulateLoading && !context.simulateError) {
-        throw new Error(
-          `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`
-        );
+        setState({
+          loading: false,
+          error: `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`,
+        });
       }
       // create a fake GeoprocessingTask record and set state, returning value
       setState({

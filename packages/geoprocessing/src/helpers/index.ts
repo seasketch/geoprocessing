@@ -21,3 +21,4 @@ export * from "./extraParams.js";
 export * from "./zeroGeometry.js";
 export * from "./zodError.js";
 export * from "./service.js";
+export * from "./genTaskCacheKey.js";

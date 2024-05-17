@@ -22,10 +22,11 @@ export * from "./src/helpers/units.js";
 export * from "./src/helpers/ts.js";
 export * from "./src/helpers/valueFormatter.js";
 export * from "./src/helpers/service.js";
+export * from "./src/helpers/genTaskCacheKey.js";
 export * from "./src/datasources/helpers.js";
-
 export * from "./src/metrics/helpers.js";
 export * from "./src/iucn/helpers.js";
+
 export * from "./src/iucn/iucnProtectionLevel.js";
 export * from "./src/rbcs/index.js";
 export * from "./src/project/index.js";

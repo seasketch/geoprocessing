@@ -8,7 +8,7 @@ import {
   GeoprocessingRequestParams,
 } from "../types/index.js";
 import { runTask, finishTask } from "../clients/tasks.js";
-import { genTaskCacheKey } from "../util/genTaskCacheKey.js";
+import { genTaskCacheKey } from "../helpers/genTaskCacheKey.js";
 import cloneDeep from "lodash/cloneDeep.js";
 
 interface PendingRequest {

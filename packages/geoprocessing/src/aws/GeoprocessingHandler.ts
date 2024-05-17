@@ -109,7 +109,7 @@ export class GeoprocessingHandler<
     options: GeoprocessingHandlerOptions
   );
   constructor(
-    func: (feature, extraParams) => Promise<T>,
+    func: (feature, extraParams, request) => Promise<T>,
     options: GeoprocessingHandlerOptions
   ) {
     this.func = func;

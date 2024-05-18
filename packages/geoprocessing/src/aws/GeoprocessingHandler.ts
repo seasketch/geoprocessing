@@ -340,8 +340,6 @@ export class GeoprocessingHandler<
         }
         event.queryStringParameters = queryParams;
         let payload = JSON.stringify(event);
-        console.log("gpHandler event payload", payload);
-        console.log("gpHandler task", JSON.stringify(task));
         await Lambda.invoke({
           FunctionName: RUN_HANDLER_FUNCTION_NAME,
           ClientContext: JSON.stringify(task),
@@ -440,7 +438,6 @@ export class GeoprocessingHandler<
    * Parses request event and returns GeoprocessingRequest.
    */
   parseRequest<G>(event: APIGatewayProxyEvent): GeoprocessingRequestModel<G> {
-    console.log("parseRequest", event);
     let request: GeoprocessingRequestModel<G>;
     if ("geometry" in event) {
       // POST request or aws console, so already in internal model form

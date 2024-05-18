@@ -440,6 +440,7 @@ export class GeoprocessingHandler<
    * Parses request event and returns GeoprocessingRequest.
    */
   parseRequest<G>(event: APIGatewayProxyEvent): GeoprocessingRequestModel<G> {
+    console.log("parseRequest", event);
     let request: GeoprocessingRequestModel<G>;
     if ("geometry" in event) {
       // POST request or aws console, so already in internal model form

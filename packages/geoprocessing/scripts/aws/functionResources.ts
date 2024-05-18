@@ -30,6 +30,9 @@ import path from "path";
 
 const GP_ROOT = process.env.GP_ROOT;
 
+// Once sync functions create, contains policies to invoke all sync functions
+const invokeSyncLambdaPolicies: PolicyStatement[] = [];
+
 /**
  * Create Lambda function constructs
  */
@@ -144,6 +147,15 @@ const createSyncFunctions = (
         ),
         description: functionMeta.description,
       });
+
+      // Allow sync functions to invoked by other functions
+      const syncInvokeLambdaPolicy = new PolicyStatement({
+        effect: Effect.ALLOW,
+        resources: [func.functionArn],
+        actions: ["lambda:InvokeFunction"],
+      });
+      invokeSyncLambdaPolicies.push(syncInvokeLambdaPolicy);
+
       return {
         func,
         meta: functionMeta,
@@ -218,7 +230,7 @@ const createAsyncFunctions = (
       );
 
       // Allow start function to invoke run function
-      const asyncLambdaPolicy = new PolicyStatement({
+      const invokeAsyncRunLambdaPolicy = new PolicyStatement({
         effect: Effect.ALLOW,
         resources: [runFunc.functionArn],
         actions: ["lambda:InvokeFunction"],
@@ -226,8 +238,21 @@ const createAsyncFunctions = (
       const asyncLambdaRole = new Role(stack, "GpAsyncLambdaRole" + index, {
         assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
       });
-      asyncLambdaRole.addToPolicy(asyncLambdaPolicy);
-      startFunc.addToRolePolicy(asyncLambdaPolicy);
+      asyncLambdaRole.addToPolicy(invokeAsyncRunLambdaPolicy);
+      startFunc.addToRolePolicy(invokeAsyncRunLambdaPolicy);
+
+      // Allow async lambdas to invoke sync lambdas (workers)
+      invokeSyncLambdaPolicies.forEach((curInvokeSyncLambdaPolicy, index2) => {
+        const syncLambdaRole = new Role(
+          stack,
+          "GpSyncLambdaRole" + index + "_" + index2,
+          {
+            assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
+          }
+        );
+        syncLambdaRole.addToPolicy(curInvokeSyncLambdaPolicy);
+        runFunc.addToRolePolicy(curInvokeSyncLambdaPolicy);
+      });
 
       return {
         startFunc,

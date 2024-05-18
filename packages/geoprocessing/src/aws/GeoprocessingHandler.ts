@@ -66,7 +66,7 @@ if (process) {
 export class GeoprocessingHandler<
   T = JSONValue,
   G extends Geometry = Polygon | LineString | Point,
-  P extends Record<string, JSONValue> = Record<string, JSONValue>
+  P extends Record<string, JSONValue> = Record<string, JSONValue>,
 > {
   func: (
     feature:
@@ -75,7 +75,9 @@ export class GeoprocessingHandler<
       | Sketch<G>
       | SketchCollection<G>,
     /** Optional additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
-    extraParams?: P
+    extraParams?: P,
+    /** Original event params used to invoke geoprocessing function made accessible to func */
+    request?: GeoprocessingRequestModel<G>
   ) => Promise<T>;
   options: GeoprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
@@ -93,19 +95,21 @@ export class GeoprocessingHandler<
   constructor(
     func: (
       feature: Feature<G> | FeatureCollection<G>,
-      extraParams: P
+      extraParams: P,
+      request?: GeoprocessingRequestModel<G>
     ) => Promise<T>,
     options: GeoprocessingHandlerOptions
   );
   constructor(
     func: (
       feature: Sketch<G> | SketchCollection<G>,
-      extraParams: P
+      extraParams: P,
+      request?: GeoprocessingRequestModel<G>
     ) => Promise<T>,
     options: GeoprocessingHandlerOptions
   );
   constructor(
-    func: (feature, extraParams) => Promise<T>,
+    func: (feature, extraParams, request) => Promise<T>,
     options: GeoprocessingHandlerOptions
   ) {
     this.func = func;
@@ -269,7 +273,7 @@ export class GeoprocessingHandler<
         const extraParams = request.extraParams as unknown as P;
         try {
           console.time(`run func ${this.options.title}`);
-          const results = await this.func(featureSet, extraParams);
+          const results = await this.func(featureSet, extraParams, request);
           console.timeEnd(`run func ${this.options.title}`);
 
           task.data = results;

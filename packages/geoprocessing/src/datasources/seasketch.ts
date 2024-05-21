@@ -5,8 +5,8 @@ import {
   Sketch,
   SketchCollection,
   Geometry,
+  GeoprocessingRequest,
 } from "../types/index.js";
-import { GeoprocessingRequest } from "../types/index.js";
 import isHostedOnLambda from "./isHostedOnLambda.js";
 // Seasketch client
 

@@ -435,20 +435,19 @@ export class GeoprocessingHandler<
   }
 
   /**
-   * Parses request event and returns GeoprocessingRequest.
+   * Parses event and returns GeoprocessingRequestModel object.
    */
   parseRequest<G>(event: APIGatewayProxyEvent): GeoprocessingRequestModel<G> {
     let request: GeoprocessingRequestModel<G>;
-    if ("geometry" in event) {
-      // POST request or aws console, so already in internal model form
+    if ("geometry" in event || "geometryUri" in event) {
+      // Is direct aws invocation, so should already be in internal model form
       request = event as GeoprocessingRequestModel<G>;
     } else if (
       event.queryStringParameters &&
       event.queryStringParameters["geometryUri"]
     ) {
-      // GET request with query string parameters to merge
-
-      // Extract extraParams from query string if necessary, though gateway lambda integration seems to do it for us
+      // Is GET request with query string parameters
+      // parse extraParams object from query string if necessary, though gateway lambda integration seems to do it for us
       const extraString = event.queryStringParameters["extraParams"];
       let extraParams: P | undefined;
       if (typeof extraString === "string") {
@@ -465,6 +464,7 @@ export class GeoprocessingHandler<
         extraParams,
       };
     } else if (event.body && typeof event.body === "string") {
+      // Is POST request
       request = JSON.parse(event.body);
     } else {
       throw new Error("Could not interpret incoming request");

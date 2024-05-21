@@ -119,6 +119,8 @@ export interface GeoprocessingRequest<
   geometryUri?: string; // must be https
   /** Sketch JSON */
   geometry?: Sketch<G> | SketchCollection<G>;
+  /** Sketch Geobuf base64 string */
+  geometryGeobuf?: string;
   /** Additional runtime parameters, as escaped JSON string */
   extraParams?: string;
   token?: string;

@@ -7,6 +7,8 @@ import {
   Geometry,
   GeoprocessingRequest,
 } from "../types/index.js";
+import geobuf from "geobuf";
+import Pbf from "pbf";
 import isHostedOnLambda from "./isHostedOnLambda.js";
 // Seasketch client
 
@@ -20,6 +22,16 @@ export const fetchGeoJSON = async <G extends Geometry>(
 ): Promise<
   Feature<G> | FeatureCollection<G> | Sketch<G> | SketchCollection<G>
 > => {
+  if (request.geometryGeobuf) {
+    const sketchU8 = new Uint8Array(
+      Buffer.from(request.geometryGeobuf, "base64")
+    );
+    return geobuf.decode(new Pbf(sketchU8)) as
+      | Feature<G>
+      | FeatureCollection<G>
+      | Sketch<G>
+      | SketchCollection<G>;
+  }
   if (request.geometry) {
     return request.geometry;
   } else if (request.geometryUri) {

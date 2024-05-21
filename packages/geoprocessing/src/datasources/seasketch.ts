@@ -23,6 +23,7 @@ export const fetchGeoJSON = async <G extends Geometry>(
   Feature<G> | FeatureCollection<G> | Sketch<G> | SketchCollection<G>
 > => {
   if (request.geometryGeobuf) {
+    console.log("fetchGeoJSON, found geometryGeobuf, decoding");
     const sketchU8 = new Uint8Array(
       Buffer.from(request.geometryGeobuf, "base64")
     );

@@ -1,6 +1,17 @@
 import { JSONValue } from "./base.js";
-import { Polygon, LineString, Point, Feature } from "./geojson.js";
-import { Sketch, SketchProperties } from "./sketch.js";
+import {
+  Polygon,
+  MultiPolygon,
+  LineString,
+  Point,
+  Feature,
+} from "./geojson.js";
+import {
+  Sketch,
+  SketchCollection,
+  SketchGeometryTypes,
+  SketchProperties,
+} from "./sketch.js";
 
 interface ClientCode {
   uri: string; // public bundle location
@@ -99,13 +110,15 @@ export interface PreprocessingHandlerOptions {
 }
 
 /**
- * Represents geoprocessing request via HTTP method, fully packed
+ * Represents geoprocessing request via HTTP method, fully packed (stringified JSON) parameters
  */
-export interface GeoprocessingRequest<G = Polygon | LineString | Point> {
+export interface GeoprocessingRequest<
+  G = Polygon | MultiPolygon | LineString | Point,
+> {
   /** URL to fetch Sketch JSON */
   geometryUri?: string; // must be https
   /** Sketch JSON */
-  geometry?: Sketch<G>;
+  geometry?: Sketch<G> | SketchCollection<G>;
   /** Additional runtime parameters, as escaped JSON string */
   extraParams?: string;
   token?: string;
@@ -118,13 +131,13 @@ export interface GeoprocessingRequest<G = Polygon | LineString | Point> {
 export type GeoprocessingRequestParams = Record<string, JSONValue>;
 
 /**
- * Represents geoprocessing request internally, fully unpacked
+ * Represents geoprocessing request internally, fully unpacked parameters
  */
-export interface GeoprocessingRequestModel<G = Polygon | LineString | Point> {
+export interface GeoprocessingRequestModel<G = SketchGeometryTypes> {
   /** URL to fetch Sketch JSON */
   geometryUri?: string; // must be https
   /** Sketch JSON */
-  geometry?: Sketch<G>;
+  geometry?: Sketch<G> | SketchCollection<G>;
   /** Additional runtime parameters */
   extraParams?: GeoprocessingRequestParams;
   token?: string;

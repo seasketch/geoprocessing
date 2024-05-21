@@ -109,35 +109,18 @@ export interface PreprocessingHandlerOptions {
   requiresProperties: string[];
 }
 
-/**
- * Represents geoprocessing request via HTTP method, fully packed (stringified JSON) parameters
- */
-export interface GeoprocessingRequest<
-  G = Polygon | MultiPolygon | LineString | Point,
-> {
-  /** URL to fetch Sketch JSON */
-  geometryUri?: string; // must be https
-  /** Sketch JSON */
-  geometry?: Sketch<G> | SketchCollection<G>;
-  /** Additional runtime parameters, as escaped JSON string */
-  extraParams?: string;
-  token?: string;
-  cacheKey?: string;
-  wss?: string;
-  checkCacheOnly?: string;
-  onSocketConnect?: string;
-}
-
 export type GeoprocessingRequestParams = Record<string, JSONValue>;
 
 /**
- * Represents geoprocessing request internally, fully unpacked parameters
+ * Geoprocessing request internal data model, with full objects, no JSON strings
  */
 export interface GeoprocessingRequestModel<G = SketchGeometryTypes> {
   /** URL to fetch Sketch JSON */
   geometryUri?: string; // must be https
   /** Sketch JSON */
   geometry?: Sketch<G> | SketchCollection<G>;
+  /** Sketch Geobuf base64 string */
+  geometryGeobuf?: string;
   /** Additional runtime parameters */
   extraParams?: GeoprocessingRequestParams;
   token?: string;
@@ -146,6 +129,14 @@ export interface GeoprocessingRequestModel<G = SketchGeometryTypes> {
   checkCacheOnly?: string;
   onSocketConnect?: string;
 }
+
+/**
+ * Geoprocessing request sent via HTTP GET, with extraParams as url-encoded JSON string
+ */
+export type GeoprocessingRequest<G = SketchGeometryTypes> = Omit<
+  GeoprocessingRequestModel<G>,
+  "extraParams"
+> & { extraParams?: string };
 
 export interface SeaSketchReportingMessageEvent {
   client: string;

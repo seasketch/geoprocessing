@@ -3,7 +3,7 @@ import fs from "fs-extra";
 import * as path from "path";
 import config from "../config.json";
 import languages from "../supported.js";
-import extraTerms from "../extraTerms.json";
+import extraTerms from "../extraTerms.json" with { type: "json" };
 
 export type Translations = Record<string, string>;
 

@@ -30,10 +30,26 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
+  },{
+    "type": "node",
+    "request": "launch",
+    "name": "debug single script",
+    "runtimeArgs": [
+        "--import",
+        "tsx",
+    ],
+    "args": [
+        "${workspaceRoot}/${input:scriptPath}"
+    ]
   }
   ],
   "inputs": [
     {
+      "type": "promptString",
+      "id": "scriptPath",
+      "description": "",
+      "default": "scripts/myscript.ts"
+    },{
       "type": "promptString",
       "id": "testNamePattern",
       "description": "vitest -t 'regex pattern to select tests'",

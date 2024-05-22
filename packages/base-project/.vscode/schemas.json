@@ -1,0 +1,434 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "basicSchema": {
+      "type": "object",
+      "properties": {
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "items": [
+                { "type": "number" },
+                { "type": "number" },
+                { "type": "number" },
+                { "type": "number" }
+              ]
+            },
+            {
+              "type": "array",
+              "minItems": 6,
+              "maxItems": 6,
+              "items": [
+                { "type": "number" },
+                { "type": "number" },
+                { "type": "number" },
+                { "type": "number" },
+                { "type": "number" },
+                { "type": "number" }
+              ]
+            }
+          ]
+        },
+        "planningAreaType": { "type": "string", "enum": ["eez", "other"] },
+        "planningAreaId": { "type": "string" },
+        "planningAreaName": { "type": "string" },
+        "externalLinks": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "required": [
+        "bbox",
+        "planningAreaType",
+        "planningAreaId",
+        "planningAreaName",
+        "externalLinks"
+      ],
+      "additionalProperties": false
+    },
+    "metricsSchema": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metricId": { "type": "string" },
+          "type": { "type": "string" },
+          "datasourceId": { "type": "string" },
+          "classKey": { "type": "string" },
+          "classes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "classId": { "type": "string" },
+                "classKey": { "type": "string" },
+                "datasourceId": { "type": "string" },
+                "display": { "type": "string" },
+                "numericClassId": { "type": "number" },
+                "layerId": { "type": "string" },
+                "objectiveId": { "type": "string" }
+              },
+              "required": ["classId", "display"],
+              "additionalProperties": false
+            }
+          },
+          "layerId": { "type": "string" },
+          "objectiveId": { "type": "string" }
+        },
+        "required": ["metricId", "type", "classes"],
+        "additionalProperties": false
+      }
+    },
+    "objectivesSchema": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "objectiveId": { "type": "string" },
+          "shortDesc": { "type": "string" },
+          "target": { "type": "number", "minimum": 0 },
+          "countsToward": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "enum": ["yes", "no", "maybe"]
+            }
+          }
+        },
+        "required": ["objectiveId", "shortDesc", "target", "countsToward"],
+        "additionalProperties": false
+      }
+    },
+    "geographiesSchema": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "geographyId": { "type": "string" },
+          "datasourceId": { "type": "string" },
+          "display": { "type": "string" },
+          "layerId": { "type": "string" },
+          "groups": { "type": "array", "items": { "type": "string" } },
+          "precalc": { "type": "boolean" },
+          "propertyFilter": {
+            "type": "object",
+            "properties": {
+              "property": { "type": "string" },
+              "values": {
+                "type": "array",
+                "items": { "type": ["string", "number"] }
+              }
+            },
+            "required": ["property", "values"],
+            "additionalProperties": false
+          },
+          "bboxFilter": {
+            "anyOf": [
+              {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": [
+                  { "type": "number" },
+                  { "type": "number" },
+                  { "type": "number" },
+                  { "type": "number" }
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 6,
+                "maxItems": 6,
+                "items": [
+                  { "type": "number" },
+                  { "type": "number" },
+                  { "type": "number" },
+                  { "type": "number" },
+                  { "type": "number" },
+                  { "type": "number" }
+                ]
+              }
+            ]
+          }
+        },
+        "required": ["geographyId", "datasourceId", "display", "precalc"],
+        "additionalProperties": false
+      }
+    },
+    "datasourcesSchema": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "datasourceId": { "type": "string" },
+                      "geo_type": {
+                        "type": "string",
+                        "enum": ["vector", "raster"]
+                      },
+                      "formats": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": ["fgb", "json", "tif", "subdivided"]
+                        }
+                      },
+                      "precalc": { "type": "boolean" },
+                      "metadata": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "description": { "type": "string" },
+                          "version": { "type": "string" },
+                          "publisher": { "type": "string" },
+                          "publishDate": { "type": "string" },
+                          "publishLink": { "type": "string" }
+                        },
+                        "required": [
+                          "name",
+                          "version",
+                          "publisher",
+                          "publishDate",
+                          "publishLink"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "idProperty": { "type": "string" },
+                      "nameProperty": { "type": "string" },
+                      "propertyFilter": {
+                        "type": "object",
+                        "properties": {
+                          "property": { "type": "string" },
+                          "values": {
+                            "type": "array",
+                            "items": { "type": ["string", "number"] }
+                          }
+                        },
+                        "required": ["property", "values"],
+                        "additionalProperties": false
+                      },
+                      "bboxFilter": {
+                        "anyOf": [
+                          {
+                            "type": "array",
+                            "minItems": 4,
+                            "maxItems": 4,
+                            "items": [
+                              { "type": "number" },
+                              { "type": "number" },
+                              { "type": "number" },
+                              { "type": "number" }
+                            ]
+                          },
+                          {
+                            "type": "array",
+                            "minItems": 6,
+                            "maxItems": 6,
+                            "items": [
+                              { "type": "number" },
+                              { "type": "number" },
+                              { "type": "number" },
+                              { "type": "number" },
+                              { "type": "number" },
+                              { "type": "number" }
+                            ]
+                          }
+                        ]
+                      },
+                      "layerName": { "type": "string" },
+                      "classKeys": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                      },
+                      "created": { "type": "string" },
+                      "lastUpdated": { "type": "string" },
+                      "src": { "type": "string" },
+                      "propertiesToKeep": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                      },
+                      "explodeMulti": { "type": "boolean" }
+                    },
+                    "required": [
+                      "datasourceId",
+                      "geo_type",
+                      "formats",
+                      "precalc",
+                      "classKeys",
+                      "created",
+                      "lastUpdated",
+                      "src",
+                      "propertiesToKeep",
+                      "explodeMulti"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "datasourceId": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/datasourceId"
+                          },
+                          "geo_type": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/geo_type"
+                          },
+                          "formats": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/formats"
+                          },
+                          "precalc": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/precalc"
+                          },
+                          "metadata": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/metadata"
+                          },
+                          "idProperty": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/idProperty"
+                          },
+                          "nameProperty": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/nameProperty"
+                          },
+                          "propertyFilter": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/propertyFilter"
+                          },
+                          "bboxFilter": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/bboxFilter"
+                          },
+                          "layerName": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/layerName"
+                          },
+                          "classKeys": {
+                            "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/classKeys"
+                          }
+                        },
+                        "required": [
+                          "datasourceId",
+                          "geo_type",
+                          "formats",
+                          "precalc",
+                          "classKeys"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": { "url": { "type": "string" } },
+                        "required": ["url"]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "datasourceId": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/datasourceId"
+                  },
+                  "geo_type": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/geo_type"
+                  },
+                  "formats": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/formats"
+                  },
+                  "precalc": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/precalc"
+                  },
+                  "metadata": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/metadata"
+                  },
+                  "measurementType": {
+                    "type": "string",
+                    "enum": ["quantitative", "categorical"]
+                  },
+                  "band": { "type": "number" },
+                  "noDataValue": { "type": "number" },
+                  "created": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/created"
+                  },
+                  "lastUpdated": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/lastUpdated"
+                  },
+                  "src": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/src"
+                  }
+                },
+                "required": [
+                  "datasourceId",
+                  "geo_type",
+                  "formats",
+                  "precalc",
+                  "measurementType",
+                  "band",
+                  "created",
+                  "lastUpdated",
+                  "src"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "datasourceId": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/datasourceId"
+                  },
+                  "geo_type": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/geo_type"
+                  },
+                  "formats": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/formats"
+                  },
+                  "precalc": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/precalc"
+                  },
+                  "metadata": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/0/properties/metadata"
+                  },
+                  "measurementType": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/1/properties/measurementType"
+                  },
+                  "band": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/1/properties/band"
+                  },
+                  "noDataValue": {
+                    "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/1/properties/noDataValue"
+                  }
+                },
+                "required": [
+                  "datasourceId",
+                  "geo_type",
+                  "formats",
+                  "precalc",
+                  "measurementType",
+                  "band"
+                ]
+              },
+              {
+                "$ref": "#/definitions/datasourcesSchema/items/anyOf/0/anyOf/0/anyOf/1/allOf/1"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/definitions/basicSchema" },
+    { "$ref": "#/definitions/objectivesSchema" },
+    { "$ref": "#/definitions/metricsSchema" },
+    { "$ref": "#/definitions/geographiesSchema" },
+    { "$ref": "#/definitions/datasourcesSchema" }
+  ]
+}

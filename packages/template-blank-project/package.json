@@ -14,7 +14,7 @@
     "build": "geoprocessing build:lambda && geoprocessing build:client",
     "build:client": "geoprocessing build:client",
     "build:lambda": "geoprocessing build:lambda",
-    "storybook": "geoprocessing storybook"
+    "storybook": "PROJECT_PATH=$(pwd) npx tsx .storybook/genReportStories.ts && storybook dev -p 6006"
   },
   "keywords": [
     "@seasketch/geoprocessing",

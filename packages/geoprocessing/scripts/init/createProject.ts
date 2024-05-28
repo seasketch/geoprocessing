@@ -60,6 +60,7 @@ export async function createProject(
     license,
     repositoryUrl,
   } = metadata;
+  console.log("metadata", metadata);
 
   // Installation path for new project
   const projectPath = `${basePath ? basePath + "/" : ""}${metadata.name}`;
@@ -345,6 +346,7 @@ export async function createProject(
   const configPath = `${projectPath}/src/i18n/config.json`;
   const config = await fs.readJSON(configPath);
   config.remoteContext = `${packageJSON.name}`;
+  console.log("i18config", config);
   await fs.writeJSON(configPath, config, { spaces: 2 });
 
   spinner.succeed("added i18n directory");

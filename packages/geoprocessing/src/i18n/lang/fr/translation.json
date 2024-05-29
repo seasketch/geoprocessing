@@ -75,5 +75,10 @@
   "Viability": "Viabilité",
   "(Not answered)": "(Non répondu)",
   "% Within Plan": "% dans le plan",
-  "Results not found": "Résultats introuvables"
+  "Results not found": "Résultats introuvables",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "Zone économique exclusive\n(0-200 milles marins)",
+  "Land": "Atterrir",
+  "Nearshore\n(0-12 nautical miles)": "Près du littoral\n(0-12 milles marins)",
+  "Offshore\n(12-200 nautical miles)": "En mer\n(12-200 milles marins)",
+  "Shoreline": "Littoral"
 }

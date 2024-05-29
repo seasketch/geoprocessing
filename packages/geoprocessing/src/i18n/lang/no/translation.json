@@ -75,5 +75,10 @@
   "Viability": "Levedyktighet",
   "(Not answered)": "(Ikke besvart)",
   "% Within Plan": "% Innenfor plan",
-  "Results not found": "Finner ikke resultater"
+  "Results not found": "Finner ikke resultater",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "Eksklusiv økonomisk sone\n(0-200 nautiske mil)",
+  "Land": "Land",
+  "Nearshore\n(0-12 nautical miles)": "Nær kysten\n(0-12 nautiske mil)",
+  "Offshore\n(12-200 nautical miles)": "Offshore\n(12-200 nautiske mil)",
+  "Shoreline": "Strandlinje"
 }

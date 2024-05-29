@@ -31,8 +31,12 @@ export function createI18nAsyncInstance(
   const { langPath = "./lang", baseLangPath = "./baseLang" } = options;
   const instance = createInstance();
 
-  const baseLangModules = import.meta.glob(`./baseLang/*/translation.json`);
-  const langModules = import.meta.glob(`./lang/*/translation.json`);
+  const baseLangModules = import.meta.glob(`./baseLang/*/translation.json`, {
+    query: "raw",
+  });
+  const langModules = import.meta.glob(`./lang/*/translation.json`, {
+    query: "raw",
+  });
 
   instance
     .use({
@@ -62,11 +66,13 @@ export function createI18nAsyncInstance(
           try {
             const baseLangToLoadPath = `${baseLangPath}/${langToLoad}/${namespace}.json`;
             const curModule = baseLangModules[baseLangToLoadPath];
-            baseLangResources = (await curModule()) as Record<string, string>;
+            baseLangResources = JSON.parse(
+              ((await curModule()) as unknown as any).default
+            );
           } catch (error: unknown) {
             console.info(`Warning: failed to find base lang resource.`);
           }
-          // console.log("baseLangResourcez", baseLangResources);
+          console.log("baseLangResourcez", baseLangResources);
 
           let langResources = {};
           if (langPath !== undefined) {
@@ -74,7 +80,9 @@ export function createI18nAsyncInstance(
               if (!isDefault) {
                 const langToLoadPath = `${langPath}/${langToLoad}/${namespace}.json`;
                 const curModule = langModules[langToLoadPath];
-                langResources = (await curModule()) as Record<string, string>;
+                langResources = JSON.parse(
+                  ((await curModule()) as unknown as any).default
+                );
               } else {
                 langResources = {};
               }
@@ -82,8 +90,8 @@ export function createI18nAsyncInstance(
               console.info(`Warning: failed to find lang resource.`);
             }
           }
-          // console.log("langResources", langResources);
-          // console.log("extraTerms", extraTerms)
+          console.log("langResources", langResources);
+          console.log("extraTerms", extraTerms);
 
           // Return merged translations
           if (isDefault) {

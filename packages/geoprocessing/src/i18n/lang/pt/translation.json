@@ -75,5 +75,10 @@
   "Description": "Descrição",
   "(Not answered)": "(Não respondido)",
   "% Within Plan": "% Dentro do Plano",
-  "Results not found": "Resultados não encontrados"
+  "Results not found": "Resultados não encontrados",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "Zona econômica exclusiva\n(0-200 milhas náuticas)",
+  "Land": "Terra",
+  "Nearshore\n(0-12 nautical miles)": "Perto da costa\n(0-12 milhas náuticas)",
+  "Offshore\n(12-200 nautical miles)": "No mar\n(12-200 milhas náuticas)",
+  "Shoreline": "Litoral"
 }

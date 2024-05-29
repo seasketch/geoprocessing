@@ -75,5 +75,10 @@
   "Viability": "Održivost",
   "(Not answered)": "(Bez odgovora)",
   "% Within Plan": "% unutar plana",
-  "Results not found": "Rezultati nisu pronađeni"
+  "Results not found": "Rezultati nisu pronađeni",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "Isključivi gospodarski pojas\n(0-200 nautičkih milja)",
+  "Land": "Zemljište",
+  "Nearshore\n(0-12 nautical miles)": "Nearshore\n(0-12 nautičkih milja)",
+  "Offshore\n(12-200 nautical miles)": "Offshore\n(12-200 nautičkih milja)",
+  "Shoreline": "Obala"
 }

@@ -38,4 +38,3 @@ await $`mv src/i18n/supported.ts src/i18n/supported.ts.bak`;
 await $`cp -r ${gpPath}/dist/base-project/src/i18n/*.* src/i18n`;
 await $`mv src/i18n/config.json.bak src/i18n/config.json`;
 await $`mv src/i18n/supported.ts.bak src/i18n/supported.ts`;
-await $`npm run translation:extract`;

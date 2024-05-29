@@ -24,6 +24,7 @@ const config: StorybookConfig = {
         viteConfigPath: "./.storybook/vite.config.ts",
       },
     },
+    disableTelemetry: true,
   },
   docs: {
     autodocs: "tag",

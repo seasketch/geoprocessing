@@ -159,13 +159,13 @@
 }, {
   "type": "node",
   "request": "launch",
-  "name": "run any ts-node script",
+  "name": "debug single script",
   "runtimeArgs": [
       "--import",
       "tsx",
   ],
   "args": [
-      "${workspaceRoot}/packages/geoprocessing/${input:scriptPath}"
+      "${workspaceRoot}/${input:scriptPath}"
   ]
 }
   ],
@@ -174,7 +174,7 @@
       "type": "promptString",
       "id": "scriptPath",
       "description": "",
-      "default": "path/to/script.ts relative to packages/geoprocessing directory"
+      "default": "packages/geoprocessing/scripts/myscript.ts"
     },
     {
       "type": "promptString",

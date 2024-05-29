@@ -1,15 +1,18 @@
 /* eslint-disable i18next/no-literal-string */
-import * as request from "request";
 import fs from "fs-extra";
 import * as path from "path";
-import { promisify } from "util";
 import config from "../config.json";
 import languages from "../supported.js";
 import extraTerms from "../extraTerms.json" with { type: "json" };
 
-const post = promisify(request.post);
-
 export type Translations = Record<string, string>;
+
+if (!process.env.POEDITOR_API_TOKEN) {
+  throw new Error("POEDITOR_API_TOKEN is not defined");
+}
+if (!process.env.POEDITOR_PROJECT) {
+  throw new Error("POEDITOR_PROJECT is not defined");
+}
 
 /**
  * Pushes all terms for english language to POEditor, updating any existing translations.
@@ -29,17 +32,23 @@ export type Translations = Record<string, string>;
  * local translation is not present for a given term.
  */
 async function publishEnglish() {
-  const res = await post({
-    url: "https://api.poeditor.com/v2/terms/list",
-    form: {
-      api_token: process.env.POEDITOR_API_TOKEN,
-      id: process.env.POEDITOR_PROJECT,
-      language: "en",
-    },
-  });
-  const data = JSON.parse(res.body);
-  if (data.response.status !== "success") {
-    throw new Error(`API response was ${data.response.status}`);
+  const enTermsForm = new FormData();
+  enTermsForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
+  enTermsForm.append("id", process.env.POEDITOR_PROJECT!);
+  enTermsForm.append("language", "en");
+
+  const enTermsResponse = await fetch(
+    "https://api.poeditor.com/v2/terms/list",
+    {
+      method: "POST",
+      body: enTermsForm,
+    }
+  );
+
+  const enTermsResult = await enTermsResponse.json();
+
+  if (enTermsResult.response.status !== "success") {
+    throw new Error(`API response was ${enTermsResult.response.status}`);
   }
   const publishedTerms: {
     term: string;
@@ -56,7 +65,7 @@ async function publishEnglish() {
     tags: string[];
     comment: string;
     obsolete?: boolean;
-  }[] = data.result.terms.filter(
+  }[] = enTermsResult.result.terms.filter(
     (t: any) => t.context === config.remoteContext
   );
 
@@ -128,82 +137,41 @@ async function publishEnglish() {
 
   // update terms
   if (termsToUpdate.length) {
-    const updated = await post({
-      url: `https://api.poeditor.com/v2/terms/update`,
-      form: {
-        api_token: process.env.POEDITOR_API_TOKEN,
-        id: process.env.POEDITOR_PROJECT,
-        data: JSON.stringify(termsToUpdate),
-      },
-    });
-    const data = JSON.parse(updated.body);
-    if (data.response.status !== "success") {
-      throw new Error(`API response was ${data.response.status}`);
+    const enTermsUpdateForm = new FormData();
+    enTermsUpdateForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
+    enTermsUpdateForm.append("id", process.env.POEDITOR_PROJECT!);
+    enTermsUpdateForm.append("data", JSON.stringify(termsToUpdate));
+
+    const enTermsUpdateResponse = await fetch(
+      "https://api.poeditor.com/v2/terms/update",
+      {
+        method: "POST",
+        body: enTermsUpdateForm,
+      }
+    );
+
+    const enTermsUpdatedResult = await enTermsUpdateResponse.json();
+    if (enTermsUpdatedResult.response.status !== "success") {
+      throw new Error(
+        `API response was ${enTermsUpdatedResult.response.status}`
+      );
     } else {
       console.log(`en: updated ${termsToUpdate.length} terms in POEditor`);
     }
 
     // Update their english translations
     if (enTranslationsToUpdate.length > 0) {
-      const updatedTranslations = await post({
-        url: `https://api.poeditor.com/v2/translations/update`,
-        form: {
-          api_token: process.env.POEDITOR_API_TOKEN,
-          id: process.env.POEDITOR_PROJECT,
-          language: "en",
-          data: JSON.stringify(
-            enTranslationsToUpdate
-              .filter((t) => t.english?.length)
-              .map((t) => ({
-                term: t.term,
-                context: t.context,
-                translation: {
-                  content: t.english,
-                },
-              }))
-          ),
-        },
-      });
-      const updatedTranslationData = JSON.parse(updatedTranslations.body);
-      if (updatedTranslationData.response.status !== "success") {
-        console.log(JSON.stringify(updatedTranslationData.response));
-        throw new Error(
-          `API response was ${updatedTranslationData.response.status}`
-        );
-      } else {
-        console.log(
-          `en: updated translations for ${updatedTranslationData.result.translations.updated} terms`
-        );
-      }
-    }
-  }
-
-  // add new terms
-  if (termsToAdd.length) {
-    const { statusCode, body } = await post({
-      url: `https://api.poeditor.com/v2/terms/add`,
-      form: {
-        api_token: process.env.POEDITOR_API_TOKEN,
-        id: process.env.POEDITOR_PROJECT,
-        data: JSON.stringify(termsToAdd),
-      },
-    });
-    let data = JSON.parse(body);
-    if (data.response.status !== "success") {
-      throw new Error(`API response was ${data.response.status}`);
-    } else {
-      console.log(`en: published ${data.result.terms.added} terms to POEditor`);
-    }
-
-    // Add their english translations
-    const addedTranslations = await post({
-      url: `https://api.poeditor.com/v2/translations/add`,
-      form: {
-        api_token: process.env.POEDITOR_API_TOKEN,
-        id: process.env.POEDITOR_PROJECT,
-        language: "en",
-        data: JSON.stringify(
-          termsToAdd
+      const updateTranslationsForm = new FormData();
+      updateTranslationsForm.append(
+        "api_token",
+        process.env.POEDITOR_API_TOKEN!
+      );
+      updateTranslationsForm.append("id", process.env.POEDITOR_PROJECT!);
+      updateTranslationsForm.append("language", "en");
+      updateTranslationsForm.append(
+        "data",
+        JSON.stringify(
+          enTranslationsToUpdate
             .filter((t) => t.english?.length)
             .map((t) => ({
               term: t.term,
@@ -212,16 +180,94 @@ async function publishEnglish() {
                 content: t.english,
               },
             }))
-        ),
-      },
-    });
-    data = JSON.parse(addedTranslations.body);
+        )
+      );
 
-    if (data.response.status !== "success") {
-      throw new Error(`API response was ${data.response.status}`);
+      const updatedTranslationsResponse = await fetch(
+        "https://api.poeditor.com/v2/translations/update",
+        {
+          method: "POST",
+          body: updateTranslationsForm,
+        }
+      );
+
+      const updatedTranslationsResult =
+        await updatedTranslationsResponse.json();
+      if (updatedTranslationsResult.response.status !== "success") {
+        console.log(JSON.stringify(updatedTranslationsResult.response));
+        throw new Error(
+          `API response was ${updatedTranslationsResult.response.status}`
+        );
+      } else {
+        console.log(
+          `en: updated translations for ${updatedTranslationsResult.result.translations.updated} terms`
+        );
+      }
+    }
+  }
+
+  // add new terms
+  if (termsToAdd.length) {
+    const addTermsForm = new FormData();
+    addTermsForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
+    addTermsForm.append("id", process.env.POEDITOR_PROJECT!);
+    addTermsForm.append("language", "en");
+    addTermsForm.append("data", JSON.stringify(termsToAdd));
+
+    const addTermsResponse = await fetch(
+      "https://api.poeditor.com/v2/terms/add",
+      {
+        method: "POST",
+        body: addTermsForm,
+      }
+    );
+
+    let addTermsResult = await addTermsResponse.json();
+    if (addTermsResult.response.status !== "success") {
+      throw new Error(`API response was ${addTermsResult.response.status}`);
     } else {
       console.log(
-        `en: published translations for ${data.result.translations.added} terms to POEditor`
+        `en: published ${addTermsResult.result.terms.added} terms to POEditor`
+      );
+    }
+
+    // Add their english translations
+    const addTranslationsForm = new FormData();
+    addTranslationsForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
+    addTranslationsForm.append("id", process.env.POEDITOR_PROJECT!);
+    addTranslationsForm.append("language", "en");
+    addTranslationsForm.append(
+      "data",
+      JSON.stringify(
+        termsToAdd
+          .filter((t) => t.english?.length)
+          .map((t) => ({
+            term: t.term,
+            context: t.context,
+            translation: {
+              content: t.english,
+            },
+          }))
+      )
+    );
+
+    const addTranslationsResponse = await fetch(
+      "https://api.poeditor.com/v2/translations/add",
+      {
+        method: "POST",
+        body: addTranslationsForm,
+      }
+    );
+
+    const addTranslationsResult = await addTranslationsResponse.json();
+
+    if (addTranslationsResult.response.status !== "success") {
+      throw new Error(
+        `API response was ${addTranslationsResult.response.status}`
+      );
+    } else {
+      console.log(
+        `en: published translations for ${addTranslationsResult.result.translations.added} terms to POEditor`
       );
     }
   }
@@ -244,18 +290,23 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
   for (const curLang of languages) {
     if (curLang.code === "EN") continue;
 
-    const res = await post({
-      url: "https://api.poeditor.com/v2/terms/list",
-      form: {
-        api_token: process.env.POEDITOR_API_TOKEN,
-        id: process.env.POEDITOR_PROJECT,
-        language: curLang.code,
-      },
-    });
+    const curLangTermsForm = new FormData();
+    curLangTermsForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
+    curLangTermsForm.append("id", process.env.POEDITOR_PROJECT!);
+    curLangTermsForm.append("language", curLang.code);
 
-    const data = JSON.parse(res.body);
-    if (data.response.status !== "success") {
-      throw new Error(`API response was ${data.response.status}`);
+    const curLangTermsResponse = await fetch(
+      "https://api.poeditor.com/v2/terms/list",
+      {
+        method: "POST",
+        body: curLangTermsForm,
+      }
+    );
+
+    const curLangTermsResult = await curLangTermsResponse.json();
+
+    if (curLangTermsResult.response.status !== "success") {
+      throw new Error(`API response was ${curLangTermsResult.response.status}`);
     }
 
     // Filter down to the terms with context we care about
@@ -274,7 +325,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       tags: string[];
       comment: string;
       obsolete?: boolean;
-    }[] = data.result.terms.filter(
+    }[] = curLangTermsResult.result.terms.filter(
       (t: any) => t.context === config.remoteContext
     );
 
@@ -374,34 +425,42 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
 
     // Add translations for current language
     if (translationsToAdd.length > 0) {
-      const addedTranslations = await post({
-        url: `https://api.poeditor.com/v2/translations/add`,
-        form: {
-          api_token: process.env.POEDITOR_API_TOKEN,
-          id: process.env.POEDITOR_PROJECT,
-          language: curLang.code,
-          data: JSON.stringify(
-            translationsToAdd
-              .filter((t) => t.translation?.length)
-              .map((t) => ({
-                term: t.term,
-                context: t.context,
-                translation: {
-                  content: t.translation,
-                },
-              }))
-          ),
-        },
-      });
-      const transData = JSON.parse(addedTranslations.body);
+      const addTranslationsForm = new FormData();
+      addTranslationsForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
+      addTranslationsForm.append("id", process.env.POEDITOR_PROJECT!);
+      addTranslationsForm.append("language", curLang.code);
+      addTranslationsForm.append(
+        "data",
+        JSON.stringify(
+          translationsToAdd
+            .filter((t) => t.translation?.length)
+            .map((t) => ({
+              term: t.term,
+              context: t.context,
+              translation: {
+                content: t.translation,
+              },
+            }))
+        )
+      );
 
-      if (transData.response.status !== "success") {
+      const addTranslationsResponse = await fetch(
+        "https://api.poeditor.com/v2/translations/add",
+        {
+          method: "POST",
+          body: addTranslationsForm,
+        }
+      );
+
+      const addTranslationsResult = await addTranslationsResponse.json();
+
+      if (addTranslationsResult.response.status !== "success") {
         throw new Error(
-          `API response was ${JSON.stringify(transData.response)}`
+          `API response was ${JSON.stringify(addTranslationsResult.response)}`
         );
       } else {
         console.log(
-          `${curLang.code}: published ${transData.result.translations.added} ${curLang.name} translations to POEditor`
+          `${curLang.code}: published ${addTranslationsResult.result.translations.added} ${curLang.name} translations to POEditor`
         );
       }
     } else {

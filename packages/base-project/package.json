@@ -50,7 +50,7 @@
     "@turf/helpers": "7.0.0-alpha.113",
     "@turf/simplify": "7.0.0-alpha.113",
     "geojson-antimeridian-cut": "^0.1.0",
-    "react-i18next": "^12.2.0"
+    "react-i18next": "^14.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.5",
@@ -67,7 +67,6 @@
     "babel-plugin-i18next-extract": "0.10.0",
     "globby": "^14.0.1",
     "prop-types": "^15.8.1",
-    "request": "^2.88.2",
     "storybook": "^8.1.1",
     "vite": "^5.2.11",
     "vitest": "^1.6.0",

@@ -14,12 +14,10 @@ const Number = new Intl.NumberFormat("en", { style: "decimal" });
  */
 export const SimpleCard = () => {
   const { t } = useTranslation();
+  const titleTrans = t("SimpleCard title", "Zone Report");
   return (
     <>
-      <ResultsCard
-        title={t("SimpleCard title", "Zone Report")}
-        functionName="simpleFunction"
-      >
+      <ResultsCard title={titleTrans} functionName="simpleFunction">
         {(data: SimpleResults) => {
           return (
             <>

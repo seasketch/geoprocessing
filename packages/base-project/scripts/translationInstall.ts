@@ -30,8 +30,10 @@ const gpPath = (() => {
 })();
 
 await $`rm -rf src/i18n/baseLang`;
-// Update (overwrite) everything except lang directory
+// Update (overwrite) everything except lang directory and config.json
 await $`cp -r ${gpPath}/dist/base-project/src/i18n/baseLang src/i18n`;
 await $`cp -r ${gpPath}/dist/base-project/src/i18n/bin/* src/i18n/bin`;
+await $`mv src/i18n/config.json src/i18n/config.json.bak`;
 await $`cp -r ${gpPath}/dist/base-project/src/i18n/*.* src/i18n`;
+await $`mv src/i18n/config.json.bak src/i18n/config.json`;
 await $`npm run translation:extract`;

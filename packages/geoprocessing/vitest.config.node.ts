@@ -2,17 +2,17 @@ import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    name: "src-node",
-    root: "./src",
+    name: "node",
+    root: ".",
     //include: ["**/*.{test}.?(c|m)[jt]s?(x)"],
     exclude: [
       ...configDefaults.exclude,
-      "components/**",
-      "hooks/**",
+      "src/components/**",
+      "src/hooks/**",
       "**/GeoprocessingHandler.test.ts",
     ],
     environment: "node",
     globals: true,
-    // setupFiles: ["./vitest-setup.ts"],
+    globalSetup: ["./vitest-setup-web-server.ts"],
   },
 });

@@ -1,5 +1,8 @@
 import awsSdk from "aws-sdk";
-import dynamodb, { ScanInput } from "aws-sdk/clients/dynamodb.js";
+import dynamodb, {
+  ScanInput,
+  AttributeValue,
+} from "aws-sdk/clients/dynamodb.js";
 import fs from "fs";
 import path from "path";
 import inquirer from "inquirer";
@@ -56,7 +59,7 @@ export async function clearCachedResults(options: ClearCacheOptions) {
       FilterExpression: "service = :val",
 
       ExpressionAttributeValues: {
-        ":val": { S: serviceName },
+        ":val": serviceName as AttributeValue,
       },
     };
   }

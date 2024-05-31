@@ -1,13 +1,9 @@
-import { DocumentClient, ScanInput } from "aws-sdk/clients/dynamodb.js";
-import { StackProps } from "aws-cdk-lib";
+import dynamodb, { ScanInput } from "aws-sdk/clients/dynamodb.js";
 import awsSdk from "aws-sdk";
+import { doScan } from "./doScan.js";
 
 import fs from "fs";
 import path from "path";
-
-interface ClearCacheOptions {
-  tableName: string;
-}
 
 const packageJson = JSON.parse(
   fs.readFileSync(path.join("./", "package.json")).toString()
@@ -21,63 +17,10 @@ export async function clearResults() {
   await clearCachedResults();
 }
 
-//@ts-ignore
-async function doScan(
-  err: awsSdk.AWSError,
-  data: DocumentClient.ScanOutput,
-  docClient: DocumentClient,
-  tableName: string
-) {
-  if (err) {
-    console.error(
-      "Error: Unable to scan the table. Error JSON:",
-      JSON.stringify(err, null, 2)
-    );
-  } else {
-    if (data?.Items !== undefined && data?.Items?.length > 0) {
-      for (const d of data?.Items) {
-        let deleteParams = {
-          TableName: tableName,
-          Key: {
-            id: d.id,
-            service: d.service,
-          },
-        };
-
-        //@ts-ignore
-        docClient.delete(deleteParams, (err, data) => {
-          if (err) {
-            console.error(
-              "Unable to delete item. Error JSON:",
-              JSON.stringify(err, null, 2)
-            );
-          } else {
-            console.log("Deleted results for ", d.service);
-          }
-        });
-
-        // continue scanning if we have more movies, because
-        // scan can retrieve a maximum of 1MB of data
-
-        if (typeof data.LastEvaluatedKey != "undefined") {
-          let scanParams: ScanInput = { TableName: tableName };
-
-          //@ts-ignore
-          scanParams.ExclusiveStartKey = data.LastEvaluatedKey;
-          //@ts-ignore
-          docClient.scan(scanParams, (err, data) => {
-            doScan(err, data, docClient, tableName);
-          });
-        }
-      }
-    } else {
-      console.log("No cached results found for all services");
-    }
-  }
-}
-function buildProjectName(projectName: string): string {
+function buildTaskTableName(projectName: string): string {
   return `gp-${projectName}-tasks`;
 }
+
 export async function clearCachedResults() {
   let projectName = packageJson.name;
 
@@ -86,10 +29,9 @@ export async function clearCachedResults() {
     region: regionName,
   });
 
-  let docClient = new DocumentClient();
+  let docClient = new dynamodb.DocumentClient();
 
-  //let tableName = "gp-fsm-next-reports-tasks";
-  let tableName = buildProjectName(projectName);
+  let tableName = buildTaskTableName(projectName);
 
   let params: ScanInput = { TableName: tableName };
 
@@ -97,7 +39,5 @@ export async function clearCachedResults() {
     doScan(err, data, docClient, tableName);
   });
 }
-interface GeoprocessingStackProps extends StackProps {
-  tableName: string;
-}
+
 clearResults();

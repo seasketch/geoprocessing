@@ -14,7 +14,7 @@ export interface TemplateMetadata {
 }
 
 const TemplateTypes = ["add-on-template", "starter-template"] as const;
-export type TemplateType = typeof TemplateTypes[number];
+export type TemplateType = (typeof TemplateTypes)[number];
 
 function getTemplatesPath(templateType: TemplateType): string {
   // published bundle path exists if this is being run from the published geoprocessing package
@@ -254,17 +254,23 @@ export async function copyTemplates(
         }
       }
 
-      // Merge .gitignore, starting with line 4
       if (fs.existsSync(path.join(templatePath, "_gitignore"))) {
         // Convert to array of lines
         const tplIgnoreArray = fs
           .readFileSync(path.join(templatePath, "_gitignore"))
           .toString()
           .split("\n");
-        if (tplIgnoreArray.length > 3) {
+        const commentIndex = tplIgnoreArray.findIndex((line) =>
+          line.startsWith("### Ignore")
+        );
+        if (commentIndex === -1) {
+          throw new Error("Could not find separator in .gitignore file");
+        }
+        const startLine = commentIndex + 1;
+        if (tplIgnoreArray.length > startLine) {
           // Merge back into string with newlines and append to end of project file
           const tplIgnoreLines = tplIgnoreArray
-            .slice(3)
+            .slice(startLine)
             .reduce<string>((acc, line) => {
               return line.length > 0 ? acc.concat(line + "\n") : "";
             }, "\n");

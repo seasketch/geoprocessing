@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
-### Do no edit above this line
+.story-cache
+src/i18n
 data/src
 data/dist/**
-src/i18n
-.story-cache
+### Ignore entries that should be copied to user project should be added below this line

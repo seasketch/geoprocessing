@@ -7,8 +7,6 @@ import fetch, {
 } from "node-fetch";
 import http from "http";
 
-http.globalAgent.maxSockets = 10;
-
 // Custom agent that forces connections to be closed
 const agent = new http.Agent({ keepAlive: false, maxSockets: Infinity });
 const customFetch = async (

@@ -9,17 +9,12 @@ import http from "http";
 
 http.globalAgent.maxSockets = 10;
 
-/**
- * Custom fetch function that uses custom http agent to force connections to not be reused
- * @param url
- * @param init
- * @returns
- */
+// Custom agent that forces connections to be closed
+const agent = new http.Agent({ keepAlive: false, maxSockets: Infinity });
 const customFetch = async (
   url: URL | RequestInfo,
   init?: RequestInit
 ): Promise<Response> => {
-  const agent = new http.Agent({ keepAlive: false, maxSockets: 25 });
   const options = {
     ...init,
     agent,

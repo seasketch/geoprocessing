@@ -9,6 +9,7 @@ import https from "https";
 import http from "http";
 
 // Custom agents that force connection to be closed after request complete (no reuse)
+// Overcomes Node 19+ change to set keepalive to true and reuse connections
 const httpAgent = new http.Agent({ keepAlive: false, maxSockets: Infinity });
 const httpsAgent = new https.Agent({ keepAlive: false, maxSockets: Infinity });
 const customFetch = async (

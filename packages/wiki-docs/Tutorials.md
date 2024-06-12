@@ -1392,7 +1392,7 @@ Finally, [export](https://docs.seasketch.org/seasketch-documentation/users-guide
     features/ # <-- examples used by preprocessing functions
 ```
 
-Once you add your example sketches and collections to this folder, you can `npm run test:smoke` and any smoke tests will automatically include these new examples and generate output for them for each geoprocessing function. You can then look at the smoke test output and ensure that it is as expected.
+Once you add your example sketches and collections to this folder, you can `npm run test` and any smoke tests will automatically include these new examples and generate output for them for each geoprocessing function. You can then look at the smoke test output and ensure that it is as expected.
 
 It's now possible for you to quickly create examples that cover common as well as specific use cases. For example are you sure your geoprocessing function works with both Sketches and Sketch Collections? Then include examples of both types. Maybe even include Sketches that overlap outside the planning area to make sure error conditions are handled appropriately. Or create a giant sketch that covers the entire planning area to make sure your reports are picking up all of the data and % overlap metrics are 100% or very close. Does your geoprocessing project handle overlapping sketches within a collection properly? Create all kinds of overlap scenarios.
 

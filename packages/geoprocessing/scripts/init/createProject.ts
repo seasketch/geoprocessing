@@ -153,16 +153,6 @@ export async function createProject(
     JSON.stringify(packageJSON, null, "  ")
   );
 
-  // Add smoke tests to default run
-  if (process.env.NODE_ENV !== "test") {
-    await fs.writeFile(
-      `${projectPath}/package.json`,
-      fs
-        .readFileSync(`${projectPath}/package.json`)
-        .toString()
-        .replace("npm run test:unit", "npm run test:unit && npm run test:smoke")
-    );
-  }
   spinner.succeed("updated package.json");
 
   spinner.start("creating geoprocessing.json");

@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/template-blank-project",
-  "version": "7.0.0-beta.3",
+  "version": "7.0.0-beta.4",
   "description": "blank starter project",
   "author": "Tim Welch",
   "license": "BSD-3-Clause",
@@ -21,7 +21,7 @@
     "starter-template"
   ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "^7.0.0-beta.3",
+    "@seasketch/geoprocessing": "^7.0.0-beta.4",
     "@turf/boolean-disjoint": "7.0.0",
     "@turf/boolean-valid": "7.0.0"
   },

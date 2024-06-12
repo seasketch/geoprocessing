@@ -1,7 +1,7 @@
 import React from "react";
-import Card from "./Card";
-import { Tooltip } from "./Tooltip";
-import ReportDecorator from "./storybook/ReportDecorator";
+import Card from "./Card.js";
+import { Tooltip } from "./Tooltip.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
 import { InfoCircleFill } from "@styled-icons/bootstrap";
 
 export default {

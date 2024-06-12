@@ -272,9 +272,10 @@ export class GeoprocessingHandler<
         const featureSet = await fetchGeoJSON<G>(request);
         const extraParams = request.extraParams as unknown as P;
         try {
-          console.time(`run func ${this.options.title}`);
+          const timestamp = Date.now();
+          console.time(`run func ${this.options.title} - ${timestamp}`);
           const results = await this.func(featureSet, extraParams, request);
-          console.timeEnd(`run func ${this.options.title}`);
+          console.timeEnd(`run func ${this.options.title} - ${timestamp}`);
 
           task.data = results;
           task.status = GeoprocessingTaskStatus.Completed;
@@ -302,8 +303,8 @@ export class GeoprocessingHandler<
 
           let failureMessage =
             e instanceof Error
-              ? `Geoprocessing exception: \n${e.stack}`
-              : "Geoprocessing exception";
+              ? `Exception running geoprocessing function ${this.options.title}: \n${e.stack}`
+              : `Exception running geoprocessing function ${this.options.title}`;
           await this.sendSocketErrorMessage(
             wssUrl,
             request.cacheKey,

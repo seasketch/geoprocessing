@@ -272,9 +272,10 @@ export class GeoprocessingHandler<
         const featureSet = await fetchGeoJSON<G>(request);
         const extraParams = request.extraParams as unknown as P;
         try {
-          console.time(`run func ${this.options.title} - ${Date.now()}`);
+          const timestamp = Date.now();
+          console.time(`run func ${this.options.title} - ${timestamp}`);
           const results = await this.func(featureSet, extraParams, request);
-          console.timeEnd(`run func ${this.options.title} - ${Date.now()}`);
+          console.timeEnd(`run func ${this.options.title} - ${timestamp}`);
 
           task.data = results;
           task.status = GeoprocessingTaskStatus.Completed;

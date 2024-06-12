@@ -89,9 +89,9 @@ export async function genGeojson(config: ImportVectorDatasourceConfig) {
   fs.removeSync(dst);
   // explode to Polygon or promote to MultiPolygon, GeoJSON supports mixed geometries but intention is to match what is done for Flatgeobuf for consistency
   if (config.explodeMulti === true) {
-    await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON -explodeCollections -wrapdateline -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+    await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON -lco RFC7946=YES -explodeCollections -wrapdateline -dialect OGRSQL -sql ${query} ${dst} ${src}`;
   } else {
-    await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON -nlt PROMOTE_TO_MULTI -wrapdateline -dialect OGRSQL -sql ${query} ${dst} ${src}`;
+    await $`ogr2ogr -t_srs "EPSG:4326" -f GeoJSON -lco RFC7946=YES -nlt PROMOTE_TO_MULTI -wrapdateline -dialect OGRSQL -sql ${query} ${dst} ${src}`;
   }
 }
 

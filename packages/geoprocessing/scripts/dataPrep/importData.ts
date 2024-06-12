@@ -1,4 +1,5 @@
 import inquirer from "inquirer";
+import { $ } from "zx";
 import { importDatasource, readDatasources } from "../base/datasources/index.js";
 import {
   datasourceFormatDescriptions,
@@ -10,6 +11,8 @@ import {
   datasourceConfig,
 } from "../../src/index.js";
 import path from "path";
+import fs from 'fs';
+
 import { getProjectClient } from "../base/project/projectClient.js";
 import { precalcQuestion } from "./precalcQuestion.js";
 import { explodeQuestion } from "./explodeQuestion.js";
@@ -18,6 +21,7 @@ import { explodeQuestion } from "./explodeQuestion.js";
 
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
+$.verbose = false
 
 interface ImportVectorDatasourceAnswers
   extends Pick<
@@ -30,8 +34,8 @@ interface ImportVectorDatasourceAnswers
     | "precalc"
     | "explodeMulti"
   > {
-  classKeys: string;
-  propertiesToKeep: string;
+  classKeys: string[];
+  propertiesToKeep: string[];
 }
 
 interface ImportRasterDatasourceAnswers
@@ -50,25 +54,22 @@ interface ImportRasterDatasourceAnswers
 // Main function, wrapped in an IIFE to avoid top-level await
 void (async function () {
   const datasources = readDatasources();
-  const geoTypeAnswer = await geoTypeQuestion(datasources);
-  const precalcAnswers = await precalcQuestion();
-  const explodeAnswers = await explodeQuestion();
+  const geoTypeAnswer = await geoTypeQuestion();
+  const srcAnswer = await srcQuestion();
 
   const config = await (async () => {
     if (geoTypeAnswer.geo_type === "vector") {
-      // vector
-      const inputAnswers = await inputQuestions(datasources);
-      const layerNameAnswer = await layerNameQuestion(
-        path.basename(
-          inputAnswers.src,
-          "." + path.basename(inputAnswers.src).split(".").pop()
-        )
-      );
-      const detailedVectorAnswers = await detailedVectorQuestions(datasources);
+      // Vector datasource
+      const layerNameAnswer = await layerNameQuestion(srcAnswer.src);
+      const datasourceIdAnswer = await datasourceIdQuestion(datasources, srcAnswer.src);
+      const explodeAnswers = await explodeQuestion();
+      const detailedVectorAnswers = await detailedVectorQuestions(srcAnswer.src, layerNameAnswer.layerName!);
+      const precalcAnswers = await precalcQuestion();
 
       const config = vectorMapper({
         ...geoTypeAnswer,
-        ...inputAnswers,
+        ...srcAnswer,
+        ...datasourceIdAnswer,
         ...layerNameAnswer,
         ...{
           ...detailedVectorAnswers,
@@ -81,17 +82,15 @@ void (async function () {
       });
       return config;
     } else {
-      // raster
-      const inputAnswers = await inputQuestions(datasources);
-      const rasterBandAnswer = await rasterBandQuestion(
-        inputAnswers.datasourceId
-      );
-      const detailedRasterAnswers = await detailedRasterQuestions(datasources);
+      // Raster datasource
+      const datasourceIdAnswer = await datasourceIdQuestion(datasources, srcAnswer.src);
+      const detailedRasterAnswers = await detailedRasterQuestions(srcAnswer.src);
+      const precalcAnswers = await precalcQuestion();
 
       const config = rasterMapper({
         ...geoTypeAnswer,
-        ...inputAnswers,
-        ...rasterBandAnswer,
+        ...srcAnswer,
+        ...datasourceIdAnswer,
         ...detailedRasterAnswers,
         ...precalcAnswers,
       });
@@ -106,16 +105,7 @@ void (async function () {
 function vectorMapper(
   answers: ImportVectorDatasourceAnswers
 ): ImportVectorDatasourceOptions {
-  const options: ImportVectorDatasourceOptions = {
-    ...answers,
-    classKeys: answers.classKeys.length > 0 ? answers.classKeys.split(",") : [],
-    propertiesToKeep:
-      answers.propertiesToKeep.length > 0
-        ? answers.propertiesToKeep.split(",")
-        : [],
-  };
-
-  const validOptions = importVectorDatasourceOptionsSchema.parse(options);
+  const validOptions = importVectorDatasourceOptionsSchema.parse(answers);
   return validOptions;
 }
 
@@ -135,9 +125,8 @@ function rasterMapper(
   return validOptions;
 }
 
-async function geoTypeQuestion(
-  datasources: Datasource[]
-): Promise<Pick<ImportVectorDatasourceAnswers, "geo_type">> {
+/** Get Vector/Raster type */
+async function geoTypeQuestion(): Promise<Pick<ImportVectorDatasourceAnswers, "geo_type">> {
   return inquirer.prompt<Pick<ImportVectorDatasourceAnswers, "geo_type">>([
     {
       type: "list",
@@ -157,69 +146,82 @@ async function geoTypeQuestion(
   ]);
 }
 
-async function inputQuestions(
-  datasources: Datasource[]
-): Promise<Pick<ImportVectorDatasourceAnswers, "src" | "datasourceId">> {
-  const datasourceIds = datasources.map((ds) => ds.datasourceId);
+/** Get src path */
+async function srcQuestion(): Promise<Pick<ImportVectorDatasourceAnswers, "src">> {
   return inquirer.prompt<
-    Pick<ImportVectorDatasourceAnswers, "src" | "datasourceId">
+    Pick<ImportVectorDatasourceAnswers, "src">
   >([
     {
       type: "input",
       name: "src",
       message: "Enter path to src file (with filename)",
+      validate: (value) => {
+        const fullPath = path.resolve(projectPath, value);
+        if (!fs.existsSync(fullPath)) return "File does not exist";
+        else if (!fs.statSync(fullPath).isFile()) return "Path does not point to a file";
+        else return true;
+      }
     },
+  ]);
+}
+
+/** Get datasourceId */
+async function datasourceIdQuestion(
+  datasources: Datasource[], srcPath: string
+): Promise<Pick<ImportVectorDatasourceAnswers, "datasourceId">> {
+  const datasourceIds = datasources.map((ds) => ds.datasourceId);
+  return inquirer.prompt<
+    Pick<ImportVectorDatasourceAnswers, "datasourceId">
+  >([
     {
       type: "input",
       name: "datasourceId",
-      message:
-        "Choose unique datasource name (use letters, numbers, -, _ to ensure will work)",
+      message: "Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename",
+      default: path.basename(srcPath, path.extname(srcPath)),
       validate: (value) =>
         value === "" ||
         (!datasourceIds.includes(value) &&
           (/^[a-zA-Z0-9-_]+$/.test(value)
             ? true
-            : "Invalid datasource name. Leave it blank or use alphanumeric strings with dash or underscore and separate with commas")),
+            : "Invalid or duplicate datasource name")),
     },
   ]);
 }
 
+/** Get layer name of vector file */
 async function layerNameQuestion(
-  layerName: string
+  srcPath: string
 ): Promise<Pick<ImportVectorDatasourceAnswers, "layerName">> {
+  const { stdout } = await $`ogrinfo -json ${srcPath}`;
+  const layers = JSON.parse(stdout).layers.map(layer => layer.name);
+  if (!layers.length) throw new Error(`No layers in vector, check validity of file.`)
+
   return inquirer.prompt<Pick<ImportVectorDatasourceAnswers, "layerName">>([
     {
-      type: "input",
-      name: "layerName",
-      message: "Enter layer name, defaults to filename",
-      default: layerName,
+      type: 'list',
+      name: 'layerName',
+      message: 'Select layer to import',
+      choices: layers.map((layer) => ({
+        value: layer,
+        name: layer,
+      })),
     },
   ]);
 }
 
-async function rasterBandQuestion(
-  datasourceId: string
-): Promise<Pick<ImportRasterDatasourceAnswers, "band">> {
-  return inquirer.prompt<Pick<ImportRasterDatasourceAnswers, "band">>([
-    {
-      type: "input",
-      name: "band",
-      message: "Enter band number to import, defaults to 1",
-      default: 1,
-      validate: (value) => (isNaN(parseInt(value)) ? "Not a number!" : true),
-      filter: (value) => (isNaN(parseInt(value)) ? value : parseInt(value, 10)),
-    },
-  ]);
-}
-
+/** Get classKeys, propertiesToKeep, and formats */
 async function detailedVectorQuestions(
-  datasources: Datasource[]
+  srcPath: string,
+  layerName: string,
 ): Promise<
   Pick<
     ImportVectorDatasourceAnswers,
     "classKeys" | "propertiesToKeep" | "formats"
   >
 > {
+  const { stdout } = await $`ogrinfo -json -so -nocount -noextent -nogeomtype ${srcPath} ${layerName}`;
+  const fields = JSON.parse(stdout).layers.find(layer => layer.name === layerName).fields.map(field => field.name);
+
   return inquirer.prompt<
     Pick<
       ImportVectorDatasourceAnswers,
@@ -227,33 +229,29 @@ async function detailedVectorQuestions(
     >
   >([
     {
-      type: "input",
-      name: "classKeys",
-      message:
-        "Enter feature property names that you want to group metrics by (separated by a comma e.g. prop1,prop2,prop3)",
-      validate: (value) =>
-        value === "" ||
-        (/^[a-zA-Z0-9-, _]+$/.test(value)
-          ? true
-          : "Invalid property names. Leave it blank or use alphanumeric strings with dash or underscore and separate with commas"),
+      type: 'checkbox',
+      name: 'classKeys',
+      message: fields.length > 0 ? 'Select feature properties that you want to group metrics by' : 'No feature properties found in the vector layer. Press enter to continue.',
+      choices: fields.map((field) => ({
+        value: field,
+        name: field,
+      })),
     },
     {
-      type: "input",
-      name: "propertiesToKeep",
-      message:
-        "Enter additional feature property names to keep in final datasource (separated by a comma e.g. prop1,prop2,prop3). All others will be filtered out",
-      validate: (value) =>
-        value === "" ||
-        (/^[a-zA-Z0-9-, _]+$/.test(value)
-          ? true
-          : "Invalid property names. Leave it blank or use alphanumeric strings with dash or underscore and separate with commas"),
+      type: 'checkbox',
+      name: 'propertiesToKeep',
+      message: fields.length > 0 ? 'Select additional feature properties to keep in final datasource' : 'No feature properties found in the vector layer. Press enter to continue.',
+      choices: fields.map((field) => ({
+        value: field,
+        name: field,
+      })),
     },
     {
       type: "checkbox",
       name: "formats",
-      message: `The following formats will automatically be created: ${datasourceConfig.importDefaultVectorFormats.join(
+      message: `These formats are automatically created: ${datasourceConfig.importDefaultVectorFormats.join(
         ", "
-      )}. What additional formats would you like created?`,
+      )}. Select any additional formats you want created`,
       choices: datasourceConfig.importExtraVectorFormats.map((name) => ({
         value: name,
         name: `${name} - ${datasourceFormatDescriptions[name]}`,
@@ -263,20 +261,32 @@ async function detailedVectorQuestions(
   ]);
 }
 
+/** Get measurementType, export formats, band, and noDataValue */
 async function detailedRasterQuestions(
-  datasources: Datasource[]
+  srcPath: string
 ): Promise<
   Pick<
     ImportRasterDatasourceAnswers,
-    "measurementType" | "formats" | "noDataValue"
+    "measurementType" | "formats" | "band" | "noDataValue"
   >
 > {
-  return inquirer.prompt<
+  const { stdout } = await $`gdalinfo -json ${srcPath}`;
+  const bands = JSON.parse(stdout).bands.map(band => band.band);
+
+  const answers = await inquirer.prompt<
     Pick<
       ImportRasterDatasourceAnswers,
-      "measurementType" | "formats" | "noDataValue"
+      "measurementType" | "formats" | "band" | "noDataValue"
     >
-  >([
+  >([{
+      type: 'list',
+      name: 'band',
+      message: 'Select raster band to import',
+      choices: bands.map((band) => ({
+        value: band,
+        name: band,
+      })),
+    },
     {
       type: "list",
       name: "measurementType",
@@ -292,24 +302,14 @@ async function detailedRasterQuestions(
         },
       ],
     },
-    {
-      type: "checkbox",
-      name: "formats",
-      message:
-        "What formats would you like to publish?  Suggested formats already selected",
-      choices: datasourceConfig.importSupportedRasterFormats.map((name) => ({
-        value: name,
-        name: `${name} - ${datasourceFormatDescriptions[name]}`,
-        checked: datasourceConfig.importDefaultRasterFormats.includes(name),
-      })),
-    },
-    {
-      type: "input",
-      name: "noDataValue",
-      message: "Enter nodata value for raster or leave blank",
-      validate: (value) =>
-        value !== "" && isNaN(parseFloat(value)) ? "Not a number!" : true,
-      filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
-    },
   ]);
+  
+  const noDataValue = JSON.parse(stdout).bands.find(b => b.band === answers.band).noDataValue
+  
+  return {
+    ...answers, 
+    formats: ["tif"], 
+    noDataValue: isNaN(noDataValue) ? -9999 : noDataValue
+  };
 }
+

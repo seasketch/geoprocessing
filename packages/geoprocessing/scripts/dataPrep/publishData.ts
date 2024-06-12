@@ -1,5 +1,5 @@
 import inquirer from "inquirer";
-import { Datasource } from "../../src/index.js";
+import { Datasource, isinternalDatasource } from "../../src/index.js";
 import { publishDatasources } from "../base/datasources/index.js";
 import { getProjectClient } from "../base/project/projectClient.js";
 
@@ -11,7 +11,8 @@ export interface PublishAnswers {
 
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
-const numDs = projectClient.datasources.length;
+const internalDatasources = projectClient.datasources.filter((ds) => isinternalDatasource(ds));
+const numDs = internalDatasources.length;
 
 void (async function () {
   const publishAllAnswers = await publishAllQuestion(numDs);
@@ -19,7 +20,7 @@ void (async function () {
   if (publishAllAnswers.publish === "yes") {
     await publishDatasources(projectClient);
   } else {
-    const dsAnswers = await datasourcesQuestion(projectClient.datasources);
+    const dsAnswers = await datasourcesQuestion(internalDatasources);
     await publishDatasources(projectClient, { matcher: dsAnswers.datasources });
   }
 })();

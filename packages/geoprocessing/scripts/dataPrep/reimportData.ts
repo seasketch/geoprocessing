@@ -1,34 +1,27 @@
 import inquirer from "inquirer";
-import { Datasource } from "../../src/index.js";
+import { Datasource, isinternalDatasource } from "../../src/index.js";
 import { reimportDatasources } from "../base/datasources/index.js";
 import { getProjectClient } from "../base/project/projectClient.js";
-import { publishQuestion } from "./publishQuestion.js";
-
 export interface ReimportAnswers {
-  publish: "yes" | "no";
+  reimportAll: "yes" | "no";
 }
 
 // This is a standalone script used as a CLI command with a top-level function
 
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
-const numDs = projectClient.datasources.length;
+const internalDatasources = projectClient.datasources.filter((ds) => isinternalDatasource(ds));
+const numDs = internalDatasources.length;
 
 // Wrap in an IIFE to avoid top-level await
 void (async function () {
   const reimportAllAnswers = await reimportAllQuestion(numDs);
-  const publishAnswers = await publishQuestion(
-    "Do you want to publish datasources to S3 after re-import?"
-  );
 
-  if (reimportAllAnswers.publish === "yes") {
-    await reimportDatasources(projectClient, {
-      doPublish: publishAnswers.publish === "yes" ? true : false,
-    });
+  if (reimportAllAnswers.reimportAll === "yes") {
+    await reimportDatasources(projectClient, {});
   } else {
-    const dsAnswers = await datasourcesQuestion(projectClient.datasources);
+    const dsAnswers = await datasourcesQuestion(internalDatasources);
     await reimportDatasources(projectClient, {
-      doPublish: publishAnswers.publish === "yes" ? true : false,
       matcher: dsAnswers.datasources,
     });
   }
@@ -36,11 +29,11 @@ void (async function () {
 
 export async function reimportAllQuestion(
   numDs: number
-): Promise<Pick<ReimportAnswers, "publish">> {
-  return inquirer.prompt<Pick<ReimportAnswers, "publish">>([
+): Promise<Pick<ReimportAnswers, "reimportAll">> {
+  return inquirer.prompt<Pick<ReimportAnswers, "reimportAll">>([
     {
       type: "list",
-      name: "publish",
+      name: "reimportAll",
       message: `Do you want to reimport all ${numDs} datasources at once?`,
       default: "no",
       choices: [

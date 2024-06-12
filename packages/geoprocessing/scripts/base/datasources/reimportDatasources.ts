@@ -9,14 +9,12 @@ import {
 import {
   isInternalRasterDatasource,
   isInternalVectorDatasource,
-  getDatasetBucketName,
 } from "../../../src/datasources/index.js";
 import { genGeojson, genFlatgeobuf } from "./importVectorDatasource.js";
 import { genVectorConfig } from "./genVectorConfig.js";
 import { genCog } from "./importRasterDatasource.js";
 import { genRasterConfig } from "./genRasterConfig.js";
 import ProjectClientBase from "../../../src/project/ProjectClientBase.js";
-import { publishDatasource } from "./publishDatasource.js";
 
 /**
  * Reimport one or more datasources into project.
@@ -24,8 +22,6 @@ import { publishDatasource } from "./publishDatasource.js";
 export async function reimportDatasources<C extends ProjectClientBase>(
   projectClient: C,
   extraOptions: {
-    /** Whether or not to publish after reimport */
-    doPublish?: boolean;
     /** Alternative path to look for datasources than default. useful for testing */
     newDatasourcePath?: string;
     /** Alternative path to store transformed data. useful for testing */
@@ -34,12 +30,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
     matcher?: string[];
   }
 ): Promise<Datasource[]> {
-  const {
-    newDatasourcePath,
-    newDstPath,
-    matcher,
-    doPublish = false,
-  } = extraOptions;
+  const { newDatasourcePath, newDstPath, matcher } = extraOptions;
 
   const allDatasources = await readDatasources(newDatasourcePath);
   const filteredDatasources = (() => {
@@ -83,19 +74,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           })
         );
 
-        if (doPublish) {
-          await Promise.all(
-            config.formats.map((format) => {
-              return publishDatasource(
-                config.dstPath,
-                format,
-                config.datasourceId,
-                getDatasetBucketName(config)
-              );
-            })
-          );
-        }
-
         // Datasource record with new or updated timestamp
         const finalDs = await createOrUpdateDatasource(ds, newDatasourcePath);
         finalDatasources.push(finalDs);
@@ -122,19 +100,6 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         // generate full config
         const config = genRasterConfig(projectClient, options, newDstPath);
         await genCog(config);
-
-        if (doPublish) {
-          await Promise.all(
-            config.formats.map((format) => {
-              return publishDatasource(
-                config.dstPath,
-                format,
-                config.datasourceId,
-                getDatasetBucketName(config)
-              );
-            })
-          );
-        }
 
         // Datasource record with new or updated timestamp
         const finalDs = await createOrUpdateDatasource(ds, newDatasourcePath);

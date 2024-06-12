@@ -22,17 +22,17 @@
   ],
   "devDependencies": {
     "@seasketch/geoprocessing": "^7.0.0-beta.3",
-    "@turf/boolean-disjoint": "7.0.0-alpha.113",
-    "@turf/boolean-valid": "7.0.0-alpha.113"
+    "@turf/boolean-disjoint": "7.0.0",
+    "@turf/boolean-valid": "7.0.0"
   },
   "dependencies": {
-    "@turf/area": "7.0.0-alpha.113",
-    "@turf/bbox": "7.0.0-alpha.113",
-    "@turf/combine": "7.0.0-alpha.113",
-    "@turf/flatten": "7.0.0-alpha.113",
-    "@turf/invariant": "7.0.0-alpha.113",
-    "@turf/kinks": "7.0.0-alpha.113",
-    "@turf/simplify": "7.0.0-alpha.113",
+    "@turf/area": "7.0.0",
+    "@turf/bbox": "7.0.0",
+    "@turf/combine": "7.0.0",
+    "@turf/flatten": "7.0.0",
+    "@turf/invariant": "7.0.0",
+    "@turf/kinks": "7.0.0",
+    "@turf/simplify": "7.0.0",
     "geoblaze": "2.6.1",
     "geojson-antimeridian-cut": "^0.1.0",
     "i18next-browser-languagedetector": "^8.0.0",

@@ -71,6 +71,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
         const bufPoly = buffer(bboxPolygon(box), radius, {
           units: "degrees",
         });
+        if (!bufPoly) throw new Error("Failed to buffer window");
         const bufBox = bbox(bufPoly);
         return bboxToPixelEdge(bufBox, georaster);
       }

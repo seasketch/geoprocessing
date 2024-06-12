@@ -1,5 +1,5 @@
-import { Datasource, Geography, Metric } from "../../../src/types";
-import ProjectClientBase from "../../../src/project/ProjectClientBase";
+import { Datasource, Geography, Metric } from "../../../src/types/index.js";
+import ProjectClientBase from "../../../src/project/ProjectClientBase.js";
 
 /**
  * Precalc one or more datasources for a project, for one or more defined geographies, and return the freshly filtered metrics

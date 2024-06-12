@@ -1,7 +1,7 @@
 import React from "react";
-import Card from "../Card";
-import { IucnLevelPill } from "./IucnLevelPill";
-import ReportDecorator from "../storybook/ReportDecorator";
+import Card from "../Card.js";
+import { IucnLevelPill } from "./IucnLevelPill.js";
+import ReportDecorator from "../storybook/ReportDecorator.js";
 
 export default {
   component: IucnLevelPill,

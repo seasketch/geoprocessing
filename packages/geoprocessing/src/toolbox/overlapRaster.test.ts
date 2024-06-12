@@ -1,10 +1,11 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
-import fix from "../testing/fixtures/sketches";
+import { describe, test, expect } from "vitest";
+import fix from "../testing/fixtures/sketches.js";
 import parseGeoraster from "georaster";
-import { overlapRaster } from "./overlapRaster";
+import { overlapRaster } from "./overlapRaster.js";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]

@@ -1,3 +1,3 @@
-export * from "./HorizontalStackedBar";
-export * from "./ReportChartFigure";
-export * from "./ChartLegend";
+export * from "./HorizontalStackedBar.js";
+export * from "./ReportChartFigure.js";
+export * from "./ChartLegend.js";

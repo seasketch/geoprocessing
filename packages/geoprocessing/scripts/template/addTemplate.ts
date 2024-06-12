@@ -1,23 +1,26 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
-import path from "path";
 import util from "util";
-import { GeoprocessingJsonConfig, Package } from "../../src/types";
-const exec = util.promisify(require("child_process").exec);
+import { GeoprocessingJsonConfig, Package } from "../../src/types/index.js";
+import path from "node:path";
+import * as child from "child_process";
+import { pathToFileURL } from "url";
+
+const exec = util.promisify(child.exec);
 
 export interface TemplateMetadata {
   templates: string | string[];
 }
 
 const TemplateTypes = ["add-on-template", "starter-template"] as const;
-export type TemplateType = typeof TemplateTypes[number];
+export type TemplateType = (typeof TemplateTypes)[number];
 
 function getTemplatesPath(templateType: TemplateType): string {
   // published bundle path exists if this is being run from the published geoprocessing package
   // (e.g. via geoprocessing init or add:template)
   const publishedBundlePath = path.join(
-    __dirname,
+    import.meta.dirname,
     "..",
     "..",
     "templates",
@@ -28,7 +31,7 @@ function getTemplatesPath(templateType: TemplateType): string {
     return publishedBundlePath;
   } else {
     // Use src templates
-    return path.join(__dirname, "..", "..", "..");
+    return path.join(import.meta.dirname, "..", "..", "..");
   }
 }
 
@@ -40,7 +43,7 @@ export async function getTemplateQuestion(templateType: TemplateType) {
   if (templateNames.length === 0) {
     console.error(`No add-on templates currently available`);
     console.log("template path:", templatesPath);
-    console.log("add:template running from:", __dirname);
+    console.log("add:template running from:", import.meta.dirname);
     console.log("CLI running from:", process.cwd());
     process.exit();
   }
@@ -105,7 +108,8 @@ async function addTemplate(projectPath?: string) {
   }
 }
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  // module was not imported but called directly
   addTemplate();
 }
 
@@ -250,17 +254,23 @@ export async function copyTemplates(
         }
       }
 
-      // Merge .gitignore, starting with line 4
       if (fs.existsSync(path.join(templatePath, "_gitignore"))) {
         // Convert to array of lines
         const tplIgnoreArray = fs
           .readFileSync(path.join(templatePath, "_gitignore"))
           .toString()
           .split("\n");
-        if (tplIgnoreArray.length > 3) {
+        const commentIndex = tplIgnoreArray.findIndex((line) =>
+          line.startsWith("### Ignore")
+        );
+        if (commentIndex === -1) {
+          throw new Error("Could not find separator in .gitignore file");
+        }
+        const startLine = commentIndex + 1;
+        if (tplIgnoreArray.length > startLine) {
           // Merge back into string with newlines and append to end of project file
           const tplIgnoreLines = tplIgnoreArray
-            .slice(3)
+            .slice(startLine)
             .reduce<string>((acc, line) => {
               return line.length > 0 ? acc.concat(line + "\n") : "";
             }, "\n");
@@ -309,12 +319,16 @@ export async function copyTemplates(
   // Install new dependencies
   if (interactive && !skipInstall) {
     spinner.start("installing new dependencies with npm");
-    const { stderr, stdout, error } = await exec("npm install", {
-      cwd: projectPath,
-    });
-    if (error) {
-      console.log(error);
-      process.exit();
+    try {
+      await exec("npm install", {
+        cwd: projectPath,
+      });
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        console.log(e.message);
+        console.log(e.stack);
+        process.exit();
+      }
     }
     spinner.succeed("installed new dependencies");
   }

@@ -6,17 +6,17 @@ import {
 } from "slonik";
 import { raw } from "slonik-sql-tag-raw";
 import ora from "ora";
-import inspectTable from "./inspectTable";
+import inspectTable from "./inspectTable.js";
 import cliProgress from "cli-progress";
 import Pbf from "pbf";
-import { FeatureCollection, BBox, Geometry } from "../../src/types"; // Use geojson to avoid
+import { FeatureCollection, BBox, Geometry } from "../../src/types/index.js"; // Use geojson to avoid
 import { FeatureCollection as geobufFC } from "geojson";
 import { lineString } from "@turf/helpers";
 import length from "@turf/length";
 import geobuf from "geobuf";
 import humanizeDuration from "humanize-duration";
 import prettyBytes from "pretty-bytes";
-import expandBBox from "./expand";
+import expandBBox from "./expand.js";
 import z from "zod";
 
 // Warn users if index is over 500kb

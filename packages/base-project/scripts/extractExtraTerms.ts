@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import project from "../project";
+import project from "../project/projectClient.js";
 import fs from "fs-extra";
 
 (async () => {

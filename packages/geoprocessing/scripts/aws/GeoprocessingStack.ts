@@ -10,33 +10,33 @@ import {
   hasClients,
   isSyncFunctionMetadata,
   isAsyncFunctionMetadata,
-} from "../manifest";
+} from "../manifest.js";
 import {
   createPublicBuckets,
   setupBucketFunctionAccess,
-} from "./publicBuckets";
+} from "./publicBuckets.js";
 import {
   createClientResources,
   setupClientFunctionAccess,
-} from "./clientResources";
-import { createFunctions } from "./functionResources";
+} from "./clientResources.js";
+import { createFunctions } from "./functionResources.js";
 
-import { createTables, setupTableFunctionAccess } from "./dynamodb";
-import { createRestApi } from "./restApiGateway";
+import { createTables, setupTableFunctionAccess } from "./dynamodb.js";
+import { createRestApi } from "./restApiGateway.js";
 import {
   createWebSocketApi,
   setupWebSocketFunctionAccess,
-} from "./socketApiGateway";
+} from "./socketApiGateway.js";
 import { RestApi } from "aws-cdk-lib/aws-apigateway";
-import { WebSocketApi } from "@aws-cdk/aws-apigatewayv2-alpha";
+import { WebSocketApi } from "aws-cdk-lib/aws-apigatewayv2";
 import {
   GpPublicBuckets,
   GpProjectFunctions,
   GpDynamoTables,
   SyncFunctionWithMeta,
   AsyncFunctionWithMeta,
-} from "./types";
-import { genOutputMeta } from "./outputMeta";
+} from "./types.js";
+import { genOutputMeta } from "./outputMeta.js";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 
 /** StackProps extended with geoprocessing project metadata */

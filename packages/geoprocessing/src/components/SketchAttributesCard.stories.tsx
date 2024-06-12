@@ -1,10 +1,8 @@
 import React from "react";
-import SketchAttributesCard from "./SketchAttributesCard";
-import { createReportDecorator } from "./storybook";
-import { sampleSketchReportContextValue } from "../context";
-import Translator from "./i18n/TranslatorAsync";
-import ReportDecorator from "./storybook/ReportDecorator";
-import { ReportContext } from "../context/ReportContext";
+import SketchAttributesCard from "./SketchAttributesCard.js";
+import { createReportDecorator } from "./storybook/index.js";
+import { sampleSketchReportContextValue } from "../context/index.js";
+import Translator from "./i18n/TranslatorAsync.js";
 
 const mappings = {
   ACTIVITIES: {
@@ -107,18 +105,6 @@ const nextContextValue = sampleSketchReportContextValue({
     ],
   },
 });
-
-export const legacy = () => (
-  <Translator>
-    <SketchAttributesCard title="Attributes Legacy" mappings={mappings} />
-  </Translator>
-);
-
-export const next = () => (
-  <Translator>
-    <SketchAttributesCard title="Attributes Next" />
-  </Translator>
-);
 
 export default {
   component: SketchAttributesCard,

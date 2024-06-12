@@ -1,10 +1,11 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
 
-import { zeroSketchCollection } from "./zeroGeometry";
-import sk from "../testing/fixtures/sketches";
+import { describe, test, expect } from "vitest";
+import { zeroSketchCollection } from "./zeroGeometry.js";
+import sk from "../testing/fixtures/sketches.js";
 
 describe("zero polygon", () => {
   test("zeroSketch", () => {

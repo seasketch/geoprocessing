@@ -1,9 +1,9 @@
-import { BBox } from "../types";
+import { BBox } from "../types/index.js";
 // @ts-ignore
 import parseGeoraster from "georaster";
 // @ts-ignore
 import geoblaze from "geoblaze";
-import { maxWidth } from "../toolbox";
+import { maxWidth } from "../toolbox/index.js";
 import buffer from "@turf/buffer";
 import bboxPolygon from "@turf/bbox-polygon";
 import bbox from "@turf/bbox";
@@ -71,6 +71,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
         const bufPoly = buffer(bboxPolygon(box), radius, {
           units: "degrees",
         });
+        if (!bufPoly) throw new Error("Failed to buffer window");
         const bufBox = bbox(bufPoly);
         return bboxToPixelEdge(bufBox, georaster);
       }

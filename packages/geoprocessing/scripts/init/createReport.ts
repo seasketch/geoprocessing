@@ -8,7 +8,7 @@ import {
   ExecutionMode,
   metricGroupsSchema,
   GeoprocessingJsonConfig,
-} from "../../src/types";
+} from "../../src/types/index.js";
 import {
   getBlankComponentPath,
   getBlankFunctionPath,
@@ -17,7 +17,8 @@ import {
   getProjectComponentPath,
   getProjectConfigPath,
   getProjectFunctionPath,
-} from "../util/getPaths";
+} from "../util/getPaths.js";
+import { pathToFileURL } from "url";
 
 // CLI questions
 const createReport = async () => {
@@ -82,7 +83,7 @@ const createReport = async () => {
       );
     if (!availableMetricGroups.length)
       throw new Error(
-        "All existing metric groups have reports. Either create a new metric group or delete an existing report, then try again."
+        "All existing metric groups have reports. Either create a new metric group in project/metrics.json or delete an existing report, then try again."
       );
 
     // Only allow creation of reports for unused metric groups (prevents overwriting)
@@ -151,7 +152,7 @@ const createReport = async () => {
   return answers;
 };
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   createReport()
     .then(async (answers) => {
       await makeReport(answers, true, "");
@@ -185,7 +186,7 @@ export async function makeReport(
     options.type === "blank"
       ? getBlankComponentPath()
       : getOceanEEZComponentPath();
-  const templateCompStoriesPath = `${getBlankComponentPath()}/BlankCard.stories.tsx`;
+  const templateCompStoriesPath = `${getBlankComponentPath()}/BlankCard.example-stories.ts`;
 
   if (!fs.existsSync(path.join(basePath, "src"))) {
     fs.mkdirSync(path.join(basePath, "src"));
@@ -202,14 +203,14 @@ export async function makeReport(
     options.type === "raster"
       ? "rasterFunction"
       : options.type === "vector"
-      ? "vectorFunction"
-      : "blankFunction";
+        ? "vectorFunction"
+        : "blankFunction";
   const defaultFuncRegex =
     options.type === "raster"
       ? /rasterFunction/g
       : options.type === "vector"
-      ? /vectorFunction/g
-      : /blankFunction/g;
+        ? /vectorFunction/g
+        : /blankFunction/g;
   const blankFuncRegex = /blankFunction/g;
   const defaultCompName =
     options.type === "raster" || options.type === "vector"
@@ -265,7 +266,7 @@ export async function makeReport(
 
   // Write component stories file
   await fs.writeFile(
-    `${projectComponentPath}/${compName}.stories.tsx`,
+    `${projectComponentPath}/${compName}.example-stories.ts`,
     storiesComponentCode
       .toString()
       .replace(blankCompRegex, `${compName}`)
@@ -297,9 +298,9 @@ export async function makeReport(
       chalk.blue(`Component: ${`${projectComponentPath}/${compName}.tsx`}`)
     );
     console.log(`\nNext Steps:
-    * Add your new <${compName} /> component to your reports by adding it to Viability.tsx or Representation.tsx
+    * Add your new <${compName} /> component to one of your reports (e.g. src/clients/SimpleReport.tsx) or report pages (e.g. src/components/ViabilityPage.tsx)
     * Run 'npm test' to run smoke tests against your new function
-    * View your report using 'npm start-storybook' with smoke test output
+    * View your report using 'npm storybook' with smoke test output
   `);
   }
 }

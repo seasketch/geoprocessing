@@ -1,10 +1,10 @@
 import { config, CloudFront, S3 } from "aws-sdk";
-import { LifecycleRules } from "aws-sdk/clients/s3";
+import { LifecycleRules } from "aws-sdk/clients/s3.js";
 import { Flatbush } from "flatbush";
 import { sync } from "read-pkg-up";
-import slugify from "slugify";
+import slugify from "../../src/util/slugify.js";
 import fetch from "node-fetch";
-import { CompositeIndexDetails } from "./indexes";
+import { CompositeIndexDetails } from "./indexes.js";
 import fs from "fs";
 
 // TODO: Set tags for Cost Center, Author, and Geoprocessing Project using
@@ -31,7 +31,7 @@ export async function getDataSourceVersion(
     const url = objectUrl(name, "metadata.json");
     const res = await fetch(url);
     if (res.ok) {
-      const metadata = await res.json();
+      const metadata: any = await res.json();
       return {
         currentVersion: metadata.version,
         lastPublished: new Date(metadata.published),

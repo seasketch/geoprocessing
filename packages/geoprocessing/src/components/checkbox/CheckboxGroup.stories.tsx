@@ -1,8 +1,8 @@
 import React from "react";
-import ReportDecorator from "../storybook/ReportDecorator";
-import useCheckboxes from "../../hooks/useCheckboxes";
-import CheckboxGroup from "./CheckboxGroup";
-import { Card } from "../Card";
+import ReportDecorator from "../storybook/ReportDecorator.js";
+import useCheckboxes from "../../hooks/useCheckboxes.js";
+import CheckboxGroup from "./CheckboxGroup.js";
+import { Card } from "../Card.js";
 
 export default {
   component: CheckboxGroup,

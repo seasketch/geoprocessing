@@ -6,26 +6,39 @@
   "configurations": [
     
     {
-        "name": "geoprocessing - debug tests",
+        "name": "geoprocessing - debug src tests",
         "type": "node",
         "request": "launch",
         "cwd": "${workspaceFolder}/packages/geoprocessing",
         "runtimeArgs": [
           "--inspect-brk",
-          "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
-          "--group=-e2e"
+          "${workspaceRoot}/node_modules/.bin/vitest",
+          "-c",
+          "vitest.config.node.js"
         ],
         "console": "integratedTerminal",
         "internalConsoleOptions": "neverOpen",
         "port": 9229        
     }, {
-      "name": "geoprocessing - debug tests with pattern",
+      "type": "node",
+      "request": "launch",
+      "name": "geoprocessing - debug current test file",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "smartStep": true,
+      "console": "integratedTerminal"
+    }, {
+      "name": "geoprocessing - debug src tests with pattern",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/packages/geoprocessing",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
+        "${workspaceRoot}/node_modules/.bin/vitest",
+        "-c",
+        "vitest.config.node.js",
         "-t",
         "${input:testNamePattern}"
       ],
@@ -34,29 +47,29 @@
       "port": 9229        
     },
     {
-      "name": "geoprocessing - debug tests scripts",
+      "name": "geoprocessing - debug src e2e tests",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/packages/geoprocessing",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
-        "--projects",
-        "scripts"
+        "${workspaceRoot}/node_modules/.bin/vitest",
+        "-c",
+        "vitest.config.e2e.js"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "port": 9229        
   }, {
-    "name": "geoprocessing - debug tests scripts with pattern",
+    "name": "geoprocessing - debug src e2e tests with pattern",
     "type": "node",
     "request": "launch",
     "cwd": "${workspaceFolder}/packages/geoprocessing",
     "runtimeArgs": [
       "--inspect-brk",
-      "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
-      "--projects",
-      "scripts",
+      "${workspaceRoot}/node_modules/.bin/vitest",
+      "-c",
+      "vitest.config.e2e.js",
       "-t",
       "${input:testNamePattern}"
     ],
@@ -64,50 +77,6 @@
     "internalConsoleOptions": "neverOpen",
     "port": 9229        
   }, {
-      "name": "geoprocessing - debug e2e tests",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/packages/geoprocessing",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
-        "--runInBand",
-        "--group=e2e"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229        
-  }, {
-    "name": "geoprocessing - debug e2e tests with pattern",
-    "type": "node",
-    "request": "launch",
-    "cwd": "${workspaceFolder}/packages/geoprocessing",
-    "runtimeArgs": [
-      "--inspect-brk",
-      "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
-      "--runInBand",
-      "--group=e2e",
-      "-t",
-      "${input:testNamePattern}"
-    ],
-    "console": "integratedTerminal",
-    "internalConsoleOptions": "neverOpen",
-    "port": 9229        
-  }, {
-      "name": "geoprocessing scripts- debug tests",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/packages/geoprocessing",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/packages/geoprocessing/node_modules/.bin/jest",
-        "--projects",
-        "scripts"
-      ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "port": 9229        
-    }, {
       "name": "template-ocean-eez - debug tests",
       "type": "node",
       "request": "launch",
@@ -125,8 +94,8 @@
       "request": "launch",
       "name": "translation - debug importTerms",
       "runtimeArgs": [
-          "-r",
-          "ts-node/register",
+          "--import",
+          "tsx",
       ],
       "args": [
           "${workspaceRoot}/packages/geoprocessing/src/i18n/bin/importTerms.ts"
@@ -136,8 +105,8 @@
     "request": "launch",
     "name": "translation - debug publishTerms",
     "runtimeArgs": [
-        "-r",
-        "ts-node/register",
+        "--import",
+        "tsx",
     ],
     "args": [
         "${workspaceRoot}/packages/geoprocessing/src/i18n/bin/publishTerms.ts"
@@ -160,13 +129,13 @@
 }, {
   "type": "node",
   "request": "launch",
-  "name": "run any ts-node script",
+  "name": "debug single script",
   "runtimeArgs": [
-      "-r",
-      "ts-node/register/transpile-only",
+      "--import",
+      "tsx",
   ],
   "args": [
-      "${workspaceRoot}/packages/geoprocessing/${input:scriptPath}"
+      "${workspaceRoot}/${input:scriptPath}"
   ]
 }
   ],
@@ -175,12 +144,12 @@
       "type": "promptString",
       "id": "scriptPath",
       "description": "",
-      "default": "path/to/script.ts relative to packages/geoprocessing directory"
+      "default": "packages/geoprocessing/scripts/myscript.ts"
     },
     {
       "type": "promptString",
       "id": "testNamePattern",
-      "description": "jest -t 'regex pattern to select tests'",
+      "description": "vitest -t 'regex pattern to select tests'",
       "default": "name of my test"
     },
     {

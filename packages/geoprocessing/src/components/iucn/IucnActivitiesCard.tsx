@@ -1,6 +1,6 @@
 import React from "react";
-import { SketchAttributesCard } from "../SketchAttributesCard";
-import { iucnActivities } from "../../iucn";
+import { SketchAttributesCard } from "../SketchAttributesCard.js";
+import { iucnActivities } from "../../iucn/index.js";
 
 export const IucnActivitiesCard = () => {
   const actMapping = Object.values(iucnActivities)

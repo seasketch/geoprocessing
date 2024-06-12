@@ -1,7 +1,6 @@
 import { Position } from "geojson";
 import { feature, featureCollection } from "@turf/helpers";
 import { getCoords, getType } from "@turf/invariant";
-import { FeatureCollection } from "../types";
 
 /**
  * Cleans geojson coordinates to be within the bounds of the world [-90, -180, 90, 180], so that they don't wrap off the end, and can be split
@@ -116,7 +115,7 @@ function latitude(lat: number) {
     lat = lat % 180;
     if (lat > 90) lat = -180 + lat;
     if (lat < -90) lat = 180 + lat;
-    if (lat === -0) lat = 0;
+    if (lat === 0) lat = Math.abs(lat); // make sure not negative zero
   }
   return lat;
 }
@@ -135,7 +134,7 @@ function longitude(lng: number) {
     lng = lng % 360;
     if (lng > 180) lng = -360 + lng;
     if (lng < -180) lng = 360 + lng;
-    if (lng === -0) lng = 0;
+    if (lng === 0) lng = Math.abs(lng); // make sure not negative zero
   }
   return lng;
 }

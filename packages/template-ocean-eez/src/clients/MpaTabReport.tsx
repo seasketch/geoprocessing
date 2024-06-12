@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { SegmentControl, ReportPage } from "@seasketch/geoprocessing/client-ui";
-import ViabilityPage from "../components/ViabilityPage";
-import RepresentationPage from "../components/RepresentationPage";
+import ViabilityPage from "../components/ViabilityPage.js";
+import RepresentationPage from "../components/RepresentationPage.js";
 import { useTranslation } from "react-i18next";
-import { Translator } from "../components/TranslatorAsync";
+import { Translator } from "../components/TranslatorAsync.js";
 
 const enableAllTabs = false;
 
-const MpaTabReport = () => {
+const BaseReport = () => {
   const { t } = useTranslation();
   const viabilityId = "viability";
   const representationId = "representation";
@@ -35,11 +35,15 @@ const MpaTabReport = () => {
   );
 };
 
-export default function () {
+// Named export loaded by storybook
+export const MpaTabReport = () => {
   // Translator must be in parent FunctionComponent in order for ReportClient to use useTranslate hook
   return (
     <Translator>
-      <MpaTabReport />
+      <BaseReport />
     </Translator>
   );
-}
+};
+
+// Default export lazy-loaded by top-level ReportApp
+export default MpaTabReport;

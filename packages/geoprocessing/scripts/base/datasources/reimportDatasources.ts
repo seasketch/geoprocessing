@@ -1,20 +1,20 @@
-import { createOrUpdateDatasource, readDatasources } from "./datasources";
+import { createOrUpdateDatasource, readDatasources } from "./datasources.js";
 import {
   Datasource,
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
   ImportVectorDatasourceOptions,
   importVectorDatasourceOptionsSchema,
-} from "../../../src/types";
+} from "../../../src/types/index.js";
 import {
   isInternalRasterDatasource,
   isInternalVectorDatasource,
-} from "../../../src/datasources";
-import { genGeojson, genFlatgeobuf } from "./importVectorDatasource";
-import { genVectorConfig } from "./genVectorConfig";
-import { genCog } from "./importRasterDatasource";
-import { genRasterConfig } from "./genRasterConfig";
-import ProjectClientBase from "../../../src/project/ProjectClientBase";
+} from "../../../src/datasources/index.js";
+import { genGeojson, genFlatgeobuf } from "./importVectorDatasource.js";
+import { genVectorConfig } from "./genVectorConfig.js";
+import { genCog } from "./importRasterDatasource.js";
+import { genRasterConfig } from "./genRasterConfig.js";
+import ProjectClientBase from "../../../src/project/ProjectClientBase.js";
 
 /**
  * Reimport one or more datasources into project.
@@ -30,11 +30,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
     matcher?: string[];
   }
 ): Promise<Datasource[]> {
-  const {
-    newDatasourcePath,
-    newDstPath,
-    matcher,
-  } = extraOptions;
+  const { newDatasourcePath, newDstPath, matcher } = extraOptions;
 
   const allDatasources = await readDatasources(newDatasourcePath);
   const filteredDatasources = (() => {

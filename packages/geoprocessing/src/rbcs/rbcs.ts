@@ -1,4 +1,4 @@
-import { MpaClassification, Zone, ZoneColor, ZoneId, ZoneName } from "./types";
+import { MpaClassification, Zone, ZoneColor, ZoneId, ZoneName } from "./types.js";
 
 export const rbcsConstants: Record<string, Record<string, string>> = {
   GEAR_TYPES: {

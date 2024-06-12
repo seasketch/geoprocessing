@@ -75,5 +75,10 @@
   "Viability": "Talafeagai",
   "(Not answered)": "(E le'i taliina)",
   "% Within Plan": "% I totonu o le Fuafuaga",
-  "Results not found": "E le'i maua i'uga"
+  "Results not found": "E le'i maua i'uga",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "Sone Tamaoaiga Fa'apitoa\n(0-200 maila tautai)",
+  "Land": "Laufanua",
+  "Nearshore\n(0-12 nautical miles)": "Talafatai\n(0-12 maila tautai)",
+  "Offshore\n(12-200 nautical miles)": "I fafo\n(12-200 maila tautai)",
+  "Shoreline": "Laufanua"
 }

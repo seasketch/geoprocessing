@@ -1,10 +1,10 @@
 import React from "react";
-import Card from "../Card";
-import { GroupCircleRow } from "./GroupCircleRow";
-import ReportDecorator from "../storybook/ReportDecorator";
-import { Table, Column } from "./Table";
-import fixtures, { HumanUse } from "../../testing/fixtures";
-import { capitalize } from "../../helpers/string";
+import Card from "../Card.js";
+import { GroupCircleRow } from "./GroupCircleRow.js";
+import ReportDecorator from "../storybook/ReportDecorator.js";
+import { Table, Column } from "./Table.js";
+import fixtures, { HumanUse } from "../../testing/fixtures/index.js";
+import { capitalize } from "../../helpers/string.js";
 
 export default {
   component: GroupCircleRow,

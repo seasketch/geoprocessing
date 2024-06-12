@@ -9,14 +9,14 @@ import {
   splitSketchAntimeridian,
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
-import project from "../../project";
+import project from "../../project/projectClient.js";
 import {
   ReportResult,
   rekeyMetrics,
   sortMetrics,
   toNullSketch,
 } from "@seasketch/geoprocessing/client-core";
-import { clipToGeography } from "../util/clipToGeography";
+import { clipToGeography } from "../util/clipToGeography.js";
 
 export async function blankFunction(
   sketch:

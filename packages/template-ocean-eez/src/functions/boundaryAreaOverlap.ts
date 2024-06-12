@@ -18,8 +18,8 @@ import {
 } from "@seasketch/geoprocessing";
 import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import bbox from "@turf/bbox";
-import project from "../../project";
-import { clipToGeography } from "../util/clipToGeography";
+import project from "../../project/projectClient.js";
+import { clipToGeography } from "../util/clipToGeography.js";
 
 const metricGroup = project.getMetricGroup("boundaryAreaOverlap");
 
@@ -74,29 +74,28 @@ export async function boundaryAreaOverlap(
     };
   }, {});
 
-  const metrics: Metric[] = // calculate area overlap metrics for each class
-    (
-      await Promise.all(
-        metricGroup.classes.map(async (curClass) => {
-          const overlapResult = await overlapFeatures(
-            metricGroup.metricId,
-            polysByBoundary[curClass.classId],
-            clippedSketch
-          );
-          return overlapResult.map(
-            (metric): Metric => ({
-              ...metric,
-              classId: curClass.classId,
-              geographyId: curGeography.geographyId,
-            })
-          );
-        })
-      )
-    ).reduce(
-      // merge
-      (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
-      []
-    );
+  const metrics: Metric[] = ( // calculate area overlap metrics for each class
+    await Promise.all(
+      metricGroup.classes.map(async (curClass) => {
+        const overlapResult = await overlapFeatures(
+          metricGroup.metricId,
+          polysByBoundary[curClass.classId],
+          clippedSketch
+        );
+        return overlapResult.map(
+          (metric): Metric => ({
+            ...metric,
+            classId: curClass.classId,
+            geographyId: curGeography.geographyId,
+          })
+        );
+      })
+    )
+  ).reduce(
+    // merge
+    (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
+    []
+  );
 
   return {
     metrics: sortMetrics(rekeyMetrics(metrics)),

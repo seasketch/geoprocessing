@@ -1,15 +1,21 @@
 export PROJECT_PATH=$(pwd)
 set -e
 echo ""
-echo "Starting client dev server..."
-echo ""
-# Determine correct path. Need to be in @seasketch/geoprocessing root
-if test -f "../geoprocessing/scripts/build/start-client.sh"; then
+rm -rf .build-web
+mkdir .build-web
+
+# Determine path to @seasketch/geoprocessing root.  Running script from gp folder will use its dependencies
+GP_PATH=GP_NOT_FOUND
+if test -f "../geoprocessing/scripts/build/build-client.sh"; then
   # in monorepo
-  cd ../geoprocessing
+  GP_PATH=../geoprocessing
 else
   # production reporting tool
-  cd node_modules/@seasketch/geoprocessing
+  GP_PATH=node_modules/@seasketch/geoprocessing
 fi
-DEBUG='express:*' npx webpack serve --config scripts/build/webpack.clients.config.js --mode="development" --client-logging verbose --progress --watch-files "${PROJECT_PATH}/src"
+
+cd "$GP_PATH"
+
+NOMINIFY=$NOMINIFY npx tsx scripts/build/startClient.ts
+
 echo ""

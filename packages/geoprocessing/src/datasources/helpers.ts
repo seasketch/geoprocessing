@@ -21,9 +21,8 @@ import {
   importVectorDatasourceOptionsSchema,
   rasterDatasourceSchema,
   RasterDatasource,
-} from "../types";
-import { DataClass } from "../types";
-import path from "path";
+} from "../types/index.js";
+import { DataClass } from "../types/index.js";
 
 /**
  * Returns the first item that returns true for filter
@@ -245,16 +244,4 @@ export function getDatasetBucketName<C extends BaseImportDatasourceConfig>(
   config: C
 ) {
   return `gp-${config.package.name}-datasets`;
-}
-
-export function getJsonPath(dstPath: string, datasourceId: string) {
-  return path.join(dstPath, datasourceId) + ".json";
-}
-
-export function getFlatGeobufPath(dstPath: string, datasourceId: string) {
-  return path.join(dstPath, datasourceId) + ".fgb";
-}
-
-export function getGeopackagePath(dstPath: string, datasourceId: string) {
-  return path.join(dstPath, datasourceId) + ".gpkg";
 }

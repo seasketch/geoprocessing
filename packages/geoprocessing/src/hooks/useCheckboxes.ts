@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Checkbox } from "../components/checkbox/types";
+import { Checkbox } from "../components/checkbox/types.js";
 
 /**
  * Hook to maintain checkbox state

@@ -1,5 +1,7 @@
 # Changelog
 
+Changelog is no longer maintained.  For the latest see [Github releases](https://github.com/seasketch/geoprocessing/releases)
+
 ## v6.1.2 (1/5/2024)
 
 ### :bug: Bug Fix

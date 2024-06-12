@@ -1,6 +1,6 @@
 import React from "react";
-import Card from "./Card";
-import styled from "styled-components";
+import Card from "./Card.js";
+import { styled } from "styled-components";
 import { useTranslation } from "react-i18next";
 
 // styled-components are needed here to use the ::before pseudo selector
@@ -44,7 +44,25 @@ const ErrorCard = () => {
   );
 };
 
-export class ReportError extends React.Component {
+interface ReportErrorProps {
+  children: React.ReactNode;
+}
+
+interface ReportErrorState {
+  hasError: boolean;
+  error: {
+    message: string;
+    stack: string;
+  };
+  info: {
+    componentStack: string;
+  };
+}
+
+export class ReportError extends React.Component<
+  ReportErrorProps,
+  ReportErrorState
+> {
   state = {
     hasError: false,
     error: { message: "", stack: "" },

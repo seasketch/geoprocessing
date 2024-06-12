@@ -3,12 +3,14 @@ import {
   GEOBLAZE_RASTER_STATS,
   Sketch,
   SketchCollection,
-  MetricDimension,
-} from "../../types";
-import { Feature, MultiPolygon, FeatureCollection } from "@turf/helpers";
+  Feature,
+  MultiPolygon,
+  FeatureCollection,
+  MetricDimension
+} from "../../types/index.js";
 import geoblaze, { Georaster } from "geoblaze";
-import { StatsObject, CalcStatsOptions } from "../../types/geoblaze";
-import { toRasterProjection, defaultStatValues } from "./geoblaze";
+import { StatsObject, CalcStatsOptions } from "../../types/geoblaze.js";
+import { toRasterProjection, defaultStatValues } from "./geoblaze.js";
 
 /**
  * options accepted by rasterStats

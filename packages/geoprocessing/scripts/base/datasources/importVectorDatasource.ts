@@ -1,20 +1,16 @@
-import {
-  getJsonPath,
-  getFlatGeobufPath,
-  getGeopackagePath,
-} from "../../../src/datasources";
+import { getJsonPath, getFlatGeobufPath } from "./pathUtils.js";
 import fs from "fs-extra";
 import { $ } from "zx";
 import {
   InternalVectorDatasource,
   ImportVectorDatasourceOptions,
   ImportVectorDatasourceConfig,
-} from "../../../src/types";
-import { getDatasetBucketName } from "../../../src/datasources";
-import { ProjectClientBase } from "../../../src";
-import { createOrUpdateDatasource } from "./datasources";
-import { publishDatasource } from "./publishDatasource";
-import { genVectorConfig } from "./genVectorConfig";
+} from "../../../src/types/index.js";
+import { getDatasetBucketName } from "../../../src/datasources/index.js";
+import { ProjectClientBase } from "../../../src/index.js";
+import { createOrUpdateDatasource } from "./datasources.js";
+import { publishDatasource } from "./publishDatasource.js";
+import { genVectorConfig } from "./genVectorConfig.js";
 
 export async function importVectorDatasource<C extends ProjectClientBase>(
   projectClient: C,

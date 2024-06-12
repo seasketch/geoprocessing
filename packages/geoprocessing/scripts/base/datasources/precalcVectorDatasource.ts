@@ -5,7 +5,7 @@ import {
   Geography,
   featuresSchema,
   VectorDatasource,
-} from "../../../src/types";
+} from "../../../src/types/index.js";
 import {
   Feature,
   FeatureCollection,
@@ -15,11 +15,11 @@ import {
   createMetric,
   datasourceConfig,
   genZodErrorMessage,
-} from "../../../src";
-import { getFeatures } from "../../../src/dataproviders";
+} from "../../../src/index.js";
+import { getFeatures } from "../../../src/dataproviders/index.js";
 import { featureCollection } from "@turf/helpers";
 import truncate from "@turf/truncate";
-import { getGeographyFeatures } from "../geographies/helpers";
+import { getGeographyFeatures } from "../geographies/helpers.js";
 
 /**
  * Creates precalc metrics for a datasource and geography

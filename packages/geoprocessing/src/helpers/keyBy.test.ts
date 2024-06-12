@@ -1,4 +1,5 @@
-import { keyBy } from "./keyBy";
+import { describe, test, expect } from "vitest";
+import { keyBy } from "./keyBy.js";
 
 const list = [
   { name: "foo", id: 1 },

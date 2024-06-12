@@ -1,4 +1,4 @@
-import { BBox } from "../../src/types";
+import { BBox } from "../../src/types/index.js";
 
 /**
  * Expands bboxA to incorporate bboxB

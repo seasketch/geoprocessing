@@ -1,26 +1,26 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { nestMetrics } from "../../metrics/helpers";
+import { nestMetrics } from "../../metrics/helpers.js";
 import {
   percentWithEdge,
   PercentEdgeOptions,
   keyBy,
   getObjectiveById,
-} from "../../helpers";
-import { MetricGroup, Metric, Objective } from "../../types";
-import { Table, Column } from "../table/Table";
-import { LayerToggle } from "../LayerToggle";
+} from "../../helpers/index.js";
+import { MetricGroup, Metric, Objective } from "../../types/index.js";
+import { Table, Column } from "../table/Table.js";
+import { LayerToggle } from "../LayerToggle.js";
 import { CheckCircleFill, InfoCircleFill } from "@styled-icons/bootstrap";
 import {
   HorizontalStackedBar,
   HorizontalStackedBarProps,
-} from "../chart/HorizontalStackedBar";
-import { ValueFormatter, valueFormatter } from "../../helpers/valueFormatter";
+} from "../chart/HorizontalStackedBar.js";
+import { ValueFormatter, valueFormatter } from "../../helpers/valueFormatter.js";
 
-import { ReportTableStyled } from "../table/ReportTableStyled";
-import styled from "styled-components";
-import { getMetricGroupObjectiveId } from "../../helpers/metricGroup";
-import { Tooltip } from "../Tooltip";
+import { ReportTableStyled } from "../table/ReportTableStyled.js";
+import { styled } from "styled-components";
+import { getMetricGroupObjectiveId } from "../../helpers/metricGroup.js";
+import { Tooltip } from "../Tooltip.js";
 
 export const ClassTableStyled = styled(ReportTableStyled)`
   .styled {

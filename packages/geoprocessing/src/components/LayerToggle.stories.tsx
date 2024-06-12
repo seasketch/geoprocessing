@@ -1,8 +1,8 @@
 import React from "react";
-import Card from "./Card";
-import { LayerToggle } from "./LayerToggle";
-import ReportDecorator from "./storybook/ReportDecorator";
-import { ReportContext, sampleSketchReportContextValue } from "../context";
+import Card from "./Card.js";
+import { LayerToggle } from "./LayerToggle.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
+import { ReportContext, sampleSketchReportContextValue } from "../context/index.js";
 
 export default {
   component: LayerToggle,

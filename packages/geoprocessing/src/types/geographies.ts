@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { bboxSchema } from "./geojson";
+import { bboxSchema } from "./geojson.js";
 
 /**
  * A geographic area (Polygon) for planning.  Typically used to represent a planning area

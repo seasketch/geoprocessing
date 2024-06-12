@@ -1,32 +1,40 @@
 #!/usr/bin/env node
 /* eslint-disable i18next/no-literal-string */
-import * as request from "request";
 import fs from "fs-extra";
 import * as path from "path";
-import { promisify } from "util";
 import config from "../config.json";
-import { Translations } from "./publishTerms";
+import { Translations } from "./publishTerms.js";
 
-const post = promisify(request.post);
-const get = promisify(request.get);
+if (!process.env.POEDITOR_API_TOKEN) {
+  throw new Error("POEDITOR_API_TOKEN is not defined");
+}
+if (!process.env.POEDITOR_PROJECT) {
+  throw new Error("POEDITOR_PROJECT is not defined");
+}
 
 /**
  * Pulls all terms for all languages from POEditor and writes them to the local translation files.
  * This will overwrite any existing translations.
  */
 (async () => {
-  const res = await post({
-    url: `https://api.poeditor.com/v2/terms/list`,
-    form: {
-      api_token: process.env.POEDITOR_API_TOKEN,
-      id: process.env.POEDITOR_PROJECT,
-      language: "en",
-      context: config.remoteContext,
-    },
-  });
-  let data = JSON.parse(res.body);
-  if (data.response.status !== "success") {
-    throw new Error(`API response was ${data.response.status}`);
+  const enTermsForm = new FormData();
+  enTermsForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
+  enTermsForm.append("id", process.env.POEDITOR_PROJECT!);
+  enTermsForm.append("language", "en");
+  enTermsForm.append("context", config.remoteContext);
+
+  const enTermsResponse = await fetch(
+    "https://api.poeditor.com/v2/terms/list",
+    {
+      method: "POST",
+      body: enTermsForm,
+    }
+  );
+
+  const enTermsResult = await enTermsResponse.json();
+
+  if (enTermsResult.response.status !== "success") {
+    throw new Error(`API response was ${enTermsResult.response.status}`);
   }
   const enTerms: {
     term: string;
@@ -43,23 +51,29 @@ const get = promisify(request.get);
     tags: string[];
     comment: string;
     obsolete?: boolean;
-  }[] = data.result.terms;
+  }[] = enTermsResult.result.terms;
   enTerms.sort((a, b) => a.term.localeCompare(b.term));
+
   console.log(
     `Importing strings with context '${config.remoteContext}' to namespace '${config.localNamespace}'`
   );
-  const { statusCode, body } = await post({
-    url: `https://api.poeditor.com/v2/languages/list`,
-    form: {
-      api_token: process.env.POEDITOR_API_TOKEN,
-      id: process.env.POEDITOR_PROJECT,
-    },
-  });
-  data = JSON.parse(body);
-  if (data.response.status !== "success") {
-    throw new Error(`API response was ${data.response.status}`);
+  const langForm = new FormData();
+  langForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
+  langForm.append("id", process.env.POEDITOR_PROJECT!);
+
+  const langResponse = await fetch(
+    `https://api.poeditor.com/v2/languages/list`,
+    {
+      method: "POST",
+      body: langForm,
+    }
+  );
+
+  const langResult = await langResponse.json();
+  if (langResult.response.status !== "success") {
+    throw new Error(`API response was ${langResult.response.status}`);
   }
-  const languages = data.result.languages as {
+  const languages = langResult.result.languages as {
     name: string;
     code: string;
     percentage: number;
@@ -75,25 +89,32 @@ const get = promisify(request.get);
     console.log(
       `${curLang.code}: importing ${curLang.name} (${curLang.percentage}% translated)`
     );
-    const { statusCode, body } = await post({
-      url: `https://api.poeditor.com/v2/projects/export`,
-      form: {
-        api_token: process.env.POEDITOR_API_TOKEN,
-        id: process.env.POEDITOR_PROJECT,
-        language: curLang.code,
-        type: "key_value_json",
-        filters: "translated",
-        order: "terms",
-      },
-    });
-    data = JSON.parse(body);
-    if (data.response.status !== "success") {
-      throw new Error(`API response was ${data.response.status}`);
-    }
-    const translationsResponse = await get(data.result.url);
-    const remoteTranslations = JSON.parse(translationsResponse.body);
 
-    const localePath = path.join(__dirname, "../lang", curLang.code);
+    const curLangInfoForm = new FormData();
+    curLangInfoForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
+    curLangInfoForm.append("id", process.env.POEDITOR_PROJECT!);
+    curLangInfoForm.append("language", curLang.code);
+    curLangInfoForm.append("type", "key_value_json");
+    curLangInfoForm.append("filters", "translated");
+    curLangInfoForm.append("order", "terms");
+
+    const curLangInfoResponse = await fetch(
+      `https://api.poeditor.com/v2/projects/export`,
+      {
+        method: "POST",
+        body: curLangInfoForm,
+      }
+    );
+
+    const projectsResult = await curLangInfoResponse.json();
+
+    if (projectsResult.response.status !== "success") {
+      throw new Error(`API response was ${projectsResult.response.status}`);
+    }
+    const translationsResponse = await fetch(projectsResult.result.url);
+    const remoteTranslations = await translationsResponse.json();
+
+    const localePath = path.join(import.meta.dirname, "../lang", curLang.code);
 
     const localTranslationsPath = `${localePath}/${config.localNamespace}.json`;
     const localTranslations: Translations = (() => {

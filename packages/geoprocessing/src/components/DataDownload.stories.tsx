@@ -1,7 +1,7 @@
 import React from "react";
-import DataDownload from "./DataDownload";
-import fixtures from "../testing/fixtures";
-import { SimpleButton } from "./buttons/SimpleButton";
+import DataDownload from "./DataDownload.js";
+import fixtures from "../testing/fixtures/index.js";
+import { SimpleButton } from "./buttons/SimpleButton.js";
 
 export default {
   component: DataDownload,

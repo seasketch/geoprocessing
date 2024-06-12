@@ -1,4 +1,4 @@
-import { dataClassSchema } from "./dataclass";
+import { dataClassSchema } from "./dataclass.js";
 import { z } from "zod";
 
 //// METRIC GROUP SCHEMA ////

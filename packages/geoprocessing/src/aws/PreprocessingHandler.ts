@@ -7,6 +7,7 @@ import {
   PreprocessingHandlerOptions,
   PreprocessingRequest,
   PreprocessingResponse,
+  Geometry,
   Feature,
   Polygon,
   LineString,
@@ -14,7 +15,7 @@ import {
   Sketch,
   ValidationError,
   JSONValue,
-} from "../types";
+} from "../types/index.js";
 
 const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,7 +28,7 @@ const commonHeaders = {
  * @template G the geometry type of the feature for the geoprocessing function, automatically set from func feature type
  */
 export class PreprocessingHandler<
-  G = Polygon | LineString | Point,
+  G extends Geometry = Polygon | LineString | Point,
   P = Record<string, JSONValue>
 > {
   func: (

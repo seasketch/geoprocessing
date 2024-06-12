@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "../Card";
+import { Card } from "../Card.js";
 
 /**
  * Default decorator.  Create additional building on StoryLayout for more sophisticated needs

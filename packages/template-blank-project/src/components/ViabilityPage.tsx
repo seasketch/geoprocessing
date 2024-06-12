@@ -1,5 +1,5 @@
 import React from "react";
-import { SimpleCard } from "./SimpleCard";
+import { SimpleCard } from "./SimpleCard.js";
 import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
 
 export const ViabilityPage = () => {

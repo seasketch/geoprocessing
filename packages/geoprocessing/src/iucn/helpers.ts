@@ -1,6 +1,6 @@
-import { Sketch } from "../types";
-import { getJsonUserAttribute } from "../helpers";
-import { IucnCategoryCombined, iucnCategoriesMap } from "./iucnProtectionLevel";
+import { Sketch } from "../types/index.js";
+import { getJsonUserAttribute } from "../helpers/index.js";
+import { IucnCategoryCombined, iucnCategoriesMap } from "./iucnProtectionLevel.js";
 
 /**
  * Given list of allowed activities in the sketch, returns the highest category allowable

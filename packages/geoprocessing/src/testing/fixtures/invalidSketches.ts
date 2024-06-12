@@ -1,5 +1,6 @@
-import { feature, Feature, Polygon } from "@turf/helpers";
-import { genSampleSketch } from "../../helpers";
+import { feature } from "@turf/helpers";
+import { Feature, Polygon } from "../../types/geojson.js";
+import { genSampleSketch } from "../../helpers/index.js";
 
 export const selfCrossingPolygon: Feature<Polygon> = feature({
   type: "Polygon",

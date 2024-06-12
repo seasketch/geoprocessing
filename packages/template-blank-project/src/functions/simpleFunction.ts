@@ -11,8 +11,8 @@ import {
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import turfArea from "@turf/area";
-import project from "../../project";
-import { clipToGeography } from "../util/clipToGeography";
+import project from "../../project/projectClient.js";
+import { clipToGeography } from "../util/clipToGeography.js";
 import { getFeatures, loadCog } from "@seasketch/geoprocessing/dataproviders";
 // @ts-ignore
 import geoblaze from "geoblaze";

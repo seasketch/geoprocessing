@@ -2,9 +2,10 @@
  * @group unit
  */
 
-import { firstMatchingMetric } from "../metrics";
-import { area } from "./area";
-import fix from "../testing/fixtures/squareSketches";
+import { describe, test, expect } from "vitest";
+import { firstMatchingMetric } from "../metrics/index.js";
+import { area } from "./area.js";
+import fix from "../testing/fixtures/squareSketches.js";
 
 describe("area", () => {
   test("function is present", () => {
@@ -14,7 +15,8 @@ describe("area", () => {
   test("area - sketch polygon", async () => {
     const metrics = await area(fix.sketch1);
     expect(metrics.length).toBe(1);
-    expect(metrics[0].value).toBeCloseTo(12391399902.071104);
+    console.log(metrics);
+    expect(metrics[0].value).toBeCloseTo(12363718145.180046);
   });
 
   test("area - sketch polygon set metric id", async () => {

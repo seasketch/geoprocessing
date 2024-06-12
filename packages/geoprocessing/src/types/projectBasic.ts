@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { bboxSchema } from "./geojson";
+import { bboxSchema } from "./geojson.js";
 
 //// SCHEMA ////
 

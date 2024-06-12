@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [20.x]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - name: Check node version
@@ -24,7 +24,7 @@ jobs:
       - name: Check npm version
         run: npm -v
       - name: Restore npm cache if possible
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             node_modules

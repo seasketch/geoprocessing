@@ -1,19 +1,20 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
 
-import { SketchCollection, NullSketchCollection } from "../types";
+import { describe, test, expect } from "vitest";
+import { SketchCollection, NullSketchCollection } from "../types/index.js";
 import {
   includeVirtualSketch,
   isTruthyAttributeValue,
-} from "./includeVirtualSketch";
+} from "./includeVirtualSketch.js";
 import {
   getUserAttribute,
   isSketchCollection,
   genSketch,
   genSketchCollection,
-} from "./sketch";
+} from "./sketch.js";
 import { polygon } from "@turf/helpers";
 
 describe("isTrueAttributeValue", () => {
@@ -53,7 +54,7 @@ const mergeColl = genSketchCollection([
 ]);
 
 describe("includeVirtualSketch", () => {
-  test.only("should be included if valid yes attribute", async () => {
+  test.skip("should be included if valid yes attribute", async () => {
     const sketch = genSketch({ name: "test1" });
     const coll = genSketchCollection([sketch], { name: "testColl" });
     coll.properties.userAttributes = [
@@ -74,7 +75,7 @@ describe("includeVirtualSketch", () => {
     expect(mergedColl.bbox).toEqual([0, 0, 2, 2]); // verify expanded bbox
   });
 
-  test.only("should not be included if invalid yes attribute", async () => {
+  test("should not be included if invalid yes attribute", async () => {
     const sketch = genSketch({ name: "test1" });
     const coll = genSketchCollection([sketch], { name: "testColl" });
     coll.properties.userAttributes = [
@@ -93,7 +94,7 @@ describe("includeVirtualSketch", () => {
     expect(mergedColl.features[0].properties.name).toBe("test1");
   });
 
-  test.only("should not be included if missing attribute", async () => {
+  test("should not be included if missing attribute", async () => {
     const sketch = genSketch({ name: "test1" });
     const coll = genSketchCollection([sketch], { name: "testColl" });
     coll.properties.userAttributes = [];

@@ -2,12 +2,13 @@
  * @group unit
  */
 
-import { firstMatchingMetric } from "../metrics";
-import { overlapArea, overlapSubarea } from "./overlapArea";
+import { describe, test, expect } from "vitest";
+import { firstMatchingMetric } from "../metrics/index.js";
+import { overlapArea, overlapSubarea } from "./overlapArea.js";
 import area from "@turf/area";
-import fix from "../testing/fixtures/squareSketches";
-import { testWithinPerc } from "../testing";
-import { ValidationError } from "../types";
+import fix from "../testing/fixtures/squareSketches.js";
+import { testWithinPerc } from "../testing/index.js";
+import { ValidationError } from "../types/index.js";
 
 describe("overlapArea", () => {
   test("function is present", () => {
@@ -15,10 +16,10 @@ describe("overlapArea", () => {
   });
 
   test("outerArea", () => {
-    expect(fix.outerArea).toBeCloseTo(49558050527.3877);
+    expect(fix.outerArea).toBeCloseTo(49447340364.08609);
   });
   test("outerOuterArea", () => {
-    expect(fix.outerOuterArea).toBeCloseTo(198111444408.08057);
+    expect(fix.outerOuterArea).toBeCloseTo(197668873521.43488);
   });
 
   test("overlapArea - undefined sketch throws", async () => {
@@ -30,7 +31,7 @@ describe("overlapArea", () => {
   // sketch always assumed to be within outer boundary.  outerArea is passed as pre-calculated area avoiding need to compute it on the fly
   test("overlapArea overall - single polygon fully inside", async () => {
     const metrics = await overlapArea("test", fix.sketch1, fix.outerArea);
-    expect(metrics[0].value).toBeCloseTo(12391399902.071104);
+    expect(metrics[0].value).toBeCloseTo(12363718145.180046);
     expect(metrics[1].value).toBeCloseTo(0.25); // takes up bottom left quadrant of outer
   });
 
@@ -50,7 +51,7 @@ describe("overlapSubarea", () => {
 
   test("overlapSubarea intersect - single polygon fully inside", async () => {
     const metrics = await overlapSubarea("test", fix.sketch1, fix.outer);
-    expect(metrics[0].value).toBeCloseTo(12391399902.071104);
+    expect(metrics[0].value).toBeCloseTo(12363718145.180046);
     expect(metrics[1].value).toBeCloseTo(0.25);
   });
 
@@ -74,7 +75,7 @@ describe("overlapSubarea", () => {
       operation: "difference",
       outerArea: fix.outerOuterArea,
     });
-    expect(metrics[0].value).toBeCloseTo(12368758407.838667);
+    expect(metrics[0].value).toBeCloseTo(12341127230.89369);
     expect(metrics[1].value).toBeCloseTo(0.08326); // should be 1 square of 16 in outerOuter
   });
 

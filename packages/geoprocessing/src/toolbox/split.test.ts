@@ -1,17 +1,10 @@
-/**
- * @group unit
- */
-
 import { describe, test, expect } from "vitest";
 
 import { splitFeatureAntimeridian, splitSketchAntimeridian } from "./split.js";
 import { feature } from "@turf/helpers";
 import { Feature, Polygon, Sketch } from "../types/index.js";
-import {
-  toFeaturePolygonArray,
-  toSketchArray,
-} from "../helpers/index.js";
-import { toJsonFile } from "../helpers/fs.js"
+import { toFeaturePolygonArray, toSketchArray } from "../helpers/index.js";
+import { toJsonFile } from "../helpers/fs.js";
 import {
   genSampleSketch,
   genSampleSketchCollectionFromSketches,

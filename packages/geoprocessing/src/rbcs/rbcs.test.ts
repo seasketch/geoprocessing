@@ -1,7 +1,3 @@
-/**
- * @group unit
- */
-
 import { classifyZone, rbcsConstants, classifyMPA } from "./rbcs.js";
 import { Zone } from "./types.js";
 

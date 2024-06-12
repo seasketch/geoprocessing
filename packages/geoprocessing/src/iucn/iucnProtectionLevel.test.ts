@@ -1,7 +1,3 @@
-/**
- * @group unit
- */
-
 import { getIucnCategoryForActivities } from "./helpers.js";
 
 describe("IUCN protection level", () => {

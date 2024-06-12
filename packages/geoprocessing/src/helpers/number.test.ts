@@ -1,8 +1,3 @@
-/**
- * @vitest-environment node
- * @group unit
- */
-
 import { describe, test, expect } from "vitest";
 import { roundDecimal } from "./number.js";
 

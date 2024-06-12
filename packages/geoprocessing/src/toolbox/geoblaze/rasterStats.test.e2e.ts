@@ -1,7 +1,3 @@
-/**
- * @vitest-environment node
- * @group e2e
- */
 import { describe, test, expect } from "vitest";
 import { rasterStats } from "./rasterStats.js";
 //@ts-ignore

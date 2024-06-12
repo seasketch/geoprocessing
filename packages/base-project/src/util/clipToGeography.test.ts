@@ -1,8 +1,3 @@
-/**
- * @vitest-environment node
- * @group unit
- */
-
 import { clipToGeography } from "./clipToGeography.js";
 import project from "../../project/projectClient.js";
 import bbox from "@turf/bbox";

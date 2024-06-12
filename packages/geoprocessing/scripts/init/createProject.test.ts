@@ -1,7 +1,3 @@
-/**
- * @group scripts/project
- */
-
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,7 +10,7 @@ import {
   datasourcesSchema,
 } from "../../src/types/index.js";
 import { isVectorDatasource } from "../../src/datasources/index.js";
-import { describe, it, expect, afterAll } from "vitest"
+import { describe, it, expect, afterAll } from "vitest";
 
 const rootPath = `${import.meta.dirname}/../__test__`;
 

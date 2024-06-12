@@ -1,7 +1,3 @@
-/**
- * @group scripts/cdk
- */
-
 import { App } from "aws-cdk-lib";
 import "@aws-cdk/assert/jest";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
@@ -9,7 +5,7 @@ import config from "./config.js";
 import createTestProjectManifest from "../testing/createTestProjectManifest.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
-import { describe, it, expect, afterAll } from "vitest"
+import { describe, it, expect, afterAll } from "vitest";
 
 const rootPath = `${import.meta.dirname}/../__test__`;
 const projectName = "sync-geoprocessor-only";

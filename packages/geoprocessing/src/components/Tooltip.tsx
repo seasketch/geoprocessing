@@ -20,27 +20,30 @@ export interface TooltipProps {
   placement?: popper.Placement;
   /* Distance pixels to offset from children */
   offset?: { horizontal: number; vertical: number };
+  /* Width in pixels of tooltip */
+  width?: number;
 }
 
 export const TooltipContainer = styled.div<TooltipContainerProps>`
   visibility: ${({ $visible }) => ($visible ? "visible" : "hidden")};
-  z-index: 100;
-  width: 100%;
   max-width: 200px;
   flex-direction: column;
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+  font-weight: normal;
 `;
 
 export const TooltipTrigger = styled.button`
   border: none;
   background: none;
-  font-family: sans-serif;
+  font-weight: inherit;
+  font-size: inherit;
+  color: inherit;
 `;
 
 export const TooltipItem = styled.div`
-  font-family: sans-serif;
   text-align: center;
   padding: 5px;
 `;
@@ -50,12 +53,13 @@ export const Tooltip = ({
   placement = "auto",
   offset = { horizontal: 0, vertical: 0 },
   text,
+  width = 200,
 }: TooltipProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   /** Used for updates */
   const referenceRef = useRef(null);
-  const popperRef = useRef(null);
+  const popperRef = useRef<HTMLDivElement>(null);
 
   const { horizontal, vertical } = offset;
   const { styles, attributes } = usePopper(
@@ -77,16 +81,19 @@ export const Tooltip = ({
 
   const handleMouseEnter = () => {
     setIsVisible(true);
+    if (popperRef.current) popperRef.current.style.zIndex = "100";
   };
 
   const handleMouseLeave = () => {
     setIsVisible(false);
+    if (popperRef.current) popperRef.current.style.zIndex = "-100";
   };
 
   return (
     <React.StrictMode>
       <TooltipTrigger
         ref={referenceRef}
+        style={children.props.style}
         onMouseOver={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -94,10 +101,13 @@ export const Tooltip = ({
       </TooltipTrigger>
       <div
         ref={popperRef}
-        style={{ zIndex: 100, ...styles.popper }}
+        style={{ zIndex: -100, ...styles.popper }}
         {...attributes.popper}
       >
-        <TooltipContainer style={styles.offset} $visible={isVisible}>
+        <TooltipContainer
+          style={{ ...styles.offset, width: width }}
+          $visible={isVisible}
+        >
           <TooltipItem>{text}</TooltipItem>
         </TooltipContainer>
       </div>

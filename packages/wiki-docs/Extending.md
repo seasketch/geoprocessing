@@ -30,11 +30,13 @@ Most things exported via the `client-core` and `client-ui` modules can be extend
 - The [rbcs](https://github.com/seasketch/geoprocessing/tree/dev/packages/geoprocessing/src/rbcs) module is a great example of extending all of these to create things specific to use of the `regulation-based classification system`.
 - The ClassTable component is an extension of the base[Table](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/table/Table.tsx) component, capable of displaying metrics for one or more classes of data. And you can layer this multiple levels deep as the [SketchClassTable](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/table/SketchClassTable.tsx) component is an extension of the [ClassTable](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/table/ClassTable.tsx) component, capable of displaying metrics for all classes, for a SketchCollection with one or more sketches.
 
-# I need to print my reports
+# I need to print my reports / save reports to PDF
 
 Enabling printing of reports involves adding a state variable `isPrinting` which edits the UI so all our React elements are visible for the print dialog.
 
 To begin, download and add [Print.tsx](https://github.com/seasketch/fsm-nearshore-reports/blob/main/src/util/Print.tsx) to your `src/util` directory. This file contains much of the code you'll need to set up printing.
+
+To include a small map overview of your sketch in your printed reports, you'll also need to download [PrintMap.tsx](https://github.com/seasketch/fsm-nearshore-reports/blob/main/src/components/PrintMap.tsx) to your `src/components` directory, and [printMap.ts](https://github.com/seasketch/fsm-nearshore-reports/blob/main/src/functions/printMap.ts) and it's test file [printMapSmoke.test.ts](https://github.com/seasketch/fsm-nearshore-reports/blob/main/src/functions/printMapSmoke.test.ts) to your `src/functions` directory.
 
 Run the following to install `react-to-print`:
 
@@ -107,8 +109,13 @@ Now that we've configured what elements to print, we need to add a print button 
 Finally, we need to attach `printRef` to our reports component. We also want to set all report pages to appear when `isPrinting` is true.
 
 ```typescript
-<div ref={printRef} color={isPrinting ? "#FFF" : "inherit"}>
-  {isPrinting && <SketchAttributes {...attributes} />}
+<div
+  ref={printRef}
+  style={{ backgroundColor: isPrinting ? "#FFF" : "inherit" }}
+>
+  <div style={{ display: isPrinting ? "block" : "none" }}>
+    <SketchAttributes {...attributes} />
+  </div>
   <ReportPage hidden={!isPrinting && tab !== viabilityId}>
     <ViabilityPage />
   </ReportPage>

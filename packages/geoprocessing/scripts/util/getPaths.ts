@@ -1,4 +1,3 @@
-import path from "path";
 //// GEOPROCESSING LIBRARY PATHS ////
 
 // Functions that return relatives paths to access assets within
@@ -11,9 +10,9 @@ import path from "path";
  * geoprocessing path is the top-levl of src folder (2 folders up)
  */
 export function getGeoprocessingPath() {
-  return /dist/.test(__dirname)
-    ? `${__dirname}/../../..`
-    : `${__dirname}/../..`;
+  return /dist/.test(import.meta.dirname)
+    ? `${import.meta.dirname}/../../..`
+    : `${import.meta.dirname}/../..`;
 }
 
 /**
@@ -24,9 +23,9 @@ export function getGeoprocessingPath() {
  * package
  */
 export function getBaseProjectPath() {
-  return /dist/.test(__dirname)
-    ? `${__dirname}/../../base-project`
-    : `${__dirname}/../../../base-project`;
+  return /dist/.test(import.meta.dirname)
+    ? `${import.meta.dirname}/../../base-project`
+    : `${import.meta.dirname}/../../../base-project`;
 }
 
 export function getBaseFunctionPath() {
@@ -36,9 +35,9 @@ export function getBaseFunctionPath() {
 //// TEMPLATE PATHS ////
 
 export function getBlankProjectPath() {
-  return /dist/.test(__dirname)
-    ? `${__dirname}/../../templates/starter-templates/template-blank-project`
-    : `${__dirname}/../../../templates/starter-templates/template-blank-project`;
+  return /dist/.test(import.meta.dirname)
+    ? `${import.meta.dirname}/../../templates/starter-templates/template-blank-project`
+    : `${import.meta.dirname}/../../../templates/starter-templates/template-blank-project`;
 }
 
 export function getBlankFunctionPath() {
@@ -54,9 +53,9 @@ export function getBlankComponentPath() {
 }
 
 export function getOceanEEZProjectPath() {
-  return /dist/.test(__dirname)
-    ? `${__dirname}/../../templates/starter-templates/template-ocean-eez`
-    : `${__dirname}/../../../templates/starter-templates/template-ocean-eez`;
+  return /dist/.test(import.meta.dirname)
+    ? `${import.meta.dirname}/../../templates/starter-templates/template-ocean-eez`
+    : `${import.meta.dirname}/../../../templates/starter-templates/template-ocean-eez`;
 }
 
 export function getOceanEEZFunctionPath() {

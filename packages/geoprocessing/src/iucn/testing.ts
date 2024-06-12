@@ -1,4 +1,4 @@
-import { Sketch } from "../types";
+import { Sketch } from "../types/index.js";
 
 export const genSketchWithActivities = (activities: string[]): Sketch => {
   return {

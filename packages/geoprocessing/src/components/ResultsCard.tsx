@@ -1,19 +1,20 @@
 import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import Card, { CardProps } from "./Card";
-import { useFunction } from "../hooks/useFunction";
-import styled from "styled-components";
-import Skeleton from "./Skeleton";
-import { ProgressBar, ProgressBarWrapper } from "./ProgressBar";
-import { ReportError } from "./ReportError";
-import { GeoprocessingRequestParams } from "../types";
+import Card, { CardProps } from "./Card.js";
+import { useFunction } from "../hooks/useFunction.js";
+import { styled } from "styled-components";
+import Skeleton from "./Skeleton.js";
+import { ProgressBar, ProgressBarWrapper } from "./ProgressBar.js";
+import { ReportError } from "./ReportError.js";
+import { GeoprocessingRequestParams } from "../types/service.js";
 
-export interface ResultsCardProps<T> extends CardProps {
+export interface ResultsCardProps<T> {
   functionName: string;
   children: (results: T) => ReactNode;
   skeleton?: ReactNode;
   title?: string | ReactNode;
   titleStyle?: React.CSSProperties;
+  style?: object;
   /** Assumes caller will provide card in children to use results (e.g. ToolbarCard with DataDownload). Shows a simple card until loading complete */
   useChildCard?: boolean;
   /** Additional runtime parameters from report client for geoprocessing function. */
@@ -121,7 +122,7 @@ export function ResultsCard<T>({
       <Card {...cardProps}>
         {skeleton || <DefaultSkeleton />}
         <ProgressBarWrapper>
-          <ProgressBar duration={taskEstimate} />
+          <ProgressBar $duration={taskEstimate} />
         </ProgressBarWrapper>
       </Card>
     );

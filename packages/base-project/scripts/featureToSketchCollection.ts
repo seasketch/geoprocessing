@@ -5,8 +5,10 @@ import {
   featureToSketchCollection,
 } from "@seasketch/geoprocessing";
 import fs from "fs-extra";
+import { pathToFileURL } from "url";
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  // module was not imported but called directly
   const usage =
     "Converts geojson polygon feature collection to sketch collection \n Usage: convertToSketch [INFILE] [OUTFILE] [NAME_PROPERTY]. \n INFILE expected to be polygon feature collection. \n NAME is optional feature property to assign sketch name from.  If not property by that name in feature then used as a name prefix [PREFIX]-1, [PREFIX-2], otherwise sketch names assigned as 'Area-1', 'Area-2'";
 

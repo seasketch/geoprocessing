@@ -1,7 +1,7 @@
 import React from "react";
-import Card from "./Card";
-import { Pill, GroupPill, GreenPill, WarningPill } from "./Pill";
-import ReportDecorator from "./storybook/ReportDecorator";
+import Card from "./Card.js";
+import { Pill, GroupPill, GreenPill, WarningPill } from "./Pill.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
 
 export default {
   component: Pill,

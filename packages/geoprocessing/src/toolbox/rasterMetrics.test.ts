@@ -1,12 +1,13 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
+import { describe, test, expect } from "vitest";
 import parseGeoraster from "georaster";
-import { rasterMetrics } from "./rasterMetrics";
-import fix from "../testing/fixtures/sketches";
-import { firstMatchingMetric } from "../metrics";
-import { Feature, Polygon } from "../types";
+import { rasterMetrics } from "./rasterMetrics.js";
+import fix from "../testing/fixtures/sketches.js";
+import { firstMatchingMetric } from "../metrics/index.js";
+import { Feature, Polygon } from "../types/index.js";
 import { feature } from "@turf/helpers";
 
 // bbox  - [xmin, ymin, xmax, ymax]

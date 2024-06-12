@@ -1,8 +1,8 @@
 import {
   ProjectClientConfig,
   ProjectClientBase,
-} from "../../../src/project/ProjectClientBase";
-import { globalDatasources } from "../../../src/datasources/global";
+} from "../../../src/project/ProjectClientBase.js";
+import { globalDatasources } from "../../../src/datasources/global.js";
 
 // Config constructed just for working with global datasources
 const internalConfig: ProjectClientConfig = {

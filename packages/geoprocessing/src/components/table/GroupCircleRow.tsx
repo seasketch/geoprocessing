@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { GroupCircle } from "../Circle";
+import { GroupCircle } from "../Circle.js";
 
 export interface GroupCircleRowProps {
   group: string;

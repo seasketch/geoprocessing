@@ -19,7 +19,7 @@ Each geoprocessing project provides a number of commands to get work done. Some 
 
 Testing uses [Storybook](https://storybook.js.org/), [Jest](https://jestjs.io/) and the [React testing library](https://testing-library.com/docs/react-testing-library/intro/).
 
-- `start-storybook` - loads stories for your reports and other UI components in your default web browser using a local storybook dev server.
+- `storybook` - loads stories for your reports and other UI components in your default web browser using a local storybook dev server.
   - Story files must be named `*.stories.tsx` to be picked up.
   - Storybook updates automatically as you make and save changes to your components.
 - `start-data` - runs a local file server, serving up the cloud-optimized datasources in `data/dist`.
@@ -37,15 +37,13 @@ Testing uses [Storybook](https://storybook.js.org/), [Jest](https://jestjs.io/) 
 
 ```typescript
 /**
- * @jest-environment node
- * @group smoke
+ * @vitest-environment node
  */
 ```
 
 - `test:unit:matching` - executes unit tests matching the given substring.
-
   - You will need to run `start-data` command manually before running this command if your functions accesses datasources published by this project (not global datasources).
-  - See Jest [--testNamePattern](https://jestjs.io/docs/cli#--testnamepatternregex)
+  - See Vitest [-t](https://vitest.dev/guide/cli#options)
   - e.g. `npm run test:smoke:matching boundaryAreaOverlapSmoke` where smoke test is coded as follows
 
 ```typescript

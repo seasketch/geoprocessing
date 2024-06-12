@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
-import { CircleProps, StyledCircle } from "../../components/Circle";
-import styled from "styled-components";
+import { CircleProps, StyledCircle } from "../../components/Circle.js";
+import { styled } from "styled-components";
 
 const StyledClassCircle = styled(StyledCircle)`
   border: 3px solid white;
@@ -31,10 +31,10 @@ export const PointyCircle: React.FunctionComponent<CircleProps> = ({
 };
 
 export interface StyledTwoColorPointyCircleProps {
-  bottomColor?: string;
-  topColor?: string;
-  perc: number;
-  size?: number;
+  $bottomColor?: string;
+  $topColor?: string;
+  $perc: number;
+  $size?: number;
 }
 
 export interface TwoColorPointyCircleProps {
@@ -52,26 +52,27 @@ export interface TwoColorPointyCircleProps {
 export const StyledTwoColorPointyCircle = styled.span<StyledTwoColorPointyCircleProps>`
   background-color: green;
   background-image: linear-gradient(
-    ${(props) => props.bottomColor || "#aaa"}
-      ${(props) => `${100 - props.perc}%`},
-    ${(props) => props.topColor || "green"} ${(props) => `${100 - props.perc}%`}
+    ${(props) => props.$bottomColor || "#aaa"}
+      ${(props) => `${100 - props.$perc}%`},
+    ${(props) => props.$topColor || "green"}
+      ${(props) => `${100 - props.$perc}%`}
   );
   padding: 3px 5px;
-  border-radius: ${(props) => (props.size ? `${props.size}px` : "17px")};
-  min-width: ${(props) => (props.size ? `${props.size}px` : "17px")};
-  max-width: ${(props) => (props.size ? `${props.size}px` : "17px")};
-  height: ${(props) => (props.size ? `${props.size + 4}px` : "21px")};
+  border-radius: ${(props) => (props.$size ? `${props.$size}px` : "17px")};
+  min-width: ${(props) => (props.$size ? `${props.$size}px` : "17px")};
+  max-width: ${(props) => (props.$size ? `${props.$size}px` : "17px")};
+  height: ${(props) => (props.$size ? `${props.$size + 4}px` : "21px")};
   display: flex;
   justify-content: center;
   align-items: center;
   border: 3px solid white;
   border-top-left-radius: ${(props) =>
-    props.size ? `${props.size}px` : "17px"};
+    props.$size ? `${props.$size}px` : "17px"};
   border-top-right-radius: 0;
   border-bottom-left-radius: ${(props) =>
-    props.size ? `${props.size}px` : "17px"};
+    props.$size ? `${props.$size}px` : "17px"};
   border-bottom-right-radius: ${(props) =>
-    props.size ? `${props.size}px` : "17px"};
+    props.$size ? `${props.$size}px` : "17px"};
   box-shadow: 1px 1px 3px 2px rgba(0, 0, 0, 0.15);
   color: white;
   font-weight: bold;
@@ -79,16 +80,17 @@ export const StyledTwoColorPointyCircle = styled.span<StyledTwoColorPointyCircle
 `;
 
 /** Two-color reg-based classification circle for collection index value */
-export const TwoColorPointyCircle: React.FunctionComponent<TwoColorPointyCircleProps> =
-  ({ children, topColor, bottomColor, perc, size }) => {
-    return (
-      <StyledTwoColorPointyCircle
-        topColor={topColor}
-        bottomColor={bottomColor}
-        perc={perc}
-        size={size}
-      >
-        {children}
-      </StyledTwoColorPointyCircle>
-    );
-  };
+export const TwoColorPointyCircle: React.FunctionComponent<
+  TwoColorPointyCircleProps
+> = ({ children, topColor, bottomColor, perc, size }) => {
+  return (
+    <StyledTwoColorPointyCircle
+      $topColor={topColor}
+      $bottomColor={bottomColor}
+      $perc={perc}
+      $size={size}
+    >
+      {children}
+    </StyledTwoColorPointyCircle>
+  );
+};

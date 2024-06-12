@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 import { usePopper } from "react-popper";
 import popper from "@popperjs/core";
 
 export interface TooltipContainerProps {
   /* Whether tooltip contain is visible or not */
-  visible: boolean;
+  $visible: boolean;
 }
 
 /**
@@ -25,7 +25,7 @@ export interface TooltipProps {
 }
 
 export const TooltipContainer = styled.div<TooltipContainerProps>`
-  visibility: ${({ visible }) => (visible ? "visible" : "hidden")};
+  visibility: ${({ $visible }) => ($visible ? "visible" : "hidden")};
   max-width: 200px;
   flex-direction: column;
   background-color: #fff;
@@ -106,7 +106,7 @@ export const Tooltip = ({
       >
         <TooltipContainer
           style={{ ...styles.offset, width: width }}
-          visible={isVisible}
+          $visible={isVisible}
         >
           <TooltipItem>{text}</TooltipItem>
         </TooltipContainer>

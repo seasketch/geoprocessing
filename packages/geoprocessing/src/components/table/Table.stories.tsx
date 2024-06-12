@@ -1,13 +1,13 @@
 import React, { CSSProperties } from "react";
-import Table, { Column } from "./Table";
-import FilterSelectTable, { FilterSelect } from "./FilterSelectTable";
-import { ReportDecorator, CardDecorator } from "../storybook";
+import Table, { Column } from "./Table.js";
+import FilterSelectTable, { FilterSelect } from "./FilterSelectTable.js";
+import { ReportDecorator, CardDecorator } from "../storybook/index.js";
 import fixtures, {
   HumanUse,
   Categorical,
   getRandomCategorical,
-} from "../../testing/fixtures";
-import styled from "styled-components";
+} from "../../testing/fixtures/index.js";
+import { styled } from "styled-components";
 
 export default {
   component: Table,

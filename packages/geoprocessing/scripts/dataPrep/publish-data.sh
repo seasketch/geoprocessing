@@ -3,11 +3,15 @@ set -e
 
 echo "PROJECT_PATH: $PROJECT_PATH"
 
-# Default to assuming running from project, but check if running from within monorepo like example project
-GP_PATH="node_modules/@seasketch/geoprocessing"
-if test -f "$GP_PATH"; then
-    GP_PATH="../geoprocessing"
+# Default to assuming running from installed project, but check if running from within monorepo like example project
+INSTALLED_GP_PATH="node_modules/@seasketch/geoprocessing"
+MONOREPO_GP_PATH="../geoprocessing"
+GP_PATH=$INSTALLED_GP_PATH
+
+if test -d "$INSTALLED_GP_PATH"; then
+    GP_PATH=$INSTALLED_GP_PATH
+elif test -d "$MONOREPO_GP_PATH"; then
+    GP_PATH=$MONOREPO_GP_PATH
 fi
 
-echo ""
 node "${GP_PATH}/dist/scripts/dataPrep/publishData.js" $PROJECT_PATH

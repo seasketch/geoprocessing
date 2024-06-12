@@ -75,5 +75,10 @@
   "Viability": "ވިޔަބިލިޓީ",
   "(Not answered)": "(ޖަވާބެއް ނުދޭ)",
   "% Within Plan": "ޕްލޭންގެ ތެރެއިން %",
-  "Results not found": "ނަތީޖާ ނުފެނުނު"
+  "Results not found": "ނަތީޖާ ނުފެނުނު",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "އެކްސްކްލޫސިވް އިކޮނޮމިކް ޒޯން\n(0-200 ނޯޓިކަލް މޭލު)",
+  "Land": "ބިން",
+  "Nearshore\n(0-12 nautical miles)": "ކައިރި އައްސޭރި\n(0-12 ނޯޓިކަލް މޭލު)",
+  "Offshore\n(12-200 nautical miles)": "އޮފްޝޯ\n(12-200 ނޯޓިކަލް މޭލު)",
+  "Shoreline": "ޝޯރލައިން"
 }

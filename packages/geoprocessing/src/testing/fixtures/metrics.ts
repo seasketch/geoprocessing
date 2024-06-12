@@ -1,5 +1,5 @@
-import { createMetrics } from "../../metrics";
-import { DataClass, Metric, MetricGroup, Objective } from "../../types";
+import { createMetrics } from "../../metrics/index.js";
+import { DataClass, Metric, MetricGroup, Objective } from "../../types/index.js";
 
 export const simpleObjectives: Objective[] = [
   {

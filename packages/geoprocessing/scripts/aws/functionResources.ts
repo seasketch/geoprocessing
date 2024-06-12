@@ -1,4 +1,4 @@
-import { GeoprocessingStack } from "./GeoprocessingStack";
+import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import { Duration } from "aws-cdk-lib";
 import { Function, Code } from "aws-cdk-lib/aws-lambda";
 import {
@@ -7,19 +7,19 @@ import {
   Role,
   ServicePrincipal,
 } from "aws-cdk-lib/aws-iam";
-import { SyncFunctionWithMeta, AsyncFunctionWithMeta } from "./types";
+import { SyncFunctionWithMeta, AsyncFunctionWithMeta } from "./types.js";
 import {
   ProcessingFunctionMetadata,
   GeoprocessingFunctionMetadata,
-} from "../manifest";
+} from "../manifest.js";
 
-import config from "./config";
+import config from "./config.js";
 import {
   GpProjectFunctions,
   GpSocketFunctions,
   GpDynamoTables,
   GpPublicBuckets,
-} from "./types";
+} from "./types.js";
 
 export interface CreateFunctionOptions {
   clientDistributionUrl?: string;
@@ -27,6 +27,11 @@ export interface CreateFunctionOptions {
   tables: GpDynamoTables;
 }
 import path from "path";
+
+const GP_ROOT = process.env.GP_ROOT;
+
+// Once sync functions create, contains policies to invoke all sync functions
+const invokeSyncLambdaPolicies: PolicyStatement[] = [];
 
 /**
  * Create Lambda function constructs
@@ -47,7 +52,9 @@ export const createFunctions = (
 const createRootFunction = (stack: GeoprocessingStack): Function => {
   return new Function(stack, "GpServiceRootFunction", {
     runtime: config.NODE_RUNTIME,
-    code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+    code: Code.fromAsset(
+      path.join(stack.props.projectPath, ".build", "serviceHandlers")
+    ),
     functionName: `gp-${stack.props.projectName}-metadata`,
     handler: "serviceHandlers.projectMetadata",
   });
@@ -65,7 +72,9 @@ export const createSocketFunctions = (
   if (stack.hasAsyncFunctions()) {
     const subscribe = new Function(stack, "GpSubscribeHandler", {
       runtime: config.NODE_RUNTIME,
-      code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+      code: Code.fromAsset(
+        path.join(stack.props.projectPath, ".build", "connect")
+      ),
       handler: "connect.connectHandler",
       functionName: `gp-${stack.props.projectName}-subscribe`,
       memorySize: config.SOCKET_HANDLER_MEMORY,
@@ -75,7 +84,9 @@ export const createSocketFunctions = (
 
     const unsubscribe = new Function(stack, "GpUnsubscribeHandler", {
       runtime: config.NODE_RUNTIME,
-      code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+      code: Code.fromAsset(
+        path.join(stack.props.projectPath, ".build", "disconnect")
+      ),
       handler: "disconnect.disconnectHandler",
       functionName: `gp-${stack.props.projectName}-unsubscribe`,
       memorySize: config.SOCKET_HANDLER_MEMORY,
@@ -85,7 +96,9 @@ export const createSocketFunctions = (
 
     const send = new Function(stack, "GpSendHandler", {
       runtime: config.NODE_RUNTIME,
-      code: Code.fromAsset(path.join(stack.props.projectPath, ".build/")),
+      code: Code.fromAsset(
+        path.join(stack.props.projectPath, ".build", "sendmessage")
+      ),
       handler: "sendmessage.sendHandler",
       functionName: `gp-${stack.props.projectName}-send`,
       memorySize: config.SOCKET_HANDLER_MEMORY,
@@ -117,10 +130,15 @@ const createSyncFunctions = (
   return syncFunctionMetas.map(
     (functionMeta: ProcessingFunctionMetadata, index: number) => {
       const rootPointer = getHandlerPointer(functionMeta);
+      const pkgName = getHandlerPkgName(functionMeta);
       const functionName = `gp-${stack.props.projectName}-sync-${functionMeta.title}`;
+      const codePath = path.join(stack.props.projectPath, ".build", pkgName);
+      // console.log("codePath", codePath);
+      // console.log("rootPointer", rootPointer);
+
       const func = new Function(stack, `${functionMeta.title}GpSyncHandler`, {
         runtime: config.NODE_RUNTIME,
-        code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+        code: Code.fromAsset(codePath),
         handler: rootPointer,
         functionName,
         memorySize: functionMeta.memory,
@@ -129,6 +147,15 @@ const createSyncFunctions = (
         ),
         description: functionMeta.description,
       });
+
+      // Allow sync functions to invoked by other functions
+      const syncInvokeLambdaPolicy = new PolicyStatement({
+        effect: Effect.ALLOW,
+        resources: [func.functionArn],
+        actions: ["lambda:InvokeFunction"],
+      });
+      invokeSyncLambdaPolicies.push(syncInvokeLambdaPolicy);
+
       return {
         func,
         meta: functionMeta,
@@ -148,6 +175,7 @@ const createAsyncFunctions = (
   return asyncFunctionMetas.map(
     (functionMeta: GeoprocessingFunctionMetadata, index: number) => {
       const rootPointer = getHandlerPointer(functionMeta);
+      const pkgName = getHandlerPkgName(functionMeta);
       const startFunctionName = `gp-${stack.props.projectName}-async-${functionMeta.title}-start`;
       const runFunctionName = `gp-${stack.props.projectName}-async-${functionMeta.title}-run`;
 
@@ -160,7 +188,9 @@ const createAsyncFunctions = (
         `${functionMeta.title}GpAsyncHandlerStart`,
         {
           runtime: config.NODE_RUNTIME,
-          code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+          code: Code.fromAsset(
+            path.join(stack.props.projectPath, ".build", pkgName)
+          ),
           handler: rootPointer,
           functionName: startFunctionName,
           memorySize: functionMeta.memory,
@@ -182,7 +212,9 @@ const createAsyncFunctions = (
         `${functionMeta.title}GpAsyncHandlerRun`,
         {
           runtime: config.NODE_RUNTIME,
-          code: Code.fromAsset(path.join(stack.props.projectPath, ".build")),
+          code: Code.fromAsset(
+            path.join(stack.props.projectPath, ".build", pkgName)
+          ),
 
           handler: rootPointer,
           functionName: runFunctionName,
@@ -198,7 +230,7 @@ const createAsyncFunctions = (
       );
 
       // Allow start function to invoke run function
-      const asyncLambdaPolicy = new PolicyStatement({
+      const invokeAsyncRunLambdaPolicy = new PolicyStatement({
         effect: Effect.ALLOW,
         resources: [runFunc.functionArn],
         actions: ["lambda:InvokeFunction"],
@@ -206,8 +238,21 @@ const createAsyncFunctions = (
       const asyncLambdaRole = new Role(stack, "GpAsyncLambdaRole" + index, {
         assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
       });
-      asyncLambdaRole.addToPolicy(asyncLambdaPolicy);
-      startFunc.addToRolePolicy(asyncLambdaPolicy);
+      asyncLambdaRole.addToPolicy(invokeAsyncRunLambdaPolicy);
+      startFunc.addToRolePolicy(invokeAsyncRunLambdaPolicy);
+
+      // Allow async lambdas to invoke sync lambdas (workers)
+      invokeSyncLambdaPolicies.forEach((curInvokeSyncLambdaPolicy, index2) => {
+        const syncLambdaRole = new Role(
+          stack,
+          "GpSyncLambdaRole" + index + "_" + index2,
+          {
+            assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
+          }
+        );
+        syncLambdaRole.addToPolicy(curInvokeSyncLambdaPolicy);
+        runFunc.addToRolePolicy(curInvokeSyncLambdaPolicy);
+      });
 
       return {
         startFunc,
@@ -225,4 +270,13 @@ export function getHandlerPointer(funcMeta: ProcessingFunctionMetadata) {
   return `${funcMeta.handlerFilename
     .replace(/\.js$/, "")
     .replace(/\.ts$/, "")}Handler.handler`;
+}
+
+/**
+ * Returns build package name to look for handler
+ */
+export function getHandlerPkgName(funcMeta: ProcessingFunctionMetadata) {
+  return `${funcMeta.handlerFilename
+    .replace(/\.js$/, "")
+    .replace(/\.ts$/, "")}`;
 }

@@ -1,5 +1,6 @@
-import { PreprocessingHandler } from "./PreprocessingHandler";
-import { ValidationError } from "../types";
+import { describe, test, expect } from "vitest";
+import { PreprocessingHandler } from "./PreprocessingHandler.js";
+import { ValidationError } from "../types/index.js";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
 import deepEqual from "fast-deep-equal";
 

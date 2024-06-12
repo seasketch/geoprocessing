@@ -1,15 +1,14 @@
 import inquirer from "inquirer";
-// @ts-ignore
-import licenses from "spdx-license-ids";
+import licenses from "spdx-license-ids/index.json" with { type: "json" };
+
 import fuzzy from "fuzzy-tools";
 import autocomplete from "inquirer-autocomplete-prompt";
 import awsRegions from "aws-regions";
-import util from "util";
-import { getTemplateQuestion } from "../template/addTemplate";
-import { createProject, CreateProjectMetadata } from "./createProject";
-import { eezColl } from "../global/datasources/mr-eez";
-
-const exec = util.promisify(require("child_process").exec);
+import { getTemplateQuestion } from "../template/addTemplate.js";
+import { createProject, CreateProjectMetadata } from "./createProject.js";
+import { eezColl } from "../global/datasources/mr-eez.js";
+import { pathToFileURL } from 'url'
+import userMeta from 'user-meta'
 
 const regions = awsRegions.list({ public: true }).map((v) => v.code);
 
@@ -18,7 +17,6 @@ const licenseDefaults = ["MIT", "UNLICENSED", "BSD-3-Clause", "APACHE-2.0"];
 const allLicenseOptions = [...licenses, "UNLICENSED"];
 
 async function init(gpVersion?: string) {
-  const userMeta = require("user-meta");
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
 
@@ -206,7 +204,8 @@ async function init(gpVersion?: string) {
   await createProject(answers);
 }
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  // module was not imported but called directly
   init();
 }
 

@@ -1,9 +1,10 @@
 import React, { ReactElement, useMemo, ReactNode } from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
-import styled from "styled-components";
-import { ChevronLeft, ChevronRight } from "@styled-icons/boxicons-solid";
-import DataDownload, { DataDownloadProps } from "../DataDownload";
-import Toolbar from "../Toolbar";
+import { styled } from "styled-components";
+import { ChevronLeft } from "@styled-icons/bootstrap/ChevronLeft/ChevronLeft.esm.js";
+import { ChevronRight } from "@styled-icons/bootstrap/ChevronRight/ChevronRight.esm.js";
+import DataDownload, { DataDownloadProps } from "../DataDownload.js";
+import Toolbar from "../Toolbar.js";
 
 import { TableOptions } from "react-table";
 
@@ -25,9 +26,8 @@ declare module "react-table" {
    * Unused plugings are commented out
    */
 
-  export interface TableOptions<
-    D extends object = {}
-  > extends UseExpandedOptions<D>,
+  export interface TableOptions<D extends object = {}>
+    extends UseExpandedOptions<D>,
       // UseFiltersOptions<D>,
       UseGlobalFiltersOptions<D>,
       // UseGroupByOptions<D>,
@@ -291,64 +291,79 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
       )}
       <table className={props.className} {...getTableProps()}>
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  // Return an array of prop objects and react-table will merge them appropriately
-                  {...column.getHeaderProps([
-                    {
-                      className: column.className,
-                      style: column.style,
-                    },
-                    columnProps(column), // user passed
-                    headerProps(column), // user passed
-                  ])}
-                >
-                  <div>
-                    {column.canGroupBy ? (
-                      <span {...column.getGroupByToggleProps()}>
-                        {column.isGrouped ? "🛑 " : "👊 "}
-                      </span>
-                    ) : null}
-                    <span {...column.getSortByToggleProps()}>
-                      {column.render("Header")}
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <span className="up-arrow" />
-                        ) : (
-                          <span className="down-arrow" />
-                        )
-                      ) : (
-                        ""
-                      )}
-                    </span>
-                  </div>
-                  {/* Render the columns filter UI */}
-                  {/* <div>{column.canFilter ? column.render("Filter") : null}</div> */}
-                </th>
-              ))}
-            </tr>
-          ))}
+          {headerGroups.map((headerGroup) => {
+            const { key: headerGroupPropKey, ...otherHeaderGroupProps } =
+              headerGroup.getHeaderGroupProps();
+            return (
+              <tr key={headerGroupPropKey} {...otherHeaderGroupProps}>
+                {headerGroup.headers.map((column) => {
+                  const { key: headerPropKey, ...otherHeaderProps } =
+                    column.getHeaderProps([
+                      {
+                        className: column.className,
+                        style: column.style,
+                      },
+                      columnProps(column), // user passed
+                      headerProps(column), // user passed
+                    ]);
+                  return (
+                    <th
+                      // Return an array of prop objects and react-table will merge them appropriately
+                      {...otherHeaderProps}
+                      key={headerPropKey}
+                    >
+                      <div>
+                        {column.canGroupBy ? (
+                          <span {...column.getGroupByToggleProps()}>
+                            {column.isGrouped ? "🛑 " : "👊 "}
+                          </span>
+                        ) : null}
+                        <span {...column.getSortByToggleProps()}>
+                          {column.render("Header")}
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <span className="up-arrow" />
+                            ) : (
+                              <span className="down-arrow" />
+                            )
+                          ) : (
+                            ""
+                          )}
+                        </span>
+                      </div>
+                      {/* Render the columns filter UI */}
+                      {/* <div>{column.canFilter ? column.render("Filter") : null}</div> */}
+                    </th>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </thead>
         <tbody {...getTableBodyProps()}>
           {page.map((row) => {
             prepareRow(row);
+            const { key: otherRowPropKey, ...otherRowProps } = row.getRowProps(
+              rowProps(row) || {}
+            );
             return (
-              <tr {...row.getRowProps(rowProps(row) || {})}>
+              <tr key={otherRowPropKey} {...otherRowProps}>
                 {row.cells.map((cell) => {
                   let cellVal = cell.value;
+                  const { key: otherCellPropKey, ...otherCellProps } =
+                    cell.getCellProps([
+                      {
+                        className: cell.column.className,
+                        style: cell.column.style,
+                      },
+                      columnProps(cell.column),
+                      cellProps(cell),
+                    ]);
                   return (
                     <td
+                      key={otherCellPropKey}
                       // Return an array of prop objects and react-table will merge them appropriately
-                      {...cell.getCellProps([
-                        {
-                          className: cell.column.className,
-                          style: cell.column.style,
-                        },
-                        columnProps(cell.column),
-                        cellProps(cell),
-                      ])}
+                      {...otherCellProps}
                     >
                       {cell.isGrouped ? (
                         // If it's a grouped cell, add an expander and row count

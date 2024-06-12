@@ -75,5 +75,10 @@
   "Viability": "Na Bula Tudei",
   "(Not answered)": "(Sega ni saumi)",
   "% Within Plan": "% Ena Loma ni iTuvatuva",
-  "Results not found": "Sega ni kune na kena macala"
+  "Results not found": "Sega ni kune na kena macala",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "iWasewase Vakailavo Vakatabakidua\n(0-200 na maile wai)",
+  "Land": "Vanua",
+  "Nearshore\n(0-12 nautical miles)": "Baravi\n(0-12 na maile e wai)",
+  "Offshore\n(12-200 nautical miles)": "E baravi\n(12-200 na maile wai)",
+  "Shoreline": "Baravi"
 }

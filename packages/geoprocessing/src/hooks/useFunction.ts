@@ -1,14 +1,15 @@
-import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks";
+import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks.js";
 import { useState, useContext, useEffect } from "react";
-import { useDeepEqualMemo } from "./useDeepEqualMemo";
-import { ReportContext } from "../context";
+import { useDeepEqualMemo } from "./useDeepEqualMemo.js";
+import { ReportContext } from "../context/index.js";
 import {
   GeoprocessingRequest,
   GeoprocessingProject,
   GeoprocessingRequestParams,
-} from "../types";
-import { runTask, finishTask, genTaskCacheKey } from "../clients/tasks";
-import cloneDeep from "lodash/cloneDeep";
+} from "../types/index.js";
+import { runTask, finishTask } from "../clients/tasks.js";
+import { genTaskCacheKey } from "../helpers/genTaskCacheKey.js";
+import cloneDeep from "lodash/cloneDeep.js";
 
 interface PendingRequest {
   functionName: string;
@@ -295,9 +296,10 @@ export const useFunction = <ResultType>(
         (output) => output.functionName === functionTitle
       );
       if (!data && !context.simulateLoading && !context.simulateError) {
-        throw new Error(
-          `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`
-        );
+        setState({
+          loading: false,
+          error: `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`,
+        });
       }
       // create a fake GeoprocessingTask record and set state, returning value
       setState({

@@ -1,8 +1,8 @@
 import React from "react";
-import { RbcsObjective } from "../types";
-import { OBJECTIVE_YES, OBJECTIVE_NO, ObjectiveAnswer } from "../../types";
-import { percentWithEdge } from "../../helpers";
-import { ObjectiveStatus } from "../../components/ObjectiveStatus";
+import { RbcsObjective } from "../types.js";
+import { OBJECTIVE_YES, OBJECTIVE_NO, ObjectiveAnswer } from "../../types/index.js";
+import { percentWithEdge } from "../../helpers/index.js";
+import { ObjectiveStatus } from "../../components/ObjectiveStatus.js";
 
 export type RbcsNetworkObjectiveRenderMsgFunction = (
   objective: RbcsObjective,

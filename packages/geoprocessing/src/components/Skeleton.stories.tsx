@@ -1,7 +1,7 @@
 import React from "react";
-import Card from "./Card";
-import { Skeleton } from "./Skeleton";
-import ReportDecorator from "./storybook/ReportDecorator";
+import Card from "./Card.js";
+import { Skeleton } from "./Skeleton.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
 
 export default {
   component: Skeleton,

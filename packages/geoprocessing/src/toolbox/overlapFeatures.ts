@@ -1,4 +1,10 @@
-import { Sketch, SketchCollection, Polygon, Feature, Metric } from "../types";
+import {
+  Sketch,
+  SketchCollection,
+  Polygon,
+  Feature,
+  Metric,
+} from "../types/index.js";
 import {
   toSketchArray,
   isSketchCollection,
@@ -6,9 +12,10 @@ import {
   clip,
   clipMultiMerge,
   roundDecimal,
-} from "../helpers";
-import { createMetric } from "../metrics";
-import { featureCollection, MultiPolygon } from "@turf/helpers";
+} from "../helpers/index.js";
+import { createMetric } from "../metrics/index.js";
+import { MultiPolygon } from "../types/geojson.js";
+import { featureCollection } from "@turf/helpers";
 import { featureEach } from "@turf/meta";
 import area from "@turf/area";
 import flatten from "@turf/flatten";

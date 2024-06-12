@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import Dropdown, { DropdownProps } from "./Dropdown";
-import { SimpleButtonStyled } from "./buttons/SimpleButton";
-import styled from "styled-components";
+import Dropdown, { DropdownProps } from "./Dropdown.js";
+import { SimpleButtonStyled } from "./buttons/SimpleButton.js";
+import { styled } from "styled-components";
 import { Parser, transforms } from "json2csv";
-import useSketchProperties from "../hooks/useSketchProperties";
-import { CloudDownload } from "@styled-icons/boxicons-solid";
-import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical/ThreeDotsVertical";
+import useSketchProperties from "../hooks/useSketchProperties.js";
+import { ThreeDotsVertical } from "@styled-icons/bootstrap/ThreeDotsVertical/ThreeDotsVertical.esm.js";
+import { CloudArrowDown } from "@styled-icons/bootstrap/CloudArrowDown/CloudArrowDown.esm.js";
 import { useTranslation } from "react-i18next";
 
 // Strictly limit format and data types accepted
 const SUPPORTED_FORMATS = ["json", "csv"] as const;
-export type SUPPORTED_FORMAT = typeof SUPPORTED_FORMATS[number];
+export type SUPPORTED_FORMAT = (typeof SUPPORTED_FORMATS)[number];
 export type StringOrNumber = string | number;
 
 export interface DataFormatters {
@@ -87,9 +87,6 @@ export const DataDownload = ({
       const [{ name }] = useSketchProperties();
       return name;
     } catch (error) {
-      console.info(
-        `ReportContext is not available. sketchName not added for "${filename}"`
-      );
       return "";
     }
   })();
@@ -129,11 +126,11 @@ export const DataDownload = ({
     <a
       key={index}
       download={`${fullFilename}.${dOption.extension}`}
-      href={data && data.length > 0 ? dOption.url : "javascript:;"}
+      href={data && data.length > 0 ? dOption.url : "#"}
       aria-disabled={!data || data.length === 0}
     >
       <DownloadButtonStyled>
-        <CloudDownload color="#999" size="20" style={{ paddingRight: 5 }} />
+        <CloudArrowDown color="#999" size="20" style={{ paddingRight: 5 }} />
         <span style={{ verticalAlign: "middle" }}>{dOption.label}</span>
       </DownloadButtonStyled>
     </a>

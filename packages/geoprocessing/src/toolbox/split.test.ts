@@ -2,18 +2,23 @@
  * @group unit
  */
 
-import { splitFeatureAntimeridian, splitSketchAntimeridian } from "./split";
+import { describe, test, expect } from "vitest";
+
+import { splitFeatureAntimeridian, splitSketchAntimeridian } from "./split.js";
 import { feature } from "@turf/helpers";
-import { Feature, Polygon, Sketch } from "../types";
-import { toFeaturePolygonArray, toJsonFile, toSketchArray } from "../helpers";
+import { Feature, Polygon, Sketch } from "../types/index.js";
+import {
+  toFeaturePolygonArray,
+  toSketchArray,
+} from "../helpers/index.js";
+import { toJsonFile } from "../helpers/fs.js"
 import {
   genSampleSketch,
   genSampleSketchCollectionFromSketches,
   isSketch,
   isSketchCollection,
-} from "../helpers/sketch";
+} from "../helpers/sketch.js";
 import deepEqual from "fast-deep-equal";
-import bboxPolygon from "@turf/bbox-polygon";
 
 describe("splitFeature", () => {
   test("splitFeature Polygon antimeridian", async () => {
@@ -134,7 +139,7 @@ describe("splitSketch", () => {
         ],
       ]);
     } else {
-      fail("Should not get here");
+      throw new Error("Should not get here");
     }
   });
 
@@ -180,7 +185,7 @@ describe("splitSketch", () => {
         ],
       ]);
     } else {
-      fail("Should not reach here");
+      throw new Error("Should not reach here");
     }
   });
 });

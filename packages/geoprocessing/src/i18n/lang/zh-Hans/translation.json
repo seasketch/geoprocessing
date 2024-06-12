@@ -75,5 +75,10 @@
   "Viability": "可行性",
   "(Not answered)": "（无解答）",
   "% Within Plan": "计划内百分比",
-  "Results not found": "未找到结果"
+  "Results not found": "未找到结果",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "专属经济区\n（0-200海里）",
+  "Land": "土地",
+  "Nearshore\n(0-12 nautical miles)": "近岸\n（0-12海里）",
+  "Offshore\n(12-200 nautical miles)": "离岸\n（12-200海里）",
+  "Shoreline": "海岸线"
 }

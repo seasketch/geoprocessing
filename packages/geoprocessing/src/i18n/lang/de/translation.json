@@ -75,5 +75,10 @@
   "Viability": "Lebensfähigkeit",
   "(Not answered)": "(Nicht beantwortet)",
   "% Within Plan": "% Innerhalb des Plans",
-  "Results not found": "Ergebnisse nicht gefunden"
+  "Results not found": "Ergebnisse nicht gefunden",
+  "Exclusive Economic Zone\n(0-200 nautical miles)": "Ausschließlichen Wirtschaftszone\n(0-200 Seemeilen)",
+  "Land": "Land",
+  "Nearshore\n(0-12 nautical miles)": "In Küstennähe\n(0-12 Seemeilen)",
+  "Offshore\n(12-200 nautical miles)": "Off-Shore\n(12-200 Seemeilen)",
+  "Shoreline": "Küstenlinie"
 }

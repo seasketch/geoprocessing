@@ -7,15 +7,16 @@
     "description":  "Report suite with tab navigation",
     "source": "src/clients/TabReport.tsx"
   },{
-    "name": "SizeReport",
+    "name": "SimpleReport",
     "description":  "Sketch size",
-    "source": "src/clients/SizeReport.tsx"
+    "source": "src/clients/SimpleReport.tsx"
   }],
   "preprocessingFunctions": [
     "src/functions/clipToLand.ts",
     "src/functions/clipToOcean.ts"
   ],
   "geoprocessingFunctions": [
-    "src/functions/area.ts"
+    "src/functions/simpleFunction.ts",
+    "src/functions/blankFunction.ts"
   ]
 }

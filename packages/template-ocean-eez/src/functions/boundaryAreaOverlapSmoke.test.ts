@@ -1,12 +1,12 @@
 /**
- * @jest-environment node
- * @group smoke
+ * @vitest-environment node
  */
-import { boundaryAreaOverlap } from "./boundaryAreaOverlap";
+import { boundaryAreaOverlap } from "./boundaryAreaOverlap.js";
 import {
   getExamplePolygonSketchAll,
   writeResultOutput,
 } from "@seasketch/geoprocessing/scripts/testing";
+import { describe, test, expect } from "vitest";
 
 describe("Basic smoke tests", () => {
   test("handler function is present", () => {

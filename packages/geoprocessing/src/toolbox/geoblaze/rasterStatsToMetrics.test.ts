@@ -1,9 +1,10 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  * @group unit
  */
-import { rasterStatsToMetrics } from "./rasterStatsToMetrics";
-import { StatsObject } from "../../types";
+import { describe, test, expect } from "vitest";
+import { rasterStatsToMetrics } from "./rasterStatsToMetrics.js";
+import { StatsObject } from "../../types/index.js";
 import deepEqual from "fast-deep-equal";
 
 describe("rasterStatsToMetrics", () => {

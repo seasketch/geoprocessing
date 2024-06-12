@@ -1,9 +1,12 @@
 import React from "react";
-import { RbcsMpaObjectiveStatus } from "./RbcsMpaObjectiveStatus";
-import { ReportDecorator, CardDecorator } from "../../components/storybook";
-import { percentWithEdge, getKeys } from "../../helpers";
-import { RbcsObjective, RbcsMpaProtectionLevel } from "../types";
-import { OBJECTIVE_YES, OBJECTIVE_NO } from "../../types";
+import { RbcsMpaObjectiveStatus } from "./RbcsMpaObjectiveStatus.js";
+import {
+  ReportDecorator,
+  CardDecorator,
+} from "../../components/storybook/index.js";
+import { percentWithEdge, getKeys } from "../../helpers/index.js";
+import { RbcsObjective, RbcsMpaProtectionLevel } from "../types.js";
+import { OBJECTIVE_YES, OBJECTIVE_NO } from "../../types/index.js";
 
 export default {
   component: RbcsMpaObjectiveStatus,
@@ -29,11 +32,11 @@ export const simple = () => {
   return (
     <>
       <p>Based on the following objective {JSON.stringify(objective)}:</p>
-      {levels.map((level) => (
-        <>
+      {levels.map((level, index) => (
+        <div key={index}>
           <p>{`If MPA has protection level: ${level}`}</p>
           <RbcsMpaObjectiveStatus level={level} objective={objective} />
-        </>
+        </div>
       ))}
     </>
   );
@@ -44,15 +47,15 @@ export const customMessageRenderProp = () => {
   return (
     <>
       <p>Based on the following objective {JSON.stringify(objective)}:</p>
-      {levels.map((level) => (
-        <>
+      {levels.map((level, index) => (
+        <div key={index}>
           <p>{`If MPA has protection level: ${level}`}</p>
           <RbcsMpaObjectiveStatus
             level={level}
             objective={objective}
             renderMsg={() => customRenderMsg(objective, level)}
           />
-        </>
+        </div>
       ))}
     </>
   );

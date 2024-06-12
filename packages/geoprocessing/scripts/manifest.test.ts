@@ -8,6 +8,7 @@ import {
   getAsyncFunctionMetadata,
 } from "./manifest.js";
 import createTestProjectManifest from "./testing/createTestProjectManifest.js";
+import { describe, test, expect } from "vitest";
 
 describe("manifest helpers", () => {
   test("manifest has no clients", async () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment node
- * @group smoke
- */
 import {
   getExamplePolygonSketchAll,
   writeResultOutput,

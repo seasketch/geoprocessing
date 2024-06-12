@@ -1,8 +1,3 @@
-/**
- * @vitest-environment node
- * @group e2e
- */
-
 // @ts-ignore
 import geoblaze from "geoblaze";
 

@@ -1,7 +1,3 @@
-/**
- * @group unit
- */
-
 import {
   flattenByGroupAllClass,
   flattenByGroupSketchAllClass,

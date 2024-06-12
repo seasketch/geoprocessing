@@ -1,7 +1,3 @@
-/**
- * @group scripts/cdk
- */
-
 import { App } from "aws-cdk-lib";
 import "@aws-cdk/assert/jest";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";

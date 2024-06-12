@@ -1,6 +1,5 @@
 /**
  * @vitest-environment node
- * @group e2e
  */
 
 // @ts-ignore

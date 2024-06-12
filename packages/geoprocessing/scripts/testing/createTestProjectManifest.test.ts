@@ -1,7 +1,3 @@
-/**
- * @group scripts/testing
- */
-
 import createTestProjectManifest from "./createTestProjectManifest.js";
 
 describe("createTestProjectManifest", () => {

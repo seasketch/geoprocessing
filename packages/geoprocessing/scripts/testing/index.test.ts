@@ -1,7 +1,3 @@
-/**
- * @group scripts/testing
- */
-
 import {
   getExampleSketches,
   getExamplePolygonSketches,

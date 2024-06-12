@@ -1,8 +1,3 @@
-/**
- * @vitest-environment node
- * @group unit
- */
-
 import { describe, test, expect } from "vitest";
 import { zeroSketchCollection } from "./zeroGeometry.js";
 import sk from "../testing/fixtures/sketches.js";

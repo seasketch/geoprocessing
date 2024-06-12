@@ -1,7 +1,3 @@
-/**
- * @group unit
- */
-
 import { describe, test, expect } from "vitest";
 import { booleanOverlap } from "./booleanOverlap.js";
 import { genSampleSketch } from "../helpers/index.js";

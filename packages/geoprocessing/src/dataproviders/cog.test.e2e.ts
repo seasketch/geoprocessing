@@ -1,7 +1,3 @@
-/**
- * @vitest-environment node
- * @group e2e
- */
 import { describe, test, expect } from "vitest";
 import { loadCog, loadCogWindow } from "./cog.js";
 import { Feature, Polygon, Sketch } from "../types/index.js";

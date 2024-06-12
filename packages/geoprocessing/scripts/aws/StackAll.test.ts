@@ -1,7 +1,3 @@
-/**
- * @group scripts/cdk
- */
-
 import { App } from "aws-cdk-lib";
 import { SynthUtils } from "@aws-cdk/assert";
 import "@aws-cdk/assert/jest";
@@ -10,7 +6,7 @@ import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
 import config from "./config.js";
 import path from "node:path";
-import { describe, test, expect, afterAll } from "vitest"
+import { describe, test, expect, afterAll } from "vitest";
 
 const rootPath = `${import.meta.dirname}/../__test__`;
 const projectName = "all";

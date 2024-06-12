@@ -85,21 +85,9 @@ Test groups:
 - `e2e`: end-to-end tests that test larger parts of the system. May make network calls, make system calls, or expect a web server on a specific port.  These tests may take longer, or only run locally, and therefore are often excluded by a test command, or not run in CI.  Be aware of this and have a regiment of running e2e tests.
 - `smoke`: tests that make sure a functions/components main functionality is working (e.g. reference to hardware that doesn't smoke when you turn it on).  The core geoprocessing library doesn't really have tests with this group name but it could, opting to just call them unit tests, but in project-space, every geoprocessing function has an accompanying smoke test, and suite of sketches for running against to verify successful output.
 
-If your test is a unit test, then name it with the `.test.ts` extension like `myModule.test.ts`.  If your test is an end-to-end test, meaning it makes network calls, requires a test data server to be running, or is a higher-level test of many lower-level modules, then name it with the `.e2e.test.ts` extension like `myModule.e2e.test.ts`.
+If your test is a unit test, then name it with the `.test.ts` extension like `myModule.test.ts`.  If your test is an end-to-end test, meaning it makes network calls, requires a test data server to be running, or is a higher-level test of many lower-level modules, then name it with the `.e2e.test.ts` extension like `myModule.e2e.test.ts`.  All of these tests will run in a `node` environment.
 
-```javascript
-/**
- * @group unit
- */
-```
-
-If your test file has dependencies (like Geoblaze for example) that requires a full node environment and all of its base modules to operate (Jest by default I think uses a lighter weight environment that runs faster?), then you need at add a directive for that in your test file.  For example:
-
-```javascript
-/**
- * @vitest-environment node
- */
-```
+If you are writing test for UI component or hooks, then put your test in the `src/components` or `src/hooks` directory and use the `myModule.test.ts` extension.  Tests in these folders will be run in a `jsdom` environment.
 
 Rundown of the various test commands.  These are really just shortcuts to running jest commands.
 

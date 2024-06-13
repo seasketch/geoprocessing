@@ -286,10 +286,14 @@ export async function copyTemplates(
     // Merge geoprocessing metadata
     // TODO: Should not duplicate existing entries
     const tplGeoprocessing = JSON.parse(
-      fs.readFileSync(path.join(templatePath, "geoprocessing.json")).toString()
+      fs
+        .readFileSync(path.join(templatePath, "project", "geoprocessing.json"))
+        .toString()
     );
     const dstGeoprocessing = JSON.parse(
-      fs.readFileSync(path.join(projectPath, "geoprocessing.json")).toString()
+      fs
+        .readFileSync(path.join(projectPath, "project", "geoprocessing.json"))
+        .toString()
     );
 
     const geoprocessingJSON: GeoprocessingJsonConfig = {
@@ -309,7 +313,7 @@ export async function copyTemplates(
     };
 
     fs.writeFileSync(
-      path.join(projectPath, "geoprocessing.json"),
+      path.join(projectPath, "project", "geoprocessing.json"),
       JSON.stringify(geoprocessingJSON, null, "  ")
     );
 

@@ -517,7 +517,6 @@ Next, take some time to learn more about the structure of your new project, and 
 There are a variety of project configuration files. Many have been pre-populated usings your answers to the initial questions. You can hand edit most of these files later to change them, with some noted exceptions.
 
 - `package.json` - Javascript [package](https://docs.npmjs.com/cli/v9/configuring-npm/package-json) configuration that defines things like the project name, author, and third-party dependencies. The [npm](https://docs.npmjs.com/cli/v6/commands) command is typically used to add, upgrade, or remove dependencies using `npm install`, otherwise it can be hand-edited.
-- `geoprocessing.json` - file used to register assets to be bundled for deployment. If they aren't registered here, then they won't be included in the bundle.
 - `tsconfig.json` - contains configuration for the [Typescript](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) compiler
 - `project/` - contains project configuration files.
   - `basic.json` - contains basic project configuration.
@@ -526,6 +525,7 @@ There are a variety of project configuration files. Many have been pre-populated
     - `planningAreaId` - the unique identifier of the planning region used by the boundary dataset. If your planningAreaType is `eez` and you want to change it, you'll find the full list [in github](#https://raw.githubusercontent.com/seasketch/geoprocessing/dev/packages/geoprocessing/scripts/global/datasources/eez_land_union_v3.json), just look at the UNION property for the id to use
     - `planningAreaName` - the name of the planning region (e.g. Micronesia)
     - `externalLinks` - central store of links that you want to populate in your reports.
+  - `geoprocessing.json` - file used to register assets to be bundled for deployment. If they aren't registered here, then they won't be included in the bundle.
   - `geographies.json` - contains one or more planning geographies for your project. If you chose to start with a blank project template, you will have a default geography of the entire world. If you chose to start with the Ocean EEZ template, you will have a default geography that is the EEZ you chose at creation time. Geographies must be manually added/edited in this file. You will then want to re-run `precalc` and `test` to process the changes and make sure they are working as expected. Learn more about [geographies](./Concepts.md#geographies)
   - `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided. Global datasources can be manually added/edited in this file, but local datasources should use the [import](#import-datasource) process. After import, datasources can be manually added/edited in this file. You will then want to run `reimport:data`, `precalc:data`, `precalc:clean`, and `test` to process the changes and make sure they are working as expected. Learn more about [datasources](./Concepts.md#datasources)
   - `metrics.json` - contains an array of one or more metric groups. Each group defines a metric to calculate, with one or more data classes, derived from one or more datasources, measuring progress towards a planning objective. An initial boundaryAreaOverlap metric group is included in the file by default that uses the global eez datasource. Learn more about [metrics](./Concepts.md#metrics)
@@ -1446,7 +1446,7 @@ Next Steps:
   * Populate examples/sketches folder with sketches for smoke test to run against
 ```
 
-The function will have been added to `geoprocessing.json` in the `geoprocessingFunctions` section.
+The function will have been added to `project/geoprocessing.json` in the `geoprocessingFunctions` section.
 
 The geoprocessing function file starts off with boilerplate code every geoprocessing function should have. It then includes an example of loading both vector data and raster data from [global datasources](https://github.com/seasketch/global-datasources) and calculating some simple stats, and returning a `Result` payload. To explain in more detail:
 
@@ -1570,7 +1570,7 @@ export default new GeoprocessingHandler(calculateArea, {
 
 To publish your new function:
 
-- Add it to the top-level `geoprocessing.json` file under the `geoprocessingFunctions` section.
+- Add it to the `project/geoprocessing.json` file under the `geoprocessingFunctions` section.
 - Build and publish your project as normal.
 
 ## Creating a Report Client
@@ -1601,7 +1601,7 @@ Next Steps:
     * View your report client using 'npm storybook' with smoke test output for all geoprocessing functions
 ```
 
-Assuming you named your client the default `SimpleReport`, it will have been been added to `geoprocessing.json` in the `clients` section. A `SimpleReport.tsx` file will have been added to `src/clients` folder. It is responsible for rendering your new `SimpleCard` component from the `src/components` folder and wrapping it in a language `Translator`. Think of the Card component as one section of a report. It executes a geoprocessing function and renders the results in a way that is readable to the user. You can add one or more Cards to your Report client. If your report gets too long, you can split it into multiple ReportPages. See the [TabReport](https://github.com/seasketch/geoprocessing/blob/dev/packages/template-blank-project/src/clients/TabReport.tsx) example of how to add a `SegmentControl` with multiple pages.
+Assuming you named your client the default `SimpleReport`, it will have been been added to `project/geoprocessing.json` in the `clients` section. A `SimpleReport.tsx` file will have been added to `src/clients` folder. It is responsible for rendering your new `SimpleCard` component from the `src/components` folder and wrapping it in a language `Translator`. Think of the Card component as one section of a report. It executes a geoprocessing function and renders the results in a way that is readable to the user. You can add one or more Cards to your Report client. If your report gets too long, you can split it into multiple ReportPages. See the [TabReport](https://github.com/seasketch/geoprocessing/blob/dev/packages/template-blank-project/src/clients/TabReport.tsx) example of how to add a `SegmentControl` with multiple pages.
 
 `SimpleReport.stories.tsx` and `SimpleCard.stories.tsx` files will both be included that allows you to view your Report and Card components in [storybook](#view-reports-in-storybook) to dial in how they should render for every example sketch and their smoke test output.
 

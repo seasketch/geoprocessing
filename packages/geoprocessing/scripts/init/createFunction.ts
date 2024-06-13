@@ -149,7 +149,9 @@ export async function makeGeoprocessingHandler(
       .replace("./simpleFunction", `./${options.title}`)
   );
   const geoprocessingJson = JSON.parse(
-    fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
+    fs
+      .readFileSync(path.join(basePath, "project", "geoprocessing.json"))
+      .toString()
   ) as GeoprocessingJsonConfig;
   geoprocessingJson.geoprocessingFunctions =
     geoprocessingJson.geoprocessingFunctions || [];
@@ -157,7 +159,7 @@ export async function makeGeoprocessingHandler(
     `src/functions/${options.title}.ts`
   );
   fs.writeFileSync(
-    path.join(basePath, "geoprocessing.json"),
+    path.join(basePath, "project", "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")
   );
 
@@ -232,7 +234,9 @@ export async function makePreprocessingHandler(
     testCode.toString().replace(/clipToOceanEez/g, options.title)
   );
   const geoprocessingJson = JSON.parse(
-    fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
+    fs
+      .readFileSync(path.join(basePath, "project", "geoprocessing.json"))
+      .toString()
   ) as GeoprocessingJsonConfig;
   geoprocessingJson.preprocessingFunctions =
     geoprocessingJson.preprocessingFunctions || [];
@@ -240,7 +244,7 @@ export async function makePreprocessingHandler(
     `src/functions/${options.title}.ts`
   );
   fs.writeFileSync(
-    path.join(basePath, "geoprocessing.json"),
+    path.join(basePath, "project", "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")
   );
 

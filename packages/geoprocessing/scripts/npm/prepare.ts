@@ -132,8 +132,8 @@ async function bundleTemplates(templateType: TemplateType) {
     );
 
     await fs.copy(
-      path.join(templatePath, "geoprocessing.json"),
-      path.join(distTemplatePath, "geoprocessing.json")
+      path.join(templatePath, "project", "geoprocessing.json"),
+      path.join(distTemplatePath, "project", "geoprocessing.json")
     );
 
     if (!fs.existsSync(path.join(distTemplatePath, "src"))) {

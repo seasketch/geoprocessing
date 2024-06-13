@@ -11,7 +11,9 @@ const pkg = JSON.parse(
 );
 const packageName = pkg.name;
 const geoprocessing = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
+  fs
+    .readFileSync(path.join(PROJECT_PATH, "project", "geoprocessing.json"))
+    .toString()
 );
 const cf = new CloudFormation({ region: geoprocessing.region });
 

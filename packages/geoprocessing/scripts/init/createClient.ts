@@ -84,7 +84,9 @@ export async function makeClient(
 
   // Add client to geoprocessing.json
   const geoprocessingJson = JSON.parse(
-    fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
+    fs
+      .readFileSync(path.join(basePath, "project", "geoprocessing.json"))
+      .toString()
   ) as GeoprocessingJsonConfig;
   geoprocessingJson.clients = geoprocessingJson.clients || [];
   geoprocessingJson.clients.push({
@@ -93,7 +95,7 @@ export async function makeClient(
     source: `src/clients/${options.title}.tsx`,
   });
   fs.writeFileSync(
-    path.join(basePath, "geoprocessing.json"),
+    path.join(basePath, "project", "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")
   );
 

@@ -12,7 +12,9 @@ const PROJECT_PATH = process.env.PROJECT_PATH || "UNDEFINED";
 const destBuildPath = path.join(PROJECT_PATH, ".build-web");
 
 const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "geoprocessing.json")).toString()
+  fs
+    .readFileSync(path.join(PROJECT_PATH, "project", "geoprocessing.json"))
+    .toString()
 );
 
 const packageGp: Package = JSON.parse(

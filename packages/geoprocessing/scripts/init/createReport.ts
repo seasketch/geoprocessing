@@ -73,7 +73,7 @@ const createReport = async () => {
     );
     const metrics = metricGroupsSchema.parse(rawMetrics);
     const geoprocessingJson = JSON.parse(
-      fs.readFileSync("./geoprocessing.json").toString()
+      fs.readFileSync("./project/geoprocessing.json").toString()
     ) as GeoprocessingJsonConfig;
     const gpFunctions = geoprocessingJson.geoprocessingFunctions || [];
     const availableMetricGroups = metrics
@@ -275,7 +275,9 @@ export async function makeReport(
 
   // Add function to geoprocessing.json
   const geoprocessingJson = JSON.parse(
-    fs.readFileSync(path.join(basePath, "geoprocessing.json")).toString()
+    fs
+      .readFileSync(path.join(basePath, "project", "geoprocessing.json"))
+      .toString()
   ) as GeoprocessingJsonConfig;
   geoprocessingJson.geoprocessingFunctions =
     geoprocessingJson.geoprocessingFunctions || [];
@@ -283,7 +285,7 @@ export async function makeReport(
     `src/functions/${options.title}.ts`
   );
   fs.writeFileSync(
-    path.join(basePath, "geoprocessing.json"),
+    path.join(basePath, "project", "geoprocessing.json"),
     JSON.stringify(geoprocessingJson, null, "  ")
   );
 

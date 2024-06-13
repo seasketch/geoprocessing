@@ -1,4 +1,4 @@
-import { ProjectClientConfig } from "../../project/index.js";
+import { ProjectClientConfig } from "../../project/ProjectClientBase.js";
 import { globalDatasources } from "../../datasources/global.js";
 import cloneDeep from "lodash/cloneDeep.js";
 

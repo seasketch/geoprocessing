@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import area from "@turf/area";
-import project from "../testing/project/index.js";
+import project from "../testing/project/testProjectClient.js";
 import { genClipLoader } from "../dataproviders/index.js";
 import { Sketch } from "../types/index.js";
 import { genPreprocessor } from "./genPreprocessor.js";

@@ -319,18 +319,20 @@ export async function createProject(
   }
 
   // recursively copy entire i18n directory to project space
-  spinner.start("add i18n directory");
+  spinner.start("add i18n");
   await fs.copy(
     `${getGeoprocessingPath()}/src/i18n`,
     projectPath + "/src/i18n"
   );
-  // Update config.json with project-specific namespace and tag
-  const configPath = `${projectPath}/src/i18n/config.json`;
-  const config = await fs.readJSON(configPath);
-  config.remoteContext = `${packageJSON.name}`;
-  await fs.writeJSON(configPath, config, { spaces: 2 });
+  // Create i18n.json with project-specific config
+  const configPath = `${projectPath}/project/i18n.json`;
+  const i18nConfig = {
+    localNamespace: "translation",
+    remoteContext: packageJSON.name,
+  };
+  await fs.writeJSON(configPath, i18nConfig, { spaces: 2 });
 
-  spinner.succeed("added i18n directory");
+  spinner.succeed("added i18n");
 
   if (metadata.templates.length > 0) {
     // Should always be a single name if single select question used

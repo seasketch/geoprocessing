@@ -54,7 +54,7 @@ CLI commands will be the main way developers work with translations.
   - For non-english languages, POEditor is the source of truth, so if a translation is not defined in POEditor, then a local project translation is published if available, to seed it the first time.
   - For GP projects, if a project translation is not available, then a base translation will be published as fallback if available. Running `translation:import` after that will then import those base translations back and seed the local project translations.
 - `translation:import`
-  - fetches translations from POEditor for all non-english languages having context value specified by `remotextContex` property in `src/i18n/config.son`. Any existing translation values will be overwritten. Translations are saved to the namespace specified by the `localNamespace` property in `src/i18n/config.json`.
+  - fetches translations from POEditor for all non-english languages having context value specified by `remotextContex` property in `src/i18n/config.son`. Any existing translation values will be overwritten. Translations are saved to the namespace specified by the `localNamespace` property in `project/i18n.json`.
 - `translation:sync`
   - runs in succession `extract`, `publish`, then `import`.
 - `translation:install` (available in gp project only)
@@ -63,9 +63,9 @@ CLI commands will be the main way developers work with translations.
 Configuration files:
 
 - A `i18n/supported.ts` file will contain all supported languages, with a unique language code for each. When POEditor is used, then languages get added there as well for each one.
-- An `i18n/config.json` file will be used to map the local i18n data model (e.g. keys, namespaces) to those of POEditor (terms, context. Specifically it dictates which local i18n namespace to extract translations from (defaults to `translation`), and which remote POEditor context to publish terms/translations to, and import terms/translations from. The `remoteContext` value will vary. For the core geoprocessing library the context will be set to `base` and for geoprocessing project it will be set to the name of the project, as defined in package.json. For example:
+- An `project/i18n.json` file will be used to map the local i18n data model (e.g. keys, namespaces) to those of POEditor (terms, context. Specifically it dictates which local i18n namespace to extract translations from (defaults to `translation`), and which remote POEditor context to publish terms/translations to, and import terms/translations from. The `remoteContext` value will vary. For the core geoprocessing library the context will be set to `base` and for geoprocessing project it will be set to the name of the project, as defined in package.json. For example:
 
-geoprocessing library internal config.json:
+geoprocessing library internal i18n.json:
 
 ```json
 {
@@ -74,7 +74,7 @@ geoprocessing library internal config.json:
 }
 ```
 
-config.json for geoprocessing project called `fsm-reports`:
+i18n.json file for geoprocessing project called `fsm-reports`:
 
 ```json
 {

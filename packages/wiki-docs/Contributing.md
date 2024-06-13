@@ -71,7 +71,7 @@ The language translation [tutorial](./Tutorials.md) contains a lot of useful inf
   - All english translations are published, overwriting any in POEditor, since the code is their source of truth.
   - For non-english languages, POEditor is the source of truth, so if a translation is not defined in POEditor, then a local translation is published if available.
 - `translation:import`
-  - Fetches translations from POEditor for all non-english languages having `base` context value (context specified by `remotextContex` property in `src/i18n/config.son`). Any existing translation values will be overwritten. Translations are saved to the default `translation` namespace (as specified by the `localNamespace` property in `src/i18n/config.json`).
+  - Fetches translations from POEditor for all non-english languages having `base` context value (context specified by `remotextContex` property in `src/i18n/config.son`). Any existing translation values will be overwritten. Translations are saved to the default `translation` namespace (as specified by the `localNamespace` property in `project/i18n.json`).
 - `translation:sync`
   - A convenience command to keep the code, local translations, and remote translations in sync.  Simply runs in succession `extract`, `publish`, then `import`.
 

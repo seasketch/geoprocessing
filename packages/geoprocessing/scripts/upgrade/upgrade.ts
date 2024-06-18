@@ -3,17 +3,23 @@ import path from "path";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import { Package } from "../../src/types/index.js";
 import ora from "ora";
+import { $ } from "zx";
+
+$.verbose = false;
 
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 
 const PROJECT_PATH = process.env.PROJECT_PATH || "UNDEFINED";
+const GP_PATH = process.env.GP_PATH || "UNDEFINED";
 
 const spinner = ora("Upgrading project").start();
 
 spinner.start("Update scripts");
+await $`mkdir -p scripts && cp -r ${GP_PATH}/dist/base-project/scripts/* scripts`;
 spinner.succeed("Update scripts");
 
 spinner.start("Update i18n");
+
 spinner.succeed("Update i18n");
 
 spinner.start("Update package.json");

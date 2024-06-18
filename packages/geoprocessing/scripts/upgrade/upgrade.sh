@@ -14,4 +14,4 @@ elif test -d "$MONOREPO_GP_PATH"; then
     GP_PATH=$MONOREPO_GP_PATH
 fi
 
-node "${GP_PATH}/dist/scripts/upgrade/upgrade.js" $PROJECT_PATH
+GP_PATH=$GP_PATH node "${GP_PATH}/dist/scripts/upgrade/upgrade.js" $PROJECT_PATH

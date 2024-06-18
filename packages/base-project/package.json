@@ -37,7 +37,8 @@
     "storybook:install": "npx tsx scripts/storybookInstall.ts",
     "url": "geoprocessing url",
     "clear-results": "geoprocessing clear-results",
-    "clear-all-results": "geoprocessing clear-all-results"
+    "clear-all-results": "geoprocessing clear-all-results",
+    "upgrade": "geoprocessing upgrade"
   },
   "keywords": [
     "@seasketch/geoprocessing"

@@ -1,11 +1,12 @@
 import fs from "fs-extra";
 import path from "path";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
-import { Package } from "../../src/types/index.js";
 import ora from "ora";
+import { loadedPackageSchema } from "../../src/types/package.js";
 import { $ } from "zx";
+import { updatePackageJson } from "./updatePackage.js";
 
-$.verbose = false;
+$.verbose = true;
 
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 
@@ -14,30 +15,38 @@ const GP_PATH = process.env.GP_PATH || "UNDEFINED";
 
 const spinner = ora("Upgrading project").start();
 
+//// scripts ////
 spinner.start("Update scripts");
 await $`mkdir -p scripts && cp -r ${GP_PATH}/dist/base-project/scripts/* scripts`;
 spinner.succeed("Update scripts");
 
+//// i18n ////
 spinner.start("Update i18n");
-
+await $`npx tsx scripts/translationInstall.ts`;
 spinner.succeed("Update i18n");
 
+//// package.json ////
+
 spinner.start("Update package.json");
+const projectPkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
+  `${PROJECT_PATH}/package.json`
+);
+const projectPkg = loadedPackageSchema.parse(projectPkgRaw);
+
+const basePkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
+  path.join(`${GP_PATH}/dist/base-project/package.json`)
+);
+const basePkg = loadedPackageSchema.parse(basePkgRaw);
+
+const updatedPkg = updatePackageJson(projectPkg, basePkg);
+
+fs.writeJSONSync(`${PROJECT_PATH}/package.json`, updatedPkg, { spaces: 2 });
+console.log("\nUpdated Package\n");
+console.log(JSON.stringify(updatedPkg, null, 2));
+
 spinner.succeed("Update package.json");
+
+//vscode
 
 spinner.start("Update .vscode");
 spinner.succeed("Update .vscode");
-
-const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
-  fs
-    .readFileSync(path.join(PROJECT_PATH, "project", "geoprocessing.json"))
-    .toString()
-);
-
-const packageGp: Package = JSON.parse(
-  fs.readFileSync("./package.json").toString()
-);
-
-const packageProject: Package = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
-);

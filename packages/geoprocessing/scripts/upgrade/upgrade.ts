@@ -14,7 +14,18 @@ if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 const PROJECT_PATH = process.env.PROJECT_PATH || "UNDEFINED";
 const GP_PATH = process.env.GP_PATH || "UNDEFINED";
 
+const projectPkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
+  `${PROJECT_PATH}/package.json`
+);
+const projectPkg = loadedPackageSchema.parse(projectPkgRaw);
+
 const spinner = ora("Upgrading project").start();
+
+//// tsconfig ////
+
+spinner.start("Update tsconfig.json");
+await $`cp ${GP_PATH}/dist/base-project/tsconfig.json tsconfig.json`;
+spinner.succeed("Update tsconfig.json");
 
 //// scripts ////
 spinner.start("Update scripts");
@@ -23,16 +34,39 @@ spinner.succeed("Update scripts");
 
 //// i18n ////
 spinner.start("Update i18n");
-await $`npx tsx scripts/translationInstall.ts`;
+
+await $`rm -rf src/i18n/baseLang`;
+// Update (overwrite) most i18n directory except lang dir and some config files
+await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/baseLang src/i18n`;
+await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/bin/* src/i18n/bin`;
+await $`mv src/i18n/supported.ts src/i18n/supported.ts.bak`;
+await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/*.* src/i18n`;
+await $`mv src/i18n/supported.ts.bak src/i18n/supported.ts`;
+
+// install and verify valid i18n config
+
+if (!fs.existsSync("project/i18n.json")) {
+  console.log("Creating new project/i18n.json");
+  await fs.writeJSON("project/i18n.json", {
+    localNamespace: "translation",
+    remoteContext: projectPkg.name,
+  });
+} else {
+  const i18nConfig = await fs.readJson("project/i18n.json");
+  if (!i18nConfig.localNamespace) {
+    i18nConfig.localNamespace = "translation";
+  }
+  if (!i18nConfig.remoteContext) {
+    i18nConfig.remoteContext = projectPkg.name;
+  }
+  await fs.writeJson("project/i18n.json", i18nConfig, { spaces: 2 });
+}
+
 spinner.succeed("Update i18n");
 
 //// package.json ////
 
 spinner.start("Update package.json");
-const projectPkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
-  `${PROJECT_PATH}/package.json`
-);
-const projectPkg = loadedPackageSchema.parse(projectPkgRaw);
 
 const basePkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
   path.join(`${GP_PATH}/dist/base-project/package.json`)
@@ -41,19 +75,36 @@ const basePkg = loadedPackageSchema.parse(basePkgRaw);
 
 const starterTemplatePkgs = await getTemplatePackages("starter-template");
 const addonTemplatePkgs = await getTemplatePackages("add-on-template");
-console.log(starterTemplatePkgs);
-console.log(addonTemplatePkgs);
 
 const updatedPkg = updatePackageJson(projectPkg, basePkg, [
   ...addonTemplatePkgs,
   ...starterTemplatePkgs,
 ]);
 
+// Remove old scripts
+delete updatedPkg.scripts["install:scripts"];
+delete updatedPkg.scripts["translation:install"];
+
 fs.writeJSONSync(`${PROJECT_PATH}/package.json`, updatedPkg, { spaces: 2 });
 
 spinner.succeed("Update package.json");
 
-//vscode
+//// storybook ////
+
+spinner.start("Update .storybook");
+
+await $`rm -rf .storybook`;
+// Update (overwrite) everything except lang directory
+await $`cp -r ${GP_PATH}/dist/base-project/.storybook .storybook`;
+
+spinner.succeed("Update .storybook");
+
+//// vscode ////
 
 spinner.start("Update .vscode");
+await $`mkdir -p .vscode && cp -r ${GP_PATH}/dist/base-project/.vscode .vscode`;
 spinner.succeed("Update .vscode");
+
+//// other ////
+
+await $`rm .nvmrc`;

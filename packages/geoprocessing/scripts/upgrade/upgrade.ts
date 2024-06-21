@@ -5,6 +5,7 @@ import ora from "ora";
 import { loadedPackageSchema } from "../../src/types/package.js";
 import { $ } from "zx";
 import { updatePackageJson } from "./updatePackage.js";
+import { getTemplatePackages } from "../template/addTemplate.js";
 
 $.verbose = true;
 
@@ -38,11 +39,17 @@ const basePkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
 );
 const basePkg = loadedPackageSchema.parse(basePkgRaw);
 
-const updatedPkg = updatePackageJson(projectPkg, basePkg);
+const starterTemplatePkgs = await getTemplatePackages("starter-template");
+const addonTemplatePkgs = await getTemplatePackages("add-on-template");
+console.log(starterTemplatePkgs);
+console.log(addonTemplatePkgs);
+
+const updatedPkg = updatePackageJson(projectPkg, basePkg, [
+  ...addonTemplatePkgs,
+  ...starterTemplatePkgs,
+]);
 
 fs.writeJSONSync(`${PROJECT_PATH}/package.json`, updatedPkg, { spaces: 2 });
-console.log("\nUpdated Package\n");
-console.log(JSON.stringify(updatedPkg, null, 2));
 
 spinner.succeed("Update package.json");
 

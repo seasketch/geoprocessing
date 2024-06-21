@@ -39,7 +39,7 @@ export const loadedPackageSchema = z.object({
   private: z.boolean(),
   type: z.string().optional(),
   keywords: z.array(z.string()),
-  repositoryUrl: z.string(),
+  repositoryUrl: z.string().optional(),
 });
 
 //// INFERRED TYPES ////

@@ -15,7 +15,7 @@ function sortObjectKeys(obj: Record<string, any>) {
 /**
  * Returns a new package.json with updated scripts, dependencies, and devDependencies.  Does not remove any dependencies or devDependencies, that is up to the report developer.
  * @param srcPkg package starting point (deep cloned)
- * @param basePkg package to add/update srcPkg from
+ * @param basePkg package to add/update srcPkg from, overwrites version string not checking for greater version number or fuzzy matching
  * @param otherPkgs packages to update from if present in srcPkg after basePkg merge
  * @returns
  */

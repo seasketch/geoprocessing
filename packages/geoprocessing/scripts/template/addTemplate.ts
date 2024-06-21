@@ -2,7 +2,11 @@ import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
 import util from "util";
-import { GeoprocessingJsonConfig, Package } from "../../src/types/index.js";
+import {
+  GeoprocessingJsonConfig,
+  Package,
+  loadedPackageSchema,
+} from "../../src/types/index.js";
 import path from "node:path";
 import * as child from "child_process";
 import { pathToFileURL } from "url";
@@ -35,36 +39,35 @@ function getTemplatesPath(templateType: TemplateType): string {
   }
 }
 
-export async function getTemplateQuestion(templateType: TemplateType) {
+export async function getTemplatePackages(templateType: TemplateType) {
   const templatesPath = getTemplatesPath(templateType);
   // Extract list of template names and descriptions from bundles
   const templateNames = await fs.readdir(templatesPath);
 
-  if (templateNames.length === 0) {
-    console.error(`No add-on templates currently available`);
-    console.log("template path:", templatesPath);
-    console.log("add:template running from:", import.meta.dirname);
-    console.log("CLI running from:", process.cwd());
-    process.exit();
-  }
+  if (templateNames.length === 0) return [];
 
-  const templateDescriptions = templateNames.map((name) => {
+  const templatePackages = templateNames.map((name) => {
     try {
       const templatePackageMetaPath = path.join(
         templatesPath,
         name,
         "package.json"
       );
-      return JSON.parse(fs.readFileSync(templatePackageMetaPath).toString())
-        .description;
+      const rawPkg = fs.readJSONSync(templatePackageMetaPath);
+      return loadedPackageSchema.parse(rawPkg);
     } catch (error) {
-      console.error(
-        `Missing package.json or its description for template ${name}`
-      );
+      console.error(`Missing package.json for template ${name}`);
       console.error(error);
       process.exit();
     }
   });
+
+  return templatePackages;
+}
+
+export async function getTemplateQuestion(templateType: TemplateType) {
+  const tplPkgs = await getTemplatePackages(templateType);
+  const templateDescriptions = tplPkgs.map((tplPkg) => tplPkg.description);
 
   // Allow selection of one starter template or multiple add-on templates
   const templateQuestion = {
@@ -73,9 +76,9 @@ export async function getTemplateQuestion(templateType: TemplateType) {
     message: `What ${templateType}${
       templateType === "add-on-template" ? "s" : ""
     } would you like to install?`,
-    choices: templateNames.map((name, index) => ({
-      value: name,
-      name: `${name} - ${templateDescriptions[index]}`,
+    choices: tplPkgs.map((pkg, index) => ({
+      value: pkg.name,
+      name: `${pkg.name} - ${templateDescriptions[index]}`,
     })),
   };
 

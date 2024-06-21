@@ -53,7 +53,7 @@ If you're maintaining your own development environment then you should look to h
 - NPM 10.5.0
 - GDAL 3.5.0
 
-### Update Scripts
+### Upgrade Script
 
 As of v7.0-beta.5 there is a new `upgrade` script that automates installing/updating assets in your project from the gp library.  As of now it upgrades:
 

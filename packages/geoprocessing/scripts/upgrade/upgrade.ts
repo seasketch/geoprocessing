@@ -7,7 +7,7 @@ import { $ } from "zx";
 import { updatePackageJson } from "./updatePackage.js";
 import { getTemplatePackages } from "../template/addTemplate.js";
 
-$.verbose = true;
+$.verbose = false;
 
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 

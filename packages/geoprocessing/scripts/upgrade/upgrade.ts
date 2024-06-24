@@ -113,10 +113,16 @@ spinner.start("Update .vscode");
 await $`rm -rf .vscode && mkdir -p .vscode && cp -r ${GP_PATH}/dist/base-project/.vscode .`;
 spinner.succeed("Update .vscode");
 
-//// other ////
+//// migration ////
 
+// .nvmrc dropped in 7.0
 if (fs.existsSync(".nvmrc")) {
   await $`rm .nvmrc`;
+}
+
+// geoprocessing.json moved to project folder in 7.0
+if (fs.existsSync("geoprocessing.json")) {
+  await $`mv geoprocessing.json project/geoprocessing.json`;
 }
 
 /**

@@ -90,8 +90,10 @@ const updatedPkg = updatePackageJson(projectPkg, basePkg, [
   ...starterTemplatePkgs,
 ]);
 
+console.log("updatedVersion", updatedPkg.devDependencies["geoprocessing"]);
 // Ensure geoprocessing version is not overwritten
 updatedPkg.devDependencies["geoprocessing"] = gpVersion;
+console.log("gpVersion", gpVersion);
 
 // Remove old scripts
 delete updatedPkg.scripts["install:scripts"];

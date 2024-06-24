@@ -84,10 +84,14 @@ const addonTemplatePkgs = await getTemplatePackages(
   templatesPath
 );
 
+const gpVersion = projectPkg.devDependencies["geoprocessing"];
 const updatedPkg = updatePackageJson(projectPkg, basePkg, [
   ...addonTemplatePkgs,
   ...starterTemplatePkgs,
 ]);
+
+// Ensure geoprocessing version is not overwritten
+updatedPkg.devDependencies["geoprocessing"] = gpVersion;
 
 // Remove old scripts
 delete updatedPkg.scripts["install:scripts"];
@@ -124,6 +128,11 @@ if (fs.existsSync(".nvmrc")) {
 if (fs.existsSync("geoprocessing.json")) {
   await $`mv geoprocessing.json project/geoprocessing.json`;
 }
+
+// update geoprocessing.json path in projectClient
+const pc = await fs.readFile("project/projectClient.ts", "utf8");
+const newPc = pc.replace("../geoprocessing.json", "./geoprocessing.json");
+fs.writeFile("project/projectClient.ts", newPc, "utf8");
 
 /**
  * @param templateType

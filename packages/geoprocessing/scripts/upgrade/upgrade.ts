@@ -110,7 +110,7 @@ spinner.succeed("Update .storybook");
 //// vscode ////
 
 spinner.start("Update .vscode");
-await $`mkdir -p .vscode && cp -r ${GP_PATH}/dist/base-project/.vscode .vscode`;
+await $`rm -rf .vscode && mkdir -p .vscode && cp -r ${GP_PATH}/dist/base-project/.vscode .`;
 spinner.succeed("Update .vscode");
 
 //// other ////

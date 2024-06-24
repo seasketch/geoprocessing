@@ -64,5 +64,16 @@ export function updatePackageJson(
   projectPkg.dependencies = sortObjectKeys(projectPkg.dependencies);
   projectPkg.devDependencies = sortObjectKeys(projectPkg.devDependencies);
 
+  // Don't overwrite geoprocessing version, should already be correct
+  if (projectPkg.dependencies["geoprocessing"]) {
+    projectPkg.dependencies["geoprocessing"] =
+      srcPkg.dependencies["geoprocessing"];
+  }
+
+  if (projectPkg.devDependencies["geoprocessing"]) {
+    projectPkg.devDependencies["geoprocessing"] =
+      srcPkg.devDependencies["geoprocessing"];
+  }
+
   return projectPkg;
 }

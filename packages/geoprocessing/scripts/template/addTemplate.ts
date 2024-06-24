@@ -2,23 +2,14 @@ import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
 import util from "util";
-import {
-  GeoprocessingJsonConfig,
-  Package,
-  loadedPackageSchema,
-} from "../../src/types/index.js";
+import { GeoprocessingJsonConfig, Package } from "../../src/types/index.js";
 import path from "node:path";
 import * as child from "child_process";
 import { pathToFileURL } from "url";
+import { getTemplatePackages } from "./templatePackages.js";
+import { TemplateType, TemplateMetadata } from "../types.js";
 
 const exec = util.promisify(child.exec);
-
-export interface TemplateMetadata {
-  templates: string | string[];
-}
-
-const TemplateTypes = ["add-on-template", "starter-template"] as const;
-export type TemplateType = (typeof TemplateTypes)[number];
 
 function getTemplatesPath(templateType: TemplateType): string {
   // published bundle path exists if this is being run from the published geoprocessing package
@@ -39,34 +30,9 @@ function getTemplatesPath(templateType: TemplateType): string {
   }
 }
 
-export async function getTemplatePackages(templateType: TemplateType) {
-  const templatesPath = getTemplatesPath(templateType);
-  // Extract list of template names and descriptions from bundles
-  const templateNames = await fs.readdir(templatesPath);
-
-  if (templateNames.length === 0) return [];
-
-  const templatePackages = templateNames.map((name) => {
-    try {
-      const templatePackageMetaPath = path.join(
-        templatesPath,
-        name,
-        "package.json"
-      );
-      const rawPkg = fs.readJSONSync(templatePackageMetaPath);
-      return loadedPackageSchema.parse(rawPkg);
-    } catch (error) {
-      console.error(`Missing package.json for template ${name}`);
-      console.error(error);
-      process.exit();
-    }
-  });
-
-  return templatePackages;
-}
-
 export async function getTemplateQuestion(templateType: TemplateType) {
-  const tplPkgs = await getTemplatePackages(templateType);
+  const templatesPath = getTemplatesPath(templateType);
+  const tplPkgs = await getTemplatePackages(templateType, templatesPath);
   const templateDescriptions = tplPkgs.map((tplPkg) => tplPkg.description);
 
   // Allow selection of one starter template or multiple add-on templates

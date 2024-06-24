@@ -5,7 +5,8 @@ import ora from "ora";
 import { loadedPackageSchema } from "../../src/types/package.js";
 import { $ } from "zx";
 import { updatePackageJson } from "./updatePackage.js";
-import { getTemplatePackages } from "../template/addTemplate.js";
+import { getTemplatePackages } from "../template/templatePackages.js";
+import { TemplateType } from "../types.js";
 
 $.verbose = false;
 
@@ -73,8 +74,15 @@ const basePkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
 );
 const basePkg = loadedPackageSchema.parse(basePkgRaw);
 
-const starterTemplatePkgs = await getTemplatePackages("starter-template");
-const addonTemplatePkgs = await getTemplatePackages("add-on-template");
+const templatesPath = getTemplatesPath("starter-template");
+const starterTemplatePkgs = await getTemplatePackages(
+  "starter-template",
+  templatesPath
+);
+const addonTemplatePkgs = await getTemplatePackages(
+  "add-on-template",
+  templatesPath
+);
 
 const updatedPkg = updatePackageJson(projectPkg, basePkg, [
   ...addonTemplatePkgs,
@@ -108,3 +116,27 @@ spinner.succeed("Update .vscode");
 //// other ////
 
 await $`rm .nvmrc`;
+
+function getTemplatesPath(templateType: TemplateType): string {
+  // published bundle path exists if this is being run from the published geoprocessing package
+  // (e.g. via geoprocessing init or add:template)
+  const publishedBundlePath = path.join(
+    import.meta.dirname,
+    "..",
+    "..",
+    "templates",
+    `${templateType}s`
+  );
+  if (fs.existsSync(publishedBundlePath)) {
+    // Use bundled templates if user running published version, e.g. via geoprocessing init
+    return publishedBundlePath;
+  } else {
+    // Use src templates
+    console.log("import.meta.dirname", import.meta.dirname);
+    console.log(
+      "templatesPath",
+      path.join(import.meta.dirname, "..", "..", "..")
+    );
+    return path.join(import.meta.dirname, "..", "..", "..");
+  }
+}

@@ -1,4 +1,5 @@
-import { TemplateMetadata, copyTemplates } from "../template/addTemplate.js";
+import { copyTemplates } from "../template/addTemplate.js";
+import { TemplateMetadata } from "../types.js";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";

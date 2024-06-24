@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import { $ } from "zx";
-import { TemplateType } from "../template/index.js";
+import { TemplateType } from "../types.js";
 import path from "node:path";
 
 $.verbose = true;

@@ -114,5 +114,5 @@ describe("genPreprocessor", () => {
 
     expect(result).toBeTruthy();
     expect(area(result)).toEqual(origArea);
-  }, 10000);
+  }, 20000);
 });

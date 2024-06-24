@@ -32,23 +32,33 @@ export function updatePackageJson(
   });
 
   Object.keys(basePkg.dependencies).forEach((key) => {
-    projectPkg.dependencies[key] = basePkg.dependencies[key];
+    if (key !== "@seasketch/geoprocessing") {
+      projectPkg.dependencies[key] = basePkg.dependencies[key];
+    }
   });
 
   Object.keys(basePkg.devDependencies).forEach((key) => {
-    projectPkg.devDependencies[key] = basePkg.devDependencies[key];
+    if (key !== "@seasketch/geoprocessing") {
+      projectPkg.devDependencies[key] = basePkg.devDependencies[key];
+    }
   });
 
   // add otherPkgs to projectPkg if present, skip scripts
   otherPkgs.forEach((otherPkg) => {
     Object.keys(otherPkg.dependencies).forEach((key) => {
-      if (hasOwnProperty(projectPkg.dependencies, key)) {
+      if (
+        key !== "@seasketch/geoprocessing" &&
+        hasOwnProperty(projectPkg.dependencies, key)
+      ) {
         projectPkg.dependencies[key] = otherPkg.dependencies[key];
       }
     });
 
     Object.keys(otherPkg.devDependencies).forEach((key) => {
-      if (hasOwnProperty(projectPkg.devDependencies, key)) {
+      if (
+        key !== "@seasketch/geoprocessing" &&
+        hasOwnProperty(projectPkg.devDependencies, key)
+      ) {
         projectPkg.devDependencies[key] = otherPkg.devDependencies[key];
       }
     });

@@ -84,19 +84,10 @@ const addonTemplatePkgs = await getTemplatePackages(
   templatesPath
 );
 
-const gpVersion = projectPkg.devDependencies["@seasketch/geoprocessing"];
 const updatedPkg = updatePackageJson(projectPkg, basePkg, [
   ...addonTemplatePkgs,
   ...starterTemplatePkgs,
 ]);
-
-console.log(
-  "updatedVersion",
-  updatedPkg.devDependencies["@seasketch/geoprocessing"]
-);
-// Ensure geoprocessing version is not overwritten
-updatedPkg.devDependencies["@seasketch/geoprocessing"] = gpVersion;
-console.log("gpVersion", gpVersion);
 
 // Remove old scripts
 delete updatedPkg.scripts["install:scripts"];

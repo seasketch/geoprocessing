@@ -115,8 +115,14 @@ spinner.succeed("Update .vscode");
 
 //// other ////
 
-await $`rm .nvmrc`;
+if (fs.existsSync(".nvmrc")) {
+  await $`rm .nvmrc`;
+}
 
+/**
+ * @param templateType
+ * @returns path to template directories, given template type
+ */
 function getTemplatesPath(templateType: TemplateType): string {
   // published bundle path exists if this is being run from the published geoprocessing package
   // (e.g. via geoprocessing init or add:template)
@@ -132,11 +138,6 @@ function getTemplatesPath(templateType: TemplateType): string {
     return publishedBundlePath;
   } else {
     // Use src templates
-    console.log("import.meta.dirname", import.meta.dirname);
-    console.log(
-      "templatesPath",
-      path.join(import.meta.dirname, "..", "..", "..")
-    );
     return path.join(import.meta.dirname, "..", "..", "..");
   }
 }

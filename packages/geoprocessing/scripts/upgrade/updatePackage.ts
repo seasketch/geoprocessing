@@ -39,14 +39,8 @@ export function updatePackageJson(
     projectPkg.devDependencies[key] = basePkg.devDependencies[key];
   });
 
-  // add otherPkgs to projectPkg if present
+  // add otherPkgs to projectPkg if present, skip scripts
   otherPkgs.forEach((otherPkg) => {
-    Object.keys(otherPkg.scripts).forEach((key) => {
-      if (hasOwnProperty(projectPkg.scripts, key)) {
-        projectPkg.scripts[key] = otherPkg.scripts[key];
-      }
-    });
-
     Object.keys(otherPkg.dependencies).forEach((key) => {
       if (hasOwnProperty(projectPkg.dependencies, key)) {
         projectPkg.dependencies[key] = otherPkg.dependencies[key];

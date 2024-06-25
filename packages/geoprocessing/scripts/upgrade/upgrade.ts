@@ -36,6 +36,11 @@ spinner.succeed("Update scripts");
 //// i18n ////
 spinner.start("Update i18n");
 
+const extraTerms = (await fs.readJson(
+  "src/i18n/extraTerms.json",
+  "utf8"
+)) as Record<string, string>;
+
 await $`rm -rf src/i18n/baseLang`;
 // Update (overwrite) most i18n directory except lang dir and some config files
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/baseLang src/i18n`;
@@ -43,6 +48,14 @@ await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/bin/* src/i18n/bin`;
 await $`mv src/i18n/supported.ts src/i18n/supported.ts.bak`;
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/*.* src/i18n`;
 await $`mv src/i18n/supported.ts.bak src/i18n/supported.ts`;
+
+// Merge in new extra terms
+const newTerms = (await fs.readJson(
+  "${GP_PATH}/dist/base-project/src/i18n/extraTerms.json",
+  "utf8"
+)) as Record<string, string>;
+const updatedTerms = { ...extraTerms, ...newTerms };
+await fs.writeJson("src/i18n/extraTerms.json", updatedTerms, { spaces: 2 });
 
 // install and verify valid i18n config
 

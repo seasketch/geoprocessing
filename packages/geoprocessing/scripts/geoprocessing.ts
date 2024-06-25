@@ -198,6 +198,16 @@ if (process.argv.length < 3) {
         }
       );
       break;
+    case "upgrade":
+      spawn(
+        `${import.meta.dirname}/../../scripts/upgrade/upgrade.sh`,
+        process.argv.slice(2),
+        {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        }
+      );
+      break;
     default:
       throw new Error(`Command ${command} not supported.`);
   }

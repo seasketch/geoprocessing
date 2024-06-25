@@ -29,7 +29,7 @@ export * from "./src/iucn/helpers.js";
 
 export * from "./src/iucn/iucnProtectionLevel.js";
 export * from "./src/rbcs/index.js";
-export * from "./src/project/index.js";
+export * from "./src/project/ProjectClientBase.js";
 
 // Testing
 export * from "./src/testing/index.js";

@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import { $ } from "zx";
-import { TemplateType } from "../template/index.js";
+import { TemplateType } from "../types.js";
 import path from "node:path";
 
 $.verbose = true;
@@ -132,8 +132,8 @@ async function bundleTemplates(templateType: TemplateType) {
     );
 
     await fs.copy(
-      path.join(templatePath, "geoprocessing.json"),
-      path.join(distTemplatePath, "geoprocessing.json")
+      path.join(templatePath, "project", "geoprocessing.json"),
+      path.join(distTemplatePath, "project", "geoprocessing.json")
     );
 
     if (!fs.existsSync(path.join(distTemplatePath, "src"))) {

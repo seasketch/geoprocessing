@@ -1,7 +1,6 @@
 /* eslint-disable i18next/no-literal-string */
 import fs from "fs-extra";
 import * as path from "path";
-import config from "../config.json";
 import languages from "../supported.js";
 import extraTerms from "../extraTerms.json" with { type: "json" };
 
@@ -13,6 +12,24 @@ if (!process.env.POEDITOR_API_TOKEN) {
 if (!process.env.POEDITOR_PROJECT) {
   throw new Error("POEDITOR_PROJECT is not defined");
 }
+
+const installedProjectPath = path.join("project"); // assumes script running from top of gp project
+const monoProjectPath = path.join("packages/geoprocessing/src/project"); // assumes script running from top of monorepo
+
+const projectPath = (() => {
+  if (fs.existsSync(installedProjectPath)) {
+    console.log(`Found project path at ${installedProjectPath}`);
+    return installedProjectPath;
+  } else if (fs.existsSync(monoProjectPath)) {
+    console.log(`Found project path at ${monoProjectPath}`);
+    return monoProjectPath;
+  }
+  throw new Error(
+    `Could not find path to project dir, tried ${installedProjectPath} and ${monoProjectPath}`
+  );
+})();
+
+const config = await fs.readJSON(`${projectPath}/i18n.json`);
 
 /**
  * Pushes all terms for english language to POEditor, updating any existing translations.

@@ -17,7 +17,7 @@ const packageJson = JSON.parse(
 );
 
 const geoprocessingJson = JSON.parse(
-  fs.readFileSync(path.join("./", "geoprocessing.json")).toString()
+  fs.readFileSync(path.join("./", "project", "geoprocessing.json")).toString()
 );
 
 export async function clearResults() {

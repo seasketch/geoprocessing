@@ -33,9 +33,9 @@
     "@turf/invariant": "7.0.0",
     "@turf/kinks": "7.0.0",
     "@turf/simplify": "7.0.0",
-    "geoblaze": "2.6.1",
+    "geoblaze": "2.7.0",
     "geojson-antimeridian-cut": "^0.1.0",
-    "react-i18next": "^14.1.1",
+    "react-i18next": "^14.1.2",
     "union-subdivided-polygons": "^0.9.1"
   }
 }

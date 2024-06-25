@@ -1,9 +1,0 @@
-{
-  "name": "@seasketch/wiki-docs",
-  "version": "7.0.0-beta.4",
-  "description": "wiki docs",
-  "author": "Tim Welch",
-  "license": "BSD-3-Clause",
-  "private": true,
-  "scripts": {}
-}

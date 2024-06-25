@@ -72,7 +72,7 @@ test("boundaryAreaOverlapSmoke - tests run against all examples", async () => {
   - All english translations are published, overwriting any in POEditor, since the code is their source of truth.
   - For non-english languages, POEditor is the source of truth, so if a translation is not defined in POEditor, then a local project translation is published if available, otherwise a base translation will be published as fallback. Running `translation:import` after that will then import those base translations back and seed the local project translations.
 - `translation:import`
-  - Fetches translations from POEditor for all non-english languages having context value specified by `remotextContex` property in `src/i18n/config.son`. Any existing translation values will be overwritten. Translations are saved to the namespace specified by the `localNamespace` property in `src/i18n/config.json`.
+  - Fetches translations from POEditor for all non-english languages having context value specified by `remotextContex` property in `src/i18n/config.son`. Any existing translation values will be overwritten. Translations are saved to the namespace specified by the `localNamespace` property in `project/i18n.json`.
 - `translation:sync`
   - A convenience command to keep the code, local translations, and remote translations in sync. Simply runs in succession `extract`, `publish`, then `import`.
 - `translation:install`

@@ -1,4 +1,5 @@
-import { TemplateMetadata, copyTemplates } from "../template/addTemplate.js";
+import { copyTemplates } from "../template/addTemplate.js";
+import { TemplateMetadata } from "../types.js";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
@@ -92,7 +93,7 @@ export async function createProject(
     await $`cp -r ${baseProjectPath}/* ${projectPath}`;
     await $`cp -r ${baseProjectPath}/. ${projectPath}`;
     await $`rm -f ${projectPath}/package-lock.json`;
-    await $`rm -f ${projectPath}/geoprocessing.json`;
+    await $`rm -f ${projectPath}/project/geoprocessing.json`;
     await $`rm -rf ${projectPath}/examples/outputs/*.*`;
     await $`rm -rf ${projectPath}/examples/features/*.*`;
     await $`rm -rf ${projectPath}/examples/sketches/*/*`;
@@ -158,7 +159,7 @@ export async function createProject(
   spinner.start("creating geoprocessing.json");
   const geoAuthor = email ? `${metadata.author} <${email}>` : metadata.author;
   await fs.writeFile(
-    `${projectPath}/geoprocessing.json`,
+    `${projectPath}/project/geoprocessing.json`,
     JSON.stringify(
       {
         author: geoAuthor,
@@ -319,18 +320,20 @@ export async function createProject(
   }
 
   // recursively copy entire i18n directory to project space
-  spinner.start("add i18n directory");
+  spinner.start("add i18n");
   await fs.copy(
     `${getGeoprocessingPath()}/src/i18n`,
     projectPath + "/src/i18n"
   );
-  // Update config.json with project-specific namespace and tag
-  const configPath = `${projectPath}/src/i18n/config.json`;
-  const config = await fs.readJSON(configPath);
-  config.remoteContext = `${packageJSON.name}`;
-  await fs.writeJSON(configPath, config, { spaces: 2 });
+  // Create i18n.json with project-specific config
+  const configPath = `${projectPath}/project/i18n.json`;
+  const i18nConfig = {
+    localNamespace: "translation",
+    remoteContext: packageJSON.name,
+  };
+  await fs.writeJSON(configPath, i18nConfig, { spaces: 2 });
 
-  spinner.succeed("added i18n directory");
+  spinner.succeed("added i18n");
 
   if (metadata.templates.length > 0) {
     // Should always be a single name if single select question used

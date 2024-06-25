@@ -16,8 +16,6 @@
     "precalc:data_": "geoprocessing precalc:data",
     "precalc:data:clean": "geoprocessing precalc:data:clean",
     "publish:data": "geoprocessing publish:data",
-    "install:scripts": "mkdir -p scripts && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/scripts/* scripts",
-    "translation:install": "npx tsx scripts/translationInstall.ts",
     "translation:extract": "npx tsx scripts/translationExtract.ts",
     "translation:publish": "npx tsx src/i18n/bin/publishTerms.ts",
     "translation:import": "npx tsx src/i18n/bin/importTerms.ts",
@@ -34,10 +32,10 @@
     "build:client": "geoprocessing build:client",
     "build:lambda": "geoprocessing build:lambda",
     "storybook": "PROJECT_PATH=$(pwd) npx tsx .storybook/genReportStories.ts && storybook dev -p 6006",
-    "storybook:install": "npx tsx scripts/storybookInstall.ts",
     "url": "geoprocessing url",
     "clear-results": "geoprocessing clear-results",
-    "clear-all-results": "geoprocessing clear-all-results"
+    "clear-all-results": "geoprocessing clear-all-results",
+    "upgrade": "geoprocessing upgrade"
   },
   "keywords": [
     "@seasketch/geoprocessing"

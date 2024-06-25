@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import project from "../testing/project/index.js";
+import project from "../testing/project/testProjectClient.js";
 import { genClipLoader } from "./genClipLoader.js";
 
 // import micronesia eez from global subdivided

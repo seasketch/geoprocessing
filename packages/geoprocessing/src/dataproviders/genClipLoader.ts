@@ -5,7 +5,7 @@ import {
   isInternalVectorDatasource,
 } from "../datasources/index.js";
 import { isPolygonFeatureArray } from "../helpers/index.js";
-import { ProjectClientInterface } from "../project/index.js";
+import { ProjectClientInterface } from "../project/ProjectClientBase.js";
 import { getFeatures } from "./getFeatures.js";
 import { DatasourceClipOperation } from "../types/dataProcessor.js";
 

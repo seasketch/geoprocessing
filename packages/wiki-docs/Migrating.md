@@ -53,108 +53,42 @@ If you're maintaining your own development environment then you should look to h
 - NPM 10.5.0
 - GDAL 3.5.0
 
-### Upgrade project dependencies
+### Upgrade Script
 
-- Upgrade geoprocessing library to the latest 7.x version found on [NPM](https://www.npmjs.com/package/@seasketch/geoprocessing)
-- In your project source codes package.json, review and update `scripts`, `dependencies` and `devDependencies` using [base-project](https://github.com/seasketch/geoprocessing/blob/dev/packages/base-project/package.json) as a guide. Using anything other than the exact version of dependencies found in base-project may have unexpected results.
-- Run `npm install`
+As of v7.0-beta.5 there is a new `upgrade` script that automates installing/updating assets in your project from the gp library.  As of now it upgrades:
 
-### Upgrade package scripts
+- package.json - updates scripts, dependencies, devDependencies
+- .storybook - installs directory
+- .vscode - overwrites `.vscode` directory with new files
+- i18n - creates a new `project/i18n.json` file.  overwrites `src/i18n` directory with new files.
 
-- Update scripts object to the following:
+Some of these upgrades are destructive and will simply overwrite the director in your project (.storybook, .vscode, src/i18n).  If you have customized any of these parts of your project, then be sure to look at the git changelog and bring back any of your work.
 
-```json
-{
-  "scripts": {
-    "start-data": "http-server data/dist -c-1",
-    "__test": "TEST_ROOT=$(pwd) geoprocessing test",
-    "test": "start-server-and-test start-data 8080 'npm run __test'",
-    "test:matching": "npm run __test -- -t",
-    "add:template": "geoprocessing add:template",
-    "import:data": "geoprocessing import:data",
-    "reimport:data": "geoprocessing reimport:data",
-    "precalc:data": "start-server-and-test 'http-server data/dist -c-1 -p 8001' http://localhost:8001 precalc:data_",
-    "precalc:data_": "geoprocessing precalc:data",
-    "precalc:data:clean": "geoprocessing precalc:data:clean",
-    "publish:data": "geoprocessing publish:data",
-    "install:scripts": "mkdir -p scripts && cp -r node_modules/@seasketch/geoprocessing/dist/base-project/scripts/* scripts",
-    "translation:install": "npx tsx scripts/translationInstall.ts",
-    "translation:extract": "npx tsx scripts/translationExtract.ts",
-    "translation:publish": "npx tsx src/i18n/bin/publishTerms.ts",
-    "translation:import": "npx tsx src/i18n/bin/importTerms.ts",
-    "translation:sync": "npm run translation:extract && npm run translation:publish && npm run translation:import",
-    "create:function": "geoprocessing create:function",
-    "create:client": "geoprocessing create:client",
-    "create:report": "geoprocessing create:report",
-    "start:client": "geoprocessing start:client",
-    "synth": "geoprocessing synth",
-    "bootstrap": "geoprocessing bootstrap",
-    "deploy": "geoprocessing deploy",
-    "destroy": "geoprocessing destroy",
-    "build": "geoprocessing build:lambda && geoprocessing build:client",
-    "build:client": "geoprocessing build:client",
-    "build:lambda": "geoprocessing build:lambda",
-    "storybook:install": "npx tsx scripts/storybookInstall.ts",
-    "storybook": "geoprocessing storybook",
-    "url": "geoprocessing url",
-    "clear-results": "geoprocessing clear-results",
-    "clear-all-results": "geoprocessing clear-all-results",
-    "prepare": "npm run translation:install"
-  }
-}
+  This includes: package.json, i18n, storybook, vscode.  
+
+Add it to your projects package.json `scripts` section
+
+```
+"upgrade": "geoprocessing upgrade"
 ```
 
-### Upgrade project scripts
-
-Update the project `scripts` directory.  This includes replacement of source files to be ESM and Node v20 compliant.  If you have customized any of the scripts, you will need to look at the git changes and figure out how to re-merge your work.
-
-`npm run install:scripts`
-
-### Upgrade translations
-
-Update the project `src/i18n` directory.  This includes update of base translations and replacement of source files to be ESM and Node v20 compliant.  Also switches to using Vite for dynamic import of translations using `import.meta.glob`  If you have customized any of the scripts, you will need to look at the git changes and figure out how to re-merge your work.
-
-`npm run translation:install`
-
-### Update tsconfig.json
-
-Change to the following.  This supports use of ES Module (ESM) structure in your project and use of the ESM runtime by the Node instead of Common JS (CJS).  It also ensures that transpiling from Typescript at `build` time produces ESM code.  This means that geoprocessing functions will run as ESM code in the lambdas and report clients as ESM in the browser.  Modern Javascript from end-to-end.  Also imports 3rd party types for Vite and Vitest for use in project.
-
-```javascript
-{
-  "compilerOptions": {
-    "target": "es2022",               /* Specify ECMAScript target version*/
-    "module": "nodenext",             /* Specify module code generation */
-    "jsx": "react",                   /* Specify JSX code generation */
-    "strict": true,                   /* Enable all strict type-checking options. */
-    "moduleResolution": "nodenext",   /* Specify module resolution strategy */
-    "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/@seasketch/geoprocessing/node_modules/@types",
-    ],                                              /* List of folders to include type definitions from. */
-    "types": ["vitest/globals", "vite/client"],     /* Type declaration files to be included in compilation. */
-    "allowSyntheticDefaultImports": true,           /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
-    "forceConsistentCasingInFileNames": true,       /* Disallow inconsistently-cased references to the same file. */
-    "resolveJsonModule": true
-  },
-  "exclude": ["cdk.out", "node_modules"] /* Files to exclude from compilation */
-}
+Then run it:
+```bash
+npm run upgrade
 ```
-
-### Add Storybook
-
-Storybook is now run using configuration kept in project space.  This is installed with every new project but to add now just run `npm run storybook:install` to install to the `.storybook` directory.  This command should have been added when you updated your package.json file.
 
 ### Convert project to ES Modules
 
-This is the biggest breaking change.  You will need to modify your 
+This is the biggest breaking change in v7.  You will need to change your project to an `ES Module` structure or `ESM` for short.  With this change, Node will use an `ESM` runtime, instead of the original `CommonJS`, which will necessitate some additional code changes covered below.
 
-In package.json:
+Use the [base project](https://github.com/seasketch/geoprocessing/tree/dev/packages/base-project) that gets installed when you init a new geoprocessing project as a guide.
+
+First, in package.json:
 - Add `"type": "module",`
 
-Then reload your VSCode window to make sure it picks up that your project is now an "ES Module" project.  You can do this with `Cmd-Shift-P` on Mac or `Ctrl-Shift-P` on Windows and then start typing `reload` and select the `Developer: Reload Window` option.  Or just exit and restart the VSCode app as you normally would.
+Then reload your VSCode window to make sure it picks up that your project is now an ESM project.  You can do this with `Cmd-Shift-P` on Mac or `Ctrl-Shift-P` on Windows and then start typing `reload` and select the `Developer: Reload Window` option.  Or just close and restart the VSCode app as you normally would.
 
-Now update all of your projects source files to be ESM and Node v20 compliant.  VSCode should give you hints along the way, so basically just click through all the source files looking for red squiggle underlined text.  You will focus in the `src` directory.
+Now you need to update all of your projects source files to be ESM and Node v20 compliant.  VSCode should give you hints along the way, so basically just click through all the source files looking for red squiggle underlined text.  You will focus in the `src` directory.
   - For each import of a local module (e.g. `import project from ../project`), use a full explicit path and include a `.js` extension on the end, even if you are importing a `.ts` file.  The example would become `import project from ../project/projectClient.js`.
   - NodeJS when using the ES Module engine now requires explicit paths to code files.  No longer can you import a module from a directory (e.g. `import foo from ./my/directory`) and expect it will look for an index.js file.  You have to change this to`import foo form ./my/directory/index.js`.
   `__dirname` built-in must be changed to `import.meta.dirname`
@@ -187,7 +121,6 @@ At this point, VSCode will complain about your image import, it doesn't support 
 
 ### Other Changes
 
-- Change .nvmrc file value to 20
 - Rename babel.config.js to babel.config.cjs.  This babel config is used only by the translation library.
 - update project/projectClient.ts with type assertion syntax
 
@@ -199,7 +132,7 @@ import objectives from "./objectives.json" with { type: "json" };
 import geographies from "./geographies.json" with { type: "json" };
 import basic from "./basic.json" with { type: "json" };
 import projectPackage from "../package.json" with { type: "json" };
-import gp from "../geoprocessing.json" with { type: "json" };
+import gp from "../project/geoprocessing.json" with { type: "json" };
 
 import { ProjectClientBase } from "@seasketch/geoprocessing/client-core";
 
@@ -295,7 +228,7 @@ import objectives from "./objectives.json" with { type: "json" };
 import geographies from "./geographies.json" with { type: "json" };
 import basic from "./basic.json" with { type: "json" };
 import projectPackage from "../package.json" with { type: "json" };
-import gp from "../geoprocessing.json" with { type: "json" };
+import gp from "../project/geoprocessing.json" with { type: "json" };
 import { ProjectClientBase } from "@seasketch/geoprocessing" with { type: "json" };
 
 const projectClient = new ProjectClientBase({

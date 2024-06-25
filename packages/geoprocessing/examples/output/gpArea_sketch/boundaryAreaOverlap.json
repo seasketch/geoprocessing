@@ -1,0 +1,29 @@
+{
+  "metrics": [
+    {
+      "geographyId": "world",
+      "metricId": "boundaryAreaOverlap",
+      "classId": "eez",
+      "groupId": null,
+      "value": 777058660.744653,
+      "extra": {
+        "sketchName": "gpArea_sketch"
+      }
+    }
+  ],
+  "sketch": {
+    "type": "Feature",
+    "properties": {
+      "name": "gpArea_sketch",
+      "updatedAt": "2020-01-29T16:02:53.645Z",
+      "sketchClassId": "123abc"
+    },
+    "bbox": [
+      -120.18218994140626,
+      34.136815058265334,
+      -119.83337402343749,
+      34.35477416538757
+    ],
+    "geometry": null
+  }
+}

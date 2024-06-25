@@ -54,7 +54,7 @@ describe("createProject", () => {
     expect(packageJson.author).toBe("Test");
 
     const gpConfig = JSON.parse(
-      fs.readFileSync(projectPath + "/geoprocessing.json").toString()
+      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString()
     ) as GeoprocessingJsonConfig;
 
     expect(gpConfig.author).toBe("Test <test@test.com>");
@@ -169,7 +169,7 @@ describe("createProject", () => {
     );
 
     const gpConfig = JSON.parse(
-      fs.readFileSync(projectPath + "/geoprocessing.json").toString()
+      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString()
     ) as GeoprocessingJsonConfig;
 
     expect(gpConfig.preprocessingFunctions.length).toBeGreaterThanOrEqual(1);
@@ -223,7 +223,7 @@ describe("createProject", () => {
     expect(basicJson.planningAreaName).toEqual("Test Area");
 
     const gpConfig = JSON.parse(
-      fs.readFileSync(projectPath + "/geoprocessing.json").toString()
+      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString()
     ) as GeoprocessingJsonConfig;
 
     expect(gpConfig.author).toBe("");

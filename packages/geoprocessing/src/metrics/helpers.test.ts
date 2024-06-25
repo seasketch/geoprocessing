@@ -364,7 +364,7 @@ test("MetricPack", async () => {
   expect(packed.data[0]).toHaveLength(6);
 
   const unpacked = unpackMetrics(packed);
-  console.log("unpacked", JSON.stringify(unpacked, null, 2));
+  // console.log("unpacked", JSON.stringify(unpacked, null, 2));
   expect(deepEqual(metrics, unpacked)).toBe(true);
 });
 

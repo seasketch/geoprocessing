@@ -1,4 +1,4 @@
-import { ProjectClientBase } from "../../../src/project/index.js";
+import { ProjectClientBase } from "../../../src/project/ProjectClientBase.js";
 import fs from "fs-extra";
 import path from "path";
 
@@ -24,7 +24,9 @@ export function getProjectClient(projectPath: string) {
   const projectPackage = fs.readJsonSync(
     path.join(projectPath, "package.json")
   );
-  const gp = fs.readJsonSync(path.join(projectPath, "geoprocessing.json"));
+  const gp = fs.readJsonSync(
+    path.join(projectPath, "project", "geoprocessing.json")
+  );
 
   return new ProjectClientBase({
     datasources,

@@ -128,6 +128,16 @@ spinner.succeed("Update .vscode");
 
 //// migration ////
 
+// add type module (esm enable)
+const pkg = fs.readJsonSync("package.json");
+pkg.type = "module";
+fs.writeJSONSync("package.json", pkg, { spaces: 2 });
+
+// move babel to have cjs extension
+if (fs.existsSync("babel.config.js")) {
+  await $`mv babel.config.js babel.config.cjs`;
+}
+
 // .nvmrc dropped in 7.0
 if (fs.existsSync(".nvmrc")) {
   await $`rm .nvmrc`;

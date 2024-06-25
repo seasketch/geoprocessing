@@ -51,7 +51,7 @@ await $`mv src/i18n/supported.ts.bak src/i18n/supported.ts`;
 
 // Merge in new extra terms
 const newTerms = (await fs.readJson(
-  "${GP_PATH}/dist/base-project/src/i18n/extraTerms.json",
+  `${GP_PATH}/dist/base-project/src/i18n/extraTerms.json`,
   "utf8"
 )) as Record<string, string>;
 const updatedTerms = { ...extraTerms, ...newTerms };

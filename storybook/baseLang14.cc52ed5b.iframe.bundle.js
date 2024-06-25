@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[9],{"./src/i18n/lang/kos/translation.json":function(module){module.exports=JSON.parse("{}")}}]);

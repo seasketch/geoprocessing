@@ -1,0 +1,5 @@
+import{j as o}from"./jsx-runtime-qGIIFXMu.js";import{I as m}from"./IucnMatrix-CkhY5OBy.js";import{a as i}from"./Card-Chsr0-0l.js";import{a as e}from"./ReportDecorator-CVkrvWea.js";import{T as p}from"./TranslatorAsync-BVbRhhEu.js";import"./index-CDs2tPxN.js";import"./iucnProtectionLevel-KZvFkafK.js";import"./styled-components.browser.esm-Bui9LJgA.js";import"./index-BAMY2Nnw.js";import"./useTranslation-BpTe-nno.js";import"./context-CnTB_i5T.js";import"./ReportContext-BTL8L5yF.js";import"./_getPrototype-CLNpD7aq.js";import"./cloneDeep-DUn4YpqL.js";import"./iframe-CDEMpSoA.js";import"../sb-preview/runtime.js";const R={component:m,title:"Components/Iucn/IucnMatrix",decorators:[e]},r=()=>o.jsx(p,{children:o.jsx(i,{children:o.jsx(m,{})})});r.__docgenInfo={description:"",methods:[],displayName:"simple"};var t,s,a;r.parameters={...r.parameters,docs:{...(t=r.parameters)==null?void 0:t.docs,source:{originalSource:`() => <Translator>
+    <Card>
+      <IucnMatrix />
+    </Card>
+  </Translator>`,...(a=(s=r.parameters)==null?void 0:s.docs)==null?void 0:a.source}}};const y=["simple"];export{y as __namedExportsOrder,R as default,r as simple};

@@ -1,0 +1,1 @@
+import{j as t}from"./jsx-runtime-qGIIFXMu.js";const r=({height:e="1rem"})=>t.jsx("div",{style:{height:e,width:"100%"}});r.__docgenInfo={description:"",methods:[],displayName:"VerticalSpacer",props:{height:{required:!1,tsType:{name:'ReactCSSProperties["height"]',raw:'React.CSSProperties["height"]'},description:"",defaultValue:{value:'"1rem"',computed:!1}}}};export{r as V};

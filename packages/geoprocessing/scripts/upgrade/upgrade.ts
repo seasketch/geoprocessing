@@ -7,6 +7,7 @@ import { $ } from "zx";
 import { updatePackageJson } from "./updatePackage.js";
 import { getTemplatePackages } from "../template/templatePackages.js";
 import { TemplateType } from "../types.js";
+import { rekeyObject } from "../../src/index.js";
 
 $.verbose = false;
 
@@ -128,6 +129,16 @@ spinner.succeed("Update .vscode");
 
 //// migration ////
 
+// add type module (esm enable)
+const pkg = fs.readJsonSync("package.json");
+pkg.type = "module";
+fs.writeJSONSync("package.json", pkg, { spaces: 2 });
+
+// move babel to have cjs extension
+if (fs.existsSync("babel.config.js")) {
+  await $`mv babel.config.js babel.config.cjs`;
+}
+
 // .nvmrc dropped in 7.0
 if (fs.existsSync(".nvmrc")) {
   await $`rm .nvmrc`;
@@ -142,6 +153,28 @@ if (fs.existsSync("geoprocessing.json")) {
 const pc = await fs.readFile("project/projectClient.ts", "utf8");
 const newPc = pc.replace("../geoprocessing.json", "./geoprocessing.json");
 fs.writeFile("project/projectClient.ts", newPc, "utf8");
+
+//// rekey package.json ////
+
+fs.writeJSONSync(
+  "package.json",
+  rekeyObject(fs.readJsonSync("package.json"), [
+    "name",
+    "version",
+    "description",
+    "private",
+    "type",
+    "main",
+    "keywords",
+    "repositoryUrl",
+    "author",
+    "license",
+    "scripts",
+    "dependencies",
+    "devDependencies",
+  ]),
+  { spaces: 2 }
+);
 
 /**
  * @param templateType

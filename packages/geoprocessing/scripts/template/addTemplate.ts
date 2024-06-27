@@ -24,19 +24,56 @@ function getTemplatesPath(templateType: TemplateType): string {
   console.log("import.meta.dirname", import.meta.dirname);
   if (fs.existsSync(publishedBundlePath)) {
     // Use bundled templates if user running published version, e.g. via geoprocessing init
-    console.log("returning publishedBundlePath", publishedBundlePath);
+    console.log(
+      "getTemplatesPath returning publishedBundlePath",
+      publishedBundlePath
+    );
     return publishedBundlePath;
   } else {
     // Use src templates
-    console.log("returning import.meta.dirname", import.meta.dirname);
+    console.log(
+      "getTemplatesPath returning import.meta.dirname/../../..",
+      import.meta.dirname
+    );
     return path.join(import.meta.dirname, "..", "..", "..");
   }
 }
 
 export async function getTemplateQuestion(templateType: TemplateType) {
   const templatesPath = getTemplatesPath(templateType);
-  const tplPkgs = await getTemplatePackages(templateType, templatesPath);
-  const templateDescriptions = tplPkgs.map((tplPkg) => tplPkg.description);
+
+  // Extract list of template names and descriptions from bundles
+  const templateNames = await fs.readdir(templatesPath);
+  console.log(templateNames);
+  if (!fs.existsSync(templatesPath)) {
+    throw new Error("Templates path does not exist: " + templatesPath);
+  }
+
+  if (templateNames.length === 0) {
+    console.error(`No add-on templates currently available`);
+    console.log("template path:", templatesPath);
+    console.log("add:template running from:", import.meta.dirname);
+    console.log("CLI running from:", process.cwd());
+    process.exit();
+  }
+
+  const templateDescriptions = templateNames.map((name) => {
+    try {
+      const templatePackageMetaPath = path.join(
+        templatesPath,
+        name,
+        "package.json"
+      );
+      return JSON.parse(fs.readFileSync(templatePackageMetaPath).toString())
+        .description;
+    } catch (error) {
+      console.error(
+        `Missing package.json or its description for template ${name}`
+      );
+      console.error(error);
+      process.exit();
+    }
+  });
 
   // Allow selection of one starter template or multiple add-on templates
   const templateQuestion = {
@@ -45,9 +82,9 @@ export async function getTemplateQuestion(templateType: TemplateType) {
     message: `What ${templateType}${
       templateType === "add-on-template" ? "s" : ""
     } would you like to install?`,
-    choices: tplPkgs.map((pkg, index) => ({
-      value: pkg.name,
-      name: `${pkg.name} - ${templateDescriptions[index]}`,
+    choices: templateNames.map((name, index) => ({
+      value: name,
+      name: `${name} - ${templateDescriptions[index]}`,
     })),
   };
 

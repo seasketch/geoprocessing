@@ -7,9 +7,18 @@ export async function getTemplatePackages(
   templateType: TemplateType,
   templatesPath
 ) {
-  console.log("templatesPath", templatesPath);
+  // console.log("templatesPath", templatesPath);
+
+  if (!fs.existsSync(templatesPath)) {
+    throw new Error(
+      "Templates path does not exist: " +
+        templatesPath +
+        " (getTemplatePackages)"
+    );
+  }
+
   const templateNames = await fs.readdir(templatesPath);
-  console.log("templateNames", templateNames);
+  // console.log("templateNames", templateNames);
 
   if (templateNames.length === 0) return [];
 
@@ -20,7 +29,7 @@ export async function getTemplatePackages(
         name,
         "package.json"
       );
-      console.log("templatePackageMetaPath", templatePackageMetaPath);
+      // console.log("templatePackageMetaPath", templatePackageMetaPath);
       const rawPkg = fs.readJSONSync(templatePackageMetaPath);
       return loadedPackageSchema.parse(rawPkg);
     } catch (error) {

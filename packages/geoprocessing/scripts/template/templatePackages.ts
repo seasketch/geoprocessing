@@ -18,6 +18,7 @@ export async function getTemplatePackages(
         name,
         "package.json"
       );
+      console.log("templatePackageMetaPath", templatePackageMetaPath);
       const rawPkg = fs.readJSONSync(templatePackageMetaPath);
       return loadedPackageSchema.parse(rawPkg);
     } catch (error) {

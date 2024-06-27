@@ -21,11 +21,14 @@ function getTemplatesPath(templateType: TemplateType): string {
     "templates",
     `${templateType}s`
   );
+  console.log("import.meta.dirname", import.meta.dirname);
   if (fs.existsSync(publishedBundlePath)) {
     // Use bundled templates if user running published version, e.g. via geoprocessing init
+    console.log("returning publishedBundlePath", publishedBundlePath);
     return publishedBundlePath;
   } else {
     // Use src templates
+    console.log("returning import.meta.dirname", import.meta.dirname);
     return path.join(import.meta.dirname, "..", "..", "..");
   }
 }

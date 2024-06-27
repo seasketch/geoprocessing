@@ -7,7 +7,9 @@ export async function getTemplatePackages(
   templateType: TemplateType,
   templatesPath
 ) {
+  console.log("templatesPath", templatesPath);
   const templateNames = await fs.readdir(templatesPath);
+  console.log("templateNames", templateNames);
 
   if (templateNames.length === 0) return [];
 

@@ -38,6 +38,7 @@ import {
 } from "./types.js";
 import { genOutputMeta } from "./outputMeta.js";
 import { Bucket } from "aws-cdk-lib/aws-s3";
+import { LambdaStack } from "./LambdaStack.js";
 
 /** StackProps extended with geoprocessing project metadata */
 export interface GeoprocessingStackProps extends StackProps {
@@ -68,12 +69,16 @@ export class GeoprocessingStack extends Stack {
   socketApi?: WebSocketApi;
   clientBucket?: Bucket;
   clientDistribution?: CloudFrontWebDistribution;
+  lambdaStack: LambdaStack;
 
   constructor(scope: Construct, id: string, props: GeoprocessingStackProps) {
     super(scope, id, props);
     this.props = props;
 
-    // Create lambdas for all functions
+    // Create lambda functions
+    this.lambdaStack = new LambdaStack(this, id, props);
+
+    // Create other functions root/socket
     this.functions = createFunctions(this);
 
     this.publicBuckets = createPublicBuckets(this);
@@ -123,16 +128,16 @@ export class GeoprocessingStack extends Stack {
 
   /** Given all gp lambda functions with meta for project, returns sync lambda function */
   getSyncFunctionsWithMeta(): SyncFunctionWithMeta[] {
-    return this.functions.processingFunctions.filter<SyncFunctionWithMeta>(
-      this.isSyncFunctionWithMeta
-    );
+    return this.lambdaStack
+      .getProcessingFunctions()
+      .filter<SyncFunctionWithMeta>(this.isSyncFunctionWithMeta);
   }
 
   /** Given all gp lambda functions with meta for project, returns async lambda function */
   getAsyncFunctionsWithMeta(): AsyncFunctionWithMeta[] {
-    return this.functions.processingFunctions.filter<AsyncFunctionWithMeta>(
-      this.isAsyncFunctionWithMeta
-    );
+    return this.lambdaStack
+      .getProcessingFunctions()
+      .filter<AsyncFunctionWithMeta>(this.isAsyncFunctionWithMeta);
   }
 
   /** Returns true if sync function with meta and narrows type */

@@ -13,7 +13,7 @@ export const createTables = (stack: GeoprocessingStack): GpDynamoTables => {
     estimates: undefined,
     subscriptions: undefined,
   };
-  if (stack.functions.processingFunctions.length > 0) {
+  if (stack.lambdaStack.getProcessingFunctions().length > 0) {
     tables.tasks = new Table(stack, `GpTasksTable`, {
       partitionKey: { name: "id", type: AttributeType.STRING },
       sortKey: { name: "service", type: AttributeType.STRING },

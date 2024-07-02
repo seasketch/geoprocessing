@@ -89,8 +89,8 @@ describe("overlapFeatures", () => {
       sk.holeBlPoly
     );
 
-    // 3487699295400.2056 qgis
-    // 3473074014471.342  turf
+    // 3487699295400.2056 qgis area result
+    // 3473074014471.342  turf is close
 
     expect(metrics.length).toEqual(1);
     const wholeArea = area(sk.wholePoly);

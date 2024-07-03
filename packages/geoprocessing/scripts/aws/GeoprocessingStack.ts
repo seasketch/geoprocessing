@@ -69,14 +69,22 @@ export class GeoprocessingStack extends Stack {
   socketApi?: WebSocketApi;
   clientBucket?: Bucket;
   clientDistribution?: CloudFrontWebDistribution;
-  lambdaStack: LambdaStack;
+  syncLambdaStack: LambdaStack;
+  asyncLambdaStack: LambdaStack;
 
   constructor(scope: Construct, id: string, props: GeoprocessingStackProps) {
     super(scope, id, props);
     this.props = props;
 
     // Create lambda functions
-    this.lambdaStack = new LambdaStack(this, id, props);
+    this.syncLambdaStack = new LambdaStack(this, id + "-sync-fns", {
+      ...props,
+      type: "sync",
+    });
+    this.asyncLambdaStack = new LambdaStack(this, id + "-async-fns", {
+      ...props,
+      type: "async",
+    });
 
     // Create other functions root/socket
     this.functions = createFunctions(this);
@@ -128,14 +136,14 @@ export class GeoprocessingStack extends Stack {
 
   /** Given all gp lambda functions with meta for project, returns sync lambda function */
   getSyncFunctionsWithMeta(): SyncFunctionWithMeta[] {
-    return this.lambdaStack
+    return this.syncLambdaStack
       .getProcessingFunctions()
       .filter<SyncFunctionWithMeta>(this.isSyncFunctionWithMeta);
   }
 
   /** Given all gp lambda functions with meta for project, returns async lambda function */
   getAsyncFunctionsWithMeta(): AsyncFunctionWithMeta[] {
-    return this.lambdaStack
+    return this.asyncLambdaStack
       .getProcessingFunctions()
       .filter<AsyncFunctionWithMeta>(this.isAsyncFunctionWithMeta);
   }
@@ -161,6 +169,13 @@ export class GeoprocessingStack extends Stack {
       funcWithMeta.hasOwnProperty("meta") &&
       isAsyncFunctionMetadata(funcWithMeta.meta)
     );
+  }
+
+  getProcessingFunctions() {
+    return [
+      ...this.syncLambdaStack.getProcessingFunctions(),
+      ...this.asyncLambdaStack.getProcessingFunctions(),
+    ];
   }
 }
 

@@ -1,4 +1,4 @@
-import { NestedStack, NestedStackProps, CfnElement } from "aws-cdk-lib";
+import { NestedStack, NestedStackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import {
   Manifest,
@@ -51,15 +51,6 @@ export class LambdaStack extends NestedStack {
 
     // Create lambdas for all functions
     this.processingFunctions = this.createProcessingFunctions();
-  }
-
-  // Force stack name to be same as logical ID, otherwise it generates a very long cryptic one
-  // https://github.com/aws/aws-cdk/issues/18053#issuecomment-1272927543
-  getLogicalId(element: CfnElement): string {
-    if (element.node.id.includes("NestedStackResource")) {
-      return /([a-zA-Z0-9]+)\.NestedStackResource/.exec(element.node.id)![1]; // will be the exact id of the stack
-    }
-    return super.getLogicalId(element);
   }
 
   getProcessingFunctions() {

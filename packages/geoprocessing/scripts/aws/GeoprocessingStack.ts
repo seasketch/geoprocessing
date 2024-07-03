@@ -77,14 +77,22 @@ export class GeoprocessingStack extends Stack {
     this.props = props;
 
     // Create lambda functions
-    this.syncLambdaStack = new LambdaStack(this, id + "-sync-fns", {
-      ...props,
-      type: "sync",
-    });
-    this.asyncLambdaStack = new LambdaStack(this, id + "-async-fns", {
-      ...props,
-      type: "async",
-    });
+    this.syncLambdaStack = new LambdaStack(
+      this,
+      `${this.props.projectName}-sync-fns`,
+      {
+        ...props,
+        type: "sync",
+      }
+    );
+    this.asyncLambdaStack = new LambdaStack(
+      this,
+      `${this.props.projectName}-async-fns`,
+      {
+        ...props,
+        type: "async",
+      }
+    );
 
     // Create other functions root/socket
     this.functions = createFunctions(this);

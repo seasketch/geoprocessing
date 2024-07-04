@@ -24,6 +24,11 @@ export interface AsyncFunctionWithMeta {
   runFunc: Function;
 }
 
+export type ProcessingFunctions = (
+  | SyncFunctionWithMeta
+  | AsyncFunctionWithMeta
+)[];
+
 /**
  * Catch-all type for gp function lambda paired with metadata
  */
@@ -69,6 +74,4 @@ export interface GpProjectFunctions {
   serviceRootFunction: Function;
   /** Base web socket functions */
   socketFunctions: GpSocketFunctions;
-  /** geoprocessing/preprocessing functions */
-  processingFunctions: (SyncFunctionWithMeta | AsyncFunctionWithMeta)[];
 }

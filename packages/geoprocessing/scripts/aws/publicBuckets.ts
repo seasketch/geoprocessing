@@ -32,7 +32,7 @@ export const createPublicBuckets = (
     }),
   };
 
-  if (stack.functions.processingFunctions.length > 0) {
+  if (stack.getProcessingFunctions().length > 0) {
     const result = new Bucket(stack, `GpResultBucket`, {
       bucketName: `gp-${stack.props.projectName}-results`,
       versioned: false,

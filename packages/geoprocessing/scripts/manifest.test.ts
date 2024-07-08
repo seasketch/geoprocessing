@@ -7,7 +7,7 @@ import {
   getSyncFunctionMetadata,
   getAsyncFunctionMetadata,
 } from "./manifest.js";
-import createTestProjectManifest from "./testing/createTestProjectManifest.js";
+import createTestProjectManifest from "./testing/createTestProject.js";
 import { describe, test, expect } from "vitest";
 
 describe("manifest helpers", () => {

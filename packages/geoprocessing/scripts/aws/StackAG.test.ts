@@ -2,7 +2,7 @@ import { App } from "aws-cdk-lib";
 import "@aws-cdk/assert/jest";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
 import config from "./config.js";
-import createTestProjectManifest from "../testing/createTestProjectManifest.js";
+import createTestProject from "../testing/createTestProject.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,7 +17,7 @@ describe("GeoprocessingStack - async geoprocessor only", () => {
   it.skip("should create a valid stack", async () => {
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProjectManifest(projectName, [
+    const manifest = await createTestProject(projectName, [
       "asyncGeoprocessor",
     ]);
 

@@ -1,7 +1,7 @@
 import { App } from "aws-cdk-lib";
 import { SynthUtils } from "@aws-cdk/assert";
 import "@aws-cdk/assert/jest";
-import createTestProjectManifest from "../testing/createTestProjectManifest.js";
+import createTestProject from "../testing/createTestProject.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
 import config from "./config.js";
@@ -18,7 +18,7 @@ describe("GeoprocessingStack - all components", () => {
   test.skip("should create a valid stack", async () => {
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProjectManifest(projectName, [
+    const manifest = await createTestProject(projectName, [
       "preprocessor",
       "syncGeoprocessor",
       "asyncGeoprocessor",

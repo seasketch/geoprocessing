@@ -1,8 +1,7 @@
 import { App } from "aws-cdk-lib";
-import "@aws-cdk/assert/jest";
 import { GeoprocessingStack } from "./GeoprocessingStack.js";
-import config from "./config.js";
-import createTestProjectManifest from "../testing/createTestProjectManifest.js";
+import createTestProject from "../testing/createTestProject.js";
+import { Match, Template } from "aws-cdk-lib/assertions";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
 import { describe, it, expect, afterAll } from "vitest";
@@ -12,12 +11,14 @@ const projectName = "empty";
 const projectPath = path.join(rootPath, projectName);
 
 describe("GeoprocessingStack - empty", () => {
-  afterAll(() => cleanupBuildDirs(projectPath));
+  // afterAll(() => cleanupBuildDirs(projectPath));
 
-  it.skip("should create a valid stack", async () => {
+  test("should create a valid stack", async () => {
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProjectManifest(projectName, []);
+    const manifest = await createTestProject(projectName, []);
+    // run build script
+    // createTestProjectBuild(projectPath, manifest);
 
     expect(manifest.clients.length).toBe(0);
     expect(manifest.preprocessingFunctions.length).toBe(0);
@@ -30,6 +31,9 @@ describe("GeoprocessingStack - empty", () => {
       manifest,
       projectPath,
     });
+
+    const template = Template.fromStack(stack);
+    expect(template.toJSON()).toMatchSnapshot();
 
     // Check counts
     expect(stack.hasClients()).toEqual(false);

@@ -1,25 +1,24 @@
 import { App } from "aws-cdk-lib";
-import "@aws-cdk/assert/jest";
 import { GeoprocessingStack } from "./GeoprocessingStack.js";
-import config from "./config.js";
 import createTestProject from "../testing/createTestProject.js";
+import { Match, Template } from "aws-cdk-lib/assertions";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
 import { describe, it, expect, afterAll } from "vitest";
 
 const rootPath = `${import.meta.dirname}/../__test__`;
-const projectName = "client-only";
+const projectName = "empty";
 const projectPath = path.join(rootPath, projectName);
 
-describe("GeoprocessingStack - client only", () => {
-  afterAll(() => cleanupBuildDirs(projectPath));
+describe("GeoprocessingStack with snapshot - empty", () => {
+  // afterAll(() => cleanupBuildDirs(projectPath));
 
-  it.skip("should create a valid stack", async () => {
+  test.skip("should create a valid stack", async () => {
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProject(projectName, ["client"]);
+    const manifest = await createTestProject(projectName, []);
 
-    expect(manifest.clients.length).toBe(1);
+    expect(manifest.clients.length).toBe(0);
     expect(manifest.preprocessingFunctions.length).toBe(0);
     expect(manifest.geoprocessingFunctions.length).toBe(0);
 
@@ -31,8 +30,11 @@ describe("GeoprocessingStack - client only", () => {
       projectPath,
     });
 
+    const template = Template.fromStack(stack);
+    expect(template.toJSON()).toMatchSnapshot();
+
     // Check counts
-    expect(stack.hasClients()).toEqual(true);
+    expect(stack.hasClients()).toEqual(false);
     expect(stack.hasSyncFunctions()).toEqual(false);
     expect(stack.hasAsyncFunctions()).toEqual(false);
     expect(stack.getSyncFunctionMetas().length).toBe(0);
@@ -40,14 +42,14 @@ describe("GeoprocessingStack - client only", () => {
     expect(stack.getSyncFunctionsWithMeta().length).toBe(0);
     expect(stack.getAsyncFunctionsWithMeta().length).toBe(0);
 
-    // expect(stack).toCountResources("AWS::CloudFront::Distribution", 1); // shared
-    // expect(stack).toCountResources("AWS::S3::Bucket", 2);
-    // expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1);
-    // expect(stack).toCountResources("AWS::ApiGateway::Stage", 1);
-    // expect(stack).toCountResources("AWS::ApiGatewayV2::Api", 0); // web socket api
-    // expect(stack).toCountResources("AWS::ApiGatewayV2::Stage", 0);
+    // expect(stack).toCountResources("AWS::CloudFront::Distribution", 0);
+    // expect(stack).toCountResources("AWS::S3::Bucket", 1); // dataset bucket
+    // expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1); // metadata root route
+    // expect(stack).toCountResources("AWS::ApiGateway::Stage", 1); // rest api
+    // expect(stack).toCountResources("AWS::ApiGatewayV2::Api", 0); // metadata root route
+    // expect(stack).toCountResources("AWS::ApiGatewayV2::Stage", 0); // web socket api
     // expect(stack).toCountResources("AWS::DynamoDB::Table", 0);
-    // expect(stack).toCountResources("AWS::Lambda::Function", 3); //metadataHandler, client bucket deploy, bucket delete
+    // expect(stack).toCountResources("AWS::Lambda::Function", 2); // metadata root and bucket auto-delete
 
     // expect(stack).toHaveResourceLike("AWS::ApiGateway::Stage", {
     //   StageName: config.STAGE_NAME,
@@ -63,11 +65,6 @@ describe("GeoprocessingStack - client only", () => {
     // expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
     //   Handler: "serviceHandlers.projectMetadata",
     //   Runtime: config.NODE_RUNTIME.name,
-    // });
-
-    // // Check client resources
-    // expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
-    //   BucketName: `gp-${projectName}-client`,
     // });
   });
 });

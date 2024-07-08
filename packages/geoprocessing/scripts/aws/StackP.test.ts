@@ -2,7 +2,7 @@ import { App } from "aws-cdk-lib";
 import "@aws-cdk/assert/jest";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
 import config from "./config.js";
-import createTestProjectManifest from "../testing/createTestProjectManifest.js";
+import createTestProject from "../testing/createTestProject.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
 import { describe, it, expect, afterAll } from "vitest";
@@ -17,9 +17,7 @@ describe("GeoprocessingStack - preprocessor only", () => {
   it.skip("should create a valid stack", async () => {
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProjectManifest(projectName, [
-      "preprocessor",
-    ]);
+    const manifest = await createTestProject(projectName, ["preprocessor"]);
 
     expect(manifest.clients.length).toBe(0);
     expect(manifest.preprocessingFunctions.length).toBe(1);

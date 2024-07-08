@@ -179,6 +179,11 @@ fs.writeJSONSync(
   { spaces: 2 }
 );
 
+console.log(`Upgrade complete!
+
+See upgrade tutorial for additional steps - https://github.com/seasketch/geoprocessing/wiki/Tutorials/#upgrading-your-project  
+`);
+
 /**
  * @param templateType
  * @returns path to template directories, given template type

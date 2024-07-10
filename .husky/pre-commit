@@ -3,4 +3,5 @@
 
 npx lerna run prepare # transpiles core geoprocessing code for templates
 # run tests including e2e tests not run by Github CI (GDAL, etc.)
-npx lerna run test:local
+npx lerna run test
+npx lerna run test:e2e

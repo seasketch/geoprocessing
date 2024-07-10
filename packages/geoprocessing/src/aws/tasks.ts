@@ -149,27 +149,28 @@ export default class TasksModel {
       .promise();
   }
 
-  private packageResults(results: any) {
-    const rootResult = cloneDeep(results);
+  private packageData(data: any) {
+    const rootData = cloneDeep(data);
     let metricsBySketch: Record<string, Metric[]> = {};
     let numSketches = 1;
 
-    // If more than one sketch, split out from root result
-    if (results.metrics && isMetricArray(results.metrics)) {
+    // If results in metric array form and more than one sketch, break into multiple results
+    if (data.metrics && isMetricArray(data.metrics)) {
       metricsBySketch = groupBy(
-        cloneDeep(results.metrics as Metric[]),
+        cloneDeep(data.metrics as Metric[]),
         (m) => m.sketchId || "undefined"
       );
-      console.log(`${numSketches} sketches`);
+      const sketchIds = Object.keys(metricsBySketch);
+      numSketches = sketchIds.length;
       if (numSketches > 1) {
-        delete rootResult.metrics;
-        console.log("Deleted metrics from root", JSON.stringify(rootResult));
+        rootData.sketchChildItems = sketchIds;
+        rootData.metrics = [];
       } else {
-        rootResult.metrics = packMetrics(rootResult.metrics);
+        rootData.metrics = packMetrics(rootData.metrics);
       }
     }
 
-    return { rootResult, metricsBySketch };
+    return { rootResult: rootData, metricsBySketch };
   }
 
   async complete(
@@ -182,7 +183,7 @@ export default class TasksModel {
 
     // packageResults
 
-    const { rootResult, metricsBySketch } = this.packageResults(results);
+    const { rootResult, metricsBySketch } = this.packageData(results);
     const numSketches = Object.keys(metricsBySketch).length;
 
     // Store the top-level result
@@ -192,21 +193,18 @@ export default class TasksModel {
         Key: {
           id: task.id,
           service: task.service,
-          component: "root",
         },
         UpdateExpression:
-          "set #data = :data, #status = :status, #duration = :duration, #sketchChildItems = :sketchChildItems",
+          "set #data = :data, #status = :status, #duration = :duration",
         ExpressionAttributeNames: {
           "#data": "data",
           "#status": "status",
           "#duration": "duration",
-          "#sketchChildItems": "sketchChildItems",
         },
         ExpressionAttributeValues: {
           ":data": rootResult,
           ":status": task.status,
           ":duration": task.duration,
-          ":sketchChildItems": Object.keys(metricsBySketch),
         },
       })
       .promise();
@@ -216,14 +214,12 @@ export default class TasksModel {
       console.log(`db.update ${numSketches} sketches`);
       console.log(Object.keys(metricsBySketch).join(", "));
       const promises = Object.keys(metricsBySketch).map(async (sketchId) => {
-        // Store the top-level result
         return this.db
           .update({
             TableName: this.table,
             Key: {
-              id: task.id,
+              id: `${task.id}-sketchId-${sketchId}`,
               service: task.service,
-              component: sketchId,
             },
             UpdateExpression:
               "set #data = :data, #status = :status, #duration = :duration",
@@ -382,7 +378,6 @@ export default class TasksModel {
           Key: {
             id: taskId,
             service,
-            component: "root",
           },
         })
         .promise();
@@ -400,7 +395,6 @@ export default class TasksModel {
               Keys: rootResult.sketchChildItems.map((sketchId) => ({
                 id: taskId,
                 service,
-                component: sketchId,
               })),
             },
           },

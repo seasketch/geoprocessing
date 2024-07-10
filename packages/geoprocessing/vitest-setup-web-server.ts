@@ -1,23 +1,31 @@
 import LocalFileServer from "./scripts/base/util/localServer.js";
+import DynamoDbLocal from "dynamodb-local";
 
-let server: LocalFileServer;
+const dynamoPort = 8000;
+const fileServerPort = 8001;
+
+let fileServer: LocalFileServer;
 
 export async function setup() {
   const dstPath = "../data/out";
-  const tempPort = 8001;
 
   console.log(
-    `Starting file server on port ${tempPort} to serve test files from data/out`
+    `Starting file server on port ${fileServerPort} to serve test files from data/out`
   );
   // Set reference in order to use during teardown
-  server = new LocalFileServer({
+  fileServer = new LocalFileServer({
     path: dstPath,
-    port: tempPort,
+    port: fileServerPort,
   });
+
+  console.log(`Starting DynamoDb service on port ${dynamoPort}`);
+  await DynamoDbLocal.launch(dynamoPort, null, ["-sharedDb"]);
 }
 export async function teardown() {
-  if (server) {
+  if (fileServer) {
     console.log("Shutting down file server");
-    server.close();
+    fileServer.close();
   }
+  DynamoDbLocal.stop(dynamoPort);
+  console.log("Shutting down dynamodb service");
 }

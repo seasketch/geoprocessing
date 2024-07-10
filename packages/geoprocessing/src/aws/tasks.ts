@@ -8,6 +8,8 @@ import {
   unpackMetrics,
 } from "../metrics/index.js";
 import cloneDeep from "lodash/cloneDeep.js";
+import { groupBy } from "../helpers/groupBy.js";
+import { Metric } from "../types/metrics.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,6 +33,16 @@ export interface GeoprocessingTask<ResultType = any> {
   error?: string;
   estimate: number;
   // ttl?: number;
+}
+
+export interface ChildTaskItem<ResultType = any> {
+  duration?: number; //ms
+  status: GeoprocessingTaskStatus;
+  data?: ResultType; // result data can take any json-serializable form
+}
+export interface RootTaskItem<ResultType = any>
+  extends ChildTaskItem<ResultType> {
+  sketchChildItems: string[];
 }
 
 export enum GeoprocessingTaskStatus {
@@ -137,6 +149,29 @@ export default class TasksModel {
       .promise();
   }
 
+  private packageResults(results: any) {
+    const rootResult = cloneDeep(results);
+    let metricsBySketch: Record<string, Metric[]> = {};
+    let numSketches = 1;
+
+    // If more than one sketch, split out from root result
+    if (results.metrics && isMetricArray(results.metrics)) {
+      metricsBySketch = groupBy(
+        cloneDeep(results.metrics as Metric[]),
+        (m) => m.sketchId || "undefined"
+      );
+      console.log(`${numSketches} sketches`);
+      if (numSketches > 1) {
+        delete rootResult.metrics;
+        console.log("Deleted metrics from root", JSON.stringify(rootResult));
+      } else {
+        rootResult.metrics = packMetrics(rootResult.metrics);
+      }
+    }
+
+    return { rootResult, metricsBySketch };
+  }
+
   async complete(
     task: GeoprocessingTask,
     results: any
@@ -145,33 +180,68 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
-    // Check for metrics and pack them before inserting into DB
-    const dataToStore = cloneDeep(results);
-    if (dataToStore.metrics && isMetricArray(dataToStore.metrics)) {
-      const packed = packMetrics(dataToStore.metrics);
-      dataToStore.metrics = packed;
-    }
+    // packageResults
+
+    const { rootResult, metricsBySketch } = this.packageResults(results);
+    const numSketches = Object.keys(metricsBySketch).length;
+
+    // Store the top-level result
     await this.db
       .update({
         TableName: this.table,
         Key: {
           id: task.id,
           service: task.service,
+          component: "root",
         },
         UpdateExpression:
-          "set #data = :data, #status = :status, #duration = :duration",
+          "set #data = :data, #status = :status, #duration = :duration, #sketchChildItems = :sketchChildItems",
         ExpressionAttributeNames: {
           "#data": "data",
           "#status": "status",
           "#duration": "duration",
+          "#sketchChildItems": "sketchChildItems",
         },
         ExpressionAttributeValues: {
-          ":data": dataToStore,
+          ":data": rootResult,
           ":status": task.status,
           ":duration": task.duration,
+          ":sketchChildItems": Object.keys(metricsBySketch),
         },
       })
       .promise();
+
+    // If more than one sketch, save metrics in chunks, one dynamodb item per sketch ID
+    if (numSketches > 1) {
+      console.log(`db.update ${numSketches} sketches`);
+      console.log(Object.keys(metricsBySketch).join(", "));
+      const promises = Object.keys(metricsBySketch).map(async (sketchId) => {
+        // Store the top-level result
+        return this.db
+          .update({
+            TableName: this.table,
+            Key: {
+              id: task.id,
+              service: task.service,
+              component: sketchId,
+            },
+            UpdateExpression:
+              "set #data = :data, #status = :status, #duration = :duration",
+            ExpressionAttributeNames: {
+              "#data": "data",
+              "#status": "status",
+              "#duration": "duration",
+            },
+            ExpressionAttributeValues: {
+              ":data": { metrics: packMetrics(metricsBySketch[sketchId]) },
+              ":status": task.status,
+              ":duration": task.duration,
+            },
+          })
+          .promise();
+      });
+      await Promise.all(promises);
+    }
 
     return {
       statusCode: 200,
@@ -305,26 +375,65 @@ export default class TasksModel {
     taskId: string
   ): Promise<GeoprocessingTask | undefined> {
     try {
-      const response = await this.db
+      // Get root item
+      const rootResponse = await this.db
         .get({
           TableName: this.table,
           Key: {
             id: taskId,
             service,
+            component: "root",
           },
         })
         .promise();
 
-      const result = response.Item as GeoprocessingTask;
-      // Check for metrics and unpack them before returning
+      // Check for sketch child items
+      const rootResult = rootResponse.Item as RootTaskItem;
+
       if (
-        result.data &&
-        result.data.metrics &&
-        isMetricPack(result.data.metrics)
+        rootResult.sketchChildItems &&
+        rootResult.sketchChildItems.length > 0
       ) {
-        result.data.metrics = unpackMetrics(result.data.metrics);
+        var sketchChildBatchParams = {
+          RequestItems: {
+            [this.table]: {
+              Keys: rootResult.sketchChildItems.map((sketchId) => ({
+                id: taskId,
+                service,
+                component: sketchId,
+              })),
+            },
+          },
+        };
+
+        const childResult = await this.db
+          .batchGet(sketchChildBatchParams)
+          .promise();
+
+        let childItems: any[] = [];
+        if (childResult.Responses && childResult.Responses[this.table]) {
+          childItems = childResult.Responses[this.table] as ChildTaskItem[];
+          let aggMetrics: Metric[] = [];
+          for (let i = 0; i < childItems.length; i++) {
+            const childItem = childItems[i];
+
+            if (childItem.data && childItem.data.metrics) {
+              const newMetrics = isMetricPack(childItem.data.metrics)
+                ? unpackMetrics(childItem.data.metrics)
+                : childItem.data.metrics;
+
+              aggMetrics = aggMetrics.concat(newMetrics);
+            }
+          }
+          rootResult.data.metrics = aggMetrics;
+        } else {
+          console.warn(
+            `No child items found - id: ${taskId}, service: ${service}, childItems: ${rootResult.sketchChildItems}`
+          );
+        }
       }
-      return result;
+
+      return rootResult as unknown as GeoprocessingTask;
     } catch (e) {
       return undefined;
     }

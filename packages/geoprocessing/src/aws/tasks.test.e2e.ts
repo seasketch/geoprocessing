@@ -121,7 +121,6 @@ describe("DynamoDB local", () => {
 
   test("get() a created task", async () => {
     const task = await Tasks.create(SERVICE_NAME, undefined, "abc123");
-    console.log("task.id", task.id);
     expect(typeof task.id).toBe("string");
     const retrieved = await Tasks.get(SERVICE_NAME, task.id);
     expect(retrieved && retrieved.id).toBe(task.id);
@@ -228,11 +227,12 @@ describe("DynamoDB local", () => {
 
   test("complete a task with multiple sketch metrics should create multiple items", async () => {
     const task = await Tasks.create(SERVICE_NAME);
+    const metrics = [
+      createMetric({ value: 15, sketchId: "sketch1" }),
+      createMetric({ value: 30, sketchId: "sketch2" }),
+    ];
     const response = await Tasks.complete(task, {
-      metrics: [
-        createMetric({ value: 15, sketchId: "sketch1" }),
-        createMetric({ value: 30, sketchId: "sketch2" }),
-      ],
+      metrics,
     });
     expect(response.statusCode).toBe(200);
 
@@ -285,6 +285,12 @@ describe("DynamoDB local", () => {
     const childMetrics2 = unpackMetrics(childRawMetrics2);
     expect(isMetricArray(childMetrics2)).toBe(true);
     expect(childMetrics2.length).toBe(1);
+
+    const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
+    const cachedMetrics = cachedResult?.data.metrics;
+    expect(cachedMetrics).toBeTruthy();
+    expect(isMetricArray(cachedMetrics)).toBe(true);
+    expect(deepEqual(cachedMetrics, metrics)).toBe(true);
   });
 
   test("fail a task", async () => {

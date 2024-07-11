@@ -211,8 +211,6 @@ export default class TasksModel {
 
     // If more than one sketch, save metrics in chunks, one dynamodb item per sketch ID
     if (numSketches > 1) {
-      console.log(`db.update ${numSketches} sketches`);
-      console.log(Object.keys(metricsBySketch).join(", "));
       const promises = Object.keys(metricsBySketch).map(async (sketchId) => {
         return this.db
           .update({
@@ -386,14 +384,15 @@ export default class TasksModel {
       const rootResult = rootResponse.Item as RootTaskItem;
 
       if (
-        rootResult.sketchChildItems &&
-        rootResult.sketchChildItems.length > 0
+        rootResult.data &&
+        rootResult.data.sketchChildItems &&
+        rootResult.data.sketchChildItems.length > 0
       ) {
         var sketchChildBatchParams = {
           RequestItems: {
             [this.table]: {
-              Keys: rootResult.sketchChildItems.map((sketchId) => ({
-                id: taskId,
+              Keys: rootResult.data.sketchChildItems.map((sketchId) => ({
+                id: `${taskId}-sketchId-${sketchId}`,
                 service,
               })),
             },

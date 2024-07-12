@@ -42,7 +42,7 @@ export interface ChildTaskItem<ResultType = any> {
 }
 export interface RootTaskItem<ResultType = any>
   extends ChildTaskItem<ResultType> {
-  sketchChildItems: string[];
+  sketchMetricItems: string[];
 }
 
 export enum GeoprocessingTaskStatus {
@@ -149,30 +149,6 @@ export default class TasksModel {
       .promise();
   }
 
-  private packageData(data: any) {
-    const rootData = cloneDeep(data);
-    let metricsBySketch: Record<string, Metric[]> = {};
-    let numSketches = 1;
-
-    // If results in metric array form and more than one sketch, break into multiple results
-    if (data.metrics && isMetricArray(data.metrics)) {
-      metricsBySketch = groupBy(
-        cloneDeep(data.metrics as Metric[]),
-        (m) => m.sketchId || "undefined"
-      );
-      const sketchIds = Object.keys(metricsBySketch);
-      numSketches = sketchIds.length;
-      if (numSketches > 1) {
-        rootData.sketchChildItems = sketchIds;
-        rootData.metrics = [];
-      } else {
-        rootData.metrics = packMetrics(rootData.metrics);
-      }
-    }
-
-    return { rootResult: rootData, metricsBySketch };
-  }
-
   async complete(
     task: GeoprocessingTask,
     results: any
@@ -183,7 +159,7 @@ export default class TasksModel {
 
     // packageResults
 
-    const { rootResult, metricsBySketch } = this.packageData(results);
+    const { rootResult, metricsBySketch } = this.splitSketchMetrics(results);
     const numSketches = Object.keys(metricsBySketch).length;
 
     // Store the top-level result
@@ -379,19 +355,18 @@ export default class TasksModel {
           },
         })
         .promise();
+      let rootResult = rootResponse.Item as RootTaskItem;
 
-      // Check for sketch child items
-      const rootResult = rootResponse.Item as RootTaskItem;
-
+      // Check for sketch metric items and re-merge them with root item if found
       if (
         rootResult.data &&
-        rootResult.data.sketchChildItems &&
-        rootResult.data.sketchChildItems.length > 0
+        rootResult.data.sketchMetricItems &&
+        rootResult.data.sketchMetricItems.length > 0
       ) {
-        var sketchChildBatchParams = {
+        var sketchMetricBatchParams = {
           RequestItems: {
             [this.table]: {
-              Keys: rootResult.data.sketchChildItems.map((sketchId) => ({
+              Keys: rootResult.data.sketchMetricItems.map((sketchId) => ({
                 id: `${taskId}-sketchId-${sketchId}`,
                 service,
               })),
@@ -400,28 +375,14 @@ export default class TasksModel {
         };
 
         const childResult = await this.db
-          .batchGet(sketchChildBatchParams)
+          .batchGet(sketchMetricBatchParams)
           .promise();
 
-        let childItems: any[] = [];
         if (childResult.Responses && childResult.Responses[this.table]) {
-          childItems = childResult.Responses[this.table] as ChildTaskItem[];
-          let aggMetrics: Metric[] = [];
-          for (let i = 0; i < childItems.length; i++) {
-            const childItem = childItems[i];
-
-            if (childItem.data && childItem.data.metrics) {
-              const newMetrics = isMetricPack(childItem.data.metrics)
-                ? unpackMetrics(childItem.data.metrics)
-                : childItem.data.metrics;
-
-              aggMetrics = aggMetrics.concat(newMetrics);
-            }
-          }
-          rootResult.data.metrics = aggMetrics;
+          rootResult.data.metrics = this.unsplitSketchMetrics(childResult);
         } else {
           console.warn(
-            `No child items found - id: ${taskId}, service: ${service}, childItems: ${rootResult.sketchChildItems}`
+            `No child items found for sketches: ${rootResult.sketchMetricItems}`
           );
         }
       }
@@ -444,5 +405,53 @@ export default class TasksModel {
       .promise();
     let meanEstimate: number = response.Item?.meanEstimate;
     return meanEstimate;
+  }
+
+  /**
+   * Split result into multple items if more than one sketch
+   * @param rootResult
+   * @returns rootResult with metrics removed, and metricsBySketch individual sketch results keyed by sketchId
+   */
+  private splitSketchMetrics(rootResult: any) {
+    const rootData = cloneDeep(rootResult);
+    let metricsBySketch: Record<string, Metric[]> = {};
+    let numSketches = 1;
+
+    // If results in metric array form and more than one sketch, break into multiple results
+    if (rootResult.metrics && isMetricArray(rootResult.metrics)) {
+      metricsBySketch = groupBy(
+        cloneDeep(rootResult.metrics as Metric[]),
+        (m) => m.sketchId || "undefined"
+      );
+      const sketchIds = Object.keys(metricsBySketch);
+      numSketches = sketchIds.length;
+      if (numSketches > 1) {
+        rootData.sketchMetricItems = sketchIds;
+        rootData.metrics = [];
+      } else {
+        rootData.metrics = packMetrics(rootData.metrics);
+      }
+    }
+
+    return { rootResult: rootData, metricsBySketch };
+  }
+
+  /** Given dynambodb shild  */
+  private unsplitSketchMetrics(childResult: any) {
+    let childItems: any[] = [];
+    childItems = childResult.Responses[this.table] as ChildTaskItem[];
+    let aggMetrics: Metric[] = [];
+    for (let i = 0; i < childItems.length; i++) {
+      const childItem = childItems[i];
+
+      if (childItem.data && childItem.data.metrics) {
+        const newMetrics = isMetricPack(childItem.data.metrics)
+          ? unpackMetrics(childItem.data.metrics)
+          : childItem.data.metrics;
+
+        aggMetrics = aggMetrics.concat(newMetrics);
+      }
+    }
+    return aggMetrics;
   }
 }

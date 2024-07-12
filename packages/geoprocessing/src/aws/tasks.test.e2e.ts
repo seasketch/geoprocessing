@@ -249,7 +249,7 @@ describe("DynamoDB local", () => {
     expect(Array.isArray(rootMetrics)).toBe(true);
     expect(rootMetrics.length).toBe(0);
 
-    const childItems = item?.Item?.data.sketchChildItems;
+    const childItems = item?.Item?.data.sketchMetricItems;
     expect(childItems).toBeTruthy();
     expect(childItems.length).toBe(2);
     expect(childItems).toEqual(["sketch1", "sketch2"]);

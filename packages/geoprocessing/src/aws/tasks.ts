@@ -379,7 +379,10 @@ export default class TasksModel {
           .promise();
 
         if (childResult.Responses && childResult.Responses[this.table]) {
-          rootResult.data.metrics = this.unsplitSketchMetrics(childResult);
+          const childItems = childResult.Responses[
+            this.table
+          ] as ChildTaskItem[];
+          rootResult.data.metrics = this.unsplitSketchMetrics(childItems);
         } else {
           console.warn(
             `No child items found for sketches: ${rootResult.sketchMetricItems}`
@@ -408,7 +411,7 @@ export default class TasksModel {
   }
 
   /**
-   * Split result into multple items if more than one sketch
+   * Split function result into multple items if more than one sketch
    * @param rootResult
    * @returns rootResult with metrics removed, and metricsBySketch individual sketch results keyed by sketchId
    */
@@ -436,10 +439,10 @@ export default class TasksModel {
     return { rootResult: rootData, metricsBySketch };
   }
 
-  /** Given dynambodb shild  */
-  private unsplitSketchMetrics(childResult: any) {
-    let childItems: any[] = [];
-    childItems = childResult.Responses[this.table] as ChildTaskItem[];
+  /**
+   * Given child task item array, returns them unpacked and merged into a single array
+   */
+  private unsplitSketchMetrics(childItems: ChildTaskItem[]) {
     let aggMetrics: Metric[] = [];
     for (let i = 0; i < childItems.length; i++) {
       const childItem = childItems[i];

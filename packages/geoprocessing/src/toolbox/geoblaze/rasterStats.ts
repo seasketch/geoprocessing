@@ -6,7 +6,7 @@ import {
   Feature,
   MultiPolygon,
   FeatureCollection,
-  MetricDimension
+  MetricDimension,
 } from "../../types/index.js";
 import geoblaze, { Georaster } from "geoblaze";
 import { StatsObject, CalcStatsOptions } from "../../types/geoblaze.js";
@@ -83,12 +83,22 @@ export const rasterStats = async (
 
   try {
     // If categorical raster, use histogram to calculate valid cells
-    statsByBand = categorical
-      ? (
-          await geoblaze.histogram(raster, projectedFeat, {
-            scaleType: "nominal",
-          })
-        ).map((h: any) => {
+    if (categorical) {
+      const histogram = await geoblaze.histogram(raster, projectedFeat, {
+        scaleType: "nominal",
+      });
+
+      // If no overlap
+      if (!histogram.length) {
+        if (!categoryMetricValues || categoryMetricValues.length === 0) {
+          statsByBand = [{ histogram: {} }];
+        } else {
+          let hist = {};
+          categoryMetricValues.forEach((c) => (hist[c] = 0));
+          statsByBand = [{ histogram: hist }];
+        }
+      } else {
+        statsByBand = histogram.map((h) => {
           let hist = {};
           if (!categoryMetricValues || categoryMetricValues.length === 0) {
             return { histogram: h };
@@ -96,18 +106,21 @@ export const rasterStats = async (
             categoryMetricValues.forEach((c) => (hist[c] = h[c] ?? 0));
             return { histogram: hist };
           }
-        })
-      : ((await geoblaze.stats(
-          raster,
-          projectedFeat,
-          {
-            stats: statsToCalculate.filter((stat) =>
-              GEOBLAZE_RASTER_STATS.includes(stat)
-            ), // filter to only native geoblaze stats
-            ...restCalcOptions,
-          },
-          filterFn
-        )) as StatsObject[]);
+        });
+      }
+    } else {
+      statsByBand = await geoblaze.stats(
+        raster,
+        projectedFeat,
+        {
+          stats: statsToCalculate.filter((stat) =>
+            GEOBLAZE_RASTER_STATS.includes(stat)
+          ), // filter to only native geoblaze stats
+          ...restCalcOptions,
+        },
+        filterFn
+      );
+    }
 
     statsByBand.forEach((statBand) => {
       // Calculate area

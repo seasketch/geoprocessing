@@ -219,7 +219,7 @@ describe("DynamoDB local", () => {
 
     const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
 
-    const cachedMetrics = unpackMetrics(cachedResult?.data.metrics);
+    const cachedMetrics = cachedResult?.data.metrics;
     expect(cachedMetrics).toBeTruthy();
     expect(isMetricArray(cachedMetrics)).toBe(true);
     expect(deepEqual(cachedMetrics, metrics)).toBe(true);

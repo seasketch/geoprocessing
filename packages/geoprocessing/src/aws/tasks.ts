@@ -388,6 +388,12 @@ export default class TasksModel {
             `No child items found for sketches: ${rootResult.sketchMetricItems}`
           );
         }
+      } else if (
+        rootResult.data &&
+        rootResult.data.metrics &&
+        isMetricPack(rootResult.data.metrics)
+      ) {
+        rootResult.data.metrics = unpackMetrics(rootResult.data.metrics);
       }
 
       return rootResult as unknown as GeoprocessingTask;

@@ -10,6 +10,9 @@ import {
 import cloneDeep from "lodash/cloneDeep.js";
 import { groupBy } from "../helpers/groupBy.js";
 import { Metric } from "../types/metrics.js";
+import { byteSize } from "../util/byteSize.js";
+import { JSONValue } from "../types/base.js";
+import { hasOwnProperty } from "../helpers/native.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -151,7 +154,8 @@ export default class TasksModel {
 
   async complete(
     task: GeoprocessingTask,
-    results: any
+    results: any,
+    options: { minSplitSizeBytes?: number } = {}
   ): Promise<APIGatewayProxyResult> {
     task.data = results;
     task.status = GeoprocessingTaskStatus.Completed;
@@ -159,7 +163,9 @@ export default class TasksModel {
 
     // packageResults
 
-    const { rootResult, metricsBySketch } = this.splitSketchMetrics(results);
+    const { rootResult, metricsBySketch } = this.splitSketchMetrics(results, {
+      minSplitSizeBytes: options.minSplitSizeBytes,
+    });
     const numSketches = Object.keys(metricsBySketch).length;
 
     // Store the top-level result
@@ -417,27 +423,45 @@ export default class TasksModel {
   }
 
   /**
-   * Split function result into multple items if more than one sketch
+   * Split function result into multple items if more object with metrics for more than one sketch
    * @param rootResult
+   * @param minSplitSizeBytes rootResult over this size in bytes (when converted to JSON string) will be split. defaults to 350KB, just under 400KB dynamodb limit per item
    * @returns rootResult with metrics removed, and metricsBySketch individual sketch results keyed by sketchId
    */
-  private splitSketchMetrics(rootResult: any) {
+  private splitSketchMetrics(
+    rootResult: JSONValue,
+    options: { minSplitSizeBytes?: number } = {}
+  ) {
+    const minSplitSizeBytes = options.minSplitSizeBytes || 350 * 1024;
     const rootData = cloneDeep(rootResult);
+    const rootString = JSON.stringify(rootData);
+    const resultSize = byteSize(rootString);
     let metricsBySketch: Record<string, Metric[]> = {};
     let numSketches = 1;
 
-    // If results in metric array form and more than one sketch, break into multiple results
-    if (rootResult.metrics && isMetricArray(rootResult.metrics)) {
+    if (
+      typeof rootResult === "object" &&
+      rootResult !== null &&
+      hasOwnProperty(rootResult, "metrics") &&
+      isMetricArray(rootResult.metrics)
+    ) {
       metricsBySketch = groupBy(
         cloneDeep(rootResult.metrics as Metric[]),
         (m) => m.sketchId || "undefined"
       );
       const sketchIds = Object.keys(metricsBySketch);
       numSketches = sketchIds.length;
-      if (numSketches > 1) {
+      const shouldSplit = numSketches > 1 && resultSize > minSplitSizeBytes;
+      if (shouldSplit) {
+        console.log(
+          `Result size of ${resultSize} bytes exceeds ${minSplitSizeBytes} limit, splitting into multiple db items`
+        );
+        // @ts-ignore
         rootData.sketchMetricItems = sketchIds;
+        // @ts-ignore
         rootData.metrics = [];
       } else {
+        // @ts-ignore
         rootData.metrics = packMetrics(rootData.metrics);
       }
     }

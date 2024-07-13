@@ -8,6 +8,7 @@ import {
 import TaskModel from "./tasks.js";
 import AWS, { DynamoDB } from "aws-sdk";
 import deepEqual from "fast-deep-equal";
+import { hasOwnProperty } from "../helpers/native.js";
 
 AWS.config.update({
   accessKeyId: "local-access-key",
@@ -225,7 +226,7 @@ describe("DynamoDB local", () => {
     expect(deepEqual(cachedMetrics, metrics)).toBe(true);
   });
 
-  test("complete a task with multiple sketch metrics should create multiple items", async () => {
+  test("complete a task with multiple sketch metrics below size threshold should not split into multiple items", async () => {
     const task = await Tasks.create(SERVICE_NAME);
     const metrics = [
       createMetric({ value: 15, sketchId: "sketch1" }),
@@ -234,6 +235,43 @@ describe("DynamoDB local", () => {
     const response = await Tasks.complete(task, {
       metrics,
     });
+    expect(response.statusCode).toBe(200);
+
+    const item = await docClient
+      .get({
+        TableName: "tasks-core",
+        Key: {
+          id: task.id,
+          service: SERVICE_NAME,
+        },
+      })
+      .promise();
+
+    const rootData = item?.Item?.data;
+    expect(hasOwnProperty(rootData, "sketchMetricItems")).toBe(false);
+
+    expect(isMetricPack(rootData.metrics)).toBe(true);
+    const rootMetrics = unpackMetrics(rootData.metrics);
+
+    expect(Array.isArray(rootMetrics)).toBe(true);
+    expect(rootMetrics.length).toBe(2);
+  });
+
+  test("complete a task with multiple sketch metrics above size threshold should split into multiple items", async () => {
+    const task = await Tasks.create(SERVICE_NAME);
+    const metrics = [
+      createMetric({ value: 15, sketchId: "sketch1" }),
+      createMetric({ value: 30, sketchId: "sketch2" }),
+    ];
+    const response = await Tasks.complete(
+      task,
+      {
+        metrics,
+      },
+      {
+        minSplitSizeBytes: 100, // set to below metrics size of 210 bytes, triggering split
+      }
+    );
     expect(response.statusCode).toBe(200);
 
     const item = await docClient
@@ -287,7 +325,9 @@ describe("DynamoDB local", () => {
     expect(childMetrics2.length).toBe(1);
 
     const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
-    const cachedMetrics = cachedResult?.data.metrics;
+    const cachedMetrics = cachedResult?.data.metrics.sort((a, b) => {
+      a.value - b.value;
+    }); // sort in order of value to match original metrics array
     expect(cachedMetrics).toBeTruthy();
     expect(isMetricArray(cachedMetrics)).toBe(true);
     expect(deepEqual(cachedMetrics, metrics)).toBe(true);

@@ -452,6 +452,12 @@ export default class TasksModel {
       const sketchIds = Object.keys(metricsBySketch);
       numSketches = sketchIds.length;
       const shouldSplit = numSketches > 1 && resultSize > minSplitSizeBytes;
+      console.log(
+        "resultSize",
+        resultSize,
+        "minSplitSizeBytes",
+        minSplitSizeBytes
+      );
       if (shouldSplit) {
         console.log(
           `Result size of ${resultSize} bytes exceeds ${minSplitSizeBytes} limit, splitting into multiple db items`

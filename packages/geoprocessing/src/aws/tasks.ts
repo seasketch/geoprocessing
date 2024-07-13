@@ -465,10 +465,11 @@ export default class TasksModel {
         // @ts-ignore
         rootData.sketchMetricItems = sketchIds;
         // @ts-ignore
-        rootData.metrics = [];
+        rootData.metrics = []; // clear it
       } else {
         // @ts-ignore
         rootData.metrics = packMetrics(rootData.metrics);
+        metricsBySketch = {}; // clear it
       }
     }
 

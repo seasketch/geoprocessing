@@ -8,6 +8,11 @@ import {
   unpackMetrics,
 } from "../metrics/index.js";
 import cloneDeep from "lodash/cloneDeep.js";
+import { groupBy } from "../helpers/groupBy.js";
+import { Metric } from "../types/metrics.js";
+import { byteSize } from "../util/byteSize.js";
+import { JSONValue } from "../types/base.js";
+import { hasOwnProperty } from "../helpers/native.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,6 +36,16 @@ export interface GeoprocessingTask<ResultType = any> {
   error?: string;
   estimate: number;
   // ttl?: number;
+}
+
+export interface ChildTaskItem<ResultType = any> {
+  duration?: number; //ms
+  status: GeoprocessingTaskStatus;
+  data?: ResultType; // result data can take any json-serializable form
+}
+export interface RootTaskItem<ResultType = any>
+  extends ChildTaskItem<ResultType> {
+  sketchMetricItems: string[];
 }
 
 export enum GeoprocessingTaskStatus {
@@ -139,18 +154,21 @@ export default class TasksModel {
 
   async complete(
     task: GeoprocessingTask,
-    results: any
+    results: any,
+    options: { minSplitSizeBytes?: number } = {}
   ): Promise<APIGatewayProxyResult> {
     task.data = results;
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
-    // Check for metrics and pack them before inserting into DB
-    const dataToStore = cloneDeep(results);
-    if (dataToStore.metrics && isMetricArray(dataToStore.metrics)) {
-      const packed = packMetrics(dataToStore.metrics);
-      dataToStore.metrics = packed;
-    }
+    // packageResults
+
+    const { rootResult, metricsBySketch } = this.splitSketchMetrics(results, {
+      minSplitSizeBytes: options.minSplitSizeBytes,
+    });
+    const numSketches = Object.keys(metricsBySketch).length;
+
+    // Store the top-level result
     await this.db
       .update({
         TableName: this.table,
@@ -166,12 +184,40 @@ export default class TasksModel {
           "#duration": "duration",
         },
         ExpressionAttributeValues: {
-          ":data": dataToStore,
+          ":data": rootResult,
           ":status": task.status,
           ":duration": task.duration,
         },
       })
       .promise();
+
+    // If more than one sketch, save metrics in chunks, one dynamodb item per sketch ID
+    if (numSketches > 1) {
+      const promises = Object.keys(metricsBySketch).map(async (sketchId) => {
+        return this.db
+          .update({
+            TableName: this.table,
+            Key: {
+              id: `${task.id}-sketchId-${sketchId}`,
+              service: task.service,
+            },
+            UpdateExpression:
+              "set #data = :data, #status = :status, #duration = :duration",
+            ExpressionAttributeNames: {
+              "#data": "data",
+              "#status": "status",
+              "#duration": "duration",
+            },
+            ExpressionAttributeValues: {
+              ":data": { metrics: packMetrics(metricsBySketch[sketchId]) },
+              ":status": task.status,
+              ":duration": task.duration,
+            },
+          })
+          .promise();
+      });
+      await Promise.all(promises);
+    }
 
     return {
       statusCode: 200,
@@ -305,7 +351,8 @@ export default class TasksModel {
     taskId: string
   ): Promise<GeoprocessingTask | undefined> {
     try {
-      const response = await this.db
+      // Get root item
+      const rootResponse = await this.db
         .get({
           TableName: this.table,
           Key: {
@@ -314,17 +361,48 @@ export default class TasksModel {
           },
         })
         .promise();
+      let rootResult = rootResponse.Item as RootTaskItem;
 
-      const result = response.Item as GeoprocessingTask;
-      // Check for metrics and unpack them before returning
+      // Check for sketch metric items and re-merge them with root item if found
       if (
-        result.data &&
-        result.data.metrics &&
-        isMetricPack(result.data.metrics)
+        rootResult.data &&
+        rootResult.data.sketchMetricItems &&
+        rootResult.data.sketchMetricItems.length > 0
       ) {
-        result.data.metrics = unpackMetrics(result.data.metrics);
+        var sketchMetricBatchParams = {
+          RequestItems: {
+            [this.table]: {
+              Keys: rootResult.data.sketchMetricItems.map((sketchId) => ({
+                id: `${taskId}-sketchId-${sketchId}`,
+                service,
+              })),
+            },
+          },
+        };
+
+        const childResult = await this.db
+          .batchGet(sketchMetricBatchParams)
+          .promise();
+
+        if (childResult.Responses && childResult.Responses[this.table]) {
+          const childItems = childResult.Responses[
+            this.table
+          ] as ChildTaskItem[];
+          rootResult.data.metrics = this.unsplitSketchMetrics(childItems);
+        } else {
+          console.warn(
+            `No child items found for sketches: ${rootResult.sketchMetricItems}`
+          );
+        }
+      } else if (
+        rootResult.data &&
+        rootResult.data.metrics &&
+        isMetricPack(rootResult.data.metrics)
+      ) {
+        rootResult.data.metrics = unpackMetrics(rootResult.data.metrics);
       }
-      return result;
+
+      return rootResult as unknown as GeoprocessingTask;
     } catch (e) {
       return undefined;
     }
@@ -342,5 +420,72 @@ export default class TasksModel {
       .promise();
     let meanEstimate: number = response.Item?.meanEstimate;
     return meanEstimate;
+  }
+
+  /**
+   * Split function result into multple items if more object with metrics for more than one sketch
+   * @param rootResult
+   * @param minSplitSizeBytes rootResult over this size in bytes (when converted to JSON string) will be split. defaults to 350KB, just under 400KB dynamodb limit per item
+   * @returns rootResult with metrics removed, and metricsBySketch individual sketch results keyed by sketchId
+   */
+  private splitSketchMetrics(
+    rootResult: JSONValue,
+    options: { minSplitSizeBytes?: number } = {}
+  ) {
+    const minSplitSizeBytes = options.minSplitSizeBytes || 350 * 1024;
+    const rootData = cloneDeep(rootResult);
+    const rootString = JSON.stringify(rootData);
+    const resultSize = byteSize(rootString);
+    let metricsBySketch: Record<string, Metric[]> = {};
+    let numSketches = 1;
+
+    if (
+      typeof rootResult === "object" &&
+      rootResult !== null &&
+      hasOwnProperty(rootResult, "metrics") &&
+      isMetricArray(rootResult.metrics)
+    ) {
+      metricsBySketch = groupBy(
+        cloneDeep(rootResult.metrics as Metric[]),
+        (m) => m.sketchId || "undefined"
+      );
+      const sketchIds = Object.keys(metricsBySketch);
+      numSketches = sketchIds.length;
+      const shouldSplit = numSketches > 1 && resultSize > minSplitSizeBytes;
+      if (shouldSplit) {
+        console.log(
+          `Result size of ${resultSize} bytes exceeds ${minSplitSizeBytes} threshold, splitting into multiple db items`
+        );
+        // @ts-ignore
+        rootData.sketchMetricItems = sketchIds;
+        // @ts-ignore
+        rootData.metrics = []; // clear it
+      } else {
+        // @ts-ignore
+        rootData.metrics = packMetrics(rootData.metrics);
+        metricsBySketch = {}; // clear it
+      }
+    }
+
+    return { rootResult: rootData, metricsBySketch };
+  }
+
+  /**
+   * Given child task item array, returns them unpacked and merged into a single array
+   */
+  private unsplitSketchMetrics(childItems: ChildTaskItem[]) {
+    let aggMetrics: Metric[] = [];
+    for (let i = 0; i < childItems.length; i++) {
+      const childItem = childItems[i];
+
+      if (childItem.data && childItem.data.metrics) {
+        const newMetrics = isMetricPack(childItem.data.metrics)
+          ? unpackMetrics(childItem.data.metrics)
+          : childItem.data.metrics;
+
+        aggMetrics = aggMetrics.concat(newMetrics);
+      }
+    }
+    return aggMetrics;
   }
 }

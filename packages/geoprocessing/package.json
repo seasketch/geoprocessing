@@ -23,7 +23,6 @@
   "scripts": {
     "build": "tsc",
     "test": "npm run test:node && npm run test:browser",
-    "test:local": "npm run test && npm run test:e2e",
     "test:node": "vitest run -c vitest.config.node.js",
     "test:node:matching": "vitest run -c vitest.config.node.js -t",
     "test:browser": "vitest run -c vitest.config.browser.js",
@@ -224,6 +223,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.5",
     "@types/finalhandler": "^1.2.3",
+    "dynamodb-local": "^0.0.34",
     "eslint": "^8.57.0",
     "eslint-plugin-storybook": "^0.8.0",
     "eslint-plugin-unicorn": "^51.0.1",

@@ -1,13 +1,4 @@
 import { GeoprocessingStack } from "./GeoprocessingStack.js";
-
-import { GpDynamoTables, GpPublicBuckets } from "./types.js";
-
-export interface CreateFunctionOptions {
-  clientDistributionUrl?: string;
-  publicBuckets: GpPublicBuckets;
-  tables: GpDynamoTables;
-}
-
 import { GeoprocessingNestedStackProps, LambdaStack } from "./LambdaStack.js";
 import { chunk } from "../../src/index.js";
 import {

@@ -17,9 +17,9 @@ export interface CreateFunctionOptions {
 import path from "path";
 
 /**
- * Create Lambda function constructs
+ * Create Lambda function constructs core to project
  */
-export const createFunctions = (
+export const createProjectFunctions = (
   stack: GeoprocessingStack
 ): GpProjectFunctions => {
   return {

@@ -21,13 +21,10 @@ import {
 
 import config from "./config.js";
 import path from "path";
-
-type StackFuncType = "sync" | "async";
 export interface GeoprocessingNestedStackProps extends NestedStackProps {
   projectName: string;
   projectPath: string;
   manifest: Manifest;
-  type: StackFuncType;
 }
 
 // Once sync functions create, contains policies to invoke all sync functions
@@ -48,9 +45,10 @@ export class LambdaStack extends NestedStack {
   ) {
     super(scope, id, props);
     this.props = props;
+    this.processingFunctions = [];
 
     // Create lambdas for all functions
-    this.processingFunctions = this.createProcessingFunctions();
+    this.createProcessingFunctions();
   }
 
   getProcessingFunctions() {
@@ -60,13 +58,9 @@ export class LambdaStack extends NestedStack {
   /**
    * Create Lambda function constructs
    */
-  createProcessingFunctions = (): ProcessingFunctions => {
-    if (this.props.type === "sync") {
-      return this.createSyncFunctions();
-    } else if (this.props.type === "async") {
-      return this.createAsyncFunctions();
-    }
-    return [];
+  createProcessingFunctions = () => {
+    this.processingFunctions.push(...this.createSyncFunctions());
+    this.processingFunctions.push(...this.createAsyncFunctions());
   };
 
   /** Create Lambda function constructs for sync functions that return result immediately */

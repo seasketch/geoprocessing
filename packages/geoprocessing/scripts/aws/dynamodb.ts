@@ -87,19 +87,21 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
   });
 
   // socket
-  Object.values(stack.functions.socketFunctions).forEach((socketFunction) => {
-    if (socketFunction && stack.tables.subscriptions) {
-      stack.tables.subscriptions.grantReadWriteData(socketFunction);
-      socketFunction.addEnvironment(
-        "SUBSCRIPTIONS_TABLE",
-        stack.tables.subscriptions.tableName
-      );
+  Object.values(stack.projectFunctions.socketFunctions).forEach(
+    (socketFunction) => {
+      if (socketFunction && stack.tables.subscriptions) {
+        stack.tables.subscriptions.grantReadWriteData(socketFunction);
+        socketFunction.addEnvironment(
+          "SUBSCRIPTIONS_TABLE",
+          stack.tables.subscriptions.tableName
+        );
+      }
     }
-  });
+  );
 
-  if (stack.functions.socketFunctions.send && stack.tables.estimates)
+  if (stack.projectFunctions.socketFunctions.send && stack.tables.estimates)
     stack.tables.estimates.grantReadWriteData(
-      stack.functions.socketFunctions.send
+      stack.projectFunctions.socketFunctions.send
     );
 };
 

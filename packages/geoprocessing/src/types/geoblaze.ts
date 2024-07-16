@@ -64,7 +64,7 @@ export interface StatsObject {
   std?: Nullable<number>;
   /** Statistical measurement of spread between values in raster */
   variance?: Nullable<number>;
-  /** Histogram only for categorical raster */
+  /** Histogram object, for categorical raster, mapping category IDs to cell count */
   histogram?: Nullable<{}>;
 }
 
@@ -83,7 +83,7 @@ export interface CalcStatsOptions {
   filter?: (index: number, value: number) => boolean;
 }
 
-interface HistogramOptions {
+export interface HistogramOptions {
   scaleType: "nominal" | "ratio";
   /** required for ratio scaleType */
   numClasses?: number;
@@ -91,7 +91,7 @@ interface HistogramOptions {
   classType?: "equal-interval" | "quantile";
 }
 
-interface Histogram {
+export interface Histogram {
   [binKey: string]: number;
 }
 

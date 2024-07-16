@@ -9,8 +9,20 @@ import {
   MetricDimension,
 } from "../../types/index.js";
 import geoblaze, { Georaster } from "geoblaze";
-import { StatsObject, CalcStatsOptions } from "../../types/geoblaze.js";
-import { toRasterProjection, defaultStatValues } from "./geoblaze.js";
+import {
+  StatsObject,
+  CalcStatsOptions,
+  Histogram,
+} from "../../types/geoblaze.js";
+import { toRasterProjection, geoblazeDefaultStatValues } from "./geoblaze.js";
+import cloneDeep from "lodash/cloneDeep.js";
+
+// default values for all supported raster stats, beyond just geoblaze.stats
+export const defaultStatValues = {
+  ...cloneDeep(geoblazeDefaultStatValues),
+  area: 0,
+  histogram: {},
+};
 
 /**
  * options accepted by rasterStats
@@ -39,7 +51,6 @@ export interface RasterStatsOptions extends CalcStatsOptions {
  * Calculates over 10 different raster stats, optionally constrains to raster cells overlapping with feature.
  * Defaults to calculating only sum stat
  * If no cells found, returns 0 or null value for each stat as appropriate.
- * If categorical raster, only calculates "valid" stat
  */
 export const rasterStats = async (
   raster: Georaster,
@@ -61,42 +72,49 @@ export const rasterStats = async (
 
   // If area is included in stats list, then also include valid stat which is needed to calculate area later
   if (stats.includes("area")) statsToCalculate.push("valid");
-  // If categorical raster, only calculate valid stat
+
+  // if categorical, override stats to only include histogram
   if (categorical) {
     statsToCalculate = ["histogram"];
     statsToPublish = ["histogram"];
   }
 
   const projectedFeat = toRasterProjection(raster, feature);
+  const finalStats: StatsObject[] = [];
   let statsByBand: StatsObject[] = [];
-  let finalStats: StatsObject[] = [];
 
-  // Build array of default stat values, that can be returned if raster can't be accessed or returns nothing
-  let defaultStats: StatsObject[] = [];
+  // Package default values for only published stats. Enhance histogram default with categories if provided
+  const defaultStats: StatsObject[] = [];
   for (let i = 0; i < numBands; i++) {
     defaultStats[i] = {};
-    for (let j = 0; j < stats.length; j++) {
-      if (stats[j] === "area") defaultStats[i][stats[j]] = 0;
-      else defaultStats[i][stats[j]] = defaultStatValues[stats[j]];
+    for (let j = 0; j < statsToPublish.length; j++) {
+      if (
+        statsToPublish[j] === "histogram" &&
+        categorical &&
+        categoryMetricValues
+      ) {
+        let hist = {};
+        categoryMetricValues.forEach((c) => (hist[c] = 0)); // load zero for each histogram category
+        defaultStats[i][statsToPublish[j]] = hist;
+      } else {
+        defaultStats[i][statsToPublish[j]] =
+          defaultStatValues[statsToPublish[j]];
+      }
     }
   }
 
   try {
-    // If categorical raster, use histogram to calculate valid cells
     if (categorical) {
-      const histogram = await geoblaze.histogram(raster, projectedFeat, {
+      const histogram = (await geoblaze.histogram(raster, projectedFeat, {
         scaleType: "nominal",
-      });
+      })) as Histogram[];
 
-      // If no overlap
-      if (!histogram.length) {
-        if (!categoryMetricValues || categoryMetricValues.length === 0) {
-          statsByBand = [{ histogram: {} }];
-        } else {
-          let hist = {};
-          categoryMetricValues.forEach((c) => (hist[c] = 0));
-          statsByBand = [{ histogram: hist }];
-        }
+      // If no overlap, return default values
+      if (
+        histogram.length === 0 ||
+        (histogram.length === 1 && Object.keys(histogram[0]).length === 0)
+      ) {
+        return defaultStats;
       } else {
         statsByBand = histogram.map((h) => {
           let hist = {};

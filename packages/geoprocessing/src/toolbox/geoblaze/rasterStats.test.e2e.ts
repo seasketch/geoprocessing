@@ -182,7 +182,7 @@ describe("rasterStats", () => {
     const statNames = Object.keys(stats);
     expect(statNames.length).toEqual(1);
     expect(statNames[0]).toBe("histogram");
-    expect(stats[statNames[0]]).toStrictEqual({});
+    expect(stats[statNames[0]]).toStrictEqual(defaultStatValues.histogram);
   });
 
   test("rasterStats - non-overlapping feature categorical return 0", async () => {

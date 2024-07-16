@@ -17,7 +17,7 @@ import {
 import { toRasterProjection, geoblazeDefaultStatValues } from "./geoblaze.js";
 import cloneDeep from "lodash/cloneDeep.js";
 
-// default values for stats
+// default values for all supported raster stats, beyond just geoblaze.stats
 export const defaultStatValues = {
   ...cloneDeep(geoblazeDefaultStatValues),
   area: 0,
@@ -83,15 +83,13 @@ export const rasterStats = async (
   let statsByBand: StatsObject[] = [];
   let finalStats: StatsObject[] = [];
 
-  // Build array of default stat values, that can be returned if raster can't be accessed or returns nothing
+  // Enhance default stat values with histogram categories if available
   let defaultStats: StatsObject[] = [];
   for (let i = 0; i < numBands; i++) {
     defaultStats[i] = {};
     // Initialize default values for published stats
     for (let j = 0; j < statsToPublish.length; j++) {
-      if (statsToPublish[j] === "area") {
-        defaultStats[i][statsToPublish[j]] = 0;
-      } else if (
+      if (
         statsToPublish[j] === "histogram" &&
         categorical &&
         categoryMetricValues

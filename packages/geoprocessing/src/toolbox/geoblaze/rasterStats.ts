@@ -80,14 +80,13 @@ export const rasterStats = async (
   }
 
   const projectedFeat = toRasterProjection(raster, feature);
+  const finalStats: StatsObject[] = [];
   let statsByBand: StatsObject[] = [];
-  let finalStats: StatsObject[] = [];
 
-  // Enhance default stat values with histogram categories if available
-  let defaultStats: StatsObject[] = [];
+  // Package default values for only published stats. Enhance histogram default with categories if provided
+  const defaultStats: StatsObject[] = [];
   for (let i = 0; i < numBands; i++) {
     defaultStats[i] = {};
-    // Initialize default values for published stats
     for (let j = 0; j < statsToPublish.length; j++) {
       if (
         statsToPublish[j] === "histogram" &&

@@ -11,7 +11,8 @@ import reprojectGeoJSONPlugable from "reproject-geojson/pluggable.js";
 import proj4 from "../proj4.js";
 import bboxFns from "bbox-fns";
 
-export const defaultStatValues = {
+// default values for stats calculated by geoblaze.stats
+export const geoblazeDefaultStatValues = {
   count: 0,
   invalid: 0,
   max: null,

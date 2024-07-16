@@ -1,5 +1,4 @@
 import {
-  Histogram,
   Georaster,
   Metric,
   Geography,

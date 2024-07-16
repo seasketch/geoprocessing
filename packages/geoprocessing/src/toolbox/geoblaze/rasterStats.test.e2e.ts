@@ -1,10 +1,9 @@
 import { describe, test, expect } from "vitest";
-import { rasterStats } from "./rasterStats.js";
+import { rasterStats, defaultStatValues } from "./rasterStats.js";
 //@ts-ignore
 import geoblaze from "geoblaze";
 import testData from "./test/testData.js";
 import parseGeoraster from "georaster";
-import { defaultStatValues } from "./geoblaze.js";
 
 describe("rasterStats", () => {
   test("rasterStats - default sum", async () => {

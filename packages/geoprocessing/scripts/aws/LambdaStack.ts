@@ -76,7 +76,7 @@ export class LambdaStack extends NestedStack {
       (functionMeta: ProcessingFunctionMetadata, index: number) => {
         const rootPointer = getHandlerPointer(functionMeta);
         const pkgName = getHandlerPkgName(functionMeta);
-        const functionName = `gp-${this.props.projectName}-sync-${functionMeta.title}-${Date.now()}`;
+        const functionName = `gp-${this.props.projectName}-sync-${functionMeta.title}`;
         const codePath = path.join(this.props.projectPath, ".build", pkgName);
         // console.log("codePath", codePath);
         // console.log("rootPointer", rootPointer);
@@ -121,8 +121,8 @@ export class LambdaStack extends NestedStack {
       (functionMeta: GeoprocessingFunctionMetadata, index: number) => {
         const rootPointer = getHandlerPointer(functionMeta);
         const pkgName = getHandlerPkgName(functionMeta);
-        const startFunctionName = `gp-${this.props.projectName}-async-${functionMeta.title}-start-${Date.now()}`;
-        const runFunctionName = `gp-${this.props.projectName}-async-${functionMeta.title}-run-${Date.now()}`;
+        const startFunctionName = `gp-${this.props.projectName}-async-${functionMeta.title}-start`;
+        const runFunctionName = `gp-${this.props.projectName}-async-${functionMeta.title}-run`;
 
         /**
          * startHandler Lambda is connected to the REST API allowing client to

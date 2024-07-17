@@ -13,6 +13,7 @@ import { Metric } from "../types/metrics.js";
 import { byteSize } from "../util/byteSize.js";
 import { JSONValue } from "../types/base.js";
 import { hasOwnProperty } from "../helpers/native.js";
+import { chunk } from "../helpers/chunk.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -38,14 +39,14 @@ export interface GeoprocessingTask<ResultType = any> {
   // ttl?: number;
 }
 
-export interface ChildTaskItem<ResultType = any> {
+export interface MetricGroupItem<ResultType = any> {
   duration?: number; //ms
   status: GeoprocessingTaskStatus;
   data?: ResultType; // result data can take any json-serializable form
 }
 export interface RootTaskItem<ResultType = any>
-  extends ChildTaskItem<ResultType> {
-  sketchMetricItems: string[];
+  extends MetricGroupItem<ResultType> {
+  metricGroupItems: string[];
 }
 
 export enum GeoprocessingTaskStatus {
@@ -161,14 +162,12 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
-    // packageResults
-
-    const { rootResult, metricsBySketch } = this.splitSketchMetrics(results, {
+    const { rootResult, metricGroups } = this.splitSketchMetrics(results, {
       minSplitSizeBytes: options.minSplitSizeBytes,
     });
-    const numSketches = Object.keys(metricsBySketch).length;
+    const numMetricGroups = metricGroups.length;
 
-    // Store the top-level result
+    // Store root result as top-level dynamodb item
     await this.db
       .update({
         TableName: this.table,
@@ -191,14 +190,14 @@ export default class TasksModel {
       })
       .promise();
 
-    // If more than one sketch, save metrics in chunks, one dynamodb item per sketch ID
-    if (numSketches > 1) {
-      const promises = Object.keys(metricsBySketch).map(async (sketchId) => {
+    // If more than one metric group, store each one as a separate dynamdodb item
+    if (numMetricGroups > 1) {
+      const promises = metricGroups.map(async (metricGroup, index) => {
         return this.db
           .update({
             TableName: this.table,
             Key: {
-              id: `${task.id}-sketchId-${sketchId}`,
+              id: `${task.id}-metricGroup-${index}`,
               service: task.service,
             },
             UpdateExpression:
@@ -209,7 +208,7 @@ export default class TasksModel {
               "#duration": "duration",
             },
             ExpressionAttributeValues: {
-              ":data": { metrics: packMetrics(metricsBySketch[sketchId]) },
+              ":data": { metrics: packMetrics(metricGroup) },
               ":status": task.status,
               ":duration": task.duration,
             },
@@ -366,33 +365,36 @@ export default class TasksModel {
       // Check for sketch metric items and re-merge them with root item if found
       if (
         rootResult.data &&
-        rootResult.data.sketchMetricItems &&
-        rootResult.data.sketchMetricItems.length > 0
+        rootResult.data.numMetricGroups &&
+        rootResult.data.numMetricGroups > 0
       ) {
-        var sketchMetricBatchParams = {
+        var metricGroupBatchParams = {
           RequestItems: {
             [this.table]: {
-              Keys: rootResult.data.sketchMetricItems.map((sketchId) => ({
-                id: `${taskId}-sketchId-${sketchId}`,
+              Keys: Array.from(
+                Array(rootResult.data.numMetricGroups).keys()
+              ).map((index) => ({
+                id: `${taskId}-metricGroup-${index}`,
                 service,
               })),
             },
           },
         };
 
-        const childResult = await this.db
-          .batchGet(sketchMetricBatchParams)
+        const metricGroupResult = await this.db
+          .batchGet(metricGroupBatchParams)
           .promise();
 
-        if (childResult.Responses && childResult.Responses[this.table]) {
-          const childItems = childResult.Responses[
+        if (
+          metricGroupResult.Responses &&
+          metricGroupResult.Responses[this.table]
+        ) {
+          const metricGroupItems = metricGroupResult.Responses[
             this.table
-          ] as ChildTaskItem[];
-          rootResult.data.metrics = this.unsplitSketchMetrics(childItems);
+          ] as MetricGroupItem[];
+          rootResult.data.metrics = this.unsplitSketchMetrics(metricGroupItems);
         } else {
-          console.warn(
-            `No child items found for sketches: ${rootResult.sketchMetricItems}`
-          );
+          console.warn(`No child items found for: ${taskId}`);
         }
       } else if (
         rootResult.data &&
@@ -436,8 +438,7 @@ export default class TasksModel {
     const rootData = cloneDeep(rootResult);
     const rootString = JSON.stringify(rootData);
     const resultSize = byteSize(rootString);
-    let metricsBySketch: Record<string, Metric[]> = {};
-    let numSketches = 1;
+    let metricGroups: Metric[][] = [];
 
     if (
       typeof rootResult === "object" &&
@@ -445,43 +446,45 @@ export default class TasksModel {
       hasOwnProperty(rootResult, "metrics") &&
       isMetricArray(rootResult.metrics)
     ) {
-      metricsBySketch = groupBy(
-        cloneDeep(rootResult.metrics as Metric[]),
-        (m) => m.sketchId || "undefined"
-      );
-      const sketchIds = Object.keys(metricsBySketch);
-      numSketches = sketchIds.length;
-      const shouldSplit = numSketches > 1 && resultSize > minSplitSizeBytes;
+      const shouldSplit = resultSize > minSplitSizeBytes;
+
       if (shouldSplit) {
         console.log(
           `Result size of ${resultSize} bytes exceeds ${minSplitSizeBytes} threshold, splitting into multiple db items`
         );
+
+        // Split metrics into groups that will fit within size limit
+        const clonedMetrics = cloneDeep(rootResult.metrics as Metric[]);
+        const metricSize = byteSize(JSON.stringify(clonedMetrics));
+        const numGroups = Math.ceil(metricSize / minSplitSizeBytes);
+        const chunkSize = Math.ceil(clonedMetrics.length / numGroups);
+        metricGroups = chunk(clonedMetrics, chunkSize);
+
         // @ts-ignore
-        rootData.sketchMetricItems = sketchIds;
+        rootData.numMetricGroups = metricGroups.length;
         // @ts-ignore
         rootData.metrics = []; // clear it
       } else {
         // @ts-ignore
-        rootData.metrics = packMetrics(rootData.metrics);
-        metricsBySketch = {}; // clear it
+        rootData.metrics = packMetrics(rootData.metrics); // just pack the original metrics
       }
     }
 
-    return { rootResult: rootData, metricsBySketch };
+    return { rootResult: rootData, metricGroups };
   }
 
   /**
    * Given child task item array, returns them unpacked and merged into a single array
    */
-  private unsplitSketchMetrics(childItems: ChildTaskItem[]) {
+  private unsplitSketchMetrics(metricGroupItems: MetricGroupItem[]) {
     let aggMetrics: Metric[] = [];
-    for (let i = 0; i < childItems.length; i++) {
-      const childItem = childItems[i];
+    for (let i = 0; i < metricGroupItems.length; i++) {
+      const metricGroupItem = metricGroupItems[i];
 
-      if (childItem.data && childItem.data.metrics) {
-        const newMetrics = isMetricPack(childItem.data.metrics)
-          ? unpackMetrics(childItem.data.metrics)
-          : childItem.data.metrics;
+      if (metricGroupItem.data && metricGroupItem.data.metrics) {
+        const newMetrics = isMetricPack(metricGroupItem.data.metrics)
+          ? unpackMetrics(metricGroupItem.data.metrics)
+          : metricGroupItem.data.metrics;
 
         aggMetrics = aggMetrics.concat(newMetrics);
       }

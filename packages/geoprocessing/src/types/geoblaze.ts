@@ -24,18 +24,18 @@ export const GEOBLAZE_RASTER_STATS: ReadonlyArray<string> = [
   "std",
   "variance",
 ];
-export type GEOBLAZE_RASTER_STAT = typeof GEOBLAZE_RASTER_STATS[number];
+export type GEOBLAZE_RASTER_STAT = (typeof GEOBLAZE_RASTER_STATS)[number];
 
 /** Additional raster stats calculated by geoprocessing library */
 export const EXTRA_RASTER_STATS: ReadonlyArray<string> = ["area", "histogram"];
-export type EXTRA_RASTER_STAT = typeof EXTRA_RASTER_STATS[number];
+export type EXTRA_RASTER_STAT = (typeof EXTRA_RASTER_STATS)[number];
 
 /** Combined raster stats supported by geoprocessing library */
 export const SUPPORTED_RASTER_STATS: ReadonlyArray<string> = [
   ...GEOBLAZE_RASTER_STATS,
   ...EXTRA_RASTER_STATS,
 ];
-export type SUPPORTED_RASTER_STAT = typeof SUPPORTED_RASTER_STATS[number];
+export type SUPPORTED_RASTER_STAT = (typeof SUPPORTED_RASTER_STATS)[number];
 
 export interface StatsObject {
   /** Number of cells that are not nodata */
@@ -64,6 +64,8 @@ export interface StatsObject {
   std?: Nullable<number>;
   /** Statistical measurement of spread between values in raster */
   variance?: Nullable<number>;
+  /** Histogram object, for categorical raster, mapping category IDs to cell count */
+  histogram?: Nullable<{}>;
 }
 
 /**
@@ -81,7 +83,7 @@ export interface CalcStatsOptions {
   filter?: (index: number, value: number) => boolean;
 }
 
-interface HistogramOptions {
+export interface HistogramOptions {
   scaleType: "nominal" | "ratio";
   /** required for ratio scaleType */
   numClasses?: number;
@@ -89,7 +91,7 @@ interface HistogramOptions {
   classType?: "equal-interval" | "quantile";
 }
 
-interface Histogram {
+export interface Histogram {
   [binKey: string]: number;
 }
 

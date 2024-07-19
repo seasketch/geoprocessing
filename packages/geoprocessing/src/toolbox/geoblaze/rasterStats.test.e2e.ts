@@ -1,10 +1,9 @@
 import { describe, test, expect } from "vitest";
-import { rasterStats } from "./rasterStats.js";
+import { rasterStats, defaultStatValues } from "./rasterStats.js";
 //@ts-ignore
 import geoblaze from "geoblaze";
 import testData from "./test/testData.js";
 import parseGeoraster from "georaster";
-import { defaultStatValues } from "./geoblaze.js";
 
 describe("rasterStats", () => {
   test("rasterStats - default sum", async () => {
@@ -126,5 +125,93 @@ describe("rasterStats", () => {
       else expect(stats[statName]).toEqual(defaultStatValues[statName]);
     });
     // should return zero values for each stat if no feature overlap
+  });
+
+  test("rasterStats -  categorical", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [0, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+
+    const statsByBand = await rasterStats(raster, {
+      categorical: true,
+    });
+    const stats = statsByBand[0];
+    const statNames = Object.keys(stats);
+    expect(statNames.length).toEqual(1);
+    expect(statNames[0]).toBe("histogram");
+    expect(stats[statNames[0]][1]).toBe(2);
+    expect(stats[statNames[0]][2]).toBe(1);
+  });
+
+  test("rasterStats - non-overlapping feature categorical", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [0, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+
+    const statsByBand = await rasterStats(raster, {
+      feature: testData.outsideQuadPoly,
+      categorical: true,
+    });
+    const stats = statsByBand[0];
+    const statNames = Object.keys(stats);
+    expect(statNames.length).toEqual(1);
+    expect(statNames[0]).toBe("histogram");
+    expect(stats[statNames[0]]).toStrictEqual(defaultStatValues.histogram);
+  });
+
+  test("rasterStats - non-overlapping feature categorical return 0", async () => {
+    const raster = await parseGeoraster(
+      [
+        [
+          [1, 2],
+          [0, 1],
+        ],
+      ],
+      {
+        noDataValue: 0,
+        projection: 4326,
+        xmin: 0, // left
+        ymax: 20, // top
+        pixelWidth: 10,
+        pixelHeight: 10,
+      }
+    );
+
+    const statsByBand = await rasterStats(raster, {
+      feature: testData.outsideQuadPoly,
+      categorical: true,
+      categoryMetricValues: ["1"],
+    });
+    const stats = statsByBand[0];
+    const statNames = Object.keys(stats);
+    expect(statNames.length).toEqual(1);
+    expect(statNames[0]).toBe("histogram");
+    expect(stats[statNames[0]][1]).toStrictEqual(0);
   });
 });

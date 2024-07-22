@@ -9,7 +9,7 @@ import {
 } from "../types/index.js";
 import { isSketchCollection } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
-import { Histogram } from "../types/georaster.js";
+import { Histogram } from "../types/geoblaze.js";
 import { getHistogram } from "./geoblaze/index.js";
 import { featureEach } from "@turf/meta";
 

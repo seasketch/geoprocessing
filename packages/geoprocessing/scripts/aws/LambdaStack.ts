@@ -78,8 +78,8 @@ export class LambdaStack extends NestedStack {
         const pkgName = getHandlerPkgName(functionMeta);
         const functionName = `gp-${this.props.projectName}-sync-${functionMeta.title}`;
         const codePath = path.join(this.props.projectPath, ".build", pkgName);
-        // console.log("codePath", codePath);
-        // console.log("rootPointer", rootPointer);
+        console.log("codePath", codePath);
+        console.log("rootPointer", rootPointer);
 
         const func = new Function(this, `${functionMeta.title}GpSyncHandler`, {
           runtime: config.NODE_RUNTIME,

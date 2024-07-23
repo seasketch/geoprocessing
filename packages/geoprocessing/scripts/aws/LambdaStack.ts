@@ -27,16 +27,27 @@ export interface GeoprocessingNestedStackProps extends NestedStackProps {
   manifest: Manifest;
 }
 
-// Once sync functions create, contains policies to invoke all sync functions
-const invokeSyncLambdaPolicies: PolicyStatement[] = [];
-
 /**
  * Nested stack for Lambda functions.  Can contain sync or async functions
  * Create multiple instances to handle both
  */
 export class LambdaStack extends NestedStack {
   props: GeoprocessingNestedStackProps;
-  processingFunctions: ProcessingFunctions;
+
+  /**
+   * Once stack created, this array will contain all processing functions
+   */
+  private processingFunctions: ProcessingFunctions;
+
+  /**
+   * Once stack created, this array will contain all sync function ARNs
+   */
+  private syncLambdaArns: string[];
+
+  /**
+   * Once stack created, this array will contain all async run lambda functions
+   */
+  private asyncRunLambdas: Function[];
 
   constructor(
     scope: Construct,
@@ -46,6 +57,8 @@ export class LambdaStack extends NestedStack {
     super(scope, id, props);
     this.props = props;
     this.processingFunctions = [];
+    this.asyncRunLambdas = [];
+    this.syncLambdaArns = [];
 
     // Create lambdas for all functions
     this.createProcessingFunctions();
@@ -53,6 +66,14 @@ export class LambdaStack extends NestedStack {
 
   getProcessingFunctions() {
     return this.processingFunctions;
+  }
+
+  getAsyncRunLambdas() {
+    return this.asyncRunLambdas;
+  }
+
+  getSyncLambdaArns() {
+    return this.syncLambdaArns;
   }
 
   /**
@@ -93,13 +114,7 @@ export class LambdaStack extends NestedStack {
           description: functionMeta.description,
         });
 
-        // Allow sync functions to invoked by other functions
-        const syncInvokeLambdaPolicy = new PolicyStatement({
-          effect: Effect.ALLOW,
-          resources: [func.functionArn],
-          actions: ["lambda:InvokeFunction"],
-        });
-        invokeSyncLambdaPolicies.push(syncInvokeLambdaPolicy);
+        this.syncLambdaArns.push(func.functionArn);
 
         return {
           func,
@@ -186,20 +201,7 @@ export class LambdaStack extends NestedStack {
         asyncLambdaRole.addToPolicy(invokeAsyncRunLambdaPolicy);
         startFunc.addToRolePolicy(invokeAsyncRunLambdaPolicy);
 
-        // Allow async lambdas to invoke sync lambdas (workers)
-        invokeSyncLambdaPolicies.forEach(
-          (curInvokeSyncLambdaPolicy, index2) => {
-            const syncLambdaRole = new Role(
-              this,
-              "GpSyncLambdaRole" + index + "_" + index2,
-              {
-                assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
-              }
-            );
-            syncLambdaRole.addToPolicy(curInvokeSyncLambdaPolicy);
-            runFunc.addToRolePolicy(curInvokeSyncLambdaPolicy);
-          }
-        );
+        this.asyncRunLambdas.push(runFunc);
 
         return {
           startFunc,
@@ -209,6 +211,35 @@ export class LambdaStack extends NestedStack {
       }
     );
   };
+
+  /**
+   * Given run lambda functions across all lambda stacks, creates policies allowing them to invoke sync lambdas within this lambda stack
+   */
+  createLambdaSyncPolicies(runLambdas: Function[]) {
+    // Create invoke policy for each sync functions in this lambda stack
+    const invokeSyncLambdaPolicies = this.syncLambdaArns.map((arn) => {
+      return new PolicyStatement({
+        effect: Effect.ALLOW,
+        resources: [arn],
+        actions: ["lambda:InvokeFunction"],
+      });
+    });
+
+    // Allow all async run lambdas to invoke sync functions in this lambda stack using this policy
+    runLambdas.forEach((runLambda, index) => {
+      invokeSyncLambdaPolicies.forEach((curInvokeSyncLambdaPolicy, index2) => {
+        const syncLambdaRole = new Role(
+          this,
+          "GpSyncLambdaRole" + index + "_" + index2,
+          {
+            assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
+          }
+        );
+        syncLambdaRole.addToPolicy(curInvokeSyncLambdaPolicy);
+        runLambda.addToRolePolicy(curInvokeSyncLambdaPolicy);
+      });
+    });
+  }
 }
 
 /**

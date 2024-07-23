@@ -41,6 +41,13 @@ import { genOutputMeta } from "./outputMeta.js";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { LambdaStack } from "./LambdaStack.js";
 import { createLambdaStacks } from "./lambdaResources.js";
+import {
+  Effect,
+  PolicyStatement,
+  Role,
+  ServicePrincipal,
+} from "aws-cdk-lib/aws-iam";
+import { Function } from "aws-cdk-lib/aws-lambda";
 
 /** StackProps extended with geoprocessing project metadata */
 export interface GeoprocessingStackProps extends StackProps {
@@ -135,7 +142,19 @@ export class GeoprocessingStack extends Stack {
     }, []);
   }
 
-  /** aggregate and return async lambda function meta from lambda stacks */
+  /**
+   * @returns run functions across all lambda stacks
+   */
+  getAsyncRunLambdas(): Function[] {
+    return this.lambdaStacks.reduce<Function[]>(
+      (acc, curStack) => [...acc, ...curStack.getAsyncRunLambdas()],
+      []
+    );
+  }
+
+  /**
+   * @returns async lambda function meta from all lambda stacks
+   */
   getAsyncFunctionsWithMeta(): AsyncFunctionWithMeta[] {
     return this.lambdaStacks.reduce<AsyncFunctionWithMeta[]>(
       (acc, curStack) => {

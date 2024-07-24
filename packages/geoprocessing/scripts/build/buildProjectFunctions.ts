@@ -69,7 +69,7 @@ export async function buildProjectFunctions(
       const pkgPath = path.join(destBuildPath, pkgName).replace("Handler", "");
       const bundledPath = path.join(pkgPath, handlerDestPath);
 
-      fs.mkdirSync(pkgPath);
+      fs.ensureDirSync(pkgPath);
 
       // Build esm bundle with all dependencies
       const buildResult = await esbuild.build({

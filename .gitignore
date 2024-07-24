@@ -9,6 +9,7 @@ packages/geoprocessing/docs/api
 packages/geoprocessing/docs/storybook
 packages/geoprocessing/data/out
 packages/geoprocessing/scripts/__test__
+packages/geoprocesssing/scripts/aws/__snapshots__
 .workspace.env
 packages/example-*/
 report.*

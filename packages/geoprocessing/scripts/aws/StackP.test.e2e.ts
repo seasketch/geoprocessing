@@ -1,13 +1,13 @@
-import { App } from "aws-cdk-lib";
+import { App, NestedStack } from "aws-cdk-lib";
 import "@aws-cdk/assert/jest";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
 import config from "./config.js";
-import createTestProjectManifest from "../testing/createTestProjectManifest.js";
 import { cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
 import { describe, it, expect, afterAll } from "vitest";
 import { Template } from "aws-cdk-lib/assertions";
 import createTestBuild from "../testing/createTestBuild.js";
+import fs from "fs-extra";
 
 const rootPath = `${import.meta.dirname}/../__test__`;
 const projectName = "preprocessor-only";
@@ -16,7 +16,7 @@ const projectPath = path.join(rootPath, projectName);
 describe("GeoprocessingStack - preprocessor only", () => {
   // afterAll(() => cleanupBuildDirs(projectPath));
 
-  it.skip("should create a valid stack", async () => {
+  it("should create a valid stack", async () => {
     const manifest = await createTestBuild(projectName, projectPath, [
       "preprocessor",
     ]);
@@ -33,9 +33,8 @@ describe("GeoprocessingStack - preprocessor only", () => {
       projectPath,
     });
 
-    const template = Template.fromStack(stack);
+    // Root stack assertions
 
-    // Check counts
     expect(stack.hasClients()).toEqual(false);
     expect(stack.hasSyncFunctions()).toEqual(true);
     expect(stack.hasAsyncFunctions()).toEqual(false);
@@ -44,51 +43,83 @@ describe("GeoprocessingStack - preprocessor only", () => {
     expect(stack.getSyncFunctionsWithMeta().length).toBe(1);
     expect(stack.getAsyncFunctionsWithMeta().length).toBe(0);
 
-    template.resourceCountIs("AWS::CloudFront::Distribution", 0);
-    template.resourceCountIs("AWS::S3::Bucket", 2);
-    template.resourceCountIs("AWS::ApiGateway::RestApi", 1);
-    template.resourceCountIs("AWS::ApiGateway::Stage", 1);
-    template.resourceCountIs("AWS::ApiGatewayV2::Api", 0); // web socket api
-    template.resourceCountIs("AWS::ApiGatewayV2::Stage", 0);
-    template.resourceCountIs("AWS::DynamoDB::Table", 2);
-    template.resourceCountIs("AWS::Lambda::Function", 3);
+    // Root CDK template assertions
 
-    template.hasResourceProperties("Foo::Bar", {
-      Lorem: "Ipsum",
-      Baz: 5,
-      Qux: ["Waldo", "Fred"],
-    });
+    const rootTemplate = Template.fromStack(stack);
 
-    template.allResourcesProperties("AWS::ApiGateway::Stage", {
+    rootTemplate.resourceCountIs("AWS::CloudFront::Distribution", 0);
+    rootTemplate.resourceCountIs("AWS::S3::Bucket", 2);
+    rootTemplate.resourceCountIs("AWS::ApiGateway::RestApi", 1);
+    rootTemplate.resourceCountIs("AWS::ApiGateway::Stage", 1);
+    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Api", 0); // web socket api
+    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Stage", 0);
+    rootTemplate.resourceCountIs("AWS::DynamoDB::Table", 2);
+    rootTemplate.resourceCountIs("AWS::Lambda::Function", 2);
+
+    rootTemplate.allResourcesProperties("AWS::ApiGateway::Stage", {
       StageName: config.STAGE_NAME,
     });
 
-    // // Check shared resources
-    template.hasResourceProperties("AWS::ApiGateway::RestApi", {
+    // Check shared resources
+    rootTemplate.hasResourceProperties("AWS::ApiGateway::RestApi", {
       Name: `gp-${projectName}`,
     });
-    template.hasResourceProperties("AWS::S3::Bucket", {
+    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
       BucketName: `gp-${projectName}-results`,
     });
-    template.hasResourceProperties("AWS::S3::Bucket", {
+    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
       BucketName: `gp-${projectName}-datasets`,
     });
-    template.hasResourceProperties("AWS::Lambda::Function", {
+    rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
       Handler: "serviceHandlers.projectMetadata",
       Runtime: config.NODE_RUNTIME.name,
     });
-    template.hasResourceProperties("AWS::DynamoDB::Table", {
+    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
       TableName: `gp-${projectName}-tasks`,
     });
-    template.hasResourceProperties("AWS::DynamoDB::Table", {
+    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
       TableName: `gp-${projectName}-estimates`,
     });
 
-    // // Check preprocessor resources
-    template.hasResourceProperties("AWS::Lambda::Function", {
+    const lambdaStacks = stack.node.children.filter(
+      (child) => child instanceof NestedStack
+    );
+    expect(lambdaStacks.length).toBe(1);
+
+    // Lambda stack assertions
+
+    // Lambda stack CDK template assertions
+
+    const lambdaStackTemplate = Template.fromStack(
+      lambdaStacks[0] as NestedStack
+    );
+
+    lambdaStackTemplate.resourceCountIs("AWS::Lambda::Function", 1);
+
+    lambdaStackTemplate.hasResourceProperties("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
       Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
       Runtime: config.NODE_RUNTIME.name,
     });
+
+    // Generator JSON snapshot for stacks.  These are available to developer to assess what cdk synth produces for writing assertions
+    // Does not currently enforce matching with toMatchSnapshot() because dynamic values like S3Key are not consistent
+
+    const snapPath = "./scripts/aws/__snapshots__/";
+    fs.ensureDirSync(snapPath);
+    fs.writeJSONSync(
+      `${snapPath}/StackP_rootStack.test.e2e.ts.snap`,
+      rootTemplate.toJSON(),
+      {
+        spaces: 2,
+      }
+    );
+    fs.writeJSONSync(
+      `${snapPath}/StackP_lambdaStack.test.e2e.ts.snap`,
+      lambdaStackTemplate.toJSON(),
+      {
+        spaces: 2,
+      }
+    );
   });
 });

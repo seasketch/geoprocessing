@@ -1,19 +1,8 @@
-import { generateManifest } from "../build/generateManifest.js";
-import {
-  Package,
-  Feature,
-  FeatureCollection,
-  Point,
-  GeoprocessingJsonConfig,
-} from "../../src/types/index.js";
-import { PreprocessingHandler, GeoprocessingHandler } from "../../src/index.js";
-import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src/index.js";
-import { point } from "@turf/helpers";
+import { Package, GeoprocessingJsonConfig } from "../../src/types/index.js";
 import { PreprocessingBundle, GeoprocessingBundle } from "../types.js";
 import { Manifest } from "../manifest.js";
 import { TestComponentTypes } from "./types.js";
-import { setupBuildDirs } from "../testing/lifecycle.js";
-import { generateHandler } from "../build/generateHandler.js";
+import { setupProjectDirs } from "../testing/lifecycle.js";
 import fs from "fs-extra";
 import { buildProjectFunctions } from "../build/buildProjectFunctions.js";
 
@@ -26,7 +15,7 @@ export default async function createTestBuild(
   /** test components to add */
   components: TestComponentTypes[]
 ): Promise<Manifest> {
-  await setupBuildDirs(projectPath);
+  await setupProjectDirs(projectPath);
 
   // Create source package
   const pkgGeo: Package = {
@@ -34,6 +23,7 @@ export default async function createTestBuild(
     version: "1.0.0",
     description: `Test project with components ${components.join(", ")}`,
     dependencies: {},
+    type: "module",
     devDependencies: {},
     author: "Test",
     license: "UNLICENSED",
@@ -56,71 +46,32 @@ export default async function createTestBuild(
     result: number;
   }
 
-  // in-memory preprocessor function stub
-  const testPpFunction = async (feature: Feature<Point>) => {
-    return point([0, 0]);
-  };
-
-  // in-memory geoprocessing function stub
-  const testGpFunction = async (
-    feature: Feature | FeatureCollection
-  ): Promise<TestResult> => {
-    return { result: 50 };
-  };
-  const testSources = [
-    {
-      url: "https://testsource.com",
-      options: VECTOR_SOURCE_DEFAULTS,
-    },
-  ];
-
   if (components.includes("preprocessor")) {
     gpConfig = {
       ...gpConfig,
       preprocessingFunctions: ["src/functions/testPreprocessor.ts"],
     };
 
-    const pHandler = new PreprocessingHandler(testPpFunction, {
-      title: "testPreprocessor",
-      description: "",
-      timeout: 1,
-      requiresProperties: [],
-      memory: 256, // test non-default value
-    });
-
-    // write handler to test build path that imports testPreprocessor
     fs.writeFileSync(
-      `${projectPath}/.build/testPreprocessor.ts`,
+      `${projectPath}/src/functions/testPreprocessor.ts`,
       `
-      import { Feature, Point } from "geojson";
-      import { point } from "@turf/helpers";
-      import { PreprocessingHandler } from "../../../../src/aws"
+    import { Feature, Point } from "geojson";
+    import { point } from "@turf/helpers";
+    import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
 
-      const clipToLand = async (feature: Feature<Point>) => {
-        return point([0, 0]);
-      };
+    const testPreprocessor = async (feature: Feature<Point>) => {
+      return point([0, 0]);
+    };
 
-      export default new PreprocessingHandler(clipToLand, {
-        title: "clipToLand",
-        description: "Clips portion of feature or sketch not overlapping land",
-        timeout: 40,
-        requiresProperties: [],
-        memory: 4096,
-      });
-      `
-    );
-
-    generateHandler(
-      `${projectPath}/.build/testPreprocessor.ts`,
-      `${projectPath}/.build`
-    );
-
-    preprocessingBundles = preprocessingBundles.concat({
-      handler: pHandler.lambdaHandler,
-      handlerFilename: "testPreprocessor.ts",
-      options: pHandler.options,
-      sources: testSources,
+    export default new PreprocessingHandler(testPreprocessor, {
+      title: "testPreprocessor",
+      description: "Test preprocessor",
+      timeout: 40,
+      requiresProperties: [],
+      memory: 4096,
     });
+    `
+    );
   }
 
   if (components.includes("syncGeoprocessor")) {
@@ -132,20 +83,26 @@ export default async function createTestBuild(
       ],
     };
 
-    const sgHandler = new GeoprocessingHandler<TestResult>(testGpFunction, {
-      title: "testSyncGeoprocessor",
-      description: "",
-      timeout: 2,
-      executionMode: "sync",
-      requiresProperties: [],
-    });
+    fs.writeFileSync(
+      `${projectPath}/src/functions/testSyncGeoprocessor.ts`,
+      `
+    import { Feature, Point } from "geojson";
+    import { point } from "@turf/helpers";
+    import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
 
-    geoprocessingBundles = geoprocessingBundles.concat({
-      handler: sgHandler.lambdaHandler,
-      handlerFilename: "testSyncGeoprocessor.ts",
-      options: sgHandler.options,
-      sources: testSources,
+    const testSyncGeoprocessor = async (feature: Feature<Point>) => {
+      return point([0, 0]);
+    };
+
+    export default new PreprocessingHandler(testSyncGeoprocessor, {
+      title: "testSyncGeoprocessor",
+      description: "Test sync geoprocessor",
+      timeout: 40,
+      requiresProperties: [],
+      memory: 4096,
     });
+    `
+    );
   }
 
   if (components.includes("asyncGeoprocessor")) {
@@ -157,20 +114,26 @@ export default async function createTestBuild(
       ],
     };
 
-    const agHandler = new GeoprocessingHandler<TestResult>(testGpFunction, {
-      title: "testAsyncGeoprocessor",
-      description: "",
-      timeout: 2,
-      executionMode: "async",
-      requiresProperties: [],
-    });
+    fs.writeFileSync(
+      `${projectPath}/src/functions/testAsyncGeoprocessor.ts`,
+      `
+    import { Feature, Point } from "geojson";
+    import { point } from "@turf/helpers";
+    import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
 
-    geoprocessingBundles = geoprocessingBundles.concat({
-      handler: agHandler.lambdaHandler,
-      handlerFilename: "testAsyncGeoprocessor.ts",
-      options: agHandler.options,
-      sources: testSources,
+    const testAsyncGeoprocessor = async (feature: Feature<Point>) => {
+      return point([0, 0]);
+    };
+
+    export default new PreprocessingHandler(testAsyncGeoprocessor, {
+      title: "testAsyncGeoprocessor",
+      description: "Test async geoprocessor",
+      timeout: 40,
+      requiresProperties: [],
+      memory: 4096,
     });
+    `
+    );
   }
 
   fs.ensureDirSync(`${projectPath}/project`);
@@ -188,13 +151,22 @@ export default async function createTestBuild(
         },
       ],
     };
+
+    fs.writeFileSync(
+      `${projectPath}/src/functions/testClient.ts`,
+      `
+      import React from "react";
+
+      export const TestClient = () => {
+        return (
+          <div>Test</div>
+        );
+      };
+    `
+    );
   }
 
-  return generateManifest(
-    gpConfig,
-    pkgGeo,
-    preprocessingBundles,
-    geoprocessingBundles,
-    pkgGeo.version
-  );
+  await buildProjectFunctions(projectPath, `${projectPath}/.build`);
+  const manifest = await fs.readJSONSync(`${projectPath}/.build/manifest.json`);
+  return manifest as Manifest;
 }

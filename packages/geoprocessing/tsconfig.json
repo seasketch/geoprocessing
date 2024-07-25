@@ -67,6 +67,6 @@
       "resolveJsonModule": true
     },
     "exclude": ["docs", "./templates/**/*", "node_modules", 
-                "dist", "cdk.out", "vitest*", "scripts/testing/*.mjs", "scripts/*.test.*"]
+                "dist", "cdk.out", "vitest*", "scripts/testing/*.mjs", "scripts/*.test.*", "scripts/__test__"]
   }
   

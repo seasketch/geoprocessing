@@ -5,7 +5,7 @@ import {
   isMetricPack,
   unpackMetrics,
 } from "../metrics/helpers.js";
-import TaskModel from "./tasks.js";
+import { TasksModel } from "./tasks.js";
 import AWS, { DynamoDB } from "aws-sdk";
 import deepEqual from "fast-deep-equal";
 import { hasOwnProperty } from "../helpers/native.js";
@@ -26,7 +26,7 @@ const docClient = new DynamoDB.DocumentClient({
   region: "local-region",
 });
 
-const Tasks = new TaskModel("tasks-core", "tasks-estimates", docClient);
+const Tasks = new TasksModel("tasks-core", "tasks-estimates", docClient);
 const SERVICE_NAME = "test-serviceName";
 
 describe("DynamoDB local", () => {

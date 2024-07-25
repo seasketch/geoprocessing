@@ -11,10 +11,11 @@ import {
   JSONValue,
   GeoprocessingRequestModel,
 } from "../types/index.js";
-import TaskModel, {
+import {
   commonHeaders,
   GeoprocessingTask,
   GeoprocessingTaskStatus,
+  TasksModel,
 } from "./tasks.js";
 import { fetchGeoJSON } from "../datasources/seasketch.js";
 import {
@@ -83,7 +84,7 @@ export class GeoprocessingHandler<
   // Store last request id to avoid retries on a failure of the lambda
   // aws runs several retries and there appears to be no setting to avoid this
   lastRequestId?: string;
-  Tasks: TaskModel;
+  Tasks: TasksModel;
 
   /**
    * @param func the geoprocessing function to run
@@ -114,7 +115,7 @@ export class GeoprocessingHandler<
   ) {
     this.func = func;
     this.options = Object.assign({ memory: 1024 }, options);
-    this.Tasks = new TaskModel(TASKS_TABLE!, ESTIMATES_TABLE!, Db);
+    this.Tasks = new TasksModel(TASKS_TABLE!, ESTIMATES_TABLE!, Db);
   }
 
   /**

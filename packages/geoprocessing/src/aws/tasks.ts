@@ -8,7 +8,6 @@ import {
   unpackMetrics,
 } from "../metrics/index.js";
 import cloneDeep from "lodash/cloneDeep.js";
-import { groupBy } from "../helpers/groupBy.js";
 import { Metric } from "../types/metrics.js";
 import { byteSize } from "../util/byteSize.js";
 import { JSONValue } from "../types/base.js";
@@ -58,7 +57,7 @@ export enum GeoprocessingTaskStatus {
 /**
  * Task model responsible for managing task results and estimates in DynamoDB
  */
-export default class TasksModel {
+export class TasksModel {
   /** task table */
   table: string;
   /** task estimate table */

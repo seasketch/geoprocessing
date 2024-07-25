@@ -1,6 +1,10 @@
 import { describe, test, expect } from "vitest";
 import { GeoprocessingHandler } from "./GeoprocessingHandler.js";
-import Tasks, { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks.js";
+import {
+  TasksModel,
+  GeoprocessingTask,
+  GeoprocessingTaskStatus,
+} from "./tasks.js";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { v4 as uuid } from "uuid";
 import {
@@ -9,38 +13,101 @@ import {
   Feature,
   FeatureCollection,
 } from "../types/index.js";
-// @ts-ignore
-import fetchMock from "fetch-mock-jest";
+
+import fetchMock from "vitest-fetch-mock";
 import deepEqual from "fast-deep-equal";
+import awsSdk from "aws-sdk";
+
+const Db = new awsSdk.DynamoDB.DocumentClient();
+const fetchMocker = fetchMock(vi);
+fetchMocker.enableMocks();
+
+const init = TasksModel.prototype.init;
+
+vi.mock("./tasks.js", async () => {
+  const TasksModule = await vi.importActual("./tasks.js");
+
+  return {
+    // Start with actual module
+    ...TasksModule,
+    TasksModel: vi.fn().mockReturnValue({
+      init: init,
+
+      create: async (service: string, cacheKey: string) => {
+        const task = new TasksModel("tasks", "estimates", Db);
+        task.init(service, cacheKey);
+        return task;
+      },
+
+      complete: async (task: GeoprocessingTask, results: any) => {
+        task.data = results;
+        task.status = GeoprocessingTaskStatus.Completed;
+        task.duration =
+          new Date().getTime() - new Date(task.startedAt).getTime();
+        lastSavedTask = task;
+        return {
+          statusCode: 200,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true,
+          },
+          body: JSON.stringify(task),
+        };
+      },
+
+      fail: async (
+        task: GeoprocessingTask,
+        errorDescription: string,
+        error?: Error
+      ) => {
+        task.status = GeoprocessingTaskStatus.Failed;
+        task.duration =
+          new Date().getTime() - new Date(task.startedAt).getTime();
+        task.error = errorDescription;
+        return {
+          statusCode: 500,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Credentials": true,
+          },
+          body: JSON.stringify(task),
+        };
+      },
+      get: vi.fn(),
+    }),
+  };
+});
 
 // Mock task methods, using actual implementation for init
-const init = Tasks.prototype.init;
+// const init = TasksModel.prototype.init;
 // jest.mock("./tasks");
-// const TasksActual = jest.requireActual("./tasks").default;
-// @ts-ignore
-// Tasks.prototype.create.mockImplementation(
+
+// Mock TasksModel class methods, without use of dynamodb
+
+// TasksModel.prototype.create.mockImplementation(
 //   async (service: string, cacheKey: string) => {
-//     const task = TasksActual.prototype.init(service, cacheKey);
+//     const task = new TasksModel("tasks", "estimates", Db);
+//     task.init(service, cacheKey);
 //     return task;
 //   }
 // );
 
 // @ts-ignore
-Tasks.prototype.fail.mockImplementation(
-  async (task: GeoprocessingTask, errorDescription: string, error?: Error) => {
-    task.status = GeoprocessingTaskStatus.Failed;
-    task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
-    task.error = errorDescription;
-    return {
-      statusCode: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
-      },
-      body: JSON.stringify(task),
-    };
-  }
-);
+// TasksModel.prototype.fail.mockImplementation(
+//   async (task: GeoprocessingTask, errorDescription: string, error?: Error) => {
+//     task.status = GeoprocessingTaskStatus.Failed;
+//     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
+//     task.error = errorDescription;
+//     return {
+//       statusCode: 500,
+//       headers: {
+//         "Access-Control-Allow-Origin": "*",
+//         "Access-Control-Allow-Credentials": true,
+//       },
+//       body: JSON.stringify(task),
+//     };
+//   }
+// );
 
 /** Simple in-memory cache for last saved task */
 let lastSavedTask: GeoprocessingTask;
@@ -49,22 +116,22 @@ let lastSavedTask: GeoprocessingTask;
  * Implements mock for Tasks.complete that returns the last saved task
  */
 // @ts-ignore
-Tasks.prototype.complete.mockImplementation(
-  async (task: GeoprocessingTask, results: any) => {
-    task.data = results;
-    task.status = GeoprocessingTaskStatus.Completed;
-    task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
-    lastSavedTask = task;
-    return {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
-      },
-      body: JSON.stringify(task),
-    };
-  }
-);
+// TasksModel.prototype.complete.mockImplementation(
+//   async (task: GeoprocessingTask, results: any) => {
+//     task.data = results;
+//     task.status = GeoprocessingTaskStatus.Completed;
+//     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
+//     lastSavedTask = task;
+//     return {
+//       statusCode: 200,
+//       headers: {
+//         "Access-Control-Allow-Origin": "*",
+//         "Access-Control-Allow-Credentials": true,
+//       },
+//       body: JSON.stringify(task),
+//     };
+//   }
+// );
 
 const exampleSketch = {
   type: "Feature",
@@ -102,15 +169,33 @@ const exampleFeatureResponse = {
   id: exampleFeature.properties.id,
 };
 
-fetchMock.get("https://example.com/geom/123", JSON.stringify(exampleSketch));
+// fetchMock.get("https://example.com/geom/123", JSON.stringify(exampleSketch));
 
 describe("GeoprocessingHandler", () => {
+  beforeEach(() => {
+    fetchMocker.mockIf(/^https?:\/\/example.com.*$/, (req) => {
+      if (req.url.endsWith("/geom/123")) {
+        return JSON.stringify(exampleSketch);
+      } else if (req.url.endsWith("/geom/500")) {
+        return {
+          status: 500,
+          body: "Error",
+        };
+      } else {
+        return {
+          status: 404,
+          body: "Not Found",
+        };
+      }
+    });
+  });
+
   test.skip("Handler can be constructed and run simple async geoprocessing", async () => {
-    /*
     process.env.RUN_HANDLER_FUNCTION_NAME = "MockLambda";
     const handler = new GeoprocessingHandler(
       async (sketch) => {
-        return { foo: "bar", id: sketch.properties.id };
+        const sketchId = (sketch as Sketch).properties.id;
+        return { foo: "bar", id: sketchId };
       },
       {
         title: "TestGP",
@@ -124,19 +209,19 @@ describe("GeoprocessingHandler", () => {
     expect(handler.options.title).toBe("TestGP");
     // @ts-ignore
     Tasks.prototype.get.mockResolvedValueOnce(false);
-  
+
     const result = await handler.lambdaHandler(
-      ({
+      {
         body: JSON.stringify({
           geometryUri: "https://example.com/geom/123",
           cacheKey: "abc123",
           wss: "wss://localhost:1234",
         }),
-      } as unknown) as APIGatewayProxyEvent,
+      } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
       { awsRequestId: "foo" }
     );
-  
+
     //expect(result.statusCode).toBe(200);
     const task = JSON.parse(result.body) as GeoprocessingTask;
     console.log("task-->>>> ", task);
@@ -146,7 +231,6 @@ describe("GeoprocessingHandler", () => {
     expect(result.headers!["Access-Control-Allow-Origin"]).toBe("*");
     expect(result.headers!["Access-Control-Allow-Credentials"]).toBe(true);
     expect(task.data.id).toBe(exampleSketch.properties.id);
-    */
   });
 
   test.skip("Sketch handler can be constructed and run simple geoprocessing", async () => {
@@ -163,7 +247,7 @@ describe("GeoprocessingHandler", () => {
     );
     expect(handler.options.title).toBe("TestGP");
     // @ts-ignore
-    Tasks.prototype.get.mockResolvedValueOnce(false);
+    TasksModel.prototype.get.mockResolvedValueOnce(false);
 
     const result = await handler.lambdaHandler(
       {
@@ -199,7 +283,7 @@ describe("GeoprocessingHandler", () => {
     );
     expect(handler.options.title).toBe("TestGP");
     // @ts-ignore
-    Tasks.prototype.get.mockResolvedValueOnce(false);
+    TasksModel.prototype.get.mockResolvedValueOnce(false);
 
     const result = await handler.lambdaHandler(
       {
@@ -234,7 +318,7 @@ describe("GeoprocessingHandler", () => {
       }
     );
     // @ts-ignore
-    Tasks.prototype.get.mockResolvedValueOnce(false);
+    TasksModel.prototype.get.mockResolvedValueOnce(false);
     const result = await handler.lambdaHandler(
       {
         body: JSON.stringify({
@@ -276,7 +360,7 @@ describe("GeoprocessingHandler", () => {
       }
     );
     // @ts-ignore
-    Tasks.prototype.get.mockResolvedValueOnce(false);
+    TasksModel.prototype.get.mockResolvedValueOnce(false);
     const result = await handler.lambdaHandler(
       {
         body: JSON.stringify({
@@ -315,7 +399,7 @@ describe("GeoprocessingHandler", () => {
       }
     );
     // @ts-ignore
-    Tasks.prototype.get.mockImplementation(
+    TasksModel.prototype.get.mockImplementation(
       async (service: string, cacheKey: string) => {
         if (cacheKey === "abc123") {
           return lastSavedTask;
@@ -345,7 +429,7 @@ describe("GeoprocessingHandler", () => {
       { awsRequestId: "bar" }
     );
     // @ts-ignore
-    Tasks.prototype.get.mockReset();
+    TasksModel.prototype.get.mockReset();
     expect(result.body.length).toBeGreaterThan(1);
     expect(result2.body.length).toBeGreaterThan(1);
     const task1 = JSON.parse(result.body) as GeoprocessingTask;
@@ -368,7 +452,7 @@ describe("GeoprocessingHandler", () => {
       }
     );
     // @ts-ignore
-    Tasks.prototype.get.mockImplementation(
+    TasksModel.prototype.get.mockImplementation(
       async (service: string, cacheKey: string) => {
         if (cacheKey === "abc123") {
           return lastSavedTask;
@@ -399,7 +483,7 @@ describe("GeoprocessingHandler", () => {
       { awsRequestId: "bar" }
     );
     // @ts-ignore
-    Tasks.prototype.get.mockReset();
+    TasksModel.prototype.get.mockReset();
 
     expect(result.body.length).toBeGreaterThan(1);
     expect(result2.body.length).toBeGreaterThan(1);
@@ -428,7 +512,7 @@ describe("GeoprocessingHandler", () => {
     );
     expect(handler.options.title).toBe("paramsGP");
     // @ts-ignore
-    Tasks.prototype.get.mockResolvedValueOnce(false);
+    TasksModel.prototype.get.mockResolvedValueOnce(false);
 
     const extraParams = { geography: "nearshore" };
     const result = await handler.lambdaHandler(
@@ -452,7 +536,6 @@ describe("GeoprocessingHandler", () => {
   });
 
   test.skip("Failed geometryUri fetches are communicated to requester", async () => {
-    fetchMock.get("https://example.com/geom/abc123", 500);
     const handler = new GeoprocessingHandler(
       async (feature) => exampleResponse,
       {
@@ -466,12 +549,12 @@ describe("GeoprocessingHandler", () => {
     );
     expect(handler.options.title).toBe("TestGP");
     // @ts-ignore
-    Tasks.prototype.get.mockResolvedValueOnce(false);
+    TasksModel.prototype.get.mockResolvedValueOnce(false);
 
     const result = await handler.lambdaHandler(
       {
         body: JSON.stringify({
-          geometryUri: "https://example.com/geom/abc123",
+          geometryUri: "https://example.com/geom/500",
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
@@ -503,7 +586,7 @@ describe("GeoprocessingHandler", () => {
     );
     expect(handler.options.title).toBe("TestGP");
     // @ts-ignore
-    Tasks.prototype.get.mockResolvedValueOnce(false);
+    TasksModel.prototype.get.mockResolvedValueOnce(false);
 
     const result = await handler.lambdaHandler(
       {

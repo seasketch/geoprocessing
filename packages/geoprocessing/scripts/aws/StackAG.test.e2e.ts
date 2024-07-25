@@ -22,8 +22,6 @@ describe("GeoprocessingStack - async geoprocessor only", () => {
       "asyncGeoprocessor",
     ]);
 
-    console.log("manifestz", manifest);
-
     expect(manifest.clients.length).toBe(0);
     expect(manifest.preprocessingFunctions.length).toBe(0);
     expect(manifest.geoprocessingFunctions.length).toBe(1);

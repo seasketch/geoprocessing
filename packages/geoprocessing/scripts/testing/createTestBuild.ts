@@ -93,6 +93,7 @@ export default async function createTestBuild(
       description: "Test sync geoprocessor",
       timeout: 40,
       requiresProperties: [],
+      executionMode: "sync",
       memory: 4096,
     });
     `

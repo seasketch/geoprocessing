@@ -1,12 +1,12 @@
-import { App } from "aws-cdk-lib";
-import { SynthUtils } from "@aws-cdk/assert";
-import "@aws-cdk/assert/jest";
-import createTestProjectManifest from "../testing/createTestProjectManifest.js";
-import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
+import { App, NestedStack } from "aws-cdk-lib";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
 import config from "./config.js";
+import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
-import { describe, test, expect, afterAll } from "vitest";
+import { describe, it, expect, afterAll } from "vitest";
+import { Template } from "aws-cdk-lib/assertions";
+import fs from "fs-extra";
+import createTestBuild from "../testing/createTestBuild.js";
 
 const rootPath = `${import.meta.dirname}/../__test__`;
 const projectName = "all";
@@ -15,10 +15,10 @@ const projectPath = path.join(rootPath, projectName);
 describe("GeoprocessingStack - all components", () => {
   afterAll(() => cleanupBuildDirs(projectPath));
 
-  test.skip("should create a valid stack", async () => {
+  test("should create a valid stack", async () => {
     await setupBuildDirs(projectPath);
 
-    const manifest = await createTestProjectManifest(projectName, [
+    const manifest = await createTestBuild(projectName, projectPath, [
       "preprocessor",
       "syncGeoprocessor",
       "asyncGeoprocessor",
@@ -37,99 +37,140 @@ describe("GeoprocessingStack - all components", () => {
       projectPath,
     });
 
-    expect(stack).toBeTruthy();
-    expect(SynthUtils.toCloudFormation(stack)).toMatchSnapshot();
+    const rootTemplate = Template.fromStack(stack);
 
-    // Check counts
-    // expect(stack).toCountResources("AWS::CloudFront::Distribution", 1);
-    // expect(stack).toCountResources("AWS::S3::Bucket", 3);
-    // expect(stack).toCountResources("AWS::ApiGateway::RestApi", 1);
-    // expect(stack).toCountResources("AWS::ApiGateway::Stage", 1);
-    // expect(stack).toCountResources("AWS::ApiGateway::Method", 10); // root (get, options), async (get, post, options), preprocessor (options, post), sync (get, post, options)
-    // expect(stack).toCountResources("AWS::ApiGatewayV2::Api", 1); // web socket api
-    // expect(stack).toCountResources("AWS::ApiGatewayV2::Stage", 1);
-    // expect(stack).toCountResources("AWS::ApiGatewayV2::Route", 4);
-    // expect(stack).toCountResources("AWS::DynamoDB::Table", 3);
-    // expect(stack).toCountResources("AWS::Lambda::Function", 10);
+    // Lambda stack assertions
 
-    // expect(stack).toHaveResourceLike("AWS::ApiGateway::Stage", {
-    //   StageName: config.STAGE_NAME,
-    // });
+    const lambdaStacks = stack.node.children.filter(
+      (child) => child instanceof NestedStack
+    );
+    expect(lambdaStacks.length).toBe(1);
+
+    // Lambda stack CDK template assertions
+
+    const lambdaStackTemplate = Template.fromStack(
+      lambdaStacks[0] as NestedStack
+    );
+
+    // Generate JSON snapshot.  Use to manually assess what cdk synth produces and write tests
+    // Does not currently enforce matching with toMatchSnapshot() because dynamic values like S3Key are not consistent
+
+    const snapPath = "./scripts/aws/__snapshots__/";
+    fs.ensureDirSync(snapPath);
+    fs.writeJSONSync(
+      `${snapPath}/StackAll_rootStack.test.e2e.ts.snap`,
+      rootTemplate.toJSON(),
+      {
+        spaces: 2,
+      }
+    );
+    fs.writeJSONSync(
+      `${snapPath}/StackAll_lambdaStack.test.e2e.ts.snap`,
+      lambdaStackTemplate.toJSON(),
+      {
+        spaces: 2,
+      }
+    );
+
+    // Root stack assertions
+
+    expect(stack.hasClients()).toEqual(true);
+    expect(stack.hasSyncFunctions()).toEqual(true);
+    expect(stack.hasAsyncFunctions()).toEqual(true);
+    expect(stack.getSyncFunctionMetas().length).toBe(2);
+    expect(stack.getAsyncFunctionMetas().length).toBe(1);
+    expect(stack.getSyncFunctionsWithMeta().length).toBe(2);
+    expect(stack.getAsyncFunctionsWithMeta().length).toBe(1);
+
+    rootTemplate.resourceCountIs("AWS::CloudFront::Distribution", 1);
+    rootTemplate.resourceCountIs("AWS::S3::Bucket", 3);
+    rootTemplate.resourceCountIs("AWS::ApiGateway::RestApi", 1);
+    rootTemplate.resourceCountIs("AWS::ApiGateway::Stage", 1);
+    rootTemplate.resourceCountIs("AWS::ApiGateway::Method", 10); // root (get, options), async (get, post, options), preprocessor (options, post), sync (get, post, options)
+    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Api", 1); // web socket api
+    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Stage", 1);
+    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Route", 4);
+    rootTemplate.resourceCountIs("AWS::DynamoDB::Table", 3);
+    rootTemplate.resourceCountIs("AWS::Lambda::Function", 6);
+
+    rootTemplate.allResourcesProperties("AWS::ApiGateway::Stage", {
+      StageName: config.STAGE_NAME,
+    });
 
     // Check shared resources
-    // expect(stack).toHaveResourceLike("AWS::ApiGateway::RestApi", {
-    //   Name: `gp-${projectName}`,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
-    //   BucketName: `gp-${projectName}-results`,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
-    //   BucketName: `gp-${projectName}-datasets`,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-    //   Handler: "serviceHandlers.projectMetadata",
-    //   Runtime: config.NODE_RUNTIME.name,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::DynamoDB::Table", {
-    //   TableName: `gp-${projectName}-tasks`,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::DynamoDB::Table", {
-    //   TableName: `gp-${projectName}-estimates`,
-    // });
+    rootTemplate.hasResourceProperties("AWS::ApiGateway::RestApi", {
+      Name: `gp-${projectName}`,
+    });
+    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
+      BucketName: `gp-${projectName}-results`,
+    });
+    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
+      BucketName: `gp-${projectName}-datasets`,
+    });
+    rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
+      Handler: "serviceHandlers.projectMetadata",
+      Runtime: config.NODE_RUNTIME.name,
+    });
+    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
+      TableName: `gp-${projectName}-tasks`,
+    });
+    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
+      TableName: `gp-${projectName}-estimates`,
+    });
 
     // // Check shared async resources
-    // expect(stack).toHaveResourceLike("AWS::ApiGatewayV2::Api", {
-    //   ProtocolType: "WEBSOCKET",
-    //   Name: `gp-${projectName}-socket`,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::DynamoDB::Table", {
-    //   TableName: `gp-${projectName}-subscriptions`,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-    //   FunctionName: `gp-${projectName}-subscribe`,
-    //   Handler: "connect.connectHandler",
-    //   Runtime: config.NODE_RUNTIME.name,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-    //   FunctionName: `gp-${projectName}-unsubscribe`,
-    //   Handler: "disconnect.disconnectHandler",
-    //   Runtime: config.NODE_RUNTIME.name,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-    //   FunctionName: `gp-${projectName}-send`,
-    //   Handler: "sendmessage.sendHandler",
-    //   Runtime: config.NODE_RUNTIME.name,
-    // });
+    rootTemplate.hasResourceProperties("AWS::ApiGatewayV2::Api", {
+      ProtocolType: "WEBSOCKET",
+      Name: `gp-${projectName}-socket`,
+    });
+    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
+      TableName: `gp-${projectName}-subscriptions`,
+    });
+    rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-subscribe`,
+      Handler: "connect.connectHandler",
+      Runtime: config.NODE_RUNTIME.name,
+    });
+    rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-unsubscribe`,
+      Handler: "disconnect.disconnectHandler",
+      Runtime: config.NODE_RUNTIME.name,
+    });
+    rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-send`,
+      Handler: "sendmessage.sendHandler",
+      Runtime: config.NODE_RUNTIME.name,
+    });
 
     // // Check client resources
-    // expect(stack).toHaveResourceLike("AWS::S3::Bucket", {
-    //   BucketName: `gp-${projectName}-client`,
-    // });
+    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
+      BucketName: `gp-${projectName}-client`,
+    });
 
     // // Check preprocessor resources
-    // expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-    //   FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
-    //   Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
-    //   Runtime: config.NODE_RUNTIME.name,
-    // });
+    lambdaStackTemplate.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
+      Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
+      Runtime: config.NODE_RUNTIME.name,
+    });
 
-    // // Check sync geoprocessing function resources
-    // expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-    //   FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[0].title}`,
-    //   Handler: getHandlerPointer(manifest.geoprocessingFunctions[0]),
-    //   Runtime: config.NODE_RUNTIME.name,
-    // });
+    // Check sync geoprocessing function resources
+    lambdaStackTemplate.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[0].title}`,
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[0]),
+      Runtime: config.NODE_RUNTIME.name,
+    });
 
-    // // Check async function resources
-    // expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-    //   FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-start`,
-    //   Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
-    //   Runtime: config.NODE_RUNTIME.name,
-    // });
-    // expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-    //   FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-run`,
-    //   Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
-    //   Runtime: config.NODE_RUNTIME.name,
-    // });
-  });
+    // Check async function resources
+    lambdaStackTemplate.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-start`,
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
+      Runtime: config.NODE_RUNTIME.name,
+    });
+    lambdaStackTemplate.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-run`,
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
+      Runtime: config.NODE_RUNTIME.name,
+    });
+  }, 30000);
 });

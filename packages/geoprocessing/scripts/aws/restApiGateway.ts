@@ -11,7 +11,7 @@ export const createRestApi = (stack: GeoprocessingStack) => {
     restApiName: `gp-${stack.props.projectName}`,
     description: `Serves API requests for ${stack.props.projectName}.`,
     retainDeployments: false,
-    
+
     defaultCorsPreflightOptions: {
       allowOrigins: Cors.ALL_ORIGINS,
       allowMethods: Cors.ALL_METHODS,
@@ -25,7 +25,7 @@ export const createRestApi = (stack: GeoprocessingStack) => {
 
   // Add route to return project metadata
   const metadataIntegration = new LambdaIntegration(
-    stack.functions.serviceRootFunction,
+    stack.projectFunctions.serviceRootFunction,
     {
       requestTemplates: { "application/json": '{ "statusCode": "200" }' },
     }

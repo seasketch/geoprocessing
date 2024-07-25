@@ -274,6 +274,7 @@ describe("DynamoDB local", () => {
     );
     expect(response.statusCode).toBe(200);
 
+    // Verify created 2 metric group items
     const item = await docClient
       .get({
         TableName: "tasks-core",
@@ -287,43 +288,44 @@ describe("DynamoDB local", () => {
     expect(Array.isArray(rootMetrics)).toBe(true);
     expect(rootMetrics.length).toBe(0);
 
-    const childItems = item?.Item?.data.sketchMetricItems;
-    expect(childItems).toBeTruthy();
-    expect(childItems.length).toBe(2);
-    expect(childItems).toEqual(["sketch1", "sketch2"]);
+    const numMetricGroups = item?.Item?.data.numMetricGroups;
+    expect(numMetricGroups).toBeTruthy();
+    expect(numMetricGroups).toBe(2);
 
-    const childItem1 = await docClient
+    // Verify contents of 2 metric groups items
+    const metricGroupItem1 = await docClient
       .get({
         TableName: "tasks-core",
         Key: {
-          id: `${task.id}-sketchId-${childItems[0]}`,
+          id: `${task.id}-metricGroup-0`,
           service: SERVICE_NAME,
         },
       })
       .promise();
 
-    const childRawMetrics1 = childItem1?.Item?.data.metrics;
-    expect(isMetricPack(childRawMetrics1)).toBe(true);
-    const childMetrics1 = unpackMetrics(childRawMetrics1);
-    expect(isMetricArray(childMetrics1)).toBe(true);
-    expect(childMetrics1.length).toBe(1);
+    const metricGroupRawMetrics1 = metricGroupItem1?.Item?.data.metrics;
+    expect(isMetricPack(metricGroupRawMetrics1)).toBe(true);
+    const metricGroupMetrics1 = unpackMetrics(metricGroupRawMetrics1);
+    expect(isMetricArray(metricGroupMetrics1)).toBe(true);
+    expect(metricGroupMetrics1.length).toBe(1);
 
-    const childItem2 = await docClient
+    const metricGroupItem2 = await docClient
       .get({
         TableName: "tasks-core",
         Key: {
-          id: `${task.id}-sketchId-${childItems[1]}`,
+          id: `${task.id}-metricGroup-1`,
           service: SERVICE_NAME,
         },
       })
       .promise();
 
-    const childRawMetrics2 = childItem2?.Item?.data.metrics;
-    expect(isMetricPack(childRawMetrics2)).toBe(true);
-    const childMetrics2 = unpackMetrics(childRawMetrics2);
-    expect(isMetricArray(childMetrics2)).toBe(true);
-    expect(childMetrics2.length).toBe(1);
+    const metricGroupRawMetrics2 = metricGroupItem2?.Item?.data.metrics;
+    expect(isMetricPack(metricGroupRawMetrics2)).toBe(true);
+    const metricGroupMetrics2 = unpackMetrics(metricGroupRawMetrics2);
+    expect(isMetricArray(metricGroupMetrics2)).toBe(true);
+    expect(metricGroupMetrics2.length).toBe(1);
 
+    // Verify on get that metrics are re-merged with root item
     const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
     const cachedMetrics = cachedResult?.data.metrics;
     expect(cachedMetrics).toBeTruthy();

@@ -190,8 +190,8 @@ export default class TasksModel {
       })
       .promise();
 
-    // If more than one metric group, store each one as a separate dynamdodb item
-    if (numMetricGroups > 1) {
+    // If at least one metric group, store each one as a separate dynamdodb item
+    if (numMetricGroups > 0) {
       const promises = metricGroups.map(async (metricGroup, index) => {
         return this.db
           .update({

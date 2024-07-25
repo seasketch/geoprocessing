@@ -1,28 +1,31 @@
 import { App, NestedStack } from "aws-cdk-lib";
 import "@aws-cdk/assert/jest";
-import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
+import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import config from "./config.js";
-import { cleanupBuildDirs } from "../testing/lifecycle.js";
+import createTestProjectManifest from "../testing/createTestProjectManifest.js";
+import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
 import { describe, it, expect, afterAll } from "vitest";
 import { Template } from "aws-cdk-lib/assertions";
-import createTestBuild from "../testing/createTestBuild.js";
 import fs from "fs-extra";
+import createTestBuild from "../testing/createTestBuild.js";
 
 const rootPath = `${import.meta.dirname}/../__test__`;
-const projectName = "preprocessor-only";
+const projectName = "client-only";
 const projectPath = path.join(rootPath, projectName);
 
-describe("GeoprocessingStack - preprocessor only", () => {
+describe("GeoprocessingStack - client only", () => {
   afterAll(() => cleanupBuildDirs(projectPath));
 
   it("should create a valid stack", async () => {
+    await setupBuildDirs(projectPath);
+
     const manifest = await createTestBuild(projectName, projectPath, [
-      "preprocessor",
+      "client",
     ]);
 
-    expect(manifest.clients.length).toBe(0);
-    expect(manifest.preprocessingFunctions.length).toBe(1);
+    expect(manifest.clients.length).toBe(1);
+    expect(manifest.preprocessingFunctions.length).toBe(0);
     expect(manifest.geoprocessingFunctions.length).toBe(0);
 
     const app = new App();
@@ -32,21 +35,7 @@ describe("GeoprocessingStack - preprocessor only", () => {
       manifest,
       projectPath,
     });
-
     const rootTemplate = Template.fromStack(stack);
-
-    // Lambda stack assertions
-
-    const lambdaStacks = stack.node.children.filter(
-      (child) => child instanceof NestedStack
-    );
-    expect(lambdaStacks.length).toBe(1);
-
-    // Lambda stack CDK template assertions
-
-    const lambdaStackTemplate = Template.fromStack(
-      lambdaStacks[0] as NestedStack
-    );
 
     // Generate JSON snapshot.  Use to manually assess what cdk synth produces and write tests
     // Does not currently enforce matching with toMatchSnapshot() because dynamic values like S3Key are not consistent
@@ -54,15 +43,8 @@ describe("GeoprocessingStack - preprocessor only", () => {
     const snapPath = "./scripts/aws/__snapshots__/";
     fs.ensureDirSync(snapPath);
     fs.writeJSONSync(
-      `${snapPath}/StackP_rootStack.test.e2e.ts.snap`,
+      `${snapPath}/StackC_rootStack.test.e2e.ts.snap`,
       rootTemplate.toJSON(),
-      {
-        spaces: 2,
-      }
-    );
-    fs.writeJSONSync(
-      `${snapPath}/StackP_lambdaStack.test.e2e.ts.snap`,
-      lambdaStackTemplate.toJSON(),
       {
         spaces: 2,
       }
@@ -70,24 +52,24 @@ describe("GeoprocessingStack - preprocessor only", () => {
 
     // Root stack assertions
 
-    expect(stack.hasClients()).toEqual(false);
-    expect(stack.hasSyncFunctions()).toEqual(true);
+    expect(stack.hasClients()).toEqual(true);
+    expect(stack.hasSyncFunctions()).toEqual(false);
     expect(stack.hasAsyncFunctions()).toEqual(false);
-    expect(stack.getSyncFunctionMetas().length).toBe(1);
+    expect(stack.getSyncFunctionMetas().length).toBe(0);
     expect(stack.getAsyncFunctionMetas().length).toBe(0);
-    expect(stack.getSyncFunctionsWithMeta().length).toBe(1);
+    expect(stack.getSyncFunctionsWithMeta().length).toBe(0);
     expect(stack.getAsyncFunctionsWithMeta().length).toBe(0);
 
     // Root CDK template assertions
 
-    rootTemplate.resourceCountIs("AWS::CloudFront::Distribution", 0);
+    rootTemplate.resourceCountIs("AWS::CloudFront::Distribution", 1);
     rootTemplate.resourceCountIs("AWS::S3::Bucket", 2);
     rootTemplate.resourceCountIs("AWS::ApiGateway::RestApi", 1);
     rootTemplate.resourceCountIs("AWS::ApiGateway::Stage", 1);
     rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Api", 0); // web socket api
     rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Stage", 0);
-    rootTemplate.resourceCountIs("AWS::DynamoDB::Table", 2);
-    rootTemplate.resourceCountIs("AWS::Lambda::Function", 2);
+    rootTemplate.resourceCountIs("AWS::DynamoDB::Table", 0);
+    rootTemplate.resourceCountIs("AWS::Lambda::Function", 3);
 
     rootTemplate.allResourcesProperties("AWS::ApiGateway::Stage", {
       StageName: config.STAGE_NAME,
@@ -98,28 +80,23 @@ describe("GeoprocessingStack - preprocessor only", () => {
       Name: `gp-${projectName}`,
     });
     rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
-      BucketName: `gp-${projectName}-results`,
-    });
-    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
       BucketName: `gp-${projectName}-datasets`,
     });
     rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
       Handler: "serviceHandlers.projectMetadata",
       Runtime: config.NODE_RUNTIME.name,
     });
-    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
-      TableName: `gp-${projectName}-tasks`,
-    });
-    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
-      TableName: `gp-${projectName}-estimates`,
+
+    // Check client resources
+    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
+      BucketName: `gp-${projectName}-client`,
     });
 
-    lambdaStackTemplate.resourceCountIs("AWS::Lambda::Function", 1);
+    // Lambda stack assertions
 
-    lambdaStackTemplate.hasResourceProperties("AWS::Lambda::Function", {
-      FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
-      Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
-      Runtime: config.NODE_RUNTIME.name,
-    });
+    const lambdaStacks = stack.node.children.filter(
+      (child) => child instanceof NestedStack
+    );
+    expect(lambdaStacks.length).toBe(0);
   }, 30000);
 });

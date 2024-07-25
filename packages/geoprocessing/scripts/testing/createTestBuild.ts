@@ -5,6 +5,7 @@ import { TestComponentTypes } from "./types.js";
 import { setupProjectDirs } from "../testing/lifecycle.js";
 import fs from "fs-extra";
 import { buildProjectFunctions } from "../build/buildProjectFunctions.js";
+import { buildProjectClients } from "../build/buildProjectClients.js";
 
 /**
  * Creates test project build, with the components requested, at project path and returns the resulting manifest
@@ -39,12 +40,6 @@ export default async function createTestBuild(
     geoprocessingFunctions: [],
     clients: [],
   };
-  let preprocessingBundles: PreprocessingBundle[] = [];
-  let geoprocessingBundles: GeoprocessingBundle[] = [];
-
-  interface TestResult {
-    result: number;
-  }
 
   if (components.includes("preprocessor")) {
     gpConfig = {
@@ -137,7 +132,6 @@ export default async function createTestBuild(
   }
 
   fs.ensureDirSync(`${projectPath}/project`);
-  fs.writeJSONSync(`${projectPath}/project/geoprocessing.json`, gpConfig);
 
   if (components.includes("client")) {
     gpConfig = {
@@ -153,7 +147,7 @@ export default async function createTestBuild(
     };
 
     fs.writeFileSync(
-      `${projectPath}/src/functions/testClient.ts`,
+      `${projectPath}/src/clients/TestClient.tsx`,
       `
       import React from "react";
 
@@ -162,11 +156,18 @@ export default async function createTestBuild(
           <div>Test</div>
         );
       };
+      export default TestClient;
     `
     );
   }
 
+  fs.writeJSONSync(`${projectPath}/project/geoprocessing.json`, gpConfig);
+
   await buildProjectFunctions(projectPath, `${projectPath}/.build`);
+
+  if (components.includes("client")) {
+    await buildProjectClients(projectPath, `${projectPath}/.build-web`);
+  }
   const manifest = await fs.readJSONSync(`${projectPath}/.build/manifest.json`);
   return manifest as Manifest;
 }

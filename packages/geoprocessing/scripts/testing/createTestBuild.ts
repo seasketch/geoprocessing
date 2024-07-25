@@ -1,5 +1,4 @@
 import { Package, GeoprocessingJsonConfig } from "../../src/types/index.js";
-import { PreprocessingBundle, GeoprocessingBundle } from "../types.js";
 import { Manifest } from "../manifest.js";
 import { TestComponentTypes } from "./types.js";
 import { setupProjectDirs } from "../testing/lifecycle.js";
@@ -125,6 +124,7 @@ export default async function createTestBuild(
       description: "Test async geoprocessor",
       timeout: 40,
       requiresProperties: [],
+      executionMode: "async",
       memory: 4096,
     });
     `

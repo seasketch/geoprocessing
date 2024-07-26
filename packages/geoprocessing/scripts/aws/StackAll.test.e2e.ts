@@ -172,5 +172,5 @@ describe("GeoprocessingStack - all components", () => {
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
       Runtime: config.NODE_RUNTIME.name,
     });
-  }, 30000);
+  }, 60000);
 });

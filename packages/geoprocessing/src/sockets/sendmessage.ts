@@ -1,9 +1,14 @@
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License
 
-import { ApiGatewayManagementApi, AWSError } from "aws-sdk";
-import { DocumentClient } from "aws-sdk/clients/dynamodb.js";
-import { PromiseResult } from "aws-sdk/lib/request.js";
+import { ApiGatewayManagementApi } from "@aws-sdk/client-apigatewaymanagementapi";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import {
+  DeleteCommand,
+  DynamoDBDocumentClient,
+  ScanCommand,
+  ScanCommandOutput,
+} from "@aws-sdk/lib-dynamodb";
 
 /**
  * Posts message to socket connection
@@ -15,8 +20,8 @@ export const sendHandler = async (event) => {
   let serviceName: string;
   let failureMessage: string;
   let postData;
-  let ddb: DocumentClient;
-  let responses: PromiseResult<DocumentClient.ScanOutput, AWSError>;
+  let ddb: DynamoDBDocumentClient;
+  let responses: ScanCommandOutput;
 
   if (!process.env.SUBSCRIPTIONS_TABLE)
     throw new Error("SUBSCRIPTIONS_TABLE is undefined");
@@ -28,17 +33,14 @@ export const sendHandler = async (event) => {
     serviceName = eventData["serviceName"];
     failureMessage = eventData["failureMessage"];
 
-    ddb = new DocumentClient({
-      apiVersion: "2012-08-10",
-      region: process.env.AWS_REGION,
-    });
+    const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
+    ddb = DynamoDBDocumentClient.from(dbClient);
 
-    responses = await ddb
-      .scan({
-        TableName: process.env.SUBSCRIPTIONS_TABLE,
-        ProjectionExpression: "serviceName, connectionId, cacheKey",
-      })
-      .promise();
+    const command = new ScanCommand({
+      TableName: process.env.SUBSCRIPTIONS_TABLE,
+      ProjectionExpression: "serviceName, connectionId, cacheKey",
+    });
+    responses = await ddb.send(command);
   } catch (e: unknown) {
     console.warn("Error finding socket connection: ", e);
     return {
@@ -61,7 +63,6 @@ export const sendHandler = async (event) => {
     event.requestContext.domainName + "/" + event.requestContext.stage;
 
   const apigwManagementApi = new ApiGatewayManagementApi({
-    apiVersion: "2018-11-29",
     endpoint: endpoint,
   });
 
@@ -87,27 +88,23 @@ export const sendHandler = async (event) => {
         let postData = JSON.stringify(resultItem);
 
         try {
-          await apigwManagementApi
-            .postToConnection({
-              ConnectionId: responseItem.connectionId,
-              Data: postData,
-            })
-            .promise();
+          await apigwManagementApi.postToConnection({
+            ConnectionId: responseItem.connectionId,
+            Data: postData,
+          });
         } catch (e: any) {
           if (e.statusCode && e.statusCode === 410) {
             console.log(
               `Found stale connection, deleting ${responseItem.connectionId}`
             );
             try {
-              await ddb
-                .delete({
-                  //@ts-ignore
-                  TableName: process.env.SUBSCRIPTIONS_TABLE,
-                  Key: {
-                    connectionId: responseItem.connectionId,
-                  },
-                })
-                .promise();
+              const command = new DeleteCommand({
+                TableName: process.env.SUBSCRIPTIONS_TABLE,
+                Key: {
+                  connectionId: responseItem.connectionId,
+                },
+              });
+              responses = await ddb.send(command);
             } catch (e) {
               console.info("failed to delete stale connection...");
             }

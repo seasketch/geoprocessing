@@ -22,12 +22,13 @@ import {
   APIGatewayProxyResult,
   APIGatewayProxyEvent,
 } from "aws-lambda";
-import awsSdk from "aws-sdk";
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { InvokeCommand, LambdaClient, LogType } from "@aws-sdk/client-lambda";
 import { unescape } from "querystring";
 import WebSocket from "ws";
 
-const Lambda = new awsSdk.Lambda();
-const Db = new awsSdk.DynamoDB.DocumentClient();
+const Db = DynamoDBDocument.from(new DynamoDB());
 
 let NODE_ENV = "";
 let TASKS_TABLE = "";
@@ -341,12 +342,15 @@ export class GeoprocessingHandler<
         }
         event.queryStringParameters = queryParams;
         let payload = JSON.stringify(event);
-        await Lambda.invoke({
+
+        const client = new LambdaClient({});
+        const command = new InvokeCommand({
           FunctionName: RUN_HANDLER_FUNCTION_NAME,
-          ClientContext: JSON.stringify(task),
-          InvocationType: "Event",
           Payload: payload,
-        }).promise();
+          LogType: LogType.Tail,
+          InvocationType: "Event",
+        });
+        await client.send(command);
 
         return {
           statusCode: 200,

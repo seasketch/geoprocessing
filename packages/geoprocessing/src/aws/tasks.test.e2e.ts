@@ -6,33 +6,29 @@ import {
   unpackMetrics,
 } from "../metrics/helpers.js";
 import TaskModel from "./tasks.js";
-import AWS, { DynamoDB } from "aws-sdk";
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient, CreateTableCommand } from "@aws-sdk/client-dynamodb";
 import deepEqual from "fast-deep-equal";
 import { hasOwnProperty } from "../helpers/native.js";
 
-AWS.config.update({
-  accessKeyId: "local-access-key",
-  secretAccessKey: "local-secret-key",
+const dynamodb = new DynamoDBClient({
+  endpoint: "http://localhost:8000",
+  credentials: {
+    accessKeyId: "local-access-key",
+    secretAccessKey: "local-secret-key",
+  },
   region: "local-region",
-  sslEnabled: false,
+  tls: false,
 });
-const dynamodb = new AWS.DynamoDB({
-  endpoint: new AWS.Endpoint("http://localhost:8000"),
-});
-const docClient = new DynamoDB.DocumentClient({
-  // @ts-ignore
-  endpoint: "localhost:8000",
-  sslEnabled: false,
-  region: "local-region",
-});
+const docClient = DynamoDBDocument.from(dynamodb);
 
 const Tasks = new TaskModel("tasks-core", "tasks-estimates", docClient);
 const SERVICE_NAME = "test-serviceName";
 
 describe("DynamoDB local", () => {
   beforeAll(async () => {
-    await dynamodb
-      .createTable({
+    await dynamodb.send(
+      new CreateTableCommand({
         TableName: "tasks-core",
         KeySchema: [
           { AttributeName: "id", KeyType: "HASH" },
@@ -47,10 +43,10 @@ describe("DynamoDB local", () => {
           WriteCapacityUnits: 1,
         },
       })
-      .promise();
+    );
 
-    await dynamodb
-      .createTable({
+    await dynamodb.send(
+      new CreateTableCommand({
         TableName: "tasks-estimates",
         KeySchema: [{ AttributeName: "service", KeyType: "HASH" }],
         AttributeDefinitions: [
@@ -61,10 +57,10 @@ describe("DynamoDB local", () => {
           WriteCapacityUnits: 1,
         },
       })
-      .promise();
+    );
 
-    await dynamodb
-      .createTable({
+    await dynamodb.send(
+      new CreateTableCommand({
         TableName: "test-websockets",
         KeySchema: [{ AttributeName: "connectionId", KeyType: "HASH" }],
         AttributeDefinitions: [
@@ -75,7 +71,7 @@ describe("DynamoDB local", () => {
           WriteCapacityUnits: 1,
         },
       })
-      .promise();
+    );
   });
 
   test("create new task", async () => {
@@ -83,15 +79,13 @@ describe("DynamoDB local", () => {
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
-    const item = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: task.id,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
     expect(item && item.Item && item.Item.id).toBe(task.id);
     expect(item && item.Item && item.Item.correlationIds.length).toBe(1);
   }, 10000);
@@ -106,15 +100,13 @@ describe("DynamoDB local", () => {
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
-    const item = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: task.id,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
     expect(item && item.Item && item.Item.id).toBe(task.id);
     expect(item && item.Item && item.Item.correlationIds.length).toBe(1);
     expect(item && item.Item && item.Item.wss.length).toBeGreaterThan(0);
@@ -137,30 +129,26 @@ describe("DynamoDB local", () => {
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
-    const item = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: task.id,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
     expect(item && item.Item && item.Item.id).toBe("my-cache-key");
   });
 
   test("assign a correlation id", async () => {
     const task = await Tasks.create(SERVICE_NAME, undefined, "12345");
     await Tasks.assignCorrelationId(SERVICE_NAME, task.id, "1-2-3");
-    const item = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: task.id,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
     expect(item && item.Item && item.Item.correlationIds.length).toBe(2);
     expect(
       item && item.Item && item.Item.correlationIds.indexOf("1-2-3")
@@ -170,15 +158,13 @@ describe("DynamoDB local", () => {
   test("complete an existing task", async () => {
     const task = await Tasks.create(SERVICE_NAME);
     const response = await Tasks.complete(task, { area: 1234556 });
-    const item = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: task.id,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
     expect(response.statusCode).toBe(200);
     expect(JSON.parse(response.body).data.area).toBe(1234556);
     expect(item && item.Item && item.Item.status).toBe("completed");
@@ -191,15 +177,13 @@ describe("DynamoDB local", () => {
     const response = await Tasks.complete(task, {
       metrics: [createMetric({ value: 15, sketchId: "test" })],
     });
-    const item = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: task.id,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
     expect(response.statusCode).toBe(200);
     const metrics = JSON.parse(response.body).data.metrics;
     expect(metrics).toBeTruthy();
@@ -237,15 +221,13 @@ describe("DynamoDB local", () => {
     });
     expect(response.statusCode).toBe(200);
 
-    const item = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: task.id,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
 
     const rootData = item?.Item?.data;
     expect(hasOwnProperty(rootData, "sketchMetricItems")).toBe(false);
@@ -275,15 +257,13 @@ describe("DynamoDB local", () => {
     expect(response.statusCode).toBe(200);
 
     // Verify created 2 metric group items
-    const item = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: task.id,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
     const rootMetrics = item?.Item?.data.metrics;
     expect(Array.isArray(rootMetrics)).toBe(true);
     expect(rootMetrics.length).toBe(0);
@@ -293,15 +273,13 @@ describe("DynamoDB local", () => {
     expect(numMetricGroups).toBe(2);
 
     // Verify contents of 2 metric groups items
-    const metricGroupItem1 = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: `${task.id}-metricGroup-0`,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const metricGroupItem1 = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: `${task.id}-metricGroup-0`,
+        service: SERVICE_NAME,
+      },
+    });
 
     const metricGroupRawMetrics1 = metricGroupItem1?.Item?.data.metrics;
     expect(isMetricPack(metricGroupRawMetrics1)).toBe(true);
@@ -309,15 +287,13 @@ describe("DynamoDB local", () => {
     expect(isMetricArray(metricGroupMetrics1)).toBe(true);
     expect(metricGroupMetrics1.length).toBe(1);
 
-    const metricGroupItem2 = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: `${task.id}-metricGroup-1`,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const metricGroupItem2 = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: `${task.id}-metricGroup-1`,
+        service: SERVICE_NAME,
+      },
+    });
 
     const metricGroupRawMetrics2 = metricGroupItem2?.Item?.data.metrics;
     expect(isMetricPack(metricGroupRawMetrics2)).toBe(true);
@@ -336,15 +312,13 @@ describe("DynamoDB local", () => {
   test("fail a task", async () => {
     const task = await Tasks.create(SERVICE_NAME);
     const response = await Tasks.fail(task, "It broken");
-    const item = await docClient
-      .get({
-        TableName: "tasks-core",
-        Key: {
-          id: task.id,
-          service: SERVICE_NAME,
-        },
-      })
-      .promise();
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
     expect(response.statusCode).toBe(500);
     expect(JSON.parse(response.body).error).toBe("It broken");
     expect(item && item.Item && item.Item.status).toBe("failed");

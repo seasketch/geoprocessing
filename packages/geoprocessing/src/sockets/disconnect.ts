@@ -1,7 +1,8 @@
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import { DocumentClient } from "aws-sdk/clients/dynamodb.js";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DeleteCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 /**
  * Removes socket connection record from DB given connectionId
@@ -15,10 +16,8 @@ export const disconnectHandler = async (event) => {
   try {
     const connectionId = event.requestContext.connectionId;
 
-    const ddb = new DocumentClient({
-      apiVersion: "2012-08-10",
-      region: process.env.AWS_REGION,
-    });
+    const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
+    const ddb = DynamoDBDocumentClient.from(dbClient);
 
     const deleteParams = {
       TableName: process.env.SUBSCRIPTIONS_TABLE,
@@ -26,7 +25,9 @@ export const disconnectHandler = async (event) => {
         connectionId: connectionId,
       },
     };
-    await ddb.delete(deleteParams).promise();
+
+    const command = new DeleteCommand(deleteParams);
+    await ddb.send(command);
   } catch (err) {
     console.warn(": error trying to disconnect: ", JSON.stringify(err));
     return { statusCode: 200, body: "Disconnected." };

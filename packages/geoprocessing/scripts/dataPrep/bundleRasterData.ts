@@ -54,7 +54,7 @@ program
           ]);
           if (answers.proceed) {
             spinner.start("Creating public S3 bucket");
-            const url = await createBucket(datasourceName, true);
+            const url = await createBucket(datasourceName, region, true);
             spinner.succeed("Public S3 bucket created at " + url);
             cloudfrontDistroPromise = createCloudfrontDistribution(
               datasourceName,

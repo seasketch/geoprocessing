@@ -1,4 +1,3 @@
-import { config } from "aws-sdk";
 import bundleFeatures from "./bundleFeatures.js";
 import ora from "ora";
 import program from "commander";
@@ -17,7 +16,17 @@ import {
 } from "./aws.js";
 import { BBox } from "geojson";
 import prettyBytes from "pretty-bytes";
+import { loadConfig } from "@smithy/node-config-provider";
 import { createIndexes } from "./indexes.js";
+import {
+  NODE_REGION_CONFIG_FILE_OPTIONS,
+  NODE_REGION_CONFIG_OPTIONS,
+} from "@smithy/config-resolver";
+
+const region = await loadConfig(
+  NODE_REGION_CONFIG_OPTIONS,
+  NODE_REGION_CONFIG_FILE_OPTIONS
+)();
 
 const DEFAULT_FLATBUSH_NODE_SIZE = 9;
 const DEFAULT_COMPOSITE_INDEX_SIZE_TARGET = 80_000;
@@ -70,9 +79,8 @@ program
         | undefined;
       if (!options.dryRun) {
         spinner.start("Checking for existing hosting resources");
-        ({ currentVersion, lastPublished, bucket } = await getDataSourceVersion(
-          datasourceName
-        ));
+        ({ currentVersion, lastPublished, bucket } =
+          await getDataSourceVersion(datasourceName));
         spinner.stop();
         if (!currentVersion || currentVersion === 0) {
           const answers = await inquirer.prompt([
@@ -80,7 +88,7 @@ program
               type: "confirm",
               name: "proceed",
               default: false,
-              message: `Existing version not found in ${config.region}. Would you like to create a new S3 bucket (${datasourceName}) and Cloudfront distro?`,
+              message: `Existing version not found in ${region}. Would you like to create a new S3 bucket (${datasourceName}) and Cloudfront distro?`,
             },
           ]);
           if (answers.proceed) {

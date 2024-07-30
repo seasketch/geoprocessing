@@ -1,10 +1,14 @@
-import { config } from "aws-sdk";
 import { CloudFront } from "@aws-sdk/client-cloudfront";
 import {
   BucketLocationConstraint,
   S3,
   LifecycleRule,
 } from "@aws-sdk/client-s3";
+import { loadConfig } from "@smithy/node-config-provider";
+import {
+  NODE_REGION_CONFIG_FILE_OPTIONS,
+  NODE_REGION_CONFIG_OPTIONS,
+} from "@smithy/config-resolver";
 import { Flatbush } from "flatbush";
 import { sync } from "read-pkg-up";
 import slugify from "../../src/util/slugify.js";
@@ -17,6 +21,11 @@ import fs from "fs";
 const cloudfront = new CloudFront();
 const s3 = new S3();
 
+const region = await loadConfig(
+  NODE_REGION_CONFIG_OPTIONS,
+  NODE_REGION_CONFIG_FILE_OPTIONS
+)();
+
 /**
  * Retrieves metadata from the given DataSource on s3. If a deployed version of
  * the DataSource has not been created yet, 0 will be returned.
@@ -25,9 +34,10 @@ const s3 = new S3();
  * @returns {number}
  */
 export async function getDataSourceVersion(
-  name: string
+  name: string,
+  region?: string
 ): Promise<{ currentVersion: number; lastPublished?: Date; bucket?: string }> {
-  if (!config.region) {
+  if (!region) {
     throw new Error(
       `AWS region not configured. Set AWS_REGION environment variable or use "aws configure" from the command line.`
     );
@@ -66,7 +76,7 @@ export async function createBucket(name: string, publicAccess?: boolean) {
     Bucket: bucket,
     ACL: "private",
     CreateBucketConfiguration: {
-      LocationConstraint: config.region as BucketLocationConstraint,
+      LocationConstraint: region as BucketLocationConstraint,
     },
   });
   await s3.putBucketCors({

@@ -1,6 +1,10 @@
-import { config } from "aws-sdk";
 import ora from "ora";
 import program, { version } from "commander";
+import { loadConfig } from "@smithy/node-config-provider";
+import {
+  NODE_REGION_CONFIG_FILE_OPTIONS,
+  NODE_REGION_CONFIG_OPTIONS,
+} from "@smithy/config-resolver";
 
 import inquirer from "inquirer";
 import {
@@ -13,6 +17,11 @@ import {
   CloudfrontDistributionDetails,
   scheduleObjectsForDeletion,
 } from "./aws.js";
+
+const region = await loadConfig(
+  NODE_REGION_CONFIG_OPTIONS,
+  NODE_REGION_CONFIG_FILE_OPTIONS
+)();
 
 program
   .command("bundle-rasters <datasource-name>")
@@ -31,9 +40,8 @@ program
         | undefined;
       if (!options.dryRun) {
         spinner.start("Checking for existing hosting resources");
-        ({ currentVersion, lastPublished, bucket } = await getDataSourceVersion(
-          datasourceName
-        ));
+        ({ currentVersion, lastPublished, bucket } =
+          await getDataSourceVersion(datasourceName));
         spinner.stop();
         if (!currentVersion || currentVersion === 0) {
           const answers = await inquirer.prompt([
@@ -41,7 +49,7 @@ program
               type: "confirm",
               name: "proceed",
               default: false,
-              message: `Existing version not found in ${config.region}. Would you like to create a new S3 bucket and Cloudfront distro?`,
+              message: `Existing version not found in ${region}. Would you like to create a new S3 bucket and Cloudfront distro?`,
             },
           ]);
           if (answers.proceed) {

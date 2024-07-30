@@ -81,7 +81,7 @@ export async function buildProjectFunctions(
         format: "esm",
         logLevel: process.env.NODE_ENV === "test" ? "error" : "info",
         sourcemap: false,
-        // external: ["aws-cdk-lib", "aws-sdk"],
+        external: ["aws-cdk-lib", "aws-sdk"],
         banner: {
           // workaround require bug https://github.com/evanw/esbuild/pull/2067#issuecomment-1324171716
           js: "import { createRequire } from 'module'; const require = createRequire(import.meta.url);",

@@ -115,6 +115,7 @@
     "@turf/simplify": "^7.0.0",
     "@turf/truncate": "^7.0.0",
     "@turf/union": "7.0.0",
+    "@types/aws-lambda": "^8.10.142",
     "@types/bytes": "^3.1.4",
     "@types/cli-progress": "^3.11.5",
     "@types/cli-table": "^0.3.4",

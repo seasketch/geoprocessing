@@ -58,20 +58,23 @@ test("flatgeobuf - file countries fgb from disk", async () => {
     },
   ]);
 
-  const filePath = path.join(import.meta.dirname, "../../data/in/countries.fgb");
-  console.log(filePath);
+  const filePath = path.join(
+    import.meta.dirname,
+    "../../data/in/countries.fgb"
+  );
+  // console.log(filePath);
   const data = readFileSync(filePath);
   const view = new Uint8Array(data.buffer);
   const fc = deserialize(view);
   if (isFeatureCollection(fc)) {
-    expect(fc.features.length).toEqual(179)
+    expect(fc.features.length).toEqual(179);
   }
 });
 
 test("flatgeobuf - external world fgb", async () => {
   const url =
     "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/world-unstable.fgb";
-  const features = await fgbFetchAll(url)
+  const features = await fgbFetchAll(url);
   expect(features.length).toEqual(1);
-  console.log(JSON.stringify(features))
+  // console.log(JSON.stringify(features))
 }, 5000);

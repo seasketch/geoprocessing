@@ -337,9 +337,10 @@ export const toPercentMetric = (
   options: {
     metricIdOverride?: string;
     idProperty?: string;
+    debug?: boolean;
   } = {}
 ): Metric[] => {
-  const { metricIdOverride, idProperty = "classId" } = options;
+  const { metricIdOverride, idProperty = "classId", debug = true } = options;
 
   // Index denominators into precalc totals using idProperty
   const totalsByKey = (() => {
@@ -379,9 +380,10 @@ export const toPercentMetric = (
     const value = (() => {
       // Catch 0 or malformed denominator value and return percent metric with 0 value
       if (denomMetric.value === 0) {
-        console.log(
-          `Denominator metric with ${idProperty} of ${idValue} has 0 value, returning 0 percent metric`
-        );
+        if (debug)
+          console.log(
+            `Denominator metric with ${idProperty} of ${idValue} has 0 value, returning 0 percent metric`
+          );
         return NaN;
       } else {
         return numerMetric.value / denomMetric.value;

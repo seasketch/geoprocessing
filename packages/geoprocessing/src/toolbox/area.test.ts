@@ -11,7 +11,6 @@ describe("area", () => {
   test("area - sketch polygon", async () => {
     const metrics = await area(fix.sketch1);
     expect(metrics.length).toBe(1);
-    console.log(metrics);
     expect(metrics[0].value).toBeCloseTo(12363718145.180046);
   });
 

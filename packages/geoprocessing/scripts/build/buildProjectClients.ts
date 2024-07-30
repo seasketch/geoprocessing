@@ -28,7 +28,8 @@ export async function buildProjectClients(
     throw new Error("No functions found in geoprocessing.json");
   }
 
-  console.log("Found report clients in geoprocessing.json:");
+  if (process.env.NODE_ENV !== "test")
+    console.log("Found report clients in geoprocessing.json:");
 
   const reportClients = geoprocessing.clients.reduce(
     (clientSoFar, curClient) => {
@@ -36,7 +37,10 @@ export async function buildProjectClients(
     },
     {}
   );
-  Object.values(reportClients).forEach((clientPath) => console.log(clientPath));
+  if (process.env.NODE_ENV !== "test")
+    Object.values(reportClients).forEach((clientPath) =>
+      console.log(clientPath)
+    );
 
   // Generate top-level ReportApp.tsx with dynamic import of report clients
 
@@ -77,7 +81,7 @@ export async function buildProjectClients(
 
   // Create top-level index.html that loads report client
 
-  console.log("Generating index.html");
+  if (process.env.NODE_ENV !== "test") console.log("Generating index.html");
   fs.writeFileSync(
     path.join(destBuildPath, "index.html"),
     `
@@ -105,6 +109,7 @@ export async function buildProjectClients(
     base: "/",
     plugins: [react(), nodePolyfills()],
     publicDir: path.join(projectPath, "src", "assets"),
+    logLevel: process.env.NODE_ENV === "test" ? "error" : "info",
     // add inline image
     build: {
       sourcemap: true,

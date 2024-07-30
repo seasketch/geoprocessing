@@ -5,8 +5,6 @@ import fix from "../testing/fixtures/squareSketches.js";
 import sk from "../testing/fixtures/sketches.js";
 import { firstMatchingMetric } from "../metrics/index.js";
 import { testWithinPerc } from "../testing/index.js";
-import { Sketch } from "../types/sketch.js";
-import { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 
 describe("overlapFeatures", () => {
   test("function is present", () => {
@@ -82,7 +80,7 @@ describe("overlapFeatures", () => {
   });
 
   test("overlapFeatures - should not count holes", async () => {
-    console.log(JSON.stringify(sk.holeBlPoly));
+    // console.log(JSON.stringify(sk.holeBlPoly));
     const metrics = await overlapFeatures(
       "test",
       [sk.wholePoly],
@@ -94,13 +92,13 @@ describe("overlapFeatures", () => {
 
     expect(metrics.length).toEqual(1);
     const wholeArea = area(sk.wholePoly);
-    console.log("wholeArea", wholeArea);
+    // console.log("wholeArea", wholeArea);
     const holeArea = area(sk.holeBlPoly);
-    console.log("holeArea", holeArea);
+    // console.log("holeArea", holeArea);
     const overlapArea = metrics[0].value;
-    console.log("overlapArea", overlapArea);
+    // console.log("overlapArea", overlapArea);
     const percDiff = Math.abs(overlapArea - holeArea) / holeArea;
-    console.log("percDiff", percDiff);
+    // console.log("percDiff", percDiff);
     expect(percDiff).toBeGreaterThan(0);
     expect(percDiff).toBeLessThan(1);
   });
@@ -172,8 +170,7 @@ describe("overlapFeatures", () => {
     ids.forEach((curSketchId, index) => {
       testWithinPerc(
         firstMatchingMetric(metrics, (m) => m.sketchId === curSketchId).value,
-        areas[index] * percs[index],
-        { debug: true }
+        areas[index] * percs[index]
       );
     });
   });

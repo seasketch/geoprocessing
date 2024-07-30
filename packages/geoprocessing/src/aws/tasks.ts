@@ -451,9 +451,10 @@ export default class TasksModel {
       const shouldSplit = resultSize > minSplitSizeBytes;
 
       if (shouldSplit) {
-        console.log(
-          `Result size of ${resultSize} bytes exceeds ${minSplitSizeBytes} threshold, splitting into multiple db items`
-        );
+        if (process.env.NODE_ENV !== "test")
+          console.log(
+            `Result size of ${resultSize} bytes exceeds ${minSplitSizeBytes} threshold, splitting into multiple db items`
+          );
 
         // Split metrics into groups that will fit within size limit
         const clonedMetrics = cloneDeep(rootResult.metrics as Metric[]);

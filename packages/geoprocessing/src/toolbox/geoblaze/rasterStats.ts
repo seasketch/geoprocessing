@@ -167,9 +167,10 @@ export const rasterStats = async (
       finalStats.push(finalStatsBand);
     });
   } catch (err) {
-    console.log(
-      "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry"
-    );
+    if (process.env.NODE_ENV !== "test")
+      console.log(
+        "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry"
+      );
     return defaultStats;
   }
 

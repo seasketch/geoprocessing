@@ -106,7 +106,9 @@ describe("overlapSubarea", () => {
       (m) => m.sketchId === "CCCC" && m.metricId === "test"
     );
     // Expect about half, but not exactly same as inside
-    testWithinPerc(collAreaMetric.value, fix.scArea / 2, { withinPerc: 0.5 });
+    testWithinPerc(collAreaMetric.value, fix.scArea / 2, {
+      withinPerc: 0.5,
+    });
 
     const collAreaPercMetric = firstMatchingMetric(
       metrics,

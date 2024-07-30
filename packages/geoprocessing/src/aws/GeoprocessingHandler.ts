@@ -149,12 +149,13 @@ export class GeoprocessingHandler<
       this.lastRequestId = context.awsRequestId;
     }
 
-    console.log(
-      `${this.options.executionMode} ${
-        ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : "sync"
-      } request`,
-      JSON.stringify(request)
-    );
+    if (process.env.NODE_ENV !== "test")
+      console.log(
+        `${this.options.executionMode} ${
+          ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : "sync"
+        } request`,
+        JSON.stringify(request)
+      );
 
     // get cached result if available. standard method to get results for async function
     if (request.checkCacheOnly) {
@@ -166,9 +167,10 @@ export class GeoprocessingHandler<
           cachedResult?.status !== GeoprocessingTaskStatus.Pending
         ) {
           // cache hit
-          console.log(
-            `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
-          );
+          if (process.env.NODE_ENV !== "test")
+            console.log(
+              `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+            );
           return {
             statusCode: 200,
             headers: {
@@ -179,9 +181,10 @@ export class GeoprocessingHandler<
           };
         } else {
           // cache miss
-          console.log(
-            `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`
-          );
+          if (process.env.NODE_ENV !== "test")
+            console.log(
+              `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`
+            );
           return {
             statusCode: 200,
             headers: {
@@ -208,9 +211,10 @@ export class GeoprocessingHandler<
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Pending
       ) {
-        console.log(
-          `Cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
-        );
+        if (process.env.NODE_ENV !== "test")
+          console.log(
+            `Cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+          );
         return {
           statusCode: 200,
           headers: {

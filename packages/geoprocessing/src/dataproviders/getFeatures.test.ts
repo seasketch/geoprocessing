@@ -11,7 +11,7 @@ describe("getFeatures", () => {
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
     const url = project.getDatasourceUrl(eezDatasource, { format: "fgb" });
-    console.log("url", url);
+    // console.log("url", url);
     const feats = await getFeatures(eezDatasource, url, {
       bbox: [
         135.312441837621, -1.17311096529859, 165.676528225997, 13.4454329253893,

@@ -107,7 +107,7 @@ export async function deleteTasks(
     const upperBound =
       (index + 1) *
       (deleteRequestChunk.length < MAX_BATCH_UPDATE
-        ? deleteRequestChunk.length
+        ? deleteRequestChunk.length + 1
         : MAX_BATCH_UPDATE);
     console.log(`Deleting items ${lowerBound} - ${upperBound}`);
     const deleteCommand = new BatchWriteCommand(deleteRequest);

@@ -435,9 +435,8 @@ export class GeoprocessingHandler<
         resolve(socket);
       };
       socket.onerror = (error: any) => {
-        console.warn(
-          "Error connecting socket to " + wss + " error: " + error.toString()
-        );
+        console.warn("Error connecting socket to " + wss + " error: ");
+        console.warn(JSON.stringify(error));
         reject(error);
       };
     });

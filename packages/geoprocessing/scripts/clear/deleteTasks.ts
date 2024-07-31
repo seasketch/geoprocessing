@@ -1,8 +1,6 @@
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
-  BatchWriteItemCommand,
-  DynamoDBClient,
-} from "@aws-sdk/client-dynamodb";
-import {
+  BatchWriteCommand,
   DynamoDBDocument,
   QueryCommandInput,
   paginateScan,
@@ -50,14 +48,17 @@ export async function deleteTasks(
       },
     };
   }
+  console.log("query");
 
   const pager = paginateScan(paginatorConfig, query);
 
   for await (const result of pager) {
     if (result && result.Items) {
-      taskKeys.push({
-        id: result.Items[0].id,
-        service: result.Items[0].service,
+      result.Items.forEach((item) => {
+        taskKeys.push({
+          id: item.id,
+          service: item.service,
+        });
       });
     }
   }
@@ -81,13 +82,30 @@ export async function deleteTasks(
 
   // create and execute batch command for each chunk of items to delete
 
-  deleteRequestChunks.forEach(async (deleteRequestChunk) => {
+  if (deleteRequestChunks.length > 0) {
+    console.log(
+      `Clearing all results in ${projectName}${serviceName ? " for function " + serviceName : ""}`
+    );
+  } else {
+    console.log(
+      `No results found in ${projectName}${serviceName ? " for function " + serviceName : ""}`
+    );
+  }
+
+  deleteRequestChunks.forEach(async (deleteRequestChunk, index) => {
     const deleteRequest = {
       RequestItems: {
         [tableName]: deleteRequestChunk,
       },
     };
-    const deleteCommand = new BatchWriteItemCommand(deleteRequest);
+    const lowerBound = index === 0 ? 1 : index * MAX_BATCH_UPDATE;
+    const upperBound =
+      (index + 1) *
+      (deleteRequestChunk.length < MAX_BATCH_UPDATE
+        ? deleteRequestChunk.length
+        : MAX_BATCH_UPDATE);
+    console.log(`Deleting items ${lowerBound} - ${upperBound}`);
+    const deleteCommand = new BatchWriteCommand(deleteRequest);
     await docClient.send(deleteCommand);
   });
 }

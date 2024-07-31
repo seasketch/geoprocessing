@@ -13,3 +13,5 @@ const geoprocessingJson = JSON.parse(
 export async function clearResults() {
   await deleteTasks(packageJson.name, geoprocessingJson.region);
 }
+
+clearResults();

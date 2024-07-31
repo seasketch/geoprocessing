@@ -21,6 +21,10 @@ export async function deleteTasks(
 ) {
   const tableName = `gp-${projectName}-tasks`;
 
+  console.log("projectName", projectName);
+  console.log("region", region);
+  console.log("serviceName", serviceName);
+
   const docClient = DynamoDBDocument.from(
     new DynamoDBClient({
       region: region,
@@ -48,7 +52,8 @@ export async function deleteTasks(
       },
     };
   }
-  console.log("query");
+
+  console.log("query", query);
 
   const pager = paginateScan(paginatorConfig, query);
 

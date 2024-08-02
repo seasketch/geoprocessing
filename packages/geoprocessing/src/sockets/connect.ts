@@ -18,15 +18,16 @@ export const connectHandler = async (event) => {
     const serviceName = event.queryStringParameters["serviceName"];
     const cacheKey = event.queryStringParameters["cacheKey"];
 
-    const command = new PutCommand({
-      TableName: process.env.SUBSCRIPTIONS_TABLE,
-      Item: {
-        connectionId: event.requestContext.connectionId,
-        cacheKey: cacheKey,
-        serviceName: serviceName,
-      },
-    });
-    await ddb.send(command);
+    await ddb.send(
+      new PutCommand({
+        TableName: process.env.SUBSCRIPTIONS_TABLE,
+        Item: {
+          connectionId: event.requestContext.connectionId,
+          cacheKey: cacheKey,
+          serviceName: serviceName,
+        },
+      })
+    );
   } catch (err) {
     return {
       statusCode: 500,

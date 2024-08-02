@@ -36,11 +36,12 @@ export const sendHandler = async (event) => {
     const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
     ddb = DynamoDBDocumentClient.from(dbClient);
 
-    const command = new ScanCommand({
-      TableName: process.env.SUBSCRIPTIONS_TABLE,
-      ProjectionExpression: "serviceName, connectionId, cacheKey",
-    });
-    responses = await ddb.send(command);
+    responses = await ddb.send(
+      new ScanCommand({
+        TableName: process.env.SUBSCRIPTIONS_TABLE,
+        ProjectionExpression: "serviceName, connectionId, cacheKey",
+      })
+    );
   } catch (e: unknown) {
     console.warn("Error finding socket connection: ", e);
     return {

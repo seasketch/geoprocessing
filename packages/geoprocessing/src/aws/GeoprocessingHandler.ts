@@ -297,7 +297,9 @@ export class GeoprocessingHandler<
             let wssUrl =
               task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
             await this.sendSocketMessage(wssUrl, task.id, task.service);
-            console.info(`sent task ${task.id} result to socket ${wssUrl}`);
+            console.info(
+              `sent task ${task.id} result to socket ${wssUrl} for service ${task.service}`
+            );
           }
           return promise;
         } catch (e: unknown) {

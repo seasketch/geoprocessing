@@ -5,7 +5,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DeleteCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 /**
- * Removes socket connection record from DB given connectionId
+ * Clear socket connection record in DB given connectionId
  */
 export const disconnectHandler = async (event) => {
   if (!process.env.SUBSCRIPTIONS_TABLE)
@@ -19,15 +19,14 @@ export const disconnectHandler = async (event) => {
     const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
     const ddb = DynamoDBDocumentClient.from(dbClient);
 
-    const deleteParams = {
-      TableName: process.env.SUBSCRIPTIONS_TABLE,
-      Key: {
-        connectionId: connectionId,
-      },
-    };
-
-    const command = new DeleteCommand(deleteParams);
-    await ddb.send(command);
+    await ddb.send(
+      new DeleteCommand({
+        TableName: process.env.SUBSCRIPTIONS_TABLE,
+        Key: {
+          connectionId: connectionId,
+        },
+      })
+    );
   } catch (err) {
     console.warn(": error trying to disconnect: ", JSON.stringify(err));
     return { statusCode: 200, body: "Disconnected." };

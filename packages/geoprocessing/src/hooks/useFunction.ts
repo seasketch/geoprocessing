@@ -221,7 +221,7 @@ export const useFunction = <ResultType>(
                   "&fromClient=true";
 
                 // set up the socket (async only)
-                getSendSocket(
+                getSocket(
                   task,
                   wssUrl,
                   setState,
@@ -341,9 +341,9 @@ export const useFunction = <ResultType>(
 /**
  * Creates WebSocket at wss url that listens for task completion
  */
-const getSendSocket = (
+const getSocket = (
   task: GeoprocessingTask,
-  wss: string,
+  wssUrl: string,
   setState,
   cacheKey,
   url,
@@ -353,7 +353,7 @@ const getSendSocket = (
   socket
 ): WebSocket => {
   if (socket === undefined) {
-    socket = new WebSocket(wss);
+    socket = new WebSocket(wssUrl);
   }
 
   // once socket open, check if task completed before it opened

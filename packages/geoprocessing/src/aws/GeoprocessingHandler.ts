@@ -385,7 +385,7 @@ export class GeoprocessingHandler<
     serviceName: string,
     failureMessage: string
   ) {
-    let socket = await this.getSendSocket(wss);
+    let socket = await this.getSocket(wss);
 
     let data = JSON.stringify({
       cacheKey,
@@ -410,7 +410,7 @@ export class GeoprocessingHandler<
     cacheKey: string | undefined,
     serviceName: string
   ) {
-    let socket = await this.getSendSocket(wss);
+    let socket = await this.getSocket(wss);
 
     let data = JSON.stringify({
       cacheKey,
@@ -419,9 +419,11 @@ export class GeoprocessingHandler<
     });
 
     let message = JSON.stringify({
-      message: "sendmessage",
+      f: "sendmessage",
       data: data,
     });
+
+    console.log("sendSocketMessage", JSON.stringify(message));
 
     socket.send(message);
     socket.close(1000, serviceName);
@@ -430,7 +432,7 @@ export class GeoprocessingHandler<
   /**
    * Returns a new socket connection to send a message
    */
-  async getSendSocket(wss: string): Promise<WebSocket> {
+  async getSocket(wss: string): Promise<WebSocket> {
     const socket = new WebSocket(wss) as WebSocket;
     return new Promise(function (resolve, reject) {
       socket.onopen = () => {

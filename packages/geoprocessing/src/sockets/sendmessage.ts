@@ -93,6 +93,18 @@ export const sendHandler = async (event) => {
       try {
         let postData = JSON.stringify(resultItem);
 
+        console.log(
+          "postToConnection",
+          JSON.stringify(
+            {
+              ConnectionId: responseItem.connectionId,
+              Data: postData,
+            },
+            null,
+            2
+          )
+        );
+
         try {
           await apigwManagementApi.postToConnection({
             ConnectionId: responseItem.connectionId,

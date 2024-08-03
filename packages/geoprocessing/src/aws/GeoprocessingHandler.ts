@@ -423,7 +423,7 @@ export class GeoprocessingHandler<
       data: data,
     });
 
-    console.log("sendSocketMessage", JSON.stringify(message));
+    console.log("sendSocketMessage completed", JSON.stringify(message));
 
     socket.send(message);
     socket.close(1000, serviceName);

@@ -36,6 +36,9 @@ export const sendHandler = async (event) => {
     const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
     ddb = DynamoDBDocument.from(dbClient);
 
+    console.log("eventData", JSON.stringify(eventData, null, 2));
+
+    // Get all socket subscriptions
     responses = await ddb.send(
       new ScanCommand({
         TableName: process.env.SUBSCRIPTIONS_TABLE,
@@ -72,6 +75,8 @@ export const sendHandler = async (event) => {
     serviceName: any;
     failureMessage?: string;
   }
+
+  console.log("items", JSON.stringify(responses.Items, null, 2));
 
   for (let responseItem of responses.Items) {
     const resultItem: ResultItem = {

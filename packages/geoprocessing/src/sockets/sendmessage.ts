@@ -76,8 +76,6 @@ export const sendHandler = async (event) => {
     failureMessage?: string;
   }
 
-  console.log("items", JSON.stringify(responses.Items, null, 2));
-
   for (let responseItem of responses.Items) {
     const resultItem: ResultItem = {
       cacheKey: responseItem.cacheKey,
@@ -94,21 +92,16 @@ export const sendHandler = async (event) => {
         let postData = JSON.stringify(resultItem);
 
         console.log(
-          "postToConnection",
-          JSON.stringify(
-            {
-              ConnectionId: responseItem.connectionId,
-              Data: postData,
-            },
-            null,
-            2
-          )
+          "connectionId",
+          responseItem.connectionId,
+          "data",
+          postData
         );
 
         try {
           await apigwManagementApi.postToConnection({
             ConnectionId: responseItem.connectionId,
-            Data: postData,
+            Data: Buffer.from(postData),
           });
         } catch (e: any) {
           if (e.statusCode && e.statusCode === 410) {

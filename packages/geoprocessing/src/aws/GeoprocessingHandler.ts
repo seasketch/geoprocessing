@@ -419,7 +419,7 @@ export class GeoprocessingHandler<
     });
 
     let message = JSON.stringify({
-      f: "sendmessage",
+      message: "sendmessage",
       data: data,
     });
 

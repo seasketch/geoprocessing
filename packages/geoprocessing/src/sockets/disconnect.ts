@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DeleteCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
 /**
  * Clear socket connection record in DB given connectionId
@@ -17,7 +17,7 @@ export const disconnectHandler = async (event) => {
     const connectionId = event.requestContext.connectionId;
 
     const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
-    const ddb = DynamoDBDocumentClient.from(dbClient);
+    const ddb = DynamoDBDocument.from(dbClient);
 
     await ddb.send(
       new DeleteCommand({

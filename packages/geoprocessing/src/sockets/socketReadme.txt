@@ -1,5 +1,4 @@
 - Connect to socket at wss url
-
 - Send it a message
 - In your WebSocket API, incoming JSON messages are directed to backend integrations based on routes that you configure.
 - connect/disconnect/sendmessage
@@ -65,9 +64,13 @@ wss://tdbwzjxlk4.execute-api.us-west-1.amazonaws.com/prod?serviceName=boundaryAr
 
 Questions:
 - unclear how connectionId comes from requestContext
+- is there a lambda function for connect, disconnect, sendmessage?
 
 Problems:
 - subscription table is almost empty
+
+ToDo
+- verify connectionId and everything coming through to connect handler
 
 
 wscat -c wss://tdbwzjxlk4.execute-api.us-west-1.amazonaws.com/pd?serviceName%3DkelpPersist%26cacheKey%3Dblord

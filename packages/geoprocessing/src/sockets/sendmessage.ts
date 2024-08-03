@@ -5,7 +5,7 @@ import { ApiGatewayManagementApi } from "@aws-sdk/client-apigatewaymanagementapi
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DeleteCommand,
-  DynamoDBDocumentClient,
+  DynamoDBDocument,
   ScanCommand,
   ScanCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
@@ -20,7 +20,7 @@ export const sendHandler = async (event) => {
   let serviceName: string;
   let failureMessage: string;
   let postData;
-  let ddb: DynamoDBDocumentClient;
+  let ddb: DynamoDBDocument;
   let responses: ScanCommandOutput;
 
   if (!process.env.SUBSCRIPTIONS_TABLE)
@@ -34,7 +34,7 @@ export const sendHandler = async (event) => {
     failureMessage = eventData["failureMessage"];
 
     const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
-    ddb = DynamoDBDocumentClient.from(dbClient);
+    ddb = DynamoDBDocument.from(dbClient);
 
     responses = await ddb.send(
       new ScanCommand({

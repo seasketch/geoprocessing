@@ -418,12 +418,13 @@ export class GeoprocessingHandler<
       fromClient: "false",
     });
 
+    // hit sendmessage route, invoking sendmessage lambda
     let message = JSON.stringify({
       message: "sendmessage",
       data: data,
     });
 
-    console.log("sendSocketMessage completed", JSON.stringify(message));
+    console.log("sendSocketMessage completed", data);
 
     socket.send(message);
     socket.close(1000, serviceName);

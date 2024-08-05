@@ -76,6 +76,8 @@ export const sendHandler = async (event) => {
     failureMessage?: string;
   }
 
+  // Find subscription matching serviceName and cacheKey
+  // Send connectionId from that subscription
   for (let responseItem of responses.Items) {
     const resultItem: ResultItem = {
       cacheKey: responseItem.cacheKey,
@@ -99,6 +101,7 @@ export const sendHandler = async (event) => {
         );
 
         try {
+          // Send socket message with cacheKey to clients listening so they can fetch result
           await apigwManagementApi.postToConnection({
             ConnectionId: responseItem.connectionId,
             Data: Buffer.from(postData),

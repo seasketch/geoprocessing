@@ -67,10 +67,27 @@ Questions:
 - is there a lambda function for connect, disconnect, sendmessage?
 
 Problems:
-- subscription table is almost empty
+- client not receiving message on ws connection, not clear if being sent properly
+- or not being received properly
+- not clear if listening to the same thing
 
 ToDo
-- verify connectionId and everything coming through to connect handler
+- YES - connectionId coming through to connect handler
+- GUESS SO - GeoprocessingHandler sendSocketMessage payload is correct.
+- YES - sendMessage handler is receiving data from sendSocketMessage okey
+- sendMessage handler is properly calling postToConnection with payload (Buffer.from required?)
 
 
 wscat -c wss://tdbwzjxlk4.execute-api.us-west-1.amazonaws.com/pd?serviceName%3DkelpPersist%26cacheKey%3Dblord
+
+
+{
+ "connectionId": "b7_Vadd4yK4CGPQ=",
+ "cacheKey": "35354-2024-08-01T19:37:55.612063+00:00",
+ "serviceName": "kelpPersist"
+}
+
+wss://tdbwzjxlk4.execute-api.us-west-1.amazonaws.com/prod?
+serviceName=kelpPersist&
+cacheKey=35354-2024-08-01T19:37:55.612063+00:00&
+fromClient=true

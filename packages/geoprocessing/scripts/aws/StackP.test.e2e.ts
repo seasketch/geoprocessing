@@ -1,5 +1,4 @@
 import { App, NestedStack } from "aws-cdk-lib";
-import "@aws-cdk/assert/jest";
 import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
 import config from "./config.js";
 import { cleanupBuildDirs } from "../testing/lifecycle.js";

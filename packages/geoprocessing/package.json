@@ -60,7 +60,6 @@
     "gis"
   ],
   "dependencies": {
-    "@aws-cdk/assert": "2.68.0",
     "@aws-sdk/client-apigatewaymanagementapi": "^3.620.0",
     "@aws-sdk/client-cloudformation": "^3.620.0",
     "@aws-sdk/client-cloudfront": "^3.620.1",
@@ -137,7 +136,7 @@
     "@types/uuid": "^9.0.8",
     "@vitejs/plugin-react": "^4.2.1",
     "abortcontroller-polyfill": "^1.7.5",
-    "aws-cdk-lib": "2.142.0",
+    "aws-cdk-lib": "2.151.0",
     "aws-regions": "2.3.1",
     "babel-loader": "^8.2.2",
     "bbox-fns": "^0.20.2",

@@ -1,8 +1,6 @@
 import { App, NestedStack } from "aws-cdk-lib";
-import "@aws-cdk/assert/jest";
 import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import config from "./config.js";
-import createTestProjectManifest from "../testing/createTestProjectManifest.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
 import { describe, it, expect, afterAll } from "vitest";

@@ -28,9 +28,9 @@ export const sendHandler = async (event) => {
 
   try {
     postData = JSON.parse(event.body).data;
-    console.log("event", JSON.stringify(event, null, 2));
+    // console.log("event", JSON.stringify(event, null, 2));
     const eventData = JSON.parse(postData);
-    console.log("eventData", JSON.stringify(eventData, null, 2));
+    // console.log("eventData", JSON.stringify(eventData, null, 2));
 
     if (!eventData.cacheKey) {
       throw new Error("Missing cacheKey in event body");
@@ -46,7 +46,7 @@ export const sendHandler = async (event) => {
     const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
     ddb = DynamoDBDocument.from(dbClient);
 
-    console.log("eventData", JSON.stringify(eventData, null, 2));
+    // console.log("eventData", JSON.stringify(eventData, null, 2));
 
     // Get all socket subscriptions
     responses = await ddb.send(
@@ -75,7 +75,7 @@ export const sendHandler = async (event) => {
 
   let endpoint = `https://${event.requestContext.domainName}/${event.requestContext.stage}`;
 
-  console.log("endpoint", endpoint);
+  // console.log("endpoint", endpoint);
 
   const apigwManagementApi = new ApiGatewayManagementApi({
     endpoint: endpoint,
@@ -104,12 +104,8 @@ export const sendHandler = async (event) => {
       try {
         let postData = JSON.stringify(resultItem);
 
-        console.log(
-          "connectionId",
-          responseItem.connectionId,
-          "data",
-          postData
-        );
+        // console.log("connectionId", responseItem.connectionId);
+        // console.log("data", postData);
 
         try {
           // Send socket message with cacheKey to clients listening so they can fetch result
@@ -117,7 +113,7 @@ export const sendHandler = async (event) => {
             ConnectionId: responseItem.connectionId,
             Data: Buffer.from(postData),
           });
-          console.log("postResult", JSON.stringify(JSON.stringify(postResult)));
+          // console.log("postResult", JSON.stringify(JSON.stringify(postResult)));
         } catch (e: any) {
           if (e.statusCode && e.statusCode === 410) {
             console.log(

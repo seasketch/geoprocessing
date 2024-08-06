@@ -25,10 +25,10 @@ export const connectHandler = async (event) => {
     const serviceName = event.queryStringParameters["serviceName"];
     const cacheKey = event.queryStringParameters["cacheKey"];
 
-    console.log("SUBSCRIPTIONS_TABLE", process.env.SUBSCRIPTIONS_TABLE);
-    console.log("connectionId", event.requestContext.connectionId);
-    console.log("serviceName", serviceName);
-    console.log("cacheKey", cacheKey);
+    // console.log("SUBSCRIPTIONS_TABLE", process.env.SUBSCRIPTIONS_TABLE);
+    // console.log("connectionId", event.requestContext.connectionId);
+    // console.log("serviceName", serviceName);
+    // console.log("cacheKey", cacheKey);
 
     await ddb.send(
       new PutCommand({

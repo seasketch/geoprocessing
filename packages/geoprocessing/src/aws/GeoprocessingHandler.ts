@@ -424,7 +424,7 @@ export class GeoprocessingHandler<
       data: data,
     });
 
-    console.log("sendSocketMessage completed", data);
+    // console.log("sendSocketMessage completed", data);
 
     socket.send(message);
     socket.close(1000, serviceName);

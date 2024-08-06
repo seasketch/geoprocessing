@@ -28,7 +28,17 @@ export const sendHandler = async (event) => {
 
   try {
     postData = JSON.parse(event.body).data;
+    console.log("event", JSON.stringify(event, null, 2));
     const eventData = JSON.parse(postData);
+    console.log("eventData", JSON.stringify(eventData, null, 2));
+
+    if (!eventData.cacheKey) {
+      throw new Error("Missing cacheKey in event body");
+    }
+    if (!eventData.serviceName) {
+      throw new Error("Missing serviceName in event body");
+    }
+
     cacheKey = eventData["cacheKey"];
     serviceName = eventData["serviceName"];
     failureMessage = eventData["failureMessage"];

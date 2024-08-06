@@ -12,6 +12,13 @@ export const connectHandler = async (event) => {
     if (!process.env.SUBSCRIPTIONS_TABLE)
       throw new Error("SUBSCRIPTIONS_TABLE is undefined");
 
+    if (!event.queryStringParameters["serviceName"]) {
+      throw new Error("Missing serviceName query parameter");
+    }
+    if (!event.queryStringParameters["cacheKey"]) {
+      throw new Error("Missing cacheKey query parameter");
+    }
+
     const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
     const ddb = DynamoDBDocument.from(dbClient);
 

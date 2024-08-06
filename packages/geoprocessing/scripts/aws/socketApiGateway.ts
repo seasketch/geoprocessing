@@ -73,7 +73,7 @@ export const createWebSocketApi = (
     actions: ["lambda:InvokeFunction", "sts:AssumeRole"],
   });
 
-  // Create async function resources
+  // Create custom routes for starting async geoprocessing functions via web socket
   stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
     const action = `start${asyncFunctionWithMeta.meta.title}`;
     webSocketApi.addRoute(action, {

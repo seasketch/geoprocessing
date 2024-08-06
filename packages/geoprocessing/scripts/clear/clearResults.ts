@@ -1,12 +1,7 @@
-import awsSdk from "aws-sdk";
-import dynamodb, {
-  ScanInput,
-  AttributeValue,
-} from "aws-sdk/clients/dynamodb.js";
 import fs from "fs";
 import path from "path";
 import inquirer from "inquirer";
-import { doScan } from "./doScan.js";
+import { deleteTasks } from "./deleteTasks.js";
 
 interface ClearCacheOptions {
   tableName: string;
@@ -34,39 +29,9 @@ export async function clearResults() {
   await clearCachedResults(answers);
 }
 
-function buildTableName(projectName: string): string {
-  return `gp-${projectName}-tasks`;
-}
-
 export async function clearCachedResults(options: ClearCacheOptions) {
   let serviceName = options.tableName;
-  let projectName = packageJson.name;
-
-  let regionName = geoprocessingJson.region;
-  awsSdk.config.update({
-    region: regionName,
-  });
-
-  let docClient = new dynamodb.DocumentClient();
-
-  //let tableName = "gp-fsm-next-reports-tasks";
-  let tableName = buildTableName(projectName);
-
-  let params: ScanInput = { TableName: tableName };
-  if (serviceName !== "all") {
-    params = {
-      TableName: tableName,
-      FilterExpression: "service = :val",
-
-      ExpressionAttributeValues: {
-        ":val": serviceName as AttributeValue,
-      },
-    };
-  }
-
-  docClient.scan(params, (err, data) => {
-    doScan(err, data, docClient, tableName, serviceName);
-  });
+  await deleteTasks(packageJson.name, geoprocessingJson.region, serviceName);
 }
 
 clearResults();

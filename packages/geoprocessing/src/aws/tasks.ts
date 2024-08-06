@@ -1,6 +1,12 @@
 import { v4 as uuid } from "uuid";
 import { APIGatewayProxyResult } from "aws-lambda";
-import { DynamoDB } from "aws-sdk";
+import {
+  DynamoDBDocument,
+  UpdateCommand,
+  PutCommand,
+  GetCommand,
+  BatchGetCommand,
+} from "@aws-sdk/lib-dynamodb";
 import {
   isMetricArray,
   isMetricPack,
@@ -64,13 +70,9 @@ export default class TasksModel {
   /** task estimate table */
   estimatesTable: string;
   /** database client */
-  db: DynamoDB.DocumentClient;
+  db: DynamoDBDocument;
 
-  constructor(
-    table: string,
-    estimatesTable: string,
-    db: DynamoDB.DocumentClient
-  ) {
+  constructor(table: string, estimatesTable: string, db: DynamoDBDocument) {
     this.table = table;
     this.estimatesTable = estimatesTable;
     this.db = db;
@@ -117,15 +119,15 @@ export default class TasksModel {
       //can happen when testing, will default to 1 if can't get an estimate
     }
 
-    await this.db
-      .put({
+    await this.db.send(
+      new PutCommand({
         TableName: this.table,
         Item: {
           ...task,
           correlationIds: correlationId ? [correlationId] : [],
         },
       })
-      .promise();
+    );
     return task;
   }
 
@@ -134,8 +136,8 @@ export default class TasksModel {
     taskId: string,
     correlationId: string
   ) {
-    return this.db
-      .update({
+    return this.db.send(
+      new UpdateCommand({
         TableName: this.table,
         Key: {
           id: taskId,
@@ -150,7 +152,7 @@ export default class TasksModel {
           ":val": [correlationId],
         },
       })
-      .promise();
+    );
   }
 
   async complete(
@@ -168,8 +170,8 @@ export default class TasksModel {
     const numMetricGroups = metricGroups.length;
 
     // Store root result as top-level dynamodb item
-    await this.db
-      .update({
+    await this.db.send(
+      new UpdateCommand({
         TableName: this.table,
         Key: {
           id: task.id,
@@ -188,13 +190,13 @@ export default class TasksModel {
           ":duration": task.duration,
         },
       })
-      .promise();
+    );
 
     // If at least one metric group, store each one as a separate dynamdodb item
     if (numMetricGroups > 0) {
       const promises = metricGroups.map(async (metricGroup, index) => {
-        return this.db
-          .update({
+        return this.db.send(
+          new UpdateCommand({
             TableName: this.table,
             Key: {
               id: `${task.id}-metricGroup-${index}`,
@@ -213,7 +215,7 @@ export default class TasksModel {
               ":duration": task.duration,
             },
           })
-          .promise();
+        );
       });
       await Promise.all(promises);
     }
@@ -234,14 +236,14 @@ export default class TasksModel {
     let meanEstimate = 0;
 
     try {
-      const response = await this.db
-        .get({
+      const response = await this.db.send(
+        new GetCommand({
           TableName: this.estimatesTable,
           Key: {
             service,
           },
         })
-        .promise();
+      );
 
       let taskItem = response.Item;
 
@@ -259,8 +261,8 @@ export default class TasksModel {
           allEstimates.reduce((a, b) => a + b, 0) / allEstimates.length
         );
 
-        await this.db
-          .update({
+        await this.db.send(
+          new UpdateCommand({
             TableName: this.estimatesTable,
             Key: {
               service: task.service,
@@ -276,12 +278,12 @@ export default class TasksModel {
               ":meanEstimate": meanEstimate,
             },
           })
-          .promise();
+        );
       } else {
         meanEstimate = duration;
         //no estimates yet
-        await this.db
-          .update({
+        await this.db.send(
+          new UpdateCommand({
             TableName: this.estimatesTable,
             Key: {
               service: task.service,
@@ -297,7 +299,7 @@ export default class TasksModel {
               ":meanEstimate": meanEstimate,
             },
           })
-          .promise();
+        );
       }
       return meanEstimate;
     } catch (e) {
@@ -314,8 +316,8 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Failed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
     task.error = errorDescription;
-    await this.db
-      .update({
+    await this.db.send(
+      new UpdateCommand({
         TableName: this.table,
         Key: {
           id: task.id,
@@ -334,7 +336,7 @@ export default class TasksModel {
           ":duration": task.duration,
         },
       })
-      .promise();
+    );
     return {
       statusCode: 500,
       headers: {
@@ -351,15 +353,15 @@ export default class TasksModel {
   ): Promise<GeoprocessingTask | undefined> {
     try {
       // Get root item
-      const rootResponse = await this.db
-        .get({
+      const rootResponse = await this.db.send(
+        new GetCommand({
           TableName: this.table,
           Key: {
             id: taskId,
             service,
           },
         })
-        .promise();
+      );
       let rootResult = rootResponse.Item as RootTaskItem;
 
       // Check for sketch metric items and re-merge them with root item if found
@@ -381,9 +383,9 @@ export default class TasksModel {
           },
         };
 
-        const metricGroupResult = await this.db
-          .batchGet(metricGroupBatchParams)
-          .promise();
+        const metricGroupResult = await this.db.send(
+          new BatchGetCommand(metricGroupBatchParams)
+        );
 
         if (
           metricGroupResult.Responses &&
@@ -412,14 +414,14 @@ export default class TasksModel {
 
   async getMeanEstimate(task: GeoprocessingTask): Promise<number> {
     let service = task.service;
-    const response = await this.db
-      .get({
+    const response = await this.db.send(
+      new GetCommand({
         TableName: this.estimatesTable,
         Key: {
           service,
         },
       })
-      .promise();
+    );
     let meanEstimate: number = response.Item?.meanEstimate;
     return meanEstimate;
   }
@@ -449,9 +451,10 @@ export default class TasksModel {
       const shouldSplit = resultSize > minSplitSizeBytes;
 
       if (shouldSplit) {
-        console.log(
-          `Result size of ${resultSize} bytes exceeds ${minSplitSizeBytes} threshold, splitting into multiple db items`
-        );
+        if (process.env.NODE_ENV !== "test")
+          console.log(
+            `Result size of ${resultSize} bytes exceeds ${minSplitSizeBytes} threshold, splitting into multiple db items`
+          );
 
         // Split metrics into groups that will fit within size limit
         const clonedMetrics = cloneDeep(rootResult.metrics as Metric[]);

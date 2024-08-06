@@ -5,16 +5,12 @@ describe("rekeyObject", async () => {
   test("simpe reorder", async () => {
     const input = { a: 1, b: 2, c: 3 };
     const output = rekeyObject(input, ["c", "a", "b"]);
-    console.log(input);
-    console.log(output);
     expect(Object.keys(output)).toEqual(["c", "a", "b"]);
   });
 
   test("extra", async () => {
     const input = { a: 1, b: 2, z: 26, c: 3 };
     const output = rekeyObject(input, ["c", "a", "b"]);
-    console.log(input);
-    console.log(output);
     expect(Object.keys(output)).toEqual(["c", "a", "b", "z"]);
   });
 });

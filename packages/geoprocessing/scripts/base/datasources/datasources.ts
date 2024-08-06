@@ -33,9 +33,10 @@ export async function createOrUpdateDatasource(
   );
   const dExists = dIndex > -1;
   if (dExists) {
-    console.log(
-      `Updating ${inputDatasource.datasourceId} record in datasource file`
-    );
+    if (process.env.NODE_ENV !== "test")
+      console.log(
+        `Updating ${inputDatasource.datasourceId} record in datasource file`
+      );
     // Update in place
     if (
       isInternalVectorDatasource(inputDatasource) ||
@@ -49,9 +50,10 @@ export async function createOrUpdateDatasource(
       dSources[dIndex] = finalDatasource;
     }
   } else {
-    console.log(
-      `Adding ${inputDatasource.datasourceId} record in datasource file`
-    );
+    if (process.env.NODE_ENV !== "test")
+      console.log(
+        `Adding ${inputDatasource.datasourceId} record in datasource file`
+      );
     // Just add onto the end
     dSources = dSources.concat(inputDatasource);
   }

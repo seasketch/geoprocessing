@@ -28,7 +28,10 @@ export async function fgbFetchAll<F extends Feature<Geometry>>(
       return fgBoundingBox(box);
     }
   })();
-  console.log("fgbFetchAll", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
+
+  if (process.env.NODE_ENV !== "test")
+    console.log("fgbFetchAll", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
+
   const features = (await takeAsync(
     deserialize(url, fgBox) as AsyncGenerator
   )) as F[];

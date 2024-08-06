@@ -57,7 +57,8 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   for (const ds of filteredDatasources) {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       try {
-        console.log(`${ds.datasourceId} vector reimport started`);
+        if (process.env.NODE_ENV !== "test")
+          console.log(`${ds.datasourceId} vector reimport started`);
         // parse import options from datasource record, is just a subset
         const options: ImportVectorDatasourceOptions =
           importVectorDatasourceOptionsSchema.parse(ds);
@@ -78,22 +79,28 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         const finalDs = await createOrUpdateDatasource(ds, newDatasourcePath);
         finalDatasources.push(finalDs);
 
-        console.log(`${ds.datasourceId} reimport complete`);
-        console.log(" ");
+        if (process.env.NODE_ENV !== "test") {
+          console.log(`${ds.datasourceId} reimport complete`);
+          console.log(" ");
+        }
         updated += 1;
       } catch (e: unknown) {
         if (e instanceof Error) {
-          console.log(e.message);
-          console.log(e.stack);
-          console.log(
-            `Updating datasource ${ds.datasourceId} failed, moving to next`
-          );
+          if (process.env.NODE_ENV !== "test") {
+            console.log(e.message);
+            console.log(e.stack);
+            console.log(
+              `Updating datasource ${ds.datasourceId} failed, moving to next`
+            );
+          }
           failed += 1;
         }
       }
     } else if (isInternalRasterDatasource(ds) && ds.geo_type === "raster") {
       try {
-        console.log(`${ds.datasourceId} raster reimport started`);
+        if (process.env.NODE_ENV !== "test")
+          console.log(`${ds.datasourceId} raster reimport started`);
+
         // parse import options from datasource record, is just a subset
         const options: ImportRasterDatasourceOptions =
           importRasterDatasourceOptionsSchema.parse(ds);
@@ -105,29 +112,36 @@ export async function reimportDatasources<C extends ProjectClientBase>(
         const finalDs = await createOrUpdateDatasource(ds, newDatasourcePath);
         finalDatasources.push(finalDs);
 
-        console.log(`${ds.datasourceId} reimport complete`);
-        console.log();
+        if (process.env.NODE_ENV !== "test") {
+          console.log(`${ds.datasourceId} reimport complete`);
+          console.log();
+        }
         updated += 1;
       } catch (e: unknown) {
         if (e instanceof Error) {
-          console.log(e.message);
-          console.log(e.stack);
-          console.log(
-            `Updating datasource ${ds.datasourceId} failed, moving to next`
-          );
+          if (process.env.NODE_ENV !== "test") {
+            console.log(e.message);
+            console.log(e.stack);
+            console.log(
+              `Updating datasource ${ds.datasourceId} failed, moving to next`
+            );
+          }
           failed += 1;
         }
       }
     } else {
-      console.log(`Skipping ${ds.datasourceId}, reimport not supported`);
+      if (process.env.NODE_ENV !== "test")
+        console.log(`Skipping ${ds.datasourceId}, reimport not supported`);
     }
   }
 
-  console.log(`${updated} datasources reimported successfully`);
-  if (failed > 0) {
-    console.log(
-      `${failed} datasources failed to reimported.  Fix them and try again`
-    );
+  if (process.env.NODE_ENV !== "test") {
+    console.log(`${updated} datasources reimported successfully`);
+    if (failed > 0) {
+      console.log(
+        `${failed} datasources failed to reimported.  Fix them and try again`
+      );
+    }
   }
 
   return finalDatasources;

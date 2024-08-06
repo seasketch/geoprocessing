@@ -201,6 +201,6 @@ describe("rasterMetrics", () => {
     };
 
     const metrics = await rasterMetrics(raster, { feature: sketch });
-    console.log(JSON.stringify(metrics, null, 2));
+    // console.log(JSON.stringify(metrics, null, 2));
   });
 });

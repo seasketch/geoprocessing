@@ -48,7 +48,8 @@ export async function buildProjectFunctions(
     ...geoprocessing.preprocessingFunctions,
   ];
 
-  console.log("Bundling functions found in geoprocessing.json...\n");
+  if (process.env.NODE_ENV !== "test")
+    console.log("Bundling functions found in geoprocessing.json...\n");
 
   await Promise.all(
     functionPaths.map(async (functionPath) => {
@@ -78,9 +79,9 @@ export async function buildProjectFunctions(
         outfile: bundledPath,
         platform: "node",
         format: "esm",
-        logLevel: "info",
+        logLevel: process.env.NODE_ENV === "test" ? "error" : "info",
         sourcemap: false,
-        // external: ["aws-cdk-lib", "aws-sdk"],
+        external: ["aws-cdk-lib", "aws-sdk"],
         banner: {
           // workaround require bug https://github.com/evanw/esbuild/pull/2067#issuecomment-1324171716
           js: "import { createRequire } from 'module'; const require = createRequire(import.meta.url);",
@@ -122,7 +123,8 @@ export async function buildProjectFunctions(
 
   // OTHER_FUNCTIONS
 
-  console.log("\nBundling support functions...\n");
+  if (process.env.NODE_ENV !== "test")
+    console.log("\nBundling support functions...\n");
 
   const otherFunctions = [
     "src/aws/serviceHandlers.ts",
@@ -146,7 +148,7 @@ export async function buildProjectFunctions(
         outfile: bundledPath,
         platform: "node",
         format: "esm",
-        logLevel: "info",
+        logLevel: process.env.NODE_ENV === "test" ? "error" : "info",
         minify: minify,
         treeShaking: true,
         metafile: true,
@@ -157,13 +159,16 @@ export async function buildProjectFunctions(
           js: "import { createRequire } from 'module'; const require = createRequire(import.meta.url);",
         },
       });
-      if (buildResult.errors.length > 0 || buildResult.warnings.length > 0) {
+      if (
+        process.env.NODE_ENV !== "test" &&
+        (buildResult.errors.length > 0 || buildResult.warnings.length > 0)
+      ) {
         console.log(JSON.stringify(buildResult, null, 2));
       }
 
       if (buildResult.metafile && process.env.ANALYZE) {
-        // use https://bundle-buddy.com/esbuild to analyze
-        console.log("Generating metafile esbuild-metafile-lambda.json");
+        if (process.env.NODE_ENV !== "test")
+          console.log("Generating metafile esbuild-metafile-lambda.json"); // use https://bundle-buddy.com/esbuild to analyze
         await fs.writeFile(
           `${projectPath}/esbuild-metafile-lambda.json`,
           JSON.stringify(buildResult.metafile)
@@ -215,7 +220,8 @@ export async function buildProjectFunctions(
     packageGp.version
   );
   const manifestPath = path.join(destBuildPath, "manifest.json");
-  console.log(`\nCreating service manifest ${manifestPath}\n`);
+  if (process.env.NODE_ENV !== "test")
+    console.log(`\nCreating service manifest ${manifestPath}\n`);
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, "  "));
 
   fs.copyFileSync(

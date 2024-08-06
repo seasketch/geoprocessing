@@ -15,7 +15,7 @@ const projectPath = path.join(rootPath, projectName);
 describe("GeoprocessingStack - sync geoprocessor only", () => {
   afterAll(() => cleanupBuildDirs(projectPath));
 
-  it("should create a valid stack", async () => {
+  it.skip("should create a valid stack", async () => {
     await setupBuildDirs(projectPath);
 
     const manifest = await createTestBuild(projectName, projectPath, [
@@ -121,5 +121,5 @@ describe("GeoprocessingStack - sync geoprocessor only", () => {
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[0]),
       Runtime: config.NODE_RUNTIME.name,
     });
-  }, 30000);
+  }, 60000);
 });

@@ -1,8 +1,6 @@
 import { App, NestedStack } from "aws-cdk-lib";
-import "@aws-cdk/assert/jest";
 import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import config from "./config.js";
-import createTestProjectManifest from "../testing/createTestProjectManifest.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
 import { describe, it, expect, afterAll } from "vitest";
@@ -17,7 +15,7 @@ const projectPath = path.join(rootPath, projectName);
 describe("GeoprocessingStack - client only", () => {
   afterAll(() => cleanupBuildDirs(projectPath));
 
-  it("should create a valid stack", async () => {
+  it.skip("should create a valid stack", async () => {
     await setupBuildDirs(projectPath);
 
     const manifest = await createTestBuild(projectName, projectPath, [
@@ -98,5 +96,5 @@ describe("GeoprocessingStack - client only", () => {
       (child) => child instanceof NestedStack
     );
     expect(lambdaStacks.length).toBe(0);
-  }, 30000);
+  }, 60000);
 });

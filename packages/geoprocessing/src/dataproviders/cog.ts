@@ -25,7 +25,7 @@ interface CogOptions {
  * geoblaze calls (e.g. sum) must be called async to allow the raster to load.
  */
 export const loadCog = async (url: string) => {
-  console.log("loadCog", url);
+  if (process.env.NODE_ENV !== "test") console.log("loadCog", url);
   return geoblaze.parse(url);
 };
 
@@ -36,7 +36,9 @@ export const loadCog = async (url: string) => {
  * @deprecated
  * */
 export const loadCogWindow = async (url: string, options: CogOptions) => {
-  console.log("loadCogWindow", url, "options: ", JSON.stringify(options));
+  if (process.env.NODE_ENV !== "test")
+    console.log("loadCogWindow", url, "options: ", JSON.stringify(options));
+
   const georaster = await parseGeoraster(url);
   // Default to meta parsed from raster
   const {
@@ -52,7 +54,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
     bufferWidthMultiple = 0.2,
   } = options;
 
-  console.log(`using bbox ${windowBox}`);
+  if (process.env.NODE_ENV !== "test") console.log(`using bbox ${windowBox}`);
 
   // Calculate window in geographic and image coordinates
   const { image: finalWindow, bbox: finalBox } = ((box: BBox) => {

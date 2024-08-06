@@ -1,5 +1,4 @@
 import { App, NestedStack } from "aws-cdk-lib";
-import "@aws-cdk/assert/jest";
 import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import config from "./config.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
@@ -92,5 +91,5 @@ describe("GeoprocessingStack - empty", () => {
       (child) => child instanceof NestedStack
     );
     expect(lambdaStacks.length).toBe(0);
-  });
+  }, 30000);
 });

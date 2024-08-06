@@ -22,12 +22,13 @@ import {
   APIGatewayProxyResult,
   APIGatewayProxyEvent,
 } from "aws-lambda";
-import awsSdk from "aws-sdk";
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { InvokeCommand, LambdaClient, LogType } from "@aws-sdk/client-lambda";
 import { unescape } from "querystring";
 import WebSocket from "ws";
 
-const Lambda = new awsSdk.Lambda();
-const Db = new awsSdk.DynamoDB.DocumentClient();
+const Db = DynamoDBDocument.from(new DynamoDB());
 
 let NODE_ENV = "";
 let TASKS_TABLE = "";
@@ -148,12 +149,13 @@ export class GeoprocessingHandler<
       this.lastRequestId = context.awsRequestId;
     }
 
-    console.log(
-      `${this.options.executionMode} ${
-        ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : "sync"
-      } request`,
-      JSON.stringify(request)
-    );
+    if (process.env.NODE_ENV !== "test")
+      console.log(
+        `${this.options.executionMode} ${
+          ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : "sync"
+        } request`,
+        JSON.stringify(request)
+      );
 
     // get cached result if available. standard method to get results for async function
     if (request.checkCacheOnly) {
@@ -165,9 +167,10 @@ export class GeoprocessingHandler<
           cachedResult?.status !== GeoprocessingTaskStatus.Pending
         ) {
           // cache hit
-          console.log(
-            `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
-          );
+          if (process.env.NODE_ENV !== "test")
+            console.log(
+              `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+            );
           return {
             statusCode: 200,
             headers: {
@@ -178,9 +181,10 @@ export class GeoprocessingHandler<
           };
         } else {
           // cache miss
-          console.log(
-            `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`
-          );
+          if (process.env.NODE_ENV !== "test")
+            console.log(
+              `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`
+            );
           return {
             statusCode: 200,
             headers: {
@@ -207,9 +211,10 @@ export class GeoprocessingHandler<
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Pending
       ) {
-        console.log(
-          `Cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
-        );
+        if (process.env.NODE_ENV !== "test")
+          console.log(
+            `Cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+          );
         return {
           statusCode: 200,
           headers: {
@@ -292,7 +297,9 @@ export class GeoprocessingHandler<
             let wssUrl =
               task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
             await this.sendSocketMessage(wssUrl, task.id, task.service);
-            console.info(`sent task ${task.id} result to socket ${wssUrl}`);
+            console.info(
+              `sent task ${task.id} result to socket ${wssUrl} for service ${task.service}`
+            );
           }
           return promise;
         } catch (e: unknown) {
@@ -341,12 +348,15 @@ export class GeoprocessingHandler<
         }
         event.queryStringParameters = queryParams;
         let payload = JSON.stringify(event);
-        await Lambda.invoke({
+
+        const client = new LambdaClient({});
+        const command = new InvokeCommand({
           FunctionName: RUN_HANDLER_FUNCTION_NAME,
-          ClientContext: JSON.stringify(task),
-          InvocationType: "Event",
           Payload: payload,
-        }).promise();
+          LogType: LogType.Tail,
+          InvocationType: "Event",
+        });
+        await client.send(command);
 
         return {
           statusCode: 200,
@@ -375,7 +385,7 @@ export class GeoprocessingHandler<
     serviceName: string,
     failureMessage: string
   ) {
-    let socket = await this.getSendSocket(wss);
+    let socket = await this.getSocket(wss);
 
     let data = JSON.stringify({
       cacheKey,
@@ -400,7 +410,7 @@ export class GeoprocessingHandler<
     cacheKey: string | undefined,
     serviceName: string
   ) {
-    let socket = await this.getSendSocket(wss);
+    let socket = await this.getSocket(wss);
 
     let data = JSON.stringify({
       cacheKey,
@@ -408,10 +418,13 @@ export class GeoprocessingHandler<
       fromClient: "false",
     });
 
+    // hit sendmessage route, invoking sendmessage lambda
     let message = JSON.stringify({
       message: "sendmessage",
       data: data,
     });
+
+    // console.log("sendSocketMessage completed", data);
 
     socket.send(message);
     socket.close(1000, serviceName);
@@ -420,16 +433,15 @@ export class GeoprocessingHandler<
   /**
    * Returns a new socket connection to send a message
    */
-  async getSendSocket(wss: string): Promise<WebSocket> {
+  async getSocket(wss: string): Promise<WebSocket> {
     const socket = new WebSocket(wss) as WebSocket;
     return new Promise(function (resolve, reject) {
       socket.onopen = () => {
         resolve(socket);
       };
       socket.onerror = (error: any) => {
-        console.warn(
-          "Error connecting socket to " + wss + " error: " + error.toString()
-        );
+        console.warn("Error connecting socket to " + wss + " error: ");
+        console.warn(JSON.stringify(error));
         reject(error);
       };
     });

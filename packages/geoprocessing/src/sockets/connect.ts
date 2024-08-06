@@ -1,7 +1,8 @@
 // Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import { DocumentClient } from "aws-sdk/clients/dynamodb.js";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { PutCommand, DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
 /**
  * Puts new socket connection record in DB
@@ -11,23 +12,34 @@ export const connectHandler = async (event) => {
     if (!process.env.SUBSCRIPTIONS_TABLE)
       throw new Error("SUBSCRIPTIONS_TABLE is undefined");
 
-    const ddb = new DocumentClient({
-      apiVersion: "2012-08-10",
-      region: process.env.AWS_REGION,
-    });
+    if (!event.queryStringParameters["serviceName"]) {
+      throw new Error("Missing serviceName query parameter");
+    }
+    if (!event.queryStringParameters["cacheKey"]) {
+      throw new Error("Missing cacheKey query parameter");
+    }
+
+    const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
+    const ddb = DynamoDBDocument.from(dbClient);
 
     const serviceName = event.queryStringParameters["serviceName"];
     const cacheKey = event.queryStringParameters["cacheKey"];
 
-    const putParams = {
-      TableName: process.env.SUBSCRIPTIONS_TABLE,
-      Item: {
-        connectionId: event.requestContext.connectionId,
-        cacheKey: cacheKey,
-        serviceName: serviceName,
-      },
-    };
-    await ddb.put(putParams).promise();
+    // console.log("SUBSCRIPTIONS_TABLE", process.env.SUBSCRIPTIONS_TABLE);
+    // console.log("connectionId", event.requestContext.connectionId);
+    // console.log("serviceName", serviceName);
+    // console.log("cacheKey", cacheKey);
+
+    await ddb.send(
+      new PutCommand({
+        TableName: process.env.SUBSCRIPTIONS_TABLE,
+        Item: {
+          connectionId: event.requestContext.connectionId,
+          cacheKey: cacheKey,
+          serviceName: serviceName,
+        },
+      })
+    );
   } catch (err) {
     return {
       statusCode: 500,

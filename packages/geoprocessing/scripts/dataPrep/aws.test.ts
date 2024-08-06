@@ -1,14 +1,6 @@
-import { config } from "aws-sdk";
-// jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
-// const fetchMock = require("node-fetch");
 import { getDataSourceVersion } from "./aws.js";
 
 const NAME = "dataset-name";
-const PKGNAME = "seasketchgeoprocessing-data-sources";
-const REGION = "us-west-2";
-config.update({
-  region: REGION,
-});
 
 describe("getDataSourceVersion", () => {
   test.skip("recognizes missing buckets", async () => {

@@ -73,8 +73,7 @@ export const sendHandler = async (event) => {
     };
   }
 
-  let endpoint =
-    event.requestContext.domainName + "/" + event.requestContext.stage;
+  let endpoint = `https://${event.requestContext.domainName}/${event.requestContext.stage}`;
 
   console.log("endpoint", endpoint);
 

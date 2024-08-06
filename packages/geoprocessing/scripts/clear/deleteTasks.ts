@@ -56,10 +56,12 @@ export async function deleteTasks(
 
   // console.log("query", query);
 
+  // Pager will return a variable number of items, up to 1MB of data
   const pager = paginateScan(paginatorConfig, query);
 
   const promises: Promise<void>[] = [];
   let batchNum = 0;
+  // Each page of results will often have less than number we can delete at a time so we build up batch until ready
   for await (const result of pager) {
     if (result && result.Items) {
       result.Items.forEach(async (item, index, result) => {
@@ -68,7 +70,7 @@ export async function deleteTasks(
           service: item.service,
         });
 
-        // Delete tasks in batches
+        // When batch of tasks is ready, start their delete and continue
         if (taskKeys.length >= MAX_BATCH_DELETE) {
           const taskKeyBatch = taskKeys.splice(0, MAX_BATCH_DELETE); // deletes items from taskKeys array
           promises.push(

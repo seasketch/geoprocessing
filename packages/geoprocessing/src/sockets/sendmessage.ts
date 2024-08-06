@@ -133,6 +133,7 @@ export const sendHandler = async (event) => {
               console.info("failed to delete stale connection...");
             }
           }
+          console.log("postToConnection failed", e);
         }
       } catch (e) {
         console.info("blowing up with send message: ", e);

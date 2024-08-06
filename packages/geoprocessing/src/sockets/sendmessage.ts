@@ -76,6 +76,8 @@ export const sendHandler = async (event) => {
   let endpoint =
     event.requestContext.domainName + "/" + event.requestContext.stage;
 
+  console.log("endpoint", endpoint);
+
   const apigwManagementApi = new ApiGatewayManagementApi({
     endpoint: endpoint,
   });
@@ -112,10 +114,11 @@ export const sendHandler = async (event) => {
 
         try {
           // Send socket message with cacheKey to clients listening so they can fetch result
-          await apigwManagementApi.postToConnection({
+          const postResult = await apigwManagementApi.postToConnection({
             ConnectionId: responseItem.connectionId,
             Data: Buffer.from(postData),
           });
+          console.log("postResult", JSON.stringify(JSON.stringify(postResult)));
         } catch (e: any) {
           if (e.statusCode && e.statusCode === 410) {
             console.log(

@@ -43,10 +43,12 @@ export async function deleteTasks(
 
   let query: QueryCommandInput = {
     TableName: tableName,
+    ProjectionExpression: "id, service",
   };
   if (serviceName && serviceName !== "all") {
     query = {
       TableName: tableName,
+      ProjectionExpression: "id, service",
       FilterExpression: "service = :pk",
       ExpressionAttributeValues: {
         ":pk": serviceName,

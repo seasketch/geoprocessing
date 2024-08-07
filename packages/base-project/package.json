@@ -1,9 +1,15 @@
 {
   "name": "@seasketch/base-project",
-  "version": "7.0.0-beta.4",
+  "version": "7.0.0-beta.6",
   "description": "initial user-installed project",
   "private": true,
   "type": "module",
+  "keywords": [
+    "@seasketch/geoprocessing"
+  ],
+  "repositoryUrl": "",
+  "author": "",
+  "license": "",
   "scripts": {
     "start-data": "http-server data/dist -c-1",
     "__test": "TEST_ROOT=$(pwd) geoprocessing test",
@@ -37,9 +43,6 @@
     "clear-all-results": "geoprocessing clear-all-results",
     "upgrade": "geoprocessing upgrade"
   },
-  "keywords": [
-    "@seasketch/geoprocessing"
-  ],
   "dependencies": {
     "@turf/area": "7.0.0",
     "@turf/bbox": "7.0.0",
@@ -53,7 +56,7 @@
   "devDependencies": {
     "@babel/cli": "^7.24.5",
     "@babel/plugin-syntax-import-attributes": "^7.24.1",
-    "@seasketch/geoprocessing": "^7.0.0-beta.4",
+    "@seasketch/geoprocessing": "^7.0.0-beta.6",
     "@storybook/addon-essentials": "^8.1.1",
     "@storybook/addon-interactions": "^8.1.1",
     "@storybook/addon-links": "^8.1.1",
@@ -69,8 +72,5 @@
     "vite": "^5.2.11",
     "vitest": "^1.6.0",
     "zx": "^8.1.0"
-  },
-  "repositoryUrl": "",
-  "author": "",
-  "license": ""
+  }
 }

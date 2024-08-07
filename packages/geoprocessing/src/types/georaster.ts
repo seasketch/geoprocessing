@@ -81,7 +81,3 @@ export type GeorasterMetadata = Pick<
   Georaster,
   "noDataValue" | "projection" | "xmin" | "ymax" | "pixelWidth" | "pixelHeight"
 >;
-
-export interface Histogram {
-  [classId: string]: number;
-}

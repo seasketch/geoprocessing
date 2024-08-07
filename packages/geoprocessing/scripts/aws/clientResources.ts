@@ -87,7 +87,7 @@ export const createClientResources = (stack: GeoprocessingStack) => {
 
 export const setupClientFunctionAccess = (stack: GeoprocessingStack) => {
   if (stack.clientDistribution) {
-    stack.functions.serviceRootFunction.addEnvironment(
+    stack.projectFunctions.serviceRootFunction.addEnvironment(
       "clientDistributionUrl",
       stack.clientDistribution.distributionDomainName
     );

@@ -414,7 +414,10 @@ describe("flattenSketchAllClass", () => {
           sketchId: collectionId,
           value: 100,
         }),
-      ]
+      ],
+      {
+        debug: false,
+      }
     );
     percMetrics.forEach((m) => {
       expect(m.value).toEqual(0.25);
@@ -441,7 +444,10 @@ describe("flattenSketchAllClass", () => {
           sketchId: collectionId,
           value: 0,
         }),
-      ]
+      ],
+      {
+        debug: false,
+      }
     );
     percMetrics.forEach((m) => {
       expect(m.value).toEqual(NaN);

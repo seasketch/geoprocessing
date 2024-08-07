@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { CloudFormation } from "aws-sdk";
+import { CloudFormation } from "@aws-sdk/client-cloudformation";
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) {
   throw new Error("process.env.PROJECT_PATH not defined");
@@ -15,11 +15,16 @@ const geoprocessing = JSON.parse(
     .readFileSync(path.join(PROJECT_PATH, "project", "geoprocessing.json"))
     .toString()
 );
-const cf = new CloudFormation({ region: geoprocessing.region });
+const cf = new CloudFormation({
+  region: geoprocessing.region,
+});
 
 cf.describeStacks({ StackName: `gp-${packageName}` }, (err, data) => {
   if (err) {
     throw err;
+  }
+  if (!data) {
+    throw new Error("No data returned from describeStacks");
   }
   if (!data.Stacks || !data.Stacks.length) {
     throw new Error(`No stack named gp-${packageName}`);

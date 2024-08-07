@@ -1,12 +1,16 @@
 {
   "name": "@seasketch/template-blank-project",
-  "version": "7.0.0-beta.4",
+  "version": "7.0.0-beta.6",
   "description": "blank starter project",
-  "author": "Tim Welch",
-  "license": "BSD-3-Clause",
   "private": true,
   "type": "module",
   "main": "src/index.js",
+  "keywords": [
+    "@seasketch/geoprocessing",
+    "starter-template"
+  ],
+  "author": "Tim Welch",
+  "license": "BSD-3-Clause",
   "scripts": {
     "prepare": "rm -f src/i18n && ln -s ../../geoprocessing/src/i18n src/i18n",
     "test": "geoprocessing test",
@@ -16,12 +20,8 @@
     "build:lambda": "geoprocessing build:lambda",
     "storybook": "PROJECT_PATH=$(pwd) npx tsx .storybook/genReportStories.ts && storybook dev -p 6006"
   },
-  "keywords": [
-    "@seasketch/geoprocessing",
-    "starter-template"
-  ],
   "devDependencies": {
-    "@seasketch/geoprocessing": "^7.0.0-beta.4",
+    "@seasketch/geoprocessing": "^7.0.0-beta.6",
     "@turf/boolean-disjoint": "7.0.0",
     "@turf/boolean-valid": "7.0.0"
   },

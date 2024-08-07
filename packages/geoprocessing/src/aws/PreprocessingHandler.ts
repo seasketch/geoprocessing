@@ -29,7 +29,7 @@ const commonHeaders = {
  */
 export class PreprocessingHandler<
   G extends Geometry = Polygon | LineString | Point,
-  P = Record<string, JSONValue>
+  P = Record<string, JSONValue>,
 > {
   func: (
     feature: Feature<G> | Sketch<G>,
@@ -93,7 +93,8 @@ export class PreprocessingHandler<
       this.lastRequestId = context.awsRequestId;
     }
     try {
-      console.log("request", JSON.stringify(request));
+      if (process.env.NODE_ENV !== "test")
+        console.log("request", JSON.stringify(request));
       const feature = await this.func(request.feature, request.extraParams);
       return {
         statusCode: 200,

@@ -14,9 +14,9 @@ export const createWebSocketApi = (
   stack: GeoprocessingStack
 ): WebSocketApi | undefined => {
   if (
-    !stack.functions.socketFunctions.subscribe ||
-    !stack.functions.socketFunctions.unsubscribe ||
-    !stack.functions.socketFunctions.send
+    !stack.projectFunctions.socketFunctions.subscribe ||
+    !stack.projectFunctions.socketFunctions.unsubscribe ||
+    !stack.projectFunctions.socketFunctions.send
   )
     return undefined;
 
@@ -27,13 +27,13 @@ export const createWebSocketApi = (
     connectRouteOptions: {
       integration: new WebSocketLambdaIntegration(
         "OnConnectIntegration",
-        stack.functions.socketFunctions.subscribe
+        stack.projectFunctions.socketFunctions.subscribe
       ),
     },
     disconnectRouteOptions: {
       integration: new WebSocketLambdaIntegration(
         "OnDisconnectIntegration",
-        stack.functions.socketFunctions.unsubscribe
+        stack.projectFunctions.socketFunctions.unsubscribe
       ),
     },
     routeSelectionExpression: "$request.body.message",
@@ -43,7 +43,7 @@ export const createWebSocketApi = (
   webSocketApi.addRoute("sendmessage", {
     integration: new WebSocketLambdaIntegration(
       `OnSendIntegration`,
-      stack.functions.socketFunctions.send
+      stack.projectFunctions.socketFunctions.send
     ),
   });
 
@@ -55,11 +55,13 @@ export const createWebSocketApi = (
       `arn:aws:execute-api:${stack.region}:${stack.account}:${webSocketApi.apiId}/*`,
     ],
   });
-  stack.functions.socketFunctions.send.addToRolePolicy(socketExecutePolicy);
-  stack.functions.socketFunctions.subscribe.addToRolePolicy(
+  stack.projectFunctions.socketFunctions.send.addToRolePolicy(
     socketExecutePolicy
   );
-  stack.functions.socketFunctions.unsubscribe.addToRolePolicy(
+  stack.projectFunctions.socketFunctions.subscribe.addToRolePolicy(
+    socketExecutePolicy
+  );
+  stack.projectFunctions.socketFunctions.unsubscribe.addToRolePolicy(
     socketExecutePolicy
   );
 
@@ -71,7 +73,7 @@ export const createWebSocketApi = (
     actions: ["lambda:InvokeFunction", "sts:AssumeRole"],
   });
 
-  // Create async function resources
+  // Create custom routes for starting async geoprocessing functions via web socket
   stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
     const action = `start${asyncFunctionWithMeta.meta.title}`;
     webSocketApi.addRoute(action, {

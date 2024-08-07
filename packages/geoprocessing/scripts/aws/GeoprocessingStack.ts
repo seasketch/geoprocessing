@@ -19,7 +19,7 @@ import {
   createClientResources,
   setupClientFunctionAccess,
 } from "./clientResources.js";
-import { createFunctions } from "./functionResources.js";
+import { createProjectFunctions } from "./functionResources.js";
 
 import { createTables, setupTableFunctionAccess } from "./dynamodb.js";
 import { createRestApi } from "./restApiGateway.js";
@@ -35,9 +35,19 @@ import {
   GpDynamoTables,
   SyncFunctionWithMeta,
   AsyncFunctionWithMeta,
+  ProcessingFunctions,
 } from "./types.js";
 import { genOutputMeta } from "./outputMeta.js";
 import { Bucket } from "aws-cdk-lib/aws-s3";
+import { LambdaStack } from "./LambdaStack.js";
+import { createLambdaStacks } from "./lambdaResources.js";
+import {
+  Effect,
+  PolicyStatement,
+  Role,
+  ServicePrincipal,
+} from "aws-cdk-lib/aws-iam";
+import { Function } from "aws-cdk-lib/aws-lambda";
 
 /** StackProps extended with geoprocessing project metadata */
 export interface GeoprocessingStackProps extends StackProps {
@@ -63,19 +73,19 @@ export class GeoprocessingStack extends Stack {
 
   publicBuckets: GpPublicBuckets;
   tables: GpDynamoTables;
-  functions: GpProjectFunctions;
+  projectFunctions: GpProjectFunctions;
   restApi: RestApi;
   socketApi?: WebSocketApi;
   clientBucket?: Bucket;
   clientDistribution?: CloudFrontWebDistribution;
+  lambdaStacks: LambdaStack[];
 
   constructor(scope: Construct, id: string, props: GeoprocessingStackProps) {
     super(scope, id, props);
     this.props = props;
 
-    // Create lambdas for all functions
-    this.functions = createFunctions(this);
-
+    this.lambdaStacks = createLambdaStacks(this, props);
+    this.projectFunctions = createProjectFunctions(this);
     this.publicBuckets = createPublicBuckets(this);
 
     // Create client bundle with bucket deploymentand and Cloudfront distribution
@@ -121,17 +131,40 @@ export class GeoprocessingStack extends Stack {
     return this.getAsyncFunctionMetas().length > 0;
   }
 
-  /** Given all gp lambda functions with meta for project, returns sync lambda function */
+  /** aggregate and return sync lambda function meta from lambda stacks */
   getSyncFunctionsWithMeta(): SyncFunctionWithMeta[] {
-    return this.functions.processingFunctions.filter<SyncFunctionWithMeta>(
-      this.isSyncFunctionWithMeta
+    return this.lambdaStacks.reduce<SyncFunctionWithMeta[]>((acc, curStack) => {
+      const syncFunctions = curStack
+        .getProcessingFunctions()
+        .filter<SyncFunctionWithMeta>(this.isSyncFunctionWithMeta);
+
+      return [...acc, ...syncFunctions];
+    }, []);
+  }
+
+  /**
+   * @returns run functions across all lambda stacks
+   */
+  getAsyncRunLambdas(): Function[] {
+    return this.lambdaStacks.reduce<Function[]>(
+      (acc, curStack) => [...acc, ...curStack.getAsyncRunLambdas()],
+      []
     );
   }
 
-  /** Given all gp lambda functions with meta for project, returns async lambda function */
+  /**
+   * @returns async lambda function meta from all lambda stacks
+   */
   getAsyncFunctionsWithMeta(): AsyncFunctionWithMeta[] {
-    return this.functions.processingFunctions.filter<AsyncFunctionWithMeta>(
-      this.isAsyncFunctionWithMeta
+    return this.lambdaStacks.reduce<AsyncFunctionWithMeta[]>(
+      (acc, curStack) => {
+        const asyncFunctions = curStack
+          .getProcessingFunctions()
+          .filter<AsyncFunctionWithMeta>(this.isAsyncFunctionWithMeta);
+
+        return [...acc, ...asyncFunctions];
+      },
+      []
     );
   }
 
@@ -156,6 +189,12 @@ export class GeoprocessingStack extends Stack {
       funcWithMeta.hasOwnProperty("meta") &&
       isAsyncFunctionMetadata(funcWithMeta.meta)
     );
+  }
+
+  getProcessingFunctions() {
+    return this.lambdaStacks.reduce<ProcessingFunctions>((acc, curStack) => {
+      return [...acc, ...curStack.getProcessingFunctions()];
+    }, []);
   }
 }
 

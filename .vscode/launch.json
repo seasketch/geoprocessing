@@ -13,6 +13,7 @@
         "runtimeArgs": [
           "--inspect-brk",
           "${workspaceRoot}/node_modules/.bin/vitest",
+          "run",
           "-c",
           "vitest.config.node.js"
         ],
@@ -37,6 +38,7 @@
       "runtimeArgs": [
         "--inspect-brk",
         "${workspaceRoot}/node_modules/.bin/vitest",
+        "run",
         "-c",
         "vitest.config.node.js",
         "-t",
@@ -54,6 +56,7 @@
       "runtimeArgs": [
         "--inspect-brk",
         "${workspaceRoot}/node_modules/.bin/vitest",
+        "run",
         "-c",
         "vitest.config.e2e.js"
       ],
@@ -68,6 +71,7 @@
     "runtimeArgs": [
       "--inspect-brk",
       "${workspaceRoot}/node_modules/.bin/vitest",
+      "run",
       "-c",
       "vitest.config.e2e.js",
       "-t",

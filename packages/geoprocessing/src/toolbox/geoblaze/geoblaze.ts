@@ -11,7 +11,8 @@ import reprojectGeoJSONPlugable from "reproject-geojson/pluggable.js";
 import proj4 from "../proj4.js";
 import bboxFns from "bbox-fns";
 
-export const defaultStatValues = {
+// default values for stats calculated by geoblaze.stats
+export const geoblazeDefaultStatValues = {
   count: 0,
   invalid: 0,
   max: null,
@@ -67,9 +68,10 @@ export const getArea = async (
     });
     area = parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
   } catch (err) {
-    console.log(
-      "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry"
-    );
+    if (process.env.NODE_ENV !== "test")
+      console.log(
+        "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry"
+      );
   }
   return area;
 };

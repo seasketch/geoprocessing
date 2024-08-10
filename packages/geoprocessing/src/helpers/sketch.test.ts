@@ -8,7 +8,7 @@ import {
   getUserAttribute,
   getJsonUserAttribute,
 } from "../helpers/index.js";
-import { randomPolygon } from "@turf/random";
+import { randomPolygon } from "@turf/turf";
 
 const polySketch = genSampleSketch(randomPolygon(1).features[0].geometry);
 const polySketchCollection = genSampleSketchCollection(randomPolygon(4));

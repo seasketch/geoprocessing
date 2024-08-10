@@ -1,7 +1,6 @@
 import { clipToGeography } from "./clipToGeography.js";
 import project from "../../project/projectClient.js";
-import bbox from "@turf/bbox";
-import area from "@turf/area";
+import { bbox, area } from "@turf/turf";
 import { Polygon, Sketch, genSampleSketch } from "@seasketch/geoprocessing";
 import { describe, test, expect } from "vitest";
 

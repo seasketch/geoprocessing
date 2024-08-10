@@ -1,4 +1,3 @@
-import area from "@turf/area";
 import {
   Metric,
   Polygon,
@@ -17,8 +16,7 @@ import {
   genZodErrorMessage,
 } from "../../../src/index.js";
 import { getFeatures } from "../../../src/dataproviders/index.js";
-import { featureCollection } from "@turf/helpers";
-import truncate from "@turf/truncate";
+import { area, truncate, featureCollection } from "@turf/turf";
 import { getGeographyFeatures } from "../geographies/helpers.js";
 
 /**

@@ -1,6 +1,6 @@
 import { Feature, Geometry } from "../types/index.js";
 import { isFeature } from "../helpers/geo.js";
-import turfBoolOverlap from "@turf/boolean-overlap";
+import { booleanOverlap as turfBoolOverlap } from "@turf/turf";
 import deepEqual from "fast-deep-equal";
 
 /**
@@ -52,10 +52,8 @@ export async function booleanOverlap<B>(
     featuresB.forEach((featureB) => {
       // Don't test overlap if we already know it does
       if (isFeature(featureB) && idProperty) {
-        const fb = featureB as Feature
-        const idB = fb.properties
-          ? fb.properties[idProperty]
-          : null;
+        const fb = featureB as Feature;
+        const idB = fb.properties ? fb.properties[idProperty] : null;
         if (!overlapIds.includes(idB) && turfBoolOverlap(featureA, featureB)) {
           overlapFeatures.push(featureB);
           overlapIds.push(idB);

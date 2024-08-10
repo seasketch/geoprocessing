@@ -44,12 +44,7 @@
     "upgrade": "geoprocessing upgrade"
   },
   "dependencies": {
-    "@turf/area": "7.0.0",
-    "@turf/bbox": "7.0.0",
-    "@turf/bbox-clip": "7.0.0",
-    "@turf/boolean-valid": "7.0.0",
-    "@turf/helpers": "7.0.0",
-    "@turf/simplify": "7.0.0",
+    "@turf/turf": "7.1.0",
     "geojson-antimeridian-cut": "^0.1.0",
     "react-i18next": "^14.1.1"
   },

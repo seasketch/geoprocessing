@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { cleanCoords } from "./cleanCoords.js";
-import { feature, featureCollection } from "@turf/helpers";
+import { feature, featureCollection } from "@turf/turf";
 import { Feature, Polygon } from "../types/index.js";
 
 describe("cleanCoords", () => {

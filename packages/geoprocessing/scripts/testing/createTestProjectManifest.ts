@@ -8,7 +8,7 @@ import {
 } from "../../src/types/index.js";
 import { PreprocessingHandler, GeoprocessingHandler } from "../../src/index.js";
 import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src/index.js";
-import { point } from "@turf/helpers";
+import { point } from "@turf/turf";
 import { PreprocessingBundle, GeoprocessingBundle } from "../types.js";
 import { Manifest } from "../manifest.js";
 import { TestComponentTypes } from "./types.js";

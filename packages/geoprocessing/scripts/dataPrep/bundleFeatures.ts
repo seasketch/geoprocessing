@@ -11,8 +11,7 @@ import cliProgress from "cli-progress";
 import Pbf from "pbf";
 import { FeatureCollection, BBox, Geometry } from "../../src/types/index.js"; // Use geojson to avoid
 import { FeatureCollection as geobufFC } from "geojson";
-import { lineString } from "@turf/helpers";
-import length from "@turf/length";
+import { lineString, length } from "@turf/turf";
 import geobuf from "geobuf";
 import humanizeDuration from "humanize-duration";
 import prettyBytes from "pretty-bytes";

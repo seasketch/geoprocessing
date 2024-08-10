@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import area from "@turf/area";
+import { area } from "@turf/turf";
 import project from "../testing/project/testProjectClient.js";
 import { genClipLoader } from "../dataproviders/index.js";
 import { Sketch } from "../types/index.js";

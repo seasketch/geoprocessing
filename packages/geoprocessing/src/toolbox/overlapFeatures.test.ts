@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { overlapFeatures } from "./overlapFeatures.js";
-import area from "@turf/area";
+import { area } from "@turf/turf";
 import fix from "../testing/fixtures/squareSketches.js";
 import sk from "../testing/fixtures/sketches.js";
 import { firstMatchingMetric } from "../metrics/index.js";

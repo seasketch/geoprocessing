@@ -10,7 +10,7 @@ import {
   genSketch,
   genSketchCollection,
 } from "./sketch.js";
-import { polygon } from "@turf/helpers";
+import { polygon } from "@turf/turf";
 
 describe("isTrueAttributeValue", () => {
   test("should return proper boolean", async () => {

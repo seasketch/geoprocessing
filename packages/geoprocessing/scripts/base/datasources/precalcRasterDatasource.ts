@@ -14,7 +14,7 @@ import {
   getRasterBoxSpherical,
   rasterMetrics,
 } from "../../../src/index.js";
-import bbox from "@turf/bbox";
+import { bbox } from "@turf/turf";
 
 // @ts-ignore
 import geoblaze from "geoblaze";

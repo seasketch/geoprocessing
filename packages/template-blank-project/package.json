@@ -21,19 +21,11 @@
     "storybook": "PROJECT_PATH=$(pwd) npx tsx .storybook/genReportStories.ts && storybook dev -p 6006"
   },
   "devDependencies": {
-    "@seasketch/geoprocessing": "^7.0.0-beta.6",
-    "@turf/boolean-disjoint": "7.0.0",
-    "@turf/boolean-valid": "7.0.0"
+    "@seasketch/geoprocessing": "^7.0.0-beta.6"
   },
   "dependencies": {
-    "@turf/area": "7.0.0",
-    "@turf/bbox": "7.0.0",
-    "@turf/combine": "7.0.0",
-    "@turf/flatten": "7.0.0",
-    "@turf/invariant": "7.0.0",
-    "@turf/kinks": "7.0.0",
-    "@turf/simplify": "7.0.0",
-    "geoblaze": "2.7.0",
+    "@turf/turf": "7.1.0",
+    "geoblaze": "2.8.0",
     "geojson-antimeridian-cut": "^0.1.0",
     "i18next-browser-languagedetector": "^8.0.0",
     "react-i18next": "^14.1.2",

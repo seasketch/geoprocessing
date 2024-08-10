@@ -1,9 +1,7 @@
 import { Sketch, SketchCollection, Polygon, Metric } from "../types/index.js";
 import { isSketchCollection, clip } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
-import { featureCollection } from "@turf/helpers";
-import { featureEach } from "@turf/meta";
-import turfArea from "@turf/area";
+import { featureCollection, featureEach, area as turfArea } from "@turf/turf";
 
 /**
  * Calculates the area of each sketch and collection.

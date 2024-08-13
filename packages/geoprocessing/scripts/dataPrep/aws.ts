@@ -5,7 +5,7 @@ import {
   LifecycleRule,
 } from "@aws-sdk/client-s3";
 import { Flatbush } from "flatbush";
-import { sync } from "read-pkg-up";
+import { readPackageUp } from "read-package-up";
 import slugify from "../../src/util/slugify.js";
 import fetch from "node-fetch";
 import { CompositeIndexDetails } from "./indexes.js";
@@ -263,7 +263,7 @@ export async function putResources(
       CacheControl: "max-age=31557600",
     });
   }
-  const pkg = sync()!.packageJson;
+  const pkg = (await readPackageUp())?.packageJson;
   await s3.putObject({
     Bucket: bucketName(dataSourceName),
     ContentType: "application/json",
@@ -272,8 +272,8 @@ export async function putResources(
     Body: JSON.stringify(
       {
         name: dataSourceName,
-        project: pkg.name,
-        homepage: pkg.homepage,
+        project: pkg!.name,
+        homepage: pkg!.homepage,
         published: new Date().toISOString(),
         version,
         index: {
@@ -310,7 +310,7 @@ export async function putMetadataResources(
   dataSourceName: string,
   version: number
 ) {
-  const pkg = sync()!.packageJson;
+  const pkg = (await readPackageUp())!.packageJson;
   await s3.putObject({
     Bucket: bucketName(dataSourceName),
     ContentType: "application/json",

@@ -1,5 +1,5 @@
 import ora from "ora";
-import program, { version } from "commander";
+import { program } from "commander";
 import { loadConfig } from "@smithy/node-config-provider";
 import {
   NODE_REGION_CONFIG_FILE_OPTIONS,

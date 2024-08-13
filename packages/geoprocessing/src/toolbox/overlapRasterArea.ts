@@ -7,7 +7,7 @@ import {
 } from "../types/index.js";
 import { isSketchCollection, roundDecimal } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
-import { featureEach } from "@turf/meta";
+import { featureEach } from "@turf/turf";
 import { getArea } from "./geoblaze/index.js";
 
 // @ts-ignore

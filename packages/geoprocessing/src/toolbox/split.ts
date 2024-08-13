@@ -1,4 +1,4 @@
-import bbox from "@turf/bbox";
+import { bbox } from "@turf/turf";
 import {
   Geometry,
   Feature,
@@ -17,7 +17,7 @@ import splitGeojson from "geojson-antimeridian-cut";
  * @returns
  */
 export function splitFeatureAntimeridian<
-  G extends Geometry = Polygon | MultiPolygon
+  G extends Geometry = Polygon | MultiPolygon,
 >(
   feature: Feature<G> | FeatureCollection<G>
 ): Feature<Polygon | MultiPolygon> | FeatureCollection<Polygon | MultiPolygon> {

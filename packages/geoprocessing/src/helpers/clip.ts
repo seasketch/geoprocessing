@@ -3,7 +3,7 @@
  */
 
 import polygonClipping from "polygon-clipping";
-import { multiPolygon, polygon } from "@turf/helpers";
+import { multiPolygon, polygon, geomEach, getGeom } from "@turf/turf";
 import {
   Feature,
   MultiPolygon,
@@ -12,12 +12,10 @@ import {
   Position,
   GeoJsonProperties,
 } from "../types/geojson.js";
-import { geomEach } from "@turf/meta";
-import { getGeom } from "@turf/invariant";
 import { ValidationError } from "../types/index.js";
 
 export function clip<
-  P extends GeoJsonProperties | undefined = GeoJsonProperties
+  P extends GeoJsonProperties | undefined = GeoJsonProperties,
 >(
   features: FeatureCollection<Polygon | MultiPolygon>,
   operation: "union" | "intersection" | "xor" | "difference",
@@ -49,7 +47,7 @@ export function clip<
  * Useful when you need features2 to be seen as a single unit when clipping feature1 (e.g. intersection)
  */
 export function clipMultiMerge<
-  P extends GeoJsonProperties | undefined = GeoJsonProperties
+  P extends GeoJsonProperties | undefined = GeoJsonProperties,
 >(
   feature1: Feature<Polygon | MultiPolygon>,
   features2: FeatureCollection<Polygon | MultiPolygon>,

@@ -51,8 +51,7 @@ const simpleConfig: ProjectClientConfig = {
     scripts: {},
     keywords: ["@seasketch/geoprocessing"],
     dependencies: {
-      "@turf/area": "6.5.0",
-      "@turf/bbox-clip": "6.5.0",
+      "@turf/turf": "7.1.0",
     },
     devDependencies: {
       "@seasketch/geoprocessing": "^0.7.0",

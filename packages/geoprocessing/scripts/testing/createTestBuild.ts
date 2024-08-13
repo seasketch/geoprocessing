@@ -50,7 +50,7 @@ export default async function createTestBuild(
       `${projectPath}/src/functions/testPreprocessor.ts`,
       `
     import { Feature, Point } from "geojson";
-    import { point } from "@turf/helpers";
+    import { point } from "@turf/turf";
     import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
 
     const testPreprocessor = async (feature: Feature<Point>) => {
@@ -81,7 +81,7 @@ export default async function createTestBuild(
       `${projectPath}/src/functions/testSyncGeoprocessor.ts`,
       `
     import { Feature, Point } from "geojson";
-    import { point } from "@turf/helpers";
+    import { point } from "@turf/turf";
     import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
 
     const testSyncGeoprocessor = async (feature: Feature<Point>) => {
@@ -113,7 +113,7 @@ export default async function createTestBuild(
       `${projectPath}/src/functions/testAsyncGeoprocessor.ts`,
       `
     import { Feature, Point } from "geojson";
-    import { point } from "@turf/helpers";
+    import { point } from "@turf/turf";
     import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
 
     const testAsyncGeoprocessor = async (feature: Feature<Point>) => {

@@ -11,7 +11,7 @@ import { isSketchCollection } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
 import { Histogram } from "../types/geoblaze.js";
 import { getHistogram } from "./geoblaze/index.js";
-import { featureEach } from "@turf/meta";
+import { featureEach } from "@turf/turf";
 
 /**
  * Calculates sum of overlap between sketches and a categorical raster with numeric values representing feature classes

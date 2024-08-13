@@ -1,7 +1,7 @@
 import { isSketchCollection } from "./sketch.js";
 import { SketchGeometryTypes, SketchCollection } from "../types/index.js";
 
-import bbox from "@turf/bbox";
+import { bbox } from "@turf/turf";
 
 //// Helper methods ////
 

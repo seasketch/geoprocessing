@@ -4,7 +4,7 @@ import { rasterMetrics } from "./rasterMetrics.js";
 import fix from "../testing/fixtures/sketches.js";
 import { firstMatchingMetric } from "../metrics/index.js";
 import { Feature, Polygon } from "../types/index.js";
-import { feature } from "@turf/helpers";
+import { feature } from "@turf/turf";
 
 // bbox  - [xmin, ymin, xmax, ymax]
 // pixel - [left, bottom, right, top]

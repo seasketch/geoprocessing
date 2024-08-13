@@ -9,13 +9,10 @@ import {
   splitSketchAntimeridian,
   rasterStats,
 } from "@seasketch/geoprocessing";
-import bbox from "@turf/bbox";
-import turfArea from "@turf/area";
+import { bbox, area as turfArea } from "@turf/turf";
 import project from "../../project/projectClient.js";
 import { clipToGeography } from "../util/clipToGeography.js";
 import { getFeatures, loadCog } from "@seasketch/geoprocessing/dataproviders";
-// @ts-ignore
-import geoblaze from "geoblaze";
 
 export interface SimpleResults {
   /** area of sketch within geography in square meters */

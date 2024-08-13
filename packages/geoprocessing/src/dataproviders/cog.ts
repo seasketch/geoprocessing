@@ -4,9 +4,7 @@ import parseGeoraster from "georaster";
 // @ts-ignore
 import geoblaze from "geoblaze";
 import { maxWidth } from "../toolbox/index.js";
-import buffer from "@turf/buffer";
-import bboxPolygon from "@turf/bbox-polygon";
-import bbox from "@turf/bbox";
+import { buffer, bboxPolygon, bbox } from "@turf/turf";
 
 interface CogOptions {
   noDataValue?: number;

@@ -11,8 +11,7 @@ import geobuf from "geobuf";
 import rbushDefault from "rbush";
 import mnemonist from "mnemonist";
 
-import bbox from "@turf/bbox";
-import { featureCollection as fc } from "@turf/helpers";
+import { bbox, featureCollection as fc } from "@turf/turf";
 import isHostedOnLambda from "./isHostedOnLambda.js";
 import { union } from "union-subdivided-polygons";
 

@@ -1,6 +1,4 @@
-import { randomPolygon } from "@turf/random";
-import { featureReduce } from "@turf/meta";
-import { featureCollection } from "@turf/helpers";
+import { randomPolygon, featureReduce, featureCollection } from "@turf/turf";
 import { BBox, Polygon } from "../types/geojson.js";
 
 /**

@@ -10,9 +10,9 @@ import {
   featureCollection,
   multiPolygon,
   polygon,
-} from "@turf/helpers";
-import area from "@turf/area";
-import bbox from "@turf/bbox";
+  area,
+  bbox,
+} from "@turf/turf";
 
 const tiny: Feature<Polygon> = feature({
   type: "Polygon",

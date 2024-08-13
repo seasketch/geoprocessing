@@ -1,6 +1,9 @@
 import { toFeaturePolygonArray } from "./feature.js";
-import { genSampleSketch, genSampleSketchCollection } from "../helpers/index.js";
-import { randomPolygon } from "@turf/random";
+import {
+  genSampleSketch,
+  genSampleSketchCollection,
+} from "../helpers/index.js";
+import { randomPolygon } from "@turf/turf";
 
 const polySketch = genSampleSketch(randomPolygon(1).features[0].geometry);
 const polySketchCollection = genSampleSketchCollection(randomPolygon(4));

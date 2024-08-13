@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { firstMatchingMetric } from "../metrics/index.js";
 import { overlapArea, overlapSubarea } from "./overlapArea.js";
-import area from "@turf/area";
+import { area } from "@turf/turf";
 import fix from "../testing/fixtures/squareSketches.js";
 import { testWithinPerc } from "../testing/index.js";
 import { ValidationError } from "../types/index.js";

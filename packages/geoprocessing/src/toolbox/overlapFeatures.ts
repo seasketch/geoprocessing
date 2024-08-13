@@ -15,11 +15,13 @@ import {
 } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
 import { MultiPolygon } from "../types/geojson.js";
-import { featureCollection } from "@turf/helpers";
-import { featureEach } from "@turf/meta";
-import area from "@turf/area";
-import flatten from "@turf/flatten";
-import truncate from "@turf/truncate";
+import {
+  featureCollection,
+  featureEach,
+  area,
+  flatten,
+  truncate,
+} from "@turf/turf";
 
 interface OverlapFeatureOptions {
   /** Operation to perform, supports area or sum.  Defaults to area */

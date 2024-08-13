@@ -44,11 +44,6 @@
     "upgrade": "geoprocessing upgrade"
   },
   "dependencies": {
-    "@turf/turf": "7.1.0",
-    "geojson-antimeridian-cut": "^0.1.0",
-    "react-i18next": "^14.1.1"
-  },
-  "devDependencies": {
     "@babel/cli": "^7.24.5",
     "@babel/plugin-syntax-import-attributes": "^7.24.1",
     "@seasketch/geoprocessing": "^7.0.0-beta.6",
@@ -59,10 +54,13 @@
     "@storybook/react": "^8.1.1",
     "@storybook/react-vite": "^8.1.1",
     "@storybook/test": "^8.1.1",
+    "@turf/turf": "7.1.0",
     "@types/request": "^2.48.12",
     "babel-plugin-i18next-extract": "0.10.0",
+    "geojson-antimeridian-cut": "^0.1.0",
     "globby": "^14.0.1",
     "prop-types": "^15.8.1",
+    "react-i18next": "^14.1.1",
     "storybook": "^8.1.1",
     "vite": "^5.2.11",
     "vitest": "^1.6.0",

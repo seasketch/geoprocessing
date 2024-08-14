@@ -7,6 +7,7 @@ import {
   Geography,
   Feature,
   isSketchCollection,
+  genSketchCollection,
 } from "@seasketch/geoprocessing/client-core";
 import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import { featureCollection } from "@turf/helpers";
@@ -65,12 +66,12 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
     if (isSketchCollection(sketch)) {
       return {
         properties: sketch.properties,
-        bbox: box,
+        bbox: [0, 0, 0, 0],
         type: "FeatureCollection",
         features: finalSketches,
       };
     } else {
-      return finalSketches[0];
+      return { ...finalSketches[0], bbox: [0, 0, 0, 0] };
     }
   } else {
     const sketches = toSketchArray(sketch);
@@ -87,11 +88,14 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
       if (intersection) {
         if (options) {
           sketch.geometry = simplify(intersection.geometry, options);
+          sketch.bbox = bbox(intersection);
         } else {
           sketch.geometry = intersection.geometry;
+          sketch.bbox = bbox(intersection);
         }
       } else {
         sketch.geometry = zeroPolygon() as G;
+        sketch.bbox = [0, 0, 0, 0];
       }
       finalSketches.push(sketch);
     });
@@ -100,7 +104,11 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
   if (isSketchCollection(sketch)) {
     return {
       properties: sketch.properties,
-      bbox: box,
+      bbox: bbox(
+        genSketchCollection(
+          finalSketches.filter((sk) => !sk.bbox!.every((coord) => coord === 0))
+        )
+      ),
       type: "FeatureCollection",
       features: finalSketches,
     };

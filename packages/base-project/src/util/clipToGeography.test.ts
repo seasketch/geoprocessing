@@ -1,8 +1,12 @@
 import { clipToGeography } from "./clipToGeography.js";
 import project from "../../project/projectClient.js";
-import bbox from "@turf/bbox";
-import area from "@turf/area";
-import { Polygon, Sketch, genSampleSketch } from "@seasketch/geoprocessing";
+import { bbox, area } from "@turf/turf";
+import {
+  Polygon,
+  Sketch,
+  genSampleSketch,
+  genSketchCollection,
+} from "@seasketch/geoprocessing";
 import { describe, test, expect } from "vitest";
 
 const sketch: Sketch<Polygon> = genSampleSketch<Polygon>(
@@ -453,6 +457,19 @@ const sketch: Sketch<Polygon> = genSampleSketch<Polygon>(
   "foo"
 );
 
+const noOverlapSketch = genSampleSketch<Polygon>({
+  type: "Polygon",
+  coordinates: [
+    [
+      [181, 181],
+      [181, 182],
+      [182, 182],
+      [182, 181],
+      [181, 181],
+    ],
+  ],
+});
+
 describe("clipToGeography", () => {
   test("clipToGeography - with world polygon should not change the polygon", async () => {
     const curGeography = project.getGeographyById("world");
@@ -463,5 +480,40 @@ describe("clipToGeography", () => {
     const clippedSketchBox = clippedSketch.bbox || bbox(clippedSketch);
     expect(clippedSketchArea).toEqual(sketchArea);
     expect(sketchBox).toEqual(clippedSketchBox);
-  }, 60000);
+  });
+
+  test("clipToGeography - no overlap", async () => {
+    const curGeography = project.getGeographyById("world");
+    const sketchArea = area(noOverlapSketch);
+
+    const clippedSketch = await clipToGeography(noOverlapSketch, curGeography);
+    const clippedSketchArea = area(clippedSketch);
+    const clippedSketchBox = clippedSketch.bbox || bbox(clippedSketch);
+
+    // Clipped sketch should be zero-ed
+    expect(sketchArea === clippedSketchArea).toBe(false);
+    expect(clippedSketchArea).toEqual(0);
+    expect(clippedSketchBox.every((v) => v === 0)).toBe(true);
+  });
+
+  test("clipToGeography - sketch collection", async () => {
+    // Sketch collection with overlapping and non-overlapping polygons
+    const curGeography = project.getGeographyById("world");
+    const sketchArea = area(sketch);
+    const sketchBox = sketch.bbox || bbox(sketch);
+
+    const sketchCollection = genSketchCollection([sketch, noOverlapSketch]);
+    const clippedSketchCollection = await clipToGeography(
+      sketchCollection,
+      curGeography
+    );
+    const clippedSketchCollectionArea = area(clippedSketchCollection);
+    const clippedSketchCollectionBox =
+      clippedSketchCollection.bbox || bbox(clippedSketchCollection);
+
+    expect(sketchArea === clippedSketchCollectionArea).toBe(true);
+    sketchBox.forEach((bboxCoord, i) =>
+      expect(bboxCoord).toBeCloseTo(clippedSketchCollectionBox[i])
+    );
+  });
 });

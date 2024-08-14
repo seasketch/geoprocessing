@@ -72,27 +72,31 @@ export async function overlapFeatures(
   );
   const finalFeatures = features.map((f) => truncate(f));
 
-  // Create individual sketch metrics
-  const sketchMetrics: Metric[] = sketches.map((curSketch) => {
-    const intersections = doIntersect(
-      curSketch as Feature<Polygon | MultiPolygon>,
-      finalFeatures as Feature<Polygon | MultiPolygon>[],
-      newOptions
-    );
+  let sketchMetrics: Metric[] = [];
 
-    intersections.indices.forEach((index) => featureIndices.add(index));
+  if (includeChildMetrics) {
+    // Add individual sketch metrics
+    sketchMetrics = sketches.map((curSketch) => {
+      const intersections = doIntersect(
+        curSketch as Feature<Polygon | MultiPolygon>,
+        finalFeatures as Feature<Polygon | MultiPolygon>[],
+        newOptions
+      );
 
-    return createMetric({
-      metricId,
-      sketchId: curSketch.properties.id,
-      value: newOptions.truncate
-        ? roundDecimal(intersections.value, 6, { keepSmallValues: true })
-        : intersections.value,
-      extra: {
-        sketchName: curSketch.properties.name,
-      },
+      intersections.indices.forEach((index) => featureIndices.add(index));
+
+      return createMetric({
+        metricId,
+        sketchId: curSketch.properties.id,
+        value: newOptions.truncate
+          ? roundDecimal(intersections.value, 6, { keepSmallValues: true })
+          : intersections.value,
+        extra: {
+          sketchName: curSketch.properties.name,
+        },
+      });
     });
-  });
+  }
 
   // Get overall sum value for collection
   if (sketches.length > 0) {
@@ -155,7 +159,7 @@ export async function overlapFeatures(
     }
   })();
 
-  return [...(includeChildMetrics ? sketchMetrics : []), ...collMetrics];
+  return [...sketchMetrics, ...collMetrics];
 }
 
 /**

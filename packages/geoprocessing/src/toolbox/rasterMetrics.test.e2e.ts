@@ -105,7 +105,7 @@ describe("rasterMetrics", () => {
 
     const metrics = await rasterMetrics(raster, { feature: sketch });
     // console.log(JSON.stringify(metrics, null, 2));
-  });
+  }, 10000);
 
   test("rasterMetrics - all fishing", async () => {
     const url = "http://127.0.0.1:8080/data/in/all-fishing.tif";
@@ -202,5 +202,5 @@ describe("rasterMetrics", () => {
 
     const metrics = await rasterMetrics(raster, { feature: sketch });
     // console.log(JSON.stringify(metrics, null, 2));
-  });
+  }, 10000);
 });

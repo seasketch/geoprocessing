@@ -15,6 +15,7 @@ import {
 } from "../types/index.js";
 import { genTaskCacheKey } from "../helpers/genTaskCacheKey.js";
 import { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks.js";
+import { byteSize } from "../util/byteSize.js";
 
 /**
  * Runs a function on a specified lambda worker
@@ -53,8 +54,8 @@ export async function runLambdaWorker(
     const sketchBuffer = geobuf.encode(sketch, new Pbf());
     var sketch64 = Buffer.from(sketchBuffer).toString("base64");
 
-    const requestSizeBytes = JSON.stringify(newRequest).length * 2;
-    const sketch64SizeBytes = JSON.stringify(sketch64).length * 2;
+    const requestSizeBytes = byteSize(JSON.stringify(newRequest));
+    const sketch64SizeBytes = byteSize(JSON.stringify(sketch64));
     const MAX_SIZE_BYTES = 6_000_000; // 6MB max payload size
     if (requestSizeBytes + sketch64SizeBytes < MAX_SIZE_BYTES) {
       newRequest.geometryGeobuf = sketch64;

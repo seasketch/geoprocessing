@@ -8,10 +8,10 @@ import deepEqual from "fast-deep-equal";
 const dynamodb = new DynamoDBClient({
   endpoint: "http://localhost:8000",
   credentials: {
-    accessKeyId: "local-access-key",
-    secretAccessKey: "local-secret-key",
+    accessKeyId: "localaccesskey",
+    secretAccessKey: "localsecretkey",
   },
-  region: "local-region",
+  region: "localregion",
   tls: false,
 });
 const docClient = DynamoDBDocument.from(dynamodb);

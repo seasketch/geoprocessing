@@ -1,15 +1,9 @@
-import { describe, test, expect, beforeAll, afterAll } from "vitest";
-import {
-  createMetric,
-  isMetricArray,
-  isMetricPack,
-  unpackMetrics,
-} from "../metrics/helpers.js";
+import { describe, test, expect, beforeAll } from "vitest";
+import { createMetric, isMetricArray } from "../metrics/helpers.js";
 import TaskModel from "./tasks.js";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient, CreateTableCommand } from "@aws-sdk/client-dynamodb";
 import deepEqual from "fast-deep-equal";
-import { hasOwnProperty } from "../helpers/native.js";
 
 const dynamodb = new DynamoDBClient({
   endpoint: "http://localhost:8000",
@@ -75,7 +69,7 @@ describe("DynamoDB local", () => {
   });
 
   test("create new task", async () => {
-    const task = await Tasks.create(SERVICE_NAME, undefined, "abc123");
+    const task = await Tasks.create(SERVICE_NAME, undefined);
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
@@ -87,16 +81,10 @@ describe("DynamoDB local", () => {
       },
     });
     expect(item && item.Item && item.Item.id).toBe(task.id);
-    expect(item && item.Item && item.Item.correlationIds.length).toBe(1);
   }, 10000);
 
   test("create new async task", async () => {
-    const task = await Tasks.create(
-      SERVICE_NAME,
-      undefined,
-      "abc123",
-      "wssabc123"
-    );
+    const task = await Tasks.create(SERVICE_NAME, undefined, "wssabc123");
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
@@ -108,18 +96,17 @@ describe("DynamoDB local", () => {
       },
     });
     expect(item && item.Item && item.Item.id).toBe(task.id);
-    expect(item && item.Item && item.Item.correlationIds.length).toBe(1);
     expect(item && item.Item && item.Item.wss.length).toBeGreaterThan(0);
   });
 
-  test("get() a created task", async () => {
-    const task = await Tasks.create(SERVICE_NAME, undefined, "abc123");
+  test("get a created task", async () => {
+    const task = await Tasks.create(SERVICE_NAME, undefined);
     expect(typeof task.id).toBe("string");
     const retrieved = await Tasks.get(SERVICE_NAME, task.id);
     expect(retrieved && retrieved.id).toBe(task.id);
   });
 
-  test("get() return undefined for unknown ids", async () => {
+  test("get return undefined for unknown ids", async () => {
     const retrieved = await Tasks.get(SERVICE_NAME, "unknown-id");
     expect(retrieved).toBe(undefined);
   });
@@ -139,62 +126,39 @@ describe("DynamoDB local", () => {
     expect(item && item.Item && item.Item.id).toBe("my-cache-key");
   });
 
-  test("assign a correlation id", async () => {
-    const task = await Tasks.create(SERVICE_NAME, undefined, "12345");
-    await Tasks.assignCorrelationId(SERVICE_NAME, task.id, "1-2-3");
-    const item = await docClient.get({
-      TableName: "tasks-core",
-      Key: {
-        id: task.id,
-        service: SERVICE_NAME,
-      },
-    });
-    expect(item && item.Item && item.Item.correlationIds.length).toBe(2);
-    expect(
-      item && item.Item && item.Item.correlationIds.indexOf("1-2-3")
-    ).not.toBe(-1);
-  });
-
-  test("complete an existing task", async () => {
+  test("complete an existing task should split data into chunk item", async () => {
     const task = await Tasks.create(SERVICE_NAME);
     const response = await Tasks.complete(task, { area: 1234556 });
-    const item = await docClient.get({
+    const items = await docClient.query({
       TableName: "tasks-core",
-      Key: {
-        id: task.id,
-        service: SERVICE_NAME,
+      KeyConditionExpression: "#id = :id",
+      ExpressionAttributeNames: {
+        "#id": "id",
+      },
+      ExpressionAttributeValues: {
+        ":id": task.id,
       },
     });
+
+    // Should be two items under the one partition key (task id), the root and the chunk
+    console.log(JSON.stringify(items, null, 2));
+    expect(items.Count).toBe(2);
+
+    const rootItem = items.Items?.find((item) => item.service === SERVICE_NAME);
+    expect(rootItem && rootItem.status).toBe("completed");
+
+    const chunkItem = items.Items?.find(
+      (item) => item.service === `${SERVICE_NAME}-chunk-0`
+    );
+
     expect(response.statusCode).toBe(200);
-    expect(JSON.parse(response.body).data.area).toBe(1234556);
-    expect(item && item.Item && item.Item.status).toBe("completed");
-    expect(item && item.Item && item.Item.data.area).toBe(1234556);
-    expect(item && item.Item && item.Item.duration).toBeGreaterThan(0);
+    expect(chunkItem).toBeTruthy();
+    expect(chunkItem!.data).toBeTruthy();
+    expect(chunkItem!.data!.chunk).toBeTruthy();
+    expect(chunkItem!.data!.chunk).toEqual('{"area":1234556}');
   });
 
-  test("complete a task with metrics should have packed in db", async () => {
-    const task = await Tasks.create(SERVICE_NAME);
-    const response = await Tasks.complete(task, {
-      metrics: [createMetric({ value: 15, sketchId: "test" })],
-    });
-    const item = await docClient.get({
-      TableName: "tasks-core",
-      Key: {
-        id: task.id,
-        service: SERVICE_NAME,
-      },
-    });
-    expect(response.statusCode).toBe(200);
-    const metrics = JSON.parse(response.body).data.metrics;
-    expect(metrics).toBeTruthy();
-    expect(isMetricArray(metrics)).toBe(true);
-    expect(metrics[0].value).toEqual(15);
-
-    const dbMetrics = item?.Item?.data.metrics;
-    expect(isMetricPack(dbMetrics)).toBe(true);
-  });
-
-  test("completed task with metrics should return unpacked result", async () => {
+  test("completed task should return merged result", async () => {
     const task = await Tasks.create(SERVICE_NAME);
     const metrics = [createMetric({ value: 15, sketchId: "test" })];
     const response = await Tasks.complete(task, {
@@ -210,96 +174,51 @@ describe("DynamoDB local", () => {
     expect(deepEqual(cachedMetrics, metrics)).toBe(true);
   });
 
-  test("complete a task with multiple sketch metrics below size threshold should not split into multiple items", async () => {
-    const task = await Tasks.create(SERVICE_NAME);
-    const metrics = [
-      createMetric({ value: 15, sketchId: "sketch1" }),
-      createMetric({ value: 30, sketchId: "sketch2" }),
-    ];
-    const response = await Tasks.complete(task, {
-      metrics,
-    });
-    expect(response.statusCode).toBe(200);
-
-    const item = await docClient.get({
-      TableName: "tasks-core",
-      Key: {
-        id: task.id,
-        service: SERVICE_NAME,
-      },
-    });
-
-    const rootData = item?.Item?.data;
-    expect(hasOwnProperty(rootData, "sketchMetricItems")).toBe(false);
-
-    expect(isMetricPack(rootData.metrics)).toBe(true);
-    const rootMetrics = unpackMetrics(rootData.metrics);
-
-    expect(Array.isArray(rootMetrics)).toBe(true);
-    expect(rootMetrics.length).toBe(2);
-  });
-
   test("complete a task with multiple sketch metrics above size threshold should split into multiple items", async () => {
     const task = await Tasks.create(SERVICE_NAME);
     const metrics = [
       createMetric({ value: 15, sketchId: "sketch1" }),
       createMetric({ value: 30, sketchId: "sketch2" }),
     ];
+
     const response = await Tasks.complete(
       task,
       {
         metrics,
       },
       {
-        minSplitSizeBytes: 100, // set to below metrics size of 210 bytes, triggering split
+        minSplitSizeBytes: 80, // set size that should split into 6 pieces
       }
     );
     expect(response.statusCode).toBe(200);
 
-    // Verify created 2 metric group items
-    const item = await docClient.get({
+    // Verify created 3 items, 1 root and 2 chunks
+
+    const queryResult = await docClient.query({
       TableName: "tasks-core",
-      Key: {
-        id: task.id,
-        service: SERVICE_NAME,
+      KeyConditionExpression: "#id = :id",
+      ExpressionAttributeNames: {
+        "#id": "id",
       },
-    });
-    const rootMetrics = item?.Item?.data.metrics;
-    expect(Array.isArray(rootMetrics)).toBe(true);
-    expect(rootMetrics.length).toBe(0);
-
-    const numMetricGroups = item?.Item?.data.numMetricGroups;
-    expect(numMetricGroups).toBeTruthy();
-    expect(numMetricGroups).toBe(2);
-
-    // Verify contents of 2 metric groups items
-    const metricGroupItem1 = await docClient.get({
-      TableName: "tasks-core",
-      Key: {
-        id: `${task.id}-metricGroup-0`,
-        service: SERVICE_NAME,
+      ExpressionAttributeValues: {
+        ":id": task.id,
       },
     });
 
-    const metricGroupRawMetrics1 = metricGroupItem1?.Item?.data.metrics;
-    expect(isMetricPack(metricGroupRawMetrics1)).toBe(true);
-    const metricGroupMetrics1 = unpackMetrics(metricGroupRawMetrics1);
-    expect(isMetricArray(metricGroupMetrics1)).toBe(true);
-    expect(metricGroupMetrics1.length).toBe(1);
-
-    const metricGroupItem2 = await docClient.get({
-      TableName: "tasks-core",
-      Key: {
-        id: `${task.id}-metricGroup-1`,
-        service: SERVICE_NAME,
-      },
+    // Remove root item. remainder, if any, is chunk items
+    if (!queryResult.Items || queryResult.Items.length === 0)
+      throw new Error("No items");
+    const rootItemIndex = queryResult.Items.findIndex(
+      (item) => item.service === SERVICE_NAME
+    );
+    const rootItem = queryResult.Items.splice(rootItemIndex, 1)[0]; // mutates items
+    const chunkItems = queryResult.Items.sort((a, b) => {
+      return a.service.localeCompare(b.service); // sort by chunk index
     });
 
-    const metricGroupRawMetrics2 = metricGroupItem2?.Item?.data.metrics;
-    expect(isMetricPack(metricGroupRawMetrics2)).toBe(true);
-    const metricGroupMetrics2 = unpackMetrics(metricGroupRawMetrics2);
-    expect(isMetricArray(metricGroupMetrics2)).toBe(true);
-    expect(metricGroupMetrics2.length).toBe(1);
+    expect(rootItem && rootItem.status).toBe("completed");
+    expect(rootItem && rootItem.data.numChunks).toBe(6);
+    expect(chunkItems.length).toBe(6);
 
     // Verify on get that metrics are re-merged with root item
     const cachedResult = await Tasks.get(SERVICE_NAME, task.id);

@@ -21,7 +21,7 @@ import { byteSize } from "../util/byteSize.js";
  * Runs a function on a specified lambda worker
  * @param sketch
  * @param projectName name of project in package.json
- * @param functionName name of lambda worker function
+ * @param functionName name of sync geoprocessing function to run as worker
  * @param region AWS region specified in geoprocessing.json
  * @param functionParameters parameters required by lambda worker function
  * @param request

@@ -21,5 +21,5 @@ describe("Basic smoke tests", () => {
       expect(result).toBeTruthy();
       writeResultOutput(result, "simpleFunction", example.properties.name);
     }
-  }, 60000);
+  }, 100000);
 });

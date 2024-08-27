@@ -2,7 +2,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   BatchWriteCommand,
   DynamoDBDocument,
-  QueryCommandInput,
+  ScanCommandInput,
   paginateScan,
   DynamoDBDocumentPaginationConfiguration,
 } from "@aws-sdk/lib-dynamodb";
@@ -41,7 +41,7 @@ export async function deleteTasks(
 
   const taskKeys: TaskKey[] = [];
 
-  let query: QueryCommandInput = {
+  let query: ScanCommandInput = {
     TableName: tableName,
     ProjectionExpression: "id, service",
   };

@@ -114,9 +114,9 @@
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.1",
     "abortcontroller-polyfill": "^1.7.5",
-    "aws-sdk": "2.1674.0",
     "aws-cdk-lib": "2.151.0",
     "aws-regions": "2.3.1",
+    "aws-sdk": "2.1674.0",
     "bbox-fns": "^0.20.2",
     "bytes": "^3.1.2",
     "canonicalize": "^2.0.0",
@@ -175,6 +175,7 @@
     "react-test-renderer": "^18.3.1",
     "read-package-up": "^11.0.0",
     "reproject-geojson": "^0.5.0",
+    "runes2": "^1.1.4",
     "serve-static": "^1.15.0",
     "slonik": "33.3.1",
     "slonik-sql-tag-raw": "2.0.0",
@@ -213,16 +214,6 @@
     "identity-obj-proxy": "^3.0.0",
     "mock-socket": "^9.3.1",
     "typedoc": "^0.26.5"
-  },
-  "peerDependencies": {
-    "@turf/turf": "7.1.0 < 8.0.0",
-    "geoblaze": "2.8.0 < 3.0.0",
-    "globby": ">= 14.0.0 < 15.0.0",
-    "storybook": ">= 8.2.0 < 9.0.0",
-    "react-i18next": ">= 15.0.0 < 16.0.0",
-    "vite": ">= 5.4.0 < 6.0.0",
-    "vitest": ">= 2.0.0 < 3.0.0",
-    "zx": "8.1.0 < 9.0.0"
   },
   "eslintConfig": {
     "extends": [

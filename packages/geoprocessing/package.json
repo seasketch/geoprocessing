@@ -197,6 +197,7 @@
     "react-test-renderer": "^18.3.1",
     "read-package-up": "^11.0.0",
     "reproject-geojson": "^0.5.0",
+    "runes2": "^1.1.4",
     "serve-static": "^1.15.0",
     "slonik": "33.3.1",
     "slonik-sql-tag-raw": "2.0.0",
@@ -206,6 +207,7 @@
     "start-server-and-test": "^1.12.5",
     "storybook": "^8.1.1",
     "stream-buffers": "^3.0.2",
+    "string-length": "^6.0.0",
     "styled-components": "^6.1.11",
     "threads-plugin": "^1.4.0",
     "ts-loader": "^8.2.0",
@@ -237,10 +239,6 @@
     "identity-obj-proxy": "^3.0.0",
     "mock-socket": "^9.3.1",
     "typedoc": "^0.25.13"
-  },
-  "optionalDependencies": {
-    "bufferutil": "^4.0.8",
-    "utf-8-validate": "^5.0.2"
   },
   "eslintConfig": {
     "extends": [

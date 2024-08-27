@@ -240,7 +240,6 @@ export class GeoprocessingHandler<
     let task: GeoprocessingTask = await Tasks.create(
       serviceName,
       request.cacheKey,
-      context.awsRequestId,
       wss
     );
 

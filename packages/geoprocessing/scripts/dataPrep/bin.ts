@@ -1,6 +1,6 @@
 import bundleFeatures from "./bundleFeatures.js";
 import ora from "ora";
-import program from "commander";
+import { program } from "commander";
 import { createPool } from "slonik";
 import printSizeHistogram from "./printSizeHistogram.js";
 import inquirer from "inquirer";

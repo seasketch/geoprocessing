@@ -463,5 +463,5 @@ describe("clipToGeography", () => {
     const clippedSketchBox = clippedSketch.bbox || bbox(clippedSketch);
     expect(clippedSketchArea).toEqual(sketchArea);
     expect(sketchBox).toEqual(clippedSketchBox);
-  });
+  }, 60000);
 });

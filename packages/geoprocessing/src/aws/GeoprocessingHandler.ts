@@ -160,7 +160,17 @@ export class GeoprocessingHandler<
     // get cached result if available. standard method to get results for async function
     if (request.checkCacheOnly) {
       if (request.cacheKey) {
+        console.log(
+          "checkCacheOnly Tasks.get with",
+          serviceName,
+          request.cacheKey
+        );
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+
+        console.log(
+          "checkCacheOnly cachedResult",
+          JSON.stringify(cachedResult, null, 2)
+        );
 
         if (
           cachedResult &&

@@ -341,6 +341,9 @@ export default class TasksModel {
       const rootItem = items.Items.splice(rootItemIndex, 1)[0]; // mutates items
       const chunkItems = items.Items;
 
+      console.log("chunkItemsLength", chunkItems.length);
+      console.log("chunkItems", JSON.stringify(chunkItems, null, 2));
+
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {
         const chunkStrings = chunkItems.map((item) => item.data.chunk);
@@ -349,6 +352,7 @@ export default class TasksModel {
 
       return rootItem as unknown as GeoprocessingTask;
     } catch (e) {
+      console.log("TasksModel returning undefined, must have caught");
       return undefined;
     }
   }

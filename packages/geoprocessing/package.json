@@ -147,7 +147,6 @@
     "http-server": "^14.1.1",
     "humanize-duration": "^3.32.1",
     "i18next": "^23.14.0",
-    "i18next-browser-languagedetector": "^8.0.0",
     "inquirer": "^8.2.6",
     "inquirer-autocomplete-prompt": "^2.0.0",
     "jsdom": "^24.0.0",
@@ -168,7 +167,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-error-boundary": "^4.0.13",
-    "react-i18next": "^14.1.1",
+    "react-i18next": "^15.0.1",
     "react-popper": "^2.3.0",
     "react-table": "^7.8.0",
     "react-test-renderer": "^18.3.1",
@@ -214,7 +213,7 @@
     "eslint-plugin-unicorn": "^51.0.1",
     "identity-obj-proxy": "^3.0.0",
     "mock-socket": "^9.3.1",
-    "typedoc": "^0.25.13"
+    "typedoc": "^0.26.6"
   },
   "eslintConfig": {
     "extends": [

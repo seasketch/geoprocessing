@@ -319,7 +319,7 @@ export default class TasksModel {
       // Get all items under the same partition key (task id)
       const items = await this.db.send(
         new QueryCommand({
-          TableName: "tasks-core",
+          TableName: this.table,
           KeyConditionExpression: "#id = :id",
           ExpressionAttributeNames: {
             "#id": "id",

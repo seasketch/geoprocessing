@@ -175,6 +175,35 @@ describe("DynamoDB local", () => {
     expect(deepEqual(cachedMetrics, metrics)).toBe(true);
   });
 
+  test("tasks for multiple services should not get mixed", async () => {
+    const task = await Tasks.create("service1");
+    const metrics = [createMetric({ value: 15, sketchId: "test1" })];
+    const response = await Tasks.complete(task, {
+      metrics,
+    });
+    expect(response.statusCode).toBe(200);
+
+    const task2 = await Tasks.create("service2");
+    const metrics2 = [createMetric({ value: 30, sketchId: "test2" })];
+    const response2 = await Tasks.complete(task2, {
+      metrics: metrics2,
+    });
+    expect(response2.statusCode).toBe(200);
+
+    const cachedResult = await Tasks.get("service1", task.id);
+    const cachedMetrics = cachedResult?.data.metrics;
+    expect(cachedMetrics.length).toBe(1);
+    expect(isMetricArray(cachedMetrics)).toBe(true);
+    expect(deepEqual(cachedMetrics, metrics)).toBe(true);
+
+    const cachedResult2 = await Tasks.get("service2", task2.id);
+    const cachedMetrics2 = cachedResult2?.data.metrics;
+    expect(cachedMetrics2.length).toBe(1);
+    expect(isMetricArray(cachedMetrics2)).toBe(true);
+    expect(deepEqual(cachedMetrics2, metrics2)).toBe(true);
+  });
+
+  // To use this test, uncomment and create a sampleResult.json file in the same directory as this test file
   // test("real task should return real result", async () => {
   //   const task = await Tasks.create(SERVICE_NAME);
   //   const result = fs.readJsonSync("./src/aws/sampleResult.json");

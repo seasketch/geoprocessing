@@ -343,7 +343,10 @@ export default class TasksModel {
 
       // Remove root item. remainder, if any, is chunk items
       const rootItem = items.Items.splice(rootItemIndex, 1)[0]; // mutates items
-      const chunkItems = items.Items;
+      // Filter to only chunk items for this service
+      const chunkItems = items.Items.filter((item) =>
+        item.service.includes(service)
+      );
 
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {

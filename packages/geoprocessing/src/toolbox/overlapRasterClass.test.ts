@@ -10,8 +10,7 @@ import parseGeoraster from "georaster";
 import { overlapRasterClass } from "./overlapRasterClass.js";
 import { DataClass } from "../types/index.js";
 import { classIdMapping } from "../datasources/index.js";
-import bbox from "@turf/bbox";
-import { featureCollection } from "@turf/helpers";
+import { featureCollection, bbox } from "@turf/turf";
 import fix from "../testing/fixtures/sketches.js";
 
 // bbox  - [xmin, ymin, xmax, ymax]

@@ -10,8 +10,7 @@ import {
   isExternalVectorDatasource,
   isInternalVectorDatasource,
 } from "../../../src/index.js";
-import { featureCollection } from "@turf/helpers";
-import truncate from "@turf/truncate";
+import { featureCollection, truncate } from "@turf/turf";
 import { readDatasourceGeojsonById } from "../datasources/index.js";
 import { getFeatures } from "../../../src/dataproviders/index.js";
 

@@ -5,7 +5,7 @@ import {
   MultiPolygon,
   SketchCollection,
   Metric,
-  Georaster
+  Georaster,
 } from "../types/index.js";
 import {
   genSampleSketchCollection,
@@ -14,13 +14,12 @@ import {
   isSketchCollection,
   groupBy,
   clip,
-  isPolygonFeatureArray
+  isPolygonFeatureArray,
 } from "../helpers/index.js";
 import { createMetric, firstMatchingMetric } from "../metrics/index.js";
 import { overlapFeatures } from "./overlapFeatures.js";
 import { overlapArea } from "./overlapArea.js";
-import flatten from "@turf/flatten";
-import { featureCollection } from "@turf/helpers";
+import { featureCollection, flatten } from "@turf/turf";
 import cloneDeep from "lodash/cloneDeep.js";
 import { rasterMetrics } from "./rasterMetrics.js";
 
@@ -398,10 +397,9 @@ const getReducedGroupAreaOverlap = async (options: {
         "difference"
       )
     )
-    .reduce<Feature<Polygon | MultiPolygon>[]>(
-      (rem, diff) => (diff ? rem.concat(diff) : rem),
-      []
-    );
+    .reduce<
+      Feature<Polygon | MultiPolygon>[]
+    >((rem, diff) => (diff ? rem.concat(diff) : rem), []);
   const otherRemSketches = genSampleSketchCollection(
     featureCollection<Polygon>(
       flatten(featureCollection(otherOverlap)).features

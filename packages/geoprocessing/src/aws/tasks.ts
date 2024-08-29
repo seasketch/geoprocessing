@@ -338,8 +338,8 @@ export default class TasksModel {
         (item) => item.service === service
       );
 
-      console.log("itemsLength", items.Items.length);
-      console.log("items", JSON.stringify(items.Items, null, 2));
+      // console.log("itemsLength", items.Items.length);
+      // console.log("items", JSON.stringify(items.Items, null, 2));
 
       // Remove root item. remainder, if any, is chunk items
       const rootItem = items.Items.splice(rootItemIndex, 1)[0]; // mutates items

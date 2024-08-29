@@ -1,4 +1,4 @@
-import { featureCollection, polygon } from "@turf/helpers";
+import { featureCollection, polygon, bbox } from "@turf/turf";
 import {
   Geometry,
   Polygon,
@@ -9,7 +9,6 @@ import {
 } from "../types/index.js";
 import { isFeature } from "./geo.js";
 import { v4 as uuid } from "uuid";
-import bbox from "@turf/bbox";
 
 /** Helper to convert a Feature or a FeatureCollection to a Feature array */
 export function toFeatureArray(input: Feature | FeatureCollection) {
@@ -66,8 +65,8 @@ export const genFeature = <G extends Geometry = SketchGeometryTypes>(
     bbox: feature.bbox
       ? feature.bbox
       : feature.geometry
-      ? bbox(feature.geometry)
-      : undefined,
+        ? bbox(feature.geometry)
+        : undefined,
   };
 };
 

@@ -18,7 +18,7 @@ import {
   UserAttribute,
 } from "../types/sketch.js";
 
-import { featureCollection, polygon } from "@turf/helpers";
+import { featureCollection, polygon, bbox } from "@turf/turf";
 
 import { hasOwnProperty, isObject } from "./native.js";
 import {
@@ -30,7 +30,6 @@ import {
 } from "./geo.js";
 
 import { v4 as uuid } from "uuid";
-import bbox from "@turf/bbox";
 import { ReportContextValue } from "../context/index.js";
 /**
  * UserAttributes are those filled in via the attributes form specified as
@@ -394,7 +393,7 @@ export const genSketchCollection = <G extends Geometry = SketchGeometryTypes>(
  * Returns a Sketch with given geometry and Geometry type, Properties are reasonable random
  */
 export const genSampleSketch = <
-  G extends Geometry = Polygon | MultiPolygon | LineString
+  G extends Geometry = Polygon | MultiPolygon | LineString,
 >(
   geometry: G,
   name?: string
@@ -463,7 +462,7 @@ export const genSampleSketchCollection = <G extends Geometry = Polygon>(
  * @param geometry
  */
 export const genSampleSketchCollectionFromSketches = <
-  G extends Geometry = Polygon | LineString
+  G extends Geometry = Polygon | LineString,
 >(
   sketches: Sketch<G>[],
   name?: string

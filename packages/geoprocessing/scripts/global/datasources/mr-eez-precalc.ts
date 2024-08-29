@@ -1,11 +1,6 @@
 import fs from "fs-extra";
-import area from "@turf/area";
-import bbox from "@turf/bbox";
+import { area, bbox } from "@turf/turf";
 import { $ } from "zx";
-import { getFeatures } from "../../../src/dataproviders/index.js";
-import { featureCollection as fc } from "@turf/helpers";
-import { chunk, clip, roundDecimal } from "../../../src/helpers/index.js";
-import project from "./ProjectClientGlobal.js";
 
 // Calculates stats using Marine Regions EEZ v12
 // Which metadata says is based on ESRI World Countries 2014 with some differences, possibly amendments using GEBCO or other bathymetry data

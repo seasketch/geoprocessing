@@ -8,10 +8,12 @@ import {
 } from "../types/index.js";
 import { isSketchCollection, toSketchArray, clip } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
-import { featureCollection } from "@turf/helpers";
-import { featureEach } from "@turf/meta";
-import turfArea from "@turf/area";
-import simplify from "@turf/simplify";
+import {
+  featureCollection,
+  featureEach,
+  area as turfArea,
+  simplify,
+} from "@turf/turf";
 import { ValidationError } from "../types/index.js";
 
 /**
@@ -202,8 +204,8 @@ export async function overlapSubarea(
     options?.outerArea && operation === "intersection"
       ? options?.outerArea
       : subareaFeature
-      ? turfArea(subareaFeature)
-      : 0;
+        ? turfArea(subareaFeature)
+        : 0;
   const sketches = toSketchArray(sketch);
 
   if (operation === "difference" && !options?.outerArea)

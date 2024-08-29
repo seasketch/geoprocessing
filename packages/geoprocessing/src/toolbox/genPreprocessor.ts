@@ -1,11 +1,12 @@
 import { clip, isPolygonFeature } from "../helpers/index.js";
 import { clipMultiMerge } from "../helpers/index.js";
-import { ValidationError, Feature, Polygon, MultiPolygon } from "../types/index.js";
-
-import area from "@turf/area";
-import { featureCollection as fc } from "@turf/helpers";
-import flatten from "@turf/flatten";
-import kinks from "@turf/kinks";
+import {
+  ValidationError,
+  Feature,
+  Polygon,
+  MultiPolygon,
+} from "../types/index.js";
+import { area, featureCollection as fc, flatten, kinks } from "@turf/turf";
 import { ClipOptions, FeatureClipOperation } from "../types/dataProcessor.js";
 
 /**

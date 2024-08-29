@@ -1,6 +1,5 @@
 import { Position } from "geojson";
-import { feature, featureCollection } from "@turf/helpers";
-import { getCoords, getType } from "@turf/invariant";
+import { feature, featureCollection, getCoords, getType } from "@turf/turf";
 
 /**
  * Cleans geojson coordinates to be within the bounds of the world [-90, -180, 90, 180], so that they don't wrap off the end, and can be split

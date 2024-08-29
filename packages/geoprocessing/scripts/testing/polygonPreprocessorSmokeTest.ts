@@ -1,7 +1,7 @@
 import { getExampleFeatures, writeResultOutput } from "./index.js";
 import { Feature } from "geojson";
 import { ValidationError } from "../../src/index.js";
-import booleanValid from "@turf/boolean-valid";
+import { booleanValid } from "@turf/turf";
 
 /**
  * Runs smoke test for a preprocessor function taking polygon input

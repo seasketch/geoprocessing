@@ -1,4 +1,4 @@
-import { feature } from "@turf/helpers";
+import { feature } from "@turf/turf";
 import { Feature, Polygon } from "../../types/geojson.js";
 import { genSampleSketch } from "../../helpers/index.js";
 

@@ -1,4 +1,4 @@
-import bbox from "@turf/bbox";
+import { bbox } from "@turf/turf";
 import { Feature, MultiPolygon, Polygon } from "../types/index.js";
 import {
   isExternalVectorDatasource,

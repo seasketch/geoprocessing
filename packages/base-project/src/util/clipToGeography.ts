@@ -10,15 +10,13 @@ import {
   genSketchCollection,
 } from "@seasketch/geoprocessing/client-core";
 import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
-import { featureCollection } from "@turf/helpers";
-import bbox from "@turf/bbox";
+import { bbox, featureCollection, simplify } from "@turf/turf";
 import project from "../../project/projectClient.js";
 import {
   clipMultiMerge,
   zeroSketchArray,
   zeroPolygon,
 } from "@seasketch/geoprocessing";
-import simplify from "@turf/simplify";
 
 /**
  * Clips sketch to geography

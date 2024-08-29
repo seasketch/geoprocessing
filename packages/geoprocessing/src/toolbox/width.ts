@@ -1,8 +1,4 @@
-import bbox from "@turf/bbox";
-import bboxPolygon from "@turf/bbox-polygon";
-import explode from "@turf/explode";
-import distance from "@turf/distance";
-import { AllGeoJSON } from "@turf/helpers";
+import { bbox, bboxPolygon, explode, distance, AllGeoJSON } from "@turf/turf";
 import { BBox } from "../types/geojson.js";
 
 /**

@@ -1,9 +1,7 @@
 import fs from "fs-extra";
-import area from "@turf/area";
-import bbox from "@turf/bbox";
+import { area, bbox, featureCollection as fc } from "@turf/turf";
 import { $ } from "zx";
 import { getFeatures } from "../../../src/dataproviders/index.js";
-import { featureCollection as fc } from "@turf/helpers";
 import { chunk, clip, roundDecimal } from "../../../src/helpers/index.js";
 import project from "./ProjectClientGlobal.js";
 

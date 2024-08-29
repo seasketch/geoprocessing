@@ -4,6 +4,7 @@ import TaskModel from "./tasks.js";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient, CreateTableCommand } from "@aws-sdk/client-dynamodb";
 import deepEqual from "fast-deep-equal";
+import fs from "fs-extra";
 
 const dynamodb = new DynamoDBClient({
   endpoint: "http://localhost:8000",
@@ -173,6 +174,19 @@ describe("DynamoDB local", () => {
     expect(isMetricArray(cachedMetrics)).toBe(true);
     expect(deepEqual(cachedMetrics, metrics)).toBe(true);
   });
+
+  // test("real task should return real result", async () => {
+  //   const task = await Tasks.create(SERVICE_NAME);
+  //   const result = fs.readJsonSync("./src/aws/sampleResult.json");
+  //   const response = await Tasks.complete(task, result);
+  //   expect(response.statusCode).toBe(200);
+
+  //   const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
+  //   // console.log("cachedResult", JSON.stringify(cachedResult, null, 2));
+
+  //   expect(cachedResult).toBeTruthy();
+  //   expect(deepEqual(cachedResult!.data, result)).toBe(true);
+  // });
 
   test("complete a task with multiple sketch metrics above size threshold should split into multiple items", async () => {
     const task = await Tasks.create(SERVICE_NAME);

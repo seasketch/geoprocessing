@@ -337,12 +337,13 @@ export default class TasksModel {
       const rootItemIndex = items.Items.findIndex(
         (item) => item.service === service
       );
+
+      console.log("itemsLength", items.Items.length);
+      console.log("items", JSON.stringify(items.Items, null, 2));
+
       // Remove root item. remainder, if any, is chunk items
       const rootItem = items.Items.splice(rootItemIndex, 1)[0]; // mutates items
       const chunkItems = items.Items;
-
-      console.log("chunkItemsLength", chunkItems.length);
-      console.log("chunkItems", JSON.stringify(chunkItems, null, 2));
 
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {
@@ -351,9 +352,13 @@ export default class TasksModel {
       }
 
       return rootItem as unknown as GeoprocessingTask;
-    } catch (e) {
-      console.log("TasksModel returning undefined, must have caught");
-      return undefined;
+    } catch (e: unknown) {
+      console.log("TasksModel get threw an error");
+      if (e instanceof Error) {
+        console.log(e.message);
+        console.log(e.stack);
+        return undefined;
+      }
     }
   }
 

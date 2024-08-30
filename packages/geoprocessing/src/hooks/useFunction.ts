@@ -405,6 +405,13 @@ const getSocket = (
   socket.onmessage = function (event) {
     let incomingData = JSON.parse(event.data);
 
+    if (event.data.timestamp) {
+      const nowTime = Date.now();
+      console.log("timestamp: " + event.data.timestamp);
+      console.log("received: " + nowTime);
+      console.log("diff: " + (nowTime - event.data.timestamp));
+    }
+
     // check cache keys match. can have events for other reports appear if several are open at once.
     if (
       incomingData.cacheKey === cacheKey &&

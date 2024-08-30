@@ -407,9 +407,9 @@ const getSocket = (
 
     if (event.data.timestamp) {
       const nowTime = Date.now();
-      console.log("timestamp: " + event.data.timestamp);
-      console.log("received: " + nowTime);
-      console.log("diff: " + (nowTime - event.data.timestamp));
+      console.log(`timestamp ${currServiceName}: ${event.data.timestamp}`);
+      console.log(`received ${currServiceName}: ${nowTime}`);
+      console.log(`diff ${currServiceName}: ${nowTime - event.data.timestamp}`);
     }
 
     // check cache keys match. can have events for other reports appear if several are open at once.

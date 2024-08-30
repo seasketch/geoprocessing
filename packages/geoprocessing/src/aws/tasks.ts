@@ -159,6 +159,7 @@ export default class TasksModel {
 
     // Store each JSON substring as a separate dynamodb item, with chunk index
     // all under same partition key (task.id) as root item for easy retrieval
+    console.log(`Saving ${jsonStrings.length} chunks`);
     const promises = jsonStrings.map(async (chunk, index) => {
       return this.db.send(
         new UpdateCommand({
@@ -350,6 +351,7 @@ export default class TasksModel {
 
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {
+        console.log(`Merging ${chunkItems.length} chunks`);
         const chunkStrings = chunkItems.map((item) => item.data.chunk);
         rootItem.data = this.fromJsonStrings(chunkStrings);
       }

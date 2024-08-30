@@ -134,6 +134,9 @@ export class GeoprocessingHandler<
 
     const request = this.parseRequest<G>(event);
 
+    const handlerTime = Date.now();
+    console.time(`handler ${this.options.title} - ${handlerTime}`);
+
     // TODO: Authorization
     // Bail out if replaying previous task
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
@@ -320,6 +323,9 @@ export class GeoprocessingHandler<
               `sent task ${task.id} result to socket ${wssUrl} for service ${task.service}`
             );
           }
+
+          console.timeEnd(`handler ${this.options.title} - ${handlerTime}`);
+
           return promise;
         } catch (e: unknown) {
           let sname = encodeURIComponent(task.service);
@@ -369,6 +375,7 @@ export class GeoprocessingHandler<
         let payload = JSON.stringify(event);
 
         const client = new LambdaClient({});
+        console.log("Invoking run handler: ", RUN_HANDLER_FUNCTION_NAME);
         const command = new InvokeCommand({
           FunctionName: RUN_HANDLER_FUNCTION_NAME,
           Payload: payload,
@@ -376,6 +383,8 @@ export class GeoprocessingHandler<
           InvocationType: "Event",
         });
         await client.send(command);
+
+        console.timeEnd(`handler ${this.options.title} - ${handlerTime}`);
 
         return {
           statusCode: 200,
@@ -435,6 +444,7 @@ export class GeoprocessingHandler<
       cacheKey,
       serviceName: serviceName,
       fromClient: "false",
+      timestamp: Date.now(),
     });
 
     // hit sendmessage route, invoking sendmessage lambda
@@ -442,9 +452,6 @@ export class GeoprocessingHandler<
       message: "sendmessage",
       data: data,
     });
-
-    // console.log("sendSocketMessage completed", data);
-
     socket.send(message);
     socket.close(1000, serviceName);
   }

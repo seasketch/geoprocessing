@@ -160,7 +160,19 @@ export class GeoprocessingHandler<
     // get cached result if available. standard method to get results for async function
     if (request.checkCacheOnly) {
       if (request.cacheKey) {
+        console.log(
+          "checkCacheOnly task get with",
+          serviceName,
+          request.cacheKey
+        );
+        const timestamp = Date.now();
+        console.time(
+          `checkCacheOnly task get ${this.options.title} - ${timestamp}`
+        );
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+        console.timeEnd(
+          `checkCacheOnly task get ${this.options.title} - ${timestamp}`
+        );
 
         if (
           cachedResult &&
@@ -206,7 +218,10 @@ export class GeoprocessingHandler<
       request.cacheKey &&
       (this.options.executionMode === "sync" || ASYNC_REQUEST_TYPE === "start")
     ) {
+      const timestamp = Date.now();
+      console.time(`sync task get ${this.options.title} - ${timestamp}`);
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+      console.timeEnd(`sync task get ${this.options.title} - ${timestamp}`);
       if (
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Pending
@@ -276,10 +291,10 @@ export class GeoprocessingHandler<
         const featureSet = await fetchGeoJSON<G>(request);
         const extraParams = request.extraParams as unknown as P;
         try {
-          const timestamp = Date.now();
-          console.time(`run func ${this.options.title} - ${timestamp}`);
+          const tsRun = Date.now();
+          console.time(`run func ${this.options.title} - ${tsRun}`);
           const results = await this.func(featureSet, extraParams, request);
-          console.timeEnd(`run func ${this.options.title} - ${timestamp}`);
+          console.timeEnd(`run func ${this.options.title} - ${tsRun}`);
 
           task.data = results;
           task.status = GeoprocessingTaskStatus.Completed;
@@ -288,7 +303,12 @@ export class GeoprocessingHandler<
 
           //the duration has been updated, now update the estimates table
           await Tasks.updateEstimate(task);
+          const tsComplete = Date.now();
+          console.time(`task complete ${this.options.title} - ${tsComplete}`);
           let promise = await Tasks.complete(task, results);
+          console.timeEnd(
+            `task complete ${this.options.title} - ${tsComplete}`
+          );
 
           if (this.options.executionMode !== "sync") {
             let sname = encodeURIComponent(task.service);

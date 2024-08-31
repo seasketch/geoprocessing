@@ -134,7 +134,7 @@ export default class TasksModel {
     const jsonStrings = this.toJsonStrings(results, {
       minSplitSizeBytes: options.minSplitSizeBytes,
     });
-    console.time(`split strings - ${tsStrings}`);
+    console.timeEnd(`split strings - ${tsStrings}`);
     const numJsonStrings = jsonStrings.length;
 
     // Update root task

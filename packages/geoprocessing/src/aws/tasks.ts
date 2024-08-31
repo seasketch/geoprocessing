@@ -353,12 +353,12 @@ export default class TasksModel {
         item.service.includes(service)
       );
 
-      console.log("itemsLength", items.Items.length);
-      items.Items.forEach((item, index) => {
-        console.log(`item ${index}`, JSON.stringify(item, null, 2));
+      console.log("serviceItemsLength", serviceItems.length);
+      serviceItems.forEach((item, index) => {
+        console.log(`serviceItem ${index}`, JSON.stringify(item, null, 2));
       });
 
-      const rootItemIndex = items.Items.findIndex(
+      const rootItemIndex = serviceItems.findIndex(
         (item) => item.service === service
       );
       console.log("rootItemIndex", rootItemIndex);

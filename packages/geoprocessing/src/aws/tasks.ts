@@ -129,9 +129,12 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
+    const tsStrings = Date.now();
+    console.time(`split strings - ${tsStrings}`);
     const jsonStrings = this.toJsonStrings(results, {
       minSplitSizeBytes: options.minSplitSizeBytes,
     });
+    console.time(`split strings - ${tsStrings}`);
     const numJsonStrings = jsonStrings.length;
 
     // Update root task

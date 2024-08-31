@@ -348,20 +348,24 @@ export default class TasksModel {
 
       if (!items.Items || items.Items.length === 0) return undefined;
 
-      // Find root item
+      // Filter down to root and chunk items for service
+      const serviceItems = items.Items.filter((item) =>
+        item.service.includes(service)
+      );
+
+      console.log("itemsLength", items.Items.length);
+      items.Items.forEach((item, index) => {
+        console.log(`item ${index}`, JSON.stringify(item, null, 2));
+      });
+
       const rootItemIndex = items.Items.findIndex(
         (item) => item.service === service
       );
-
-      // console.log("itemsLength", items.Items.length);
-      // console.log("items", JSON.stringify(items.Items, null, 2));
+      console.log("rootItemIndex", rootItemIndex);
 
       // Remove root item. remainder, if any, is chunk items
-      const rootItem = items.Items.splice(rootItemIndex, 1)[0]; // mutates items
-      // Filter to only chunk items for this service
-      const chunkItems = items.Items.filter((item) =>
-        item.service.includes(service)
-      );
+      const rootItem = serviceItems.splice(rootItemIndex, 1)[0]; // mutates items
+      const chunkItems = serviceItems;
 
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {

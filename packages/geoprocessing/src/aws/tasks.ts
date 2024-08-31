@@ -348,6 +348,14 @@ export default class TasksModel {
 
       if (!items.Items || items.Items.length === 0) return undefined;
 
+      items.Items.forEach((item, index) => {
+        console.log(
+          `item ${index}`,
+          item.service,
+          JSON.stringify(item, null, 2)
+        );
+      });
+
       // Filter down to root and chunk items for service
       const serviceItems = items.Items.filter((item) =>
         item.service.includes(service)

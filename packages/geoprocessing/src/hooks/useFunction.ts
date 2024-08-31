@@ -125,7 +125,6 @@ export const useFunction = <ResultType>(
             context.sketchProperties,
             extraParams
           );
-          console.log(`cacheKey: ${theCacheKey}`);
           payload.cacheKey = theCacheKey;
         }
 

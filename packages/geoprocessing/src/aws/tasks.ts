@@ -371,9 +371,15 @@ export default class TasksModel {
       );
       console.log("rootItemIndex", rootItemIndex);
 
-      // Remove root item. remainder, if any, is chunk items
+      // Remove root item.
       const rootItem = serviceItems.splice(rootItemIndex, 1)[0]; // mutates items
-      const chunkItems = serviceItems;
+      // Filter for chunk items for this service, just in case there's more under partition key
+      const chunkItems = serviceItems.filter((item) =>
+        item.service.includes(`${service}-chunk`)
+      );
+      chunkItems.forEach((item, index) => {
+        console.log(`chunkItem ${index}`, JSON.stringify(item, null, 2));
+      });
 
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {

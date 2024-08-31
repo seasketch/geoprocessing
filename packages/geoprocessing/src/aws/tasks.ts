@@ -6,8 +6,13 @@ import {
   PutCommand,
   GetCommand,
   QueryCommand,
+  paginateQuery,
+  DynamoDBDocumentPaginationConfiguration,
+  QueryCommandInput,
 } from "@aws-sdk/lib-dynamodb";
+
 import { JSONValue } from "../types/base.js";
+import { toJsonFile } from "../helpers/fs.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -165,6 +170,14 @@ export default class TasksModel {
       })
     );
     console.timeEnd(`save root - ${tsRootChunk}`);
+
+    // const jsonStringsHash = jsonStrings.reduce<Record<string, string>>(
+    //   (acc, curString, index) => {
+    //     return { [index]: curString, ...acc };
+    //   },
+    //   {}
+    // );
+    // toJsonFile(jsonStringsHash, "./chunk_toJsonStrings.json");
 
     // Store each JSON substring as a separate dynamodb item, with chunk index
     // all under same partition key (task.id) as root item for easy retrieval
@@ -332,23 +345,36 @@ export default class TasksModel {
   ): Promise<GeoprocessingTask | undefined> {
     try {
       // Get all items under the same partition key (task id)
-      const items = await this.db.send(
-        new QueryCommand({
-          TableName: this.table,
-          KeyConditionExpression: "#id = :id",
-          ExpressionAttributeNames: {
-            "#id": "id",
-          },
-          ExpressionAttributeValues: {
-            ":id": taskId,
-          },
-          ScanIndexForward: true, // sort ascending by range key (service)
-        })
-      );
+      const query: QueryCommandInput = {
+        TableName: this.table,
+        KeyConditionExpression: "#id = :id",
+        ExpressionAttributeNames: {
+          "#id": "id",
+        },
+        ExpressionAttributeValues: {
+          ":id": taskId,
+        },
+        ScanIndexForward: true, // sort ascending by range key (service)
+      };
 
-      if (!items.Items || items.Items.length === 0) return undefined;
+      // Pager will return a variable number of items, up to 1MB of data
+      const paginatorConfig: DynamoDBDocumentPaginationConfiguration = {
+        client: this.db,
+        pageSize: 25,
+      };
+      const pager = paginateQuery(paginatorConfig, query);
 
-      items.Items.forEach((item, index) => {
+      // Build list of items, page by page
+      const items: Record<string, any>[] = [];
+      for await (const result of pager) {
+        if (result && result.Items) {
+          items.push(...result.Items);
+        }
+      }
+
+      if (!items || items.length === 0) return undefined;
+
+      items.forEach((item, index) => {
         console.log(
           `item ${index}`,
           item.service,
@@ -357,7 +383,7 @@ export default class TasksModel {
       });
 
       // Filter down to root and chunk items for service
-      const serviceItems = items.Items.filter((item) =>
+      const serviceItems = items.filter((item) =>
         item.service.includes(service)
       );
 
@@ -447,12 +473,20 @@ export default class TasksModel {
    */
   private fromJsonStrings(jsonStringChunks: string[]): JSONValue {
     const mergedString = jsonStringChunks.join("");
+
+    // const jsonStringsHash = jsonStringChunks.reduce<Record<string, string>>(
+    //   (acc, curString, index) => {
+    //     return { [index]: curString, ...acc };
+    //   },
+    //   {}
+    // );
+    // toJsonFile(jsonStringsHash, "chunk_fromJsonStrings.json");
+
     let parsedString = "";
     try {
       parsedString = JSON.parse(mergedString);
     } catch (e: unknown) {
       if (e instanceof Error) {
-        console.log("mergedString", mergedString);
         throw new Error("Error merging JSON string chunks: " + e.message);
       }
     }

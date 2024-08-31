@@ -222,7 +222,6 @@ describe("DynamoDB local", () => {
   //   // console.log("cachedResult", JSON.stringify(cachedResult, null, 2));
 
   //   expect(cachedResult).toBeTruthy();
-  //   expect(deepEqual(cachedResult!.data, result)).toBe(true);
   // });
 
   test("complete a task with multiple sketch metrics above size threshold should split into multiple items", async () => {

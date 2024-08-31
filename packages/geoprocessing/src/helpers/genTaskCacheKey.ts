@@ -8,12 +8,13 @@ import canonicalize from "../util/canonicalize.js";
  * but not arrays.  If you use arrays as extraParam values, make sure the order stays the same and sort first if needed to generate a consistent cache key.
  */
 export const genTaskCacheKey = (
+  service: string,
   /** Properties of sketch to generate cache key for */
   props: SketchProperties,
   /** Extra parameters to include in cache key */
   extraParams: Record<string, unknown> = {}
 ) => {
-  let cacheKey = `${props.id}-${props.updatedAt}`;
+  let cacheKey = `${service}-${props.id}-${props.updatedAt}`;
   if (Object.keys(extraParams).length > 0) {
     // Ensure JSON object has consistent stringification
     const canon = canonicalize(extraParams);

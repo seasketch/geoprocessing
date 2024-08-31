@@ -38,7 +38,7 @@ export async function runLambdaWorker(
   request: GeoprocessingRequestModel<Polygon | MultiPolygon>
 ): Promise<InvocationResponse> {
   // Create cache key for this task
-  const cacheKey = genTaskCacheKey(sketch.properties, {
+  const cacheKey = genTaskCacheKey(functionName, sketch.properties, {
     cacheId: `${JSON.stringify(functionParameters)}`,
   } as GeoprocessingRequestParams);
 

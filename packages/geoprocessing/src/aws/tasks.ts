@@ -447,6 +447,15 @@ export default class TasksModel {
    */
   private fromJsonStrings(jsonStringChunks: string[]): JSONValue {
     const mergedString = jsonStringChunks.join("");
-    return JSON.parse(mergedString);
+    let parsedString = "";
+    try {
+      parsedString = JSON.parse(mergedString);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        console.log("mergedString", mergedString);
+        throw new Error("Error merging JSON string chunks: " + e.message);
+      }
+    }
+    return parsedString;
   }
 }

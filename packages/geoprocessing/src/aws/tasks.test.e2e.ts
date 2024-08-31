@@ -141,22 +141,30 @@ describe("DynamoDB local", () => {
       },
     });
 
-    // Should be two items under the one partition key (task id), the root and the chunk
+    // Should be three items under the one partition key (task id), the root and two chunks
     console.log(JSON.stringify(items, null, 2));
-    expect(items.Count).toBe(2);
+    expect(items.Count).toBe(3);
 
     const rootItem = items.Items?.find((item) => item.service === SERVICE_NAME);
     expect(rootItem && rootItem.status).toBe("completed");
 
-    const chunkItem = items.Items?.find(
+    const chunkItem0 = items.Items?.find(
       (item) => item.service === `${SERVICE_NAME}-chunk-0`
     );
 
+    const chunkItem1 = items.Items?.find(
+      (item) => item.service === `${SERVICE_NAME}-chunk-1`
+    );
+
     expect(response.statusCode).toBe(200);
-    expect(chunkItem).toBeTruthy();
-    expect(chunkItem!.data).toBeTruthy();
-    expect(chunkItem!.data!.chunk).toBeTruthy();
-    expect(chunkItem!.data!.chunk).toEqual('{"area":1234556}');
+    expect(chunkItem0).toBeTruthy();
+    expect(chunkItem0!.data).toBeTruthy();
+    expect(chunkItem0!.data!.chunk).toBeTruthy();
+    expect(typeof chunkItem0!.data!.chunk).toBe("string");
+    expect(chunkItem1).toBeTruthy();
+    expect(chunkItem1!.data).toBeTruthy();
+    expect(chunkItem1!.data!.chunk).toBeTruthy();
+    expect(typeof chunkItem1!.data!.chunk).toBe("string");
   });
 
   test("completed task should return merged result", async () => {
@@ -260,8 +268,8 @@ describe("DynamoDB local", () => {
     });
 
     expect(rootItem && rootItem.status).toBe("completed");
-    expect(rootItem && rootItem.data.numChunks).toBe(6);
-    expect(chunkItems.length).toBe(6);
+    expect(rootItem && rootItem.data.numChunks).toBe(5);
+    expect(chunkItems.length).toBe(5);
 
     // Verify on get that metrics are re-merged with root item
     const cachedResult = await Tasks.get(SERVICE_NAME, task.id);

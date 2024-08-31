@@ -7,10 +7,7 @@ import {
   GetCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
-
-import cloneDeep from "lodash/cloneDeep.js";
 import { JSONValue } from "../types/base.js";
-import fastChunkString from "../helpers/fastChunkString.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -120,6 +117,12 @@ export default class TasksModel {
     return task;
   }
 
+  /**
+   * @param task
+   * @param results - JSON serializable object, with no string larger than 400KB without a space character.  Spaces are used to chunk result
+   * @param options
+   * @returns
+   */
   async complete(
     task: GeoprocessingTask,
     results: any,
@@ -402,17 +405,23 @@ export default class TasksModel {
     rootResult: JSONValue,
     options: { minSplitSizeBytes?: number } = {}
   ): string[] {
+    const rootString = JSON.stringify(rootResult, null, 1); // add spaces to string for chunking on
     const minSplitSizeBytes = options.minSplitSizeBytes || 350 * 1024;
-    const charsPerChunk = minSplitSizeBytes / 2; // 2 bytes per char
-
-    const rootData = cloneDeep(rootResult);
-    const rootString = JSON.stringify(rootData);
-    const resultChunks = fastChunkString(rootString, {
-      size: charsPerChunk,
-      unicodeAware: true,
-    });
-
-    return resultChunks;
+    let buf = Buffer.from(rootString);
+    const result: string[] = [];
+    while (buf.length) {
+      // Find last space before minSplitSizeBytes
+      let i = buf.lastIndexOf(32, minSplitSizeBytes + 1);
+      // If no space found, try forward search
+      if (i < 0) i = buf.indexOf(32, minSplitSizeBytes);
+      // If there's no space at all, take the whole string
+      if (i < 0) i = buf.length;
+      // This is a safe cut-off point; never half-way a multi-byte
+      const partial = buf.slice(0, i).toString();
+      result.push(partial);
+      buf = buf.slice(i + 1); // Skip space (if any)
+    }
+    return result;
   }
 
   /**

@@ -120,11 +120,13 @@ export const useFunction = <ResultType>(
           extraParams: JSON.stringify(extraParams), // will be url encoded automatically
         };
         if (context.sketchProperties.id && context.sketchProperties.updatedAt) {
-          payload.cacheKey = genTaskCacheKey(
+          const theCacheKey = genTaskCacheKey(
             functionTitle,
             context.sketchProperties,
             extraParams
           );
+          console.log(`cacheKey: ${theCacheKey}`);
+          payload.cacheKey = theCacheKey;
         }
 
         // check local results cache. may already be available

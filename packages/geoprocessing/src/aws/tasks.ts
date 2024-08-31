@@ -135,6 +135,8 @@ export default class TasksModel {
     const numJsonStrings = jsonStrings.length;
 
     // Update root task
+    const tsRootChunk = Date.now();
+    console.time(`save root - ${tsRootChunk}`);
     await this.db.send(
       new UpdateCommand({
         TableName: this.table,
@@ -156,11 +158,14 @@ export default class TasksModel {
         },
       })
     );
+    console.timeEnd(`save root - ${tsRootChunk}`);
 
     // Store each JSON substring as a separate dynamodb item, with chunk index
     // all under same partition key (task.id) as root item for easy retrieval
     console.log(`Saving ${jsonStrings.length} chunks`);
     const promises = jsonStrings.map(async (chunk, index) => {
+      console.log("chunk", chunk);
+      console.log(`Chunk ${index} - ${chunk.length} length`);
       return this.db.send(
         new UpdateCommand({
           TableName: this.table,
@@ -183,7 +188,10 @@ export default class TasksModel {
         })
       );
     });
+    const tsSaveChunk = Date.now();
+    console.time(`save chunks - ${tsSaveChunk}`);
     await Promise.all(promises);
+    console.timeEnd(`save chunks - ${tsSaveChunk}`);
 
     return {
       statusCode: 200,

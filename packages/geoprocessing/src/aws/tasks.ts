@@ -387,15 +387,15 @@ export default class TasksModel {
         item.service.includes(service)
       );
 
-      console.log("serviceItemsLength", serviceItems.length);
-      serviceItems.forEach((item, index) => {
-        console.log(`serviceItem ${index}`, JSON.stringify(item, null, 2));
-      });
+      // console.log("serviceItemsLength", serviceItems.length);
+      // serviceItems.forEach((item, index) => {
+      //   console.log(`serviceItem ${index}`, JSON.stringify(item, null, 2));
+      // });
 
       const rootItemIndex = serviceItems.findIndex(
         (item) => item.service === service
       );
-      console.log("rootItemIndex", rootItemIndex);
+      // console.log("rootItemIndex", rootItemIndex);
 
       // Remove root item.
       const rootItem = serviceItems.splice(rootItemIndex, 1)[0]; // mutates items
@@ -403,9 +403,10 @@ export default class TasksModel {
       const chunkItems = serviceItems.filter((item) =>
         item.service.includes(`${service}-chunk`)
       );
-      chunkItems.forEach((item, index) => {
-        console.log(`chunkItem ${index}`, JSON.stringify(item, null, 2));
-      });
+
+      // chunkItems.forEach((item, index) => {
+      //   console.log(`chunkItem ${index}`, JSON.stringify(item, null, 2));
+      // });
 
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {

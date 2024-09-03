@@ -6,11 +6,13 @@ import {
   PutCommand,
   GetCommand,
   QueryCommand,
+  paginateQuery,
+  DynamoDBDocumentPaginationConfiguration,
+  QueryCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 
-import cloneDeep from "lodash/cloneDeep.js";
 import { JSONValue } from "../types/base.js";
-import fastChunkString from "../helpers/fastChunkString.js";
+import { toJsonFile } from "../helpers/fs.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -120,6 +122,12 @@ export default class TasksModel {
     return task;
   }
 
+  /**
+   * @param task
+   * @param results - JSON serializable object, with no string larger than 400KB without a space character.  Spaces are used to chunk result
+   * @param options
+   * @returns
+   */
   async complete(
     task: GeoprocessingTask,
     results: any,
@@ -129,12 +137,17 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
+    const tsStrings = Date.now();
+    console.time(`split strings - ${tsStrings}`);
     const jsonStrings = this.toJsonStrings(results, {
       minSplitSizeBytes: options.minSplitSizeBytes,
     });
+    console.timeEnd(`split strings - ${tsStrings}`);
     const numJsonStrings = jsonStrings.length;
 
     // Update root task
+    const tsRootChunk = Date.now();
+    console.time(`save root - ${tsRootChunk}`);
     await this.db.send(
       new UpdateCommand({
         TableName: this.table,
@@ -156,10 +169,22 @@ export default class TasksModel {
         },
       })
     );
+    console.timeEnd(`save root - ${tsRootChunk}`);
+
+    // const jsonStringsHash = jsonStrings.reduce<Record<string, string>>(
+    //   (acc, curString, index) => {
+    //     return { [index]: curString, ...acc };
+    //   },
+    //   {}
+    // );
+    // toJsonFile(jsonStringsHash, "./chunk_toJsonStrings.json");
 
     // Store each JSON substring as a separate dynamodb item, with chunk index
     // all under same partition key (task.id) as root item for easy retrieval
+    console.log(`Saving ${jsonStrings.length} chunks`);
     const promises = jsonStrings.map(async (chunk, index) => {
+      console.log("chunk", chunk);
+      console.log(`Chunk ${index} - ${chunk.length} length`);
       return this.db.send(
         new UpdateCommand({
           TableName: this.table,
@@ -182,7 +207,10 @@ export default class TasksModel {
         })
       );
     });
+    const tsSaveChunk = Date.now();
+    console.time(`save chunks - ${tsSaveChunk}`);
     await Promise.all(promises);
+    console.timeEnd(`save chunks - ${tsSaveChunk}`);
 
     return {
       statusCode: 200,
@@ -317,39 +345,84 @@ export default class TasksModel {
   ): Promise<GeoprocessingTask | undefined> {
     try {
       // Get all items under the same partition key (task id)
-      const items = await this.db.send(
-        new QueryCommand({
-          TableName: "tasks-core",
-          KeyConditionExpression: "#id = :id",
-          ExpressionAttributeNames: {
-            "#id": "id",
-          },
-          ExpressionAttributeValues: {
-            ":id": taskId,
-          },
-          ScanIndexForward: true, // sort ascending by range key (service)
-        })
+      const query: QueryCommandInput = {
+        TableName: this.table,
+        KeyConditionExpression: "#id = :id",
+        ExpressionAttributeNames: {
+          "#id": "id",
+        },
+        ExpressionAttributeValues: {
+          ":id": taskId,
+        },
+        ScanIndexForward: true, // sort ascending by range key (service)
+      };
+
+      // Pager will return a variable number of items, up to 1MB of data
+      const paginatorConfig: DynamoDBDocumentPaginationConfiguration = {
+        client: this.db,
+        pageSize: 25,
+      };
+      const pager = paginateQuery(paginatorConfig, query);
+
+      // Build list of items, page by page
+      const items: Record<string, any>[] = [];
+      for await (const result of pager) {
+        if (result && result.Items) {
+          items.push(...result.Items);
+        }
+      }
+
+      if (!items || items.length === 0) return undefined;
+
+      items.forEach((item, index) => {
+        console.log(
+          `item ${index}`,
+          item.service,
+          JSON.stringify(item, null, 2)
+        );
+      });
+
+      // Filter down to root and chunk items for service
+      const serviceItems = items.filter((item) =>
+        item.service.includes(service)
       );
 
-      if (!items.Items || items.Items.length === 0) return undefined;
+      // console.log("serviceItemsLength", serviceItems.length);
+      // serviceItems.forEach((item, index) => {
+      //   console.log(`serviceItem ${index}`, JSON.stringify(item, null, 2));
+      // });
 
-      // Find root item
-      const rootItemIndex = items.Items.findIndex(
+      const rootItemIndex = serviceItems.findIndex(
         (item) => item.service === service
       );
-      // Remove root item. remainder, if any, is chunk items
-      const rootItem = items.Items.splice(rootItemIndex, 1)[0]; // mutates items
-      const chunkItems = items.Items;
+      // console.log("rootItemIndex", rootItemIndex);
+
+      // Remove root item.
+      const rootItem = serviceItems.splice(rootItemIndex, 1)[0]; // mutates items
+      // Filter for chunk items for this service, just in case there's more under partition key
+      const chunkItems = serviceItems.filter((item) =>
+        item.service.includes(`${service}-chunk`)
+      );
+
+      // chunkItems.forEach((item, index) => {
+      //   console.log(`chunkItem ${index}`, JSON.stringify(item, null, 2));
+      // });
 
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {
+        console.log(`Merging ${chunkItems.length} chunks`);
         const chunkStrings = chunkItems.map((item) => item.data.chunk);
         rootItem.data = this.fromJsonStrings(chunkStrings);
       }
 
       return rootItem as unknown as GeoprocessingTask;
-    } catch (e) {
-      return undefined;
+    } catch (e: unknown) {
+      console.log("TasksModel get threw an error");
+      if (e instanceof Error) {
+        console.log(e.message);
+        console.log(e.stack);
+        return undefined;
+      }
     }
   }
 
@@ -377,17 +450,23 @@ export default class TasksModel {
     rootResult: JSONValue,
     options: { minSplitSizeBytes?: number } = {}
   ): string[] {
+    const rootString = JSON.stringify(rootResult, null, 1); // add spaces to string for chunking on
     const minSplitSizeBytes = options.minSplitSizeBytes || 350 * 1024;
-    const charsPerChunk = minSplitSizeBytes / 2; // 2 bytes per char
-
-    const rootData = cloneDeep(rootResult);
-    const rootString = JSON.stringify(rootData);
-    const resultChunks = fastChunkString(rootString, {
-      size: charsPerChunk,
-      unicodeAware: true,
-    });
-
-    return resultChunks;
+    let buf = Buffer.from(rootString);
+    const result: string[] = [];
+    while (buf.length) {
+      // Find last space before minSplitSizeBytes
+      let i = buf.lastIndexOf(32, minSplitSizeBytes + 1);
+      // If no space found, try forward search
+      if (i < 0) i = buf.indexOf(32, minSplitSizeBytes);
+      // If there's no space at all, take the whole string
+      if (i < 0) i = buf.length;
+      // This is a safe cut-off point; never half-way a multi-byte
+      const partial = buf.slice(0, i).toString();
+      result.push(partial);
+      buf = buf.slice(i + 1); // Skip space (if any)
+    }
+    return result;
   }
 
   /**
@@ -395,6 +474,23 @@ export default class TasksModel {
    */
   private fromJsonStrings(jsonStringChunks: string[]): JSONValue {
     const mergedString = jsonStringChunks.join("");
-    return JSON.parse(mergedString);
+
+    // const jsonStringsHash = jsonStringChunks.reduce<Record<string, string>>(
+    //   (acc, curString, index) => {
+    //     return { [index]: curString, ...acc };
+    //   },
+    //   {}
+    // );
+    // toJsonFile(jsonStringsHash, "chunk_fromJsonStrings.json");
+
+    let parsedString = "";
+    try {
+      parsedString = JSON.parse(mergedString);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        throw new Error("Error merging JSON string chunks: " + e.message);
+      }
+    }
+    return parsedString;
   }
 }

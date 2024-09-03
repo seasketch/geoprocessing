@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 import { fgbFetchAll } from "./flatgeobuf.js";
 import canonicalize from "../util/canonicalize.js";
 import { deserialize } from "flatgeobuf/lib/mjs/geojson.js";
@@ -77,4 +78,4 @@ test("flatgeobuf - external world fgb", async () => {
   const features = await fgbFetchAll(url);
   expect(features.length).toEqual(1);
   // console.log(JSON.stringify(features))
-}, 5000);
+}, 20000);

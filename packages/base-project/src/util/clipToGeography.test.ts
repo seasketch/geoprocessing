@@ -1,7 +1,12 @@
 import { clipToGeography } from "./clipToGeography.js";
 import project from "../../project/projectClient.js";
 import { bbox, area } from "@turf/turf";
-import { Polygon, Sketch, genSampleSketch, genSketchCollection } from "@seasketch/geoprocessing";
+import {
+  Polygon,
+  Sketch,
+  genSampleSketch,
+  genSketchCollection,
+} from "@seasketch/geoprocessing";
 import { describe, test, expect } from "vitest";
 
 const sketch: Sketch<Polygon> = genSampleSketch<Polygon>(
@@ -461,7 +466,7 @@ const noOverlapSketch = genSampleSketch<Polygon>({
       [182, 182],
       [182, 181],
       [181, 181],
-    ]
+    ],
   ],
 });
 
@@ -488,7 +493,7 @@ describe("clipToGeography", () => {
     // Clipped sketch should be zero-ed
     expect(sketchArea === clippedSketchArea).toBe(false);
     expect(clippedSketchArea).toEqual(0);
-    expect(clippedSketchBox.every((v)=> v===0)).toBe(true);
+    expect(clippedSketchBox.every((v) => v === 0)).toBe(true);
   });
 
   test("clipToGeography - sketch collection", async () => {
@@ -497,13 +502,18 @@ describe("clipToGeography", () => {
     const sketchArea = area(sketch);
     const sketchBox = sketch.bbox || bbox(sketch);
 
-    const sketchCollection = genSketchCollection([sketch, noOverlapSketch])
-    const clippedSketchCollection = await clipToGeography(sketchCollection, curGeography);
+    const sketchCollection = genSketchCollection([sketch, noOverlapSketch]);
+    const clippedSketchCollection = await clipToGeography(
+      sketchCollection,
+      curGeography
+    );
     const clippedSketchCollectionArea = area(clippedSketchCollection);
-    const clippedSketchCollectionBox = clippedSketchCollection.bbox || bbox(clippedSketchCollection);
+    const clippedSketchCollectionBox =
+      clippedSketchCollection.bbox || bbox(clippedSketchCollection);
 
     expect(sketchArea === clippedSketchCollectionArea).toBe(true);
-    sketchBox.forEach((bboxCoord, i) => expect(bboxCoord).toBeCloseTo(clippedSketchCollectionBox[i]));
+    sketchBox.forEach((bboxCoord, i) =>
+      expect(bboxCoord).toBeCloseTo(clippedSketchCollectionBox[i])
+    );
   });
 });
-

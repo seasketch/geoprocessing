@@ -20,15 +20,13 @@
     "build:lambda": "geoprocessing build:lambda",
     "storybook": "PROJECT_PATH=$(pwd) npx tsx .storybook/genReportStories.ts && storybook dev -p 6006"
   },
-  "devDependencies": {
-    "@seasketch/geoprocessing": "^7.0.0-beta.6"
-  },
   "dependencies": {
+    "@seasketch/geoprocessing": "^7.0.0-beta.6",
     "@turf/turf": "7.1.0",
     "geoblaze": "2.8.0",
     "geojson-antimeridian-cut": "^0.1.0",
-    "i18next-browser-languagedetector": "^8.0.0",
     "react-i18next": "^15.0.1",
     "union-subdivided-polygons": "^0.9.1"
-  }
+  },
+  "devDependencies": {}
 }

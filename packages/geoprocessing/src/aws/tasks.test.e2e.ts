@@ -4,6 +4,7 @@ import TaskModel from "./tasks.js";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient, CreateTableCommand } from "@aws-sdk/client-dynamodb";
 import deepEqual from "fast-deep-equal";
+import fs from "fs-extra";
 
 const dynamodb = new DynamoDBClient({
   endpoint: "http://localhost:8000",
@@ -140,22 +141,30 @@ describe("DynamoDB local", () => {
       },
     });
 
-    // Should be two items under the one partition key (task id), the root and the chunk
+    // Should be three items under the one partition key (task id), the root and two chunks
     console.log(JSON.stringify(items, null, 2));
-    expect(items.Count).toBe(2);
+    expect(items.Count).toBe(3);
 
     const rootItem = items.Items?.find((item) => item.service === SERVICE_NAME);
     expect(rootItem && rootItem.status).toBe("completed");
 
-    const chunkItem = items.Items?.find(
+    const chunkItem0 = items.Items?.find(
       (item) => item.service === `${SERVICE_NAME}-chunk-0`
     );
 
+    const chunkItem1 = items.Items?.find(
+      (item) => item.service === `${SERVICE_NAME}-chunk-1`
+    );
+
     expect(response.statusCode).toBe(200);
-    expect(chunkItem).toBeTruthy();
-    expect(chunkItem!.data).toBeTruthy();
-    expect(chunkItem!.data!.chunk).toBeTruthy();
-    expect(chunkItem!.data!.chunk).toEqual('{"area":1234556}');
+    expect(chunkItem0).toBeTruthy();
+    expect(chunkItem0!.data).toBeTruthy();
+    expect(chunkItem0!.data!.chunk).toBeTruthy();
+    expect(typeof chunkItem0!.data!.chunk).toBe("string");
+    expect(chunkItem1).toBeTruthy();
+    expect(chunkItem1!.data).toBeTruthy();
+    expect(chunkItem1!.data!.chunk).toBeTruthy();
+    expect(typeof chunkItem1!.data!.chunk).toBe("string");
   });
 
   test("completed task should return merged result", async () => {
@@ -173,6 +182,47 @@ describe("DynamoDB local", () => {
     expect(isMetricArray(cachedMetrics)).toBe(true);
     expect(deepEqual(cachedMetrics, metrics)).toBe(true);
   });
+
+  test("tasks for multiple services should not get mixed", async () => {
+    const task = await Tasks.create("service1");
+    const metrics = [createMetric({ value: 15, sketchId: "test1" })];
+    const response = await Tasks.complete(task, {
+      metrics,
+    });
+    expect(response.statusCode).toBe(200);
+
+    const task2 = await Tasks.create("service2");
+    const metrics2 = [createMetric({ value: 30, sketchId: "test2" })];
+    const response2 = await Tasks.complete(task2, {
+      metrics: metrics2,
+    });
+    expect(response2.statusCode).toBe(200);
+
+    const cachedResult = await Tasks.get("service1", task.id);
+    const cachedMetrics = cachedResult?.data.metrics;
+    expect(cachedMetrics.length).toBe(1);
+    expect(isMetricArray(cachedMetrics)).toBe(true);
+    expect(deepEqual(cachedMetrics, metrics)).toBe(true);
+
+    const cachedResult2 = await Tasks.get("service2", task2.id);
+    const cachedMetrics2 = cachedResult2?.data.metrics;
+    expect(cachedMetrics2.length).toBe(1);
+    expect(isMetricArray(cachedMetrics2)).toBe(true);
+    expect(deepEqual(cachedMetrics2, metrics2)).toBe(true);
+  });
+
+  // To use this test, uncomment and create a sampleResult.json file in the same directory as this test file
+  // test("real task should return real result", async () => {
+  //   const task = await Tasks.create(SERVICE_NAME);
+  //   const result = fs.readJsonSync("./src/aws/sampleResult.json");
+  //   const response = await Tasks.complete(task, result);
+  //   expect(response.statusCode).toBe(200);
+
+  //   const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
+  //   // console.log("cachedResult", JSON.stringify(cachedResult, null, 2));
+
+  //   expect(cachedResult).toBeTruthy();
+  // });
 
   test("complete a task with multiple sketch metrics above size threshold should split into multiple items", async () => {
     const task = await Tasks.create(SERVICE_NAME);
@@ -217,8 +267,8 @@ describe("DynamoDB local", () => {
     });
 
     expect(rootItem && rootItem.status).toBe("completed");
-    expect(rootItem && rootItem.data.numChunks).toBe(6);
-    expect(chunkItems.length).toBe(6);
+    expect(rootItem && rootItem.data.numChunks).toBe(5);
+    expect(chunkItems.length).toBe(5);
 
     // Verify on get that metrics are re-merged with root item
     const cachedResult = await Tasks.get(SERVICE_NAME, task.id);

@@ -134,6 +134,9 @@ export class GeoprocessingHandler<
 
     const request = this.parseRequest<G>(event);
 
+    const handlerTime = Date.now();
+    console.time(`handler ${this.options.title} - ${handlerTime}`);
+
     // TODO: Authorization
     // Bail out if replaying previous task
     if (context.awsRequestId && context.awsRequestId === this.lastRequestId) {
@@ -160,7 +163,19 @@ export class GeoprocessingHandler<
     // get cached result if available. standard method to get results for async function
     if (request.checkCacheOnly) {
       if (request.cacheKey) {
+        console.log(
+          "checkCacheOnly task get with",
+          serviceName,
+          request.cacheKey
+        );
+        const timestamp = Date.now();
+        console.time(
+          `checkCacheOnly task get ${this.options.title} - ${timestamp}`
+        );
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+        console.timeEnd(
+          `checkCacheOnly task get ${this.options.title} - ${timestamp}`
+        );
 
         if (
           cachedResult &&
@@ -206,7 +221,10 @@ export class GeoprocessingHandler<
       request.cacheKey &&
       (this.options.executionMode === "sync" || ASYNC_REQUEST_TYPE === "start")
     ) {
+      const timestamp = Date.now();
+      console.time(`sync task get ${this.options.title} - ${timestamp}`);
       let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+      console.timeEnd(`sync task get ${this.options.title} - ${timestamp}`);
       if (
         cachedResult &&
         cachedResult.status !== GeoprocessingTaskStatus.Pending
@@ -276,10 +294,10 @@ export class GeoprocessingHandler<
         const featureSet = await fetchGeoJSON<G>(request);
         const extraParams = request.extraParams as unknown as P;
         try {
-          const timestamp = Date.now();
-          console.time(`run func ${this.options.title} - ${timestamp}`);
+          const tsRun = Date.now();
+          console.time(`run func ${this.options.title} - ${tsRun}`);
           const results = await this.func(featureSet, extraParams, request);
-          console.timeEnd(`run func ${this.options.title} - ${timestamp}`);
+          console.timeEnd(`run func ${this.options.title} - ${tsRun}`);
 
           task.data = results;
           task.status = GeoprocessingTaskStatus.Completed;
@@ -288,7 +306,12 @@ export class GeoprocessingHandler<
 
           //the duration has been updated, now update the estimates table
           await Tasks.updateEstimate(task);
+          const tsComplete = Date.now();
+          console.time(`task complete ${this.options.title} - ${tsComplete}`);
           let promise = await Tasks.complete(task, results);
+          console.timeEnd(
+            `task complete ${this.options.title} - ${tsComplete}`
+          );
 
           if (this.options.executionMode !== "sync") {
             let sname = encodeURIComponent(task.service);
@@ -300,6 +323,9 @@ export class GeoprocessingHandler<
               `sent task ${task.id} result to socket ${wssUrl} for service ${task.service}`
             );
           }
+
+          console.timeEnd(`handler ${this.options.title} - ${handlerTime}`);
+
           return promise;
         } catch (e: unknown) {
           let sname = encodeURIComponent(task.service);
@@ -349,6 +375,7 @@ export class GeoprocessingHandler<
         let payload = JSON.stringify(event);
 
         const client = new LambdaClient({});
+        console.log("Invoking run handler: ", RUN_HANDLER_FUNCTION_NAME);
         const command = new InvokeCommand({
           FunctionName: RUN_HANDLER_FUNCTION_NAME,
           Payload: payload,
@@ -356,6 +383,8 @@ export class GeoprocessingHandler<
           InvocationType: "Event",
         });
         await client.send(command);
+
+        console.timeEnd(`handler ${this.options.title} - ${handlerTime}`);
 
         return {
           statusCode: 200,
@@ -415,6 +444,7 @@ export class GeoprocessingHandler<
       cacheKey,
       serviceName: serviceName,
       fromClient: "false",
+      timestamp: Date.now(),
     });
 
     // hit sendmessage route, invoking sendmessage lambda
@@ -422,9 +452,6 @@ export class GeoprocessingHandler<
       message: "sendmessage",
       data: data,
     });
-
-    // console.log("sendSocketMessage completed", data);
-
     socket.send(message);
     socket.close(1000, serviceName);
   }

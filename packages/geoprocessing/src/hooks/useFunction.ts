@@ -33,10 +33,6 @@ interface FunctionState<ResultType> {
 /** Local results cache */
 const localCache = new Map<string, GeoprocessingTask>();
 
-/** Generates key for results cache combining function name and user-defined cacheKey */
-const makeLocalCacheKey = (funcName: string, cacheKey: string): string =>
-  `${funcName}-${cacheKey}`;
-
 /**  */
 let pendingRequests: PendingRequest[] = [];
 let pendingMetadataRequests: PendingMetadataRequest[] = [];
@@ -124,19 +120,17 @@ export const useFunction = <ResultType>(
           extraParams: JSON.stringify(extraParams), // will be url encoded automatically
         };
         if (context.sketchProperties.id && context.sketchProperties.updatedAt) {
-          payload.cacheKey = genTaskCacheKey(
+          const theCacheKey = genTaskCacheKey(
+            functionTitle,
             context.sketchProperties,
             extraParams
           );
+          payload.cacheKey = theCacheKey;
         }
 
         // check local results cache. may already be available
         if (payload.cacheKey) {
-          let localCacheKey = makeLocalCacheKey(
-            functionTitle,
-            payload.cacheKey
-          );
-          let task = localCache.get(localCacheKey) as
+          let task = localCache.get(payload.cacheKey) as
             | GeoprocessingTask<ResultType>
             | undefined;
           if (task) {
@@ -260,12 +254,7 @@ export const useFunction = <ResultType>(
               payload.cacheKey &&
               task.status === GeoprocessingTaskStatus.Completed
             ) {
-              let localCacheKey = makeLocalCacheKey(
-                functionTitle,
-                payload.cacheKey
-              );
-
-              localCache.set(localCacheKey, cloneDeep(task));
+              localCache.set(payload.cacheKey, cloneDeep(task));
             }
 
             // if task pending then nothing more to do
@@ -359,9 +348,7 @@ const getSocket = (
   // once socket open, check if task completed before it opened
   socket.onopen = function () {
     // Check local cache first
-    const task = localCache.get(
-      makeLocalCacheKey(currServiceName, cacheKey)
-    ) as GeoprocessingTask | undefined;
+    const task = localCache.get(cacheKey) as GeoprocessingTask | undefined;
 
     if (task) {
       setState({
@@ -404,6 +391,13 @@ const getSocket = (
   // then finish the task (because results aren't sent on the socket, too big)
   socket.onmessage = function (event) {
     let incomingData = JSON.parse(event.data);
+
+    if (event.data.timestamp) {
+      const nowTime = Date.now();
+      console.log(`timestamp ${currServiceName}: ${event.data.timestamp}`);
+      console.log(`received ${currServiceName}: ${nowTime}`);
+      console.log(`diff ${currServiceName}: ${nowTime - event.data.timestamp}`);
+    }
 
     // check cache keys match. can have events for other reports appear if several are open at once.
     if (

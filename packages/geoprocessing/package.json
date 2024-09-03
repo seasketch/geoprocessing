@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/geoprocessing",
-  "version": "7.0.0-beta.6",
+  "version": "7.0.0-beta.7",
   "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
   "type": "module",
   "main": "dist/src/index.js",

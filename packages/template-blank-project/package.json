@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/template-blank-project",
-  "version": "7.0.0-beta.6",
+  "version": "7.0.0-beta.7",
   "description": "blank starter project",
   "private": true,
   "type": "module",
@@ -21,12 +21,11 @@
     "storybook": "PROJECT_PATH=$(pwd) npx tsx .storybook/genReportStories.ts && storybook dev -p 6006"
   },
   "dependencies": {
-    "@seasketch/geoprocessing": "^7.0.0-beta.6",
+    "@seasketch/geoprocessing": "^7.0.0-beta.7",
     "@turf/turf": "7.1.0",
     "geoblaze": "2.8.0",
     "geojson-antimeridian-cut": "^0.1.0",
     "react-i18next": "^15.0.1",
     "union-subdivided-polygons": "^0.9.1"
-  },
-  "devDependencies": {}
+  }
 }

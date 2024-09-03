@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/base-project",
-  "version": "7.0.0-beta.6",
+  "version": "7.0.0-beta.7",
   "description": "initial user-installed project",
   "private": true,
   "type": "module",
@@ -46,7 +46,7 @@
   "dependencies": {
     "@babel/cli": "^7.25.6",
     "@babel/plugin-syntax-import-attributes": "^7.25.6",
-    "@seasketch/geoprocessing": "^7.0.0-beta.6",
+    "@seasketch/geoprocessing": "^7.0.0-beta.7",
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/addon-interactions": "^8.2.9",
     "@storybook/addon-links": "^8.2.9",
@@ -65,6 +65,5 @@
     "vite": "^5.4.2",
     "vitest": "^2.0.5",
     "zx": "^8.1.5"
-  },
-  "devDependencies": {}
+  }
 }

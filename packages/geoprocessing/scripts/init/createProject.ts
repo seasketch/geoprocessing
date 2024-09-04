@@ -356,7 +356,7 @@ export async function createProject(
       });
       spinner.succeed("installed dependencies");
       spinner.start("extracting translations");
-      await exec(`npm run translation:extract`, {
+      await exec(`npm run extract:translation`, {
         cwd: metadata.name,
       });
     } catch (e: unknown) {
@@ -379,7 +379,7 @@ export async function createProject(
   )} are available to create your first geoprocessing function and report client at https://github.com/seasketch/geoprocessing/wiki/Tutorials
   * ${chalk.yellow(
     `Translations`
-  )} need to be synced if you are using POEditor.  Make sure POEDITOR_PROJECT and POEDITOR_API_TOKEN environemnt variables are set in your shell environment and then run 'npm run translation:sync'.  See tutorials for more information
+  )} need to be synced if you are using POEditor.  Make sure POEDITOR_PROJECT and POEDITOR_API_TOKEN environemnt variables are set in your shell environment and then run 'npm run sync:translation'.  See tutorials for more information
 `);
   }
 }

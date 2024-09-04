@@ -14,6 +14,14 @@ import {
 } from "../types/geojson.js";
 import { ValidationError } from "../types/index.js";
 
+/**
+ * Performs clip operation on features
+ * @param features - FeatureCollection of Polygons or MultiPolygons.  First feature is the subject, the rest are the clippers
+ * @param operation - one of "union", "intersection", "xor", "difference"
+ * @param options - optional properties to set on the resulting feature
+ * @returns clipped Feature of Polygon or MultiPolygon
+ * @deprecated - use turf modules instead, now with support for operating against an array of features
+ */
 export function clip<
   P extends GeoJsonProperties | undefined = GeoJsonProperties,
 >(

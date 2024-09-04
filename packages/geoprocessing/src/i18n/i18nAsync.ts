@@ -72,7 +72,7 @@ export function createI18nAsyncInstance(
           } catch (error: unknown) {
             console.info(`Warning: failed to find base lang resource.`);
           }
-          console.log("baseLangResourcez", baseLangResources);
+          console.log("language baseLangResources", baseLangResources);
 
           let langResources = {};
           if (langPath !== undefined) {
@@ -90,8 +90,8 @@ export function createI18nAsyncInstance(
               console.info(`Warning: failed to find lang resource.`);
             }
           }
-          console.log("langResources", langResources);
-          console.log("extraTerms", extraTerms);
+          console.log("language langResources", langResources);
+          console.log("language extraTerms", extraTerms);
 
           // Return merged translations
           if (isDefault) {

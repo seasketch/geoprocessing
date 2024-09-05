@@ -20,7 +20,7 @@ const infile = "/mnt/c/data/World_EEZ_v12_20231025/eez_v12.shp";
   await $`ogr2ogr -f GeoJSON -dialect sqlite -sql ${query} ${outfile} ${infile}`;
 
   // Calculate turf area and bbox, strip geometry to save space
-  let eezFeatures = fs.readJSONSync(outfile);
+  const eezFeatures = fs.readJSONSync(outfile);
 
   for (const eezFeat of eezFeatures.features) {
     console.log(eezFeat.properties.GEONAME);

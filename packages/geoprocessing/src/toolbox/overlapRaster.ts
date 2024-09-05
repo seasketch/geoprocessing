@@ -50,7 +50,7 @@ export async function overlapRaster(
   });
 
   // await results and create metrics
-  let sketchMetrics: Metric[] = [];
+  const sketchMetrics: Metric[] = [];
   (await Promise.all(sumPromises)).forEach((curSum, index) => {
     sketchMetrics.push(
       createMetric({

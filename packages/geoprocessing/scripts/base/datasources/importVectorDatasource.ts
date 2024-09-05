@@ -81,7 +81,7 @@ export function genFields(fieldNames: string[]) {
 
 /** Convert vector datasource to GeoJSON */
 export async function genGeojson(config: ImportVectorDatasourceConfig) {
-  let { src, propertiesToKeep, layerName } = config;
+  const { src, propertiesToKeep, layerName } = config;
   const dst = getJsonPath(config.dstPath, config.datasourceId);
   const query = `SELECT ${genFields(propertiesToKeep)} FROM "${layerName}"`;
   const explodeOption =

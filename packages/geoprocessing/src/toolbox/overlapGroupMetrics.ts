@@ -200,7 +200,7 @@ export async function overlapGroupMetrics(options: {
     : cloneDeep(metrics).filter((sm) => sm.sketchId === sketch.properties.id);
 
   // Lookup and add group
-  let groupSketchMetrics: Metric[] = sketchMetrics.map((m) => ({
+  const groupSketchMetrics: Metric[] = sketchMetrics.map((m) => ({
     ...m,
     groupId: metricToGroup(m),
   }));

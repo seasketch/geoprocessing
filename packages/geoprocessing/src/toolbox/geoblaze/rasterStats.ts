@@ -93,7 +93,7 @@ export const rasterStats = async (
         categorical &&
         categoryMetricValues
       ) {
-        let hist = {};
+        const hist = {};
         categoryMetricValues.forEach((c) => (hist[c] = 0)); // load zero for each histogram category
         defaultStats[i][statsToPublish[j]] = hist;
       } else {
@@ -117,7 +117,7 @@ export const rasterStats = async (
         return defaultStats;
       } else {
         statsByBand = histogram.map((h) => {
-          let hist = {};
+          const hist = {};
           if (!categoryMetricValues || categoryMetricValues.length === 0) {
             return { histogram: h };
           } else {

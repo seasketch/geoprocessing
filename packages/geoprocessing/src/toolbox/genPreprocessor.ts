@@ -93,7 +93,7 @@ export async function clipToPolygonFeatures(
       // If multipolygon, keep only the biggest piece
       const flattened = flatten(clipped);
       let biggest = [0, 0];
-      for (var i = 0; i < flattened.features.length; i++) {
+      for (let i = 0; i < flattened.features.length; i++) {
         const a = area(flattened.features[i]);
         if (a > biggest[0]) {
           biggest = [a, i];

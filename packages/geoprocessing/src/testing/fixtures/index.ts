@@ -1,6 +1,6 @@
 import { randomInt, randomFloat } from "../../helpers/randomData.js";
 
-let fixtures = {};
+const fixtures = {};
 
 export interface HumanUse {
   name: string;

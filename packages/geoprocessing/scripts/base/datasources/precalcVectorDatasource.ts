@@ -101,7 +101,7 @@ export async function genVectorMetrics(
   // to avoid missing a class after cropping
   // key - class name e.g. geomorphology, reef type
   // values - array of all class values e.g. [hard, soft, mixed]
-  let featureCollClasses: Record<string, string[]> = {};
+  const featureCollClasses: Record<string, string[]> = {};
   datasource.classKeys.forEach((classProperty) => {
     dsFeatureColl.features.forEach((feat) => {
       if (!feat.properties) throw new Error("Missing properties");
@@ -178,7 +178,7 @@ export async function genVectorMetrics(
   ];
 
   // Create class metrics
-  let classMetrics: Metric[] = [];
+  const classMetrics: Metric[] = [];
   datasource.classKeys.forEach((classProperty) => {
     const classes = clippedFeatureColl.features.reduce<
       Record<string, { count: number; area: number }>

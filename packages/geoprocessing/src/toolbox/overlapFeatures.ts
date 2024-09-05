@@ -66,7 +66,7 @@ export async function overlapFeatures(
   const { includeChildMetrics } = newOptions;
   let sumValue: number = 0;
   let isOverlap = false;
-  let featureIndices: Set<number> = new Set();
+  const featureIndices: Set<number> = new Set();
   const sketches = (Array.isArray(sketch) ? sketch : toSketchArray(sketch)).map(
     (s) => truncate(s),
   );
@@ -225,7 +225,7 @@ const getSketchPolygonIntersectSumValue = (
   featuresB: Feature<Polygon | MultiPolygon>[],
   sumProperty?: string,
 ) => {
-  let indices: number[] = [];
+  const indices: number[] = [];
   // intersect and get sum of remainder
   const sketchValue = featuresB
     .map((curFeature, index) => {

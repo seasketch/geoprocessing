@@ -130,7 +130,7 @@ export const useFunction = <ResultType>(
 
         // check local results cache. may already be available
         if (payload.cacheKey) {
-          let task = localCache.get(payload.cacheKey) as
+          const task = localCache.get(payload.cacheKey) as
             | GeoprocessingTask<ResultType>
             | undefined;
           if (task) {
@@ -196,16 +196,16 @@ export const useFunction = <ResultType>(
         // After task started, but still pending
         pendingRequest
           .then((task) => {
-            let currServiceName = task.service;
+            const currServiceName = task.service;
             if (currServiceName) {
               if (
                 task.status !== "completed" &&
                 task.wss?.length > 0 &&
                 executionMode === "async"
               ) {
-                let sname = encodeURIComponent(currServiceName);
-                let ck = encodeURIComponent(payload.cacheKey || "");
-                let wssUrl =
+                const sname = encodeURIComponent(currServiceName);
+                const ck = encodeURIComponent(payload.cacheKey || "");
+                const wssUrl =
                   task.wss +
                   "?" +
                   "serviceName=" +
@@ -361,7 +361,7 @@ const getSocket = (
     }
 
     // Check server-side cache next using checkCacheOnly true
-    let finishedRequest: Promise<GeoprocessingTask> = runTask(
+    const finishedRequest: Promise<GeoprocessingTask> = runTask(
       url,
       payload,
       abortController.signal,
@@ -371,7 +371,7 @@ const getSocket = (
 
     finishedRequest.then((finishedTask) => {
       if (finishedTask.service === currServiceName) {
-        let ft = JSON.stringify(finishedTask);
+        const ft = JSON.stringify(finishedTask);
         //if not cached, you'll get a "NO_CACHE_HIT"
         if (ft && finishedTask.id !== "NO_CACHE_HIT" && finishedTask.data) {
           setState({
@@ -390,7 +390,7 @@ const getSocket = (
   // if task complete message received on socket (the only message type supported)
   // then finish the task (because results aren't sent on the socket, too big)
   socket.onmessage = function (event) {
-    let incomingData = JSON.parse(event.data);
+    const incomingData = JSON.parse(event.data);
 
     if (event.data.timestamp) {
       const nowTime = Date.now();

@@ -12,7 +12,7 @@ export default {
 export const simpleButton = () => {
   return (
     <Dropdown titleElement={<>⋮</>}>
-      <a href="https://seasketch.org" target="_blank">
+      <a href="https://seasketch.org" target="_blank" rel="noreferrer">
         <SimpleButton>➥ Seasketch</SimpleButton>
       </a>
     </Dropdown>

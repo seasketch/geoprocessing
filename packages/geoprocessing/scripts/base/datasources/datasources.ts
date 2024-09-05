@@ -68,7 +68,7 @@ export async function createOrUpdateDatasource(
  */
 export function readDatasources(filePath?: string) {
   // Start with default datasources
-  let pds: Datasource[] = globalDatasources as Datasource[];
+  const pds: Datasource[] = globalDatasources as Datasource[];
   // Override datasources path
   const finalFilePath =
     filePath && filePath.length > 0

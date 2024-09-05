@@ -228,7 +228,7 @@ export async function createProject(
         spinner.start("updating geographies.json");
         // read default geographies and disable them by setting precalc to false
         // also clear default-boundary group
-        let geos: Geography[] = geographiesSchema
+        const geos: Geography[] = geographiesSchema
           .parse(fs.readJSONSync(`${projectPath}/project/geographies.json`))
           .map((g) => ({ ...g, precalc: false, groups: [] }));
         // assign initial eez geography with proper filters and precalc true
@@ -257,7 +257,7 @@ export async function createProject(
 
         spinner.start("updating eez in datasources.json");
         try {
-          let ds = datasourcesSchema.parse(
+          const ds = datasourcesSchema.parse(
             fs.readJSONSync(`${projectPath}/project/datasources.json`),
           );
           const eezIndex = ds.findIndex(

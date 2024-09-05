@@ -70,7 +70,7 @@ export const rekeyMetrics = (
   idOrder: MetricProperty[] = [...MetricProperties],
 ) => {
   return metrics.map((curMetric) => {
-    var newMetric: Record<string, any> = {};
+    const newMetric: Record<string, any> = {};
     idOrder.forEach((id) => {
       if (curMetric.hasOwnProperty(id)) newMetric[id] = curMetric[id];
     });
@@ -92,11 +92,11 @@ export const packMetrics = (inMetrics: Metric[]): MetricPack => {
 
   const packData: MetricPack["data"] = [];
   // Pack data values, for-loop for speed
-  for (var a = 0, ml = metrics.length; a < ml; ++a) {
+  for (let a = 0, ml = metrics.length; a < ml; ++a) {
     const curMetric = metrics[a];
     const curRow: MetricPack["data"][0] = [];
-    for (var b = 0, kl = keys.length; b < kl; ++b) {
-      let curKey = keys[b];
+    for (let b = 0, kl = keys.length; b < kl; ++b) {
+      const curKey = keys[b];
       curRow.push(curMetric[curKey]);
     }
     packData.push(curRow);
@@ -112,12 +112,12 @@ export const packMetrics = (inMetrics: Metric[]): MetricPack => {
  */
 export const unpackMetrics = (inMetricPack: MetricPack): Metric[] => {
   const metricPack = cloneDeep(inMetricPack);
-  let metrics: Metric[] = [];
+  const metrics: Metric[] = [];
 
-  for (var a = 0, ml = metricPack.data.length; a < ml; ++a) {
-    let curRow = metricPack.data[a];
-    let curMetric = createMetric({});
-    for (var b = 0, kl = metricPack.dimensions.length; b < kl; ++b) {
+  for (let a = 0, ml = metricPack.data.length; a < ml; ++a) {
+    const curRow = metricPack.data[a];
+    const curMetric = createMetric({});
+    for (let b = 0, kl = metricPack.dimensions.length; b < kl; ++b) {
       const curDimension = metricPack.dimensions[b];
       curMetric[curDimension] = curRow[b];
     }
@@ -444,7 +444,7 @@ export const flattenBySketchAllClass = (
     (metric) => metric.classId || "error",
   );
 
-  let sketchRows: Record<string, string | number>[] = [];
+  const sketchRows: Record<string, string | number>[] = [];
 
   sketches.forEach((curSketch) => {
     // For current sketch, transform classes into an object mapping classId to its one metric value
@@ -564,7 +564,7 @@ export const flattenByGroupSketchAllClass = (
   totals: Metric[],
 ): GroupMetricSketchAgg[] => {
   const sketchIds = sketches.map((sk) => sk.properties.id);
-  let sketchRows: GroupMetricSketchAgg[] = [];
+  const sketchRows: GroupMetricSketchAgg[] = [];
 
   // Stratify in order by Group -> Sketch -> Class. Then flatten
 

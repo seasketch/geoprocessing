@@ -239,7 +239,7 @@ async function publishEnglish() {
       },
     );
 
-    let addTermsResult = await addTermsResponse.json();
+    const addTermsResult = await addTermsResponse.json();
     if (addTermsResult.response.status !== "success") {
       throw new Error(`API response was ${addTermsResult.response.status}`);
     } else {

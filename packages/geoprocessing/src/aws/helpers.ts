@@ -44,7 +44,7 @@ export async function runLambdaWorker(
 
   // Create payload including geometry and parameters for function
   const workerRequest: GeoprocessingRequestModel = (() => {
-    let newRequest: GeoprocessingRequestModel = {
+    const newRequest: GeoprocessingRequestModel = {
       geometryUri: request.geometryUri,
       extraParams: functionParameters,
       cacheKey,
@@ -52,7 +52,7 @@ export async function runLambdaWorker(
 
     // Encode sketch to geobuf if larger than max request size
     const sketchBuffer = geobuf.encode(sketch, new Pbf());
-    var sketch64 = Buffer.from(sketchBuffer).toString("base64");
+    const sketch64 = Buffer.from(sketchBuffer).toString("base64");
 
     const requestSizeBytes = byteSize(JSON.stringify(newRequest));
     const sketch64SizeBytes = byteSize(JSON.stringify(sketch64));

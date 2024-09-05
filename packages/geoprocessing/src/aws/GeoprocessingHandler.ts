@@ -172,7 +172,7 @@ export class GeoprocessingHandler<
         console.time(
           `checkCacheOnly task get ${this.options.title} - ${timestamp}`,
         );
-        let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+        const cachedResult = await Tasks.get(serviceName, request.cacheKey);
         console.timeEnd(
           `checkCacheOnly task get ${this.options.title} - ${timestamp}`,
         );
@@ -223,7 +223,7 @@ export class GeoprocessingHandler<
     ) {
       const timestamp = Date.now();
       console.time(`sync task get ${this.options.title} - ${timestamp}`);
-      let cachedResult = await Tasks.get(serviceName, request.cacheKey);
+      const cachedResult = await Tasks.get(serviceName, request.cacheKey);
       console.timeEnd(`sync task get ${this.options.title} - ${timestamp}`);
       if (
         cachedResult &&
@@ -255,7 +255,7 @@ export class GeoprocessingHandler<
       wss = request.wss;
     }
 
-    let task: GeoprocessingTask = await Tasks.create(
+    const task: GeoprocessingTask = await Tasks.create(
       serviceName,
       request.cacheKey,
       wss,
@@ -308,15 +308,15 @@ export class GeoprocessingHandler<
           await Tasks.updateEstimate(task);
           const tsComplete = Date.now();
           console.time(`task complete ${this.options.title} - ${tsComplete}`);
-          let promise = await Tasks.complete(task, results);
+          const promise = await Tasks.complete(task, results);
           console.timeEnd(
             `task complete ${this.options.title} - ${tsComplete}`,
           );
 
           if (this.options.executionMode !== "sync") {
-            let sname = encodeURIComponent(task.service);
-            let ck = encodeURIComponent(task.id || "");
-            let wssUrl =
+            const sname = encodeURIComponent(task.service);
+            const ck = encodeURIComponent(task.id || "");
+            const wssUrl =
               task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
             await this.sendSocketMessage(wssUrl, task.id, task.service);
             console.info(
@@ -328,12 +328,12 @@ export class GeoprocessingHandler<
 
           return promise;
         } catch (e: unknown) {
-          let sname = encodeURIComponent(task.service);
-          let ck = encodeURIComponent(task.id || "");
-          let wssUrl =
+          const sname = encodeURIComponent(task.service);
+          const ck = encodeURIComponent(task.id || "");
+          const wssUrl =
             task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
 
-          let failureMessage =
+          const failureMessage =
             e instanceof Error
               ? `Exception running geoprocessing function ${this.options.title}: \n${e.stack}`
               : `Exception running geoprocessing function ${this.options.title}`;
@@ -343,7 +343,7 @@ export class GeoprocessingHandler<
             serviceName,
             failureMessage,
           );
-          let failedTask = await Tasks.fail(task, failureMessage);
+          const failedTask = await Tasks.fail(task, failureMessage);
           return failedTask;
         }
       } catch (e: unknown) {
@@ -363,16 +363,16 @@ export class GeoprocessingHandler<
       }
 
       try {
-        let asyncStartTime = new Date().getTime();
+        const asyncStartTime = new Date().getTime();
         //@ts-ignore
         task.asyncStartTime = asyncStartTime;
 
-        let queryParams = event.queryStringParameters;
+        const queryParams = event.queryStringParameters;
         if (queryParams) {
           queryParams["wss"] = wss;
         }
         event.queryStringParameters = queryParams;
-        let payload = JSON.stringify(event);
+        const payload = JSON.stringify(event);
 
         const client = new LambdaClient({});
         console.log("Invoking run handler: ", RUN_HANDLER_FUNCTION_NAME);
@@ -413,15 +413,15 @@ export class GeoprocessingHandler<
     serviceName: string,
     failureMessage: string,
   ) {
-    let socket = await this.getSocket(wss);
+    const socket = await this.getSocket(wss);
 
-    let data = JSON.stringify({
+    const data = JSON.stringify({
       cacheKey,
       serviceName: serviceName,
       failureMessage: failureMessage,
     });
 
-    let message = JSON.stringify({
+    const message = JSON.stringify({
       message: "sendmessage",
       data: data,
     });
@@ -438,9 +438,9 @@ export class GeoprocessingHandler<
     cacheKey: string | undefined,
     serviceName: string,
   ) {
-    let socket = await this.getSocket(wss);
+    const socket = await this.getSocket(wss);
 
-    let data = JSON.stringify({
+    const data = JSON.stringify({
       cacheKey,
       serviceName: serviceName,
       fromClient: "false",
@@ -448,7 +448,7 @@ export class GeoprocessingHandler<
     });
 
     // hit sendmessage route, invoking sendmessage lambda
-    let message = JSON.stringify({
+    const message = JSON.stringify({
       message: "sendmessage",
       data: data,
     });

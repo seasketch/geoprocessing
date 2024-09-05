@@ -133,6 +133,7 @@ export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
                   <a
                     target="_blank"
                     href="https://en.wikipedia.org/wiki/Territorial_waters"
+                    rel="noreferrer"
                   >
                     <Trans i18nKey="SizeCard - learn more source">
                       Source: Wikipedia - Territorial Waters
@@ -173,7 +174,7 @@ const genSingleSizeTable = (
   const sqKmLabel = t("km²");
 
   const classesById = keyBy(mg.classes, (c) => c.classId);
-  let singleMetrics = data.metrics.filter(
+  const singleMetrics = data.metrics.filter(
     (m) => m.sketchId === data.sketch.properties.id,
   );
 

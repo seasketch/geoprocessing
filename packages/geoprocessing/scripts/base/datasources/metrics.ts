@@ -14,7 +14,7 @@ import { sortMetrics, rekeyMetrics } from "../../../src/metrics/helpers.js";
  * If metrics file not exist then start a new one and ensure directory exists
  */
 export function readMetrics(filePath: string) {
-  let metrics: Metric[] = [];
+  const metrics: Metric[] = [];
 
   const diskPrecalc = (() => {
     try {

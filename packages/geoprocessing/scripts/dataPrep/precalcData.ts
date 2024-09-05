@@ -31,7 +31,7 @@ void (async function () {
 
   const subsetAnswer = await precalcSubsetQuestion();
 
-  let dsOptions: PrecalcDatasourceOptions = {
+  const dsOptions: PrecalcDatasourceOptions = {
     datasourceMatcher: [],
     geographyMatcher: [],
   };
@@ -51,7 +51,7 @@ void (async function () {
     }
   }
 
-  let geogOptions: PrecalcDatasourceOptions = {};
+  const geogOptions: PrecalcDatasourceOptions = {};
   if (["all", "both", "geography"].includes(subsetAnswer.subset)) {
     if (subsetAnswer.subset === "all") {
       dsOptions.geographyMatcher = ["*"];

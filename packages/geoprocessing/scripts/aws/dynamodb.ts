@@ -8,7 +8,7 @@ import { Function } from "aws-cdk-lib/aws-lambda";
  * Create database tables
  */
 export const createTables = (stack: GeoprocessingStack): GpDynamoTables => {
-  let tables: GpDynamoTables = {
+  const tables: GpDynamoTables = {
     tasks: undefined,
     estimates: undefined,
     subscriptions: undefined,

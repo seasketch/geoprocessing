@@ -105,7 +105,7 @@ export default class TasksModel {
   ) {
     const task = this.init(service, id, wss);
     try {
-      let estimate = await this.getMeanEstimate(task);
+      const estimate = await this.getMeanEstimate(task);
       task.estimate = estimate;
     } catch (e) {
       //can happen when testing, will default to 1 if can't get an estimate
@@ -223,8 +223,8 @@ export default class TasksModel {
   }
 
   async updateEstimate(task: GeoprocessingTask) {
-    let duration: number = task.duration ? task.duration : 0;
-    let service: string = task.service;
+    const duration: number = task.duration ? task.duration : 0;
+    const service: string = task.service;
     let meanEstimate = 0;
 
     try {
@@ -237,19 +237,19 @@ export default class TasksModel {
         }),
       );
 
-      let taskItem = response.Item;
+      const taskItem = response.Item;
 
       //@ts-ignore
       if (taskItem && taskItem?.allEstimates) {
         //@ts-ignore
-        let allEstimates: number[] = taskItem?.allEstimates;
+        const allEstimates: number[] = taskItem?.allEstimates;
         //cap it at five for estimate avg
         if (allEstimates.length >= 5) {
           allEstimates.pop();
         }
         allEstimates.push(duration);
 
-        let meanEstimate = Math.round(
+        const meanEstimate = Math.round(
           allEstimates.reduce((a, b) => a + b, 0) / allEstimates.length,
         );
 
@@ -427,7 +427,7 @@ export default class TasksModel {
   }
 
   async getMeanEstimate(task: GeoprocessingTask): Promise<number> {
-    let service = task.service;
+    const service = task.service;
     const response = await this.db.send(
       new GetCommand({
         TableName: this.estimatesTable,
@@ -436,7 +436,7 @@ export default class TasksModel {
         },
       }),
     );
-    let meanEstimate: number = response.Item?.meanEstimate;
+    const meanEstimate: number = response.Item?.meanEstimate;
     return meanEstimate;
   }
 

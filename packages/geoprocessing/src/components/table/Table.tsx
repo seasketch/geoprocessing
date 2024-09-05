@@ -349,7 +349,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
             return (
               <tr key={otherRowPropKey} {...otherRowProps}>
                 {row.cells.map((cell) => {
-                  let cellVal = cell.value;
+                  const cellVal = cell.value;
                   const { key: otherCellPropKey, ...otherCellProps } =
                     cell.getCellProps([
                       {

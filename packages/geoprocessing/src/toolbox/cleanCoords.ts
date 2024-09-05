@@ -13,12 +13,12 @@ export function cleanCoords(
     mutate?: boolean;
   } = {},
 ) {
-  var mutate = typeof options === "object" ? options.mutate : options;
+  const mutate = typeof options === "object" ? options.mutate : options;
   if (!geojson) throw new Error("geojson is required");
-  var type = getType(geojson);
+  const type = getType(geojson);
 
   // Store new "clean" points in this Array
-  var newCoords: any = [];
+  let newCoords: any = [];
 
   switch (type) {
     case "FeatureCollection":
@@ -43,7 +43,7 @@ export function cleanCoords(
       break;
     case "MultiPolygon":
       getCoords(geojson).forEach(function (polygons: any) {
-        var polyPoints: Position[] = [];
+        const polyPoints: Position[] = [];
         polygons.forEach(function (ring: Position[]) {
           polyPoints.push(cleanLine(ring, type));
         });
@@ -55,7 +55,7 @@ export function cleanCoords(
     case "MultiPoint":
       var existing: Record<string, true> = {};
       getCoords(geojson).forEach(function (coord: any) {
-        var key = coord.join("-");
+        const key = coord.join("-");
         if (!Object.prototype.hasOwnProperty.call(existing, key)) {
           newCoords.push(coord);
           existing[key] = true;
@@ -92,9 +92,9 @@ export function cleanCoords(
  * @returns {Array<number>} Cleaned coordinates
  */
 function cleanLine(line: Position[], type: string): any[] {
-  var points = getCoords(line);
-  var newPoints: number[][] = [];
-  for (var i = 0; i < points.length; i++) {
+  const points = getCoords(line);
+  const newPoints: number[][] = [];
+  for (let i = 0; i < points.length; i++) {
     const newPoint = [longitude(points[i][0]), latitude(points[i][1])];
     newPoints.push(newPoint);
   }

@@ -43,7 +43,7 @@ export const rasterStatsToMetrics = (
     categoryMetricProperty = "classId",
     categoryMetricValues,
   } = options;
-  let metrics: Metric[] = [];
+  const metrics: Metric[] = [];
   if (bandMetricProperty === categoryMetricProperty)
     throw new Error(
       "bandMetricProperty and categoryMetricProperty cannot be the same",

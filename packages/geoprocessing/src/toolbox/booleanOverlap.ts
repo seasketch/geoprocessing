@@ -45,8 +45,8 @@ export async function booleanOverlap<B>(
     ? featureBInput
     : [featureBInput];
 
-  let overlapFeatures: B[] = [];
-  let overlapIds: string[] = [];
+  const overlapFeatures: B[] = [];
+  const overlapIds: string[] = [];
 
   featuresA.forEach((featureA) => {
     featuresB.forEach((featureB) => {

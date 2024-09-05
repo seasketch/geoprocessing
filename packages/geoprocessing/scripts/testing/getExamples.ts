@@ -37,7 +37,7 @@ export async function getExampleSketchAll(
 ): Promise<Array<Sketch | SketchCollection>> {
   const sketches: Array<Sketch | SketchCollection> = [];
   if (fs.existsSync("examples/sketches")) {
-    let filenames = await fs.readdir("examples/sketches");
+    const filenames = await fs.readdir("examples/sketches");
     await Promise.all(
       filenames
         .filter((fname) => /\.json/.test(fname))
@@ -269,9 +269,9 @@ export async function getExampleSketchesByName(
  * Optionally filters out those that don't match partialName
  */
 export async function getExampleFeaturesAll(partialName?: string) {
-  let features: Feature<SketchGeometryTypes>[] = [];
+  const features: Feature<SketchGeometryTypes>[] = [];
   if (fs.existsSync("examples/features")) {
-    let filenames = await fs.readdir("examples/features");
+    const filenames = await fs.readdir("examples/features");
     await Promise.all(
       filenames
         .filter((fname) => /\.json/.test(fname))

@@ -104,16 +104,16 @@ interface PendingRequest {
 
 interface DissolvedFeatureCache {
   feature: Feature<Polygon | MultiPolygon>;
-  bundleIds: { [key: string]: Boolean };
+  bundleIds: { [key: string]: boolean };
 }
 
 export interface FeatureTree {
-  fid: Number;
+  fid: number;
   root: Node;
 }
 
 export interface Node {
-  nodeId: Number;
+  nodeId: number;
   leaf?: VectorFeature;
   ancestors: number[];
   cutline?: number;
@@ -453,7 +453,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
    * @returns
    */
   async fetch(bbox: BBox): Promise<T[]> {
-    let bundleIds = await this.identifyBundles(bbox);
+    const bundleIds = await this.identifyBundles(bbox);
     this.cancelLowPriorityRequests(bundleIds);
     if (isHostedOnLambda) {
       console.time(`Fetch ${bundleIds.length} bundles from ${this.url}`);
@@ -469,7 +469,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     // console.time("retrieval and processing");
     // debug(`Searching index`, bbox);
 
-    let features = this.tree.search({
+    const features = this.tree.search({
       minX: bbox[0],
       minY: bbox[1],
       maxX: bbox[2],
@@ -589,7 +589,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
       return node;
     };
 
-    let rootNode = {
+    const rootNode = {
       cutline: nodes[0].ancestors[0],
       children: [],
       ancestors: [],

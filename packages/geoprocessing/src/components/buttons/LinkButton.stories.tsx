@@ -10,7 +10,7 @@ export default {
 export const linkButton = () => {
   return (
     <>
-      <a href="https://google.com" target="_blank">
+      <a href="https://google.com" target="_blank" rel="noreferrer">
         <SimpleButton>⬇</SimpleButton>
       </a>
     </>

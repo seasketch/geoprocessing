@@ -12,9 +12,9 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const usage =
     "Converts geojson polygon feature collection to sketch collection \n Usage: convertToSketch [INFILE] [OUTFILE] [NAME_PROPERTY]. \n INFILE expected to be polygon feature collection. \n NAME is optional feature property to assign sketch name from.  If not property by that name in feature then used as a name prefix [PREFIX]-1, [PREFIX-2], otherwise sketch names assigned as 'Area-1', 'Area-2'";
 
-  let infile = process.argv[2];
-  let outfile = process.argv[3];
-  let name = process.argv[4];
+  const infile = process.argv[2];
+  const outfile = process.argv[3];
+  const name = process.argv[4];
   if (!infile || !outfile) {
     console.error(usage);
     process.exit();

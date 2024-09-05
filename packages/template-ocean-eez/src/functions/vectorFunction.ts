@@ -53,7 +53,7 @@ export async function vectorFunction(
   const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   // Chached features
-  let cachedFeatures: Record<string, Feature<Polygon | MultiPolygon>[]> = {};
+  const cachedFeatures: Record<string, Feature<Polygon | MultiPolygon>[]> = {};
 
   // Calculate overlap metrics for each class in metric group
   const metricGroup = project.getMetricGroup("vectorFunction");

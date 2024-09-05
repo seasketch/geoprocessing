@@ -30,7 +30,7 @@ export async function clearResults() {
 }
 
 export async function clearCachedResults(options: ClearCacheOptions) {
-  let serviceName = options.tableName;
+  const serviceName = options.tableName;
   await deleteTasks(packageJson.name, geoprocessingJson.region, serviceName);
 }
 

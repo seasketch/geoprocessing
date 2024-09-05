@@ -76,7 +76,7 @@ const inspectTable = async (
     index_type: z.string(),
     column: z.string(),
   });
-  let indexes = await connection.query(
+  const indexes = await connection.query(
     sql.type(indexRecord)`
       SELECT 
         is_primary, 

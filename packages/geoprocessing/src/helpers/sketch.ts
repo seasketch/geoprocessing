@@ -60,7 +60,7 @@ export function getUserAttribute<T>(
       return sketchOrProps;
     }
   })();
-  let found = props.userAttributes.find((a) => a.exportId === exportid);
+  const found = props.userAttributes.find((a) => a.exportId === exportid);
   return found && found.value !== undefined && found.value !== null
     ? found.value
     : defaultValue;

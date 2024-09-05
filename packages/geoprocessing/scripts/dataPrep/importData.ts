@@ -128,7 +128,7 @@ function vectorMapper(
 function rasterMapper(
   answers: ImportRasterDatasourceAnswers,
 ): ImportRasterDatasourceOptions {
-  let options: ImportRasterDatasourceOptions = {
+  const options: ImportRasterDatasourceOptions = {
     ...answers,
   };
   // a blank noDataValue will end up as nan, so just remove it as its optional

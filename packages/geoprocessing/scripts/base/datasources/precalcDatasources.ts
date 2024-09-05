@@ -90,7 +90,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
   let successfulDs = 0;
   let successfulGs = 0;
   let finalMetrics: Metric[] = [];
-  let processed = {}; // Track processed datasource/geography combinations to avoid duplicates
+  const processed = {}; // Track processed datasource/geography combinations to avoid duplicates
 
   // console.log("vector (geog) datasources", vectorDatasources);
   // console.log("datasources", datasources);

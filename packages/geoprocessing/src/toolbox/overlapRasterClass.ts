@@ -41,7 +41,7 @@ export async function overlapRasterClass(
   const histoPromises: Promise<Histogram>[] = [];
   const histoFeatures: Sketch[] = [];
   // await results and create metrics for each sketch
-  let sketchMetrics: Metric[] = [];
+  const sketchMetrics: Metric[] = [];
 
   if (sketch) {
     featureEach(sketch, async (feat) => {

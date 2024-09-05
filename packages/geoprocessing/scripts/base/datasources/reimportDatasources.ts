@@ -53,7 +53,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   // Process one at a time
   let failed = 0;
   let updated = 0;
-  let finalDatasources: Datasource[] = [];
+  const finalDatasources: Datasource[] = [];
   for (const ds of filteredDatasources) {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       try {

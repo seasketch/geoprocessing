@@ -12,7 +12,7 @@ import { geographyConfig } from "../../../src/geographies/config.js";
  * If geographies file not exist then start a new one and ensure directory exists
  */
 export function readGeographies(filePath?: string) {
-  let geos: Geographies = [];
+  const geos: Geographies = [];
 
   // Optional override
   const finalFilePath =

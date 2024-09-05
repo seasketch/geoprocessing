@@ -73,7 +73,7 @@ export const sendHandler = async (event) => {
     };
   }
 
-  let endpoint = `https://${event.requestContext.domainName}/${event.requestContext.stage}`;
+  const endpoint = `https://${event.requestContext.domainName}/${event.requestContext.stage}`;
 
   // console.log("endpoint", endpoint);
 
@@ -89,7 +89,7 @@ export const sendHandler = async (event) => {
 
   // Find subscription matching serviceName and cacheKey
   // Send connectionId from that subscription
-  for (let responseItem of responses.Items) {
+  for (const responseItem of responses.Items) {
     const resultItem: ResultItem = {
       cacheKey: responseItem.cacheKey,
       serviceName: responseItem.serviceName,
@@ -102,7 +102,7 @@ export const sendHandler = async (event) => {
       responseItem.serviceName == serviceName
     ) {
       try {
-        let postData = JSON.stringify(resultItem);
+        const postData = JSON.stringify(resultItem);
 
         // console.log("connectionId", responseItem.connectionId);
         // console.log("data", postData);

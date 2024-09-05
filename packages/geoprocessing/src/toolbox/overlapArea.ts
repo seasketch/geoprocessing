@@ -40,7 +40,7 @@ export async function overlapArea(
   if (!sketch) throw new ValidationError("Missing sketch");
   const { includePercMetric = true, includeChildMetrics = true } = options;
   const percMetricId = `${metricId}Perc`;
-  let collectionExtra: Metric["extra"] = {};
+  const collectionExtra: Metric["extra"] = {};
 
   // Remove overlap
   const combinedSketchArea = (() => {
@@ -199,7 +199,7 @@ export async function overlapSubarea(
   if (!sketch) throw new ValidationError("Missing sketch");
   const percMetricId = `${metricId}Perc`;
   const operation = options?.operation || "intersection";
-  let collectionExtra: Metric["extra"] = {};
+  const collectionExtra: Metric["extra"] = {};
   const subareaArea =
     options?.outerArea && operation === "intersection"
       ? options?.outerArea
@@ -280,7 +280,7 @@ export async function overlapSubarea(
     }
   })();
 
-  let metrics: Metric[] = [];
+  const metrics: Metric[] = [];
   if (subsketches) {
     subsketches.forEach((feat, index) => {
       const origSketch = sketches[index];

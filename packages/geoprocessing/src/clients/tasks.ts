@@ -49,7 +49,7 @@ export const finishTask = async (
   socket,
 ) => {
   // Get result using checkCacheOnly flag
-  let finishedRequest: Promise<GeoprocessingTask> = runTask(
+  const finishedRequest: Promise<GeoprocessingTask> = runTask(
     url,
     payload,
     abortController.signal,

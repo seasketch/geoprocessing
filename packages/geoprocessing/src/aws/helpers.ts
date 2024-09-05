@@ -35,7 +35,11 @@ export async function runLambdaWorker(
   functionName: string,
   region: string,
   functionParameters = {},
-  request: GeoprocessingRequestModel<Polygon | MultiPolygon>
+  request: GeoprocessingRequestModel<Polygon | MultiPolygon>,
+  options: {
+    /** Whether server should cache result of worker task */
+    serverShouldCache?: boolean;
+  }
 ): Promise<InvocationResponse> {
   // Create cache key for this task
   const cacheKey = genTaskCacheKey(functionName, sketch.properties, {
@@ -77,6 +81,7 @@ export async function runLambdaWorker(
     geometryUri: `${location}/geometry`,
     status: GeoprocessingTaskStatus.Pending,
     estimate: 2,
+    disableServerCache: options.serverShouldCache || false, // default to false
   };
 
   const client = new LambdaClient({});

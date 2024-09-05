@@ -35,6 +35,7 @@ export interface GeoprocessingTask<ResultType = any> {
   data?: ResultType; // result data can take any json-serializable form
   error?: string;
   estimate: number;
+  disableServerCache?: boolean; // whether to cache the result server-side, defaults to true
   // ttl?: number;
 }
 
@@ -101,9 +102,12 @@ export default class TasksModel {
     service: string,
     /** Cache key */
     id?: string,
-    wss?: string
+    wss?: string,
+    disableServerCache?: boolean
   ) {
     const task = this.init(service, id, wss);
+    task.disableServerCache = disableServerCache;
+
     try {
       let estimate = await this.getMeanEstimate(task);
       task.estimate = estimate;
@@ -111,14 +115,20 @@ export default class TasksModel {
       //can happen when testing, will default to 1 if can't get an estimate
     }
 
-    await this.db.send(
-      new PutCommand({
-        TableName: this.table,
-        Item: {
-          ...task,
-        },
-      })
-    );
+    const shouldCache =
+      task.disableServerCache === undefined || task.disableServerCache === false
+        ? true
+        : false;
+    if (shouldCache) {
+      await this.db.send(
+        new PutCommand({
+          TableName: this.table,
+          Item: {
+            ...task,
+          },
+        })
+      );
+    }
     return task;
   }
 
@@ -137,60 +147,30 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Completed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
-    const tsStrings = Date.now();
-    console.time(`split strings - ${tsStrings}`);
-    const jsonStrings = this.toJsonStrings(results, {
-      minSplitSizeBytes: options.minSplitSizeBytes,
-    });
-    console.timeEnd(`split strings - ${tsStrings}`);
-    const numJsonStrings = jsonStrings.length;
+    const shouldCache =
+      task.disableServerCache === undefined || task.disableServerCache === false
+        ? true
+        : false;
+    console.log("shouldCache", shouldCache);
 
-    // Update root task
-    const tsRootChunk = Date.now();
-    console.time(`save root - ${tsRootChunk}`);
-    await this.db.send(
-      new UpdateCommand({
-        TableName: this.table,
-        Key: {
-          id: task.id,
-          service: task.service,
-        },
-        UpdateExpression:
-          "set #data = :data, #status = :status, #duration = :duration",
-        ExpressionAttributeNames: {
-          "#data": "data",
-          "#status": "status",
-          "#duration": "duration",
-        },
-        ExpressionAttributeValues: {
-          ":data": { numChunks: numJsonStrings },
-          ":status": task.status,
-          ":duration": task.duration,
-        },
-      })
-    );
-    console.timeEnd(`save root - ${tsRootChunk}`);
+    if (shouldCache) {
+      const tsStrings = Date.now();
+      console.time(`split strings - ${tsStrings}`);
+      const jsonStrings = this.toJsonStrings(results, {
+        minSplitSizeBytes: options.minSplitSizeBytes,
+      });
+      console.timeEnd(`split strings - ${tsStrings}`);
+      const numJsonStrings = jsonStrings.length;
 
-    // const jsonStringsHash = jsonStrings.reduce<Record<string, string>>(
-    //   (acc, curString, index) => {
-    //     return { [index]: curString, ...acc };
-    //   },
-    //   {}
-    // );
-    // toJsonFile(jsonStringsHash, "./chunk_toJsonStrings.json");
-
-    // Store each JSON substring as a separate dynamodb item, with chunk index
-    // all under same partition key (task.id) as root item for easy retrieval
-    console.log(`Saving ${jsonStrings.length} chunks`);
-    const promises = jsonStrings.map(async (chunk, index) => {
-      console.log("chunk", chunk);
-      console.log(`Chunk ${index} - ${chunk.length} length`);
-      return this.db.send(
+      // Update root task
+      const tsRootChunk = Date.now();
+      console.time(`save root - ${tsRootChunk}`);
+      await this.db.send(
         new UpdateCommand({
           TableName: this.table,
           Key: {
             id: task.id,
-            service: `${task.service}-chunk-${index}`,
+            service: task.service,
           },
           UpdateExpression:
             "set #data = :data, #status = :status, #duration = :duration",
@@ -200,17 +180,55 @@ export default class TasksModel {
             "#duration": "duration",
           },
           ExpressionAttributeValues: {
-            ":data": { chunk: chunk },
+            ":data": { numChunks: numJsonStrings },
             ":status": task.status,
             ":duration": task.duration,
           },
         })
       );
-    });
-    const tsSaveChunk = Date.now();
-    console.time(`save chunks - ${tsSaveChunk}`);
-    await Promise.all(promises);
-    console.timeEnd(`save chunks - ${tsSaveChunk}`);
+      console.timeEnd(`save root - ${tsRootChunk}`);
+
+      // const jsonStringsHash = jsonStrings.reduce<Record<string, string>>(
+      //   (acc, curString, index) => {
+      //     return { [index]: curString, ...acc };
+      //   },
+      //   {}
+      // );
+      // toJsonFile(jsonStringsHash, "./chunk_toJsonStrings.json");
+
+      // Store each JSON substring as a separate dynamodb item, with chunk index
+      // all under same partition key (task.id) as root item for easy retrieval
+      console.log(`Saving ${jsonStrings.length} chunks`);
+      const promises = jsonStrings.map(async (chunk, index) => {
+        console.log("chunk", chunk);
+        console.log(`Chunk ${index} - ${chunk.length} length`);
+        return this.db.send(
+          new UpdateCommand({
+            TableName: this.table,
+            Key: {
+              id: task.id,
+              service: `${task.service}-chunk-${index}`,
+            },
+            UpdateExpression:
+              "set #data = :data, #status = :status, #duration = :duration",
+            ExpressionAttributeNames: {
+              "#data": "data",
+              "#status": "status",
+              "#duration": "duration",
+            },
+            ExpressionAttributeValues: {
+              ":data": { chunk: chunk },
+              ":status": task.status,
+              ":duration": task.duration,
+            },
+          })
+        );
+      });
+      const tsSaveChunk = Date.now();
+      console.time(`save chunks - ${tsSaveChunk}`);
+      await Promise.all(promises);
+      console.timeEnd(`save chunks - ${tsSaveChunk}`);
+    }
 
     return {
       statusCode: 200,
@@ -308,27 +326,36 @@ export default class TasksModel {
     task.status = GeoprocessingTaskStatus.Failed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
     task.error = errorDescription;
-    await this.db.send(
-      new UpdateCommand({
-        TableName: this.table,
-        Key: {
-          id: task.id,
-          service: task.service,
-        },
-        UpdateExpression:
-          "set #error = :error, #status = :status, #duration = :duration",
-        ExpressionAttributeNames: {
-          "#error": "error",
-          "#status": "status",
-          "#duration": "duration",
-        },
-        ExpressionAttributeValues: {
-          ":error": errorDescription,
-          ":status": task.status,
-          ":duration": task.duration,
-        },
-      })
-    );
+
+    const shouldCache =
+      task.disableServerCache === undefined || task.disableServerCache === false
+        ? true
+        : false;
+
+    if (shouldCache) {
+      await this.db.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: {
+            id: task.id,
+            service: task.service,
+          },
+          UpdateExpression:
+            "set #error = :error, #status = :status, #duration = :duration",
+          ExpressionAttributeNames: {
+            "#error": "error",
+            "#status": "status",
+            "#duration": "duration",
+          },
+          ExpressionAttributeValues: {
+            ":error": errorDescription,
+            ":status": task.status,
+            ":duration": task.duration,
+          },
+        })
+      );
+    }
+
     return {
       statusCode: 500,
       headers: {

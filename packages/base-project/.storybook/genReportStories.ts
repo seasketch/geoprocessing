@@ -152,7 +152,7 @@ for (const storyConfig of storyConfigs) {
 
     const childProperties: SketchProperties["childProperties"] = (() => {
       if (isSketchCollection(sketch)) {
-        sketch.features.map((feature) => feature.properties);
+        return sketch.features.map((feature) => feature.properties);
       }
       return undefined;
     })();

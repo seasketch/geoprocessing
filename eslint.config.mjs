@@ -26,6 +26,7 @@ export default [
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
+      trailingComma: "off",
     },
   },
 

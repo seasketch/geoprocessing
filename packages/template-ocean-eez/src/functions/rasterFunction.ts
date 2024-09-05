@@ -49,7 +49,7 @@ export async function rasterFunction(
   const clippedSketch = await clipToGeography(splitSketch, curGeography);
 
   // Get bounding box of sketch remainder
-  const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
+  // const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   // Calculate overlap metrics for each class in metric group
   const metricGroup = project.getMetricGroup("rasterFunction");

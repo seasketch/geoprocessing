@@ -46,6 +46,7 @@
     "lint:eslint": "npx eslint",
     "lint:eslint:fix": "npx eslint --fix",
     "lint:prettier": "prettier --check .",
+    "lint:prettier:fix": "prettier --write .",
     "publish:experimental:canary": "BRANCH_NAME=`git rev-parse --symbolic-full-name --abbrev-ref HEAD`; if [ $BRANCH_NAME != \"dev\" -a $BRANCH_NAME != \"main\" ] ; then CI=1 lerna publish --force-publish --canary --preid experimental-${BRANCH_NAME} --dist-tag=experimental-${BRANCH_NAME} ; fi",
     "publish:alpha": "CI=1 lerna publish --force-publish --preid alpha --dist-tag=alpha",
     "publish:beta": "CI=1 lerna publish --force-publish --preid beta --dist-tag=beta",

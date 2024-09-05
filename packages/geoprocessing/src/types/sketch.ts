@@ -21,6 +21,7 @@ export type SketchProperties = Record<string, any> & {
   sketchClassId: string;
   isCollection: boolean;
   userAttributes: UserAttribute[];
+  childProperties?: SketchProperties[];
 };
 
 /** User-defined attributes with values for Sketch.  Defines known keys as well as unknown for extensiblity */

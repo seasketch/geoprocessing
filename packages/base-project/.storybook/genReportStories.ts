@@ -1,7 +1,12 @@
 import fs from "fs-extra";
 import path from "path";
 import { globby } from "globby";
-import { Sketch } from "@seasketch/geoprocessing/client-core";
+import {
+  isSketchCollection,
+  Sketch,
+  SketchCollection,
+  SketchProperties,
+} from "@seasketch/geoprocessing/client-core";
 import { GpStoryConfig } from "./types.js";
 import { v4 as uuid } from "uuid";
 
@@ -70,10 +75,10 @@ const sketchFilenames = fs
   );
 
 // console.log("sketchFilenames", sketchFilenames);
-const sketches: Sketch[] = [];
+const sketches: (Sketch | SketchCollection)[] = [];
 for (const sketchFilename of sketchFilenames) {
   try {
-    const sketch: Sketch = fs.readJSONSync(
+    const sketch: Sketch | SketchCollection = fs.readJSONSync(
       path.join(sketchDir, sketchFilename)
     ) as Sketch;
     if (sketch && sketch.properties.name) {
@@ -145,6 +150,18 @@ for (const storyConfig of storyConfigs) {
       continue;
     }
 
+    const childProperties: SketchProperties["childProperties"] = (() => {
+      if (isSketchCollection(sketch)) {
+        return sketch.features.map((feature) => feature.properties);
+      }
+      return undefined;
+    })();
+
+    const newSketchProperties: SketchProperties = {
+      ...sketch.properties,
+      ...(childProperties ? { childProperties } : {}),
+    };
+
     const story = `
       import React from "react";
       import { ${storyConfig.componentName} } from '${importFromCacheStr}';
@@ -156,7 +173,7 @@ for (const storyConfig of storyConfigs) {
 
       const contextValue = sampleSketchReportContextValue({
         exampleOutputs: ${JSON.stringify(exampleOutputs, null, 2)},
-        sketchProperties: ${JSON.stringify(sketch.properties, null, 2)},
+        sketchProperties: ${JSON.stringify(newSketchProperties, null, 2)},
         projectUrl: "https://example.com/project",
         geometryUri: 'https://localhost/${uuid()}',
         visibleLayers: [],

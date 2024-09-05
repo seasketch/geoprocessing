@@ -34,7 +34,7 @@ export const loadedPackageSchema = z.object({
   bugs: z.record(z.string()).optional(),
   repository: z.record(z.string()).optional(),
   dependencies: z.record(z.string()),
-  devDependencies: z.record(z.string()),
+  devDependencies: z.record(z.string()).optional(),
   scripts: z.record(z.string()),
   private: z.boolean(),
   type: z.string().optional(),

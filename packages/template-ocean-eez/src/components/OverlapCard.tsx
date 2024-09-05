@@ -76,7 +76,7 @@ export const OverlapCard: React.FunctionComponent<GeogProp> = (props) => {
           <ReportError>
             <p>
               <Trans i18nKey="OverlapCard 1">
-                This report summarizes this plan's overlap with OverlapCard
+                This report summarizes this plan&apos;s overlap with OverlapCard
                 data.
               </Trans>
             </p>

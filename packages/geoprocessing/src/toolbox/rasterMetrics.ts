@@ -12,8 +12,6 @@ import {
 import { featureEach } from "@turf/turf";
 import { RasterStatsOptions, rasterStats } from "./geoblaze/index.js";
 import { rasterStatsToMetrics } from "./geoblaze/rasterStatsToMetrics.js";
-
-// @ts-ignore
 import { Georaster } from "geoblaze";
 
 interface OverlapRasterOptions extends RasterStatsOptions {

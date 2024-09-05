@@ -168,12 +168,9 @@ const genSingleSizeTable = (
 ) => {
   const boundaryLabel = t("Boundary");
   const foundWithinLabel = t("Found Within Plan");
-  const areaWithinLabel = t("Area Within Plan");
-  const areaPercWithinLabel = t("% Within Plan");
   const mapLabel = t("Map");
   const sqKmLabel = t("km²");
 
-  const classesById = keyBy(mg.classes, (c) => c.classId);
   const singleMetrics = data.metrics.filter(
     (m) => m.sketchId === data.sketch.properties.id,
   );
@@ -322,12 +319,13 @@ const genNetworkSizeTable = (
     },
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const columns: Column<any>[] = [
     {
       Header: " ",
       accessor: (row) => <b>{sketchesById[row.sketchId].properties.name}</b>,
     },
-    ...(classColumns as Column<any>[]),
+    ...(classColumns as Column<any>[]), // eslint-disable-line @typescript-eslint/no-explicit-any
   ];
 
   return (

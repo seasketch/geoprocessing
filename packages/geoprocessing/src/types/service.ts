@@ -1,11 +1,5 @@
 import { JSONValue } from "./base.js";
-import {
-  Polygon,
-  MultiPolygon,
-  LineString,
-  Point,
-  Feature,
-} from "./geojson.js";
+import { Polygon, LineString, Point, Feature } from "./geojson.js";
 import {
   Sketch,
   SketchCollection,

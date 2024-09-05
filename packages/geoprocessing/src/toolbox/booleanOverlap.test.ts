@@ -3,11 +3,6 @@ import { booleanOverlap } from "./booleanOverlap.js";
 import { genSampleSketch } from "../helpers/index.js";
 import { Polygon } from "../types/geojson.js";
 
-const pointSketch = genSampleSketch({
-  type: "Point",
-  coordinates: [1, 2],
-});
-
 const lineSketchA = genSampleSketch({
   type: "LineString",
   coordinates: [

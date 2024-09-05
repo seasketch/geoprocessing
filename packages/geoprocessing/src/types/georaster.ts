@@ -9,7 +9,7 @@ export type TypedArray =
   | Float32Array
   | Float64Array;
 
-declare function parseGeoraster(
+export declare function parseGeoraster(
   /** raster pixel data, accepts variety of forms */
   data: object | string | Buffer | ArrayBuffer | TypedArray[][],
   /** raster metadata */

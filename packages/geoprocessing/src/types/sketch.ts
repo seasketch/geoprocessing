@@ -12,6 +12,7 @@ import {
 export type SketchGeometryTypes = Polygon | MultiPolygon | LineString | Point;
 
 /** Properties of a Sketch, defines known keys as well as unknown for extensiblity */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SketchProperties = Record<string, any> & {
   id: string;
   /** Name specified by the author of the sketch */
@@ -24,21 +25,21 @@ export type SketchProperties = Record<string, any> & {
 };
 
 /** User-defined attributes with values for Sketch.  Defines known keys as well as unknown for extensiblity */
-export type UserAttribute = Record<string, any> & {
+export type UserAttribute = Record<string, unknown> & {
   exportId: string;
   /** String to display for sketch attribute name */
   label: string;
   /** String to display for sketch attribute value */
   valueLabel?: string | string[] | null;
   /** Sketch attribute value */
-  value: any;
+  value: string | string[] | number | number[] | boolean | boolean[] | null;
   fieldType: string;
   /** Alternative strings to display for sketch attribute by language code */
   alternateLanguages?: Record<
     string,
     {
       label: string;
-      valueLabel: any;
+      valueLabel: string | string[] | null;
     }
   >;
 };

@@ -10,7 +10,6 @@ import {
   rasterMetrics,
   isRasterDatasource,
 } from "@seasketch/geoprocessing";
-import { bbox } from "@turf/turf";
 import project from "../../project/projectClient.js";
 import {
   Metric,

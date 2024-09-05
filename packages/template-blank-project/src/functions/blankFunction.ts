@@ -39,7 +39,7 @@ export async function blankFunction(
   const clippedSketch = await clipToGeography(splitSketch, curGeography);
 
   // Get bounding box of sketch remainder
-  const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
+  // const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   // Add functionality here to return in (most common) Metric[] format
   // Or create new type to return to component

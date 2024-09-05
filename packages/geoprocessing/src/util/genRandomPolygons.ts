@@ -1,5 +1,5 @@
 import { randomPolygon, featureReduce, featureCollection } from "@turf/turf";
-import { BBox, Polygon } from "../types/geojson.js";
+import { Feature, BBox, Polygon } from "geojson";
 
 /**
  * Generates random polygons within provided bounds.  numPolygons defaults to 300, max_radial_length to 0.5
@@ -16,7 +16,7 @@ export const genRandomPolygons = (config: {
     max_radial_length,
   });
 
-  const proppedPolys = featureReduce<any, Polygon, { id: number }>(
+  const proppedPolys = featureReduce<Feature[], Polygon, { id: number }>(
     randPolys,
     (previousValue, currentFeature, featureIndex) => {
       return previousValue.concat({

@@ -24,7 +24,17 @@ export const BlankCard: React.FunctionComponent<GeogProp> = (props) => {
         return (
           <ReportError>
             <p>
-              <Trans i18nKey="BlankCard Message">This is a blank report.</Trans>
+              {isCollection ? (
+                <Trans i18nKey="BlankCard SketchCollection Message">
+                  This is a blank sketch collection report for geography{" "}
+                  {curGeography.display} with result {JSON.stringify(data)}.
+                </Trans>
+              ) : (
+                <Trans i18nKey="BlankCard Sketch Message">
+                  This is a blank sketch report for geography{" "}
+                  {curGeography.display} with result {JSON.stringify(data)}.
+                </Trans>
+              )}
             </p>
           </ReportError>
         );

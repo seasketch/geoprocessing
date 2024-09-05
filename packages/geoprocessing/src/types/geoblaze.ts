@@ -65,7 +65,7 @@ export interface StatsObject {
   /** Statistical measurement of spread between values in raster */
   variance?: Nullable<number>;
   /** Histogram object, for categorical raster, mapping category IDs to cell count */
-  histogram?: Nullable<{}>;
+  histogram?: Nullable<object>;
 }
 
 /**

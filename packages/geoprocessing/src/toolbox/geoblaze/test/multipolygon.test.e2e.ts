@@ -1,8 +1,3 @@
-/**
- * @vitest-environment node
- */
-
-// @ts-ignore
 import geoblaze from "geoblaze";
 import parseGeoraster from "georaster";
 

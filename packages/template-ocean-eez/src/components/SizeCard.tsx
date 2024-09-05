@@ -226,11 +226,7 @@ const genSingleSizeTable = (
               barHeight: 11,
             },
             width: 40,
-            targetValueFormatter: (
-              value: number,
-              row: number,
-              numRows: number,
-            ) => {
+            targetValueFormatter: (_value: number, row: number) => {
               if (row === 0) {
                 return (value: number) =>
                   `${valueFormatter(value / 100, "percent0dig")} ${t(

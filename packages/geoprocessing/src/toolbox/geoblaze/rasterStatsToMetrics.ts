@@ -55,6 +55,7 @@ export const rasterStatsToMetrics = (
       const value = curStats[statName];
 
       if (categorical) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         categoryMetricValues
           ? categoryMetricValues.forEach((category) => {
               metrics.push(

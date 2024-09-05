@@ -2,8 +2,6 @@ import { describe, test, expect } from "vitest";
 import { Polygon, Sketch, Feature } from "../../types/index.js";
 import parseGeoraster from "georaster";
 import testData from "./test/testData.js";
-
-// @ts-ignore
 import geoblaze from "geoblaze";
 import { splitSketchAntimeridian } from "../split.js";
 
@@ -84,7 +82,7 @@ describe("geoblaze cog test", () => {
     };
     try {
       await geoblaze.sum(url, feature);
-    } catch (err) {
+    } catch {
       return;
     }
     throw new Error("should not reach here, feature smaller than pixel");

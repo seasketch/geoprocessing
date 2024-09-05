@@ -1,7 +1,5 @@
 import { randomInt, randomFloat } from "../../helpers/randomData.js";
 
-const fixtures = {};
-
 export interface HumanUse {
   name: string;
   count: number;
@@ -123,6 +121,7 @@ export const getRandomCategorical = (): Categorical[] => {
   }));
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const nested: Record<string, any>[] = [
   {
     propA: "a",

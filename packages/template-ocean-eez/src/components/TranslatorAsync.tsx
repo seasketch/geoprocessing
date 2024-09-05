@@ -18,6 +18,7 @@ export const Translator: React.FunctionComponent<{
   // useEffect used to avoid react warning about changing state during render
   // https://github.com/i18next/react-i18next/issues/1124
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     i18nInstance.language !== language && i18nInstance.changeLanguage(language);
   }, [language]);
 

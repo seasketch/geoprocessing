@@ -42,7 +42,7 @@ export const getSum = async (
   try {
     const result = await geoblaze.sum(raster, finalFeat);
     sum = result[0];
-  } catch (err) {
+  } catch {
     console.log(
       "overlapRaster geoblaze.sum threw, meaning no cells with value were found within the geometry",
     );
@@ -67,7 +67,7 @@ export const getArea = async (
       stats: ["valid"],
     });
     area = parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
-  } catch (err) {
+  } catch {
     if (process.env.NODE_ENV !== "test")
       console.log(
         "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry",
@@ -95,7 +95,7 @@ export const getHistogram = async (
   let histogram = {};
   try {
     histogram = (await geoblaze.histogram(raster, feat, options))[0];
-  } catch (err) {
+  } catch {
     console.log(
       "overlapRaster geoblaze.histogram threw, there must not be any cells with value overlapping the geometry",
     );

@@ -8,6 +8,7 @@ import { feature, featureCollection, getCoords, getType } from "@turf/turf";
  * @param options.mutate whether or not to mutate the coordinates in place, defaults to false
  */
 export function cleanCoords(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   geojson: any,
   options: {
     mutate?: boolean;
@@ -18,42 +19,45 @@ export function cleanCoords(
   const type = getType(geojson);
 
   // Store new "clean" points in this Array
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let newCoords: any = [];
 
   switch (type) {
-    case "FeatureCollection":
+    case "FeatureCollection": {
       const cleanedCollection = featureCollection(
         geojson.features.map((f) => cleanCoords(f)),
       );
       if (geojson.properties) {
-        // @ts-ignore
-        cleanedCollection.properties = geojson.properties; // if SketchCollection transfer properties
-        // @ts-ignore
+        // @ts-expect-error - is this is a sketch collection we want to transfer collection-level properties
+        cleanedCollection.properties = geojson.properties;
         cleanedCollection.bbox = geojson.bbox; // and bbox
       }
       return cleanedCollection;
+    }
     case "LineString":
-      newCoords = cleanLine(geojson, type);
+      newCoords = cleanLine(geojson);
       break;
     case "MultiLineString":
     case "Polygon":
       getCoords(geojson).forEach(function (line) {
-        newCoords.push(cleanLine(line, type));
+        newCoords.push(cleanLine(line));
       });
       break;
     case "MultiPolygon":
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getCoords(geojson).forEach(function (polygons: any) {
         const polyPoints: Position[] = [];
         polygons.forEach(function (ring: Position[]) {
-          polyPoints.push(cleanLine(ring, type));
+          polyPoints.push(cleanLine(ring));
         });
         newCoords.push(polyPoints);
       });
       break;
     case "Point":
       return geojson;
-    case "MultiPoint":
-      var existing: Record<string, true> = {};
+    case "MultiPoint": {
+      const existing: Record<string, true> = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getCoords(geojson).forEach(function (coord: any) {
         const key = coord.join("-");
         if (!Object.prototype.hasOwnProperty.call(existing, key)) {
@@ -62,6 +66,7 @@ export function cleanCoords(
         }
       });
       break;
+    }
     default:
       throw new Error(type + " geometry not supported");
   }
@@ -91,7 +96,8 @@ export function cleanCoords(
  * @param {string} type Type of geometry
  * @returns {Array<number>} Cleaned coordinates
  */
-function cleanLine(line: Position[], type: string): any[] {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function cleanLine(line: Position[]): any[] {
   const points = getCoords(line);
   const newPoints: number[][] = [];
   for (let i = 0; i < points.length; i++) {

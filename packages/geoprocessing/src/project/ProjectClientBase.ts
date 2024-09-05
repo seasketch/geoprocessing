@@ -57,13 +57,21 @@ import {
 } from "../types/index.js";
 
 export interface ProjectClientConfig {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   basic: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   datasources: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricGroups: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   geographies: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   objectives: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   package: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   geoprocessing: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   precalc: any;
 }
 

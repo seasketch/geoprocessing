@@ -64,7 +64,7 @@ describe("rasterStatsToMetrics", () => {
     ];
     const metrics = rasterStatsToMetrics(stats);
     expect(metrics.length).toEqual(7);
-    metrics.forEach((m, i) => {
+    metrics.forEach((m) => {
       expect(m.value).toEqual(stats[0][m.metricId]);
     });
   });

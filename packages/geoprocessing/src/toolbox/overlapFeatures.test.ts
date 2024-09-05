@@ -91,7 +91,7 @@ describe("overlapFeatures", () => {
     // 3473074014471.342  turf is close
 
     expect(metrics.length).toEqual(1);
-    const wholeArea = area(sk.wholePoly);
+    // const wholeArea = area(sk.wholePoly);
     // console.log("wholeArea", wholeArea);
     const holeArea = area(sk.holeBlPoly);
     // console.log("holeArea", holeArea);

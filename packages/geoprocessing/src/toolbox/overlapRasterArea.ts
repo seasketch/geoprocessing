@@ -9,8 +9,6 @@ import { isSketchCollection, roundDecimal } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
 import { featureEach } from "@turf/turf";
 import { getArea } from "./geoblaze/index.js";
-
-// @ts-ignore
 import { Georaster } from "geoblaze";
 
 interface OverlapRasterOptions {

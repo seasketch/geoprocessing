@@ -1,4 +1,3 @@
-// @ts-ignore
 import geoblaze from "geoblaze";
 
 // Testing using EPSG:6933 NSIDC EASE-Grid 2.0 Global equal-area projection in geoblaze
@@ -46,8 +45,7 @@ describe("geoblaze equal-area tests", () => {
       ],
     };
 
-    const stats = (await geoblaze.stats(url, poly))[0];
-
+    // const stats = (await geoblaze.stats(url, poly))[0];
     // Should include 0 valid points, but cross-dateline polygons
     // expect(stats.sum).toBe(0); // fails, geoblaze: 212
   });

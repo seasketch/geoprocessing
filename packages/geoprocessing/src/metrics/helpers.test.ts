@@ -12,7 +12,7 @@ import {
   MetricProperties,
 } from "./helpers.js";
 import { NullSketch, NullSketchCollection, Metric } from "../types/index.js";
-import { toPercentMetric } from "../../client-core.js";
+import { hasOwnProperty, toPercentMetric } from "../../client-core.js";
 import deepEqual from "fast-deep-equal";
 
 const metricName = "metric1";
@@ -314,8 +314,8 @@ describe("MetricPack", () => {
     ];
 
     const packed = packMetrics(metrics);
-    expect(packed.hasOwnProperty("dimensions")).toBe(true);
-    expect(packed.hasOwnProperty("data")).toBe(true);
+    expect(hasOwnProperty(packed, "dimensions")).toBe(true);
+    expect(hasOwnProperty(packed, "data")).toBe(true);
     expect(packed.dimensions).toHaveLength(6);
     expect(packed.data).toHaveLength(2);
     expect(packed.data[0]).toHaveLength(6);
@@ -332,8 +332,8 @@ describe("MetricPack", () => {
       }),
     ];
     const packed = packMetrics(metrics);
-    expect(packed.hasOwnProperty("dimensions")).toBe(true);
-    expect(packed.hasOwnProperty("data")).toBe(true);
+    expect(hasOwnProperty(packed, "dimensions")).toBe(true);
+    expect(hasOwnProperty(packed, "data")).toBe(true);
     expect(packed.dimensions).toHaveLength(7);
     expect(packed.data).toHaveLength(1);
     expect(packed.data[0]).toHaveLength(7);

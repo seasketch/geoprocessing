@@ -82,8 +82,8 @@ export const sendHandler = async (event) => {
   });
 
   interface ResultItem {
-    cacheKey: any;
-    serviceName: any;
+    cacheKey: string;
+    serviceName: string;
     failureMessage?: string;
   }
 
@@ -109,11 +109,12 @@ export const sendHandler = async (event) => {
 
         try {
           // Send socket message with cacheKey to clients listening so they can fetch result
-          const postResult = await apigwManagementApi.postToConnection({
+          await apigwManagementApi.postToConnection({
             ConnectionId: responseItem.connectionId,
             Data: Buffer.from(postData),
           });
           // console.log("postResult", JSON.stringify(JSON.stringify(postResult)));
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
           if (e.statusCode && e.statusCode === 410) {
             console.log(
@@ -127,7 +128,7 @@ export const sendHandler = async (event) => {
                 },
               });
               responses = await ddb.send(command);
-            } catch (e) {
+            } catch {
               console.info("failed to delete stale connection...");
             }
           }

@@ -54,7 +54,7 @@ describe("rasterStatsToMetrics", () => {
         extra: {
           a: "b",
         },
-      })
+      }),
     ).toBe(true);
   });
 

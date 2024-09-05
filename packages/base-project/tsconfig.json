@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es2022",               /* Specify ECMAScript target version*/
-    "module": "nodenext",             /* Specify module code generation */
-    "jsx": "react",                   /* Specify JSX code generation */
-    "strict": true,                   /* Enable all strict type-checking options. */
-    "moduleResolution": "nodenext",   /* Specify module resolution strategy */
+    "target": "es2022" /* Specify ECMAScript target version*/,
+    "module": "nodenext" /* Specify module code generation */,
+    "jsx": "react" /* Specify JSX code generation */,
+    "strict": true /* Enable all strict type-checking options. */,
+    "moduleResolution": "nodenext" /* Specify module resolution strategy */,
     "typeRoots": [
       "./node_modules/@types",
-      "./node_modules/@seasketch/geoprocessing/node_modules/@types",
-    ],                                              /* List of folders to include type definitions from. */
-    "types": ["vitest/globals", "vite/client"],     /* Type declaration files to be included in compilation. */
-    "allowSyntheticDefaultImports": true,           /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
-    "forceConsistentCasingInFileNames": true,       /* Disallow inconsistently-cased references to the same file. */
+      "./node_modules/@seasketch/geoprocessing/node_modules/@types"
+    ] /* List of folders to include type definitions from. */,
+    "types": [
+      "vitest/globals",
+      "vite/client"
+    ] /* Type declaration files to be included in compilation. */,
+    "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "resolveJsonModule": true
   },
   "exclude": ["cdk.out", "node_modules"] /* Files to exclude from compilation */

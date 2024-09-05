@@ -6,7 +6,7 @@ import { genClipLoader } from "./genClipLoader.js";
 describe("genClipLoader", () => {
   test.skip("should successfully fetch datasources and return ClipOperations", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
-      "global-clipping-eez-land-union"
+      "global-clipping-eez-land-union",
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");

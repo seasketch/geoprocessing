@@ -43,7 +43,7 @@ interface OverlapRasterOptions extends RasterStatsOptions {
 export async function rasterMetrics(
   /** Cloud-optimized geotiff, loaded via loadCog or geoblaze.parse() */
   raster: Georaster,
-  options: OverlapRasterOptions = {}
+  options: OverlapRasterOptions = {},
 ): Promise<Metric[]> {
   const {
     metricId,
@@ -77,7 +77,7 @@ export async function rasterMetrics(
             categoryMetricProperty,
             categoryMetricValues,
             ...(statOptions ?? {}),
-          })
+          }),
         );
         features.push(curSketch);
       });

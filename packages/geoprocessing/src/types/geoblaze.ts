@@ -103,68 +103,68 @@ type InputBBox = BBox | GeoblazeBBox;
 
 export type bandArithmetic = (
   raster: Georaster,
-  operation: string
+  operation: string,
 ) => Promise<Georaster>;
 
 export type get = (
   raster: Georaster,
   geom: InputBBox | null | undefined,
-  flat: boolean
+  flat: boolean,
 ) => number[][] | number[][][];
 
 export type histogram = (
   raster: Georaster,
   geom: string | InputPolygon | null | undefined,
-  options: HistogramOptions
+  options: HistogramOptions,
 ) => Histogram[];
 
 export type identify = (
   raster: Georaster,
-  geom: string | InputPoint | null | undefined
+  geom: string | InputPoint | null | undefined,
 ) => number[];
 
 export type load = (urlOrFile: object | string) => Promise<Georaster>;
 
 export type max = (
   raster: Georaster,
-  geom: string | InputPolygon | null | undefined
+  geom: string | InputPolygon | null | undefined,
 ) => number[];
 
 export type mean = (
   raster: Georaster,
-  geom: string | InputPolygon | null | undefined
+  geom: string | InputPolygon | null | undefined,
 ) => number[];
 
 export type median = (
   raster: Georaster,
-  geom: string | InputPolygon | null | undefined
+  geom: string | InputPolygon | null | undefined,
 ) => number[];
 
 export type min = (
   raster: Georaster,
-  geom: string | InputPolygon | null | undefined
+  geom: string | InputPolygon | null | undefined,
 ) => number[];
 
 export type mode = (
   raster: Georaster,
-  geom: string | InputPolygon | null | undefined
+  geom: string | InputPolygon | null | undefined,
 ) => number[];
 
 export type rasterCalculator = (
   raster: Georaster,
-  operation: ((...cellValuesPerBand: number[]) => number) | string
+  operation: ((...cellValuesPerBand: number[]) => number) | string,
 ) => Promise<Georaster>;
 
 export type sum = (
   raster: Georaster,
   geom: string | InputPolygon | null | undefined,
   test?: (cellValue: number) => boolean,
-  debug?: boolean
+  debug?: boolean,
 ) => number[];
 
 export type stats = (
   raster: Georaster,
   geom: string | InputPolygon | null | undefined,
   test?: (cellValue: number) => boolean,
-  debug?: boolean
+  debug?: boolean,
 ) => StatsObject[];

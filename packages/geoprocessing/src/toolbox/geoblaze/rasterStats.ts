@@ -54,7 +54,7 @@ export interface RasterStatsOptions extends CalcStatsOptions {
  */
 export const rasterStats = async (
   raster: Georaster,
-  options: RasterStatsOptions = {}
+  options: RasterStatsOptions = {},
 ) => {
   const {
     numBands = 1,
@@ -132,11 +132,11 @@ export const rasterStats = async (
         projectedFeat,
         {
           stats: statsToCalculate.filter((stat) =>
-            GEOBLAZE_RASTER_STATS.includes(stat)
+            GEOBLAZE_RASTER_STATS.includes(stat),
           ), // filter to only native geoblaze stats
           ...restCalcOptions,
         },
-        filterFn
+        filterFn,
       );
     }
 
@@ -161,7 +161,7 @@ export const rasterStats = async (
               : rawValue;
           return { ...soFar, [curStat]: curValue };
         },
-        {}
+        {},
       );
       // Transfer calculated stats if valid number
       finalStats.push(finalStatsBand);
@@ -169,7 +169,7 @@ export const rasterStats = async (
   } catch (err) {
     if (process.env.NODE_ENV !== "test")
       console.log(
-        "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry"
+        "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry",
       );
     return defaultStats;
   }

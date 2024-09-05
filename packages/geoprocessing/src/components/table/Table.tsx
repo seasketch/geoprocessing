@@ -210,7 +210,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
       Filter: undefined, // default filter UI
       Cell: undefined, // default editable cell
     }),
-    []
+    [],
   );
 
   const {
@@ -266,7 +266,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
       data,
     },
     useSortBy,
-    usePagination
+    usePagination,
   );
 
   return (
@@ -344,7 +344,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
           {page.map((row) => {
             prepareRow(row);
             const { key: otherRowPropKey, ...otherRowProps } = row.getRowProps(
-              rowProps(row) || {}
+              rowProps(row) || {},
             );
             return (
               <tr key={otherRowPropKey} {...otherRowProps}>

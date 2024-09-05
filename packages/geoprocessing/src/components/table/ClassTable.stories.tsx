@@ -576,7 +576,7 @@ export const chartWithMixedTarget = () => {
             targetValueFormatter: (
               value: number,
               row: number,
-              numRows: number
+              numRows: number,
             ) => {
               if (row === 0) {
                 return (value: number) =>

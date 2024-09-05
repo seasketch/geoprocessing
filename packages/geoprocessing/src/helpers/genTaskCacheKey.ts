@@ -12,7 +12,7 @@ export const genTaskCacheKey = (
   /** Properties of sketch to generate cache key for */
   props: SketchProperties,
   /** Extra parameters to include in cache key */
-  extraParams: Record<string, unknown> = {}
+  extraParams: Record<string, unknown> = {},
 ) => {
   let cacheKey = `${service}-${props.id}-${props.updatedAt}`;
   if (Object.keys(extraParams).length > 0) {

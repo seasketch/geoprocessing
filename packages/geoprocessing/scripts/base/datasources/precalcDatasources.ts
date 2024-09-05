@@ -40,7 +40,7 @@ export interface PrecalcDatasourceOptions {
  */
 export async function precalcDatasources<C extends ProjectClientBase>(
   projectClient: C,
-  extraOptions: PrecalcDatasourceOptions = {}
+  extraOptions: PrecalcDatasourceOptions = {},
 ): Promise<Metric[]> {
   const {
     newDatasourcePath,
@@ -57,18 +57,18 @@ export async function precalcDatasources<C extends ProjectClientBase>(
       matchingGeographies = cloneDeep(allGeographies);
     } else {
       matchingGeographies = cloneDeep(allGeographies).filter((geog) =>
-        geographyMatcher.includes(geog.geographyId)
+        geographyMatcher.includes(geog.geographyId),
       );
 
       if (matchingGeographies.length === 0)
         throw new Error(
-          `No matching geographies found for ${geographyMatcher}, exiting`
+          `No matching geographies found for ${geographyMatcher}, exiting`,
         );
     }
   }
 
   const vectorDatasources: VectorDatasource[] = (await readDatasources(
-    newDatasourcePath
+    newDatasourcePath,
   ).filter((ds) => isVectorDatasource(ds))) as VectorDatasource[];
   const datasources = cloneDeep(await readDatasources(newDatasourcePath));
   // Start with no datasources to precalc.  Matcher can specify all (*) or some
@@ -79,7 +79,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
       matchingDatasources = cloneDeep(datasources);
     } else {
       matchingDatasources = cloneDeep(datasources).filter((ds) =>
-        datasourceMatcher.includes(ds.datasourceId)
+        datasourceMatcher.includes(ds.datasourceId),
       );
     }
   }
@@ -114,18 +114,18 @@ export async function precalcDatasources<C extends ProjectClientBase>(
       }
       try {
         console.log(
-          `Precalculating datasource ${ds.datasourceId} for geography ${geog.geographyId}`
+          `Precalculating datasource ${ds.datasourceId} for geography ${geog.geographyId}`,
         );
         const geogDatasource = firstMatching(
           vectorDatasources,
-          (item) => item.datasourceId === geog.datasourceId
+          (item) => item.datasourceId === geog.datasourceId,
         );
         const metrics = await precalcMetrics(
           projectClient,
           ds,
           geog,
           geogDatasource,
-          extraOptions
+          extraOptions,
         );
         // console.log(ds.datasourceId, geog.geographyId, metrics);
         finalMetrics = finalMetrics.concat(metrics);
@@ -138,7 +138,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
           console.log(e.message);
           console.log(e.stack);
           console.log(
-            `Updating precalc metrics for ${ds.datasourceId} failed, moving to next`
+            `Updating precalc metrics for ${ds.datasourceId} failed, moving to next`,
           );
           failed += 1;
         }
@@ -162,18 +162,18 @@ export async function precalcDatasources<C extends ProjectClientBase>(
       }
       try {
         console.log(
-          `Precalculating datasource ${ds.datasourceId} + geography ${geog.geographyId}`
+          `Precalculating datasource ${ds.datasourceId} + geography ${geog.geographyId}`,
         );
         const geogDatasource = firstMatching(
           vectorDatasources,
-          (item) => item.datasourceId === geog.datasourceId
+          (item) => item.datasourceId === geog.datasourceId,
         );
         const metrics = await precalcMetrics(
           projectClient,
           ds,
           geog,
           geogDatasource,
-          extraOptions
+          extraOptions,
         );
         finalMetrics = finalMetrics.concat(metrics);
         console.log(`${ds.datasourceId} precalc complete`);
@@ -183,7 +183,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
         if (e instanceof Error) {
           console.log(e.stack);
           console.log(
-            `Precalculating metrics for datasource ${ds.datasourceId} + geography ${geog.geographyId} failed, moving to next`
+            `Precalculating metrics for datasource ${ds.datasourceId} + geography ${geog.geographyId} failed, moving to next`,
           );
           failed += 1;
         }
@@ -195,11 +195,11 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 
   if (successful > 0)
     console.log(
-      `${successfulDs} datasource/geography combinations precalculated successfully`
+      `${successfulDs} datasource/geography combinations precalculated successfully`,
     );
   if (skipped > 0)
     console.log(
-      `${successfulDs} datasource/geography combinations skipped due to precalc disabled`
+      `${successfulDs} datasource/geography combinations skipped due to precalc disabled`,
     );
   if (successfulDs === 0 && successfulGs === 0 && skipped === 0) {
     console.log(`No datasources or geographies found to precalculate`);
@@ -207,7 +207,7 @@ export async function precalcDatasources<C extends ProjectClientBase>(
 
   if (failed > 0) {
     console.log(
-      `${failed} datasources failed to precalculate.  Fix them and try again`
+      `${failed} datasources failed to precalculate.  Fix them and try again`,
     );
   }
 
@@ -222,7 +222,7 @@ export const precalcMetrics = async (
   ds: Datasource,
   geog: Geography,
   geogDs: VectorDatasource,
-  extraOptions: PrecalcDatasourceOptions
+  extraOptions: PrecalcDatasourceOptions,
 ): Promise<Metric[]> => {
   const { newPrecalcPath, newDstPath, port } = extraOptions;
 
@@ -246,7 +246,7 @@ export const precalcMetrics = async (
 
   const staleMetricsFilterFn = staleMetricsFilterFnFactory(
     ds.datasourceId,
-    geog.geographyId
+    geog.geographyId,
   );
 
   createOrUpdatePrecalcMetrics(curMetrics, {
@@ -262,7 +262,7 @@ export const precalcMetrics = async (
  */
 export const staleMetricsFilterFnFactory = (
   datasourceId: string,
-  geographyId: string
+  geographyId: string,
 ) => {
   return (m: Metric) => {
     return (

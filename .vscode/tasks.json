@@ -1,5 +1,5 @@
 {
-  // See https://go.microsoft.com/fwlink/?LinkId=733558 
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
   // for the documentation about the tasks.json format
   "version": "2.0.0",
   "tasks": [
@@ -7,9 +7,7 @@
       "label": "geoprocessing build",
       "type": "typescript",
       "tsconfig": "packages/geoprocessing/tsconfig.json",
-      "problemMatcher": [
-        "$tsc"
-      ],
+      "problemMatcher": ["$tsc"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -19,9 +17,7 @@
       "label": "geoprocessing build scripts",
       "type": "shell",
       "command": "./packages/geoprocessing/node_modules/.bin/tsc --build packages/geoprocessing/scripts/tsconfig.json",
-      "problemMatcher": [
-        "$tsc"
-      ],
+      "problemMatcher": ["$tsc"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -32,9 +28,7 @@
       "type": "typescript",
       "tsconfig": "packages/geoprocessing/tsconfig.json",
       "option": "watch",
-      "problemMatcher": [
-        "$tsc-watch"
-      ],
+      "problemMatcher": ["$tsc-watch"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -44,9 +38,7 @@
       "label": "geoprocessing watch scripts",
       "type": "shell",
       "command": "./packages/geoprocessing/node_modules/.bin/tsc --build packages/geoprocessing/scripts/tsconfig.json --watch",
-      "problemMatcher": [
-        "$tsc-watch"
-      ],
+      "problemMatcher": ["$tsc-watch"],
       "group": {
         "kind": "build",
         "isDefault": true

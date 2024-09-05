@@ -24,7 +24,7 @@ const s3 = new S3();
  * @returns {number}
  */
 export async function getDataSourceVersion(
-  name: string
+  name: string,
 ): Promise<{ currentVersion: number; lastPublished?: Date; bucket?: string }> {
   try {
     const url = objectUrl(name, "metadata.json");
@@ -54,7 +54,7 @@ export async function getDataSourceVersion(
 export async function createBucket(
   name: string,
   region: string,
-  publicAccess?: boolean
+  publicAccess?: boolean,
 ) {
   if (publicAccess === false) {
     throw new Error("Private DataSources not yet supported");
@@ -119,7 +119,7 @@ function s3Domain(name: string): string {
  */
 export async function createCloudfrontDistribution(
   name: string,
-  isRaster: boolean
+  isRaster: boolean,
 ): Promise<CloudfrontDistributionDetails> {
   const id = bucketName(name);
   let defaultRootObject = "metadata.json";
@@ -199,7 +199,7 @@ export function putBundle(
   id: number,
   dataSourceName: string,
   version: number,
-  geobuf: Uint8Array
+  geobuf: Uint8Array,
 ) {
   return s3.putObject({
     Bucket: bucketName(dataSourceName),
@@ -219,7 +219,7 @@ export function putBundle(
 export function putRasterBundle(
   dataSourceName,
   fileName: string,
-  version: number
+  version: number,
 ) {
   return s3.putObject({
     Bucket: bucketName(dataSourceName),
@@ -245,7 +245,7 @@ export async function putResources(
   dataSourceName: string,
   version: number,
   index: Flatbush,
-  compositeIndexes: CompositeIndexDetails[]
+  compositeIndexes: CompositeIndexDetails[],
 ) {
   await s3.putObject({
     Bucket: bucketName(dataSourceName),
@@ -287,14 +287,14 @@ export async function putResources(
           bytes: compositeIndex.index.data.byteLength,
           offset: compositeIndex.offset,
           location: `/${version}/index.${compositeIndexes.indexOf(
-            compositeIndex
+            compositeIndex,
           )}.bin`,
           rootDir: `/${version}`,
           bbox: compositeIndex.bbox,
         })),
       },
       null,
-      "  "
+      "  ",
     ),
   });
 }
@@ -308,7 +308,7 @@ export async function putResources(
  */
 export async function putMetadataResources(
   dataSourceName: string,
-  version: number
+  version: number,
 ) {
   const pkg = (await readPackageUp())!.packageJson;
   await s3.putObject({
@@ -325,7 +325,7 @@ export async function putMetadataResources(
         version,
       },
       null,
-      "  "
+      "  ",
     ),
   });
 }
@@ -357,7 +357,7 @@ export interface CloudfrontDistributionDetails {
 }
 
 export async function getCloudfrontDistributionDetails(
-  name: string
+  name: string,
 ): Promise<CloudfrontDistributionDetails> {
   const id = bucketName(name);
   const result = await cloudfront.listDistributions({
@@ -395,14 +395,14 @@ export async function getCloudfrontDistributionDetails(
 export async function scheduleObjectsForDeletion(
   dataSourceName: string,
   version: number,
-  lastPublished: Date
+  lastPublished: Date,
 ) {
   const lastPublishedDaysAgo = Math.round(
     (new Date().getTime() - new Date(lastPublished).getTime()) /
       1000 /
       60 /
       60 /
-      24
+      24,
   );
 
   let Rules: LifecycleRule[] | undefined;

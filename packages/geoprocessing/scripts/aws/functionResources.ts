@@ -20,7 +20,7 @@ import path from "path";
  * Create Lambda function constructs core to project
  */
 export const createProjectFunctions = (
-  stack: GeoprocessingStack
+  stack: GeoprocessingStack,
 ): GpProjectFunctions => {
   return {
     serviceRootFunction: createRootFunction(stack),
@@ -32,7 +32,7 @@ const createRootFunction = (stack: GeoprocessingStack): Function => {
   return new Function(stack, "GpServiceRootFunction", {
     runtime: config.NODE_RUNTIME,
     code: Code.fromAsset(
-      path.join(stack.props.projectPath, ".build", "serviceHandlers")
+      path.join(stack.props.projectPath, ".build", "serviceHandlers"),
     ),
     functionName: `gp-${stack.props.projectName}-metadata`,
     handler: "serviceHandlers.projectMetadata",
@@ -40,7 +40,7 @@ const createRootFunction = (stack: GeoprocessingStack): Function => {
 };
 
 export const createSocketFunctions = (
-  stack: GeoprocessingStack
+  stack: GeoprocessingStack,
 ): GpSocketFunctions => {
   let socketFunctions: GpSocketFunctions = {
     subscribe: undefined,
@@ -52,7 +52,7 @@ export const createSocketFunctions = (
     const subscribe = new Function(stack, "GpSubscribeHandler", {
       runtime: config.NODE_RUNTIME,
       code: Code.fromAsset(
-        path.join(stack.props.projectPath, ".build", "connect")
+        path.join(stack.props.projectPath, ".build", "connect"),
       ),
       handler: "connect.connectHandler",
       functionName: `gp-${stack.props.projectName}-subscribe`,
@@ -64,7 +64,7 @@ export const createSocketFunctions = (
     const unsubscribe = new Function(stack, "GpUnsubscribeHandler", {
       runtime: config.NODE_RUNTIME,
       code: Code.fromAsset(
-        path.join(stack.props.projectPath, ".build", "disconnect")
+        path.join(stack.props.projectPath, ".build", "disconnect"),
       ),
       handler: "disconnect.disconnectHandler",
       functionName: `gp-${stack.props.projectName}-unsubscribe`,
@@ -76,7 +76,7 @@ export const createSocketFunctions = (
     const send = new Function(stack, "GpSendHandler", {
       runtime: config.NODE_RUNTIME,
       code: Code.fromAsset(
-        path.join(stack.props.projectPath, ".build", "sendmessage")
+        path.join(stack.props.projectPath, ".build", "sendmessage"),
       ),
       handler: "sendmessage.sendHandler",
       functionName: `gp-${stack.props.projectName}-send`,

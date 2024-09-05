@@ -61,7 +61,7 @@ test("flatgeobuf - file countries fgb from disk", async () => {
 
   const filePath = path.join(
     import.meta.dirname,
-    "../../data/in/countries.fgb"
+    "../../data/in/countries.fgb",
   );
   // console.log(filePath);
   const data = readFileSync(filePath);

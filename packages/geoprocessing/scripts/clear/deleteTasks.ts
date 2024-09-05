@@ -18,7 +18,7 @@ type TaskKey = { id: string; service: string };
 export async function deleteTasks(
   projectName: string,
   region: string,
-  serviceName?: string
+  serviceName?: string,
 ) {
   const tableName = `gp-${projectName}-tasks`;
 
@@ -29,7 +29,7 @@ export async function deleteTasks(
   const docClient = DynamoDBDocument.from(
     new DynamoDBClient({
       region: region,
-    })
+    }),
   );
 
   // Get all task keys.  Scans entire table, may take a while
@@ -76,7 +76,7 @@ export async function deleteTasks(
         if (taskKeys.length >= MAX_BATCH_DELETE) {
           const taskKeyBatch = taskKeys.splice(0, MAX_BATCH_DELETE); // deletes items from taskKeys array
           promises.push(
-            batchDeleteTasks(docClient, taskKeyBatch, tableName, batchNum)
+            batchDeleteTasks(docClient, taskKeyBatch, tableName, batchNum),
           );
           batchNum += 1;
         }
@@ -91,7 +91,7 @@ export async function deleteTasks(
 
   if (batchNum === 0) {
     console.log(
-      `No results found in DynamoDB table ${tableName} ${serviceName ? "for service " + serviceName : ""}`
+      `No results found in DynamoDB table ${tableName} ${serviceName ? "for service " + serviceName : ""}`,
     );
   }
 
@@ -105,7 +105,7 @@ async function batchDeleteTasks(
   docClient: DynamoDBDocument,
   taskKeys: TaskKey[],
   tableName: string,
-  index: number
+  index: number,
 ) {
   const deleteRequestChunk: object[] = taskKeys.map((taskKey) => {
     return {

@@ -37,7 +37,7 @@ describe("DynamoDB local", () => {
           ReadCapacityUnits: 1,
           WriteCapacityUnits: 1,
         },
-      })
+      }),
     );
 
     await dynamodb.send(
@@ -51,7 +51,7 @@ describe("DynamoDB local", () => {
           ReadCapacityUnits: 1,
           WriteCapacityUnits: 1,
         },
-      })
+      }),
     );
 
     await dynamodb.send(
@@ -65,7 +65,7 @@ describe("DynamoDB local", () => {
           ReadCapacityUnits: 1,
           WriteCapacityUnits: 1,
         },
-      })
+      }),
     );
   });
 
@@ -149,11 +149,11 @@ describe("DynamoDB local", () => {
     expect(rootItem && rootItem.status).toBe("completed");
 
     const chunkItem0 = items.Items?.find(
-      (item) => item.service === `${SERVICE_NAME}-chunk-0`
+      (item) => item.service === `${SERVICE_NAME}-chunk-0`,
     );
 
     const chunkItem1 = items.Items?.find(
-      (item) => item.service === `${SERVICE_NAME}-chunk-1`
+      (item) => item.service === `${SERVICE_NAME}-chunk-1`,
     );
 
     expect(response.statusCode).toBe(200);
@@ -238,7 +238,7 @@ describe("DynamoDB local", () => {
       },
       {
         minSplitSizeBytes: 80, // set size that should split into 6 pieces
-      }
+      },
     );
     expect(response.statusCode).toBe(200);
 
@@ -259,7 +259,7 @@ describe("DynamoDB local", () => {
     if (!queryResult.Items || queryResult.Items.length === 0)
       throw new Error("No items");
     const rootItemIndex = queryResult.Items.findIndex(
-      (item) => item.service === SERVICE_NAME
+      (item) => item.service === SERVICE_NAME,
     );
     const rootItem = queryResult.Items.splice(rootItemIndex, 1)[0]; // mutates items
     const chunkItems = queryResult.Items.sort((a, b) => {

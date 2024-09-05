@@ -39,7 +39,7 @@ Tasks.prototype.fail.mockImplementation(
       },
       body: JSON.stringify(task),
     };
-  }
+  },
 );
 
 /** Simple in-memory cache for last saved task */
@@ -63,7 +63,7 @@ Tasks.prototype.complete.mockImplementation(
       },
       body: JSON.stringify(task),
     };
-  }
+  },
 );
 
 const exampleSketch = {
@@ -159,7 +159,7 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     expect(handler.options.title).toBe("TestGP");
     // @ts-ignore
@@ -173,7 +173,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(200);
     const task = JSON.parse(result.body) as GeoprocessingTask;
@@ -195,7 +195,7 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     expect(handler.options.title).toBe("TestGP");
     // @ts-ignore
@@ -209,7 +209,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(200);
     const task = JSON.parse(result.body) as GeoprocessingTask;
@@ -231,7 +231,7 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     // @ts-ignore
     Tasks.prototype.get.mockResolvedValueOnce(false);
@@ -243,7 +243,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     const result2 = await handler.lambdaHandler(
       {
@@ -253,7 +253,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     expect(result.body.length).toBeGreaterThan(1);
     expect(result2.body.length).toBe(0);
@@ -273,7 +273,7 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     // @ts-ignore
     Tasks.prototype.get.mockResolvedValueOnce(false);
@@ -285,7 +285,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     const result2 = await handler.lambdaHandler(
       {
@@ -295,7 +295,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     expect(result.body.length).toBeGreaterThan(1);
     expect(result2.body.length).toBe(0);
@@ -312,7 +312,7 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     // @ts-ignore
     Tasks.prototype.get.mockImplementation(
@@ -322,7 +322,7 @@ describe("GeoprocessingHandler", () => {
         } else {
           return false;
         }
-      }
+      },
     );
     const result = await handler.lambdaHandler(
       {
@@ -332,7 +332,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     const result2 = await handler.lambdaHandler(
       {
@@ -342,7 +342,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "bar" }
+      { awsRequestId: "bar" },
     );
     // @ts-ignore
     Tasks.prototype.get.mockReset();
@@ -365,7 +365,7 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     // @ts-ignore
     Tasks.prototype.get.mockImplementation(
@@ -375,7 +375,7 @@ describe("GeoprocessingHandler", () => {
         } else {
           return false;
         }
-      }
+      },
     );
 
     const result = await handler.lambdaHandler(
@@ -386,7 +386,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     const result2 = await handler.lambdaHandler(
       {
@@ -396,7 +396,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "bar" }
+      { awsRequestId: "bar" },
     );
     // @ts-ignore
     Tasks.prototype.get.mockReset();
@@ -424,7 +424,7 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     expect(handler.options.title).toBe("paramsGP");
     // @ts-ignore
@@ -440,7 +440,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(200);
     const task = JSON.parse(result.body) as GeoprocessingTask;
@@ -462,7 +462,7 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     expect(handler.options.title).toBe("TestGP");
     // @ts-ignore
@@ -476,7 +476,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(500);
     const task = JSON.parse(result.body) as GeoprocessingTask;
@@ -499,7 +499,7 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     expect(handler.options.title).toBe("TestGP");
     // @ts-ignore
@@ -513,7 +513,7 @@ describe("GeoprocessingHandler", () => {
         }),
       } as unknown as APIGatewayProxyEvent,
       // @ts-ignore
-      { awsRequestId: "foo" }
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(500);
     const task = JSON.parse(result.body) as GeoprocessingTask;

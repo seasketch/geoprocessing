@@ -26,7 +26,7 @@ import { rasterMetrics } from "./rasterMetrics.js";
 type OverlapGroupOperation = (
   metricId: string,
   features: Feature<Polygon>[] | Georaster,
-  sc: SketchCollection<Polygon>
+  sc: SketchCollection<Polygon>,
 ) => Promise<number>;
 
 /**
@@ -53,7 +53,7 @@ export async function overlapRasterGroupMetrics(options: {
     operation: async (
       metricId: string,
       features: Georaster | Feature<Polygon>[],
-      sc: SketchCollection<Polygon>
+      sc: SketchCollection<Polygon>,
     ) => {
       if (isPolygonFeatureArray(features)) throw new Error(`Expected raster`);
       const overallGroupMetrics = await rasterMetrics(features, {
@@ -62,7 +62,7 @@ export async function overlapRasterGroupMetrics(options: {
       });
       return firstMatchingMetric(
         overallGroupMetrics,
-        (m) => !!m.extra?.isCollection
+        (m) => !!m.extra?.isCollection,
       ).value;
     },
   });
@@ -92,7 +92,7 @@ export async function overlapFeaturesGroupMetrics(options: {
     operation: async (
       metricId: string,
       features: Feature<Polygon>[] | Georaster,
-      sc: SketchCollection<Polygon>
+      sc: SketchCollection<Polygon>,
     ) => {
       if (!isPolygonFeatureArray(features))
         throw new Error(`Expected feature array`);
@@ -103,7 +103,7 @@ export async function overlapFeaturesGroupMetrics(options: {
         sc,
         {
           includeChildMetrics: false,
-        }
+        },
       );
       return overallGroupMetrics[0].value;
     },
@@ -136,7 +136,7 @@ export async function overlapAreaGroupMetrics(options: {
     operation: async (
       metricId: string,
       features: Feature<Polygon>[] | Georaster,
-      sc: SketchCollection<Polygon>
+      sc: SketchCollection<Polygon>,
     ) => {
       // Calculate just the overall area sum for group
       const overallGroupMetrics = await overlapArea(
@@ -146,7 +146,7 @@ export async function overlapAreaGroupMetrics(options: {
         {
           includePercMetric: false,
           includeChildMetrics: false,
-        }
+        },
       );
       return overallGroupMetrics[0].value;
     },
@@ -215,7 +215,7 @@ export async function overlapGroupMetrics(options: {
           const curClassMetricsPromise = (async () => {
             // Filter to cur class metrics
             const curGroupSketchMetrics = groupSketchMetrics.filter(
-              (sm) => sm.classId === curClass && sm.metricId === metricId
+              (sm) => sm.classId === curClass && sm.metricId === metricId,
             );
 
             // Optionally, skip this group if not present in metrics
@@ -240,23 +240,23 @@ export async function overlapGroupMetrics(options: {
               (metric): Metric => ({
                 ...metric,
                 classId: curClass,
-              })
+              }),
             );
           })();
 
           return [...classMetricsPromisesSoFar, curClassMetricsPromise];
         },
-        []
+        [],
       );
       return [...groupMetricsPromisesSoFar, ...groupMetricsPromise];
     },
-    []
+    [],
   );
 
   // Await and unroll result
   const groupMetrics = (await Promise.all(groupMetricsPromises)).reduce(
     (metricsSoFar, curMetrics) => [...metricsSoFar, ...curMetrics],
-    []
+    [],
   );
 
   return groupMetrics;
@@ -289,7 +289,7 @@ const getClassGroupMetrics = async (options: {
 
   // Filter to group.  May result in empty list
   const curGroupSketchMetrics: Metric[] = groupSketchMetrics.filter(
-    (m) => m.groupId === groupId
+    (m) => m.groupId === groupId,
   );
   const results: Metric[] = curGroupSketchMetrics;
 
@@ -307,20 +307,20 @@ const getClassGroupMetrics = async (options: {
         // Append if lower index than current group
         const groupIndex = groups.findIndex((grp) => grp === groupId);
         const otherIndex = groups.findIndex(
-          (findGroupName) => otherGroupName === findGroupName
+          (findGroupName) => otherGroupName === findGroupName,
         );
 
         const otherGroupMetrics = groupSketchMetrics.filter(
-          (gm) => gm.groupId === otherGroupName
+          (gm) => gm.groupId === otherGroupName,
         );
         return otherIndex < groupIndex
           ? otherSoFar.concat(otherGroupMetrics)
           : otherSoFar;
       },
-      []
+      [],
     );
     const higherGroupSketches = Object.values(
-      keyBy(higherGroupSketchMetrics, (m) => m.sketchId!)
+      keyBy(higherGroupSketchMetrics, (m) => m.sketchId!),
     ).map((ogm) => sketchMap[ogm.sketchId!]);
 
     let groupValue: number = 0;
@@ -335,7 +335,7 @@ const getClassGroupMetrics = async (options: {
     } else {
       groupValue = curGroupSketchMetrics.reduce(
         (sumSoFar, sm) => sm.value + sumSoFar,
-        0
+        0,
       );
     }
 
@@ -349,7 +349,7 @@ const getClassGroupMetrics = async (options: {
           sketchName: sketch.properties.name,
           isCollection: true,
         },
-      })
+      }),
     );
   }
 
@@ -364,7 +364,7 @@ const getClassGroupMetrics = async (options: {
         extra: {
           sketchName: sketch.properties.name,
         },
-      })
+      }),
     );
   }
 
@@ -394,20 +394,20 @@ const getReducedGroupAreaOverlap = async (options: {
     .map((groupSketch) =>
       clip(
         featureCollection([groupSketch, ...higherGroupSketches]),
-        "difference"
-      )
+        "difference",
+      ),
     )
     .reduce<
       Feature<Polygon | MultiPolygon>[]
     >((rem, diff) => (diff ? rem.concat(diff) : rem), []);
   const otherRemSketches = genSampleSketchCollection(
     featureCollection<Polygon>(
-      flatten(featureCollection(otherOverlap)).features
-    )
+      flatten(featureCollection(otherOverlap)).features,
+    ),
   ).features;
 
   const finalFC = featureCollection(
-    higherGroupSketches.length > 0 ? otherRemSketches : groupSketches
+    higherGroupSketches.length > 0 ? otherRemSketches : groupSketches,
   );
   const finalSC = genSampleSketchCollection(finalFC);
 

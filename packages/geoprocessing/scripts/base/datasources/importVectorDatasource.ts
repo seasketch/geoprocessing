@@ -20,7 +20,7 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
     newDatasourcePath?: string;
     newDstPath?: string;
     srcBucketUrl?: string;
-  }
+  },
 ) {
   const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genVectorConfig(projectClient, options, newDstPath);
@@ -34,7 +34,7 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
       } else if (format === "fgb") {
         await genFlatgeobuf(config);
       }
-    })
+    }),
   );
 
   if (doPublish) {
@@ -44,9 +44,9 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
           config.dstPath,
           format,
           config.datasourceId,
-          getDatasetBucketName(config)
+          getDatasetBucketName(config),
         );
-      })
+      }),
     );
   }
 

@@ -105,7 +105,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
 export async function makeGeoprocessingHandler(
   options: GPOptions,
   interactive = true,
-  basePath = "./"
+  basePath = "./",
 ) {
   const spinner = interactive
     ? ora("Creating new geoprocessing handler").start()
@@ -117,10 +117,10 @@ export async function makeGeoprocessingHandler(
   // Copy from template-blank-project
   const functionTemplatePath = `${getBlankFunctionPath()}`;
   const handlerCode = await fs.readFile(
-    `${functionTemplatePath}/simpleFunction.ts`
+    `${functionTemplatePath}/simpleFunction.ts`,
   );
   const testSmokeCode = await fs.readFile(
-    `${functionTemplatePath}/simpleFunctionSmoke.test.ts`
+    `${functionTemplatePath}/simpleFunctionSmoke.test.ts`,
   );
   if (!fs.existsSync(path.join(basePath, "src"))) {
     fs.mkdirSync(path.join(basePath, "src"));
@@ -135,36 +135,36 @@ export async function makeGeoprocessingHandler(
       .replace(/simpleFunction/g, options.title)
       .replace(
         /SimpleFunction/g,
-        options.title.slice(0, 1).toUpperCase() + options.title.slice(1)
+        options.title.slice(0, 1).toUpperCase() + options.title.slice(1),
       )
       .replace(/functionName/g, options.title)
       .replace(`"async"`, `"${options.executionMode}"`)
-      .replace("Function description", options.description)
+      .replace("Function description", options.description),
   );
   await fs.writeFile(
     `${projectFunctionPath}/${options.title}Smoke.test.ts`,
     testSmokeCode
       .toString()
       .replace(/simpleFunction/g, options.title)
-      .replace("./simpleFunction", `./${options.title}`)
+      .replace("./simpleFunction", `./${options.title}`),
   );
   const geoprocessingJson = JSON.parse(
     fs
       .readFileSync(path.join(basePath, "project", "geoprocessing.json"))
-      .toString()
+      .toString(),
   ) as GeoprocessingJsonConfig;
   geoprocessingJson.geoprocessingFunctions =
     geoprocessingJson.geoprocessingFunctions || [];
   geoprocessingJson.geoprocessingFunctions.push(
-    `src/functions/${options.title}.ts`
+    `src/functions/${options.title}.ts`,
   );
   fs.writeFileSync(
     path.join(basePath, "project", "geoprocessing.json"),
-    JSON.stringify(geoprocessingJson, null, "  ")
+    JSON.stringify(geoprocessingJson, null, "  "),
   );
 
   spinner.succeed(
-    `created ${options.title} function in ${projectFunctionPath}/`
+    `created ${options.title} function in ${projectFunctionPath}/`,
   );
   if (interactive) {
     console.log(chalk.blue(`\nGeoprocessing function initialized`));
@@ -179,7 +179,7 @@ export async function makeGeoprocessingHandler(
 export async function makePreprocessingHandler(
   options: PreprocessingOptions,
   interactive = true,
-  basePath = "./"
+  basePath = "./",
 ) {
   const spinner = interactive
     ? ora("Creating new preprocessing handler").start()
@@ -190,10 +190,10 @@ export async function makePreprocessingHandler(
   // rename metadata in function definition
   const baseFunctionPath = getBaseFunctionPath();
   const handlerCode = await fs.readFile(
-    `${baseFunctionPath}/clipToOceanEez.ts`
+    `${baseFunctionPath}/clipToOceanEez.ts`,
   );
   const testCode = await fs.readFile(
-    `${baseFunctionPath}/clipToOceanEezSmoke.test.ts`
+    `${baseFunctionPath}/clipToOceanEezSmoke.test.ts`,
   );
 
   if (!fs.existsSync(path.join(basePath, "src"))) {
@@ -224,32 +224,32 @@ export async function makePreprocessingHandler(
                 },
               },
               null,
-              2
+              2,
             ).replace(/"([^"]+)":/g, "$1:")
-          : ""
-      )
+          : "",
+      ),
   );
   await fs.writeFile(
     `${projectFunctionPath}/${options.title}Smoke.test.ts`,
-    testCode.toString().replace(/clipToOceanEez/g, options.title)
+    testCode.toString().replace(/clipToOceanEez/g, options.title),
   );
   const geoprocessingJson = JSON.parse(
     fs
       .readFileSync(path.join(basePath, "project", "geoprocessing.json"))
-      .toString()
+      .toString(),
   ) as GeoprocessingJsonConfig;
   geoprocessingJson.preprocessingFunctions =
     geoprocessingJson.preprocessingFunctions || [];
   geoprocessingJson.preprocessingFunctions.push(
-    `src/functions/${options.title}.ts`
+    `src/functions/${options.title}.ts`,
   );
   fs.writeFileSync(
     path.join(basePath, "project", "geoprocessing.json"),
-    JSON.stringify(geoprocessingJson, null, "  ")
+    JSON.stringify(geoprocessingJson, null, "  "),
   );
 
   spinner.succeed(
-    `created ${options.title} function in ${projectFunctionPath}/`
+    `created ${options.title} function in ${projectFunctionPath}/`,
   );
   if (interactive) {
     console.log(chalk.blue(`\nPreprocessing function initialized`));

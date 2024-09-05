@@ -69,7 +69,7 @@ const poly1 = polygon([
 const multiPoly1 = multiPolygon([poly1.geometry.coordinates]);
 const sketchMultiPoly1 = genSampleSketch(
   multiPoly1.geometry,
-  "sketchMultiPoly1"
+  "sketchMultiPoly1",
 );
 
 const sketch1 = genSampleSketch(poly1.geometry, "sketch1");

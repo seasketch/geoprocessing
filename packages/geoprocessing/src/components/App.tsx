@@ -40,7 +40,7 @@ export const App = ({ reports }: AppProps) => {
 
   // Maintain report context in app state
   const [reportContext, setReportContext] = useState<ReportContextState | null>(
-    null
+    null,
   );
   const [initialized, setInitialized] = useState(false);
 
@@ -79,7 +79,7 @@ export const App = ({ reports }: AppProps) => {
                     layerId,
                     on: !wasToggled,
                   } as SeaSketchReportingToggleLayerVisibilityEvent,
-                  "*"
+                  "*",
                 );
                 return {
                   ...prev,
@@ -137,7 +137,7 @@ export const App = ({ reports }: AppProps) => {
       if (window.parent) {
         window.parent.postMessage(
           { type: "SeaSketchReportingKeydownEvent", key: "x" },
-          "*"
+          "*",
         );
       }
     }

@@ -7,13 +7,13 @@ if (!PROJECT_PATH) {
 }
 
 const pkg = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
+  fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString(),
 );
 const packageName = pkg.name;
 const geoprocessing = JSON.parse(
   fs
     .readFileSync(path.join(PROJECT_PATH, "project", "geoprocessing.json"))
-    .toString()
+    .toString(),
 );
 const cf = new CloudFormation({
   region: geoprocessing.region,

@@ -30,7 +30,7 @@ export async function publishDatasources<C extends ProjectClientBase>(
     newDstPath?: string;
     /** string/regular expression matching on datasourceID or array of datasource IDs */
     matcher?: string | string[];
-  } = {}
+  } = {},
 ): Promise<Datasource[]> {
   const { newDatasourcePath, newDstPath, matcher } = extraOptions;
 
@@ -40,7 +40,7 @@ export async function publishDatasources<C extends ProjectClientBase>(
       return allDatasources;
     } else if (Array.isArray(matcher)) {
       const filteredDs = allDatasources.filter((ds) =>
-        matcher.includes(ds.datasourceId)
+        matcher.includes(ds.datasourceId),
       );
       return filteredDs;
     } else {
@@ -72,9 +72,9 @@ export async function publishDatasources<C extends ProjectClientBase>(
               config.dstPath,
               format,
               config.datasourceId,
-              getDatasetBucketName(config)
+              getDatasetBucketName(config),
             );
-          })
+          }),
         );
 
         console.log(`${ds.datasourceId} publish complete`);
@@ -85,7 +85,7 @@ export async function publishDatasources<C extends ProjectClientBase>(
           console.log(e.message);
           console.log(e.stack);
           console.log(
-            `Publishing datasource ${ds.datasourceId} failed, moving to next`
+            `Publishing datasource ${ds.datasourceId} failed, moving to next`,
           );
           failed += 1;
         }
@@ -105,9 +105,9 @@ export async function publishDatasources<C extends ProjectClientBase>(
               config.dstPath,
               format,
               config.datasourceId,
-              getDatasetBucketName(config)
+              getDatasetBucketName(config),
             );
-          })
+          }),
         );
 
         console.log(`${ds.datasourceId} publish complete`);
@@ -118,7 +118,7 @@ export async function publishDatasources<C extends ProjectClientBase>(
           console.log(e.message);
           console.log(e.stack);
           console.log(
-            `Publishing datasource ${ds.datasourceId} failed, moving to next`
+            `Publishing datasource ${ds.datasourceId} failed, moving to next`,
           );
           failed += 1;
         }
@@ -131,7 +131,7 @@ export async function publishDatasources<C extends ProjectClientBase>(
   console.log(`${updated} datasources published successfully`);
   if (failed > 0) {
     console.log(
-      `${failed} datasources failed to publish.  Fix them and try again`
+      `${failed} datasources failed to publish.  Fix them and try again`,
     );
   }
 

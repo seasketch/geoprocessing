@@ -1,13 +1,12 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
 import { GeoprocessingProject } from "../types/index.js";
 import { Manifest } from "../../scripts/manifest.js";
-import fs from 'fs-extra'
+import fs from "fs-extra";
 
 export const projectMetadata = async (
-  event: APIGatewayEvent
+  event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
-
-  const manifest = await fs.readJson('./manifest.json') as Manifest
+  const manifest = (await fs.readJson("./manifest.json")) as Manifest;
 
   const {
     preprocessingFunctions,

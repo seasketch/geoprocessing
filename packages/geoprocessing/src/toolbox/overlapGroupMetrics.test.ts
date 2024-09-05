@@ -4,10 +4,15 @@ import {
   overlapFeaturesGroupMetrics,
   overlapRasterGroupMetrics,
 } from "./overlapGroupMetrics.js";
-import { SketchCollection, Polygon, Metric, Sketch, Feature } from "../types/index.js";
+import {
+  SketchCollection,
+  Polygon,
+  Metric,
+  Sketch,
+  Feature,
+} from "../types/index.js";
 import parseGeoraster from "georaster";
 import { toFeaturePolygonArray } from "../helpers/index.js";
-
 
 const sketch: SketchCollection<Polygon> = {
   type: "FeatureCollection",
@@ -167,27 +172,27 @@ describe("overlapAreaGroupMetrics", () => {
       metrics.filter(
         (m) =>
           m.sketchId === "62055ac19557604f3e5f6d43" &&
-          m.groupId === "Moderately Protected Area"
-      ).length
+          m.groupId === "Moderately Protected Area",
+      ).length,
     ).toBe(1);
     expect(
       metrics.filter(
         (m) =>
           m.sketchId === "62055aac9557604f3e5f6d3e" &&
-          m.groupId === "Highly Protected Area"
-      ).length
+          m.groupId === "Highly Protected Area",
+      ).length,
     ).toBe(1);
 
     // Test collection level metrics.  Expect one metric per protection level
     const collGroupMetrics = metrics.filter(
-      (m) => m.sketchId === sketch.properties.id
+      (m) => m.sketchId === sketch.properties.id,
     );
     expect(collGroupMetrics.length).toBe(5);
 
     // Only protection levels with a sketch in it, will have a collection level metric value > 0
     protectionLevels.forEach((level) => {
       const curLevelMetrics = collGroupMetrics.filter(
-        (m) => m.groupId === level
+        (m) => m.groupId === level,
       );
       expect(curLevelMetrics.length).toBe(1);
       const curLevelMetric = curLevelMetrics[0];
@@ -272,7 +277,7 @@ describe("overlapAreaGroupMetrics", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const wholePoly: Sketch<Polygon> = {

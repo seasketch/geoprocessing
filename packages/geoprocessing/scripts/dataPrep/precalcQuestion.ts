@@ -5,7 +5,7 @@ export interface PrecalcAnswers {
 }
 
 export async function precalcQuestion(
-  questionText?: string
+  questionText?: string,
 ): Promise<Pick<PrecalcAnswers, "precalc">> {
   return inquirer.prompt<Pick<PrecalcAnswers, "precalc">>([
     {

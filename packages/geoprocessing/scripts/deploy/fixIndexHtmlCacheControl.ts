@@ -9,7 +9,7 @@ if (!PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 const buildPath = path.join(PROJECT_PATH, `.build`);
 
 const manifest = JSON.parse(
-  fs.readFileSync(`${buildPath}/manifest.json`).toString()
+  fs.readFileSync(`${buildPath}/manifest.json`).toString(),
 ) as Manifest;
 if (!manifest) throw new Error(`Missing manifest in ${buildPath}`);
 
@@ -41,5 +41,5 @@ s3.copyObject(
       // console.log("updated cache-control header on " + indexPath);
       process.exit();
     }
-  }
+  },
 );

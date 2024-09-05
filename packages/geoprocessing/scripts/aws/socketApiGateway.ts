@@ -11,7 +11,7 @@ import { Function } from "aws-cdk-lib/aws-lambda";
  * Create Web Socket API for async functions
  */
 export const createWebSocketApi = (
-  stack: GeoprocessingStack
+  stack: GeoprocessingStack,
 ): WebSocketApi | undefined => {
   if (
     !stack.projectFunctions.socketFunctions.subscribe ||
@@ -27,13 +27,13 @@ export const createWebSocketApi = (
     connectRouteOptions: {
       integration: new WebSocketLambdaIntegration(
         "OnConnectIntegration",
-        stack.projectFunctions.socketFunctions.subscribe
+        stack.projectFunctions.socketFunctions.subscribe,
       ),
     },
     disconnectRouteOptions: {
       integration: new WebSocketLambdaIntegration(
         "OnDisconnectIntegration",
-        stack.projectFunctions.socketFunctions.unsubscribe
+        stack.projectFunctions.socketFunctions.unsubscribe,
       ),
     },
     routeSelectionExpression: "$request.body.message",
@@ -43,7 +43,7 @@ export const createWebSocketApi = (
   webSocketApi.addRoute("sendmessage", {
     integration: new WebSocketLambdaIntegration(
       `OnSendIntegration`,
-      stack.projectFunctions.socketFunctions.send
+      stack.projectFunctions.socketFunctions.send,
     ),
   });
 
@@ -56,13 +56,13 @@ export const createWebSocketApi = (
     ],
   });
   stack.projectFunctions.socketFunctions.send.addToRolePolicy(
-    socketExecutePolicy
+    socketExecutePolicy,
   );
   stack.projectFunctions.socketFunctions.subscribe.addToRolePolicy(
-    socketExecutePolicy
+    socketExecutePolicy,
   );
   stack.projectFunctions.socketFunctions.unsubscribe.addToRolePolicy(
-    socketExecutePolicy
+    socketExecutePolicy,
   );
 
   // Allow the socket apigateway to call the socket lambdas.  Supposedly RestApi automatically creates this, but not WebSocketApi
@@ -79,7 +79,7 @@ export const createWebSocketApi = (
     webSocketApi.addRoute(action, {
       integration: new WebSocketLambdaIntegration(
         `${action}Integration`,
-        asyncFunctionWithMeta.startFunc
+        asyncFunctionWithMeta.startFunc,
       ),
     });
     // Note assume requestTemplates no longer needed
@@ -94,7 +94,7 @@ export const createWebSocketApi = (
 const createStage = (
   scope: Stack,
   webSocketApi: WebSocketApi,
-  stageName: string
+  stageName: string,
 ): WebSocketStage => {
   // Unlike RestApi, you don't get a default `prod` stage automatically.
   const stage = new WebSocketStage(scope, "GpSocketApiStage", {

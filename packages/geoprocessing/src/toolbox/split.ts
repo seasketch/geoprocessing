@@ -19,7 +19,7 @@ import splitGeojson from "geojson-antimeridian-cut";
 export function splitFeatureAntimeridian<
   G extends Geometry = Polygon | MultiPolygon,
 >(
-  feature: Feature<G> | FeatureCollection<G>
+  feature: Feature<G> | FeatureCollection<G>,
 ): Feature<Polygon | MultiPolygon> | FeatureCollection<Polygon | MultiPolygon> {
   // Ensure coordinate positions are within -180 to 180 longitude, -90 to 90 latitude
   const cleanFeatures = cleanCoords(feature) as
@@ -41,7 +41,7 @@ export function splitFeatureAntimeridian<
  * @returns
  */
 export function splitSketchAntimeridian<G = Polygon | MultiPolygon>(
-  sketch: Sketch<G> | SketchCollection<G>
+  sketch: Sketch<G> | SketchCollection<G>,
 ): Sketch<Polygon | MultiPolygon> | SketchCollection<Polygon | MultiPolygon> {
   // Ensure coordinate positions are within -180 to 180 longitude, -90 to 90 latitude
   const cleanFeatures = cleanCoords(sketch) as Sketch<Polygon | MultiPolygon>;

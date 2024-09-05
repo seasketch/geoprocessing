@@ -46,7 +46,7 @@ export const useFunction = <ResultType>(
   /** Title of geoprocessing function in this project to run.  @todo support external project function */
   functionTitle: string,
   /** Additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
-  extraParams: GeoprocessingRequestParams = {}
+  extraParams: GeoprocessingRequestParams = {},
 ): FunctionState<ResultType> => {
   const context = useContext(ReportContext);
   if (!context) {
@@ -82,7 +82,7 @@ export const useFunction = <ResultType>(
         try {
           geoprocessingProject = await getGeoprocessingProject(
             context.projectUrl,
-            abortController.signal
+            abortController.signal,
           );
         } catch (e) {
           if (!abortController.signal.aborted) {
@@ -99,7 +99,7 @@ export const useFunction = <ResultType>(
           url = functionTitle;
         } else {
           const service = geoprocessingProject!.geoprocessingServices.find(
-            (s) => s.title === functionTitle
+            (s) => s.title === functionTitle,
           );
 
           if (!service) {
@@ -123,7 +123,7 @@ export const useFunction = <ResultType>(
           const theCacheKey = genTaskCacheKey(
             functionTitle,
             context.sketchProperties,
-            extraParams
+            extraParams,
           );
           payload.cacheKey = theCacheKey;
         }
@@ -149,7 +149,7 @@ export const useFunction = <ResultType>(
           const pending = pendingRequests.find(
             (r) =>
               r.cacheKey === payload.cacheKey &&
-              r.functionName === functionTitle
+              r.functionName === functionTitle,
           );
           if (pending) {
             setState({
@@ -174,7 +174,7 @@ export const useFunction = <ResultType>(
             payload,
             abortController.signal,
             false,
-            false
+            false,
           );
 
           // add as pending request
@@ -224,7 +224,7 @@ export const useFunction = <ResultType>(
                   payload,
                   functionTitle,
                   abortController,
-                  socket
+                  socket,
                 );
               }
             }
@@ -282,7 +282,7 @@ export const useFunction = <ResultType>(
       // This is test or storybook environment, so load example data
       // or simulate loading and error states.
       const data = context.exampleOutputs.find(
-        (output) => output.functionName === functionTitle
+        (output) => output.functionName === functionTitle,
       );
       if (!data && !context.simulateLoading && !context.simulateError) {
         setState({
@@ -339,7 +339,7 @@ const getSocket = (
   payload,
   currServiceName,
   abortController,
-  socket
+  socket,
 ): WebSocket => {
   if (socket === undefined) {
     socket = new WebSocket(wssUrl);
@@ -366,7 +366,7 @@ const getSocket = (
       payload,
       abortController.signal,
       true,
-      true
+      true,
     );
 
     finishedRequest.then((finishedTask) => {
@@ -422,7 +422,7 @@ const getSocket = (
           abortController,
           setState,
           currServiceName,
-          socket
+          socket,
         );
       }
     }
@@ -447,7 +447,7 @@ const getSocket = (
  */
 const getGeoprocessingProject = async (
   url: string,
-  signal: AbortSignal
+  signal: AbortSignal,
 ): Promise<GeoprocessingProject> => {
   // TODO: eventually handle updated duration
   const pending = pendingMetadataRequests.find((r) => r.url === url);
@@ -465,7 +465,7 @@ const getGeoprocessingProject = async (
     } else {
       geoprocessingProjects[url] = geoprocessingProject;
       pendingMetadataRequests = pendingMetadataRequests.filter(
-        (r) => r.url !== url
+        (r) => r.url !== url,
       );
       return geoprocessingProject;
     }

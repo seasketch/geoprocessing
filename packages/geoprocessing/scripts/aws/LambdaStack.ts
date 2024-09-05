@@ -52,7 +52,7 @@ export class LambdaStack extends NestedStack {
   constructor(
     scope: Construct,
     id: string,
-    props: GeoprocessingNestedStackProps
+    props: GeoprocessingNestedStackProps,
   ) {
     super(scope, id, props);
     this.props = props;
@@ -89,7 +89,7 @@ export class LambdaStack extends NestedStack {
     const syncFunctionMetas: ProcessingFunctionMetadata[] = [
       ...this.props.manifest.preprocessingFunctions,
       ...this.props.manifest.geoprocessingFunctions.filter(
-        (func) => func.executionMode === "sync"
+        (func) => func.executionMode === "sync",
       ),
     ];
 
@@ -109,7 +109,7 @@ export class LambdaStack extends NestedStack {
           functionName,
           memorySize: functionMeta.memory,
           timeout: Duration.seconds(
-            functionMeta.timeout || config.SYNC_LAMBDA_TIMEOUT
+            functionMeta.timeout || config.SYNC_LAMBDA_TIMEOUT,
           ),
           description: functionMeta.description,
         });
@@ -120,7 +120,7 @@ export class LambdaStack extends NestedStack {
           func,
           meta: functionMeta,
         };
-      }
+      },
     );
   };
 
@@ -129,7 +129,7 @@ export class LambdaStack extends NestedStack {
     const asyncFunctionMetas =
       this.props.manifest.geoprocessingFunctions.filter(
         (func) =>
-          func.executionMode === "async" && func.purpose !== "preprocessing"
+          func.executionMode === "async" && func.purpose !== "preprocessing",
       );
 
     return asyncFunctionMetas.map(
@@ -149,7 +149,7 @@ export class LambdaStack extends NestedStack {
           {
             runtime: config.NODE_RUNTIME,
             code: Code.fromAsset(
-              path.join(this.props.projectPath, ".build", pkgName)
+              path.join(this.props.projectPath, ".build", pkgName),
             ),
             handler: rootPointer,
             functionName: startFunctionName,
@@ -160,7 +160,7 @@ export class LambdaStack extends NestedStack {
               ASYNC_REQUEST_TYPE: "start",
               RUN_HANDLER_FUNCTION_NAME: runFunctionName,
             },
-          }
+          },
         );
 
         /**
@@ -173,20 +173,20 @@ export class LambdaStack extends NestedStack {
           {
             runtime: config.NODE_RUNTIME,
             code: Code.fromAsset(
-              path.join(this.props.projectPath, ".build", pkgName)
+              path.join(this.props.projectPath, ".build", pkgName),
             ),
 
             handler: rootPointer,
             functionName: runFunctionName,
             memorySize: functionMeta.memory,
             timeout: Duration.seconds(
-              functionMeta.timeout || config.ASYNC_LAMBDA_RUN_TIMEOUT
+              functionMeta.timeout || config.ASYNC_LAMBDA_RUN_TIMEOUT,
             ),
             description: functionMeta.description,
             environment: {
               ASYNC_REQUEST_TYPE: "run",
             },
-          }
+          },
         );
 
         // Allow start function to invoke run function
@@ -208,7 +208,7 @@ export class LambdaStack extends NestedStack {
           runFunc,
           meta: functionMeta,
         };
-      }
+      },
     );
   };
 
@@ -233,7 +233,7 @@ export class LambdaStack extends NestedStack {
           "GpSyncLambdaRole" + index + "_" + index2,
           {
             assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
-          }
+          },
         );
         syncLambdaRole.addToPolicy(curInvokeSyncLambdaPolicy);
         runLambda.addToRolePolicy(curInvokeSyncLambdaPolicy);

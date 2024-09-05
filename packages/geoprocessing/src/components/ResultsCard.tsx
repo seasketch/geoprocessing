@@ -80,7 +80,7 @@ export function ResultsCard<T>({
 
   const resultsCardNoResultMsg = t(
     "ResultsCard - no result message",
-    "Report run completed, but no results returned"
+    "Report run completed, but no results returned",
   );
 
   const cardProps = {

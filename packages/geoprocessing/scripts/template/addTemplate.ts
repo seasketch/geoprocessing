@@ -18,7 +18,7 @@ function getTemplatesPath(templateType: TemplateType): string {
     "..",
     "..",
     "templates",
-    `${templateType}s`
+    `${templateType}s`,
   );
   // console.log("import.meta.dirname", import.meta.dirname);
   if (fs.existsSync(publishedBundlePath)) {
@@ -62,13 +62,13 @@ export async function getTemplateQuestion(templateType: TemplateType) {
       const templatePackageMetaPath = path.join(
         templatesPath,
         name,
-        "package.json"
+        "package.json",
       );
       return JSON.parse(fs.readFileSync(templatePackageMetaPath).toString())
         .description;
     } catch (error) {
       console.error(
-        `Missing package.json or its description for template ${name}`
+        `Missing package.json or its description for template ${name}`,
       );
       console.error(error);
       process.exit();
@@ -132,7 +132,7 @@ export async function copyTemplates(
     projectPath?: string;
     /** skip if being called by another command that will run install later */
     skipInstall?: boolean;
-  }
+  },
 ) {
   const { interactive, projectPath, skipInstall } = {
     ...{ interactive: true, projectPath: ".", skipInstall: false },
@@ -154,7 +154,7 @@ export async function copyTemplates(
 
   if (!fs.existsSync(path.join(projectPath, "package.json"))) {
     spinner.fail(
-      "Could not find your project, are you in your project root directory?"
+      "Could not find your project, are you in your project root directory?",
     );
     process.exit();
   }
@@ -172,13 +172,13 @@ export async function copyTemplates(
     // Copy package metadata
     spinner.start(`adding template ${templateName}`);
     const templatePackage: Package = JSON.parse(
-      fs.readFileSync(`${templatePath}/package.json`).toString()
+      fs.readFileSync(`${templatePath}/package.json`).toString(),
     );
     // Remove the templates seasketch dependency, the version will not match if running from canary gp release, and don't want it to overwrite
     if (templatePackage.devDependencies)
       delete templatePackage.devDependencies["@seasketch/geoprocessing"];
     const projectPackage: Package = JSON.parse(
-      fs.readFileSync(`${projectPath}/package.json`).toString()
+      fs.readFileSync(`${projectPath}/package.json`).toString(),
     );
     const packageJSON: Package = {
       ...projectPackage,
@@ -194,7 +194,7 @@ export async function copyTemplates(
 
     await fs.writeFile(
       path.join(projectPath, "package.json"),
-      JSON.stringify(packageJSON, null, "  ")
+      JSON.stringify(packageJSON, null, "  "),
     );
 
     // Copy file assets, but only if there is something to copy. Creates directories first as needed
@@ -210,7 +210,7 @@ export async function copyTemplates(
         }
         await fs.copy(
           path.join(templatePath, "src", "functions"),
-          path.join(projectPath, "src", "functions")
+          path.join(projectPath, "src", "functions"),
         );
       }
 
@@ -220,7 +220,7 @@ export async function copyTemplates(
         }
         await fs.copy(
           path.join(templatePath, "src", "components"),
-          path.join(projectPath, "src", "components")
+          path.join(projectPath, "src", "components"),
         );
       }
 
@@ -230,7 +230,7 @@ export async function copyTemplates(
         }
         await fs.copy(
           path.join(templatePath, "src", "assets"),
-          path.join(projectPath, "src", "assets")
+          path.join(projectPath, "src", "assets"),
         );
       }
 
@@ -240,7 +240,7 @@ export async function copyTemplates(
         }
         await fs.copy(
           path.join(templatePath, "src", "clients"),
-          path.join(projectPath, "src", "clients")
+          path.join(projectPath, "src", "clients"),
         );
       }
 
@@ -270,7 +270,7 @@ export async function copyTemplates(
           .toString()
           .split("\n");
         const commentIndex = tplIgnoreArray.findIndex((line) =>
-          line.startsWith("### Ignore")
+          line.startsWith("### Ignore"),
         );
         if (commentIndex === -1) {
           throw new Error("Could not find separator in .gitignore file");
@@ -297,12 +297,12 @@ export async function copyTemplates(
     const tplGeoprocessing = JSON.parse(
       fs
         .readFileSync(path.join(templatePath, "project", "geoprocessing.json"))
-        .toString()
+        .toString(),
     );
     const dstGeoprocessing = JSON.parse(
       fs
         .readFileSync(path.join(projectPath, "project", "geoprocessing.json"))
-        .toString()
+        .toString(),
     );
 
     const geoprocessingJSON: GeoprocessingJsonConfig = {
@@ -323,7 +323,7 @@ export async function copyTemplates(
 
     fs.writeFileSync(
       path.join(projectPath, "project", "geoprocessing.json"),
-      JSON.stringify(geoprocessingJSON, null, "  ")
+      JSON.stringify(geoprocessingJSON, null, "  "),
     );
 
     spinner.succeed(`added ${templateName}`);

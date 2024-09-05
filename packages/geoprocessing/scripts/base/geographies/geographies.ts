@@ -25,7 +25,7 @@ export function readGeographies(filePath?: string) {
         return JSON.parse(geosString);
       } catch (err: unknown) {
         throw new Error(
-          `Unable to parse JSON found in ${finalFilePath}, fix it and try again`
+          `Unable to parse JSON found in ${finalFilePath}, fix it and try again`,
         );
       }
     } catch (err: unknown) {

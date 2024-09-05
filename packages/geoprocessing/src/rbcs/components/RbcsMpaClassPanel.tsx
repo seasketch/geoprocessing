@@ -16,25 +16,33 @@ export interface RbcsMpaClassPanelProps {
 /**
  * Sketch collection status panel for MPA regulation-based classification
  */
-export const RbcsMpaClassPanel: React.FunctionComponent<RbcsMpaClassPanelProps> =
-  ({ value, displayName, size, displayValue = true, group, groupColorMap }) => {
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ paddingRight: 10 }}>
-          {group && groupColorMap ? (
-            <PointyCircle size={size} color={groupColorMap[group]}>
-              {displayValue}
-            </PointyCircle>
-          ) : (
-            <RbcsIcon value={value} size={size} displayValue={displayValue} />
-          )}
-        </div>
-        <div style={{ fontSize: 18 }}>{displayName}</div>
+export const RbcsMpaClassPanel: React.FunctionComponent<
+  RbcsMpaClassPanelProps
+> = ({
+  value,
+  displayName,
+  size,
+  displayValue = true,
+  group,
+  groupColorMap,
+}) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+      }}
+    >
+      <div style={{ paddingRight: 10 }}>
+        {group && groupColorMap ? (
+          <PointyCircle size={size} color={groupColorMap[group]}>
+            {displayValue}
+          </PointyCircle>
+        ) : (
+          <RbcsIcon value={value} size={size} displayValue={displayValue} />
+        )}
       </div>
-    );
-  };
+      <div style={{ fontSize: 18 }}>{displayName}</div>
+    </div>
+  );
+};

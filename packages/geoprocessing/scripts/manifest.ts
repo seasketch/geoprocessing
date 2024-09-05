@@ -56,21 +56,22 @@ export const hasClients = (manifest: Manifest): boolean => {
 };
 
 export const getSyncFunctionMetadata = (
-  manifest: Manifest
+  manifest: Manifest,
 ): ProcessingFunctionMetadata[] => {
   return [
     ...manifest.preprocessingFunctions,
     ...manifest.geoprocessingFunctions.filter(
-      (func) => func.executionMode === "sync"
+      (func) => func.executionMode === "sync",
     ),
   ];
 };
 
 export const getAsyncFunctionMetadata = (
-  manifest: Manifest
+  manifest: Manifest,
 ): GeoprocessingFunctionMetadata[] => {
   return manifest.geoprocessingFunctions.filter(
-    (func) => func.executionMode === "async" && func.purpose !== "preprocessing"
+    (func) =>
+      func.executionMode === "async" && func.purpose !== "preprocessing",
   );
 };
 
@@ -78,7 +79,7 @@ export const getAsyncFunctionMetadata = (
 
 /** Returns true if metadata is for geoprocessing function and narrows type */
 export const isGeoprocessingFunctionMetadata = (
-  meta: any
+  meta: any,
 ): meta is GeoprocessingFunctionMetadata => {
   return (
     meta &&
@@ -91,7 +92,7 @@ export const isGeoprocessingFunctionMetadata = (
 
 /** Returns true if metadata is for preprocessing function and narrows type */
 export const isPreprocessingFunctionMetadata = (
-  meta: any
+  meta: any,
 ): meta is PreprocessingFunctionMetadata => {
   return (
     meta &&
@@ -103,7 +104,7 @@ export const isPreprocessingFunctionMetadata = (
 
 /** Returns true if metadata is for sync function and narrows type */
 export const isSyncFunctionMetadata = (
-  meta: any
+  meta: any,
 ): meta is SyncFunctionMetadata => {
   return (
     isPreprocessingFunctionMetadata(meta) ||
@@ -113,7 +114,7 @@ export const isSyncFunctionMetadata = (
 
 /** Returns true if metadata is for async function and narrows type */
 export const isAsyncFunctionMetadata = (
-  meta: any
+  meta: any,
 ): meta is AsyncFunctionMetadata => {
   return (
     isGeoprocessingFunctionMetadata(meta) && meta.executionMode === "async"

@@ -11,7 +11,7 @@ import { getKeys } from "./ts.js";
 /** find and return objectives from passed objectives */
 export const getObjectiveById = (
   objectiveId: string,
-  objectives: Objective[]
+  objectives: Objective[],
 ): Objective => {
   const obj = objectives.find((obj) => obj.objectiveId === objectiveId);
   if (!obj) {
@@ -26,7 +26,7 @@ export const getObjectiveById = (
  * @param objectives - set of objectives
  */
 export const getMinYesCountMap = (
-  objectives: Objective[]
+  objectives: Objective[],
 ): Record<ObjectiveId, ClassificationId> => {
   const objectiveMap = keyBy(objectives, (obj) => obj.objectiveId);
   return getKeys(objectiveMap).reduce((accSoFar, objectiveId) => {
@@ -34,7 +34,7 @@ export const getMinYesCountMap = (
     const curObjectiveCountsKeys = getKeys(curObjective.countsToward);
     const firstYesKey =
       curObjectiveCountsKeys.findIndex(
-        (level) => curObjective.countsToward[level] !== OBJECTIVE_YES
+        (level) => curObjective.countsToward[level] !== OBJECTIVE_YES,
       ) - 1;
     return {
       ...accSoFar,

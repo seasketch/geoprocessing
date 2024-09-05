@@ -7,7 +7,7 @@ export const testWithinPerc = (
   options?: {
     withinPerc?: number;
     debug?: boolean;
-  }
+  },
 ) => {
   const { withinPerc, debug } = { withinPerc: 0.01, debug: false, ...options };
   if (expectedValue === 0) {
@@ -24,7 +24,7 @@ export const testWithinPerc = (
 
   if (debug)
     console.log(
-      `test: ${testValue}, expected: ${expectedValue}, percDiff: ${percDiff}`
+      `test: ${testValue}, expected: ${expectedValue}, percDiff: ${percDiff}`,
     );
   expect(percDiff).toBeLessThan(withinPerc);
 };

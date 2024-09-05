@@ -22,7 +22,7 @@ export function toFeatureArray(input: Feature | FeatureCollection) {
 export function toFeaturePolygonArray(
   input:
     | Feature<Polygon | MultiPolygon>
-    | FeatureCollection<Polygon | MultiPolygon>
+    | FeatureCollection<Polygon | MultiPolygon>,
 ) {
   if (isFeature(input)) {
     return [input];
@@ -40,7 +40,7 @@ export const genFeature = <G extends Geometry = SketchGeometryTypes>(
     feature?: Feature<G>;
     name?: string;
     id?: string;
-  } = {}
+  } = {},
 ): Feature<G> => {
   const {
     feature = polygon([
@@ -81,7 +81,7 @@ export const genFeatureCollection = <G extends Geometry = SketchGeometryTypes>(
   options: {
     name?: string;
     id?: string;
-  } = {}
+  } = {},
 ): FeatureCollection<G> => {
   const fcId = options.id || uuid();
   const { id = fcId, name = `featureCollection-${fcId}` } = options;

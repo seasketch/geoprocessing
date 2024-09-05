@@ -28,7 +28,7 @@ export const createRestApi = (stack: GeoprocessingStack) => {
     stack.projectFunctions.serviceRootFunction,
     {
       requestTemplates: { "application/json": '{ "statusCode": "200" }' },
-    }
+    },
   );
   restApi.root.addMethod("GET", metadataIntegration);
 
@@ -52,7 +52,7 @@ export const createRestApi = (stack: GeoprocessingStack) => {
       asyncFunction.startFunc,
       {
         requestTemplates: { "application/json": '{ "statusCode": "200" }' },
-      }
+      },
     );
     const resource = restApi.root.addResource(asyncFunction.meta.title);
     resource.addMethod("POST", asyncHandlerIntegration);

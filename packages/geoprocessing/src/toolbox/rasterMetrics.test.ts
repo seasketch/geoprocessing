@@ -25,7 +25,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster);
     expect(metrics.length).toBe(1);
@@ -48,7 +48,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster, {
       categorical: true,
@@ -74,7 +74,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster, {
       categorical: true,
@@ -101,7 +101,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster, {
       categorical: true,
@@ -128,7 +128,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster, {
       feature: fix.topRightPoly,
@@ -155,7 +155,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster, { metricId: "coral" });
     expect(metrics.length).toBe(1);
@@ -178,7 +178,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster, { metricIdPrefix: "coral-" });
     expect(metrics.length).toBe(1);
@@ -201,7 +201,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster);
     expect(metrics.length).toBe(1);
@@ -223,7 +223,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster, { feature: fix.topRightPoly });
     expect(metrics.length).toBe(1);
@@ -258,7 +258,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster, {
       feature: poly,
@@ -285,7 +285,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const metrics = await rasterMetrics(raster, {
@@ -295,13 +295,13 @@ describe("rasterMetrics tests", () => {
 
     expect(Object.keys(metrics).length).toEqual(7);
     expect(
-      firstMatchingMetric(metrics, (m) => m.metricId === "valid").value
+      firstMatchingMetric(metrics, (m) => m.metricId === "valid").value,
     ).toEqual(3);
     expect(
-      firstMatchingMetric(metrics, (m) => m.metricId === "invalid").value
+      firstMatchingMetric(metrics, (m) => m.metricId === "invalid").value,
     ).toEqual(1);
     expect(
-      firstMatchingMetric(metrics, (m) => m.metricId === "sum").value
+      firstMatchingMetric(metrics, (m) => m.metricId === "sum").value,
     ).toEqual(4);
   });
 
@@ -320,7 +320,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const metrics = await rasterMetrics(raster, {
@@ -330,7 +330,7 @@ describe("rasterMetrics tests", () => {
 
     expect(Object.keys(metrics).length).toEqual(1);
     expect(
-      firstMatchingMetric(metrics, (m) => m.metricId === "area").value
+      firstMatchingMetric(metrics, (m) => m.metricId === "area").value,
     ).toEqual(300);
   });
 
@@ -353,7 +353,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const metrics = await rasterMetrics(raster, {
@@ -363,7 +363,7 @@ describe("rasterMetrics tests", () => {
 
     expect(Object.keys(metrics).length).toEqual(2);
     expect(
-      firstMatchingMetric(metrics, (m) => m.metricId === "area").value
+      firstMatchingMetric(metrics, (m) => m.metricId === "area").value,
     ).toEqual(300);
   });
 
@@ -382,7 +382,7 @@ describe("rasterMetrics tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await rasterMetrics(raster, {
       feature: fix.wholeMixedSC,
@@ -390,31 +390,32 @@ describe("rasterMetrics tests", () => {
     });
     expect(metrics.length).toBe(9);
     const sketch1Metrics = metrics.filter(
-      (m) => (m.sketchId = metrics[0].sketchId)
+      (m) => (m.sketchId = metrics[0].sketchId),
     );
     expect(
-      firstMatchingMetric(sketch1Metrics, (m) => m.metricId === "valid").value
+      firstMatchingMetric(sketch1Metrics, (m) => m.metricId === "valid").value,
     ).toEqual(4);
     expect(
-      firstMatchingMetric(sketch1Metrics, (m) => m.metricId === "sum").value
+      firstMatchingMetric(sketch1Metrics, (m) => m.metricId === "sum").value,
     ).toEqual(5);
     expect(
-      firstMatchingMetric(sketch1Metrics, (m) => m.metricId === "area").value
+      firstMatchingMetric(sketch1Metrics, (m) => m.metricId === "area").value,
     ).toEqual(400);
 
     // collection values should match children because two children are duplicates and overlap perfectly
     const sketchCollMetrics = metrics.filter(
-      (m) => m.extra?.isCollection === true
+      (m) => m.extra?.isCollection === true,
     );
     expect(
       firstMatchingMetric(sketchCollMetrics, (m) => m.metricId === "valid")
-        .value
+        .value,
     ).toEqual(4);
     expect(
-      firstMatchingMetric(sketchCollMetrics, (m) => m.metricId === "sum").value
+      firstMatchingMetric(sketchCollMetrics, (m) => m.metricId === "sum").value,
     ).toEqual(5);
     expect(
-      firstMatchingMetric(sketchCollMetrics, (m) => m.metricId === "area").value
+      firstMatchingMetric(sketchCollMetrics, (m) => m.metricId === "area")
+        .value,
     ).toEqual(400);
   });
 });

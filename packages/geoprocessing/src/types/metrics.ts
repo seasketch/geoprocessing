@@ -10,7 +10,7 @@ export const MetricDimensions = [
   "groupId",
   "classId",
 ] as const;
-export type MetricDimension = typeof MetricDimensions[number] & keyof Metric;
+export type MetricDimension = (typeof MetricDimensions)[number] & keyof Metric;
 
 export const metricSchema = z.object({
   metricId: z.string(),
@@ -60,4 +60,4 @@ export type GroupMetricSketchAgg = GroupMetricAgg & {
 };
 
 export type MetricIdTypes = string | number;
-export type MetricProperty = typeof MetricProperties[number] & keyof Metric;
+export type MetricProperty = (typeof MetricProperties)[number] & keyof Metric;

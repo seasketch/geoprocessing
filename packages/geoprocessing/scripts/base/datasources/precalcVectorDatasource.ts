@@ -38,7 +38,7 @@ export async function precalcVectorDatasource<C extends ProjectClientBase>(
     newDstPath?: string;
     /** Alternative port to fetch data from */
     port?: number;
-  } = {}
+  } = {},
 ): Promise<Metric[]> {
   // need 8001 for unit tests
   const url = projectClient.getDatasourceUrl(datasource, {
@@ -70,7 +70,7 @@ export async function genVectorMetrics(
   extraOptions: {
     /** Alternative path to store precalc data. useful for testing */
     newDstPath?: string;
-  }
+  },
 ): Promise<Metric[]> {
   const dstPath = extraOptions.newDstPath || datasourceConfig.defaultDstPath;
 
@@ -81,7 +81,7 @@ export async function genVectorMetrics(
       const result = featuresSchema.safeParse(feats);
       if (!result.success) {
         console.log(
-          `precalcVectorDatasource - error parsing features for datasource ${datasource.datasourceId}`
+          `precalcVectorDatasource - error parsing features for datasource ${datasource.datasourceId}`,
         );
         const errorMessage = genZodErrorMessage(result.error.issues);
         throw new Error(errorMessage);
@@ -93,7 +93,7 @@ export async function genVectorMetrics(
   const geographyFeatureColl = await getGeographyFeatures(
     geography,
     geogDs,
-    dstPath
+    dstPath,
   );
   // console.log("geographyFeatureColl", JSON.stringify(geographyFeatureColl));
 
@@ -110,11 +110,11 @@ export async function genVectorMetrics(
       }
       if (
         !featureCollClasses[classProperty].includes(
-          feat.properties[classProperty]
+          feat.properties[classProperty],
         )
       ) {
         featureCollClasses[classProperty].push(
-          feat.properties[classProperty].toString() // force string-based index
+          feat.properties[classProperty].toString(), // force string-based index
         );
       }
     });
@@ -126,7 +126,7 @@ export async function genVectorMetrics(
       (feat) =>
         clipMultiMerge(feat, geographyFeatureColl, "intersection", {
           properties: feat.properties,
-        }) as Feature<Polygon | MultiPolygon>
+        }) as Feature<Polygon | MultiPolygon>,
     )
     .filter((e) => e);
 
@@ -158,7 +158,7 @@ export async function genVectorMetrics(
       const featArea = area(feat);
       return { ...stats, count: stats.count + 1, area: stats.area + featArea };
     },
-    { count: 0, area: 0 }
+    { count: 0, area: 0 },
   );
 
   // Create total metrics
@@ -205,7 +205,7 @@ export async function genVectorMetrics(
           classId: datasource.datasourceId + "-" + curClass,
           metricId: "count",
           value: classes[curClass].count,
-        })
+        }),
       );
       classMetrics.push(
         createMetric({
@@ -213,7 +213,7 @@ export async function genVectorMetrics(
           classId: datasource.datasourceId + "-" + curClass,
           metricId: "area",
           value: classes[curClass].area,
-        })
+        }),
       );
     });
 
@@ -226,7 +226,7 @@ export async function genVectorMetrics(
             classId: datasource.datasourceId + "-" + curClass,
             metricId: "count",
             value: 0,
-          })
+          }),
         );
         classMetrics.push(
           createMetric({
@@ -234,7 +234,7 @@ export async function genVectorMetrics(
             classId: datasource.datasourceId + "-" + curClass,
             metricId: "area",
             value: 0,
-          })
+          }),
         );
       }
     });

@@ -12,7 +12,7 @@ export default function useCheckboxes(defaultState: Checkbox[]) {
       newCheckboxes[index].checked = checked;
       setCheckboxes(newCheckboxes);
     },
-    [checkboxes]
+    [checkboxes],
   );
   return {
     setCheckbox,

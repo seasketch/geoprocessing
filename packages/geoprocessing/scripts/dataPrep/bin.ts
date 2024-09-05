@@ -25,7 +25,7 @@ import {
 
 const region = await loadConfig(
   NODE_REGION_CONFIG_OPTIONS,
-  NODE_REGION_CONFIG_FILE_OPTIONS
+  NODE_REGION_CONFIG_FILE_OPTIONS,
 )();
 
 const DEFAULT_FLATBUSH_NODE_SIZE = 9;
@@ -37,35 +37,35 @@ program
   .option(
     "--points-limit <number>",
     "Maximum number of vertexes in a bundle. Use to target bundle byte sizes",
-    "6400"
+    "6400",
   )
   .option(
     "--envelope-max-distance <km>",
     "Limit merged feature envelope. Uses st_maxdistance",
-    "55"
+    "55",
   )
   .option(
     "--bbox <xmin,ymin,xmax,ymax>",
-    "Clip output to bounding box. Useful when tuning points-limit and envelope-max-distance to speed up operation"
+    "Clip output to bounding box. Useful when tuning points-limit and envelope-max-distance to speed up operation",
   )
   .option(
     "--connection <postgres://...>",
     "Connection string for source postgres database.",
-    "postgres://"
+    "postgres://",
   )
   .option(
     "--index-size-target <bytes>",
     "Spatial index will be split into several chunks to match the target size in bytes",
-    "80000"
+    "80000",
   )
   .option(
     "--flatbush-node-size <int>",
     "Passed directly to flatbush. Lower numbers mean slower index creation but faster searches",
-    "9"
+    "9",
   )
   .option(
     "--s3-bucket <bucket>",
-    "Will stream features to an s3 bucket while processing"
+    "Will stream features to an s3 bucket while processing",
   )
   .option("--dry-run", "Skip creating resources on s3")
   .action(async function (datasourceName, table, options) {
@@ -97,7 +97,7 @@ program
             spinner.succeed("Public S3 bucket created at " + url);
             cloudfrontDistroPromise = createCloudfrontDistribution(
               datasourceName,
-              false
+              false,
             );
           } else {
             console.log("Aborted. Try --dry-run if debugging package sizes");
@@ -124,11 +124,11 @@ program
                 id - 1,
                 datasourceName,
                 currentVersion + 1,
-                geobuf
-              )
+                geobuf,
+              ),
             );
           }
-        }
+        },
       );
       const pool = await createPool(options.connection, {});
       await pool.connect(async (connection) => {
@@ -141,17 +141,17 @@ program
         indexItems.map((i) => i.bbox),
         options.indexSizeTarget || DEFAULT_COMPOSITE_INDEX_SIZE_TARGET,
         DEFAULT_MIN_COMPOSITE_INDEXES,
-        options.flatbushNodeSize || DEFAULT_FLATBUSH_NODE_SIZE
+        options.flatbushNodeSize || DEFAULT_FLATBUSH_NODE_SIZE,
       );
       spinner.succeed(
-        `Created spatial index (${prettyBytes(indexes.index.data.byteLength)})`
+        `Created spatial index (${prettyBytes(indexes.index.data.byteLength)})`,
       );
       spinner.succeed(
         `Created ${
           indexes.compositeIndexes.length
         } composite indexes (${indexes.compositeIndexes
           .map((i) => prettyBytes(i.index.data.byteLength))
-          .join(", ")})`
+          .join(", ")})`,
       );
 
       // Output stats on bytes and # requests needed for each example sketch
@@ -167,7 +167,7 @@ program
           datasourceName,
           currentVersion + 1,
           indexes.index,
-          indexes.compositeIndexes
+          indexes.compositeIndexes,
         );
         spinner.succeed("Deployed metadata and indexes to S3");
         // Schedule previous versions for deletion
@@ -176,10 +176,10 @@ program
           const deletesAt = await scheduleObjectsForDeletion(
             datasourceName,
             currentVersion,
-            lastPublished
+            lastPublished,
           );
           spinner.succeed(
-            `Scheduled previous version (${currentVersion}) for deletion on ${deletesAt.toLocaleDateString()} at midnight`
+            `Scheduled previous version (${currentVersion}) for deletion on ${deletesAt.toLocaleDateString()} at midnight`,
           );
         }
 
@@ -189,7 +189,7 @@ program
           spinner.start("Creating Cloudfront distribution");
           details = await cloudfrontDistroPromise;
           spinner.succeed(
-            "Created Cloudfront distribution at " + details.location
+            "Created Cloudfront distribution at " + details.location,
           );
         } else {
           spinner.start("Creating Cloudfront invalidation");
@@ -199,11 +199,11 @@ program
         console.log(
           `✅ Version ${
             currentVersion + 1
-          } of this data source is now available at https://${details.location}`
+          } of this data source is now available at https://${details.location}`,
         );
         if (currentVersion === 0) {
           console.log(
-            "Since this cloudfront distribution is new, it may take a few minutes before it can be accessed. Future updates to this data source should be immediate."
+            "Since this cloudfront distribution is new, it may take a few minutes before it can be accessed. Future updates to this data source should be immediate.",
           );
         }
       } else {

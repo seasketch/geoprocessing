@@ -47,7 +47,7 @@ export interface FilterSelectTableOptions<D extends object = {}>
  * has to match for it to filter the row
  */
 export function FilterSelectTable<D extends object>(
-  props: FilterSelectTableOptions<D>
+  props: FilterSelectTableOptions<D>,
 ): ReactElement {
   const { filterSelect, data, ...otherProps } = props;
   const { type = "some", filterPosition = "bottom", filters } = filterSelect;
@@ -59,7 +59,7 @@ export function FilterSelectTable<D extends object>(
 
   const filteredData = React.useMemo(() => {
     const activeFilters = filters.filter(
-      (f, i) => checkboxState.checkboxes[i].checked
+      (f, i) => checkboxState.checkboxes[i].checked,
     );
     return data.filter((row) => {
       if (activeFilters.length === 0) return true;

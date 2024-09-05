@@ -29,7 +29,7 @@ async function simpleFunction(
   sketch:
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>,
-  extraParams: DefaultExtraParams = {}
+  extraParams: DefaultExtraParams = {},
 ): Promise<SimpleResults> {
   // Use caller-provided geographyId if provided
   const geographyId = getFirstFromParam("geographyIds", extraParams);
@@ -61,7 +61,7 @@ async function simpleFunction(
         return { ...regionsSoFar, unknown: "unknown" };
       }
     },
-    {}
+    {},
   );
 
   // Raster example - get minimum and maximum surface temperature within sketch for present day

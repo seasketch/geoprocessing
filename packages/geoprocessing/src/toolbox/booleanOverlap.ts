@@ -15,27 +15,27 @@ import deepEqual from "fast-deep-equal";
 export async function booleanOverlap<B extends Feature<any>>(
   featureAInput: Feature<any> | Feature<any>[],
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]>;
 export async function booleanOverlap<B extends Feature<any>>(
   featureAInput: Geometry[],
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]>;
 export async function booleanOverlap<B extends Geometry>(
   featureAInput: Feature<any> | Feature<any>[],
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]>;
 export async function booleanOverlap<B extends Geometry>(
   featureAInput: Geometry | Geometry[],
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]>;
 export async function booleanOverlap<B>(
   featureAInput,
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]> {
   // Normalize input to array
   const featuresA = Array.isArray(featureAInput)

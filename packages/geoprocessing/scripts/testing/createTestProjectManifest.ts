@@ -20,7 +20,7 @@ import { TestComponentTypes } from "./types.js";
 export default async function createTestProjectManifest(
   projectName: string,
   /** test components to add */
-  components: TestComponentTypes[]
+  components: TestComponentTypes[],
 ): Promise<Manifest> {
   // Create source package
   const pkgGeo: Package = {
@@ -52,7 +52,7 @@ export default async function createTestProjectManifest(
     return point([0, 0]);
   };
   const testGpFunction = async (
-    feature: Feature | FeatureCollection
+    feature: Feature | FeatureCollection,
   ): Promise<TestResult> => {
     return { result: 50 };
   };
@@ -154,6 +154,6 @@ export default async function createTestProjectManifest(
     pkgGeo,
     preprocessingBundles,
     geoprocessingBundles,
-    pkgGeo.version
+    pkgGeo.version,
   );
 }

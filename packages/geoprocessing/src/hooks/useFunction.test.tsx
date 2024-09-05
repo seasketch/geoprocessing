@@ -70,7 +70,7 @@ test.skip("useFunction won't accept unrecognizable responses", async () => {
     {},
     {
       overwriteRoutes: true,
-    }
+    },
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper,
@@ -103,7 +103,7 @@ test.skip("useFunction unsets loading prop and sets task upon completion of job 
         foo: "plenty",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper,
@@ -138,7 +138,7 @@ test.skip("useFunction handles errors thrown within geoprocessing function", asy
       status: "failed",
       error: "Task error",
     } as GeoprocessingTask,
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper,
@@ -229,12 +229,12 @@ test.skip("changing ReportContext.geometryUri fetches new results", async () => 
         foo: "plenty",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   const { getByRole, getByText, getAllByText } = render(
     <TestContainer>
       <TestReport />
-    </TestContainer>
+    </TestContainer>,
   );
   expect(getByRole("alert")).toHaveTextContent("loading...");
   await domAct(async () => {
@@ -264,7 +264,7 @@ test.skip("changing ReportContext.geometryUri fetches new results", async () => 
         foo: "lots!",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   await domAct(async () => {
     getByRole("button").click();
@@ -331,12 +331,12 @@ test.skip("useFunction called multiple times with the same arguments will only f
         foo: "plenty",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   const { getAllByRole, getByText, getAllByText } = render(
     <TestContainer>
       <MultiCardTestReport />
-    </TestContainer>
+    </TestContainer>,
   );
   for (const el of getAllByRole("alert")) {
     expect(el).toHaveTextContent("loading...");
@@ -373,13 +373,13 @@ test.skip("useFunction uses a local cache for repeat requests", async () => {
         foo: "plenty",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   const { getByRole, getByText, getAllByText } = render(
     // @ts-ignore
     <TestContainer sketchProperties={sketchProperties}>
       <TestReport />
-    </TestContainer>
+    </TestContainer>,
   );
   expect(getByRole("alert")).toHaveTextContent("loading...");
   await domAct(async () => {
@@ -393,7 +393,7 @@ test.skip("useFunction uses a local cache for repeat requests", async () => {
     // @ts-ignore
     <TestContainer sketchProperties={sketchProperties}>
       <TestReport />
-    </TestContainer>
+    </TestContainer>,
   );
   await domAct(async () => {
     vi.runAllTimers();

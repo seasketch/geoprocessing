@@ -23,19 +23,19 @@ import { globalDatasources } from "../../../src/datasources/global.js";
 /** Creates or updates datasource record on disk */
 export async function createOrUpdateDatasource(
   inputDatasource: Datasource,
-  newDatasourcePath?: string
+  newDatasourcePath?: string,
 ): Promise<Datasource> {
   let dSources = readDatasources(newDatasourcePath);
   let finalDatasource: Datasource = inputDatasource;
 
   const dIndex = dSources.findIndex(
-    (dSource) => dSource.datasourceId === inputDatasource.datasourceId
+    (dSource) => dSource.datasourceId === inputDatasource.datasourceId,
   );
   const dExists = dIndex > -1;
   if (dExists) {
     if (process.env.NODE_ENV !== "test")
       console.log(
-        `Updating ${inputDatasource.datasourceId} record in datasource file`
+        `Updating ${inputDatasource.datasourceId} record in datasource file`,
       );
     // Update in place
     if (
@@ -52,7 +52,7 @@ export async function createOrUpdateDatasource(
   } else {
     if (process.env.NODE_ENV !== "test")
       console.log(
-        `Adding ${inputDatasource.datasourceId} record in datasource file`
+        `Adding ${inputDatasource.datasourceId} record in datasource file`,
       );
     // Just add onto the end
     dSources = dSources.concat(inputDatasource);
@@ -82,12 +82,12 @@ export function readDatasources(filePath?: string) {
         return JSON.parse(dsString);
       } catch (err: unknown) {
         throw new Error(
-          `Unable to parse JSON found in ${finalFilePath}, fix it and try again`
+          `Unable to parse JSON found in ${finalFilePath}, fix it and try again`,
         );
       }
     } catch (err: unknown) {
       console.log(
-        `Datasource file not found at ${finalFilePath}, using default datasources`
+        `Datasource file not found at ${finalFilePath}, using default datasources`,
       );
       fs.ensureDirSync(path.dirname(datasourceConfig.defaultDatasourcesPath));
       // fallback to default
@@ -121,7 +121,7 @@ export function writeDatasources(pd: Datasource[], filePath?: string) {
  */
 export function readDatasourceGeojsonById(
   datasourceId: string,
-  dstPath: string
+  dstPath: string,
 ) {
   const jsonPath = getJsonPath(dstPath, datasourceId);
   if (!fs.existsSync(jsonPath))
@@ -131,6 +131,6 @@ export function readDatasourceGeojsonById(
     return polys as FeatureCollection<Polygon | MultiPolygon>;
   } else
     throw new Error(
-      `GeoJSON at ${jsonPath} is not a FeatureCollection. Check datasource.`
+      `GeoJSON at ${jsonPath} is not a FeatureCollection. Check datasource.`,
     );
 }

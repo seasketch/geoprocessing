@@ -31,13 +31,13 @@ const ErrorCard = () => {
         <ErrorIndicator />
         {t(
           "ReportError - message part 1",
-          "Something went wrong. Please close this report and try again."
+          "Something went wrong. Please close this report and try again.",
         )}
       </div>
       <p>
         {t(
           "ReportError - message part 2",
-          "If the error persists, please report it."
+          "If the error persists, please report it.",
         )}
       </p>
     </Card>

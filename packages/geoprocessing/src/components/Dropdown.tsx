@@ -92,7 +92,7 @@ export const Dropdown = ({
           },
         },
       ],
-    }
+    },
   );
 
   function handleDropdownClick(e: any) {

@@ -78,7 +78,7 @@ export class GeoprocessingHandler<
     /** Optional additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
     extraParams?: P,
     /** Original event params used to invoke geoprocessing function made accessible to func */
-    request?: GeoprocessingRequestModel<G>
+    request?: GeoprocessingRequestModel<G>,
   ) => Promise<T>;
   options: GeoprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
@@ -97,21 +97,21 @@ export class GeoprocessingHandler<
     func: (
       feature: Feature<G> | FeatureCollection<G>,
       extraParams: P,
-      request?: GeoprocessingRequestModel<G>
+      request?: GeoprocessingRequestModel<G>,
     ) => Promise<T>,
-    options: GeoprocessingHandlerOptions
+    options: GeoprocessingHandlerOptions,
   );
   constructor(
     func: (
       feature: Sketch<G> | SketchCollection<G>,
       extraParams: P,
-      request?: GeoprocessingRequestModel<G>
+      request?: GeoprocessingRequestModel<G>,
     ) => Promise<T>,
-    options: GeoprocessingHandlerOptions
+    options: GeoprocessingHandlerOptions,
   );
   constructor(
     func: (feature, extraParams, request) => Promise<T>,
-    options: GeoprocessingHandlerOptions
+    options: GeoprocessingHandlerOptions,
   ) {
     this.func = func;
     this.options = Object.assign({ memory: 1024 }, options);
@@ -127,7 +127,7 @@ export class GeoprocessingHandler<
    */
   async lambdaHandler(
     event: APIGatewayProxyEvent,
-    context: Context
+    context: Context,
   ): Promise<APIGatewayProxyResult> {
     const { Tasks, options } = this;
     const serviceName = options.title;
@@ -157,7 +157,7 @@ export class GeoprocessingHandler<
         `${this.options.executionMode} ${
           ASYNC_REQUEST_TYPE ? ASYNC_REQUEST_TYPE : "sync"
         } request`,
-        JSON.stringify(request)
+        JSON.stringify(request),
       );
 
     // get cached result if available. standard method to get results for async function
@@ -166,15 +166,15 @@ export class GeoprocessingHandler<
         console.log(
           "checkCacheOnly task get with",
           serviceName,
-          request.cacheKey
+          request.cacheKey,
         );
         const timestamp = Date.now();
         console.time(
-          `checkCacheOnly task get ${this.options.title} - ${timestamp}`
+          `checkCacheOnly task get ${this.options.title} - ${timestamp}`,
         );
         let cachedResult = await Tasks.get(serviceName, request.cacheKey);
         console.timeEnd(
-          `checkCacheOnly task get ${this.options.title} - ${timestamp}`
+          `checkCacheOnly task get ${this.options.title} - ${timestamp}`,
         );
 
         if (
@@ -184,7 +184,7 @@ export class GeoprocessingHandler<
           // cache hit
           if (process.env.NODE_ENV !== "test")
             console.log(
-              `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+              `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`,
             );
           return {
             statusCode: 200,
@@ -198,7 +198,7 @@ export class GeoprocessingHandler<
           // cache miss
           if (process.env.NODE_ENV !== "test")
             console.log(
-              `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`
+              `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`,
             );
           return {
             statusCode: 200,
@@ -231,7 +231,7 @@ export class GeoprocessingHandler<
       ) {
         if (process.env.NODE_ENV !== "test")
           console.log(
-            `Cache hit for ${serviceName} using cacheKey ${request.cacheKey}`
+            `Cache hit for ${serviceName} using cacheKey ${request.cacheKey}`,
           );
         return {
           statusCode: 200,
@@ -258,7 +258,7 @@ export class GeoprocessingHandler<
     let task: GeoprocessingTask = await Tasks.create(
       serviceName,
       request.cacheKey,
-      wss
+      wss,
     );
 
     if (
@@ -276,7 +276,7 @@ export class GeoprocessingHandler<
             task,
             error?.message?.toString() ||
               error?.toString() ||
-              "Uncaught exception"
+              "Uncaught exception",
           );
           process.exit();
         });
@@ -285,7 +285,7 @@ export class GeoprocessingHandler<
           console.error(error);
           await Tasks.fail(
             task,
-            error?.toString() || "Unhandled promise rejection"
+            error?.toString() || "Unhandled promise rejection",
           );
           process.exit();
         });
@@ -310,7 +310,7 @@ export class GeoprocessingHandler<
           console.time(`task complete ${this.options.title} - ${tsComplete}`);
           let promise = await Tasks.complete(task, results);
           console.timeEnd(
-            `task complete ${this.options.title} - ${tsComplete}`
+            `task complete ${this.options.title} - ${tsComplete}`,
           );
 
           if (this.options.executionMode !== "sync") {
@@ -320,7 +320,7 @@ export class GeoprocessingHandler<
               task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
             await this.sendSocketMessage(wssUrl, task.id, task.service);
             console.info(
-              `sent task ${task.id} result to socket ${wssUrl} for service ${task.service}`
+              `sent task ${task.id} result to socket ${wssUrl} for service ${task.service}`,
             );
           }
 
@@ -341,7 +341,7 @@ export class GeoprocessingHandler<
             wssUrl,
             request.cacheKey,
             serviceName,
-            failureMessage
+            failureMessage,
           );
           let failedTask = await Tasks.fail(task, failureMessage);
           return failedTask;
@@ -352,7 +352,7 @@ export class GeoprocessingHandler<
           request.geometryUri
             ? `Failed to retrieve geometry from ${request.geometryUri}`
             : `Failed to extract geometry from request`,
-          e as Error
+          e as Error,
         );
       }
     } else {
@@ -411,7 +411,7 @@ export class GeoprocessingHandler<
     wss: string,
     cacheKey: string | undefined,
     serviceName: string,
-    failureMessage: string
+    failureMessage: string,
   ) {
     let socket = await this.getSocket(wss);
 
@@ -436,7 +436,7 @@ export class GeoprocessingHandler<
   async sendSocketMessage(
     wss: string,
     cacheKey: string | undefined,
-    serviceName: string
+    serviceName: string,
   ) {
     let socket = await this.getSocket(wss);
 

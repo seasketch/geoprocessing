@@ -19,7 +19,7 @@ export function fgBoundingBox(box: BBox) {
  */
 export async function fgbFetchAll<F extends Feature<Geometry>>(
   url: string,
-  box?: BBox
+  box?: BBox,
 ) {
   const fgBox = (() => {
     if (!box && !Array.isArray(box)) {
@@ -33,7 +33,7 @@ export async function fgbFetchAll<F extends Feature<Geometry>>(
     console.log("fgbFetchAll", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
 
   const features = (await takeAsync(
-    deserialize(url, fgBox) as AsyncGenerator
+    deserialize(url, fgBox) as AsyncGenerator,
   )) as F[];
   if (!Array.isArray(features))
     throw new Error("Unexpected result from fgbFetchAll");

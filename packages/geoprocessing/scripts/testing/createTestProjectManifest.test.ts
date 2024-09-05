@@ -28,7 +28,7 @@ describe("createTestProjectManifest", () => {
     expect(client).toBeTruthy();
 
     const syncPF = manifest.preprocessingFunctions.find(
-      (f) => f.title === "testPreprocessor"
+      (f) => f.title === "testPreprocessor",
     );
     expect(syncPF).toBeTruthy();
     expect(syncPF?.hasOwnProperty("executionMode")).toBe(false);
@@ -37,7 +37,7 @@ describe("createTestProjectManifest", () => {
     expect(syncPF?.type).toBe("javascript");
 
     const syncGF = manifest.geoprocessingFunctions.find(
-      (f) => f.title === "testSyncGeoprocessor"
+      (f) => f.title === "testSyncGeoprocessor",
     );
     expect(syncGF).toBeTruthy();
     expect(syncGF?.executionMode).toBe("sync");
@@ -46,7 +46,7 @@ describe("createTestProjectManifest", () => {
     expect(syncGF?.type).toBe("javascript");
 
     const asyncGF = manifest.geoprocessingFunctions.find(
-      (f) => f.title === "testAsyncGeoprocessor"
+      (f) => f.title === "testAsyncGeoprocessor",
     );
     expect(asyncGF).toBeTruthy();
     expect(asyncGF?.executionMode).toBe("async");

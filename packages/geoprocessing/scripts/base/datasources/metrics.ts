@@ -23,7 +23,7 @@ export function readMetrics(filePath: string) {
         return JSON.parse(dsString);
       } catch (err: unknown) {
         throw new Error(
-          `Unable to parse JSON found in ${filePath}, fix it and try again`
+          `Unable to parse JSON found in ${filePath}, fix it and try again`,
         );
       }
     } catch (err: unknown) {
@@ -37,7 +37,7 @@ export function readMetrics(filePath: string) {
   const result = metricsSchema.safeParse(diskPrecalc);
   if (!result.success) {
     console.error(
-      `${filePath} is invalid, either you need to delete it and run precalc, or manually fix it`
+      `${filePath} is invalid, either you need to delete it and run precalc, or manually fix it`,
     );
     console.log(JSON.stringify(result.error.issues, null, 2));
     throw new Error("Please fix or report this issue");
@@ -53,7 +53,7 @@ export function writeMetrics(metrics: Metric[], filePath: string) {
   const safeMetrics = metricsSchema.safeParse(metrics);
   if (!safeMetrics.success) {
     console.error(
-      `precalculated metrics are invalid, this is a bug with the precalc script`
+      `precalculated metrics are invalid, this is a bug with the precalc script`,
     );
     console.log(JSON.stringify(safeMetrics.error.issues, null, 2));
     throw new Error("Please fix or report this issue");
@@ -74,7 +74,7 @@ export function writeMetrics(metrics: Metric[], filePath: string) {
 export async function createOrUpdateMetrics(
   inputMetrics: Metric[],
   matcher: ((m: Metric) => boolean) | undefined,
-  filePath: string
+  filePath: string,
 ): Promise<Metric[]> {
   let metrics = readMetrics(filePath);
 

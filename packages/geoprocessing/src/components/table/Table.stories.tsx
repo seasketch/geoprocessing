@@ -222,7 +222,7 @@ export const classDrivenStyle = () => {
         className: "med",
       },
     ],
-    []
+    [],
   );
   return (
     <TableStyled>

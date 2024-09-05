@@ -2,21 +2,22 @@
   "author": "Test <test@test.com>",
   "organization": "Test Org",
   "region": "us-west-1",
-  "clients": [{
-    "name": "MpaTabReport",
-    "description":  "Report suite for MPA planning within EEZ with tab navigation",
-    "source": "src/clients/MpaTabReport.tsx"
-  },{
-    "name": "SizeReport",
-    "description":  "Sketch size and % overlap with planning boundaries",
-    "source": "src/clients/SizeReport.tsx"
-  }],
+  "clients": [
+    {
+      "name": "MpaTabReport",
+      "description": "Report suite for MPA planning within EEZ with tab navigation",
+      "source": "src/clients/MpaTabReport.tsx"
+    },
+    {
+      "name": "SizeReport",
+      "description": "Sketch size and % overlap with planning boundaries",
+      "source": "src/clients/SizeReport.tsx"
+    }
+  ],
   "preprocessingFunctions": [
     "src/functions/clipToOceanEez.ts",
     "src/functions/clipToLand.ts",
     "src/functions/clipToOcean.ts"
   ],
-  "geoprocessingFunctions": [
-    "src/functions/boundaryAreaOverlap.ts"
-  ]
+  "geoprocessingFunctions": ["src/functions/boundaryAreaOverlap.ts"]
 }

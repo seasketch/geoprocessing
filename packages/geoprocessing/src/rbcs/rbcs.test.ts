@@ -8,19 +8,19 @@ const anchoring = rbcsConstants.BOATING_AND_ANCHORING;
 describe("rbcs", () => {
   test("rbcs - No-take/No-go", () => {
     expect(
-      classifyZone([], aquaculture.NOT_ALLOWED, anchoring.NOT_ALLOWED)
+      classifyZone([], aquaculture.NOT_ALLOWED, anchoring.NOT_ALLOWED),
     ).toBe(1);
   });
 
   test("rbcs - No-take/Regulated access", () => {
     expect(
-      classifyZone([], aquaculture.NOT_ALLOWED, anchoring.FULLY_REGULATED)
+      classifyZone([], aquaculture.NOT_ALLOWED, anchoring.FULLY_REGULATED),
     ).toBe(2);
   });
 
   test("rbcs - No-take/Unregulated access", () => {
     expect(
-      classifyZone([], aquaculture.NOT_ALLOWED, anchoring.UNREGULATED)
+      classifyZone([], aquaculture.NOT_ALLOWED, anchoring.UNREGULATED),
     ).toBe(3);
   });
 
@@ -29,8 +29,8 @@ describe("rbcs", () => {
       classifyZone(
         [gearTypes.SPEARFISHING, gearTypes.LINES],
         aquaculture.NOT_ALLOWED,
-        anchoring.FULLY_REGULATED
-      )
+        anchoring.FULLY_REGULATED,
+      ),
     ).toBe(4);
   });
 
@@ -39,8 +39,8 @@ describe("rbcs", () => {
       classifyZone(
         [gearTypes.SPEARFISHING, gearTypes.LINES, gearTypes.FISH_TRAPS],
         aquaculture.NOT_ALLOWED,
-        anchoring.FULLY_REGULATED
-      )
+        anchoring.FULLY_REGULATED,
+      ),
     ).toBe(5);
   });
 
@@ -49,8 +49,8 @@ describe("rbcs", () => {
       classifyZone(
         [gearTypes.SPEARFISHING, gearTypes.LINES],
         aquaculture.NO_RESTRICTIONS,
-        anchoring.FULLY_REGULATED
-      )
+        anchoring.FULLY_REGULATED,
+      ),
     ).toBe(6);
   });
 
@@ -76,8 +76,8 @@ describe("rbcs", () => {
           gearTypes.SPEARFISHING,
         ],
         aquaculture.NO_RESTRICTIONS,
-        anchoring.FULLY_REGULATED
-      )
+        anchoring.FULLY_REGULATED,
+      ),
     ).toBe(7);
   });
 
@@ -108,8 +108,8 @@ describe("rbcs", () => {
           gearTypes.TRAWL_PELAGIC,
         ],
         aquaculture.NO_RESTRICTIONS,
-        anchoring.FULLY_REGULATED
-      )
+        anchoring.FULLY_REGULATED,
+      ),
     ).toBe(8);
   });
 

@@ -48,65 +48,64 @@ export interface ReportStoryLayoutProps {
  * and a report width selector
  * The caller must wrap the story in a Translator component to provide translations
  */
-export const ReportStoryLayout: React.FunctionComponent<ReportStoryLayoutProps> =
-  ({ value = {}, children }) => {
-    const [width, setWidth] = useState(500);
+export const ReportStoryLayout: React.FunctionComponent<
+  ReportStoryLayoutProps
+> = ({ value = {}, children }) => {
+  const [width, setWidth] = useState(500);
 
-    const defaultContext = sampleSketchReportContextValue({
-      changeLanguage: (language: string) => {
-        setReportContext((prev) => {
-          const wasChanged = prev.language !== language;
-          return {
-            ...prev,
-            language: wasChanged ? language : prev.language,
-          };
-        });
-      },
-      ...value,
-    });
+  const defaultContext = sampleSketchReportContextValue({
+    changeLanguage: (language: string) => {
+      setReportContext((prev) => {
+        const wasChanged = prev.language !== language;
+        return {
+          ...prev,
+          language: wasChanged ? language : prev.language,
+        };
+      });
+    },
+    ...value,
+  });
 
-    // Report context source of truth
-    const [reportContext, setReportContext] =
-      useState<ReportContextValue>(defaultContext);
+  // Report context source of truth
+  const [reportContext, setReportContext] =
+    useState<ReportContextValue>(defaultContext);
 
-    return (
-      <ReportContext.Provider value={{ ...reportContext }}>
-        <div style={{ width, ...containerStyle }}>
-          <div style={headerStyle}>
-            <h1 style={{ fontSize: 18, fontWeight: 500 }}>Sketch Name</h1>
-          </div>
-          <ReportTextDirection style={{ ...styles, width }}>
-            {children}
-          </ReportTextDirection>
-          <div
-            className="storyControls"
-            style={{
-              position: "absolute",
-              bottom: -30,
-              display: "flex",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <LanguageSwitcher />
-            <select
-              value={width}
-              onChange={(e) => setWidth(parseInt(e.target.value))}
-            >
-              <option value={500}>Desktop - Standard Size</option>
-              <option value={800}>Desktop - Large</option>
-              <option value={320}>iPhone 5</option>
-              <option value={375}>iPhone 6, iPhone X</option>
-              <option value={414}>
-                iPhone 6 Plus, iPhone 8 Plus, iPhone XR
-              </option>
-              <option value={360}>Galaxy S5</option>
-              <option value={412}>Nexus 5x</option>
-              <option value={540}>Pixel</option>
-            </select>
-          </div>
+  return (
+    <ReportContext.Provider value={{ ...reportContext }}>
+      <div style={{ width, ...containerStyle }}>
+        <div style={headerStyle}>
+          <h1 style={{ fontSize: 18, fontWeight: 500 }}>Sketch Name</h1>
         </div>
-      </ReportContext.Provider>
-    );
-  };
+        <ReportTextDirection style={{ ...styles, width }}>
+          {children}
+        </ReportTextDirection>
+        <div
+          className="storyControls"
+          style={{
+            position: "absolute",
+            bottom: -30,
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <LanguageSwitcher />
+          <select
+            value={width}
+            onChange={(e) => setWidth(parseInt(e.target.value))}
+          >
+            <option value={500}>Desktop - Standard Size</option>
+            <option value={800}>Desktop - Large</option>
+            <option value={320}>iPhone 5</option>
+            <option value={375}>iPhone 6, iPhone X</option>
+            <option value={414}>iPhone 6 Plus, iPhone 8 Plus, iPhone XR</option>
+            <option value={360}>Galaxy S5</option>
+            <option value={412}>Nexus 5x</option>
+            <option value={540}>Pixel</option>
+          </select>
+        </div>
+      </div>
+    </ReportContext.Provider>
+  );
+};

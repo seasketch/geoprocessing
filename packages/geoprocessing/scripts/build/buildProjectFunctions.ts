@@ -15,7 +15,7 @@ import { generateHandler } from "./generateHandler.js";
  */
 export async function buildProjectFunctions(
   projectPath: string,
-  destBuildPath: string
+  destBuildPath: string,
 ) {
   if (!fs.existsSync(destBuildPath)) {
     fs.mkdirSync(destBuildPath);
@@ -24,15 +24,15 @@ export async function buildProjectFunctions(
   const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
     fs
       .readFileSync(path.join(projectPath, "project", "geoprocessing.json"))
-      .toString()
+      .toString(),
   );
 
   const packageGp: Package = JSON.parse(
-    fs.readFileSync("./package.json").toString()
+    fs.readFileSync("./package.json").toString(),
   );
 
   const packageProject: Package = JSON.parse(
-    fs.readFileSync(path.join(projectPath, "package.json")).toString()
+    fs.readFileSync(path.join(projectPath, "package.json")).toString(),
   );
 
   if (
@@ -58,11 +58,11 @@ export async function buildProjectFunctions(
       // and passes it on
       const handlerPath = generateHandler(
         path.join(projectPath, functionPath),
-        destBuildPath
+        destBuildPath,
       );
       const handlerDestPath = `${path.basename(functionPath)}`.replace(
         ".ts",
-        "Handler.mjs"
+        "Handler.mjs",
       );
 
       // Build a local npm package for the function
@@ -103,9 +103,9 @@ export async function buildProjectFunctions(
           version: "1.0",
           main: handlerDestPath,
         },
-        { spaces: 2 }
+        { spaces: 2 },
       );
-    })
+    }),
   );
 
   // package.json with type: module, needed in the build directory containing handlers in order to enable ESM runtime in lambda
@@ -118,7 +118,7 @@ export async function buildProjectFunctions(
       version: "1.0",
       main: "index.js",
     },
-    { spaces: 2 }
+    { spaces: 2 },
   );
 
   // OTHER_FUNCTIONS
@@ -171,7 +171,7 @@ export async function buildProjectFunctions(
           console.log("Generating metafile esbuild-metafile-lambda.json"); // use https://bundle-buddy.com/esbuild to analyze
         await fs.writeFile(
           `${projectPath}/esbuild-metafile-lambda.json`,
-          JSON.stringify(buildResult.metafile)
+          JSON.stringify(buildResult.metafile),
         );
       }
 
@@ -185,9 +185,9 @@ export async function buildProjectFunctions(
           version: "1.0",
           main: bundledName,
         },
-        { spaces: 2 }
+        { spaces: 2 },
       );
-    })
+    }),
   );
 
   // MANIFEST
@@ -204,12 +204,12 @@ export async function buildProjectFunctions(
   const preprocessingBundles: PreprocessingBundle[] =
     geoprocessing.preprocessingFunctions &&
     (await Promise.all(
-      geoprocessing.preprocessingFunctions.map(getHandlerModule)
+      geoprocessing.preprocessingFunctions.map(getHandlerModule),
     ));
   const geoprocessingBundles: GeoprocessingBundle[] =
     geoprocessing.geoprocessingFunctions &&
     (await Promise.all(
-      geoprocessing.geoprocessingFunctions.map(getHandlerModule)
+      geoprocessing.geoprocessingFunctions.map(getHandlerModule),
     ));
 
   const manifest = generateManifest(
@@ -217,7 +217,7 @@ export async function buildProjectFunctions(
     packageProject,
     preprocessingBundles,
     geoprocessingBundles,
-    packageGp.version
+    packageGp.version,
   );
   const manifestPath = path.join(destBuildPath, "manifest.json");
   if (process.env.NODE_ENV !== "test")
@@ -226,6 +226,6 @@ export async function buildProjectFunctions(
 
   fs.copyFileSync(
     manifestPath,
-    path.join(destBuildPath, "serviceHandlers", "manifest.json")
+    path.join(destBuildPath, "serviceHandlers", "manifest.json"),
   );
 }

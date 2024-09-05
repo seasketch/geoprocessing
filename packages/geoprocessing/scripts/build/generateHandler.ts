@@ -11,7 +11,7 @@ export function generateHandler(funcPath, handlerDest) {
   const handlerFilename = path.basename(funcPath);
   const handlerPath = path.join(
     handlerDest,
-    `${handlerFilename.split(".").slice(0, -1).join(".")}Handler.ts`
+    `${handlerFilename.split(".").slice(0, -1).join(".")}Handler.ts`,
   );
   fs.writeFileSync(
     handlerPath,
@@ -27,7 +27,7 @@ export function generateHandler(funcPath, handlerDest) {
     export const options = Handler.options;
     export const sources = VectorDataSource.getRegisteredSources();
     VectorDataSource.clearRegisteredSources();
-  `
+  `,
   );
   return handlerPath;
 }

@@ -11,7 +11,7 @@ import { precalcDatasources } from "./precalcDatasources.js";
 import { importDatasource } from "./importDatasource.js";
 import { writeGeographies } from "../geographies/geographies.js";
 import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
-import { describe, beforeEach, expect, test } from "vitest"
+import { describe, beforeEach, expect, test } from "vitest";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";
@@ -60,7 +60,7 @@ describe("precalcRasterDatasource", () => {
         newDatasourcePath: dsFilePath,
         newDstPath: dstPath,
         doPublish: false,
-      }
+      },
     );
     await importDatasource(
       projectClient,
@@ -79,7 +79,7 @@ describe("precalcRasterDatasource", () => {
         newDatasourcePath: dsFilePath,
         newDstPath: dstPath,
         doPublish: false,
-      }
+      },
     );
     // Create geography
     const eezGeog: Geography = {
@@ -114,7 +114,7 @@ describe("precalcRasterDatasource", () => {
 
     const countMetric = firstMatchingMetric(
       metrics,
-      (m) => m.metricId === "valid"
+      (m) => m.metricId === "valid",
     );
     expect(countMetric).toBeTruthy();
     expect(countMetric.value).toBe(53);
@@ -174,7 +174,7 @@ describe("precalcRasterDatasource", () => {
         newDatasourcePath: dsFilePath,
         newDstPath: dstPath,
         doPublish: false,
-      }
+      },
     );
 
     // Create geographies that reference this datasource
@@ -225,7 +225,7 @@ describe("precalcRasterDatasource", () => {
 
     writeGeographies(
       [geogBoxFilter, geogSingleFilter, geogDoubleFilter],
-      geogFilePath
+      geogFilePath,
     );
 
     await precalcDatasources(projectClient, {
@@ -246,33 +246,33 @@ describe("precalcRasterDatasource", () => {
 
     const boxFilterSumMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum"
+      (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum",
     );
     expect(boxFilterSumMetric.value).toEqual(101);
 
     const boxFilterAreaMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-box-filter" && m.metricId === "area"
+      (m) => m.geographyId === "geog-box-filter" && m.metricId === "area",
     );
     expect(boxFilterAreaMetric.value).toEqual(2617017582.013417); // Very close to QGIS calculated value
 
     const singleFilterSumMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-single-filter" && m.metricId === "sum"
+      (m) => m.geographyId === "geog-single-filter" && m.metricId === "sum",
     );
     expect(singleFilterSumMetric.value).toEqual(76);
 
     const singleFilterAreaMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-single-filter" && m.metricId === "area"
+      (m) => m.geographyId === "geog-single-filter" && m.metricId === "area",
     );
     expect(singleFilterAreaMetric.value).toBeCloseTo(
-      (2617017582.013417 / 101) * 76
+      (2617017582.013417 / 101) * 76,
     );
 
     const doubleFilterSumMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum"
+      (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum",
     );
     expect(doubleFilterSumMetric.value).toEqual(98);
 
@@ -327,7 +327,7 @@ describe("precalcRasterDatasource", () => {
         newDatasourcePath: dsFilePath,
         newDstPath: dstPath,
         doPublish: false,
-      }
+      },
     );
 
     // Create geographies that reference this datasource
@@ -381,7 +381,7 @@ describe("precalcRasterDatasource", () => {
 
     writeGeographies(
       [geogBoxFilter, geogSingleFilter, geogDoubleFilter],
-      geogFilePath
+      geogFilePath,
     );
 
     await precalcDatasources(projectClient, {
@@ -404,19 +404,19 @@ describe("precalcRasterDatasource", () => {
 
     const boxFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum"
+      (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum",
     );
     expect(boxFilterMetric.value).toEqual(70);
 
     const singleFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-single-filter" && m.metricId === "sum"
+      (m) => m.geographyId === "geog-single-filter" && m.metricId === "sum",
     );
     expect(singleFilterMetric.value).toEqual(53);
 
     const doubleFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum"
+      (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum",
     );
     expect(doubleFilterMetric.value).toEqual(69);
 
@@ -458,7 +458,7 @@ describe("precalcRasterDatasource", () => {
         newDatasourcePath: dsFilePath,
         newDstPath: dstPath,
         doPublish: false,
-      }
+      },
     );
 
     // Import raster to test against with known counts (both Samoa and American Samoa)
@@ -479,7 +479,7 @@ describe("precalcRasterDatasource", () => {
         newDatasourcePath: dsFilePath,
         newDstPath: dstPath,
         doPublish: false,
-      }
+      },
     );
 
     // Create geographies that reference this datasource
@@ -529,7 +529,7 @@ describe("precalcRasterDatasource", () => {
 
     writeGeographies(
       [geoBoxFilter, geogSingleFilter, geogDoubleFilter],
-      geogFilePath
+      geogFilePath,
     );
 
     await precalcDatasources(projectClient, {
@@ -551,19 +551,19 @@ describe("precalcRasterDatasource", () => {
     // check each metric for expected value
     const noFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum"
+      (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum",
     );
     expect(noFilterMetric.value).toEqual(69);
 
     const singleFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-single-filter" && m.metricId === "sum"
+      (m) => m.geographyId === "geog-single-filter" && m.metricId === "sum",
     );
     expect(singleFilterMetric.value).toEqual(53);
 
     const doubleFilterMetric = firstMatchingMetric(
       metrics,
-      (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum"
+      (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum",
     );
     expect(doubleFilterMetric.value).toEqual(69);
 

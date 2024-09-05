@@ -13,7 +13,7 @@ export default async function createTestBuild(
   projectName: string,
   projectPath: string,
   /** test components to add */
-  components: TestComponentTypes[]
+  components: TestComponentTypes[],
 ): Promise<Manifest> {
   await setupProjectDirs(projectPath);
 
@@ -64,7 +64,7 @@ export default async function createTestBuild(
       requiresProperties: [],
       memory: 4096,
     });
-    `
+    `,
     );
   }
 
@@ -96,7 +96,7 @@ export default async function createTestBuild(
       executionMode: "sync",
       memory: 4096,
     });
-    `
+    `,
     );
   }
 
@@ -128,7 +128,7 @@ export default async function createTestBuild(
       executionMode: "async",
       memory: 4096,
     });
-    `
+    `,
     );
   }
 
@@ -158,7 +158,7 @@ export default async function createTestBuild(
         );
       };
       export default TestClient;
-    `
+    `,
     );
   }
 

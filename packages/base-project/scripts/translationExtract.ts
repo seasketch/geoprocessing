@@ -9,5 +9,5 @@ await $`mv extractedTranslations/en src/i18n/lang/en`;
 await $`rm -rf extractedTranslations`;
 await $`npx tsx scripts/extractExtraTerms.ts`;
 console.log(
-  "Translations extracted to src/i18n/lang/en and src/i18n/extraTerms.json"
+  "Translations extracted to src/i18n/lang/en and src/i18n/extraTerms.json",
 );

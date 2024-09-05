@@ -27,7 +27,7 @@ export const genRandomPolygons = (config: {
         },
       });
     },
-    []
+    [],
   );
 
   const fc = featureCollection(proppedPolys);

@@ -77,7 +77,7 @@ describe("COG test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const sum = geoblaze.sum(raster, q2Poly)[0];
     expect(sum).toBe(1);
@@ -180,7 +180,7 @@ describe("COG test", () => {
     const parseSumWithin = await geoblaze.sum(rasterParse, bigFeatureWithin);
     const loadSumWithin = await geoblaze.sum(rasterLoad, bigFeatureWithin);
     expect(JSON.stringify(parseSumWithin)).toEqual(
-      JSON.stringify(loadSumWithin)
+      JSON.stringify(loadSumWithin),
     );
 
     // Larger than the raster but still not covering all value
@@ -206,7 +206,7 @@ describe("COG test", () => {
     const parseSumOutside = await geoblaze.sum(rasterParse, bigFeatureOutside);
     const loadSumOutside = await geoblaze.sum(rasterLoad, bigFeatureOutside);
     expect(JSON.stringify(parseSumOutside)).toEqual(
-      JSON.stringify(loadSumOutside)
+      JSON.stringify(loadSumOutside),
     );
   });
 });

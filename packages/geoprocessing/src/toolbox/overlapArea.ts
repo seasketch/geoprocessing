@@ -35,7 +35,7 @@ export async function overlapArea(
     includePercMetric?: boolean;
     /** simplify sketches with tolerance in degrees. .000001 is a good first value to try. only used for calculating area of collection (avoiding clip union to remove overlap blowing up) */
     simplifyTolerance?: number;
-  } = {}
+  } = {},
 ): Promise<Metric[]> {
   if (!sketch) throw new ValidationError("Missing sketch");
   const { includePercMetric = true, includeChildMetrics = true } = options;
@@ -67,7 +67,7 @@ export async function overlapArea(
             tolerance,
             highQuality: true,
           }),
-          "union"
+          "union",
         );
         collectionExtra.simplifyTolerance = tolerance;
         return combinedSketch ? turfArea(combinedSketch) : 0;
@@ -86,11 +86,11 @@ export async function overlapArea(
     featureEach(sketch, (curSketch) => {
       if (!curSketch || !curSketch.properties) {
         console.log(
-          "Warning: feature or its properties are undefined, skipped"
+          "Warning: feature or its properties are undefined, skipped",
         );
       } else if (!curSketch.geometry) {
         console.log(
-          `Warning: feature is missing geometry, zeroed: sketchId:${curSketch.properties.id}, name:${curSketch.properties.name}`
+          `Warning: feature is missing geometry, zeroed: sketchId:${curSketch.properties.id}, name:${curSketch.properties.name}`,
         );
 
         sketchMetrics.push(
@@ -101,7 +101,7 @@ export async function overlapArea(
             extra: {
               sketchName: curSketch.properties.name,
             },
-          })
+          }),
         );
         if (includePercMetric) {
           sketchMetrics.push(
@@ -112,7 +112,7 @@ export async function overlapArea(
               extra: {
                 sketchName: curSketch.properties.name,
               },
-            })
+            }),
           );
         }
       } else {
@@ -125,7 +125,7 @@ export async function overlapArea(
             extra: {
               sketchName: curSketch.properties.name,
             },
-          })
+          }),
         );
         if (includePercMetric) {
           sketchMetrics.push(
@@ -136,7 +136,7 @@ export async function overlapArea(
               extra: {
                 sketchName: curSketch.properties.name,
               },
-            })
+            }),
           );
         }
       }
@@ -154,7 +154,7 @@ export async function overlapArea(
           sketchName: sketch.properties.name,
           isCollection: true,
         },
-      })
+      }),
     );
     if (includePercMetric) {
       collMetrics.push(
@@ -166,7 +166,7 @@ export async function overlapArea(
             sketchName: sketch.properties.name,
             isCollection: true,
           },
-        })
+        }),
       );
     }
   }
@@ -194,7 +194,7 @@ export async function overlapSubarea(
     outerArea?: number | undefined;
     /** simplify sketches with tolerance in degrees. .000001 is a good first value to try. only used for calculating area of collection (avoiding clip union to remove overlap blowing up) */
     simplifyTolerance?: number;
-  }
+  },
 ): Promise<Metric[]> {
   if (!sketch) throw new ValidationError("Missing sketch");
   const percMetricId = `${metricId}Perc`;
@@ -210,7 +210,7 @@ export async function overlapSubarea(
 
   if (operation === "difference" && !options?.outerArea)
     throw new ValidationError(
-      "Missing outerArea which is required when operation is difference"
+      "Missing outerArea which is required when operation is difference",
     );
 
   // Run op and keep null remainders for reporting purposes
@@ -218,7 +218,7 @@ export async function overlapSubarea(
     return sketches.map((sketch) =>
       subareaFeature
         ? clip(featureCollection([sketch, subareaFeature]), operation)
-        : null
+        : null,
     );
   })();
 
@@ -228,7 +228,7 @@ export async function overlapSubarea(
     let allSubsketches = subsketches.reduce<Feature<Polygon | MultiPolygon>[]>(
       (subsketches, subsketch) =>
         subsketch ? [...subsketches, subsketch] : subsketches,
-      []
+      [],
     );
 
     // Remove overlap
@@ -257,7 +257,7 @@ export async function overlapSubarea(
             tolerance,
             highQuality: true,
           }),
-          "union"
+          "union",
         );
         collectionExtra.simplifyTolerance = tolerance;
         return combinedSketch ? turfArea(combinedSketch) : 0;
@@ -294,7 +294,7 @@ export async function overlapSubarea(
             extra: {
               sketchName: origSketch.properties.name,
             },
-          })
+          }),
         );
         metrics.push(
           createMetric({
@@ -304,7 +304,7 @@ export async function overlapSubarea(
             extra: {
               sketchName: origSketch.properties.name,
             },
-          })
+          }),
         );
       } else {
         metrics.push(
@@ -315,7 +315,7 @@ export async function overlapSubarea(
             extra: {
               sketchName: origSketch.properties.name,
             },
-          })
+          }),
         );
         metrics.push(
           createMetric({
@@ -325,7 +325,7 @@ export async function overlapSubarea(
             extra: {
               sketchName: origSketch.properties.name,
             },
-          })
+          }),
         );
       }
     });
@@ -342,7 +342,7 @@ export async function overlapSubarea(
           sketchName: sketch.properties.name,
           isCollection: true,
         },
-      })
+      }),
     );
     metrics.push(
       createMetric({
@@ -354,7 +354,7 @@ export async function overlapSubarea(
           sketchName: sketch.properties.name,
           isCollection: true,
         },
-      })
+      }),
     );
   }
 

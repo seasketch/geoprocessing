@@ -6,7 +6,7 @@ import { raw } from "slonik-sql-tag-raw";
 
 export default async (
   statsTable: string,
-  connection: DatabasePoolConnection
+  connection: DatabasePoolConnection,
 ) => {
   const statsRawTable = raw(statsTable);
   const histogram = await connection.many(sql.unsafe`

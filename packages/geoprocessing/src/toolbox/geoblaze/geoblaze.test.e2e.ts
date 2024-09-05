@@ -23,7 +23,7 @@ describe("geoblaze basics", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const sum = geoblaze.sum(raster, testData.quad2Poly)[0];
     expect(sum).toBe(1);
@@ -186,7 +186,7 @@ describe("geoblaze hole test", () => {
         ymax: 20, // top
         pixelWidth: 5,
         pixelHeight: 5,
-      }
+      },
     );
 
     const result = geoblaze.sum(raster, polyWithHole);

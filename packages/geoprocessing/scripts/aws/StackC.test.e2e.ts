@@ -45,7 +45,7 @@ describe("GeoprocessingStack - client only", () => {
       rootTemplate.toJSON(),
       {
         spaces: 2,
-      }
+      },
     );
 
     // Root stack assertions
@@ -93,7 +93,7 @@ describe("GeoprocessingStack - client only", () => {
     // Lambda stack assertions
 
     const lambdaStacks = stack.node.children.filter(
-      (child) => child instanceof NestedStack
+      (child) => child instanceof NestedStack,
     );
     expect(lambdaStacks.length).toBe(0);
   }, 60000);

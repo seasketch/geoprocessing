@@ -1,39 +1,24 @@
 {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "Feature",
-        "properties": {
-          "name": "World boundary",
-          "description": "World"
-        },
-        "geometry": {
-          "coordinates": [
-            [
-              [
-                -180,
-                90
-              ],
-              [
-                -180,
-                -90
-              ],
-              [
-                180,
-                -90
-              ],
-              [
-                180,
-                90
-              ],
-              [
-                -180,
-                90
-              ]
-            ]
-          ],
-          "type": "Polygon"
-        }
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "World boundary",
+        "description": "World"
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            [-180, 90],
+            [-180, -90],
+            [180, -90],
+            [180, 90],
+            [-180, 90]
+          ]
+        ],
+        "type": "Polygon"
       }
-    ]
-  }
+    }
+  ]
+}

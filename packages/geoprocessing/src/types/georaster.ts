@@ -15,7 +15,7 @@ declare function parseGeoraster(
   /** raster metadata */
   metadata?: GeorasterMetadata,
   /** whether or not to print debug statements */
-  debug?: boolean
+  debug?: boolean,
 ): Promise<Georaster>;
 
 /** defines the new raster image to generate as a window in the source raster image.  Resolution (cell size) is determined from this */

@@ -7,8 +7,8 @@ import awsRegions from "aws-regions";
 import { getTemplateQuestion } from "../template/addTemplate.js";
 import { createProject, CreateProjectMetadata } from "./createProject.js";
 import { eezColl } from "../global/datasources/mr-eez.js";
-import { pathToFileURL } from 'url'
-import userMeta from 'user-meta'
+import { pathToFileURL } from "url";
+import userMeta from "user-meta";
 
 const regions = awsRegions.list({ public: true }).map((v) => v.code);
 
@@ -53,7 +53,7 @@ async function init(gpVersion?: string) {
         value === "" ||
         value === null ||
         /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm.test(
-          value
+          value,
         )
           ? true
           : "Must be a valid url",

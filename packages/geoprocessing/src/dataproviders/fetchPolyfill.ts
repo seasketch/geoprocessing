@@ -14,7 +14,7 @@ const httpAgent = new http.Agent({ keepAlive: false, maxSockets: Infinity });
 const httpsAgent = new https.Agent({ keepAlive: false, maxSockets: Infinity });
 const customFetch = async (
   url: URL | RequestInfo,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<Response> => {
   const options = {
     ...init,

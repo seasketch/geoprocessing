@@ -84,7 +84,7 @@ export const vectorDatasourceSchema = baseDatasourceSchema.merge(
     layerName: z.string().optional(),
     /** keys to generate classes for.  Vector - property names */
     classKeys: z.array(z.string()),
-  })
+  }),
 );
 
 /** Properties for raster datasource */
@@ -96,7 +96,7 @@ export const rasterDatasourceSchema = baseDatasourceSchema.merge(
     band: z.number(),
     /** Nodata value */
     noDataValue: z.number().optional(),
-  })
+  }),
 );
 
 /** Properties for external datasource */
@@ -126,7 +126,7 @@ export const internalVectorImportSchema = internalImportSchema.merge(
     propertiesToKeep: z.array(z.string()),
     /** Import - Whether to explode multi-geometries into single e.g. MultiPolygon to Polygon. Defaults to true */
     explodeMulti: z.boolean(),
-  })
+  }),
 );
 
 export const internalVectorDatasourceSchema = vectorDatasourceSchema
@@ -134,7 +134,7 @@ export const internalVectorDatasourceSchema = vectorDatasourceSchema
   .merge(internalVectorImportSchema);
 
 export const externalVectorDatasourceSchema = vectorDatasourceSchema.and(
-  externalDatasourceSchema
+  externalDatasourceSchema,
 );
 
 export const internalRasterDatasourceSchema = rasterDatasourceSchema
@@ -142,7 +142,7 @@ export const internalRasterDatasourceSchema = rasterDatasourceSchema
   .merge(internalImportSchema);
 
 export const externalRasterDatasourceSchema = rasterDatasourceSchema.and(
-  externalDatasourceSchema
+  externalDatasourceSchema,
 );
 
 export const datasourceSchema = internalVectorDatasourceSchema
@@ -182,7 +182,7 @@ export type Datasource = z.infer<typeof datasourceSchema>;
 // SCHEMA //
 
 export const importVectorDatasourceOptionsSchema = vectorDatasourceSchema.merge(
-  internalVectorImportSchema
+  internalVectorImportSchema,
 );
 export const importRasterDatasourceOptionsSchema =
   rasterDatasourceSchema.merge(internalImportSchema);

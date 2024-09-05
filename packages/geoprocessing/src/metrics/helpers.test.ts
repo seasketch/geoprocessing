@@ -417,7 +417,7 @@ describe("flattenSketchAllClass", () => {
       ],
       {
         debug: false,
-      }
+      },
     );
     percMetrics.forEach((m) => {
       expect(m.value).toEqual(0.25);
@@ -447,7 +447,7 @@ describe("flattenSketchAllClass", () => {
       ],
       {
         debug: false,
-      }
+      },
     );
     percMetrics.forEach((m) => {
       expect(m.value).toEqual(NaN);
@@ -485,7 +485,7 @@ describe("flattenSketchAllClass", () => {
       ],
       {
         idProperty: "geographyId",
-      }
+      },
     );
     percMetrics.forEach((m) => {
       expect(m.value).toEqual(0.25);
@@ -497,7 +497,7 @@ describe("flattenSketchAllClass", () => {
     const rows = flattenByGroupAllClass(
       collection,
       groupMetrics,
-      PRECALC_TOTALS
+      PRECALC_TOTALS,
     );
 
     const answer = [
@@ -535,7 +535,7 @@ test("flattenByGroupSketch", async () => {
   const rows = flattenByGroupSketchAllClass(
     sketches,
     groupMetrics,
-    PRECALC_TOTALS
+    PRECALC_TOTALS,
   );
 
   const answer = [
@@ -585,7 +585,7 @@ test("flattenByGroupSketch", async () => {
 test("nestMetrics", async () => {
   const result = nestMetrics(
     groupMetrics.filter((m) => m.sketchId === "AAAA"),
-    ["sketchId", "classId", "groupId"]
+    ["sketchId", "classId", "groupId"],
   );
 
   const answer = {

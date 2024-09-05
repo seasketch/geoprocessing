@@ -43,7 +43,7 @@ export function CheckboxGroup({ checkboxes, setCheckbox }: CheckboxGroupProps) {
               (e) => {
                 setCheckbox(i, e.target.checked);
               },
-              [checkboxes]
+              [checkboxes],
             )}
           />
           <span className="checkbox-label-text">{checkbox.name}</span>

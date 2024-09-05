@@ -20,14 +20,14 @@ export const IucnDesignationTable = () => {
     "3": t("IUCN category 3", "Natural Monument or Feature"),
     "2/3": t(
       "IUCN category 2 or 3",
-      "National Park or Natural Monument/Feature"
+      "National Park or Natural Monument/Feature",
     ),
     "4": t("IUCN category 4", "Habitat/Species Management Area"),
     "5": t("IUCN category 5", "Protected Landscape/Seascape"),
     "6": t("IUCN category 6", "Protected area with sustainable use"),
     "4/6": t(
       "IUCN category 4 or 6",
-      "Habitat/Species Management Area or Protected area with sustainable use"
+      "Habitat/Species Management Area or Protected area with sustainable use",
     ),
     None: t("IUCN category - none", "None"),
   };
@@ -71,7 +71,7 @@ export const IucnDesignationTable = () => {
           combCat.categories.map((cat) => ({
             ...cat,
             level: combCat.level,
-          }))
+          })),
         )
       : acc.concat({
           category: combCat.category,

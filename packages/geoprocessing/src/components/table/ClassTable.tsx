@@ -15,7 +15,10 @@ import {
   HorizontalStackedBar,
   HorizontalStackedBarProps,
 } from "../chart/HorizontalStackedBar.js";
-import { ValueFormatter, valueFormatter } from "../../helpers/valueFormatter.js";
+import {
+  ValueFormatter,
+  valueFormatter,
+} from "../../helpers/valueFormatter.js";
 
 import { ReportTableStyled } from "../table/ReportTableStyled.js";
 import { styled } from "styled-components";
@@ -40,7 +43,7 @@ export const ClassTableStyled = styled(ReportTableStyled)`
 export type TargetFormatter = (
   value: number,
   row: number,
-  numRows: number
+  numRows: number,
 ) => (value: number) => string | JSX.Element;
 
 export interface ClassTableColumnConfig {
@@ -91,7 +94,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   const { t } = useTranslation();
   const classesByName = keyBy(
     metricGroup.classes,
-    (curClass) => curClass.classId
+    (curClass) => curClass.classId,
   );
 
   // group metrics by class ID, then metric ID, for easy lookup
@@ -105,7 +108,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
   type ClassTableColumn = Column<{ classId: string }>;
 
   const genColumns = (
-    colConfigs: ClassTableColumnConfig[]
+    colConfigs: ClassTableColumnConfig[],
   ): ClassTableColumn[] => {
     const defaultWidth = 100 / colConfigs.length;
 
@@ -127,7 +130,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
           accessor: (row) => {
             /* i18next-extract-disable-next-line */
             const transString = t(
-              classesByName[row.classId || "missing"]?.display
+              classesByName[row.classId || "missing"]?.display,
             );
             return transString || "missing";
           },
@@ -221,7 +224,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                 // Multi-objective - need to find by class ID
                 const objectiveId = getMetricGroupObjectiveId(
                   metricGroup,
-                  row.classId
+                  row.classId,
                 );
                 const theObj = Array.isArray(objective)
                   ? getObjectiveById(objectiveId, objective)
@@ -298,14 +301,14 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
               targetValueFormatter = colConfig.targetValueFormatter(
                 target,
                 rowIndex,
-                tableRows.length
+                tableRows.length,
               );
             } else {
               targetValueFormatter = (targetValue) =>
                 rowIndex === tableRows.length - 1
                   ? `${defaultTargetLabel} - ${valueFormatter(
                       targetValue / 100,
-                      "percent0dig"
+                      "percent0dig",
                     )}`
                   : "";
             }
@@ -338,14 +341,14 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
           accessor: (row) => {
             const objectiveId = getMetricGroupObjectiveId(
               metricGroup,
-              row.classId
+              row.classId,
             );
             const theObj = Array.isArray(objective)
               ? getObjectiveById(objectiveId, objective)
               : objective;
             if (!theObj)
               throw new Error(
-                `Missing objective for objectiveId ${objectiveId}`
+                `Missing objective for objectiveId ${objectiveId}`,
               );
 
             return colConfig.valueFormatter
@@ -391,7 +394,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
         };
       } else {
         throw new Error(
-          `Unexpected ClassTableColumnConfig type ${colConfig.type}`
+          `Unexpected ClassTableColumnConfig type ${colConfig.type}`,
         );
       }
     });

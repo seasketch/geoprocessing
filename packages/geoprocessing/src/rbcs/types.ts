@@ -24,7 +24,7 @@ export const rbcsMpaProtectionLevels = [
   UNPROTECTED_LEVEL,
 ] as const;
 
-export type RbcsMpaProtectionLevel = typeof rbcsMpaProtectionLevels[number];
+export type RbcsMpaProtectionLevel = (typeof rbcsMpaProtectionLevels)[number];
 
 /**
  * Mapping of RBCS MPA Classification ID to whether it counts toward or meets an objective

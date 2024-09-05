@@ -29,7 +29,7 @@ const infile = "/mnt/c/data/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp";
   let eezFeatures = fs.readJSONSync(outfile);
   // calculate turf area = eez - osm land
   const landDs = project.getExternalVectorDatasourceById(
-    "global-clipping-osm-land"
+    "global-clipping-osm-land",
   );
   const landUrl = project.getDatasourceUrl(landDs);
   for (const eezFeat of eezFeatures.features) {
@@ -67,7 +67,7 @@ const infile = "/mnt/c/data/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp";
 
     console.log("remEezArea: ", eezNoLandArea);
     console.log(
-      `${roundDecimal((remEezArea / eezNoLandArea) * 100, 1)}% decrease`
+      `${roundDecimal((remEezArea / eezNoLandArea) * 100, 1)}% decrease`,
     );
     console.log(" ");
     console.log(" ");

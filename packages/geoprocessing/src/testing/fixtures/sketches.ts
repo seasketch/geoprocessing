@@ -129,7 +129,7 @@ const holeBlPoly: Sketch<Polygon> = genSampleSketch(
       ],
     ],
   },
-  "holeBotLeft"
+  "holeBotLeft",
 );
 
 // hole in top right
@@ -155,7 +155,7 @@ const holeTrMultipoly: Sketch<MultiPolygon> = genSampleSketch(
       ],
     ],
   },
-  "holeTopRight"
+  "holeTopRight",
 );
 
 /**
@@ -165,7 +165,7 @@ const holeTrMultipoly: Sketch<MultiPolygon> = genSampleSketch(
 const holeMixedSC: SketchCollection<MultiPolygon | Polygon> =
   genSampleSketchCollectionFromSketches<Polygon | MultiPolygon>(
     [holeBlPoly, holeTrMultipoly],
-    "holeSC"
+    "holeSC",
   );
 
 export default {

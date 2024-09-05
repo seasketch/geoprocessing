@@ -110,7 +110,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
                   <td>{rbcsAquacultureActivities[aquacultureActivity]}</td>
                 </tr>
               );
-            }
+            },
           )}
           {Object.keys(rbcsAnchoringActivities).map(
             (anchoringActivity, index) => {
@@ -120,7 +120,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
                   <td>{rbcsAnchoringActivities[anchoringActivity]}</td>
                 </tr>
               );
-            }
+            },
           )}
         </tbody>
       </table>

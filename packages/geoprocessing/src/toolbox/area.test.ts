@@ -33,12 +33,12 @@ describe("area", () => {
     });
 
     const childMetrics = metrics.filter(
-      (m) => m.sketchId !== "CCCC" && m.metricId === "area"
+      (m) => m.sketchId !== "CCCC" && m.metricId === "area",
     );
     expect(childMetrics.length).toBe(fix.sketchCollection.features.length);
 
     const childPercMetrics = metrics.filter(
-      (m) => m.sketchId !== "CCCC" && m.metricId === "areaPerc"
+      (m) => m.sketchId !== "CCCC" && m.metricId === "areaPerc",
     );
     expect(childPercMetrics.length).toBe(fix.sketchCollection.features.length);
     expect(childPercMetrics[1].value).toEqual(childPercMetrics[2].value);
@@ -50,20 +50,20 @@ describe("area", () => {
     });
 
     const childMetrics = metrics.filter(
-      (m) => m.sketchId !== "CCCC" && m.metricId === "area"
+      (m) => m.sketchId !== "CCCC" && m.metricId === "area",
     );
     const collMetric = firstMatchingMetric(
       metrics,
-      (m) => m.sketchId === "CCCC"
+      (m) => m.sketchId === "CCCC",
     );
     const childAreaSum = childMetrics.reduce(
       (sumSoFar, m) => m.value + sumSoFar,
-      0
+      0,
     );
 
     expect(collMetric.value).toBeLessThan(childAreaSum);
     expect(collMetric.value).toEqual(
-      childMetrics[0].value + childMetrics[1].value
+      childMetrics[0].value + childMetrics[1].value,
     );
   });
 });

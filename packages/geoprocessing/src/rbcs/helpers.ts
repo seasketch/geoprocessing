@@ -31,7 +31,7 @@ import { createMetric } from "../metrics/index.js";
  * Use in conditional block logic to coerce to type RbcsObjectiveKey within the block
  */
 export function isRbcsProtectionLevel(
-  key: string
+  key: string,
 ): key is RbcsMpaProtectionLevel {
   return rbcsMpaProtectionLevels.includes(key as RbcsMpaProtectionLevel);
 }
@@ -59,18 +59,18 @@ export function getZoneClassificationName(zoneId: number) {
 
 export const sketchToZone = (
   sketch: Sketch | NullSketch,
-  sketchArea: number
+  sketchArea: number,
 ): Zone => {
   const gearTypes = getJsonUserAttribute<string[]>(
     sketch.properties,
     "GEAR_TYPES",
-    []
+    [],
   );
   const boating = getUserAttribute<string>(sketch.properties, "BOATING", "");
   const aquaculture = getUserAttribute<string>(
     sketch.properties,
     "AQUACULTURE",
-    ""
+    "",
   );
   const gearTypesMapped = gearTypes.map((gt) => rbcsConstants.GEAR_TYPES[gt]);
   const boatingMapped = rbcsConstants.BOATING_AND_ANCHORING[boating];
@@ -89,17 +89,17 @@ export const sketchToZone = (
  */
 export function getSketchToMpaProtectionLevel(
   sketch: Sketch | SketchCollection | NullSketchCollection | NullSketch,
-  metrics: Metric[]
+  metrics: Metric[],
 ): Record<string, RbcsMpaProtectionLevel> {
   // Extract sketch features
   const sketchFeatures = getSketchFeatures(sketch);
   const sketchFeatureIds = sketchFeatures.map((sk) => sk.properties.id);
   const sketchFeatureAreaMetrics = metrics.filter((m) =>
-    sketchFeatureIds.includes(m.sketchId!)
+    sketchFeatureIds.includes(m.sketchId!),
   );
   const areaBySketchFeature = keyBy(
     sketchFeatureAreaMetrics,
-    (m) => m.sketchId!
+    (m) => m.sketchId!,
   );
 
   // classify sketch features as single zone rbcs mpas
@@ -114,7 +114,7 @@ export function getSketchToMpaProtectionLevel(
       [sketchFeatures[index].properties.id]:
         mpaClass.indexLabel as RbcsMpaProtectionLevel,
     }),
-    {}
+    {},
   );
 
   return mapping;
@@ -130,7 +130,7 @@ export function getSketchToMpaProtectionLevel(
 export const rbcsZoneToMetric = (
   sketchId: string,
   zone: Zone,
-  score: number
+  score: number,
 ): RegBasedClassificationMetric => {
   return {
     ...createMetric({ value: score }),
@@ -149,7 +149,7 @@ export const rbcsZoneToMetric = (
 export const rbcsMpaToMetric = (
   sketchId: string,
   score: number,
-  label: string
+  label: string,
 ): RegBasedClassificationMetric => {
   return {
     ...createMetric({ value: score }),
@@ -172,29 +172,33 @@ export const rbcsMpaToMetric = (
  */
 export function zoneClassMetrics(
   sketch: NullSketchCollection | NullSketch,
-  childAreaMetrics?: Metric[]
+  childAreaMetrics?: Metric[],
 ): RegBasedClassificationMetric[] {
   const areaBySketch = keyBy(childAreaMetrics || [], (m) => m.sketchId!);
   const sketches = toNullSketchArray(sketch);
 
   // Extract user attributes from sketch and classify zones
   const sketchZones: Zone[] = sketches.map((sk) =>
-    sketchToZone(sk, areaBySketch[sk.properties.id].value)
+    sketchToZone(sk, areaBySketch[sk.properties.id].value),
   );
   const collectionResult: MpaClassification = classifyMPA(sketchZones);
 
   // Transform zone metrics
   const metrics: RegBasedClassificationMetric[] = collectionResult.scores.map(
     (score, index) =>
-      rbcsZoneToMetric(sketches[index].properties.id, sketchZones[index], score)
+      rbcsZoneToMetric(
+        sketches[index].properties.id,
+        sketchZones[index],
+        score,
+      ),
   );
   if (isSketchCollection(sketch) || isNullSketchCollection(sketch)) {
     metrics.push(
       rbcsMpaToMetric(
         sketch.properties.id,
         collectionResult.index,
-        collectionResult.indexLabel
-      )
+        collectionResult.indexLabel,
+      ),
     );
   }
   return metrics;
@@ -209,14 +213,14 @@ export function zoneClassMetrics(
  */
 export function mpaClassMetric(
   sketch: NullSketch,
-  childAreaMetric: Metric
+  childAreaMetric: Metric,
 ): RegBasedClassificationMetric[] {
   const zoneClass = sketchToZone(sketch, childAreaMetric.value);
   const mpaClass = classifyMPA([zoneClass]);
   return [
     // Convert all zone scores but will only be 1
     ...mpaClass.scores.map((zoneScore) =>
-      rbcsZoneToMetric(sketch.properties.id, zoneClass, zoneScore)
+      rbcsZoneToMetric(sketch.properties.id, zoneClass, zoneScore),
     ),
     rbcsMpaToMetric(sketch.properties.id, mpaClass.index, mpaClass.indexLabel),
   ];
@@ -232,7 +236,7 @@ export function mpaClassMetric(
  */
 export function mpaClassMetrics(
   sketch: NullSketchCollection | NullSketch,
-  childAreaMetrics?: Metric[]
+  childAreaMetrics?: Metric[],
 ): RegBasedClassificationMetric[] {
   const areaBySketch = keyBy(childAreaMetrics || [], (m) => m.sketchId!);
   const sketches = toNullSketchArray(sketch);
@@ -245,7 +249,7 @@ export function mpaClassMetrics(
     return rbcsMpaToMetric(
       sk.properties.id,
       mpaClass.index,
-      mpaClass.indexLabel
+      mpaClass.indexLabel,
     );
   });
 

@@ -1,4 +1,10 @@
-import { MpaClassification, Zone, ZoneColor, ZoneId, ZoneName } from "./types.js";
+import {
+  MpaClassification,
+  Zone,
+  ZoneColor,
+  ZoneId,
+  ZoneName,
+} from "./types.js";
 
 export const rbcsConstants: Record<string, Record<string, string>> = {
   GEAR_TYPES: {
@@ -88,7 +94,7 @@ export const anchorScore = (regulation: string) =>
 function getScore(
   key: string,
   lookup: Record<string, number>,
-  errorType: string
+  errorType: string,
 ) {
   if (key in lookup) {
     return lookup[key];
@@ -104,12 +110,12 @@ function getScore(
 export function classifyZone(
   gearTypes: string[],
   aquaculture: string,
-  anchoring: string
+  anchoring: string,
 ): number {
   const aquacultureAndBottomExploitationScore = aquacultureScore(aquaculture);
   const anchoringScore = anchorScore(anchoring);
   const maxGearScore = Math.max(
-    ...gearTypes.map((type) => gearTypeScore(type))
+    ...gearTypes.map((type) => gearTypeScore(type)),
   );
   // >20
   if (gearTypes.length > 20) {
@@ -177,7 +183,7 @@ export function classifyMPA(zones: Zone[]): MpaClassification {
   for (const zone of zones) {
     if (zone.length < 4) {
       throw new Error(
-        "Expected array of 4 arguments for each zone (gearTypes, aquacultureAndBottomExploitation, boating, and area"
+        "Expected array of 4 arguments for each zone (gearTypes, aquacultureAndBottomExploitation, boating, and area",
       );
     } else {
       zoneScores.push([classifyZone(zone[0], zone[1], zone[2]), zone[3]]);
@@ -186,7 +192,7 @@ export function classifyMPA(zones: Zone[]): MpaClassification {
   const sumArea = zoneScores.reduce((sum, score) => sum + score[1], 0);
   const score = zoneScores.reduce(
     (sum, score) => sum + (score[0] * score[1]) / sumArea,
-    0
+    0,
   );
   return {
     scores: zoneScores.map((zoneScore) => zoneScore[0]),

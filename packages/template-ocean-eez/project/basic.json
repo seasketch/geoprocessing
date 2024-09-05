@@ -1,10 +1,8 @@
 {
   "bbox": [
-    -174.51139447157757,
-    -15.878383591829206,
-    -170.54265693017294,
+    -174.51139447157757, -15.878383591829206, -170.54265693017294,
     -10.960825304544073
-],
+  ],
   "planningAreaType": "eez",
   "planningAreaId": "Samoan Exclusive Economic Zone",
   "planningAreaName": "Samoa",

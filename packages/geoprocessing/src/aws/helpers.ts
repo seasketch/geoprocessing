@@ -35,7 +35,7 @@ export async function runLambdaWorker(
   functionName: string,
   region: string,
   functionParameters = {},
-  request: GeoprocessingRequestModel<Polygon | MultiPolygon>
+  request: GeoprocessingRequestModel<Polygon | MultiPolygon>,
 ): Promise<InvocationResponse> {
   // Create cache key for this task
   const cacheKey = genTaskCacheKey(functionName, sketch.properties, {
@@ -86,7 +86,7 @@ export async function runLambdaWorker(
       ClientContext: Buffer.from(JSON.stringify(task)).toString("base64"),
       InvocationType: "RequestResponse",
       Payload: payload,
-    })
+    }),
   );
 }
 
@@ -94,23 +94,23 @@ export async function runLambdaWorker(
  * Parses result from worker lambda
  **/
 export function parseLambdaResponse(
-  lambdaResult: InvocationResponse
+  lambdaResult: InvocationResponse,
 ): JSONValue {
   try {
     if (lambdaResult.StatusCode !== 200)
       throw Error(
-        `Lambda result parsing failed: ${JSON.stringify(lambdaResult.Payload)}`
+        `Lambda result parsing failed: ${JSON.stringify(lambdaResult.Payload)}`,
       );
     if (!lambdaResult.Payload)
       throw Error(
-        `Lambda result parsing failed: No payload in lambda response`
+        `Lambda result parsing failed: No payload in lambda response`,
       );
 
     const payload = JSON.parse(Buffer.from(lambdaResult.Payload).toString());
 
     if (payload.statusCode !== 200)
       throw Error(
-        `Lambda result parsing failed: ${JSON.stringify(JSON.parse(payload.body))}`
+        `Lambda result parsing failed: ${JSON.stringify(JSON.parse(payload.body))}`,
       );
 
     return JSON.parse(payload.body).data;

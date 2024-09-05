@@ -13,7 +13,7 @@ export function createIndexes(
   items: BBox[],
   compositeIndexTargetBytes: number,
   compositeIndexMinChunks: number,
-  flatbushNodeSize: number
+  flatbushNodeSize: number,
 ) {
   const index = new Flatbush(items.length, flatbushNodeSize);
   for (const bbox of items) {
@@ -23,7 +23,7 @@ export function createIndexes(
   // Create composite indexes
   const nCompositeIndexes = Math.max(
     Math.round(index.data.byteLength / compositeIndexTargetBytes),
-    compositeIndexMinChunks
+    compositeIndexMinChunks,
   );
   const chunkSize = Math.floor(items.length / nCompositeIndexes);
   const compositeIndexes: any[] = [];

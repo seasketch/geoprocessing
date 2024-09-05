@@ -33,7 +33,7 @@ export async function overlapRasterClass(
   /** Object mapping numeric category IDs (as strings e.g. "1") in the raster to their string names for display e.g. "Coral Reef" */
   mapping: Record<string, string>,
   /** Dimension to assign category name when creating metrics, defaults to classId */
-  metricCategoryDimension: MetricDimension = "classId"
+  metricCategoryDimension: MetricDimension = "classId",
 ): Promise<Metric[]> {
   if (!mapping) throw new Error("Missing category mapping");
 
@@ -55,7 +55,7 @@ export async function overlapRasterClass(
         metricId,
         histoFeatures[index],
         curHisto,
-        mapping
+        mapping,
       );
       sketchMetrics.push(...histoMetrics);
     });
@@ -69,7 +69,7 @@ export async function overlapRasterClass(
       sketch,
       overallHisto,
       mapping,
-      metricCategoryDimension
+      metricCategoryDimension,
     );
     sketchMetrics.push(...overallHistoMetrics);
   }
@@ -85,14 +85,14 @@ const histoToMetrics = (
   /** Object mapping numeric category IDs to their string counterpart */
   mapping: Record<string, string>,
   /** Dimension to assign category name when creating metrics, defaults to classId */
-  metricCategoryDimension: MetricDimension = "classId"
+  metricCategoryDimension: MetricDimension = "classId",
 ): Metric[] => {
   const metrics: Metric[] = [];
   const categoryIds = Object.keys(mapping);
   // Initialize complete histogram with zeros
   const finalHisto = Object.keys(mapping).reduce(
     (histoSoFar, curCategory) => ({ ...histoSoFar, [curCategory]: 0 }),
-    {}
+    {},
   );
   // Merge in calculated histogram which will only include non-zero
   if (histo) {
@@ -115,7 +115,7 @@ const histoToMetrics = (
               ...(isSketchCollection(sketch) ? { isCollection: true } : {}),
             }
           : {},
-      })
+      }),
     );
   });
   return metrics;

@@ -22,7 +22,7 @@ interface ExtraParams {
  */
 export async function clipToOcean(
   feature: Feature | Sketch,
-  extraParams: ExtraParams = {}
+  extraParams: ExtraParams = {},
 ): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");

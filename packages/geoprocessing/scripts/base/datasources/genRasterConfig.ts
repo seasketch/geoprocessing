@@ -12,7 +12,7 @@ import { hasOwnProperty } from "../../../src/index.js";
 export function genRasterConfig<C extends ProjectClientBase>(
   projectClient: C,
   options: ImportRasterDatasourceOptions | RasterDatasource,
-  newDstPath?: string
+  newDstPath?: string,
 ): ImportRasterDatasourceConfig {
   return {
     ...options,

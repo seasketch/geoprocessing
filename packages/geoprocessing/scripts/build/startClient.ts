@@ -14,15 +14,15 @@ const destBuildPath = path.join(PROJECT_PATH, ".build-web");
 const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
   fs
     .readFileSync(path.join(PROJECT_PATH, "project", "geoprocessing.json"))
-    .toString()
+    .toString(),
 );
 
 const packageGp: Package = JSON.parse(
-  fs.readFileSync("./package.json").toString()
+  fs.readFileSync("./package.json").toString(),
 );
 
 const packageProject: Package = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
+  fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString(),
 );
 
 if (
@@ -47,7 +47,7 @@ const clientImportStr = geoprocessing.clients
 reportClients["${c.name}"] = React.lazy(
   () => import(/* @vite-ignore */"../${c.source}")
 );
-`
+`,
   )
   .join("");
 
@@ -73,7 +73,7 @@ fs.writeFileSync(
   };
 
   ReactDOM.render(<ReportApp />, document.getElementById("root"));
-`
+`,
 );
 
 // Create top-level index.html that loads report client
@@ -96,7 +96,7 @@ fs.writeFileSync(
       <script type="module" src="ReportApp.tsx"></script>
     </body>
   </html>
-`
+`,
 );
 
 const minify = process.env.NOMINIFY ? false : true;

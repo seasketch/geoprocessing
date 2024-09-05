@@ -17,7 +17,7 @@ export const polygonPreprocessorSmokeTest = (
     /** timeout for test run in milliseconds, defaults to 10000 */
     timeout?: number;
     debug?: boolean;
-  } = {}
+  } = {},
 ) => {
   const { partialName = undefined, timeout = 10000, debug = false } = options;
 
@@ -38,7 +38,7 @@ export const polygonPreprocessorSmokeTest = (
                   partialName +
                   " not match the name of any example polygon sketches?"
                 : ""
-            }`
+            }`,
           );
         }
         for (const example of examples) {
@@ -51,12 +51,12 @@ export const polygonPreprocessorSmokeTest = (
             expect(booleanValid(result));
             expect(
               result.geometry.type === "Polygon" ||
-                result.geometry.type === "MultiPolygon"
+                result.geometry.type === "MultiPolygon",
             );
             writeResultOutput(
               result,
               preprocessorName,
-              example?.properties?.name
+              example?.properties?.name,
             );
           } catch (e) {
             console.log("error", example?.properties?.name, e);
@@ -68,7 +68,7 @@ export const polygonPreprocessorSmokeTest = (
           }
         }
       },
-      timeout
+      timeout,
     );
   });
 };

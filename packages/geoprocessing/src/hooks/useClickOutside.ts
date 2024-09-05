@@ -10,7 +10,7 @@ interface ClickOutsideProps {
  * Useful for dropdown implementation
  */
 export default function useClickOutside(
-  callback: (...args: any[]) => void
+  callback: (...args: any[]) => void,
 ): ClickOutsideProps {
   const ref = useRef<HTMLDivElement>(null);
 

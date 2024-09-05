@@ -7,14 +7,14 @@ import { keyBy } from "./keyBy.js";
  * If a classID is also passed, returns the objective ID for that class within the metric group */
 export const getMetricGroupObjectiveId = (
   metricGroup: MetricGroup,
-  classId?: string
+  classId?: string,
 ) => {
   if (metricGroup.objectiveId) return metricGroup.objectiveId;
 
   if (classId) {
     const classesByName = keyBy(
       metricGroup.classes,
-      (curClass) => curClass.classId
+      (curClass) => curClass.classId,
     );
     const classObjectiveId = classesByName[classId].objectiveId;
     if (classObjectiveId) return classObjectiveId;
@@ -33,7 +33,7 @@ export const getMetricGroupObjectiveIds = (metricGroup: MetricGroup) => {
         ? idsSoFar.concat(curClass.objectiveId)
         : idsSoFar;
     },
-    []
+    [],
   );
 
   // add top-level objective if also defined

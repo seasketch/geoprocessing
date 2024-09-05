@@ -31,7 +31,7 @@ export async function createOrUpdatePrecalcMetrics(
   options: {
     matcher?: (m: Metric) => boolean;
     filePath?: string;
-  } = {}
+  } = {},
 ): Promise<Metric[]> {
   // Optional override
   const { matcher, filePath } = options;

@@ -12,7 +12,7 @@ import { bbox } from "@turf/turf";
 export function includeVirtualSketch<G extends SketchGeometryTypes>(
   sketchColl: SketchCollection<G>,
   mergeSketchColl: SketchCollection<G>,
-  sketchTest: (collection: SketchCollection) => boolean
+  sketchTest: (collection: SketchCollection) => boolean,
 ) {
   if (!isSketchCollection(sketchColl) || !isSketchCollection(mergeSketchColl)) {
     throw new Error(`Expected sketch collection for includeVirtualSketch`);

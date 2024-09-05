@@ -79,7 +79,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(multiBandRaster);
@@ -109,7 +109,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(multiBandRaster, {
@@ -142,7 +142,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(raster, {
@@ -171,7 +171,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(raster, {
@@ -200,7 +200,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(raster, {

@@ -32,7 +32,7 @@ export async function overlapRaster(
   sketch:
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>,
-  options?: Partial<OverlapRasterOptions>
+  options?: Partial<OverlapRasterOptions>,
 ): Promise<Metric[]> {
   const newOptions: OverlapRasterOptions = {
     truncate: true,
@@ -62,7 +62,7 @@ export async function overlapRaster(
         extra: {
           sketchName: sumFeatures[index].properties.name,
         },
-      })
+      }),
     );
   });
 
@@ -80,7 +80,7 @@ export async function overlapRaster(
           sketchName: sketch.properties.name,
           isCollection: true,
         },
-      })
+      }),
     );
   }
 

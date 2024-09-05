@@ -11,7 +11,7 @@ export function cleanCoords(
   geojson: any,
   options: {
     mutate?: boolean;
-  } = {}
+  } = {},
 ) {
   var mutate = typeof options === "object" ? options.mutate : options;
   if (!geojson) throw new Error("geojson is required");
@@ -23,7 +23,7 @@ export function cleanCoords(
   switch (type) {
     case "FeatureCollection":
       const cleanedCollection = featureCollection(
-        geojson.features.map((f) => cleanCoords(f))
+        geojson.features.map((f) => cleanCoords(f)),
       );
       if (geojson.properties) {
         // @ts-ignore

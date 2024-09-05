@@ -1,7 +1,7 @@
 import { Manifest } from "../manifest.js";
 import { PreprocessingBundle, GeoprocessingBundle } from "../types.js";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
-import slugify from "../../src/util/slugify.js"
+import slugify from "../../src/util/slugify.js";
 import { Package } from "../../src/types/index.js";
 
 /**
@@ -12,11 +12,11 @@ export function generateManifest(
   projectPkg: Package,
   preprocessingBundles: PreprocessingBundle[],
   geoprocessingBundles: GeoprocessingBundle[],
-  version: string
+  version: string,
 ): Manifest {
   const manifest: Manifest = {
     title: slugify(
-      projectPkg.name.replace(/@/g, "").replace("gp-", "").replace("/", "-")
+      projectPkg.name.replace(/@/g, "").replace("gp-", "").replace("/", "-"),
     ),
     author: slugify(config.author.replace(/\<.*\>/, "")),
     region: config.region,

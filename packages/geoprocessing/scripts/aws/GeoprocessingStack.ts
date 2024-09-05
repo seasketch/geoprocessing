@@ -148,7 +148,7 @@ export class GeoprocessingStack extends Stack {
   getAsyncRunLambdas(): Function[] {
     return this.lambdaStacks.reduce<Function[]>(
       (acc, curStack) => [...acc, ...curStack.getAsyncRunLambdas()],
-      []
+      [],
     );
   }
 
@@ -164,13 +164,13 @@ export class GeoprocessingStack extends Stack {
 
         return [...acc, ...asyncFunctions];
       },
-      []
+      [],
     );
   }
 
   /** Returns true if sync function with meta and narrows type */
   isSyncFunctionWithMeta(
-    funcWithMeta: any
+    funcWithMeta: any,
   ): funcWithMeta is SyncFunctionWithMeta {
     return (
       funcWithMeta.hasOwnProperty("func") &&
@@ -181,7 +181,7 @@ export class GeoprocessingStack extends Stack {
 
   /** Returns true if async function with meta and narrows type */
   isAsyncFunctionWithMeta(
-    funcWithMeta: any
+    funcWithMeta: any,
   ): funcWithMeta is AsyncFunctionWithMeta {
     return (
       funcWithMeta.hasOwnProperty("startFunc") &&

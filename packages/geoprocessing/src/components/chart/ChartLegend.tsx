@@ -68,7 +68,7 @@ const StyledLegend = styled.div<StyledLegendProps>`
       .legend li:nth-of-type(${index + 1}):before {
         background-color: ${blockGroupColor};
       }
-    `
+    `,
     )}
 
   @media screen and (min-width: 768px) {

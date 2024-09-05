@@ -5,7 +5,7 @@ import { JSONValue } from "../types/base.js";
  */
 export const rekeyObject = (
   object: Record<string, JSONValue>,
-  idOrder: string[]
+  idOrder: string[],
 ) => {
   const newObject: Record<string, JSONValue> = {};
   idOrder.forEach((id) => {

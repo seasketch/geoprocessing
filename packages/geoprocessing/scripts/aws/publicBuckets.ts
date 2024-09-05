@@ -4,7 +4,7 @@ import { BlockPublicAccess, Bucket, CorsRule } from "aws-cdk-lib/aws-s3";
 import { GpPublicBuckets } from "./types.js";
 
 export const createPublicBuckets = (
-  stack: GeoprocessingStack
+  stack: GeoprocessingStack,
 ): GpPublicBuckets => {
   const buckets = {
     result: undefined,
@@ -68,14 +68,14 @@ export const setupBucketFunctionAccess = (stack: GeoprocessingStack) => {
       stack.publicBuckets.result.grantReadWrite(syncFunctionWithMeta.func);
       syncFunctionWithMeta.func.addEnvironment(
         "resultBucketUrl",
-        stack.publicBuckets.result.urlForObject()
+        stack.publicBuckets.result.urlForObject(),
       );
     }
 
     stack.publicBuckets.dataset.grantRead(syncFunctionWithMeta.func);
     syncFunctionWithMeta.func.addEnvironment(
       "datasetBucketUrl",
-      stack.publicBuckets.dataset.urlForObject()
+      stack.publicBuckets.dataset.urlForObject(),
     );
   });
 
@@ -83,19 +83,19 @@ export const setupBucketFunctionAccess = (stack: GeoprocessingStack) => {
   stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
     if (stack.publicBuckets.result) {
       stack.publicBuckets.result.grantReadWrite(
-        asyncFunctionWithMeta.startFunc
+        asyncFunctionWithMeta.startFunc,
       );
       stack.publicBuckets.result.grantReadWrite(asyncFunctionWithMeta.runFunc);
       asyncFunctionWithMeta.runFunc.addEnvironment(
         "resultBucketUrl",
-        stack.publicBuckets.result.urlForObject()
+        stack.publicBuckets.result.urlForObject(),
       );
     }
 
     stack.publicBuckets.dataset.grantRead(asyncFunctionWithMeta.runFunc);
     asyncFunctionWithMeta.runFunc.addEnvironment(
       "datasetBucketUrl",
-      stack.publicBuckets.dataset.urlForObject()
+      stack.publicBuckets.dataset.urlForObject(),
     );
   });
 };

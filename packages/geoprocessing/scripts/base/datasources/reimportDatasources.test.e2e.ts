@@ -43,7 +43,7 @@ describe("Reimport datasources", () => {
         {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
-        }
+        },
       );
 
       const importRasterDs = await importDatasource(
@@ -62,7 +62,7 @@ describe("Reimport datasources", () => {
         {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
-        }
+        },
       );
 
       const reimportDss = await reimportDatasources(projectClient, {
@@ -74,37 +74,37 @@ describe("Reimport datasources", () => {
 
       const savedReimportDss = fs.readJSONSync(dstConfigFilePath);
       expect(
-        Array.isArray(savedReimportDss) && savedReimportDss.length === 2
+        Array.isArray(savedReimportDss) && savedReimportDss.length === 2,
       ).toBe(true);
       const validReimportDss = datasourcesSchema.parse(savedReimportDss);
 
       //// Check vector, assume first element
       const validVectorReimportDs = internalVectorDatasourceSchema.parse(
-        reimportDss[0]
+        reimportDss[0],
       );
       // Import created timestamp should match reimport created timestamp
       expect(new Date(importVectorDs.created).getTime()).toEqual(
-        new Date(validVectorReimportDs.created).getTime()
+        new Date(validVectorReimportDs.created).getTime(),
       );
 
       // Import timestamp should be less than reimport timestamp
       expect(new Date(importVectorDs.lastUpdated).getTime()).toBeLessThan(
-        new Date(validVectorReimportDs.lastUpdated).getTime()
+        new Date(validVectorReimportDs.lastUpdated).getTime(),
       );
 
       //// Check raster, assume second element
       const validRasterReimportDs = internalRasterDatasourceSchema.parse(
-        reimportDss[1]
+        reimportDss[1],
       );
 
       // Import created timestamp should match reimport created timestamp
       expect(new Date(importRasterDs.created).getTime()).toEqual(
-        new Date(validRasterReimportDs.created).getTime()
+        new Date(validRasterReimportDs.created).getTime(),
       );
 
       // Import timestamp should be less than reimport timestamp
       expect(new Date(importRasterDs.lastUpdated).getTime()).toBeLessThan(
-        new Date(validRasterReimportDs.lastUpdated).getTime()
+        new Date(validRasterReimportDs.lastUpdated).getTime(),
       );
 
       // Returned reimport object and reimport object from disk should match including timestamps

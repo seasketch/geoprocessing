@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   db:
     container_name: db-project-name
@@ -6,7 +6,7 @@ services:
     # Port 54320 will be exposed on the host machine. For example, with
     # QGIS installed you can connect to the database on this port. Use
     # the username, password, and database name listed below.
-    # If working on more than one project at a time you may want to change the 
+    # If working on more than one project at a time you may want to change the
     # exposed port number to avoid conflicts
     ports:
       - "54320:5432"
@@ -21,7 +21,7 @@ services:
       PGPASSWORD: "docker"
       PGDATABASE: "gis"
     # The contents of the project directory in the host will be mirrored
-    # within the workspace. 
+    # within the workspace.
     volumes:
       - "..:/data"
     # Switch to the data directory on startup

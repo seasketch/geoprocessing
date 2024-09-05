@@ -45,7 +45,7 @@ describe("getUserAttribute", () => {
     expect(getUserAttribute(polySketchCollection, "SINGLE")).toBe("single");
     // properties
     expect(getUserAttribute(polySketchCollection.properties, "SINGLE")).toBe(
-      "single"
+      "single",
     );
   });
 

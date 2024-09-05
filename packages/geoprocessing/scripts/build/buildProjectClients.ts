@@ -13,12 +13,12 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
  */
 export async function buildProjectClients(
   projectPath: string,
-  destBuildPath: string
+  destBuildPath: string,
 ) {
   const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
     fs
       .readFileSync(path.join(projectPath, "project", "geoprocessing.json"))
-      .toString()
+      .toString(),
   );
 
   if (
@@ -35,11 +35,11 @@ export async function buildProjectClients(
     (clientSoFar, curClient) => {
       return { [curClient.name]: curClient.source, ...clientSoFar };
     },
-    {}
+    {},
   );
   if (process.env.NODE_ENV !== "test")
     Object.values(reportClients).forEach((clientPath) =>
-      console.log(clientPath)
+      console.log(clientPath),
     );
 
   // Generate top-level ReportApp.tsx with dynamic import of report clients
@@ -50,7 +50,7 @@ export async function buildProjectClients(
   reportClients["${c.name}"] = React.lazy(
     () => import(/* @vite-ignore */"../${c.source}")
   );
-  `
+  `,
     )
     .join("");
 
@@ -76,7 +76,7 @@ export async function buildProjectClients(
     };
   
     ReactDOM.render(<ReportApp />, document.getElementById("root"));
-  `
+  `,
   );
 
   // Create top-level index.html that loads report client
@@ -99,7 +99,7 @@ export async function buildProjectClients(
         <script type="module" src="ReportApp.tsx"></script>
       </body>
     </html>
-  `
+  `,
   );
 
   const minify = process.env.NOMINIFY ? false : true;

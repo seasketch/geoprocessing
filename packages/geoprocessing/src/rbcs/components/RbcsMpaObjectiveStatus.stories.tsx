@@ -63,7 +63,7 @@ export const customMessageRenderProp = () => {
 
 const customRenderMsg = (
   objective: RbcsObjective,
-  level: RbcsMpaProtectionLevel
+  level: RbcsMpaProtectionLevel,
 ) => {
   if (objective.countsToward[level] === OBJECTIVE_YES) {
     return (

@@ -10,7 +10,7 @@ import { DefaultExtraParams } from "../types/index.js";
 export const getFirstFromParam = <P extends DefaultExtraParams>(
   paramName: string,
   params: P,
-  options: { required?: boolean } = {}
+  options: { required?: boolean } = {},
 ): string | undefined => {
   const { required = false } = options;
   const paramValue = params[paramName];
@@ -26,8 +26,8 @@ export const getFirstFromParam = <P extends DefaultExtraParams>(
     if (required) {
       throw new Error(
         `String or string array at parameter ${paramName} expected, found ${JSON.stringify(
-          paramValue
-        )}`
+          paramValue,
+        )}`,
       );
     } else {
       return undefined;
@@ -44,7 +44,7 @@ export const getFirstFromParam = <P extends DefaultExtraParams>(
  */
 export const getParamStringArray = <P extends DefaultExtraParams>(
   paramName: string,
-  params: P
+  params: P,
 ): string[] | undefined => {
   const paramValue = params[paramName];
   if (Array.isArray(paramValue)) {
@@ -56,8 +56,8 @@ export const getParamStringArray = <P extends DefaultExtraParams>(
       if (typeof arrayVal !== "string") {
         throw new Error(
           `${paramName} must contain all strings, received ${JSON.stringify(
-            arrayVal
-          )}`
+            arrayVal,
+          )}`,
         );
       }
     });

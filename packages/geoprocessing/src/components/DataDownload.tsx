@@ -78,7 +78,7 @@ export const DataDownload = ({
   ];
 
   const defaultState: DownloadOption[] = formatConfigs.filter((c) =>
-    formats.includes(c.extension)
+    formats.includes(c.extension),
   );
   const [objectUrls, setObjectUrls] = useState<DownloadOption[]>(defaultState);
 
@@ -116,7 +116,7 @@ export const DataDownload = ({
         if (dOption.url != "") window.URL.revokeObjectURL(dOption.url); // clean up last first
         return { ...dOption, url: window.URL.createObjectURL(blob) };
       },
-      [data]
+      [data],
     );
 
     setObjectUrls(dObjects);

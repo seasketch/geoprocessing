@@ -10,7 +10,7 @@ export const runTask = async (
   payload: GeoprocessingRequest,
   signal: AbortSignal,
   checkCacheOnly: boolean,
-  onConnect: boolean
+  onConnect: boolean,
 ): Promise<GeoprocessingTask> => {
   const urlInst = new URL(url);
   urlInst.searchParams.append("geometryUri", payload.geometryUri!);
@@ -46,7 +46,7 @@ export const finishTask = async (
   abortController,
   setState,
   currServiceName,
-  socket
+  socket,
 ) => {
   // Get result using checkCacheOnly flag
   let finishedRequest: Promise<GeoprocessingTask> = runTask(
@@ -54,7 +54,7 @@ export const finishTask = async (
     payload,
     abortController.signal,
     true,
-    false
+    false,
   );
   finishedRequest.then((finishedTask) => {
     if (finishedTask.data === undefined) {

@@ -10,7 +10,7 @@ export async function setup() {
   const dstPath = "../data/out";
 
   console.log(
-    `Starting file server on port ${fileServerPort} to serve test files from data/out`
+    `Starting file server on port ${fileServerPort} to serve test files from data/out`,
   );
   // Set reference in order to use during teardown
   fileServer = new LocalFileServer({

@@ -3,7 +3,7 @@ import finalhandler from "finalhandler";
 import serveStatic from "serve-static";
 
 export function startLocalServer(
-  options: { path: string; port: number } = { path: "./", port: 8001 }
+  options: { path: string; port: number } = { path: "./", port: 8001 },
 ) {
   const serve = serveStatic(options.path);
   const server = http.createServer(function (req, res) {

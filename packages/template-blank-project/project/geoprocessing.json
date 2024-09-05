@@ -2,15 +2,18 @@
   "author": "Test <test@test.com>",
   "organization": "Test Org",
   "region": "us-west-1",
-  "clients": [{
-    "name": "TabReport",
-    "description":  "Report suite with tab navigation",
-    "source": "src/clients/TabReport.tsx"
-  },{
-    "name": "SimpleReport",
-    "description":  "Sketch size",
-    "source": "src/clients/SimpleReport.tsx"
-  }],
+  "clients": [
+    {
+      "name": "TabReport",
+      "description": "Report suite with tab navigation",
+      "source": "src/clients/TabReport.tsx"
+    },
+    {
+      "name": "SimpleReport",
+      "description": "Sketch size",
+      "source": "src/clients/SimpleReport.tsx"
+    }
+  ],
   "preprocessingFunctions": [
     "src/functions/clipToLand.ts",
     "src/functions/clipToOcean.ts"

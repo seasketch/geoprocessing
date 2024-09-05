@@ -22,7 +22,7 @@ describe("overlapRasterArea test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterArea("test", raster, fix.bottomLeftPoly);
     expect(metrics.length).toBe(1);
@@ -44,7 +44,7 @@ describe("overlapRasterArea test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterArea("test", raster, fix.topRightPoly);
     expect(metrics.length).toBe(1);
@@ -66,7 +66,7 @@ describe("overlapRasterArea test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metricsTruncationFalse = await overlapRasterArea(
       "test",
@@ -74,7 +74,7 @@ describe("overlapRasterArea test", () => {
       fix.topRightPoly,
       {
         truncate: false,
-      }
+      },
     );
     expect(metricsTruncationFalse.length).toBe(1);
     expect(metricsTruncationFalse[0].value).toBe(100);
@@ -85,7 +85,7 @@ describe("overlapRasterArea test", () => {
       fix.topRightPoly,
       {
         truncate: true,
-      }
+      },
     );
     expect(metricsTruncationTrue.length).toBe(1);
     expect(metricsTruncationTrue[0].value).toBe(100);
@@ -93,7 +93,7 @@ describe("overlapRasterArea test", () => {
     const metricsTruncationDefault = await overlapRasterArea(
       "test",
       raster,
-      fix.topRightPoly
+      fix.topRightPoly,
     );
     expect(metricsTruncationDefault.length).toBe(1);
     expect(metricsTruncationDefault[0].value).toBe(100);
@@ -114,7 +114,7 @@ describe("overlapRasterArea test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metricsTruncation = await overlapRasterArea(
       "test",
@@ -122,7 +122,7 @@ describe("overlapRasterArea test", () => {
       fix.topRightPoly,
       {
         truncate: true,
-      }
+      },
     );
     expect(metricsTruncation.length).toBe(1);
     expect(metricsTruncation[0].value).toBe(100); // Value untruncated because it would truncate to 0
@@ -133,7 +133,7 @@ describe("overlapRasterArea test", () => {
       fix.topRightPoly,
       {
         truncate: false,
-      }
+      },
     );
     expect(metricsNoTruncation.length).toBe(1);
     expect(metricsNoTruncation[0].value).toBe(100); // Value untruncated
@@ -144,7 +144,7 @@ describe("overlapRasterArea test", () => {
       fix.topRightPoly,
       {
         truncate: false,
-      }
+      },
     );
     expect(metricsDefaultTruncation.length).toBe(1);
     expect(metricsDefaultTruncation[0].value).toBe(100); // Value untruncated because it would truncate to 0
@@ -165,7 +165,7 @@ describe("overlapRasterArea test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterArea("test", raster, fix.wholePoly);
     expect(metrics.length).toBe(1);
@@ -187,7 +187,7 @@ describe("overlapRasterArea test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterArea("test", raster, fix.wholeMixedSC);
     expect(metrics.length).toBe(3);
@@ -211,7 +211,7 @@ describe("overlapRasterArea test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterArea("test", raster, fix.holeBlPoly);
     expect(metrics.length).toBe(1);
@@ -233,7 +233,7 @@ describe("overlapRasterArea test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterArea("test", raster, fix.holeMixedSC);
     expect(metrics.length).toBe(3);

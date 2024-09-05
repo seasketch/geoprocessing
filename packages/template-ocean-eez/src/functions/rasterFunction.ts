@@ -32,7 +32,7 @@ export async function rasterFunction(
   sketch:
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>,
-  extraParams: DefaultExtraParams = {}
+  extraParams: DefaultExtraParams = {},
 ): Promise<ReportResult> {
   // Use caller-provided geographyId if provided
   const geographyId = getFirstFromParam("geographyIds", extraParams);
@@ -84,14 +84,14 @@ export async function rasterFunction(
             ...metrics,
             classId: curClass.classId,
             geographyId: curGeography.geographyId,
-          })
+          }),
         );
-      })
+      }),
     )
   ).reduce(
     // merge
     (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
-    []
+    [],
   );
 
   // Return a report result with metrics and a null sketch

@@ -16,7 +16,7 @@ export async function area(
     includeChildMetrics?: boolean;
     /** If collection, includes metrics with percent of total area for each sketch , in addition to raw area value metrics, defaults to false */
     includePercMetric?: boolean;
-  } = {}
+  } = {},
 ): Promise<Metric[]> {
   const {
     metricId = "area",
@@ -38,11 +38,11 @@ export async function area(
     featureEach(sketch, (curSketch) => {
       if (!curSketch || !curSketch.properties) {
         console.log(
-          "Warning: feature or its properties are undefined, skipped"
+          "Warning: feature or its properties are undefined, skipped",
         );
       } else if (!curSketch.geometry) {
         console.log(
-          `Warning: feature is missing geometry, zeroed: sketchId:${curSketch.properties.id}, name:${curSketch.properties.name}`
+          `Warning: feature is missing geometry, zeroed: sketchId:${curSketch.properties.id}, name:${curSketch.properties.name}`,
         );
 
         sketchMetrics.push(
@@ -53,7 +53,7 @@ export async function area(
             extra: {
               sketchName: curSketch.properties.name,
             },
-          })
+          }),
         );
         if (includePercMetric) {
           sketchMetrics.push(
@@ -64,7 +64,7 @@ export async function area(
               extra: {
                 sketchName: curSketch.properties.name,
               },
-            })
+            }),
           );
         }
       } else {
@@ -77,7 +77,7 @@ export async function area(
             extra: {
               sketchName: curSketch.properties.name,
             },
-          })
+          }),
         );
         if (includePercMetric && isSketchCollection(sketch)) {
           sketchMetrics.push(
@@ -88,7 +88,7 @@ export async function area(
               extra: {
                 sketchName: curSketch.properties.name,
               },
-            })
+            }),
           );
         }
       }
@@ -106,7 +106,7 @@ export async function area(
           sketchName: sketch.properties.name,
           isCollection: true,
         },
-      })
+      }),
     );
   }
 

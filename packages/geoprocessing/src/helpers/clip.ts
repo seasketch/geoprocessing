@@ -29,7 +29,7 @@ export function clip<
   operation: "union" | "intersection" | "xor" | "difference",
   options: {
     properties?: P;
-  } = {}
+  } = {},
 ): Feature<Polygon | MultiPolygon> | null {
   if (!features || !features.features || features.features.length === 0)
     throw new ValidationError("Missing or empty features for clip");
@@ -62,7 +62,7 @@ export function clipMultiMerge<
   operation: "union" | "intersection" | "xor" | "difference",
   options: {
     properties?: P;
-  } = {}
+  } = {},
 ): Feature<Polygon | MultiPolygon> | null {
   if (
     !feature1 ||
@@ -84,12 +84,12 @@ export function clipMultiMerge<
           return [...acc, ...poly.geometry.coordinates];
         }
       },
-      []
+      [],
     );
   })();
   const result = polygonClipping[operation](
     geom1.coordinates as any,
-    coords2 as any
+    coords2 as any,
   );
   if (result.length === 0) return null;
   if (result.length === 1)

@@ -38,7 +38,7 @@ export const OverlapCard: React.FunctionComponent<GeogProp> = (props) => {
   const precalcMetrics = project.getPrecalcMetrics(
     metricGroup,
     "sum",
-    curGeography.geographyId
+    curGeography.geographyId,
   );
 
   // Labels
@@ -59,7 +59,7 @@ export const OverlapCard: React.FunctionComponent<GeogProp> = (props) => {
 
         const valueMetrics = metricsWithSketchId(
           data.metrics.filter((m) => m.metricId === metricGroup.metricId),
-          [data.sketch.properties.id]
+          [data.sketch.properties.id],
         );
         const percentMetrics = toPercentMetric(valueMetrics, precalcMetrics, {
           metricIdOverride: percMetricIdName,
@@ -150,7 +150,7 @@ export const OverlapCard: React.FunctionComponent<GeogProp> = (props) => {
 const genSketchTable = (
   data: ReportResult,
   metricGroup: MetricGroup,
-  precalcMetrics: Metric[]
+  precalcMetrics: Metric[],
 ) => {
   // Build agg metric objects for each child sketch in collection with percValue for each class
   const childSketches = toNullSketchArray(data.sketch);
@@ -158,14 +158,14 @@ const genSketchTable = (
   const childSketchMetrics = toPercentMetric(
     metricsWithSketchId(
       data.metrics.filter((m) => m.metricId === metricGroup.metricId),
-      childSketchIds
+      childSketchIds,
     ),
-    precalcMetrics
+    precalcMetrics,
   );
   const sketchRows = flattenBySketchAllClass(
     childSketchMetrics,
     metricGroup.classes,
-    childSketches
+    childSketches,
   );
   return (
     <SketchClassTable rows={sketchRows} metricGroup={metricGroup} formatPerc />

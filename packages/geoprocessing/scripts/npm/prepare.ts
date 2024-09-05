@@ -22,7 +22,7 @@ async function bundleAssets() {
     "..",
     "..",
     "src",
-    "assets"
+    "assets",
   );
   const distAssetsPath = path.join(distPath, "src", "assets");
 
@@ -99,14 +99,14 @@ async function bundleTemplates(templateType: TemplateType) {
         const templatePackageMetaPath = path.join(
           packagesPath,
           dirName,
-          "package.json"
+          "package.json",
         );
         return JSON.parse(
-          fs.readFileSync(templatePackageMetaPath).toString()
+          fs.readFileSync(templatePackageMetaPath).toString(),
         )?.keywords?.includes(templateType);
       } catch (error) {
         console.error(
-          `Missing package.json or its description for template ${dirName}`
+          `Missing package.json or its description for template ${dirName}`,
         );
         console.error(error);
         process.exit();
@@ -121,19 +121,19 @@ async function bundleTemplates(templateType: TemplateType) {
       console.log(`bundling template ${templateName}`);
     } else {
       console.error(
-        `Could not find template ${templateName} in ${templatePath}`
+        `Could not find template ${templateName} in ${templatePath}`,
       );
       process.exit();
     }
 
     await fs.copy(
       path.join(templatePath, "package.json"),
-      path.join(distTemplatePath, "package.json")
+      path.join(distTemplatePath, "package.json"),
     );
 
     await fs.copy(
       path.join(templatePath, "project", "geoprocessing.json"),
-      path.join(distTemplatePath, "project", "geoprocessing.json")
+      path.join(distTemplatePath, "project", "geoprocessing.json"),
     );
 
     if (!fs.existsSync(path.join(distTemplatePath, "src"))) {
@@ -146,7 +146,7 @@ async function bundleTemplates(templateType: TemplateType) {
       }
       await fs.copy(
         path.join(templatePath, "src", "functions"),
-        path.join(distTemplatePath, "src", "functions")
+        path.join(distTemplatePath, "src", "functions"),
       );
     }
 
@@ -156,7 +156,7 @@ async function bundleTemplates(templateType: TemplateType) {
       }
       await fs.copy(
         path.join(templatePath, "src", "components"),
-        path.join(distTemplatePath, "src", "components")
+        path.join(distTemplatePath, "src", "components"),
       );
     }
 
@@ -166,7 +166,7 @@ async function bundleTemplates(templateType: TemplateType) {
       }
       await fs.copy(
         path.join(templatePath, "src", "assets"),
-        path.join(distTemplatePath, "src", "assets")
+        path.join(distTemplatePath, "src", "assets"),
       );
     }
 
@@ -176,7 +176,7 @@ async function bundleTemplates(templateType: TemplateType) {
       }
       await fs.copy(
         path.join(templatePath, "src", "clients"),
-        path.join(distTemplatePath, "src", "clients")
+        path.join(distTemplatePath, "src", "clients"),
       );
     }
 
@@ -212,7 +212,7 @@ async function bundleTemplates(templateType: TemplateType) {
               if (path.basename(srcPath) == "docker-compose.yml") return false;
               return true;
             },
-          }
+          },
         );
       }
 
@@ -220,7 +220,7 @@ async function bundleTemplates(templateType: TemplateType) {
       if (fs.existsSync(path.join(templatePath, ".gitignore"))) {
         await fs.copy(
           path.join(templatePath, ".gitignore"),
-          path.join(distTemplatePath, "_gitignore")
+          path.join(distTemplatePath, "_gitignore"),
         );
       }
     }

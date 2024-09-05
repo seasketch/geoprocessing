@@ -25,7 +25,7 @@ export const disconnectHandler = async (event) => {
         Key: {
           connectionId: connectionId,
         },
-      })
+      }),
     );
   } catch (err) {
     console.warn(": error trying to disconnect: ", JSON.stringify(err));

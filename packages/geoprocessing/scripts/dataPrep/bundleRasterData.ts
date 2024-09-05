@@ -20,7 +20,7 @@ import {
 
 const region = await loadConfig(
   NODE_REGION_CONFIG_OPTIONS,
-  NODE_REGION_CONFIG_FILE_OPTIONS
+  NODE_REGION_CONFIG_FILE_OPTIONS,
 )();
 
 program
@@ -58,7 +58,7 @@ program
             spinner.succeed("Public S3 bucket created at " + url);
             cloudfrontDistroPromise = createCloudfrontDistribution(
               datasourceName,
-              true
+              true,
             );
           } else {
             console.log("Aborted. Try --dry-run if debugging package sizes");
@@ -109,7 +109,7 @@ program
         await putRasterBundle(
           datasourceName,
           rasterFilename,
-          currentVersion + 1
+          currentVersion + 1,
         );
         spinner.succeed("Deployed raster to S3");
         // Schedule previous versions for deletion
@@ -118,10 +118,10 @@ program
           const deletesAt = await scheduleObjectsForDeletion(
             datasourceName,
             currentVersion,
-            lastPublished
+            lastPublished,
           );
           spinner.succeed(
-            `Scheduled previous version (${currentVersion}) for deletion on ${deletesAt.toLocaleDateString()} at midnight`
+            `Scheduled previous version (${currentVersion}) for deletion on ${deletesAt.toLocaleDateString()} at midnight`,
           );
         }
 
@@ -131,7 +131,7 @@ program
           spinner.start("Creating Cloudfront distribution");
           details = await cloudfrontDistroPromise;
           spinner.succeed(
-            "Created Cloudfront distribution at " + details.location
+            "Created Cloudfront distribution at " + details.location,
           );
         } else {
           spinner.start("Creating Cloudfront invalidation");
@@ -141,11 +141,11 @@ program
         console.log(
           `✅ Version ${
             currentVersion + 1
-          } of this data source is now available at https://${details.location}`
+          } of this data source is now available at https://${details.location}`,
         );
         if (currentVersion === 0) {
           console.log(
-            "Since this cloudfront distribution is new, it may take a few minutes before it can be accessed. Future updates to this data source should be immediate."
+            "Since this cloudfront distribution is new, it may take a few minutes before it can be accessed. Future updates to this data source should be immediate.",
           );
         }
       } else {

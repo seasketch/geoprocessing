@@ -53,7 +53,7 @@ export const sendHandler = async (event) => {
       new ScanCommand({
         TableName: process.env.SUBSCRIPTIONS_TABLE,
         ProjectionExpression: "serviceName, connectionId, cacheKey",
-      })
+      }),
     );
   } catch (e: unknown) {
     console.warn("Error finding socket connection: ", e);
@@ -65,7 +65,7 @@ export const sendHandler = async (event) => {
 
   if (!responses || !responses.Items) {
     console.warn(
-      `Search for socket connection returned no items for ${serviceName} service, cache key ${cacheKey}`
+      `Search for socket connection returned no items for ${serviceName} service, cache key ${cacheKey}`,
     );
     return {
       statusCode: 500,
@@ -117,7 +117,7 @@ export const sendHandler = async (event) => {
         } catch (e: any) {
           if (e.statusCode && e.statusCode === 410) {
             console.log(
-              `Found stale connection, deleting ${responseItem.connectionId}`
+              `Found stale connection, deleting ${responseItem.connectionId}`,
             );
             try {
               const command = new DeleteCommand({

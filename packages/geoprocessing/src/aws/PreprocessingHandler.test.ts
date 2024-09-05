@@ -30,7 +30,7 @@ const simpleHandler = new PreprocessingHandler(
     description: "description",
     timeout: 2,
     requiresProperties: [],
-  }
+  },
 );
 
 const extraParamHandler = new PreprocessingHandler(
@@ -47,7 +47,7 @@ const extraParamHandler = new PreprocessingHandler(
     description: "description",
     timeout: 2,
     requiresProperties: [],
-  }
+  },
 );
 
 test("Makes options available as an instance var", () => {
@@ -58,7 +58,7 @@ test("Makes options available as an instance var", () => {
 test("Returns successful output as geojson", async () => {
   const results = await simpleHandler.lambdaHandler(
     { body: JSON.stringify({ feature }), headers: {} } as APIGatewayProxyEvent,
-    {} as Context
+    {} as Context,
   );
   expect(results.statusCode).toBe(200);
   const body = JSON.parse(results.body);
@@ -72,7 +72,7 @@ test("Preprocessor can accept extraParams", async () => {
       body: JSON.stringify({ feature, extraParams }),
       headers: {},
     } as APIGatewayProxyEvent,
-    {} as Context
+    {} as Context,
   );
   expect(results.statusCode).toBe(200);
   const body = JSON.parse(results.body);
@@ -86,7 +86,7 @@ test("Rejects misshapen requests", async () => {
       body: JSON.stringify({ data: feature }),
       headers: {},
     } as APIGatewayProxyEvent,
-    {} as Context
+    {} as Context,
   );
   expect(results.statusCode).toBe(500);
   const body = JSON.parse(results.body);
@@ -103,14 +103,14 @@ test("Returns validation errors", async () => {
       description: "description",
       timeout: 2,
       requiresProperties: [],
-    }
+    },
   );
   const results = await handler.lambdaHandler(
     {
       body: JSON.stringify({ feature }),
       headers: {},
     } as APIGatewayProxyEvent,
-    {} as Context
+    {} as Context,
   );
   expect(results.statusCode).toBe(200);
   const body = JSON.parse(results.body);
@@ -128,14 +128,14 @@ test("500 errors are returned to clients", async () => {
       description: "description",
       timeout: 2,
       requiresProperties: [],
-    }
+    },
   );
   const results = await handler.lambdaHandler(
     {
       body: JSON.stringify({ feature }),
       headers: {},
     } as APIGatewayProxyEvent,
-    {} as Context
+    {} as Context,
   );
   expect(results.statusCode).toBe(500);
   const body = JSON.parse(results.body);

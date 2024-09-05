@@ -16,7 +16,7 @@ import { VectorDataSourceDetails } from "../src/index.js";
  */
 export type LambdaHandler = (
   event: APIGatewayProxyEvent,
-  context: Context
+  context: Context,
 ) => Promise<APIGatewayProxyResult>;
 
 /**

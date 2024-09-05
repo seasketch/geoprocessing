@@ -31,7 +31,7 @@ export const firstMatching = <D>(list: D[], filter: (item: D) => boolean) => {
   const item = list.find((m) => filter(m));
   if (!item)
     throw new Error(
-      `firstMatching: matching item not found for ${JSON.stringify(item)}`
+      `firstMatching: matching item not found for ${JSON.stringify(item)}`,
     );
   return item;
 };
@@ -45,76 +45,76 @@ export const classIdMapping = (classes: DataClass[]) => {
         ? { [curClass.numericClassId]: curClass.classId }
         : {}),
     }),
-    {}
+    {},
   );
 };
 
 export const isinternalDatasource = (
   /** Datasource object */
-  ds: any
+  ds: any,
 ): ds is Datasource => {
   return internalDatasourceSchema.safeParse(ds).success;
 };
 
 export const isVectorDatasource = (
   /** VectorDatasource object */
-  ds: any
+  ds: any,
 ): ds is VectorDatasource => {
   return vectorDatasourceSchema.safeParse(ds).success;
 };
 
 export const isInternalVectorDatasource = (
   /** InternalVectorDatasource object */
-  ds: any
+  ds: any,
 ): ds is InternalVectorDatasource => {
   return internalVectorDatasourceSchema.safeParse(ds).success;
 };
 
 export const isRasterDatasource = (
   /** RasterDatasource object */
-  ds: any
+  ds: any,
 ): ds is RasterDatasource => {
   return rasterDatasourceSchema.safeParse(ds).success;
 };
 
 export const isInternalRasterDatasource = (
   /** InternalRasterDatasource object */
-  ds: any
+  ds: any,
 ): ds is InternalRasterDatasource => {
   return internalRasterDatasourceSchema.safeParse(ds).success;
 };
 
 export const isExternalDatasource = (
   /** Datasource object */
-  ds: any
+  ds: any,
 ): ds is Datasource => {
   return externalDatasourceSchema.safeParse(ds).success;
 };
 
 export const isExternalVectorDatasource = (
   /** ExternalVectorDatasource object */
-  ds: any
+  ds: any,
 ): ds is ExternalVectorDatasource => {
   return externalVectorDatasourceSchema.safeParse(ds).success;
 };
 
 export const isExternalRasterDatasource = (
   /** ExternalRasterDatasource object */
-  ds: any
+  ds: any,
 ): ds is ExternalRasterDatasource => {
   return externalRasterDatasourceSchema.safeParse(ds).success;
 };
 
 export const isImportRasterDatasourceConfig = (
   /** ImportRasterDatasourceConfig object */
-  ds: any
+  ds: any,
 ): ds is ImportRasterDatasourceConfig => {
   return importRasterDatasourceOptionsSchema.safeParse(ds).success;
 };
 
 export const isImportVectorDatasourceConfig = (
   /** ImportVectorDatasourceConfig object */
-  ds: any
+  ds: any,
 ): ds is ImportVectorDatasourceConfig => {
   return importVectorDatasourceOptionsSchema.safeParse(ds).success;
 };
@@ -122,7 +122,7 @@ export const isImportVectorDatasourceConfig = (
 /** find and return datasource from passed datasources */
 export const getDatasourceById = (
   datasourceId: string,
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): Datasource => {
   const ds = datasources.find((ds) => ds.datasourceId === datasourceId);
   if (!ds) {
@@ -135,7 +135,7 @@ export const getDatasourceById = (
 /** find and return vector datasource (internal or external) from passed datasources */
 export const getVectorDatasourceById = (
   datasourceId: string,
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): VectorDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isVectorDatasource(ds)) {
@@ -148,7 +148,7 @@ export const getVectorDatasourceById = (
 /** find and return external vector datasource from passed datasources */
 export const getExternalVectorDatasourceById = (
   datasourceId: string,
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): ExternalVectorDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isExternalVectorDatasource(ds)) {
@@ -161,7 +161,7 @@ export const getExternalVectorDatasourceById = (
 /** find and return internal vector datasource from passed datasources */
 export const getInternalVectorDatasourceById = (
   datasourceId: string,
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): InternalVectorDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isInternalVectorDatasource(ds)) {
@@ -174,7 +174,7 @@ export const getInternalVectorDatasourceById = (
 /** find and return raster datasource (internal or external) from passed datasources */
 export const getRasterDatasourceById = (
   datasourceId: string,
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): RasterDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isRasterDatasource(ds)) {
@@ -187,7 +187,7 @@ export const getRasterDatasourceById = (
 /** find and return external raster datasource from passed datasources */
 export const getExternalRasterDatasourceById = (
   datasourceId: string,
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): ExternalRasterDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isExternalRasterDatasource(ds)) {
@@ -200,7 +200,7 @@ export const getExternalRasterDatasourceById = (
 /** find and return internal datasource from passed datasources */
 export const getInternalRasterDatasourceById = (
   datasourceId: string,
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): InternalRasterDatasource => {
   const ds = getDatasourceById(datasourceId, datasources);
   if (isInternalRasterDatasource(ds)) {
@@ -215,7 +215,7 @@ export function getJsonFilename(
   datasource:
     | InternalVectorDatasource
     | ImportVectorDatasourceConfig
-    | ImportVectorDatasourceOptions
+    | ImportVectorDatasourceOptions,
 ) {
   return datasource.datasourceId + ".json";
 }
@@ -225,7 +225,7 @@ export function getFlatGeobufFilename(
   datasource:
     | InternalVectorDatasource
     | ImportVectorDatasourceConfig
-    | ImportVectorDatasourceOptions
+    | ImportVectorDatasourceOptions,
 ) {
   return datasource.datasourceId + ".fgb";
 }
@@ -235,13 +235,13 @@ export function getCogFilename(
     | InternalRasterDatasource
     | ImportRasterDatasourceConfig
     | ImportRasterDatasourceOptions,
-  postfix?: string
+  postfix?: string,
 ) {
   return datasource.datasourceId + (postfix ? postfix : "") + ".tif";
 }
 
 export function getDatasetBucketName<C extends BaseImportDatasourceConfig>(
-  config: C
+  config: C,
 ) {
   return `gp-${config.package.name}-datasets`;
 }

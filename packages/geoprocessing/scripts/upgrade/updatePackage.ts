@@ -22,7 +22,7 @@ function sortObjectKeys(obj: Record<string, any>) {
 export function updatePackageJson(
   srcPkg: LoadedPackage,
   basePkg: LoadedPackage,
-  otherPkgs: LoadedPackage[] = []
+  otherPkgs: LoadedPackage[] = [],
 ) {
   const projectPkg = cloneDeep(srcPkg);
 

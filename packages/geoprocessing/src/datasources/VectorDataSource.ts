@@ -162,7 +162,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     this.cache = new mnemonist.LRUCache(
       Uint32Array,
       Array,
-      this.options.cacheSize
+      this.options.cacheSize,
     );
     this.tree = new RBushIndex();
     sources.push({
@@ -192,7 +192,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
             this.metadata = metadata;
             await this.fetchBundleIndex();
             return;
-          })
+          }),
         )
         .catch((e) => {
           // It's easier to deal with these errors at the point of use later,
@@ -201,7 +201,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
           // The identifyBundles method will check for initError
           console.error(e);
           this.initError = new Error(
-            `Problem fetching VectorDataSource manifest from ${metadataUrl}`
+            `Problem fetching VectorDataSource manifest from ${metadataUrl}`,
           );
         });
     }
@@ -226,7 +226,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     } catch (e) {
       console.error(e);
       throw new Error(
-        `Problem fetching or parsing index data at ${i.location}`
+        `Problem fetching or parsing index data at ${i.location}`,
       );
     }
     this.bundleIndex = Flatbush.from(data);
@@ -247,7 +247,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
 
   async fetchBundle(
     id: number,
-    priority: "low" | "high" = "low"
+    priority: "low" | "high" = "low",
   ): Promise<FeatureCollection> {
     const key = id.toString();
     const existingRequest = this.pendingRequests.get(key);
@@ -275,7 +275,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
           if (!r.ok) {
             this.pendingRequests.delete(key);
             return Promise.reject(
-              new Error(`Problem fetching datasource bundle at ${url}`)
+              new Error(`Problem fetching datasource bundle at ${url}`),
             );
           }
           return r.arrayBuffer();
@@ -285,7 +285,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
             return Promise.reject(new DOMException("Aborted", "AbortError"));
           }
           const geojson = geobuf.decode(
-            new Pbf(arrayBuffer)
+            new Pbf(arrayBuffer),
           ) as FeatureCollection;
           // if (this.needsRewinding === undefined) {
           //   let ring: Position[];
@@ -390,7 +390,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
       return Promise.all(bundleIds.map((id) => this.fetchBundle(id))).then(
         () => {
           return;
-        }
+        },
       );
     } else {
       // debug(`hint() identified no bundles`);
@@ -434,7 +434,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     return Promise.all(
       bundleIds
         .slice(0, this.options.cacheSize)
-        .map((id) => this.fetchBundle(id))
+        .map((id) => this.fetchBundle(id)),
     ).then(() => {
       const features = this.tree.search({
         minX: bbox[0],
@@ -461,7 +461,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     await Promise.all(
       bundleIds
         .slice(0, this.options.cacheSize)
-        .map((id) => this.fetchBundle(id, "high"))
+        .map((id) => this.fetchBundle(id, "high")),
     );
     if (isHostedOnLambda) {
       console.timeEnd(`Fetch ${bundleIds.length} bundles from ${this.url}`);
@@ -491,13 +491,13 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
    */
   async fetchUnion(
     bbox: BBox,
-    unionProperty?: string
+    unionProperty?: string,
   ): Promise<FeatureCollection<T["geometry"], T["properties"]>> {
     const features = await this.fetch(bbox);
     if (features.length !== 0) {
       return union(
         fc(features as unknown as Feature<Polygon | MultiPolygon>[]),
-        unionProperty || undefined
+        unionProperty || undefined,
       );
     } else {
       return fc([]);
@@ -575,8 +575,8 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
                 ancestors: [...node.ancestors, cutline],
                 children: [],
               },
-              groups[key]
-            )
+              groups[key],
+            ),
           );
         } else {
           (node.children as Node[]) = groups[key].map((n) => ({

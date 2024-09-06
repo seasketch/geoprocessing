@@ -123,6 +123,10 @@ export function parseLambdaResponse(
 
     return JSON.parse(payload.body).data;
   } catch {
-    throw Error(`Failed to parse response from AWS lambda: ${lambdaResult}`);
+    console.log(
+      "Failed to parse response from lambdaResult",
+      JSON.stringify(lambdaResult, null, 2)
+    );
+    throw Error(`Failed to parse response from AWS lambda`);
   }
 }

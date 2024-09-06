@@ -37,11 +37,11 @@ export async function runLambdaWorker(
   functionParameters = {},
   request: GeoprocessingRequestModel<Polygon | MultiPolygon>,
   options: {
-    /** Whether cache of worker task should be disabled, defaults to false */
-    disableServerCache?: boolean;
+    /** Whether cache of worker task should be enabled, defaults to false */
+    enableCache?: boolean;
   } = {}
 ): Promise<InvocationResponse> {
-  const { disableServerCache = true } = options;
+  const { enableCache = false } = options;
 
   // Create cache key for this task
   const cacheKey = genTaskCacheKey(functionName, sketch.properties, {
@@ -54,7 +54,7 @@ export async function runLambdaWorker(
       geometryUri: request.geometryUri,
       extraParams: functionParameters,
       cacheKey,
-      disableServerCache,
+      disableServerCache: !enableCache,
     };
 
     // Encode sketch to geobuf if larger than max request size

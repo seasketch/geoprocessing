@@ -41,7 +41,7 @@ export async function runLambdaWorker(
     disableServerCache?: boolean;
   } = {}
 ): Promise<InvocationResponse> {
-  const { disableServerCache = false } = options;
+  const { disableServerCache = true } = options;
 
   // Create cache key for this task
   const cacheKey = genTaskCacheKey(functionName, sketch.properties, {

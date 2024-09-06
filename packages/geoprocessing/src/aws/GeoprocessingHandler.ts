@@ -332,9 +332,9 @@ export class GeoprocessingHandler<
 
           return promise;
         } catch (e: unknown) {
-          let failureMessage = `Exception running geoprocessing function ${this.options.title}, ${request.cacheKey}`;
+          let failureMessage = `Error while running geoprocessing function ${this.options.title}`;
           if (e instanceof Error) {
-            failureMessage += `:\n ${e.message} \n ${e.stack}`;
+            failureMessage += `: ${e.message}`;
           }
           console.log(failureMessage);
           if (e instanceof Error) {

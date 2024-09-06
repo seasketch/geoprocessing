@@ -85,7 +85,7 @@ describe("DynamoDB local", () => {
   }, 10000);
 
   test("create new task with cache disabled should have no record", async () => {
-    const task = await Tasks.create(SERVICE_NAME, undefined, undefined, true);
+    const task = await Tasks.create(SERVICE_NAME, { disableServerCache: true });
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
@@ -101,7 +101,7 @@ describe("DynamoDB local", () => {
   }, 10000);
 
   test("create new async task", async () => {
-    const task = await Tasks.create(SERVICE_NAME, undefined, "wssabc123");
+    const task = await Tasks.create(SERVICE_NAME, { wss: "wssabc123" });
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
@@ -129,7 +129,7 @@ describe("DynamoDB local", () => {
   });
 
   test("create task with a cacheKey id", async () => {
-    const task = await Tasks.create(SERVICE_NAME, "my-cache-key");
+    const task = await Tasks.create(SERVICE_NAME, { id: "my-cache-key" });
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
@@ -200,7 +200,7 @@ describe("DynamoDB local", () => {
   });
 
   test("completed task with disabled cached should return no result", async () => {
-    const task = await Tasks.create(SERVICE_NAME, undefined, undefined, true);
+    const task = await Tasks.create(SERVICE_NAME, { disableServerCache: true });
     const metrics = [createMetric({ value: 15, sketchId: "test" })];
     const response = await Tasks.complete(task, {
       metrics,

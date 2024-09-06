@@ -72,26 +72,10 @@ export async function runLambdaWorker(
   })();
   const payload = JSON.stringify(workerRequest, null, 2);
 
-  // Configure task
-  const location = `/${region}/tasks/${cacheKey}`;
-  const task: GeoprocessingTask = {
-    id: cacheKey,
-    service: region,
-    wss: "",
-    location,
-    startedAt: new Date().toISOString(),
-    logUriTemplate: `${location}/logs{?limit,nextToken}`,
-    geometryUri: `${location}/geometry`,
-    status: GeoprocessingTaskStatus.Pending,
-    estimate: 2,
-    disableServerCache,
-  };
-
   const client = new LambdaClient({});
   return client.send(
     new InvokeCommand({
       FunctionName: `gp-${projectName}-sync-${functionName}`,
-      ClientContext: Buffer.from(JSON.stringify(task)).toString("base64"),
       InvocationType: "RequestResponse",
       Payload: payload,
     })

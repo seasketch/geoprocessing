@@ -31,7 +31,8 @@ export interface GeoprocessingTask<ResultType = any> {
   logUriTemplate: string;
   geometryUri: string;
   status: GeoprocessingTaskStatus;
-  wss: string; // websocket for listening to status updates
+  /** websocket url */
+  wss: string;
   data?: ResultType; // result data can take any json-serializable form
   error?: string;
   estimate: number;
@@ -75,6 +76,7 @@ export default class TasksModel {
   init(
     service: string,
     id?: string,
+    /** websocket url */
     wss?: string,
     startedAt?: string,
     duration?: number,
@@ -100,13 +102,16 @@ export default class TasksModel {
 
   async create(
     service: string,
-    /** Cache key */
-    id?: string,
-    wss?: string,
-    disableServerCache?: boolean
+    options: {
+      /** Unique identifier for this task, used as cache key.  If not provided a uuid is created */
+      id?: string;
+      /** websocket url */
+      wss?: string;
+      disableServerCache?: boolean;
+    } = {}
   ) {
-    const task = this.init(service, id, wss);
-    task.disableServerCache = disableServerCache;
+    const task = this.init(service, options.id, options.wss);
+    task.disableServerCache = options.disableServerCache;
 
     try {
       let estimate = await this.getMeanEstimate(task);

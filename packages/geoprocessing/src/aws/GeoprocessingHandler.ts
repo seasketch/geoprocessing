@@ -132,8 +132,8 @@ export class GeoprocessingHandler<
     const { Tasks, options } = this;
     const serviceName = options.title;
 
-    console.log("event", JSON.stringify(event, null, 2));
-    console.log("context", JSON.stringify(context, null, 2));
+    // console.log("event", JSON.stringify(event, null, 2));
+    // console.log("context", JSON.stringify(context, null, 2));
 
     const request = this.parseRequest<G>(event);
 
@@ -258,12 +258,11 @@ export class GeoprocessingHandler<
       wss = request.wss;
     }
 
-    let task: GeoprocessingTask = await Tasks.create(
-      serviceName,
-      request.cacheKey,
+    let task: GeoprocessingTask = await Tasks.create(serviceName, {
+      id: request.cacheKey,
       wss,
-      request.disableServerCache
-    );
+      disableServerCache: request.disableServerCache,
+    });
 
     if (
       this.options.executionMode === "sync" ||

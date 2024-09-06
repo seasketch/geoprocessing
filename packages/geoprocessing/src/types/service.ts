@@ -124,10 +124,14 @@ export interface GeoprocessingRequestModel<G = SketchGeometryTypes> {
   /** Additional runtime parameters */
   extraParams?: GeoprocessingRequestParams;
   token?: string;
+  /** Cache key for this task */
   cacheKey?: string;
   wss?: string;
+  /** If true, only check cache and do not run worker */
   checkCacheOnly?: string;
   onSocketConnect?: string;
+  /** If true, task state and result is not cached server-side.  Only use for sync functions in a worker use case where its results are not needed */
+  disableCache?: boolean;
 }
 
 /**

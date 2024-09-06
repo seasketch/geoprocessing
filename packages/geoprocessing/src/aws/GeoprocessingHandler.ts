@@ -132,6 +132,9 @@ export class GeoprocessingHandler<
     const { Tasks, options } = this;
     const serviceName = options.title;
 
+    // console.log("event", JSON.stringify(event, null, 2));
+    // console.log("context", JSON.stringify(context, null, 2));
+
     const request = this.parseRequest<G>(event);
 
     const handlerTime = Date.now();
@@ -255,11 +258,11 @@ export class GeoprocessingHandler<
       wss = request.wss;
     }
 
-    let task: GeoprocessingTask = await Tasks.create(
-      serviceName,
-      request.cacheKey,
-      wss
-    );
+    let task: GeoprocessingTask = await Tasks.create(serviceName, {
+      id: request.cacheKey,
+      wss,
+      disableCache: request.disableCache,
+    });
 
     if (
       this.options.executionMode === "sync" ||
@@ -328,21 +331,29 @@ export class GeoprocessingHandler<
 
           return promise;
         } catch (e: unknown) {
-          let sname = encodeURIComponent(task.service);
-          let ck = encodeURIComponent(task.id || "");
-          let wssUrl =
-            task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
+          let failureMessage = `Error while running geoprocessing function ${this.options.title}`;
+          if (e instanceof Error) {
+            failureMessage += `: ${e.message}`;
+          }
+          console.log(failureMessage);
+          if (e instanceof Error) {
+            console.error(e.message);
+            console.error(e.stack);
+          }
 
-          let failureMessage =
-            e instanceof Error
-              ? `Exception running geoprocessing function ${this.options.title}: \n${e.stack}`
-              : `Exception running geoprocessing function ${this.options.title}`;
-          await this.sendSocketErrorMessage(
-            wssUrl,
-            request.cacheKey,
-            serviceName,
-            failureMessage
-          );
+          if (this.options.executionMode !== "sync") {
+            let sname = encodeURIComponent(task.service);
+            let ck = encodeURIComponent(task.id || "");
+            let wssUrl =
+              task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
+            await this.sendSocketErrorMessage(
+              wssUrl,
+              request.cacheKey,
+              serviceName,
+              failureMessage
+            );
+          }
+
           let failedTask = await Tasks.fail(task, failureMessage);
           return failedTask;
         }
@@ -426,6 +437,8 @@ export class GeoprocessingHandler<
       data: data,
     });
 
+    console.log("sendSocketErrorMessage", message);
+
     socket.send(message);
     socket.close(1000, serviceName);
   }
@@ -452,6 +465,7 @@ export class GeoprocessingHandler<
       message: "sendmessage",
       data: data,
     });
+    console.log("sendSocketMessage", message);
     socket.send(message);
     socket.close(1000, serviceName);
   }

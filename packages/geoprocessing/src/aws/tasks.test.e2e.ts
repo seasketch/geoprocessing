@@ -84,8 +84,24 @@ describe("DynamoDB local", () => {
     expect(item && item.Item && item.Item.id).toBe(task.id);
   }, 10000);
 
+  test("create new task with cache disabled should have no record", async () => {
+    const task = await Tasks.create(SERVICE_NAME, { disableCache: true });
+    expect(typeof task.id).toBe("string");
+    expect(task.status).toBe("pending");
+    // make sure it saves to the db
+    const item = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
+    console.log(JSON.stringify(item, null, 2));
+    expect(item.Item).toBeUndefined();
+  }, 10000);
+
   test("create new async task", async () => {
-    const task = await Tasks.create(SERVICE_NAME, undefined, "wssabc123");
+    const task = await Tasks.create(SERVICE_NAME, { wss: "wssabc123" });
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
@@ -113,7 +129,7 @@ describe("DynamoDB local", () => {
   });
 
   test("create task with a cacheKey id", async () => {
-    const task = await Tasks.create(SERVICE_NAME, "my-cache-key");
+    const task = await Tasks.create(SERVICE_NAME, { id: "my-cache-key" });
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
@@ -181,6 +197,19 @@ describe("DynamoDB local", () => {
     expect(cachedMetrics).toBeTruthy();
     expect(isMetricArray(cachedMetrics)).toBe(true);
     expect(deepEqual(cachedMetrics, metrics)).toBe(true);
+  });
+
+  test("completed task with disabled cached should return no result", async () => {
+    const task = await Tasks.create(SERVICE_NAME, { disableCache: true });
+    const metrics = [createMetric({ value: 15, sketchId: "test" })];
+    const response = await Tasks.complete(task, {
+      metrics,
+    });
+    expect(response.statusCode).toBe(200);
+
+    const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
+
+    expect(cachedResult).toBeUndefined();
   });
 
   test("tasks for multiple services should not get mixed", async () => {

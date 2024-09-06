@@ -54,6 +54,7 @@ export async function runLambdaWorker(
       geometryUri: request.geometryUri,
       extraParams: functionParameters,
       cacheKey,
+      disableServerCache,
     };
 
     // Encode sketch to geobuf if larger than max request size

@@ -116,9 +116,9 @@ export default class TasksModel {
     }
 
     const shouldCache =
-      task.disableServerCache === undefined || task.disableServerCache === false
-        ? true
-        : false;
+      task.disableServerCache === undefined ||
+      task.disableServerCache === false;
+
     if (shouldCache) {
       await this.db.send(
         new PutCommand({
@@ -148,9 +148,9 @@ export default class TasksModel {
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
     const shouldCache =
-      task.disableServerCache === undefined || task.disableServerCache === false
-        ? true
-        : false;
+      task.disableServerCache === undefined ||
+      task.disableServerCache === false;
+
     console.log("shouldCache", shouldCache);
 
     if (shouldCache) {
@@ -328,9 +328,8 @@ export default class TasksModel {
     task.error = errorDescription;
 
     const shouldCache =
-      task.disableServerCache === undefined || task.disableServerCache === false
-        ? true
-        : false;
+      task.disableServerCache === undefined ||
+      task.disableServerCache === false;
 
     if (shouldCache) {
       await this.db.send(

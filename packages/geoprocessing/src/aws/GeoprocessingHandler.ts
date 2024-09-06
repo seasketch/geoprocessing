@@ -132,6 +132,9 @@ export class GeoprocessingHandler<
     const { Tasks, options } = this;
     const serviceName = options.title;
 
+    console.log("event", JSON.stringify(event, null, 2));
+    console.log("context", JSON.stringify(context, null, 2));
+
     const request = this.parseRequest<G>(event);
 
     const handlerTime = Date.now();
@@ -258,7 +261,8 @@ export class GeoprocessingHandler<
     let task: GeoprocessingTask = await Tasks.create(
       serviceName,
       request.cacheKey,
-      wss
+      wss,
+      request.disableServerCache
     );
 
     if (

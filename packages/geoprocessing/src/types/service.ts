@@ -131,7 +131,7 @@ export interface GeoprocessingRequestModel<G = SketchGeometryTypes> {
   checkCacheOnly?: string;
   onSocketConnect?: string;
   /** If true, task state and result is not cached server-side.  Only use for sync functions in a worker use case where its results are not needed */
-  disableServerCache?: boolean;
+  disableCache?: boolean;
 }
 
 /**

@@ -261,7 +261,7 @@ export class GeoprocessingHandler<
     let task: GeoprocessingTask = await Tasks.create(serviceName, {
       id: request.cacheKey,
       wss,
-      disableServerCache: request.disableServerCache,
+      disableCache: request.disableCache,
     });
 
     if (

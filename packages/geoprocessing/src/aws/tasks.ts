@@ -36,7 +36,7 @@ export interface GeoprocessingTask<ResultType = any> {
   data?: ResultType; // result data can take any json-serializable form
   error?: string;
   estimate: number;
-  disableServerCache?: boolean; // whether to cache the result server-side, defaults to true
+  disableCache?: boolean; // whether to cache the result server-side, defaults to true
   // ttl?: number;
 }
 
@@ -107,11 +107,11 @@ export default class TasksModel {
       id?: string;
       /** websocket url */
       wss?: string;
-      disableServerCache?: boolean;
+      disableCache?: boolean;
     } = {}
   ) {
     const task = this.init(service, options.id, options.wss);
-    task.disableServerCache = options.disableServerCache;
+    task.disableCache = options.disableCache;
 
     try {
       let estimate = await this.getMeanEstimate(task);
@@ -121,8 +121,7 @@ export default class TasksModel {
     }
 
     const shouldCache =
-      task.disableServerCache === undefined ||
-      task.disableServerCache === false;
+      task.disableCache === undefined || task.disableCache === false;
 
     if (shouldCache) {
       await this.db.send(
@@ -153,8 +152,7 @@ export default class TasksModel {
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
 
     const shouldCache =
-      task.disableServerCache === undefined ||
-      task.disableServerCache === false;
+      task.disableCache === undefined || task.disableCache === false;
 
     console.log("shouldCache", shouldCache);
 
@@ -333,8 +331,7 @@ export default class TasksModel {
     task.error = errorDescription;
 
     const shouldCache =
-      task.disableServerCache === undefined ||
-      task.disableServerCache === false;
+      task.disableCache === undefined || task.disableCache === false;
 
     if (shouldCache) {
       await this.db.send(

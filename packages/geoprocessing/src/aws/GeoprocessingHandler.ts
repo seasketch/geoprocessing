@@ -332,21 +332,29 @@ export class GeoprocessingHandler<
 
           return promise;
         } catch (e: unknown) {
-          let sname = encodeURIComponent(task.service);
-          let ck = encodeURIComponent(task.id || "");
-          let wssUrl =
-            task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
+          let failureMessage = `Exception running geoprocessing function ${this.options.title}, ${request.cacheKey}`;
+          if (e instanceof Error) {
+            failureMessage += `:\n ${e.message} \n ${e.stack}`;
+          }
+          console.log(failureMessage);
+          if (e instanceof Error) {
+            console.error(e.message);
+            console.error(e.stack);
+          }
 
-          let failureMessage =
-            e instanceof Error
-              ? `Exception running geoprocessing function ${this.options.title}: \n${e.stack}`
-              : `Exception running geoprocessing function ${this.options.title}`;
-          await this.sendSocketErrorMessage(
-            wssUrl,
-            request.cacheKey,
-            serviceName,
-            failureMessage
-          );
+          if (this.options.executionMode !== "sync") {
+            let sname = encodeURIComponent(task.service);
+            let ck = encodeURIComponent(task.id || "");
+            let wssUrl =
+              task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
+            await this.sendSocketErrorMessage(
+              wssUrl,
+              request.cacheKey,
+              serviceName,
+              failureMessage
+            );
+          }
+
           let failedTask = await Tasks.fail(task, failureMessage);
           return failedTask;
         }
@@ -430,6 +438,8 @@ export class GeoprocessingHandler<
       data: data,
     });
 
+    console.log("sendSocketErrorMessage", message);
+
     socket.send(message);
     socket.close(1000, serviceName);
   }
@@ -456,6 +466,7 @@ export class GeoprocessingHandler<
       message: "sendmessage",
       data: data,
     });
+    console.log("sendSocketMessage", message);
     socket.send(message);
     socket.close(1000, serviceName);
   }

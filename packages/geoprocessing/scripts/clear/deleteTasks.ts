@@ -36,11 +36,13 @@ export async function deleteTasks(
   let hasItems = false;
   // let batchNum: number = 0;
   // Each page of results will often have less than number we can delete at a time so we build up batch until ready
+  // Unclear if for await loop on pager (async generator) is synchronous in that next iteration starts before first is done
   for await (const result of pager) {
     if (result && result.Items && Object.keys(result.Items).length > 0) {
       hasItems = true;
       // synchronous for loop
-      for (const item of result.Items) {
+      for (let i = 0; i <= result.Items.length - 1; i++) {
+        const item = result.Items[i];
         taskKeys.push({
           id: item.id,
           service: item.service,

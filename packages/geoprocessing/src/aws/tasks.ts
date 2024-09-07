@@ -5,14 +5,13 @@ import {
   UpdateCommand,
   PutCommand,
   GetCommand,
-  QueryCommand,
   paginateQuery,
   DynamoDBDocumentPaginationConfiguration,
   QueryCommandInput,
 } from "@aws-sdk/lib-dynamodb";
+import { updateCommandsSync } from "./dynamodb/updateCommandsSync.js";
 
 import { JSONValue } from "../types/base.js";
-import { toJsonFile } from "../helpers/fs.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -165,10 +164,11 @@ export default class TasksModel {
       console.timeEnd(`split strings - ${tsStrings}`);
       const numJsonStrings = jsonStrings.length;
 
-      // Update root task
+      const updateCommands: UpdateCommand[] = [];
+
+      // push root task
       const tsRootChunk = Date.now();
-      console.time(`save root - ${tsRootChunk}`);
-      await this.db.send(
+      updateCommands.push(
         new UpdateCommand({
           TableName: this.table,
           Key: {
@@ -189,7 +189,6 @@ export default class TasksModel {
           },
         })
       );
-      console.timeEnd(`save root - ${tsRootChunk}`);
 
       // const jsonStringsHash = jsonStrings.reduce<Record<string, string>>(
       //   (acc, curString, index) => {
@@ -201,11 +200,10 @@ export default class TasksModel {
 
       // Store each JSON substring as a separate dynamodb item, with chunk index
       // all under same partition key (task.id) as root item for easy retrieval
-      console.log(`Saving ${jsonStrings.length} chunks`);
-      const promises = jsonStrings.map(async (chunk, index) => {
+      jsonStrings.forEach((chunk, index) => {
         console.log("chunk", chunk);
         console.log(`Chunk ${index} - ${chunk.length} length`);
-        return this.db.send(
+        updateCommands.push(
           new UpdateCommand({
             TableName: this.table,
             Key: {
@@ -227,10 +225,12 @@ export default class TasksModel {
           })
         );
       });
+
+      console.log(`Saving items, root + ${jsonStrings.length} chunks`);
       const tsSaveChunk = Date.now();
-      console.time(`save chunks - ${tsSaveChunk}`);
-      await Promise.all(promises);
-      console.timeEnd(`save chunks - ${tsSaveChunk}`);
+      console.time(`save items - ${tsSaveChunk}`);
+      await updateCommandsSync(this.db, updateCommands);
+      console.timeEnd(`save items - ${tsSaveChunk}`);
     }
 
     return {

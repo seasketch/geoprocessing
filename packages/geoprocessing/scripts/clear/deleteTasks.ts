@@ -8,7 +8,6 @@ import { scanTasks } from "../../src/aws/dynamodb/scanTasks.js";
 import { wait } from "../../src/helpers/wait.js";
 
 const MAX_BATCH_DELETE = 25; // 25 is the maximum number of items that can be deleted in a single batch
-const WAIT_TIME = 2000; // 2 seconds between batch deletes, to avoid throttling
 
 /**
  * Clear all results from task table
@@ -17,8 +16,13 @@ const WAIT_TIME = 2000; // 2 seconds between batch deletes, to avoid throttling
 export async function deleteTasks(
   projectName: string,
   region: string,
-  serviceName?: string
+  serviceName?: string,
+  options: {
+    /** Time in milliseconds to wait after each batch deleted, helps avoid throttling */
+    waitTime?: number;
+  } = {}
 ) {
+  const { waitTime = 0 } = options;
   const tableName = `gp-${projectName}-tasks`;
   const docClient = DynamoDBDocument.from(
     new DynamoDBClient({
@@ -35,7 +39,8 @@ export async function deleteTasks(
   for await (const result of pager) {
     if (result && result.Items && Object.keys(result.Items).length > 0) {
       hasItems = true;
-      result.Items.forEach(async (item) => {
+      // synchronous for loop
+      for (const item of result.Items) {
         taskKeys.push({
           id: item.id,
           service: item.service,
@@ -45,9 +50,11 @@ export async function deleteTasks(
         if (taskKeys.length >= MAX_BATCH_DELETE) {
           const taskKeyBatch = taskKeys.splice(0, MAX_BATCH_DELETE); // deletes items from taskKeys array
           await batchDeleteTasks(docClient, taskKeyBatch, tableName);
-          await wait(WAIT_TIME);
+          if (waitTime > 0) {
+            await wait(waitTime);
+          }
         }
-      });
+      }
     }
   }
 

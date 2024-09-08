@@ -228,6 +228,7 @@ export default class TasksModel {
 
       console.log(`Saving items, root + ${jsonStrings.length} chunks`);
       const tsSaveChunk = Date.now();
+
       console.time(`save items - ${tsSaveChunk}`);
       await updateCommandsSync(this.db, updateCommands);
       console.timeEnd(`save items - ${tsSaveChunk}`);
@@ -395,10 +396,6 @@ export default class TasksModel {
       // Build list of items, page by page
       const items: Record<string, any>[] = [];
       for await (const result of pager) {
-        console.log(
-          "page",
-          result.Items?.map((item) => item.service).join(", ")
-        );
         if (result && result.Items) {
           items.push(...result.Items);
         }
@@ -406,16 +403,12 @@ export default class TasksModel {
 
       if (!items || items.length === 0) return undefined;
 
-      items.forEach((item, index) => {
-        console.log(
-          `item ${index}`,
-          item.service,
-          JSON.stringify(item, null, 2)
-        );
-      });
+      // items.forEach((item, index) => {
+      //   console.log(`item ${index}`, item.service);
+      // });
 
-      console.log("itemsLength", items.length);
-      console.log("items", items.map((item) => item.service).join(", "));
+      // console.log("itemsLength", items.length);
+      // console.log("items", items.map((item) => item.service).join(", "));
 
       // Filter down to root and chunk items for service
       const serviceItems = items.filter((item) =>
@@ -423,34 +416,36 @@ export default class TasksModel {
       );
 
       // console.log("serviceItemsLength", serviceItems.length);
-      // serviceItems.forEach((item, index) => {
-      //   console.log(`serviceItem ${index}`, JSON.stringify(item, null, 2));
-      // });
+      console.log(
+        "serviceItems",
+        serviceItems.map((item) => item.service).join(", ")
+      );
 
       const rootItemIndex = serviceItems.findIndex(
         (item) => item.service === service
       );
+
       // console.log("rootItemIndex", rootItemIndex);
 
       // Remove root item, mutating serviceItems
       const rootItem = serviceItems.splice(rootItemIndex, 1)[0];
 
-      console.log("serviceItemsLength", serviceItems.length);
-      console.log(
-        "serviceItems",
-        serviceItems.map((item) => item.service).join(", ")
-      );
+      // console.log("serviceItemsLength", serviceItems.length);
+      // console.log(
+      //   "serviceItems",
+      //   serviceItems.map((item) => item.service).join(", ")
+      // );
 
       // Filter for chunk items for this service, just in case there's more under partition key
       const chunkItems = serviceItems.filter((item) =>
         item.service.includes(`${service}-chunk`)
       );
 
-      console.log("chunkItemsLength", chunkItems.length);
-      console.log(
-        "chunkItems",
-        chunkItems.map((item) => item.service).join(", ")
-      );
+      // console.log("chunkItemsLength", chunkItems.length);
+      // console.log(
+      //   "chunkItems",
+      //   chunkItems.map((item) => item.service).join(", ")
+      // );
 
       // chunkItems.forEach((item, index) => {
       //   console.log(`chunkItem ${index}`, JSON.stringify(item, null, 2));
@@ -468,10 +463,10 @@ export default class TasksModel {
           })
           .map((item) => item.data.chunk);
 
-        console.log(
-          "chunkItemsSorted",
-          chunkItems.map((item) => item.service).join(", ")
-        );
+        // console.log(
+        //   "chunkItemsSorted",
+        //   chunkItems.map((item) => item.service).join(", ")
+        // );
 
         rootItem.data = this.fromJsonStrings(chunkStrings);
       }

@@ -5,14 +5,13 @@ import {
   UpdateCommand,
   PutCommand,
   GetCommand,
-  QueryCommand,
   paginateQuery,
   DynamoDBDocumentPaginationConfiguration,
   QueryCommandInput,
 } from "@aws-sdk/lib-dynamodb";
+import { updateCommandsSync } from "./dynamodb/updateCommandsSync.js";
 
 import { JSONValue } from "../types/base.js";
-import { toJsonFile } from "../helpers/fs.js";
 
 export const commonHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -165,10 +164,11 @@ export default class TasksModel {
       console.timeEnd(`split strings - ${tsStrings}`);
       const numJsonStrings = jsonStrings.length;
 
-      // Update root task
+      const updateCommands: UpdateCommand[] = [];
+
+      // push root task
       const tsRootChunk = Date.now();
-      console.time(`save root - ${tsRootChunk}`);
-      await this.db.send(
+      updateCommands.push(
         new UpdateCommand({
           TableName: this.table,
           Key: {
@@ -189,7 +189,6 @@ export default class TasksModel {
           },
         })
       );
-      console.timeEnd(`save root - ${tsRootChunk}`);
 
       // const jsonStringsHash = jsonStrings.reduce<Record<string, string>>(
       //   (acc, curString, index) => {
@@ -201,11 +200,10 @@ export default class TasksModel {
 
       // Store each JSON substring as a separate dynamodb item, with chunk index
       // all under same partition key (task.id) as root item for easy retrieval
-      console.log(`Saving ${jsonStrings.length} chunks`);
-      const promises = jsonStrings.map(async (chunk, index) => {
+      jsonStrings.forEach((chunk, index) => {
         console.log("chunk", chunk);
         console.log(`Chunk ${index} - ${chunk.length} length`);
-        return this.db.send(
+        updateCommands.push(
           new UpdateCommand({
             TableName: this.table,
             Key: {
@@ -227,10 +225,13 @@ export default class TasksModel {
           })
         );
       });
+
+      console.log(`Saving items, root + ${jsonStrings.length} chunks`);
       const tsSaveChunk = Date.now();
-      console.time(`save chunks - ${tsSaveChunk}`);
-      await Promise.all(promises);
-      console.timeEnd(`save chunks - ${tsSaveChunk}`);
+
+      console.time(`save items - ${tsSaveChunk}`);
+      await updateCommandsSync(this.db, updateCommands);
+      console.timeEnd(`save items - ${tsSaveChunk}`);
     }
 
     return {
@@ -402,13 +403,12 @@ export default class TasksModel {
 
       if (!items || items.length === 0) return undefined;
 
-      items.forEach((item, index) => {
-        console.log(
-          `item ${index}`,
-          item.service,
-          JSON.stringify(item, null, 2)
-        );
-      });
+      // items.forEach((item, index) => {
+      //   console.log(`item ${index}`, item.service);
+      // });
+
+      // console.log("itemsLength", items.length);
+      // console.log("items", items.map((item) => item.service).join(", "));
 
       // Filter down to root and chunk items for service
       const serviceItems = items.filter((item) =>
@@ -416,21 +416,36 @@ export default class TasksModel {
       );
 
       // console.log("serviceItemsLength", serviceItems.length);
-      // serviceItems.forEach((item, index) => {
-      //   console.log(`serviceItem ${index}`, JSON.stringify(item, null, 2));
-      // });
+      console.log(
+        "serviceItems",
+        serviceItems.map((item) => item.service).join(", ")
+      );
 
       const rootItemIndex = serviceItems.findIndex(
         (item) => item.service === service
       );
+
       // console.log("rootItemIndex", rootItemIndex);
 
-      // Remove root item.
-      const rootItem = serviceItems.splice(rootItemIndex, 1)[0]; // mutates items
+      // Remove root item, mutating serviceItems
+      const rootItem = serviceItems.splice(rootItemIndex, 1)[0];
+
+      // console.log("serviceItemsLength", serviceItems.length);
+      // console.log(
+      //   "serviceItems",
+      //   serviceItems.map((item) => item.service).join(", ")
+      // );
+
       // Filter for chunk items for this service, just in case there's more under partition key
       const chunkItems = serviceItems.filter((item) =>
         item.service.includes(`${service}-chunk`)
       );
+
+      // console.log("chunkItemsLength", chunkItems.length);
+      // console.log(
+      //   "chunkItems",
+      //   chunkItems.map((item) => item.service).join(", ")
+      // );
 
       // chunkItems.forEach((item, index) => {
       //   console.log(`chunkItem ${index}`, JSON.stringify(item, null, 2));
@@ -439,7 +454,20 @@ export default class TasksModel {
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {
         console.log(`Merging ${chunkItems.length} chunks`);
-        const chunkStrings = chunkItems.map((item) => item.data.chunk);
+        // parse chunk number from service name and sort by chunk number
+        const chunkStrings = chunkItems
+          .sort((a, b) => {
+            const aNum = parseInt(a.service.split("-chunk-")[1]);
+            const bNum = parseInt(b.service.split("-chunk-")[1]);
+            return aNum - bNum;
+          })
+          .map((item) => item.data.chunk);
+
+        // console.log(
+        //   "chunkItemsSorted",
+        //   chunkItems.map((item) => item.service).join(", ")
+        // );
+
         rootItem.data = this.fromJsonStrings(chunkStrings);
       }
 

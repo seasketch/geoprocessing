@@ -14,7 +14,6 @@ import {
   JSONValue,
 } from "../types/index.js";
 import { genTaskCacheKey } from "../helpers/genTaskCacheKey.js";
-import { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks.js";
 import { byteSize } from "../util/byteSize.js";
 
 /**

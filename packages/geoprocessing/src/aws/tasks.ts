@@ -459,7 +459,20 @@ export default class TasksModel {
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {
         console.log(`Merging ${chunkItems.length} chunks`);
-        const chunkStrings = chunkItems.map((item) => item.data.chunk);
+        // parse chunk number from service name and sort by chunk number
+        const chunkStrings = chunkItems
+          .sort((a, b) => {
+            const aNum = parseInt(a.service.split("-chunk-")[1]);
+            const bNum = parseInt(b.service.split("-chunk-")[1]);
+            return aNum - bNum;
+          })
+          .map((item) => item.data.chunk);
+
+        console.log(
+          "chunkItemsSorted",
+          chunkItems.map((item) => item.service).join(", ")
+        );
+
         rootItem.data = this.fromJsonStrings(chunkStrings);
       }
 

@@ -9,6 +9,7 @@ import { CloudArrowDown } from "@styled-icons/bootstrap/CloudArrowDown/CloudArro
 import { useTranslation } from "react-i18next";
 
 // Strictly limit format and data types accepted
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const SUPPORTED_FORMATS = ["json", "csv"] as const;
 export type SUPPORTED_FORMAT = (typeof SUPPORTED_FORMATS)[number];
 export type StringOrNumber = string | number;
@@ -86,7 +87,7 @@ export const DataDownload = ({
     try {
       const [{ name }] = useSketchProperties();
       return name;
-    } catch (error) {
+    } catch {
       return "";
     }
   })();

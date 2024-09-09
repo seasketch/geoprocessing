@@ -3,7 +3,7 @@ import {
   GeoprocessingServiceMetadata,
   PreprocessingServiceMetadata,
 } from "../src/types/index.js";
-import { VectorDataSourceDetails } from "../src/index.js";
+import { hasOwnProperty, VectorDataSourceDetails } from "../src/index.js";
 
 /**
  * Select metadata of GeoprocessingBundle for manifest
@@ -83,9 +83,9 @@ export const isGeoprocessingFunctionMetadata = (
 ): meta is GeoprocessingFunctionMetadata => {
   return (
     meta &&
-    meta.hasOwnProperty("purpose") &&
+    hasOwnProperty(meta, "purpose") &&
     meta.purpose === "geoprocessing" &&
-    meta.hasOwnProperty("executionMode") &&
+    hasOwnProperty(meta, "executionMode") &&
     (meta.executionMode === "async" || meta.executionMode === "sync")
   );
 };
@@ -96,9 +96,9 @@ export const isPreprocessingFunctionMetadata = (
 ): meta is PreprocessingFunctionMetadata => {
   return (
     meta &&
-    meta.hasOwnProperty("purpose") &&
+    hasOwnProperty(meta, "purpose") &&
     meta.purpose === "preprocessing" &&
-    !meta.hasOwnProperty("executionMode")
+    !hasOwnProperty(meta, "executionMode")
   );
 };
 

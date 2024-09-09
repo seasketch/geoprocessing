@@ -69,7 +69,7 @@ export function createI18nAsyncInstance(
             baseLangResources = JSON.parse(
               ((await curModule()) as unknown as any).default,
             );
-          } catch (error: unknown) {
+          } catch {
             console.info(`Warning: failed to find base lang resource.`);
           }
           console.log("language baseLangResources", baseLangResources);
@@ -86,7 +86,7 @@ export function createI18nAsyncInstance(
               } else {
                 langResources = {};
               }
-            } catch (error: unknown) {
+            } catch {
               console.info(`Warning: failed to find lang resource.`);
             }
           }

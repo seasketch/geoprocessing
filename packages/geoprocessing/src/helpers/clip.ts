@@ -37,7 +37,7 @@ export function clip<
   geomEach(features, (geom) => {
     coords.push(geom.coordinates);
   });
-  //@ts-ignore
+  //@ts-expect-error type mismatch
   const clipped = polygonClipping[operation](coords[0], ...coords.slice(1));
 
   if (clipped.length === 0) return null;
@@ -75,7 +75,6 @@ export function clipMultiMerge<
   const geom1 = getGeom(feature1);
   // Combine into one multipoly coordinate array
   const coords2 = (() => {
-    //@ts-ignore
     return features2.features.reduce<MultiPolygon["coordinates"]>(
       (acc, poly) => {
         if (poly.geometry.type === "Polygon") {

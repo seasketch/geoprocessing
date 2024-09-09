@@ -5,7 +5,7 @@ import SketchAttributesCard from "./SketchAttributesCard.js";
 import { ReportContext } from "../context/index.js";
 
 test("SketchAttributesCard renders all userAttributes", () => {
-  const { getByRole, getByText, getAllByText } = render(
+  const { getAllByText } = render(
     <ReportContext.Provider
       value={{
         geometryUri: `https://localhost/geom/abc123`,
@@ -44,7 +44,7 @@ test("SketchAttributesCard renders all userAttributes", () => {
 });
 
 test("Can deal with null values", () => {
-  const { getByRole, getByText, getAllByText } = render(
+  const { getAllByText } = render(
     <ReportContext.Provider
       value={{
         geometryUri: `https://localhost/geom/abc123`,
@@ -83,7 +83,7 @@ test("Can deal with null values", () => {
 });
 
 test("SketchAttributesCard autoHide option hides card if there are no attributes", () => {
-  const { getByRole, getByText, getAllByText } = render(
+  const { getAllByText } = render(
     <ReportContext.Provider
       value={{
         geometryUri: `https://localhost/geom/abc123`,

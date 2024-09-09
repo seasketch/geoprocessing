@@ -12,7 +12,6 @@ import deepEqual from "fast-deep-equal";
  * @param idProperty - property in Feature B to track if overlap already found.
  * Useful if multiple features have same property value and you only want the first match.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function booleanOverlap<B extends Feature<any>>(
   featureAInput: Feature<Geometry> | Feature<Geometry>[],
   featureBInput: B | B[],

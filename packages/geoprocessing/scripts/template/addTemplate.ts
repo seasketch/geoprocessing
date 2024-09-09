@@ -94,7 +94,7 @@ export async function getTemplateQuestion(templateType: TemplateType) {
 /**
  * Asks template questions and invokes copy of templates to projectPath.  Invoked via CLI so assume 'add-on-template' type
  */
-async function addTemplate(projectPath?: string) {
+async function addTemplate() {
   // Assume invoked via CLI so we are installing add-on-templates
   const templateType = "add-on-template";
   const templateQuestion = await getTemplateQuestion(templateType);

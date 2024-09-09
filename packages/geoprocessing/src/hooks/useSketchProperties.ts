@@ -4,7 +4,6 @@ import { ReportContext } from "../context/index.js";
 
 function useSketchProperties(): [
   SketchProperties,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (exportId: string, defaultValue?: any) => any,
 ] {
   const context = useContext(ReportContext);
@@ -15,7 +14,6 @@ function useSketchProperties(): [
     context.sketchProperties.userAttributes || ([] as UserAttribute[]);
   return [
     context.sketchProperties,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (exportId: string, defaultValue?: any): any => {
       const userAttribute = context.sketchProperties.userAttributes.find(
         (attr) => attr.exportId === exportId,

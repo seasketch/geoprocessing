@@ -28,7 +28,7 @@ describe("geoblaze equal-area tests", () => {
     // All should pass
   });
 
-  test("cross-dateline geometry", async () => {
+  test.skip("cross-dateline geometry", async () => {
     const url =
       "http://127.0.0.1:8080/data/in/existing_marine_reserves_6933_COG.tif";
 
@@ -45,9 +45,9 @@ describe("geoblaze equal-area tests", () => {
       ],
     };
 
-    // const stats = (await geoblaze.stats(url, poly))[0];
-    // Should include 0 valid points, but cross-dateline polygons
-    // expect(stats.sum).toBe(0); // fails, geoblaze: 212
+    const stats = (await geoblaze.stats(url, poly))[0];
+    // Should include 0 valid points, unclear what is happening
+    expect(stats.sum).toBe(0); // fails, geoblaze: 212
   });
 
   test("raster and geom equal-area", async () => {

@@ -121,7 +121,6 @@ export const getRandomCategorical = (): Categorical[] => {
   }));
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const nested: Record<string, any>[] = [
   {
     propA: "a",

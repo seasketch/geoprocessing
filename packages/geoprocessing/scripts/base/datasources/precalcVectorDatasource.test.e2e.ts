@@ -88,7 +88,6 @@ describe("precalcDatasources", () => {
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-      const validGeos = geographySchema.parse(savedGeos[0]);
 
       // Verify precalc
       const metrics = fs.readJSONSync(precalcFilePath);
@@ -535,7 +534,7 @@ describe("precalcDatasources", () => {
             m.metricId === "count",
         );
         expect(shelfMediumCountMetric).toBeFalsy();
-      } catch (err: unknown) {
+      } catch {
         // Erroring is the correct behavior
       }
 
@@ -885,7 +884,6 @@ describe("precalcDatasources", () => {
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-      const validGeos = geographySchema.parse(savedGeos[0]);
 
       // Verify precalc
       const metrics = fs.readJSONSync(precalcFilePath);
@@ -982,7 +980,6 @@ describe("precalcDatasources", () => {
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-      const validGeos = geographySchema.parse(savedGeos[0]);
 
       // Verify precalc
       const metrics = fs.readJSONSync(precalcFilePath);

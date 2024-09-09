@@ -23,12 +23,12 @@ export function readGeographies(filePath?: string) {
       const geosString = fs.readFileSync(finalFilePath).toString();
       try {
         return JSON.parse(geosString);
-      } catch (err: unknown) {
+      } catch {
         throw new Error(
           `Unable to parse JSON found in ${finalFilePath}, fix it and try again`,
         );
       }
-    } catch (err: unknown) {
+    } catch {
       console.log(`Geography file not found at ${finalFilePath}`);
       fs.ensureDirSync(path.dirname(geographyConfig.defaultSrcPath));
       // fallback to default

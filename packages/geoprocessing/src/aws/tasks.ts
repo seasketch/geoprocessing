@@ -80,7 +80,6 @@ export default class TasksModel {
     startedAt?: string,
     duration?: number,
     status?: GeoprocessingTaskStatus,
-    data?: any,
   ) {
     id = id || uuid();
     const location = `/${service}/tasks/${id}`;
@@ -115,7 +114,7 @@ export default class TasksModel {
     try {
       const estimate = await this.getMeanEstimate(task);
       task.estimate = estimate;
-    } catch (e) {
+    } catch {
       //can happen when testing, will default to 1 if can't get an estimate
     }
 
@@ -167,7 +166,6 @@ export default class TasksModel {
       const updateCommands: UpdateCommand[] = [];
 
       // push root task
-      const tsRootChunk = Date.now();
       updateCommands.push(
         new UpdateCommand({
           TableName: this.table,
@@ -261,9 +259,7 @@ export default class TasksModel {
 
       const taskItem = response.Item;
 
-      //@ts-ignore
       if (taskItem && taskItem?.allEstimates) {
-        //@ts-ignore
         const allEstimates: number[] = taskItem?.allEstimates;
         //cap it at five for estimate avg
         if (allEstimates.length >= 5) {

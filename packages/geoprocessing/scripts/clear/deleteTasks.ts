@@ -32,7 +32,7 @@ export async function deleteTasks(
 
   const pager = scanTasks(docClient, tableName, serviceName);
 
-  let taskKeys: TaskKey[] = [];
+  const taskKeys: TaskKey[] = [];
   let hasItems = false;
   // let batchNum: number = 0;
   // Each page of results will often have less than number we can delete at a time so we build up batch until ready

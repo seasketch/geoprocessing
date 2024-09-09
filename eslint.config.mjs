@@ -24,14 +24,6 @@ export default [
     ],
   },
   {
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      trailingComma: "off",
-    },
-  },
-
-  {
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
   pluginJs.configs.recommended,
@@ -39,4 +31,12 @@ export default [
   pluginReact.configs.flat.recommended,
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
+  {
+    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+      trailingComma: "off",
+    },
+  },
 ];

@@ -273,7 +273,6 @@ export const HorizontalStackedBar: React.FunctionComponent<
 > = ({
   rows,
   rowConfigs,
-  max = 100,
   barHeight,
   titleWidth,
   showLegend = true,
@@ -301,14 +300,6 @@ export const HorizontalStackedBar: React.FunctionComponent<
   const rowTotals = rows.reduce<number[]>((rowSumsSoFar, row) => {
     return [...rowSumsSoFar, sumRow(row)];
   }, []);
-
-  const rowRems = rowTotals.map((rowTotal) => {
-    const rem = max - rowTotal;
-    if (rem < -0.001)
-      console.warn(
-        `Row sum of ${rowTotal} is greater than max: ${max}. Check your input data`,
-      );
-  });
 
   return (
     <StyledHorizontalStackedBar

@@ -4,7 +4,7 @@ import { WebSocketLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integra
 import { Stack } from "aws-cdk-lib";
 import config from "./config.js";
 import { CfnStage } from "aws-cdk-lib/aws-apigatewayv2";
-import { PolicyStatement, Effect, ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { PolicyStatement, Effect } from "aws-cdk-lib/aws-iam";
 import { Function } from "aws-cdk-lib/aws-lambda";
 
 /**
@@ -64,14 +64,6 @@ export const createWebSocketApi = (
   stack.projectFunctions.socketFunctions.unsubscribe.addToRolePolicy(
     socketExecutePolicy,
   );
-
-  // Allow the socket apigateway to call the socket lambdas.  Supposedly RestApi automatically creates this, but not WebSocketApi
-  // ToDo: this may not be needed?
-  const apigatewayPolicy = new PolicyStatement({
-    effect: Effect.ALLOW,
-    principals: [new ServicePrincipal("apigateway.amazonaws.com")],
-    actions: ["lambda:InvokeFunction", "sts:AssumeRole"],
-  });
 
   // Create custom routes for starting async geoprocessing functions via web socket
   stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {

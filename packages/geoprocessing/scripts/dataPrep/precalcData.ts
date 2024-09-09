@@ -56,11 +56,8 @@ void (async function () {
     if (subsetAnswer.subset === "all") {
       dsOptions.geographyMatcher = ["*"];
     } else {
-      const precalcDs = projectClient.geographies.filter(
-        (geog) => geog.precalc === true,
-      );
       // Ask user what they want to precalculate
-      const precalcGeosAnswers = await precalcWhichGeosQuestion(numGeos);
+      const precalcGeosAnswers = await precalcWhichGeosQuestion();
       if (precalcGeosAnswers.precalcWhichGeos === "list") {
         const geogAnswers = await geographiesQuestion(
           projectClient.geographies,
@@ -139,9 +136,9 @@ export interface PrecalcGeosAnswers {
   precalcWhichGeos: "list" | "all";
 }
 
-export async function precalcWhichGeosQuestion(
-  numDs: number,
-): Promise<Pick<PrecalcAnswers, "precalcWhichGeos">> {
+export async function precalcWhichGeosQuestion(): Promise<
+  Pick<PrecalcAnswers, "precalcWhichGeos">
+> {
   return inquirer.prompt<Pick<PrecalcAnswers, "precalcWhichGeos">>([
     {
       type: "list",

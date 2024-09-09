@@ -44,8 +44,6 @@ const Percent = new Intl.NumberFormat("en", {
   style: "percent",
 });
 
-const Number = new Intl.NumberFormat("en");
-
 /**
  * Types don't have to be specified for table Columns or data in simple use cases
  * but it provides you with Intellisense and can help avoid unexpected behavior
@@ -79,7 +77,7 @@ export const squeeze = () => {
     },
     {
       Header: "Count",
-      Cell: (cell) => <div>Number.format(cell.value)</div>, // Not working?
+      Cell: () => <div>Number.format(cell.value)</div>, // Not working?
       accessor: "count",
     },
     {

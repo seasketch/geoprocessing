@@ -1,11 +1,5 @@
 import { generateManifest } from "../build/generateManifest.js";
-import {
-  Package,
-  Feature,
-  FeatureCollection,
-  Point,
-  GeoprocessingJsonConfig,
-} from "../../src/types/index.js";
+import { Package, GeoprocessingJsonConfig } from "../../src/types/index.js";
 import { PreprocessingHandler, GeoprocessingHandler } from "../../src/index.js";
 import { DEFAULTS as VECTOR_SOURCE_DEFAULTS } from "../../src/index.js";
 import { point } from "@turf/turf";
@@ -48,12 +42,10 @@ export default async function createTestProjectManifest(
   interface TestResult {
     result: number;
   }
-  const testPpFunction = async (feature: Feature<Point>) => {
+  const testPpFunction = async () => {
     return point([0, 0]);
   };
-  const testGpFunction = async (
-    feature: Feature | FeatureCollection,
-  ): Promise<TestResult> => {
+  const testGpFunction = async (): Promise<TestResult> => {
     return { result: 50 };
   };
   const testSources = [

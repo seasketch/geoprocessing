@@ -21,12 +21,12 @@ export function readMetrics(filePath: string) {
       const dsString = fs.readFileSync(filePath).toString();
       try {
         return JSON.parse(dsString);
-      } catch (err: unknown) {
+      } catch {
         throw new Error(
           `Unable to parse JSON found in ${filePath}, fix it and try again`,
         );
       }
-    } catch (err: unknown) {
+    } catch {
       console.log(`Precalc file not found at ${filePath}, creating a new one`);
       fs.ensureDirSync(path.dirname(precalcConfig.defaultSrcPath));
       // fallback to default

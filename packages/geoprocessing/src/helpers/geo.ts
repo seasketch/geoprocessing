@@ -7,15 +7,16 @@ import {
   Point,
   FeatureCollection,
 } from "../types/geojson.js";
+import { hasOwnProperty } from "./native.js";
 
 /**
  * Check if object is a Feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Feature
  */
 export function isGeometry(geometry: any): geometry is Geometry {
   return (
-    geometry.hasOwnProperty("geometry") &&
-    geometry.hasOwnProperty("properties") &&
-    geometry.hasOwnProperty("type") &&
+    hasOwnProperty(geometry, "geometry") &&
+    hasOwnProperty(geometry, "properties") &&
+    hasOwnProperty(geometry, "type") &&
     geometry.type !== "Feature"
   );
 }
@@ -25,8 +26,8 @@ export function isGeometry(geometry: any): geometry is Geometry {
  */
 export function isFeature(feature: any): feature is Feature {
   return (
-    feature.hasOwnProperty("properties") &&
-    feature.hasOwnProperty("type") &&
+    hasOwnProperty(feature, "properties") &&
+    hasOwnProperty(feature, "type") &&
     feature.type === "Feature"
   );
 }
@@ -96,8 +97,8 @@ export function isFeatureCollection(
   feature: any,
 ): feature is FeatureCollection {
   return (
-    feature.hasOwnProperty("type") &&
-    feature.hasOwnProperty("features") &&
+    hasOwnProperty(feature, "type") &&
+    hasOwnProperty(feature, "features") &&
     feature.type === "FeatureCollection"
   );
 }

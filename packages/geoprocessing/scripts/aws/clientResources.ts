@@ -10,9 +10,7 @@ import {
 import {
   CloudFrontWebDistribution,
   OriginAccessIdentity,
-  ViewerProtocolPolicy,
 } from "aws-cdk-lib/aws-cloudfront";
-import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 
 /**
  * Create client bucket and deploy client build into it.  Serve via Cloudfront

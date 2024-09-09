@@ -80,12 +80,12 @@ export function readDatasources(filePath?: string) {
       const dsString = fs.readFileSync(finalFilePath).toString();
       try {
         return JSON.parse(dsString);
-      } catch (err: unknown) {
+      } catch {
         throw new Error(
           `Unable to parse JSON found in ${finalFilePath}, fix it and try again`,
         );
       }
-    } catch (err: unknown) {
+    } catch {
       console.log(
         `Datasource file not found at ${finalFilePath}, using default datasources`,
       );

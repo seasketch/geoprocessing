@@ -70,7 +70,6 @@ export const rekeyMetrics = (
   idOrder: MetricProperty[] = [...MetricProperties],
 ) => {
   return metrics.map((curMetric) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newMetric: Record<string, any> = {};
     idOrder.forEach((id) => {
       if (hasOwnProperty(curMetric, id)) newMetric[id] = curMetric[id];
@@ -131,7 +130,6 @@ export const unpackMetrics = (inMetricPack: MetricPack): Metric[] => {
 /**
  * Checks if object is a MetricPack.  Any code inside a block guarded by a conditional call to this function will have type narrowed to MetricPack
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMetricPack = (json: any): json is MetricPack => {
   return (
     json &&
@@ -145,7 +143,6 @@ export const isMetricPack = (json: any): json is MetricPack => {
 /**
  * Checks if object is a Metric array and returns narrowed type
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMetricArray = (metrics: any): metrics is Metric[] => {
   return (
     metrics &&
@@ -158,7 +155,6 @@ export const isMetricArray = (metrics: any): metrics is Metric[] => {
 /**
  * Checks if object is a Metric and returns narrowed type
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isMetric = (metric: any): metric is Metric => {
   return (
     metric &&
@@ -411,7 +407,6 @@ export const toPercentMetric = (
 export const nestMetrics = (
   metrics: Metric[],
   ids: MetricDimension[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Record<string, any> => {
   const grouped = groupBy(metrics, (curMetric) => curMetric[ids[0]]!);
   if (ids.length === 1) {

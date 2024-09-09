@@ -1,3 +1,4 @@
+import { hasOwnProperty } from "../../client-core.js";
 import createTestProjectManifest from "./createTestProjectManifest.js";
 
 describe("createTestProjectManifest", () => {
@@ -31,10 +32,12 @@ describe("createTestProjectManifest", () => {
       (f) => f.title === "testPreprocessor",
     );
     expect(syncPF).toBeTruthy();
-    expect(syncPF?.hasOwnProperty("executionMode")).toBe(false);
-    expect(syncPF?.purpose).toBe("preprocessing");
-    expect(syncPF?.handlerFilename).toBe("testPreprocessor.ts");
-    expect(syncPF?.type).toBe("javascript");
+    if (syncPF) {
+      expect(hasOwnProperty(syncPF, "executionMode")).toBe(false);
+      expect(syncPF.purpose).toBe("preprocessing");
+      expect(syncPF.handlerFilename).toBe("testPreprocessor.ts");
+      expect(syncPF.type).toBe("javascript");
+    }
 
     const syncGF = manifest.geoprocessingFunctions.find(
       (f) => f.title === "testSyncGeoprocessor",

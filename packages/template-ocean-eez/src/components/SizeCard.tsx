@@ -315,13 +315,12 @@ const genNetworkSizeTable = (
     },
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const columns: Column<any>[] = [
     {
       Header: " ",
       accessor: (row) => <b>{sketchesById[row.sketchId].properties.name}</b>,
     },
-    ...(classColumns as Column<any>[]), // eslint-disable-line @typescript-eslint/no-explicit-any
+    ...(classColumns as Column<any>[]),
   ];
 
   return (

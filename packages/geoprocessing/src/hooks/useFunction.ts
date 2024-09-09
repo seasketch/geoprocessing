@@ -84,7 +84,7 @@ export const useFunction = <ResultType>(
             context.projectUrl,
             abortController.signal,
           );
-        } catch (e) {
+        } catch {
           if (!abortController.signal.aborted) {
             setState({
               loading: false,
@@ -427,10 +427,10 @@ const getSocket = (
       }
     }
   };
-  socket.onclose = function (event) {
+  socket.onclose = function () {
     //no op
   };
-  socket.onerror = function (error) {
+  socket.onerror = function () {
     if (socket.url?.length > 0) {
       setState({
         loading: false,

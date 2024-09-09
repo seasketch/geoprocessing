@@ -2,7 +2,6 @@ import { describe, test, expect } from "vitest";
 import { loadCog, loadCogWindow } from "./cog.js";
 import { Feature, Polygon, Sketch } from "../types/index.js";
 import { genSampleSketch } from "../helpers/index.js";
-// @ts-ignore
 import geoblaze from "geoblaze";
 import parseGeoraster from "georaster";
 

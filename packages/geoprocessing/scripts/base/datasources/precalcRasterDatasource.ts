@@ -16,7 +16,6 @@ import {
 } from "../../../src/index.js";
 import { bbox } from "@turf/turf";
 
-// @ts-ignore
 import geoblaze from "geoblaze";
 import { getGeographyFeatures } from "../geographies/helpers.js";
 

@@ -7,7 +7,7 @@ import { wait } from "../../helpers/wait.js";
  */
 export async function updateCommandsSync(
   db: DynamoDBDocument,
-  commands: UpdateCommand[]
+  commands: UpdateCommand[],
 ) {
   for (let i = 0; i <= commands.length - 1; i++) {
     const curCommand = commands[i];
@@ -20,7 +20,7 @@ export async function updateCommandsSync(
         e.$metadata.totalRetryDelay
       ) {
         console.log(
-          `ThroughputError saving item, retrying in ${e.$metadata.totalRetryDelay}ms`
+          `ThroughputError saving item, retrying in ${e.$metadata.totalRetryDelay}ms`,
         );
         await wait(e.$metadata.totalRetryDelay);
         await updateCommandsSync(db, [curCommand]);

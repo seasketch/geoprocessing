@@ -1,6 +1,6 @@
 import { Geography } from "../types/index.js";
 import React, { ChangeEventHandler } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 export interface GeographySwitcherProps {
   curGeographyId: string;

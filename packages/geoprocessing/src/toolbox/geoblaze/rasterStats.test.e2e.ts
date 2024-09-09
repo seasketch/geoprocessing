@@ -1,6 +1,5 @@
 import { describe, test, expect } from "vitest";
 import { rasterStats, defaultStatValues } from "./rasterStats.js";
-//@ts-ignore
 import geoblaze from "geoblaze";
 import testData from "./test/testData.js";
 import parseGeoraster from "georaster";

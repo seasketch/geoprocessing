@@ -114,7 +114,6 @@ export const sendHandler = async (event) => {
             Data: Buffer.from(postData),
           });
           // console.log("postResult", JSON.stringify(JSON.stringify(postResult)));
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
           if (e.statusCode && e.statusCode === 410) {
             console.log(

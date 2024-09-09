@@ -2,6 +2,7 @@ import React from "react";
 import Card from "./Card.js";
 import { styled } from "styled-components";
 import { useTranslation } from "react-i18next";
+import PropTypes from "prop-types";
 
 // styled-components are needed here to use the ::before pseudo selector
 const ErrorIndicator = styled.div`
@@ -69,12 +70,15 @@ export class ReportError extends React.Component<
     info: { componentStack: "" },
   };
 
-  static getDerivedStateFromError = (error) => {
+  static getDerivedStateFromError = () => {
     return { hasError: true };
   };
 
   componentDidCatch = (error, info) => {
     this.setState({ error, info });
+  };
+  static propTypes: {
+    children: PropTypes.Requireable<PropTypes.ReactNodeLike>;
   };
 
   render() {
@@ -86,3 +90,7 @@ export class ReportError extends React.Component<
     return hasError ? <ErrorCard /> : children;
   }
 }
+
+ReportError.propTypes = {
+  children: PropTypes.node,
+};

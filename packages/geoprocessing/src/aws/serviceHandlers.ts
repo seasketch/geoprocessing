@@ -8,12 +8,8 @@ export const projectMetadata = async (
 ): Promise<APIGatewayProxyResult> => {
   const manifest = (await fs.readJson("./manifest.json")) as Manifest;
 
-  const {
-    preprocessingFunctions,
-    geoprocessingFunctions,
-    region,
-    ...projectInfo
-  } = manifest;
+  const { preprocessingFunctions, geoprocessingFunctions, ...projectInfo } =
+    manifest;
   const uri = `https://${event.headers["Host"]}/prod/`;
   const project: Partial<GeoprocessingProject> = {
     ...projectInfo,

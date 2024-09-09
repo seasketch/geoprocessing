@@ -163,19 +163,6 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    case "bundle-rasters":
-      spawn(
-        "node",
-        [
-          `${import.meta.dirname}/dataPrep/bundleRasterData.js`,
-          ...process.argv.slice(2),
-        ],
-        {
-          cwd: process.cwd(),
-          stdio: "inherit",
-        },
-      );
-      break;
     case "clear-results":
       spawn("node", [`${import.meta.dirname}/clear/clearResults.js`], {
         cwd: process.cwd(),

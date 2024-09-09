@@ -276,8 +276,8 @@ describe("Metric checks", () => {
     const falseMetric = { value: 15 };
     expect(isMetric(falseMetric)).toBe(false);
     const falseMetric2 = createMetric({ value: 15 });
-    //@ts-ignore
-    falseMetric2.groupId = undefined; // not allowed
+    //@ts-expect-error not allowed to assign undefined but we will force it
+    falseMetric2.groupId = undefined;
     expect(isMetric(falseMetric2)).toBe(false);
   });
 
@@ -357,8 +357,8 @@ test("MetricPack", async () => {
     },
   ];
   const packed = packMetrics(metrics);
-  expect(packed.hasOwnProperty("dimensions")).toBe(true);
-  expect(packed.hasOwnProperty("data")).toBe(true);
+  expect(hasOwnProperty(packed, "dimensions")).toBe(true);
+  expect(hasOwnProperty(packed, "data")).toBe(true);
   expect(packed.dimensions).toHaveLength(6);
   expect(packed.data).toHaveLength(1);
   expect(packed.data[0]).toHaveLength(6);

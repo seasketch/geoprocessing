@@ -84,7 +84,7 @@ export const genFeatureCollection = <G extends Geometry = SketchGeometryTypes>(
   } = {},
 ): FeatureCollection<G> => {
   const fcId = options.id || uuid();
-  const { id = fcId, name = `featureCollection-${fcId}` } = options;
+  const { name = `featureCollection-${fcId}` } = options;
 
   return {
     type: "FeatureCollection",

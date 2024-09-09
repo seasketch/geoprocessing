@@ -28,7 +28,7 @@ export function precalcCleanup<C extends ProjectClientBase>(
       if (!curDatasource) return false;
       if (curGeog.precalc === false && curDatasource.precalc === false)
         return false;
-    } catch (e: unknown) {
+    } catch {
       return false;
     }
     return true;

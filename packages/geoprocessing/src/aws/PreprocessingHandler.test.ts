@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { test, expect } from "vitest";
 import { PreprocessingHandler } from "./PreprocessingHandler.js";
 import { ValidationError } from "../types/index.js";
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
@@ -95,7 +95,7 @@ test("Rejects misshapen requests", async () => {
 
 test("Returns validation errors", async () => {
   const handler = new PreprocessingHandler(
-    async (feature) => {
+    async () => {
       throw new ValidationError("Out of bounds");
     },
     {
@@ -120,7 +120,7 @@ test("Returns validation errors", async () => {
 
 test("500 errors are returned to clients", async () => {
   const handler = new PreprocessingHandler(
-    async (feature) => {
+    async () => {
       throw new Error("I/O Error");
     },
     {

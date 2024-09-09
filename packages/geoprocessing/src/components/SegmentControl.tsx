@@ -62,7 +62,7 @@ export const SegmentControl = (props: SegmentControlProps) => {
       </span>
       {props.segments.map((segment) => (
         <span
-          onClick={(e) => {
+          onClick={() => {
             if (props.onClick) {
               props.onClick(segment.id);
             }

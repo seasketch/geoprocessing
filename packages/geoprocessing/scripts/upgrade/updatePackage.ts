@@ -1,5 +1,5 @@
 import { hasOwnProperty } from "../../client-core.js";
-import { loadedPackageSchema, LoadedPackage } from "../../src/types/package.js";
+import { LoadedPackage } from "../../src/types/package.js";
 import cloneDeep from "lodash/cloneDeep.js";
 
 // function that sorts object keys and returns a new sorted object

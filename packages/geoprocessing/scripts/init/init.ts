@@ -33,7 +33,7 @@ async function init(gpVersion?: string) {
       name: "name",
       message: "Choose a name for your project",
       validate: (value) => {
-        if (/^[a-z\-]+$/.test(value)) {
+        if (/^[a-z-]+$/.test(value)) {
           return true;
         } else {
           return "Input must be lowercase letters or hyphens and contain no spaces";
@@ -52,7 +52,7 @@ async function init(gpVersion?: string) {
       validate: (value) =>
         value === "" ||
         value === null ||
-        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm.test(
+        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/gm.test(
           value,
         )
           ? true

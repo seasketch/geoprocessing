@@ -8,7 +8,6 @@ import { feature, featureCollection, getCoords, getType } from "@turf/turf";
  * @param options.mutate whether or not to mutate the coordinates in place, defaults to false
  */
 export function cleanCoords(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   geojson: any,
   options: {
     mutate?: boolean;
@@ -19,7 +18,6 @@ export function cleanCoords(
   const type = getType(geojson);
 
   // Store new "clean" points in this Array
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let newCoords: any = [];
 
   switch (type) {
@@ -44,7 +42,6 @@ export function cleanCoords(
       });
       break;
     case "MultiPolygon":
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getCoords(geojson).forEach(function (polygons: any) {
         const polyPoints: Position[] = [];
         polygons.forEach(function (ring: Position[]) {
@@ -57,7 +54,6 @@ export function cleanCoords(
       return geojson;
     case "MultiPoint": {
       const existing: Record<string, true> = {};
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getCoords(geojson).forEach(function (coord: any) {
         const key = coord.join("-");
         if (!Object.prototype.hasOwnProperty.call(existing, key)) {
@@ -96,7 +92,6 @@ export function cleanCoords(
  * @param {string} type Type of geometry
  * @returns {Array<number>} Cleaned coordinates
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function cleanLine(line: Position[]): any[] {
   const points = getCoords(line);
   const newPoints: number[][] = [];

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { styled } from "styled-components";
 
 export const SimpleButtonStyled = styled.button`
@@ -14,9 +14,16 @@ export const SimpleButtonStyled = styled.button`
   }
 `;
 
+export interface SimpleButtonProbs {
+  children: ReactNode;
+}
+
 /**
  * A simple button component that accepts any text value so unicode can be used including emojis
  */
-export const SimpleButton = ({ children, ...props }) => {
+export const SimpleButton: React.FunctionComponent<SimpleButtonProbs> = ({
+  children,
+  ...props
+}) => {
   return <SimpleButtonStyled {...props}>{children}</SimpleButtonStyled>;
 };

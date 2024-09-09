@@ -1,6 +1,5 @@
 import { bbox } from "@turf/turf";
 import { FeatureCollection, Polygon } from "../../../src/types/index.js";
-//@ts-ignore
 import eezPrecalc from "./mr-eez-precalc.json" with { type: "json" };
 
 /** Marine Regions EEZ */

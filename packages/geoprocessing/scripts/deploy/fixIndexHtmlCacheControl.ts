@@ -14,7 +14,6 @@ const manifest = JSON.parse(
 if (!manifest) throw new Error(`Missing manifest in ${buildPath}`);
 
 const bucket = `gp-${manifest.title}-client`;
-const indexPath = bucket + "/index.html";
 
 // If no clients configured then there is no bucket to update
 if (manifest.clients.length === 0) {
@@ -34,7 +33,7 @@ s3.copyObject(
     ContentType: "text/html",
     MetadataDirective: "REPLACE",
   },
-  (err, data) => {
+  (err) => {
     if (err) {
       throw err;
     } else {

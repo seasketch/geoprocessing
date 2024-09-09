@@ -100,7 +100,7 @@ export const targetValueFormatter = () => (
       rowConfigs={rowConfigs1}
       blockGroupNames={blockGroupNames}
       blockGroupStyles={blockGroupStyles}
-      targetValueFormatter={(value) =>
+      targetValueFormatter={() =>
         `Target - ${valueFormatter(30 / 100, "percent0dig")}`
       }
     />

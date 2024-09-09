@@ -63,7 +63,7 @@ export const extraParams = () => {
         functionName="area"
         extraParams={{ geography }}
       >
-        {(data: any) => (
+        {() => (
           <>
             <p>Cur geography: {geography}</p>
             <p>
@@ -72,10 +72,10 @@ export const extraParams = () => {
               value is not set for a story. Storybook is also not setup to load
               more than one output. So This story demonstrates how to use a UI
               switcher to control passing different values to extraParams, but
-              it won't change the output. The approach to seeing what the output
-              would be for different values of extraParams is to run the smoke
-              tests is to create multiple independent smoke tests, each with
-              different values.
+              it won&apos;t change the output. The approach to seeing what the
+              output would be for different values of extraParams is to run the
+              smoke tests is to create multiple independent smoke tests, each
+              with different values.
             </p>
           </>
         )}
@@ -181,7 +181,7 @@ export const errorBoundary = () => (
     }}
   >
     <ResultsCard title="Card Title" functionName="area">
-      {(data: any) => {
+      {() => {
         return <ThrowComponent />;
       }}
     </ResultsCard>

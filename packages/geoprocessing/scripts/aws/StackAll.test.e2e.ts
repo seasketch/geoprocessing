@@ -3,7 +3,7 @@ import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
 import config from "./config.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
-import { describe, it, expect, afterAll } from "vitest";
+import { describe, expect, afterAll } from "vitest";
 import { Template } from "aws-cdk-lib/assertions";
 import fs from "fs-extra";
 import createTestBuild from "../testing/createTestBuild.js";

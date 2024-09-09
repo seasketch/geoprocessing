@@ -258,7 +258,7 @@ export class GeoprocessingHandler<
       wss = request.wss;
     }
 
-    let task: GeoprocessingTask = await Tasks.create(serviceName, {
+    const task: GeoprocessingTask = await Tasks.create(serviceName, {
       id: request.cacheKey,
       wss,
       disableCache: request.disableCache,
@@ -342,9 +342,9 @@ export class GeoprocessingHandler<
           }
 
           if (this.options.executionMode !== "sync") {
-            let sname = encodeURIComponent(task.service);
-            let ck = encodeURIComponent(task.id || "");
-            let wssUrl =
+            const sname = encodeURIComponent(task.service);
+            const ck = encodeURIComponent(task.id || "");
+            const wssUrl =
               task.wss + "?" + "serviceName=" + sname + "&cacheKey=" + ck;
             await this.sendSocketErrorMessage(
               wssUrl,
@@ -354,7 +354,7 @@ export class GeoprocessingHandler<
             );
           }
 
-          let failedTask = await Tasks.fail(task, failureMessage);
+          const failedTask = await Tasks.fail(task, failureMessage);
           return failedTask;
         }
       } catch (e: unknown) {
@@ -374,10 +374,6 @@ export class GeoprocessingHandler<
       }
 
       try {
-        const asyncStartTime = new Date().getTime();
-        //@ts-ignore
-        task.asyncStartTime = asyncStartTime;
-
         const queryParams = event.queryStringParameters;
         if (queryParams) {
           queryParams["wss"] = wss;

@@ -1,6 +1,6 @@
 import React from "react";
 import useSketchProperties from "../hooks/useSketchProperties.js";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import Card from "./Card.js";
 
 export interface SketchAttributesCardProps {
@@ -139,7 +139,7 @@ export const SketchAttributesCard = ({
   } else {
     return (
       <Card titleStyle={titleStyle} title={title || attributesLabel}>
-        <p>t("No attributes found")</p>
+        <p>{t("No attributes found")}</p>
       </Card>
     );
   }

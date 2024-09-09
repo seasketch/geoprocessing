@@ -113,12 +113,14 @@ export function toNullSketch(
   if (isSketchCollection(sketch)) {
     return {
       ...sketch,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       features: sketch.features.map(({ geometry, ...nonGeom }) => ({
         ...nonGeom,
         ...(useNull ? { geometry: null } : {}),
       })),
     };
   } else {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry, ...nonGeom } = sketch;
     return {
       ...nonGeom,

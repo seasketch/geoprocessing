@@ -12,7 +12,6 @@ import {
 export type SketchGeometryTypes = Polygon | MultiPolygon | LineString | Point;
 
 /** Properties of a Sketch, defines known keys as well as unknown for extensiblity */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SketchProperties = Record<string, any> & {
   id: string;
   /** Name specified by the author of the sketch */

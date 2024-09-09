@@ -18,7 +18,7 @@ export function generateManifest(
     title: slugify(
       projectPkg.name.replace(/@/g, "").replace("gp-", "").replace("/", "-"),
     ),
-    author: slugify(config.author.replace(/\<.*\>/, "")),
+    author: slugify(config.author.replace(/<.*>/, "")),
     region: config.region,
     apiVersion: version,
     version: projectPkg.version,

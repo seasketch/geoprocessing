@@ -4,7 +4,6 @@ import TaskModel from "./tasks.js";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient, CreateTableCommand } from "@aws-sdk/client-dynamodb";
 import deepEqual from "fast-deep-equal";
-import fs from "fs-extra";
 
 const dynamodb = new DynamoDBClient({
   endpoint: "http://localhost:8000",

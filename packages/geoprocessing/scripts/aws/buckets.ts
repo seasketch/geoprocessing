@@ -6,7 +6,7 @@ import { GpPublicBuckets } from "./types.js";
 export const createPublicBuckets = (
   stack: GeoprocessingStack,
 ): GpPublicBuckets => {
-  const buckets = {
+  const buckets: GpPublicBuckets = {
     result: undefined,
     dataset: new Bucket(stack, `GpDatasetBucket`, {
       bucketName: `gp-${stack.props.projectName}-datasets`,
@@ -33,16 +33,10 @@ export const createPublicBuckets = (
   };
 
   if (stack.getProcessingFunctions().length > 0) {
-    const result = new Bucket(stack, `GpResultBucket`, {
+    buckets.result = new Bucket(stack, `GpResultBucket`, {
       bucketName: `gp-${stack.props.projectName}-results`,
       versioned: false,
-      blockPublicAccess: new BlockPublicAccess({
-        blockPublicPolicy: false,
-        blockPublicAcls: false,
-        restrictPublicBuckets: false,
-        ignorePublicAcls: false,
-      }),
-      publicReadAccess: true,
+      publicReadAccess: false,
       cors: [
         {
           allowedOrigins: ["*"],

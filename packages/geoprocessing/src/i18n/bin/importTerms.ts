@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable i18next/no-literal-string */
 import fs from "fs-extra";
 import * as path from "path";
 import { Translations } from "./publishTerms.js";

@@ -1,7 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
-import { Package } from "../../src/types/index.js";
 import { build } from "vite";
 import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";

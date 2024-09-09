@@ -1,7 +1,9 @@
 import { DatabasePoolConnection } from "slonik";
 import { z } from "zod";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { sql } = require("slonik");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { raw } = require("slonik-sql-tag-raw");
 
 const indexInfoQuery = sql`
@@ -62,10 +64,11 @@ const inspectTable = async (
   pointsLimit: number,
 ) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const row = await connection.one(
       sql`SELECT count(*) from ${raw(tableName)} limit 1`,
     );
-  } catch (e) {
+  } catch {
     throw new Error(
       `Problem querying input table "${tableName}". Does it exist?`,
     );
@@ -95,7 +98,7 @@ const inspectTable = async (
   let primaryKeyInfo: { data_type: string; attname: string };
   try {
     primaryKeyInfo = await connection.one(primaryKeyQuery(tableName));
-  } catch (e) {
+  } catch {
     throw new Error(
       "Problem finding primary key column. Table must include a unique primary key for each feature.",
     );

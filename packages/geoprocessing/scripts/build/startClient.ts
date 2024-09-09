@@ -17,14 +17,6 @@ const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
     .toString(),
 );
 
-const packageGp: Package = JSON.parse(
-  fs.readFileSync("./package.json").toString(),
-);
-
-const packageProject: Package = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString(),
-);
-
 if (
   !geoprocessing.preprocessingFunctions &&
   !geoprocessing.geoprocessingFunctions
@@ -98,8 +90,6 @@ fs.writeFileSync(
   </html>
 `,
 );
-
-const minify = process.env.NOMINIFY ? false : true;
 
 const server = await createServer({
   // any valid user config options, plus `mode` and `configFile`

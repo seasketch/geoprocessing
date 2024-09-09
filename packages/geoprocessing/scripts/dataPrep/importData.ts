@@ -42,18 +42,17 @@ interface ImportVectorDatasourceAnswers
   propertiesToKeep: string[];
 }
 
-interface ImportRasterDatasourceAnswers
-  extends Pick<
-    ImportRasterDatasourceOptions,
-    | "src"
-    | "datasourceId"
-    | "band"
-    | "geo_type"
-    | "formats"
-    | "noDataValue"
-    | "measurementType"
-    | "precalc"
-  > {}
+type ImportRasterDatasourceAnswers = Pick<
+  ImportRasterDatasourceOptions,
+  | "src"
+  | "datasourceId"
+  | "band"
+  | "geo_type"
+  | "formats"
+  | "noDataValue"
+  | "measurementType"
+  | "precalc"
+>;
 
 // Main function, wrapped in an IIFE to avoid top-level await
 void (async function () {

@@ -93,35 +93,33 @@ export class LambdaStack extends NestedStack {
       ),
     ];
 
-    return syncFunctionMetas.map(
-      (functionMeta: ProcessingFunctionMetadata, index: number) => {
-        const rootPointer = getHandlerPointer(functionMeta);
-        const pkgName = getHandlerPkgName(functionMeta);
-        const functionName = `gp-${this.props.projectName}-sync-${functionMeta.title}`;
-        const codePath = path.join(this.props.projectPath, ".build", pkgName);
-        // console.log("codePath", codePath);
-        // console.log("rootPointer", rootPointer);
+    return syncFunctionMetas.map((functionMeta: ProcessingFunctionMetadata) => {
+      const rootPointer = getHandlerPointer(functionMeta);
+      const pkgName = getHandlerPkgName(functionMeta);
+      const functionName = `gp-${this.props.projectName}-sync-${functionMeta.title}`;
+      const codePath = path.join(this.props.projectPath, ".build", pkgName);
+      // console.log("codePath", codePath);
+      // console.log("rootPointer", rootPointer);
 
-        const func = new Function(this, `${functionMeta.title}GpSyncHandler`, {
-          runtime: config.NODE_RUNTIME,
-          code: Code.fromAsset(codePath),
-          handler: rootPointer,
-          functionName,
-          memorySize: functionMeta.memory,
-          timeout: Duration.seconds(
-            functionMeta.timeout || config.SYNC_LAMBDA_TIMEOUT,
-          ),
-          description: functionMeta.description,
-        });
+      const func = new Function(this, `${functionMeta.title}GpSyncHandler`, {
+        runtime: config.NODE_RUNTIME,
+        code: Code.fromAsset(codePath),
+        handler: rootPointer,
+        functionName,
+        memorySize: functionMeta.memory,
+        timeout: Duration.seconds(
+          functionMeta.timeout || config.SYNC_LAMBDA_TIMEOUT,
+        ),
+        description: functionMeta.description,
+      });
 
-        this.syncLambdaArns.push(func.functionArn);
+      this.syncLambdaArns.push(func.functionArn);
 
-        return {
-          func,
-          meta: functionMeta,
-        };
-      },
-    );
+      return {
+        func,
+        meta: functionMeta,
+      };
+    });
   };
 
   /** Create Lambda function constructs for functions that return result async */

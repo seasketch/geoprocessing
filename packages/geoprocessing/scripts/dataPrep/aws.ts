@@ -39,7 +39,7 @@ export async function getDataSourceVersion(
     } else {
       return { currentVersion: 0 };
     }
-  } catch (e) {
+  } catch {
     return { currentVersion: 0 };
   }
 }
@@ -180,7 +180,7 @@ export async function createCloudfrontDistribution(
       },
     },
   });
-  response.Distribution?.ARN;
+
   return {
     location: response.Distribution!.DomainName!,
     arn: response.Distribution!.ARN!,
@@ -219,6 +219,7 @@ export function putBundle(
 export function putRasterBundle(
   dataSourceName,
   fileName: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   version: number,
 ) {
   return s3.putObject({
@@ -395,16 +396,9 @@ export async function getCloudfrontDistributionDetails(
 export async function scheduleObjectsForDeletion(
   dataSourceName: string,
   version: number,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lastPublished: Date,
 ) {
-  const lastPublishedDaysAgo = Math.round(
-    (new Date().getTime() - new Date(lastPublished).getTime()) /
-      1000 /
-      60 /
-      60 /
-      24,
-  );
-
   let Rules: LifecycleRule[] | undefined;
   // get lifecycle rules
   try {
@@ -428,7 +422,7 @@ export async function scheduleObjectsForDeletion(
     } else {
       Rules = [];
     }
-  } catch (e) {
+  } catch {
     Rules = [];
   }
   const midnight = new Date();

@@ -56,7 +56,7 @@ for (const storyPath of storyPaths) {
       ...storyConfig,
       path: storyPath,
     });
-  } catch (e) {
+  } catch {
     console.log(`Trouble parsing example ${storyPath}`);
   }
 }
@@ -78,7 +78,7 @@ for (const sketchFilename of sketchFilenames) {
     if (sketch && sketch.properties.name) {
       sketches.push(sketch);
     }
-  } catch (e) {
+  } catch {
     console.log(`Trouble parsing example ${sketchFilename}`);
   }
 }

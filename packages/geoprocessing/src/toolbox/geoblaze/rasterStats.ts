@@ -62,7 +62,6 @@ export const rasterStats = async (
     feature,
     filterFn,
     categorical = false,
-    categoryMetricProperty = "classId",
     categoryMetricValues,
     ...restCalcOptions
   } = options;

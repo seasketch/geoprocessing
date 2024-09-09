@@ -436,12 +436,12 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
         .slice(0, this.options.cacheSize)
         .map((id) => this.fetchBundle(id)),
     ).then(() => {
-      const features = this.tree.search({
-        minX: bbox[0],
-        minY: bbox[1],
-        maxX: bbox[2],
-        maxY: bbox[3],
-      });
+      // const features = this.tree.search({
+      //   minX: bbox[0],
+      //   minY: bbox[1],
+      //   maxX: bbox[2],
+      //   maxY: bbox[3],
+      // });
       // this.preprocess(features);
       return;
     });
@@ -478,7 +478,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
 
     // remove extra with overlap test since bundles sometimes aren't entirely well packed
     const a = bbox;
-    return features.filter((feature) => {
+    return features.filter(() => {
       const b = bbox;
       return a[2] >= b[0] && b[2] >= a[0] && a[3] >= b[1] && b[3] >= a[1];
     });

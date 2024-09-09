@@ -18,9 +18,6 @@ import prettyBytes from "pretty-bytes";
 import expandBBox from "./expand.js";
 import z from "zod";
 
-// Warn users if index is over 500kb
-const INDEX_THRESHOLD_SIZE = 500000;
-
 interface BundleOptions {
   /** Name for data source. Will be used to automatically create s3 bucket */
   name: string;
@@ -54,7 +51,6 @@ const bundleFeatures = async (
 ): Promise<string> => {
   const options = { ...DEFAULTS, ..._options };
   const pool = await createPool(options.connection, {});
-  const outstandingPromises: Promise<any>[] = [];
   const statsTableName = `${options.tableName}_bundles`;
   await pool.connect(async (connection) => {
     const startTime = new Date().getTime();

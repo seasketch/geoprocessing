@@ -1,7 +1,5 @@
 import { BBox } from "../types/index.js";
-// @ts-ignore
 import parseGeoraster from "georaster";
-// @ts-ignore
 import geoblaze from "geoblaze";
 import { maxWidth } from "../toolbox/index.js";
 import { buffer, bboxPolygon, bbox } from "@turf/turf";

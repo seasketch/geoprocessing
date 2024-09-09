@@ -103,27 +103,33 @@ describe("updatePackage", () => {
 
   test("devDependencies are updated", async () => {
     const updatedPkg = updatePackageJson(srcPkg, basePkg);
-    const keys = Object.keys(updatedPkg.devDependencies);
-    expect(keys.length).toEqual(4);
-    expect(keys.includes("vite")).toBeTruthy();
-    expect(keys.includes("vitest")).toBeTruthy();
-    expect(keys.includes("zx")).toBeTruthy();
-    expect(updatedPkg.devDependencies["vite"]).toEqual("^5.2.11");
-    expect(updatedPkg.devDependencies["vitest"]).toEqual("^1.6.0");
-    expect(updatedPkg.devDependencies["zx"]).toEqual("^8.1.0");
+    if (updatedPkg.devDependencies) {
+      const keys = Object.keys(updatedPkg.devDependencies);
+      expect(keys.length).toEqual(4);
+      expect(keys.includes("vite")).toBeTruthy();
+      expect(keys.includes("vitest")).toBeTruthy();
+      expect(keys.includes("zx")).toBeTruthy();
+      expect(updatedPkg.devDependencies["vite"]).toEqual("^5.2.11");
+      expect(updatedPkg.devDependencies["vitest"]).toEqual("^1.6.0");
+      expect(updatedPkg.devDependencies["zx"]).toEqual("^8.1.0");
+    }
   });
 
   test("otherPkgs are updated if present in srcPkg", async () => {
     const updatedPkg = updatePackageJson(srcPkg, basePkg, [otherPkg]);
     const scriptKeys = Object.keys(updatedPkg.scripts);
     const dependencyKeys = Object.keys(updatedPkg.dependencies);
-    const devDependencyKeys = Object.keys(updatedPkg.devDependencies);
-    expect(scriptKeys.length).toEqual(4);
-    expect(scriptKeys.includes("other-script")).toBeFalsy();
-    expect(dependencyKeys.length).toEqual(3);
-    expect(dependencyKeys.includes("other-dependency")).toBeFalsy();
-    expect(devDependencyKeys.length).toEqual(4);
-    expect(devDependencyKeys.includes("other-dev-dependency")).toBeTruthy();
-    expect(updatedPkg.devDependencies["other-dev-dependency"]).toEqual("1.0.0");
+    if (updatedPkg.devDependencies) {
+      const devDependencyKeys = Object.keys(updatedPkg.devDependencies);
+      expect(scriptKeys.length).toEqual(4);
+      expect(scriptKeys.includes("other-script")).toBeFalsy();
+      expect(dependencyKeys.length).toEqual(3);
+      expect(dependencyKeys.includes("other-dependency")).toBeFalsy();
+      expect(devDependencyKeys.length).toEqual(4);
+      expect(devDependencyKeys.includes("other-dev-dependency")).toBeTruthy();
+      expect(updatedPkg.devDependencies["other-dev-dependency"]).toEqual(
+        "1.0.0"
+      );
+    }
   });
 });

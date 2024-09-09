@@ -14,7 +14,6 @@ import {
   JSONValue,
 } from "../types/index.js";
 import { genTaskCacheKey } from "../helpers/genTaskCacheKey.js";
-import { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks.js";
 import { byteSize } from "../util/byteSize.js";
 
 /**
@@ -36,7 +35,13 @@ export async function runLambdaWorker(
   region: string,
   functionParameters = {},
   request: GeoprocessingRequestModel<Polygon | MultiPolygon>,
+  options: {
+    /** Whether cache of worker task should be enabled, defaults to false */
+    enableCache?: boolean;
+  } = {},
 ): Promise<InvocationResponse> {
+  const { enableCache = false } = options;
+
   // Create cache key for this task
   const cacheKey = genTaskCacheKey(functionName, sketch.properties, {
     cacheId: `${JSON.stringify(functionParameters)}`,
@@ -48,6 +53,7 @@ export async function runLambdaWorker(
       geometryUri: request.geometryUri,
       extraParams: functionParameters,
       cacheKey,
+      disableCache: !enableCache,
     };
 
     // Encode sketch to geobuf if larger than max request size
@@ -65,25 +71,10 @@ export async function runLambdaWorker(
   })();
   const payload = JSON.stringify(workerRequest, null, 2);
 
-  // Configure task
-  const location = `/${region}/tasks/${cacheKey}`;
-  const task: GeoprocessingTask = {
-    id: cacheKey,
-    service: region,
-    wss: "",
-    location,
-    startedAt: new Date().toISOString(),
-    logUriTemplate: `${location}/logs{?limit,nextToken}`,
-    geometryUri: `${location}/geometry`,
-    status: GeoprocessingTaskStatus.Pending,
-    estimate: 2,
-  };
-
   const client = new LambdaClient({});
   return client.send(
     new InvokeCommand({
       FunctionName: `gp-${projectName}-sync-${functionName}`,
-      ClientContext: Buffer.from(JSON.stringify(task)).toString("base64"),
       InvocationType: "RequestResponse",
       Payload: payload,
     }),
@@ -115,6 +106,10 @@ export function parseLambdaResponse(
 
     return JSON.parse(payload.body).data;
   } catch {
-    throw Error(`Failed to parse response from AWS lambda: ${lambdaResult}`);
+    console.log(
+      "Failed to parse response from lambdaResult",
+      JSON.stringify(lambdaResult, null, 2),
+    );
+    throw Error(`Failed to parse response from AWS lambda`);
   }
 }

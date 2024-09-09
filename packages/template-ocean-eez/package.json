@@ -27,5 +27,6 @@
     "geojson-antimeridian-cut": "^0.1.0",
     "react-i18next": "^15.0.1",
     "union-subdivided-polygons": "^0.9.1"
-  }
+  },
+  "devDependencies": {}
 }

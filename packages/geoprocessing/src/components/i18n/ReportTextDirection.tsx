@@ -6,7 +6,7 @@ export const ReportTextDirection: React.FunctionComponent<{
   children: ReactNode;
   style?: React.CSSProperties;
 }> = ({ style, children }) => {
-  const [isRtl] = useLanguage();
+  const [language, changeLanguage, isRtl] = useLanguage();
   return (
     <div style={style} dir={isRtl ? "rtl" : "ltr"}>
       {children}

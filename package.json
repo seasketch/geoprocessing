@@ -27,6 +27,7 @@
     "http-server": "^14.1.1",
     "husky": "^9.1.5",
     "lerna": "^8.1.8",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -44,8 +45,8 @@
     "clean": "git clean -fdx",
     "test": "lerna run test",
     "build-docs": "lerna run build-docs",
-    "lint:eslint": "npx eslint",
-    "lint:eslint:fix": "npx eslint --fix",
+    "lint:eslint": "eslint",
+    "lint:eslint:fix": "eslint --fix",
     "lint:prettier": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
     "publish:experimental:canary": "BRANCH_NAME=`git rev-parse --symbolic-full-name --abbrev-ref HEAD`; if [ $BRANCH_NAME != \"dev\" -a $BRANCH_NAME != \"main\" ] ; then CI=1 lerna publish --force-publish --canary --preid experimental-${BRANCH_NAME} --dist-tag=experimental-${BRANCH_NAME} ; fi",
@@ -59,6 +60,12 @@
     "import:translation": "npx tsx packages/geoprocessing/src/i18n/bin/importTerms.ts",
     "sync:translation": "npm run extract:translationt && npm run publish:translation && npm run import:translation",
     "extract:translation": "rm -rf packages/geoprocessing/src/i18n/lang/en && mkdir -p packages/geoprocessing/src/i18n/lang/en && NODE_ENV=development npx babel 'packages/geoprocessing/src/**/*.{ts,tsx}' 'packages/template-blank-project/src/**/*.{ts,tsx}' 'packages/template-ocean-eez/src/**/*.{ts,tsx}' > /dev/null && mv extractedTranslations/en packages/geoprocessing/src/i18n/lang && rm -rf extractedTranslations && echo 'Translations extracted to packages/geoprocessing/src/i18n/lang/en'"
+  },
+  "lint-staged": {
+    "**/*.{js,mjs,cjs,ts,jsx,tsx}": [
+      "eslint --fix"
+    ],
+    "*": "prettier --write --ignore-unknown"
   },
   "repository": {
     "type": "git",

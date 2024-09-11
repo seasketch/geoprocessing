@@ -8,7 +8,6 @@ import {
   DefaultExtraParams,
   splitSketchAntimeridian,
 } from "@seasketch/geoprocessing";
-import { bbox } from "@turf/turf";
 import project from "../../project/projectClient.js";
 import {
   ReportResult,
@@ -22,7 +21,7 @@ export async function blankFunction(
   sketch:
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>,
-  extraParams: DefaultExtraParams = {}
+  extraParams: DefaultExtraParams = {},
 ): Promise<ReportResult> {
   // Use caller-provided geographyId if provided
   const geographyId = getFirstFromParam("geographyIds", extraParams);
@@ -39,7 +38,7 @@ export async function blankFunction(
   const clippedSketch = await clipToGeography(splitSketch, curGeography);
 
   // Get bounding box of sketch remainder
-  const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
+  // const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   // Add functionality here to return in (most common) Metric[] format
   // Or create new type to return to component

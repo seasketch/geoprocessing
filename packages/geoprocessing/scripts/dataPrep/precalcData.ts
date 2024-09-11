@@ -11,10 +11,10 @@ import { getProjectClient } from "../base/project/projectClient.js";
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
 const numDs = projectClient.datasources.filter(
-  (d) => d.precalc === true
+  (d) => d.precalc === true,
 ).length;
 const numGeos = projectClient.geographies.filter(
-  (g) => g.precalc === true
+  (g) => g.precalc === true,
 ).length;
 
 // Wrap in an IIFE to use async/await
@@ -31,7 +31,7 @@ void (async function () {
 
   const subsetAnswer = await precalcSubsetQuestion();
 
-  let dsOptions: PrecalcDatasourceOptions = {
+  const dsOptions: PrecalcDatasourceOptions = {
     datasourceMatcher: [],
     geographyMatcher: [],
   };
@@ -40,7 +40,7 @@ void (async function () {
       dsOptions.datasourceMatcher = ["*"];
     } else {
       const precalcDs = projectClient.datasources.filter(
-        (ds) => ds.precalc === true
+        (ds) => ds.precalc === true,
       );
       // Ask user what they want to precalculate
       const precalcDsAnswers = await precalcWhichDsQuestion(numDs);
@@ -51,19 +51,16 @@ void (async function () {
     }
   }
 
-  let geogOptions: PrecalcDatasourceOptions = {};
+  const geogOptions: PrecalcDatasourceOptions = {};
   if (["all", "both", "geography"].includes(subsetAnswer.subset)) {
     if (subsetAnswer.subset === "all") {
       dsOptions.geographyMatcher = ["*"];
     } else {
-      const precalcDs = projectClient.geographies.filter(
-        (geog) => geog.precalc === true
-      );
       // Ask user what they want to precalculate
-      const precalcGeosAnswers = await precalcWhichGeosQuestion(numGeos);
+      const precalcGeosAnswers = await precalcWhichGeosQuestion();
       if (precalcGeosAnswers.precalcWhichGeos === "list") {
         const geogAnswers = await geographiesQuestion(
-          projectClient.geographies
+          projectClient.geographies,
         );
         geogOptions.geographyMatcher = geogAnswers.geographies;
       }
@@ -113,7 +110,7 @@ export interface PrecalcAnswers {
 }
 
 export async function precalcWhichDsQuestion(
-  numDs: number
+  numDs: number,
 ): Promise<Pick<PrecalcAnswers, "precalcWhichDs">> {
   return inquirer.prompt<Pick<PrecalcAnswers, "precalcWhichDs">>([
     {
@@ -139,9 +136,9 @@ export interface PrecalcGeosAnswers {
   precalcWhichGeos: "list" | "all";
 }
 
-export async function precalcWhichGeosQuestion(
-  numDs: number
-): Promise<Pick<PrecalcAnswers, "precalcWhichGeos">> {
+export async function precalcWhichGeosQuestion(): Promise<
+  Pick<PrecalcAnswers, "precalcWhichGeos">
+> {
   return inquirer.prompt<Pick<PrecalcAnswers, "precalcWhichGeos">>([
     {
       type: "list",
@@ -167,7 +164,7 @@ export interface DatasourcesAnswers {
 }
 
 export async function datasourcesQuestion(
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): Promise<DatasourcesAnswers> {
   const datasourcesQuestion = await getDatasourcesQuestion(datasources);
   const answer = await inquirer.prompt<DatasourcesAnswers>([
@@ -207,7 +204,7 @@ export interface GeographiesAnswers {
 }
 
 export async function geographiesQuestion(
-  geographies: Geography[]
+  geographies: Geography[],
 ): Promise<GeographiesAnswers> {
   const geographiesQuestion = await getGeographiesQuestion(geographies);
   const answer = await inquirer.prompt<GeographiesAnswers>([

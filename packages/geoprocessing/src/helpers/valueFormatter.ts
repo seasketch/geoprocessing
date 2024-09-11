@@ -18,39 +18,39 @@ export type ValueFormatter =
 /** Given a number or string value and the name of a formatter function, returns a formatted value */
 export const valueFormatter = (
   value: string | number,
-  formatter: ValueFormatter
+  formatter: ValueFormatter,
 ) => {
   if (formatter === "value") return value;
   if (formatter === "percent0dig")
     return percentWithEdge(
       typeof value === "string" ? parseFloat(value) : value,
-      { digits: 0 }
+      { digits: 0 },
     );
   if (formatter === "percent")
     return percentWithEdge(
-      typeof value === "string" ? parseFloat(value) : value
+      typeof value === "string" ? parseFloat(value) : value,
     );
   if (formatter === "percent1dig")
     return percentWithEdge(
       typeof value === "string" ? parseFloat(value) : value,
-      { digits: 1 }
+      { digits: 1 },
     );
   if (formatter === "percent2dig")
     return percentWithEdge(
       typeof value === "string" ? parseFloat(value) : value,
-      { digits: 2 }
+      { digits: 2 },
     );
   if (formatter === "number")
     return NumberFormatter.format(
-      typeof value === "string" ? parseFloat(value) : value
+      typeof value === "string" ? parseFloat(value) : value,
     );
   if (formatter === "number1dig")
     return NumberFormatter.format(
-      roundDecimal(typeof value === "string" ? parseFloat(value) : value, 1)
+      roundDecimal(typeof value === "string" ? parseFloat(value) : value, 1),
     );
   if (formatter === "number2dig")
     return NumberFormatter.format(
-      roundDecimal(typeof value === "string" ? parseFloat(value) : value, 2)
+      roundDecimal(typeof value === "string" ? parseFloat(value) : value, 2),
     );
   if (formatter === "integer")
     return NumberFormatter.format(parseInt(`${value}`));

@@ -17,5 +17,5 @@ export const selfCrossingPolygon: Feature<Polygon> = feature({
 
 export const selfCrossingSketchPolygon = genSampleSketch(
   selfCrossingPolygon.geometry,
-  "selfCrossingPolygon"
+  "selfCrossingPolygon",
 );

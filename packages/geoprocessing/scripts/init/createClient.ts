@@ -47,7 +47,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
 export async function makeClient(
   options: ClientOptions,
   interactive = true,
-  basePath = "./"
+  basePath = "./",
 ) {
   const spinner = interactive
     ? ora("Creating new client").start()
@@ -76,17 +76,17 @@ export async function makeClient(
 
   // Read in top-level client files from template folder
   const clientCode = await fs.readFile(
-    `${templateClientPath}/SimpleReport.tsx`
+    `${templateClientPath}/SimpleReport.tsx`,
   );
   const testClientCode = await fs.readFile(
-    `${templateClientPath}/SimpleReport.stories.tsx`
+    `${templateClientPath}/SimpleReport.stories.tsx`,
   );
 
   // Add client to geoprocessing.json
   const geoprocessingJson = JSON.parse(
     fs
       .readFileSync(path.join(basePath, "project", "geoprocessing.json"))
-      .toString()
+      .toString(),
   ) as GeoprocessingJsonConfig;
   geoprocessingJson.clients = geoprocessingJson.clients || [];
   geoprocessingJson.clients.push({
@@ -96,7 +96,7 @@ export async function makeClient(
   });
   fs.writeFileSync(
     path.join(basePath, "project", "geoprocessing.json"),
-    JSON.stringify(geoprocessingJson, null, "  ")
+    JSON.stringify(geoprocessingJson, null, "  "),
   );
 
   // Swap user-provided metadata into client files
@@ -114,22 +114,22 @@ export async function makeClient(
     clientCode
       .toString()
       .replace(/SimpleReport/g, options.title)
-      .replace(/SimpleCard/g, `${options.title}Card`)
+      .replace(/SimpleCard/g, `${options.title}Card`),
   );
 
   await fs.writeFile(
     `${projectClientPath}/${options.title}.stories.tsx`,
-    testClientCode.toString().replace(/SimpleReport/g, options.title)
+    testClientCode.toString().replace(/SimpleReport/g, options.title),
   );
 
   // CARD COMPONENT
 
   // Read in card component files from template folder
   const componentCode = await fs.readFile(
-    `${templateComponentPath}/SimpleCard.tsx`
+    `${templateComponentPath}/SimpleCard.tsx`,
   );
   const testComponentCode = await fs.readFile(
-    `${templateComponentPath}/SimpleCard.stories.tsx`
+    `${templateComponentPath}/SimpleCard.stories.tsx`,
   );
 
   // Swap user-provided metadata into card component files
@@ -140,7 +140,7 @@ export async function makeClient(
       .toString()
       .replace(/SimpleCard/g, `${options.title}Card`)
       .replace(`"simpleFunction"`, `"${functionName}"`)
-      .replace(`functions/simpleFunction`, `functions/${functionName}`)
+      .replace(`functions/simpleFunction`, `functions/${functionName}`),
   );
 
   await fs.writeFile(
@@ -148,7 +148,7 @@ export async function makeClient(
     testComponentCode
       .toString()
       .replace(/SimpleCard/g, `${options.title}Card`)
-      .replace(`"simpleFunction"`, `"${functionName}"`)
+      .replace(`"simpleFunction"`, `"${functionName}"`),
   );
 
   spinner.succeed(`created ${options.title} client in ${projectClientPath}/`);

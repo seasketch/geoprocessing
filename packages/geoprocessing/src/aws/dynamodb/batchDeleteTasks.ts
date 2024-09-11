@@ -12,7 +12,7 @@ export type TaskKey = { id: string; service: string };
 export async function batchDeleteTasks(
   docClient: DynamoDBDocument,
   taskKeys: TaskKey[],
-  tableName: string
+  tableName: string,
 ) {
   // const batchSize = taskKeys.length;
   // const lowerBound = batchNum * MAX_BATCH_DELETE + 1;

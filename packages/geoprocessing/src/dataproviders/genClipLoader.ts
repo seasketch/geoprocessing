@@ -16,7 +16,7 @@ import { DatasourceClipOperation } from "../types/dataProcessor.js";
  */
 export const genClipLoader = <P extends ProjectClientInterface>(
   project: P,
-  operations: DatasourceClipOperation[]
+  operations: DatasourceClipOperation[],
 ) => {
   return (feature: Feature<Polygon | MultiPolygon>) => {
     return Promise.all(
@@ -43,7 +43,7 @@ export const genClipLoader = <P extends ProjectClientInterface>(
           clipFeatures,
           operation: o.operation,
         };
-      })
+      }),
     );
   };
 };

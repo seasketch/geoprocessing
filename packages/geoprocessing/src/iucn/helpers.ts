@@ -1,6 +1,9 @@
 import { Sketch } from "../types/index.js";
 import { getJsonUserAttribute } from "../helpers/index.js";
-import { IucnCategoryCombined, iucnCategoriesMap } from "./iucnProtectionLevel.js";
+import {
+  IucnCategoryCombined,
+  iucnCategoriesMap,
+} from "./iucnProtectionLevel.js";
 
 /**
  * Given list of allowed activities in the sketch, returns the highest category allowable
@@ -9,7 +12,7 @@ import { IucnCategoryCombined, iucnCategoriesMap } from "./iucnProtectionLevel.j
  * @param activityAttrib
  */
 export const getIucnCategoryForActivities = (
-  activities: string[]
+  activities: string[],
 ): IucnCategoryCombined => {
   if (activities.length === 0) return iucnCategoriesMap["1a"];
 
@@ -58,7 +61,7 @@ export const getIucnCategoryNameForSketches = (sketches: Sketch[]) => {
       ...sofar,
       [sketchId]: sketchCatMap[sketchId].category,
     }),
-    {}
+    {},
   );
 };
 
@@ -72,6 +75,6 @@ export const getIucnLevelNameForSketches = (sketches: Sketch[]) => {
       ...sofar,
       [sketchId]: sketchCatMap[sketchId].level,
     }),
-    {}
+    {},
   );
 };

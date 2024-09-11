@@ -38,7 +38,7 @@ export async function runLambdaWorker(
   options: {
     /** Whether cache of worker task should be enabled, defaults to false */
     enableCache?: boolean;
-  } = {}
+  } = {},
 ): Promise<InvocationResponse> {
   const { enableCache = false } = options;
 
@@ -49,7 +49,7 @@ export async function runLambdaWorker(
 
   // Create payload including geometry and parameters for function
   const workerRequest: GeoprocessingRequestModel = (() => {
-    let newRequest: GeoprocessingRequestModel = {
+    const newRequest: GeoprocessingRequestModel = {
       geometryUri: request.geometryUri,
       extraParams: functionParameters,
       cacheKey,
@@ -58,7 +58,7 @@ export async function runLambdaWorker(
 
     // Encode sketch to geobuf if larger than max request size
     const sketchBuffer = geobuf.encode(sketch, new Pbf());
-    var sketch64 = Buffer.from(sketchBuffer).toString("base64");
+    const sketch64 = Buffer.from(sketchBuffer).toString("base64");
 
     const requestSizeBytes = byteSize(JSON.stringify(newRequest));
     const sketch64SizeBytes = byteSize(JSON.stringify(sketch64));
@@ -77,7 +77,7 @@ export async function runLambdaWorker(
       FunctionName: `gp-${projectName}-sync-${functionName}`,
       InvocationType: "RequestResponse",
       Payload: payload,
-    })
+    }),
   );
 }
 
@@ -85,30 +85,30 @@ export async function runLambdaWorker(
  * Parses result from worker lambda
  **/
 export function parseLambdaResponse(
-  lambdaResult: InvocationResponse
+  lambdaResult: InvocationResponse,
 ): JSONValue {
   try {
     if (lambdaResult.StatusCode !== 200)
       throw Error(
-        `Lambda result parsing failed: ${JSON.stringify(lambdaResult.Payload)}`
+        `Lambda result parsing failed: ${JSON.stringify(lambdaResult.Payload)}`,
       );
     if (!lambdaResult.Payload)
       throw Error(
-        `Lambda result parsing failed: No payload in lambda response`
+        `Lambda result parsing failed: No payload in lambda response`,
       );
 
     const payload = JSON.parse(Buffer.from(lambdaResult.Payload).toString());
 
     if (payload.statusCode !== 200)
       throw Error(
-        `Lambda result parsing failed: ${JSON.stringify(JSON.parse(payload.body))}`
+        `Lambda result parsing failed: ${JSON.stringify(JSON.parse(payload.body))}`,
       );
 
     return JSON.parse(payload.body).data;
   } catch {
     console.log(
       "Failed to parse response from lambdaResult",
-      JSON.stringify(lambdaResult, null, 2)
+      JSON.stringify(lambdaResult, null, 2),
     );
     throw Error(`Failed to parse response from AWS lambda`);
   }

@@ -23,7 +23,7 @@ export async function getFeatures<F extends Feature<Geometry>>(
     | VectorDatasource,
   /** url of datasource */
   url: string,
-  options: DatasourceOptions = {}
+  options: DatasourceOptions = {},
 ): Promise<F[]> {
   const propertyFilter = datasource.propertyFilter || options.propertyFilter;
   const bboxFilter = datasource.bboxFilter || options.bbox;
@@ -33,12 +33,13 @@ export async function getFeatures<F extends Feature<Geometry>>(
     features = await fgbFetchAll<F>(url, bboxFilter);
   } else if (
     isExternalVectorDatasource(datasource) &&
-    datasource.formats && datasource.formats.includes("subdivided")
+    datasource.formats &&
+    datasource.formats.includes("subdivided")
   ) {
     // prefer subdivided if external
     if (!bboxFilter) {
       throw new Error(
-        `bbox option expected for ExternalVectorDatasource ${datasource.datasourceId}`
+        `bbox option expected for ExternalVectorDatasource ${datasource.datasourceId}`,
       );
     }
     const vectorDs = new VectorDataSource(url);
@@ -50,7 +51,8 @@ export async function getFeatures<F extends Feature<Geometry>>(
     }
   } else if (
     isExternalVectorDatasource(datasource) &&
-    datasource.formats && datasource.formats.includes("fgb")
+    datasource.formats &&
+    datasource.formats.includes("fgb")
   ) {
     // fallback to flatgeobuf
     features = await fgbFetchAll<F>(url, bboxFilter);
@@ -61,7 +63,7 @@ export async function getFeatures<F extends Feature<Geometry>>(
     features = features.filter((curFeat) => {
       if (!curFeat.properties) return false;
       return propertyFilter?.values.includes(
-        curFeat.properties[propertyFilter.property]
+        curFeat.properties[propertyFilter.property],
       );
     });
   }

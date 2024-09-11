@@ -6,7 +6,7 @@ import fs from "fs-extra";
 export async function writeResultOutput(
   results: any,
   functionName: string,
-  name: string
+  name: string,
 ) {
   if (!fs.existsSync("examples/output")) {
     await fs.mkdir("examples/output");
@@ -17,6 +17,6 @@ export async function writeResultOutput(
   }
   fs.writeFile(
     folder + "/" + functionName + ".json",
-    JSON.stringify(results, null, "  ")
+    JSON.stringify(results, null, "  "),
   );
 }

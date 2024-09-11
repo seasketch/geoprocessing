@@ -21,7 +21,7 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
     newDatasourcePath?: string;
     newDstPath?: string;
     srcBucketUrl?: string;
-  }
+  },
 ) {
   const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genRasterConfig(projectClient, options, newDstPath);
@@ -38,9 +38,9 @@ export async function importRasterDatasource<C extends ProjectClientBase>(
           config.dstPath,
           format,
           config.datasourceId,
-          getDatasetBucketName(config)
+          getDatasetBucketName(config),
         );
-      })
+      }),
     );
   }
 
@@ -78,7 +78,7 @@ export async function genCog(config: ImportRasterDatasourceConfig) {
 export function getCogPath(
   dstPath: string,
   datasourceId: string,
-  postfix?: string
+  postfix?: string,
 ) {
   return path.join(dstPath, datasourceId) + (postfix ? postfix : "") + ".tif";
 }

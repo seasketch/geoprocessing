@@ -35,16 +35,16 @@ export const getSum = async (
   raster: Georaster,
   feat?:
     | Feature<Polygon | MultiPolygon>
-    | FeatureCollection<Polygon | MultiPolygon>
+    | FeatureCollection<Polygon | MultiPolygon>,
 ) => {
   let sum = 0;
   const finalFeat = toRasterProjection(raster, feat);
   try {
     const result = await geoblaze.sum(raster, finalFeat);
     sum = result[0];
-  } catch (err) {
+  } catch {
     console.log(
-      "overlapRaster geoblaze.sum threw, meaning no cells with value were found within the geometry"
+      "overlapRaster geoblaze.sum threw, meaning no cells with value were found within the geometry",
     );
   }
   return sum;
@@ -57,7 +57,7 @@ export const getArea = async (
   raster: Georaster,
   feat?:
     | Feature<Polygon | MultiPolygon>
-    | FeatureCollection<Polygon | MultiPolygon>
+    | FeatureCollection<Polygon | MultiPolygon>,
 ) => {
   let area = 0;
   const finalFeat = toRasterProjection(raster, feat);
@@ -67,10 +67,10 @@ export const getArea = async (
       stats: ["valid"],
     });
     area = parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
-  } catch (err) {
+  } catch {
     if (process.env.NODE_ENV !== "test")
       console.log(
-        "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry"
+        "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry",
       );
   }
   return area;
@@ -90,14 +90,14 @@ export const getHistogram = async (
     classType?: "equal-interval" | "quantile";
   } = {
     scaleType: "nominal",
-  }
+  },
 ): Promise<Histogram> => {
   let histogram = {};
   try {
     histogram = (await geoblaze.histogram(raster, feat, options))[0];
-  } catch (err) {
+  } catch {
     console.log(
-      "overlapRaster geoblaze.histogram threw, there must not be any cells with value overlapping the geometry"
+      "overlapRaster geoblaze.histogram threw, there must not be any cells with value overlapping the geometry",
     );
   }
   return histogram;
@@ -114,7 +114,7 @@ export const toRasterProjection = (
   raster: Georaster,
   feat?:
     | Feature<Polygon | MultiPolygon>
-    | FeatureCollection<Polygon | MultiPolygon>
+    | FeatureCollection<Polygon | MultiPolygon>,
 ) => {
   if (raster.projection === 4326) {
     return feat;
@@ -125,7 +125,7 @@ export const toRasterProjection = (
     });
   } else {
     throw new Error(
-      `Unexpected projection for raster: ${raster.projection}. Expected 6933 or 4326`
+      `Unexpected projection for raster: ${raster.projection}. Expected 6933 or 4326`,
     );
   }
 };
@@ -143,12 +143,12 @@ export const getRasterBoxSpherical = (raster: Georaster) => {
     const { inverse } = proj4("EPSG:4326", "EPSG:6933");
     const rasterBbox: BBox = bboxFns.reproject(
       [raster.xmin, raster.ymin, raster.xmax, raster.ymax],
-      inverse
+      inverse,
     );
     return rasterBbox;
   } else {
     throw new Error(
-      `Unexpected projection for raster: ${raster.projection}. Expected 6933 or 4326`
+      `Unexpected projection for raster: ${raster.projection}. Expected 6933 or 4326`,
     );
   }
 };

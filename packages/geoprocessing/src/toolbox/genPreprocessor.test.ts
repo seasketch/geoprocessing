@@ -9,7 +9,7 @@ import { genPreprocessor } from "./genPreprocessor.js";
 describe("genPreprocessor", () => {
   test.skip("should successfully generate and run preprocessor", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
-      "global-clipping-eez-land-union"
+      "global-clipping-eez-land-union",
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
@@ -67,7 +67,7 @@ describe("genPreprocessor", () => {
 
   test("sketch outside of datasource should not clip at all", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
-      "global-clipping-eez-land-union"
+      "global-clipping-eez-land-union",
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");

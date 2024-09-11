@@ -21,22 +21,22 @@ export async function getGeographyFeatures(
   geography: Geography,
   /** Geography datasource */
   datasource: VectorDatasource,
-  dstPath: string
+  dstPath: string,
 ): Promise<FeatureCollection<Polygon | MultiPolygon>> {
   if (isInternalVectorDatasource(datasource)) {
     // Read local datasource
     let featureColl = truncate(
       readDatasourceGeojsonById(geography.datasourceId, dstPath),
-      { mutate: true }
+      { mutate: true },
     );
     if (geography.propertyFilter) {
       featureColl = featureCollection(
         featureColl.features.filter((curFeat) => {
           if (!curFeat.properties) return false;
           return geography.propertyFilter?.values.includes(
-            curFeat.properties[geography.propertyFilter.property]
+            curFeat.properties[geography.propertyFilter.property],
           );
-        })
+        }),
       );
     }
     return featureColl;

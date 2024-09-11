@@ -1,6 +1,4 @@
-// @ts-ignore
-// import fetchMock from "fetch-mock-jest";
-import { describe, test, expect } from "vitest";
+import { test, expect } from "vitest";
 import { fetchGeoJSON } from "./seasketch.js";
 import { isSketch } from "../helpers/index.js";
 import { Sketch } from "../index.js";

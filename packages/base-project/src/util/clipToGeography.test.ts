@@ -454,7 +454,7 @@ const sketch: Sketch<Polygon> = genSampleSketch<Polygon>(
       ],
     ],
   },
-  "foo"
+  "foo",
 );
 
 const noOverlapSketch = genSampleSketch<Polygon>({
@@ -505,7 +505,7 @@ describe("clipToGeography", () => {
     const sketchCollection = genSketchCollection([sketch, noOverlapSketch]);
     const clippedSketchCollection = await clipToGeography(
       sketchCollection,
-      curGeography
+      curGeography,
     );
     const clippedSketchCollectionArea = area(clippedSketchCollection);
     const clippedSketchCollectionBox =
@@ -513,7 +513,7 @@ describe("clipToGeography", () => {
 
     expect(sketchArea === clippedSketchCollectionArea).toBe(true);
     sketchBox.forEach((bboxCoord, i) =>
-      expect(bboxCoord).toBeCloseTo(clippedSketchCollectionBox[i])
+      expect(bboxCoord).toBeCloseTo(clippedSketchCollectionBox[i]),
     );
   });
 });

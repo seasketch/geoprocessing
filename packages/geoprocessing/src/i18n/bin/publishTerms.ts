@@ -1,4 +1,3 @@
-/* eslint-disable i18next/no-literal-string */
 import fs from "fs-extra";
 import * as path from "path";
 import languages from "../supported.js";
@@ -25,7 +24,7 @@ const projectPath = (() => {
     return monoProjectPath;
   }
   throw new Error(
-    `Could not find path to project dir, tried ${installedProjectPath} and ${monoProjectPath}`
+    `Could not find path to project dir, tried ${installedProjectPath} and ${monoProjectPath}`,
   );
 })();
 
@@ -59,7 +58,7 @@ async function publishEnglish() {
     {
       method: "POST",
       body: enTermsForm,
-    }
+    },
   );
 
   const enTermsResult = await enTermsResponse.json();
@@ -83,7 +82,7 @@ async function publishEnglish() {
     comment: string;
     obsolete?: boolean;
   }[] = enTermsResult.result.terms.filter(
-    (t: any) => t.context === config.remoteContext
+    (t: any) => t.context === config.remoteContext,
   );
 
   const termsToAdd: {
@@ -104,8 +103,8 @@ async function publishEnglish() {
     ...fs.readJsonSync(
       path.join(
         import.meta.dirname,
-        `../lang/en/${config.localNamespace.replace(":", "/")}.json`
-      )
+        `../lang/en/${config.localNamespace.replace(":", "/")}.json`,
+      ),
     ),
     ...extraTerms,
   } as Translations;
@@ -164,13 +163,13 @@ async function publishEnglish() {
       {
         method: "POST",
         body: enTermsUpdateForm,
-      }
+      },
     );
 
     const enTermsUpdatedResult = await enTermsUpdateResponse.json();
     if (enTermsUpdatedResult.response.status !== "success") {
       throw new Error(
-        `API response was ${enTermsUpdatedResult.response.status}`
+        `API response was ${enTermsUpdatedResult.response.status}`,
       );
     } else {
       console.log(`en: updated ${termsToUpdate.length} terms in POEditor`);
@@ -181,7 +180,7 @@ async function publishEnglish() {
       const updateTranslationsForm = new FormData();
       updateTranslationsForm.append(
         "api_token",
-        process.env.POEDITOR_API_TOKEN!
+        process.env.POEDITOR_API_TOKEN!,
       );
       updateTranslationsForm.append("id", process.env.POEDITOR_PROJECT!);
       updateTranslationsForm.append("language", "en");
@@ -196,8 +195,8 @@ async function publishEnglish() {
               translation: {
                 content: t.english,
               },
-            }))
-        )
+            })),
+        ),
       );
 
       const updatedTranslationsResponse = await fetch(
@@ -205,7 +204,7 @@ async function publishEnglish() {
         {
           method: "POST",
           body: updateTranslationsForm,
-        }
+        },
       );
 
       const updatedTranslationsResult =
@@ -213,11 +212,11 @@ async function publishEnglish() {
       if (updatedTranslationsResult.response.status !== "success") {
         console.log(JSON.stringify(updatedTranslationsResult.response));
         throw new Error(
-          `API response was ${updatedTranslationsResult.response.status}`
+          `API response was ${updatedTranslationsResult.response.status}`,
         );
       } else {
         console.log(
-          `en: updated translations for ${updatedTranslationsResult.result.translations.updated} terms`
+          `en: updated translations for ${updatedTranslationsResult.result.translations.updated} terms`,
         );
       }
     }
@@ -236,15 +235,15 @@ async function publishEnglish() {
       {
         method: "POST",
         body: addTermsForm,
-      }
+      },
     );
 
-    let addTermsResult = await addTermsResponse.json();
+    const addTermsResult = await addTermsResponse.json();
     if (addTermsResult.response.status !== "success") {
       throw new Error(`API response was ${addTermsResult.response.status}`);
     } else {
       console.log(
-        `en: published ${addTermsResult.result.terms.added} terms to POEditor`
+        `en: published ${addTermsResult.result.terms.added} terms to POEditor`,
       );
     }
 
@@ -264,8 +263,8 @@ async function publishEnglish() {
             translation: {
               content: t.english,
             },
-          }))
-      )
+          })),
+      ),
     );
 
     const addTranslationsResponse = await fetch(
@@ -273,18 +272,18 @@ async function publishEnglish() {
       {
         method: "POST",
         body: addTranslationsForm,
-      }
+      },
     );
 
     const addTranslationsResult = await addTranslationsResponse.json();
 
     if (addTranslationsResult.response.status !== "success") {
       throw new Error(
-        `API response was ${addTranslationsResult.response.status}`
+        `API response was ${addTranslationsResult.response.status}`,
       );
     } else {
       console.log(
-        `en: published translations for ${addTranslationsResult.result.translations.added} terms to POEditor`
+        `en: published translations for ${addTranslationsResult.result.translations.added} terms to POEditor`,
       );
     }
   }
@@ -317,7 +316,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       {
         method: "POST",
         body: curLangTermsForm,
-      }
+      },
     );
 
     const curLangTermsResult = await curLangTermsResponse.json();
@@ -343,7 +342,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
       comment: string;
       obsolete?: boolean;
     }[] = curLangTermsResult.result.terms.filter(
-      (t: any) => t.context === config.remoteContext
+      (t: any) => t.context === config.remoteContext,
     );
 
     // Read terms for current namespace from current language translation file.
@@ -353,8 +352,8 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         import.meta.dirname,
         `../lang/${curLang.code}/${config.localNamespace.replace(
           ":",
-          "/"
-        )}.json`
+          "/",
+        )}.json`,
       );
       if (fs.existsSync(localTermPath)) {
         return fs.readJsonSync(localTermPath) as Translations;
@@ -379,9 +378,9 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
             import.meta.dirname,
             `../baseLang/${curLang.code}/${config.localNamespace.replace(
               ":",
-              "/"
-            )}.json`
-          )
+              "/",
+            )}.json`,
+          ),
         )
       ) {
         return fs.readJsonSync(
@@ -389,9 +388,9 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
             import.meta.dirname,
             `../baseLang/${curLang.code}/${config.localNamespace.replace(
               ":",
-              "/"
-            )}.json`
-          )
+              "/",
+            )}.json`,
+          ),
         ) as Translations;
       } else {
         return {};
@@ -430,7 +429,7 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         });
       } else if (localBaseTerm) {
         console.log(
-          `${curLang.code}: using base translation for term ${enTermKey}`
+          `${curLang.code}: using base translation for term ${enTermKey}`,
         );
         translationsToAdd.push({
           term: enTermKey,
@@ -457,8 +456,8 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
               translation: {
                 content: t.translation,
               },
-            }))
-        )
+            })),
+        ),
       );
 
       const addTranslationsResponse = await fetch(
@@ -466,23 +465,23 @@ async function publishNonEnglish(localEnglishTerms?: Translations) {
         {
           method: "POST",
           body: addTranslationsForm,
-        }
+        },
       );
 
       const addTranslationsResult = await addTranslationsResponse.json();
 
       if (addTranslationsResult.response.status !== "success") {
         throw new Error(
-          `API response was ${JSON.stringify(addTranslationsResult.response)}`
+          `API response was ${JSON.stringify(addTranslationsResult.response)}`,
         );
       } else {
         console.log(
-          `${curLang.code}: published ${addTranslationsResult.result.translations.added} ${curLang.name} translations to POEditor`
+          `${curLang.code}: published ${addTranslationsResult.result.translations.added} ${curLang.name} translations to POEditor`,
         );
       }
     } else {
       console.log(
-        `${curLang.code}: no new ${curLang.name} translations to publish`
+        `${curLang.code}: no new ${curLang.name} translations to publish`,
       );
     }
   }

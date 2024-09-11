@@ -13,29 +13,29 @@ import deepEqual from "fast-deep-equal";
  * Useful if multiple features have same property value and you only want the first match.
  */
 export async function booleanOverlap<B extends Feature<any>>(
-  featureAInput: Feature<any> | Feature<any>[],
+  featureAInput: Feature<Geometry> | Feature<Geometry>[],
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]>;
-export async function booleanOverlap<B extends Feature<any>>(
+export async function booleanOverlap<B extends Feature<Geometry>>(
   featureAInput: Geometry[],
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]>;
 export async function booleanOverlap<B extends Geometry>(
-  featureAInput: Feature<any> | Feature<any>[],
+  featureAInput: Feature<Geometry> | Feature<Geometry>[],
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]>;
 export async function booleanOverlap<B extends Geometry>(
   featureAInput: Geometry | Geometry[],
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]>;
-export async function booleanOverlap<B>(
+export async function booleanOverlap<B extends Geometry>(
   featureAInput,
   featureBInput: B | B[],
-  idProperty?: string
+  idProperty?: string,
 ): Promise<B[]> {
   // Normalize input to array
   const featuresA = Array.isArray(featureAInput)
@@ -45,8 +45,8 @@ export async function booleanOverlap<B>(
     ? featureBInput
     : [featureBInput];
 
-  let overlapFeatures: B[] = [];
-  let overlapIds: string[] = [];
+  const overlapFeatures: B[] = [];
+  const overlapIds: string[] = [];
 
   featuresA.forEach((featureA) => {
     featuresB.forEach((featureB) => {
@@ -61,7 +61,7 @@ export async function booleanOverlap<B>(
       } else {
         if (
           overlapFeatures.findIndex((of) => deepEqual(featureB, of)) < 0 &&
-          turfBoolOverlap(featureA, featureB as any)
+          turfBoolOverlap(featureA, featureB)
         ) {
           overlapFeatures.push(featureB);
         }

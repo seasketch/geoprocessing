@@ -20,7 +20,7 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
     newDatasourcePath?: string;
     newDstPath?: string;
     srcBucketUrl?: string;
-  }
+  },
 ) {
   const { newDatasourcePath, newDstPath, doPublish = false } = extraOptions;
   const config = await genVectorConfig(projectClient, options, newDstPath);
@@ -34,7 +34,7 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
       } else if (format === "fgb") {
         await genFlatgeobuf(config);
       }
-    })
+    }),
   );
 
   if (doPublish) {
@@ -44,9 +44,9 @@ export async function importVectorDatasource<C extends ProjectClientBase>(
           config.dstPath,
           format,
           config.datasourceId,
-          getDatasetBucketName(config)
+          getDatasetBucketName(config),
         );
-      })
+      }),
     );
   }
 
@@ -81,11 +81,10 @@ export function genFields(fieldNames: string[]) {
 
 /** Convert vector datasource to GeoJSON */
 export async function genGeojson(config: ImportVectorDatasourceConfig) {
-  let { src, propertiesToKeep, layerName } = config;
+  const { src, propertiesToKeep, layerName } = config;
   const dst = getJsonPath(config.dstPath, config.datasourceId);
   const query = `SELECT ${genFields(propertiesToKeep)} FROM "${layerName}"`;
-  const explodeOption =
-    config.explodeMulti === true ? "-explodecollections" : "";
+
   fs.removeSync(dst);
   // explode to Polygon or promote to MultiPolygon, GeoJSON supports mixed geometries but intention is to match what is done for Flatgeobuf for consistency
   if (config.explodeMulti === true) {
@@ -100,10 +99,7 @@ export async function genFlatgeobuf(config: ImportVectorDatasourceConfig) {
   const { src, propertiesToKeep, layerName } = config;
   const dst = getFlatGeobufPath(config.dstPath, config.datasourceId);
   const query = `SELECT ${genFields(propertiesToKeep)} FROM "${layerName}"`;
-  const explodeOrPromote =
-    config.explodeMulti === true
-      ? "-explodecollections"
-      : "-nlt PROMOTE_TO_MULTI";
+
   fs.removeSync(dst);
   // explode to Polygon or promote to MultiPolygon, flatgeobuf does not support mixed geometries
   if (config.explodeMulti === true) {

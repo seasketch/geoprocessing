@@ -3,11 +3,6 @@ import { booleanOverlap } from "./booleanOverlap.js";
 import { genSampleSketch } from "../helpers/index.js";
 import { Polygon } from "../types/geojson.js";
 
-const pointSketch = genSampleSketch({
-  type: "Point",
-  coordinates: [1, 2],
-});
-
 const lineSketchA = genSampleSketch({
   type: "LineString",
   coordinates: [
@@ -112,28 +107,28 @@ describe("Overlap unit tests", () => {
   test("A and B poly geometry overlap", async () => {
     const result = await booleanOverlap(
       [polySketchA.geometry],
-      [polySketchB.geometry]
+      [polySketchB.geometry],
     );
     expect(result.length).toBe(1);
   });
   test("A and C poly geometry do not overlap", async () => {
     const result = await booleanOverlap(
       [polySketchA.geometry],
-      [polySketchC.geometry]
+      [polySketchC.geometry],
     );
     expect(result.length).toBe(0);
   });
   test("A and B together overlap with C", async () => {
     const result = await booleanOverlap(
       [polySketchA, polySketchB],
-      polySketchC
+      polySketchC,
     );
     expect(result.length).toBe(1);
   });
   test.skip("A and B together overlap with C and D", async () => {
     const result = await booleanOverlap(
       [polySketchA, polySketchB],
-      [polySketchC, polySketchD]
+      [polySketchC, polySketchD],
     );
     expect(result.length).toBe(2);
   });
@@ -148,7 +143,7 @@ describe("Overlap unit tests", () => {
     const result = await booleanOverlap(
       polySketchB,
       [polySketchA, polySketchC, polySketchD],
-      "name"
+      "name",
     );
     // All test sketches get the same name so it should only return the first that overlaps
     expect(result.length).toBe(1);
@@ -166,7 +161,7 @@ describe("Overlap unit tests", () => {
   test("A overlaps with B but not C", async () => {
     const result = await booleanOverlap(
       [lineSketchA],
-      [lineSketchB, lineSketchC]
+      [lineSketchB, lineSketchC],
     );
     expect(result.length).toBe(1);
   });
@@ -174,7 +169,7 @@ describe("Overlap unit tests", () => {
     const result = await booleanOverlap(
       [lineSketchB],
       [lineSketchA, lineSketchC, lineSketchD],
-      "name"
+      "name",
     );
     // All test sketches get the same name so it should only return the first that overlaps
     expect(result.length).toBe(1);

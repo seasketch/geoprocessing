@@ -16,7 +16,7 @@ import { VectorDataSourceDetails } from "../src/index.js";
  */
 export type LambdaHandler = (
   event: APIGatewayProxyEvent,
-  context: Context
+  context: Context,
 ) => Promise<APIGatewayProxyResult>;
 
 /**
@@ -47,5 +47,6 @@ export interface TemplateMetadata {
   templates: string | string[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const TemplateTypes = ["add-on-template", "starter-template"] as const;
 export type TemplateType = (typeof TemplateTypes)[number];

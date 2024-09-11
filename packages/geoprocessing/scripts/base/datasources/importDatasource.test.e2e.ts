@@ -41,7 +41,7 @@ describe("importDatasource", () => {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
       const savedDs = fs.readJSONSync(dstConfigFilePath);
       expect(Array.isArray(savedDs) && savedDs.length === 1).toBe(true);
@@ -85,7 +85,7 @@ describe("importDatasource", () => {
         {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
-        }
+        },
       );
       const savedDs = fs.readJSONSync(dstConfigFilePath);
       expect(Array.isArray(savedDs) && savedDs.length === 1).toBe(true);
@@ -130,7 +130,7 @@ describe("importDatasource", () => {
         {
           newDatasourcePath: dstConfigFilePath,
           newDstPath: dstPath,
-        }
+        },
       );
       const savedDs = fs.readJSONSync(dstConfigFilePath);
       expect(Array.isArray(savedDs) && savedDs.length === 1).toBe(true);

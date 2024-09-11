@@ -11,7 +11,9 @@ if (!process.env.PROJECT_PATH) {
 const PROJECT_PATH = process.env.PROJECT_PATH;
 
 const manifest: Manifest = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json")).toString()
+  fs
+    .readFileSync(path.join(PROJECT_PATH, ".build", "manifest.json"))
+    .toString(),
 );
 
 export async function createStack() {

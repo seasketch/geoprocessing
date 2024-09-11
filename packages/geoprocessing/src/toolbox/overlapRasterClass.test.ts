@@ -81,7 +81,7 @@ const mixedPolySketchCollection: SketchCollection<Polygon | MultiPolygon> = {
     userAttributes: [],
   },
   bbox: bbox(
-    featureCollection<Polygon | MultiPolygon>([bottomRightPoly, multiPoly1])
+    featureCollection<Polygon | MultiPolygon>([bottomRightPoly, multiPoly1]),
   ),
   features: [bottomRightPoly, multiPoly1],
 };
@@ -100,7 +100,7 @@ const overlappingPolySketchCollection: SketchCollection<
     userAttributes: [],
   },
   bbox: bbox(
-    featureCollection<Polygon | MultiPolygon>([topRightPoly, multiPoly1])
+    featureCollection<Polygon | MultiPolygon>([topRightPoly, multiPoly1]),
   ),
   features: [topRightPoly, multiPoly1],
 };
@@ -128,13 +128,13 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterClass(
       "test",
       raster,
       undefined,
-      classIdMapping(classes)
+      classIdMapping(classes),
     );
     // only cell in polygon should have been nodata in bottom left
     expect(metrics.length).toBe(2);
@@ -162,14 +162,14 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterClass(
       "test",
       raster,
       undefined,
       classIdMapping(classes),
-      "groupId"
+      "groupId",
     );
     expect(metrics.length).toBe(2);
     expect(metrics[0].sketchId).toBe(null);
@@ -192,13 +192,13 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterClass(
       "test",
       raster,
       bottomLeftPoly,
-      classIdMapping(classes)
+      classIdMapping(classes),
     );
     // only cell in polygon should have been nodata in bottom left
     expect(metrics.length).toBe(2);
@@ -223,13 +223,13 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterClass(
       "test",
       raster,
       topRightPoly,
-      classIdMapping(classes)
+      classIdMapping(classes),
     );
     expect(metrics.length).toBe(2);
     expect(metrics[0].classId).toBe("1");
@@ -253,13 +253,13 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const metrics = await overlapRasterClass(
       "test",
       raster,
       bottomRightPoly,
-      classIdMapping(classes)
+      classIdMapping(classes),
     );
     expect(metrics.length).toBe(2);
     expect(metrics[0].classId).toBe("1");
@@ -284,14 +284,14 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const metrics = await overlapRasterClass(
       "test",
       raster,
       multiPoly2,
-      classIdMapping(classes)
+      classIdMapping(classes),
     );
     expect(metrics.length).toBe(2);
     expect(metrics[0].classId).toBe("1");
@@ -316,14 +316,14 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const metrics = await overlapRasterClass(
       "test",
       raster,
       multiPoly2,
-      classIdMapping(classes)
+      classIdMapping(classes),
     );
     expect(metrics.length).toBe(2);
     expect(metrics[0].classId).toBe("1");
@@ -347,14 +347,14 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const metrics = await overlapRasterClass(
       "test",
       raster,
       mixedPolySketchCollection,
-      classIdMapping(classes)
+      classIdMapping(classes),
     );
     expect(metrics.length).toBe(6);
     expect(metrics[0].classId).toBe("1");
@@ -387,14 +387,14 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const metrics = await overlapRasterClass(
       "test",
       raster,
       overlappingPolySketchCollection,
-      classIdMapping(classes)
+      classIdMapping(classes),
     );
     expect(metrics.length).toBe(6);
     expect(metrics[0].classId).toBe("1");
@@ -426,14 +426,14 @@ describe("overlapRasterClass test", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const metrics = await overlapRasterClass(
       "test",
       raster,
       fix.holeMixedSC,
-      classIdMapping(classes)
+      classIdMapping(classes),
     );
     // Remember
     expect(metrics.length).toBe(6);

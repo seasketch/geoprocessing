@@ -1,4 +1,7 @@
-import { GeoprocessingServiceMetadata, PreprocessingService } from "./service.js";
+import {
+  GeoprocessingServiceMetadata,
+  PreprocessingService,
+} from "./service.js";
 import { z } from "zod";
 
 export interface GeoprocessingProject {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { ReactElement, useMemo, ReactNode } from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
 import { styled } from "styled-components";
@@ -26,6 +27,7 @@ declare module "react-table" {
    * Unused plugings are commented out
    */
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface TableOptions<D extends object = {}>
     extends UseExpandedOptions<D>,
       // UseFiltersOptions<D>,
@@ -57,12 +59,14 @@ declare module "react-table" {
     downloadFormats?: DataDownloadProps["formats"];
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface Hooks<D extends object = {}>
     extends UseExpandedHooks<D>,
       UseGroupByHooks<D>,
       UseRowSelectHooks<D>,
       UseSortByHooks<D> {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface TableInstance<D extends object = {}>
     extends UseColumnOrderInstanceProps<D>,
       UseExpandedInstanceProps<D>,
@@ -74,6 +78,7 @@ declare module "react-table" {
       UseRowStateInstanceProps<D>,
       UseSortByInstanceProps<D> {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface TableState<D extends object = {}>
     extends UseColumnOrderState<D>,
       UseExpandedState<D>,
@@ -86,6 +91,7 @@ declare module "react-table" {
       UseRowStateState<D>,
       UseSortByState<D> {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface ColumnInterface<D extends object = {}>
     extends UseFiltersColumnOptions<D>,
       UseGlobalFiltersColumnOptions<D>,
@@ -94,6 +100,7 @@ declare module "react-table" {
       UseSortByColumnOptions<D>,
       TableCommonProps {} // added style, className, role props
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface ColumnInstance<D extends object = {}>
     extends UseFiltersColumnProps<D>,
       UseGroupByColumnProps<D>,
@@ -101,10 +108,12 @@ declare module "react-table" {
       UseSortByColumnProps<D>,
       TableCommonProps {} // added style, className, role props
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface Cell<D extends object = {}, V = any>
     extends UseGroupByCellProps<D>,
       UseRowStateCellProps<D> {}
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface Row<D extends object = {}>
     extends UseExpandedRowProps<D>,
       UseGroupByRowProps<D>,
@@ -210,7 +219,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
       Filter: undefined, // default filter UI
       Cell: undefined, // default editable cell
     }),
-    []
+    [],
   );
 
   const {
@@ -266,7 +275,7 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
       data,
     },
     useSortBy,
-    usePagination
+    usePagination,
   );
 
   return (
@@ -344,12 +353,12 @@ export function Table<D extends object>(props: TableOptions<D>): ReactElement {
           {page.map((row) => {
             prepareRow(row);
             const { key: otherRowPropKey, ...otherRowProps } = row.getRowProps(
-              rowProps(row) || {}
+              rowProps(row) || {},
             );
             return (
               <tr key={otherRowPropKey} {...otherRowProps}>
                 {row.cells.map((cell) => {
-                  let cellVal = cell.value;
+                  const cellVal = cell.value;
                   const { key: otherCellPropKey, ...otherCellProps } =
                     cell.getCellProps([
                       {

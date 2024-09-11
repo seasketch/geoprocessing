@@ -11,57 +11,58 @@ export function cleanCoords(
   geojson: any,
   options: {
     mutate?: boolean;
-  } = {}
+  } = {},
 ) {
-  var mutate = typeof options === "object" ? options.mutate : options;
+  const mutate = typeof options === "object" ? options.mutate : options;
   if (!geojson) throw new Error("geojson is required");
-  var type = getType(geojson);
+  const type = getType(geojson);
 
   // Store new "clean" points in this Array
-  var newCoords: any = [];
+  let newCoords: any = [];
 
   switch (type) {
-    case "FeatureCollection":
+    case "FeatureCollection": {
       const cleanedCollection = featureCollection(
-        geojson.features.map((f) => cleanCoords(f))
+        geojson.features.map((f) => cleanCoords(f)),
       );
       if (geojson.properties) {
-        // @ts-ignore
-        cleanedCollection.properties = geojson.properties; // if SketchCollection transfer properties
-        // @ts-ignore
+        // @ts-expect-error - is this is a sketch collection we want to transfer collection-level properties
+        cleanedCollection.properties = geojson.properties;
         cleanedCollection.bbox = geojson.bbox; // and bbox
       }
       return cleanedCollection;
+    }
     case "LineString":
-      newCoords = cleanLine(geojson, type);
+      newCoords = cleanLine(geojson);
       break;
     case "MultiLineString":
     case "Polygon":
       getCoords(geojson).forEach(function (line) {
-        newCoords.push(cleanLine(line, type));
+        newCoords.push(cleanLine(line));
       });
       break;
     case "MultiPolygon":
       getCoords(geojson).forEach(function (polygons: any) {
-        var polyPoints: Position[] = [];
+        const polyPoints: Position[] = [];
         polygons.forEach(function (ring: Position[]) {
-          polyPoints.push(cleanLine(ring, type));
+          polyPoints.push(cleanLine(ring));
         });
         newCoords.push(polyPoints);
       });
       break;
     case "Point":
       return geojson;
-    case "MultiPoint":
-      var existing: Record<string, true> = {};
+    case "MultiPoint": {
+      const existing: Record<string, true> = {};
       getCoords(geojson).forEach(function (coord: any) {
-        var key = coord.join("-");
+        const key = coord.join("-");
         if (!Object.prototype.hasOwnProperty.call(existing, key)) {
           newCoords.push(coord);
           existing[key] = true;
         }
       });
       break;
+    }
     default:
       throw new Error(type + " geometry not supported");
   }
@@ -91,10 +92,10 @@ export function cleanCoords(
  * @param {string} type Type of geometry
  * @returns {Array<number>} Cleaned coordinates
  */
-function cleanLine(line: Position[], type: string): any[] {
-  var points = getCoords(line);
-  var newPoints: number[][] = [];
-  for (var i = 0; i < points.length; i++) {
+function cleanLine(line: Position[]): any[] {
+  const points = getCoords(line);
+  const newPoints: number[][] = [];
+  for (let i = 0; i < points.length; i++) {
     const newPoint = [longitude(points[i][0]), latitude(points[i][1])];
     newPoints.push(newPoint);
   }

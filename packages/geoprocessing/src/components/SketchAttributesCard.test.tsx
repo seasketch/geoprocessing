@@ -5,7 +5,7 @@ import SketchAttributesCard from "./SketchAttributesCard.js";
 import { ReportContext } from "../context/index.js";
 
 test("SketchAttributesCard renders all userAttributes", () => {
-  const { getByRole, getByText, getAllByText } = render(
+  const { getAllByText } = render(
     <ReportContext.Provider
       value={{
         geometryUri: `https://localhost/geom/abc123`,
@@ -37,14 +37,14 @@ test("SketchAttributesCard renders all userAttributes", () => {
       }}
     >
       <SketchAttributesCard />
-    </ReportContext.Provider>
+    </ReportContext.Provider>,
   );
   expect(getAllByText("Field 1").length).toBe(1);
   expect(getAllByText("Number").length).toBe(1);
 });
 
 test("Can deal with null values", () => {
-  const { getByRole, getByText, getAllByText } = render(
+  const { getAllByText } = render(
     <ReportContext.Provider
       value={{
         geometryUri: `https://localhost/geom/abc123`,
@@ -76,14 +76,14 @@ test("Can deal with null values", () => {
       }}
     >
       <SketchAttributesCard />
-    </ReportContext.Provider>
+    </ReportContext.Provider>,
   );
   expect(getAllByText("Field 1").length).toBe(1);
   expect(getAllByText("Number").length).toBe(1);
 });
 
 test("SketchAttributesCard autoHide option hides card if there are no attributes", () => {
-  const { getByRole, getByText, getAllByText } = render(
+  const { getAllByText } = render(
     <ReportContext.Provider
       value={{
         geometryUri: `https://localhost/geom/abc123`,
@@ -102,7 +102,7 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
       }}
     >
       <SketchAttributesCard autoHide={true} />
-    </ReportContext.Provider>
+    </ReportContext.Provider>,
   );
   expect(() => getAllByText("Attributes")).toThrow(/Unable to find/);
   render(
@@ -124,7 +124,7 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
       }}
     >
       <SketchAttributesCard autoHide={false} />
-    </ReportContext.Provider>
+    </ReportContext.Provider>,
   );
   expect(getAllByText("Attributes").length).toBe(1);
   render(
@@ -159,7 +159,7 @@ test("SketchAttributesCard autoHide option hides card if there are no attributes
       }}
     >
       <SketchAttributesCard autoHide={true} />
-    </ReportContext.Provider>
+    </ReportContext.Provider>,
   );
   expect(getAllByText("Attributes").length).toBe(2);
 });

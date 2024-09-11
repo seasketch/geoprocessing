@@ -14,7 +14,7 @@ const httpAgent = new http.Agent({ keepAlive: false, maxSockets: Infinity });
 const httpsAgent = new https.Agent({ keepAlive: false, maxSockets: Infinity });
 const customFetch = async (
   url: URL | RequestInfo,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<Response> => {
   const options = {
     ...init,
@@ -31,13 +31,13 @@ const customFetch = async (
 
 // Always polyfill, because of issue with native Node v20 fetch API causing request timeout.  Node v21 and up should be stable, and this polyfill can be removed in the future
 if (globalThis) {
-  //@ts-ignore
+  //@ts-expect-error type incompatibility
   globalThis.fetch = customFetch;
-  //@ts-ignore
+  //@ts-expect-error type incompatibility
   globalThis.Headers = Headers;
-  //@ts-ignore
+  //@ts-expect-error type incompatibility
   globalThis.Request = Request;
-  //@ts-ignore
+  //@ts-expect-error type incompatibility
   globalThis.Response = Response;
 }
 

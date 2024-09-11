@@ -18,13 +18,13 @@ import isHostedOnLambda from "./isHostedOnLambda.js";
  * @returns the JSON with geometry type optionally specified by request
  */
 export const fetchGeoJSON = async <G extends Geometry>(
-  request: GeoprocessingRequest<G> | GeoprocessingRequestModel<G>
+  request: GeoprocessingRequest<G> | GeoprocessingRequestModel<G>,
 ): Promise<
   Feature<G> | FeatureCollection<G> | Sketch<G> | SketchCollection<G>
 > => {
   if (request.geometryGeobuf) {
     const sketchU8 = new Uint8Array(
-      Buffer.from(request.geometryGeobuf, "base64")
+      Buffer.from(request.geometryGeobuf, "base64"),
     );
     return geobuf.decode(new Pbf(sketchU8)) as
       | Feature<G>
@@ -62,7 +62,7 @@ export const fetchGeoJSON = async <G extends Geometry>(
                 Authorization: request.token,
               },
             }
-          : {}
+          : {},
       );
       const sketch = await response.json();
       if (isHostedOnLambda) {

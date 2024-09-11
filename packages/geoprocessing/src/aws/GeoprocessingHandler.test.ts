@@ -3,21 +3,17 @@ import { GeoprocessingHandler } from "./GeoprocessingHandler.js";
 import Tasks, { GeoprocessingTask, GeoprocessingTaskStatus } from "./tasks.js";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { v4 as uuid } from "uuid";
-import {
-  Sketch,
-  SketchCollection,
-  Feature,
-  FeatureCollection,
-} from "../types/index.js";
-// @ts-ignore
+import { Sketch, SketchCollection } from "../types/index.js";
+// @ts-expect-error does not exist
 import fetchMock from "fetch-mock-jest";
 import deepEqual from "fast-deep-equal";
 
 // Mock task methods, using actual implementation for init
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const init = Tasks.prototype.init;
 // jest.mock("./tasks");
 // const TasksActual = jest.requireActual("./tasks").default;
-// @ts-ignore
+// @ts-expect-error does not exist
 // Tasks.prototype.create.mockImplementation(
 //   async (service: string, cacheKey: string) => {
 //     const task = TasksActual.prototype.init(service, cacheKey);
@@ -25,8 +21,8 @@ const init = Tasks.prototype.init;
 //   }
 // );
 
-// @ts-ignore
 Tasks.prototype.fail.mockImplementation(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (task: GeoprocessingTask, errorDescription: string, error?: Error) => {
     task.status = GeoprocessingTaskStatus.Failed;
     task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
@@ -39,7 +35,7 @@ Tasks.prototype.fail.mockImplementation(
       },
       body: JSON.stringify(task),
     };
-  }
+  },
 );
 
 /** Simple in-memory cache for last saved task */
@@ -48,7 +44,7 @@ let lastSavedTask: GeoprocessingTask;
 /**
  * Implements mock for Tasks.complete that returns the last saved task
  */
-// @ts-ignore
+// @ts-expect-error does not exist
 Tasks.prototype.complete.mockImplementation(
   async (task: GeoprocessingTask, results: any) => {
     task.data = results;
@@ -63,7 +59,7 @@ Tasks.prototype.complete.mockImplementation(
       },
       body: JSON.stringify(task),
     };
-  }
+  },
 );
 
 const exampleSketch = {
@@ -122,7 +118,7 @@ describe("GeoprocessingHandler", () => {
       }
     );
     expect(handler.options.title).toBe("TestGP");
-    // @ts-ignore
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockResolvedValueOnce(false);
   
     const result = await handler.lambdaHandler(
@@ -133,7 +129,7 @@ describe("GeoprocessingHandler", () => {
           wss: "wss://localhost:1234",
         }),
       } as unknown) as APIGatewayProxyEvent,
-      // @ts-ignore
+      // @ts-expect-error does not exist
       { awsRequestId: "foo" }
     );
   
@@ -151,6 +147,7 @@ describe("GeoprocessingHandler", () => {
 
   test.skip("Sketch handler can be constructed and run simple geoprocessing", async () => {
     const handler = new GeoprocessingHandler(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async (sketch: Sketch | SketchCollection) => exampleResponse,
       {
         title: "TestGP",
@@ -159,10 +156,10 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     expect(handler.options.title).toBe("TestGP");
-    // @ts-ignore
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockResolvedValueOnce(false);
 
     const result = await handler.lambdaHandler(
@@ -172,8 +169,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(200);
     const task = JSON.parse(result.body) as GeoprocessingTask;
@@ -187,7 +184,7 @@ describe("GeoprocessingHandler", () => {
 
   test.skip("Feature handler can be constructed and run simple geoprocessing", async () => {
     const handler = new GeoprocessingHandler(
-      async (feature: Feature | FeatureCollection) => exampleFeatureResponse,
+      async () => exampleFeatureResponse,
       {
         title: "TestGP",
         description: "Test gp function",
@@ -195,10 +192,10 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     expect(handler.options.title).toBe("TestGP");
-    // @ts-ignore
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockResolvedValueOnce(false);
 
     const result = await handler.lambdaHandler(
@@ -208,8 +205,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(200);
     const task = JSON.parse(result.body) as GeoprocessingTask;
@@ -222,18 +219,15 @@ describe("GeoprocessingHandler", () => {
   });
 
   test.skip("Repeated requests should be 'cancelled'", async () => {
-    const handler = new GeoprocessingHandler(
-      async (feature) => exampleResponse,
-      {
-        title: "TestGP",
-        description: "Test gp function",
-        executionMode: "sync",
-        memory: 128,
-        requiresProperties: [],
-        timeout: 100,
-      }
-    );
-    // @ts-ignore
+    const handler = new GeoprocessingHandler(async () => exampleResponse, {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "sync",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    });
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockResolvedValueOnce(false);
     const result = await handler.lambdaHandler(
       {
@@ -242,8 +236,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     const result2 = await handler.lambdaHandler(
       {
@@ -252,8 +246,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     expect(result.body.length).toBeGreaterThan(1);
     expect(result2.body.length).toBe(0);
@@ -264,18 +258,15 @@ describe("GeoprocessingHandler", () => {
   //sure that the async ones follow the same behavior for caching and
   //cancelling repeats
   test.skip("Repeated requests should be 'cancelled' for async tasks", async () => {
-    const handler = new GeoprocessingHandler(
-      async (feature) => exampleResponse,
-      {
-        title: "TestGP",
-        description: "Test gp function",
-        executionMode: "async",
-        memory: 128,
-        requiresProperties: [],
-        timeout: 100,
-      }
-    );
-    // @ts-ignore
+    const handler = new GeoprocessingHandler(async () => exampleResponse, {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "async",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    });
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockResolvedValueOnce(false);
     const result = await handler.lambdaHandler(
       {
@@ -284,8 +275,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     const result2 = await handler.lambdaHandler(
       {
@@ -294,8 +285,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     expect(result.body.length).toBeGreaterThan(1);
     expect(result2.body.length).toBe(0);
@@ -303,18 +294,15 @@ describe("GeoprocessingHandler", () => {
   });
 
   test.skip("Results are cached using request.cacheKey", async () => {
-    const handler = new GeoprocessingHandler(
-      async (feature) => exampleResponse,
-      {
-        title: "TestGP",
-        description: "Test gp function",
-        executionMode: "sync",
-        memory: 128,
-        requiresProperties: [],
-        timeout: 100,
-      }
-    );
-    // @ts-ignore
+    const handler = new GeoprocessingHandler(async () => exampleResponse, {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "sync",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    });
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockImplementation(
       async (service: string, cacheKey: string) => {
         if (cacheKey === "abc123") {
@@ -322,7 +310,7 @@ describe("GeoprocessingHandler", () => {
         } else {
           return false;
         }
-      }
+      },
     );
     const result = await handler.lambdaHandler(
       {
@@ -331,8 +319,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     const result2 = await handler.lambdaHandler(
       {
@@ -341,10 +329,10 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "bar" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "bar" },
     );
-    // @ts-ignore
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockReset();
     expect(result.body.length).toBeGreaterThan(1);
     expect(result2.body.length).toBeGreaterThan(1);
@@ -356,18 +344,15 @@ describe("GeoprocessingHandler", () => {
   });
 
   test.skip("Results are cached using request.cacheKey for asynchronous tasks", async () => {
-    const handler = new GeoprocessingHandler(
-      async (feature) => exampleResponse,
-      {
-        title: "TestGP",
-        description: "Test gp function",
-        executionMode: "async",
-        memory: 128,
-        requiresProperties: [],
-        timeout: 100,
-      }
-    );
-    // @ts-ignore
+    const handler = new GeoprocessingHandler(async () => exampleResponse, {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "async",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    });
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockImplementation(
       async (service: string, cacheKey: string) => {
         if (cacheKey === "abc123") {
@@ -375,7 +360,7 @@ describe("GeoprocessingHandler", () => {
         } else {
           return false;
         }
-      }
+      },
     );
 
     const result = await handler.lambdaHandler(
@@ -385,8 +370,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     const result2 = await handler.lambdaHandler(
       {
@@ -395,10 +380,10 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "bar" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "bar" },
     );
-    // @ts-ignore
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockReset();
 
     expect(result.body.length).toBeGreaterThan(1);
@@ -424,10 +409,10 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     expect(handler.options.title).toBe("paramsGP");
-    // @ts-ignore
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockResolvedValueOnce(false);
 
     const extraParams = { geography: "nearshore" };
@@ -439,8 +424,8 @@ describe("GeoprocessingHandler", () => {
           extraParams,
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(200);
     const task = JSON.parse(result.body) as GeoprocessingTask;
@@ -453,19 +438,16 @@ describe("GeoprocessingHandler", () => {
 
   test.skip("Failed geometryUri fetches are communicated to requester", async () => {
     fetchMock.get("https://example.com/geom/abc123", 500);
-    const handler = new GeoprocessingHandler(
-      async (feature) => exampleResponse,
-      {
-        title: "TestGP",
-        description: "Test gp function",
-        executionMode: "sync",
-        memory: 128,
-        requiresProperties: [],
-        timeout: 100,
-      }
-    );
+    const handler = new GeoprocessingHandler(async () => exampleResponse, {
+      title: "TestGP",
+      description: "Test gp function",
+      executionMode: "sync",
+      memory: 128,
+      requiresProperties: [],
+      timeout: 100,
+    });
     expect(handler.options.title).toBe("TestGP");
-    // @ts-ignore
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockResolvedValueOnce(false);
 
     const result = await handler.lambdaHandler(
@@ -475,8 +457,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(500);
     const task = JSON.parse(result.body) as GeoprocessingTask;
@@ -489,7 +471,7 @@ describe("GeoprocessingHandler", () => {
   test.skip("Exceptions in geoprocessing function are passed to requester", async () => {
     const handler = new GeoprocessingHandler(
       async (sketch) => {
-        // @ts-ignore
+        // @ts-expect-error does not exist
         return { foo: sketch.something.doesntexist() };
       },
       {
@@ -499,10 +481,10 @@ describe("GeoprocessingHandler", () => {
         memory: 128,
         requiresProperties: [],
         timeout: 100,
-      }
+      },
     );
     expect(handler.options.title).toBe("TestGP");
-    // @ts-ignore
+    // @ts-expect-error does not exist
     Tasks.prototype.get.mockResolvedValueOnce(false);
 
     const result = await handler.lambdaHandler(
@@ -512,8 +494,8 @@ describe("GeoprocessingHandler", () => {
           cacheKey: "abc123",
         }),
       } as unknown as APIGatewayProxyEvent,
-      // @ts-ignore
-      { awsRequestId: "foo" }
+      // @ts-expect-error does not exist
+      { awsRequestId: "foo" },
     );
     expect(result.statusCode).toBe(500);
     const task = JSON.parse(result.body) as GeoprocessingTask;

@@ -10,7 +10,9 @@ export interface ReimportAnswers {
 
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
-const internalDatasources = projectClient.datasources.filter((ds) => isinternalDatasource(ds));
+const internalDatasources = projectClient.datasources.filter((ds) =>
+  isinternalDatasource(ds),
+);
 const numDs = internalDatasources.length;
 
 // Wrap in an IIFE to avoid top-level await
@@ -28,7 +30,7 @@ void (async function () {
 })();
 
 export async function reimportAllQuestion(
-  numDs: number
+  numDs: number,
 ): Promise<Pick<ReimportAnswers, "reimportAll">> {
   return inquirer.prompt<Pick<ReimportAnswers, "reimportAll">>([
     {
@@ -55,7 +57,7 @@ export interface DatasourcesAnswers {
 }
 
 export async function datasourcesQuestion(
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): Promise<DatasourcesAnswers> {
   const datasourcesQuestion = await getDatasourcesQuestion(datasources);
   const answer = await inquirer.prompt<DatasourcesAnswers>([

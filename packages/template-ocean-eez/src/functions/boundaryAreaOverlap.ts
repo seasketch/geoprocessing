@@ -25,7 +25,7 @@ const metricGroup = project.getMetricGroup("boundaryAreaOverlap");
 
 export async function boundaryAreaOverlap(
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
-  extraParams: DefaultExtraParams = {}
+  extraParams: DefaultExtraParams = {},
 ): Promise<ReportResult> {
   // Use caller-provided geographyId if provided
   const geographyId = getFirstFromParam("geographyIds", extraParams);
@@ -65,7 +65,7 @@ export async function boundaryAreaOverlap(
           throw new Error("Expected array of Polygon features");
         }
         return polys;
-      })
+      }),
     )
   ).reduce<Record<string, Feature<Polygon>[]>>((acc, polys, classIndex) => {
     return {
@@ -75,28 +75,28 @@ export async function boundaryAreaOverlap(
   }, {});
 
   const metrics: Metric[] = // calculate area overlap metrics for each class
-  (
-    await Promise.all(
-      metricGroup.classes.map(async (curClass) => {
-        const overlapResult = await overlapFeatures(
-          metricGroup.metricId,
-          polysByBoundary[curClass.classId],
-          clippedSketch
-        );
-        return overlapResult.map(
-          (metric): Metric => ({
-            ...metric,
-            classId: curClass.classId,
-            geographyId: curGeography.geographyId,
-          })
-        );
-      })
-    )
-  ).reduce(
-    // merge
-    (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
-    []
-  );
+    (
+      await Promise.all(
+        metricGroup.classes.map(async (curClass) => {
+          const overlapResult = await overlapFeatures(
+            metricGroup.metricId,
+            polysByBoundary[curClass.classId],
+            clippedSketch,
+          );
+          return overlapResult.map(
+            (metric): Metric => ({
+              ...metric,
+              classId: curClass.classId,
+              geographyId: curGeography.geographyId,
+            }),
+          );
+        }),
+      )
+    ).reduce(
+      // merge
+      (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
+      [],
+    );
 
   return {
     metrics: sortMetrics(rekeyMetrics(metrics)),

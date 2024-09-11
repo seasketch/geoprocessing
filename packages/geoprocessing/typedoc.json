@@ -1,5 +1,10 @@
 {
   "includeVersion": true,
-  "entryPoints": ["src/index.ts", "client-ui.ts", "client-core.ts", "dataproviders.ts"],
+  "entryPoints": [
+    "src/index.ts",
+    "client-ui.ts",
+    "client-core.ts",
+    "dataproviders.ts"
+  ],
   "out": "docs/api"
 }

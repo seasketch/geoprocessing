@@ -38,7 +38,7 @@ export const connectHandler = async (event) => {
           cacheKey: cacheKey,
           serviceName: serviceName,
         },
-      })
+      }),
     );
   } catch (err) {
     return {

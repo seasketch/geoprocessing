@@ -573,11 +573,7 @@ export const chartWithMixedTarget = () => {
               targetLabelStyle: "tight",
             },
             width: 40,
-            targetValueFormatter: (
-              value: number,
-              row: number,
-              numRows: number
-            ) => {
+            targetValueFormatter: (value: number, row: number) => {
               if (row === 0) {
                 return (value: number) =>
                   `${valueFormatter(value / 100, "percent0dig")} Target`;

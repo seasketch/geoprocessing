@@ -8,7 +8,7 @@ import { Function } from "aws-cdk-lib/aws-lambda";
  * Create database tables
  */
 export const createTables = (stack: GeoprocessingStack): GpDynamoTables => {
-  let tables: GpDynamoTables = {
+  const tables: GpDynamoTables = {
     tasks: undefined,
     estimates: undefined,
     subscriptions: undefined,
@@ -56,7 +56,7 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
       stack.tables.tasks.grantReadWriteData(syncFunctionWithMeta.func);
       syncFunctionWithMeta.func.addEnvironment(
         "TASKS_TABLE",
-        stack.tables.tasks.tableName
+        stack.tables.tasks.tableName,
       );
     }
 
@@ -64,7 +64,7 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
       stack.tables.estimates.grantReadWriteData(syncFunctionWithMeta.func);
       syncFunctionWithMeta.func.addEnvironment(
         "ESTIMATES_TABLE",
-        stack.tables.estimates.tableName
+        stack.tables.estimates.tableName,
       );
     }
   });
@@ -77,7 +77,7 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
     }
     if (stack.tables.estimates) {
       stack.tables.estimates.grantReadWriteData(
-        asyncFunctionWithMeta.startFunc
+        asyncFunctionWithMeta.startFunc,
       );
       stack.tables.estimates.grantReadWriteData(asyncFunctionWithMeta.runFunc);
     }
@@ -93,15 +93,15 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
         stack.tables.subscriptions.grantReadWriteData(socketFunction);
         socketFunction.addEnvironment(
           "SUBSCRIPTIONS_TABLE",
-          stack.tables.subscriptions.tableName
+          stack.tables.subscriptions.tableName,
         );
       }
-    }
+    },
   );
 
   if (stack.projectFunctions.socketFunctions.send && stack.tables.estimates)
     stack.tables.estimates.grantReadWriteData(
-      stack.projectFunctions.socketFunctions.send
+      stack.projectFunctions.socketFunctions.send,
     );
 };
 
@@ -113,6 +113,6 @@ const addAsyncEnv = (stack: GeoprocessingStack, func: Function) => {
   if (stack.tables.subscriptions)
     func.addEnvironment(
       "SUBSCRIPTIONS_TABLE",
-      stack.tables.subscriptions.tableName
+      stack.tables.subscriptions.tableName,
     );
 };

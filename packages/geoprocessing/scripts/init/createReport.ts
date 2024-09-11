@@ -69,21 +69,21 @@ const createReport = async () => {
   if (answers.type === "raster" || answers.type === "vector") {
     // For raster and vector overlap reports, we need to know which metric group to report on
     const rawMetrics = fs.readJSONSync(
-      `${getProjectConfigPath("")}/metrics.json`
+      `${getProjectConfigPath("")}/metrics.json`,
     );
     const metrics = metricGroupsSchema.parse(rawMetrics);
     const geoprocessingJson = JSON.parse(
-      fs.readFileSync("./project/geoprocessing.json").toString()
+      fs.readFileSync("./project/geoprocessing.json").toString(),
     ) as GeoprocessingJsonConfig;
     const gpFunctions = geoprocessingJson.geoprocessingFunctions || [];
     const availableMetricGroups = metrics
       .map((metric) => metric.metricId)
       .filter(
-        (metricId) => !gpFunctions.includes(`src/functions/${metricId}.ts`)
+        (metricId) => !gpFunctions.includes(`src/functions/${metricId}.ts`),
       );
     if (!availableMetricGroups.length)
       throw new Error(
-        "All existing metric groups have reports. Either create a new metric group in project/metrics.json or delete an existing report, then try again."
+        "All existing metric groups have reports. Either create a new metric group in project/metrics.json or delete an existing report, then try again.",
       );
 
     // Only allow creation of reports for unused metric groups (prevents overwriting)
@@ -165,7 +165,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
 export async function makeReport(
   options: ReportOptions,
   interactive = true,
-  basePath = "./"
+  basePath = "./",
 ) {
   // Start interactive spinner
   const spinner = interactive
@@ -224,11 +224,11 @@ export async function makeReport(
 
   // Load code templates
   const funcCode = await fs.readFile(
-    `${templateFuncPath}/${defaultFuncName}.ts`
+    `${templateFuncPath}/${defaultFuncName}.ts`,
   );
   const testFuncCode = await fs.readFile(templateFuncTestPath);
   const componentCode = await fs.readFile(
-    `${templateCompPath}/${defaultCompName}.tsx`
+    `${templateCompPath}/${defaultCompName}.tsx`,
   );
   const storiesComponentCode = await fs.readFile(templateCompStoriesPath);
 
@@ -244,13 +244,13 @@ export async function makeReport(
       .replace(defaultFuncRegex, funcName)
       .replace(`"async"`, `"${options.executionMode}"`)
       .replace("Function description", options.description)
-      .replace(`stats: ["sum"]`, `stats: ["${options.stat}"]`) // for raster
+      .replace(`stats: ["sum"]`, `stats: ["${options.stat}"]`), // for raster
   );
 
   // Write function smoke test file
   await fs.writeFile(
     `${projectFunctionPath}/${funcName}Smoke.test.ts`,
-    testFuncCode.toString().replace(blankFuncRegex, funcName)
+    testFuncCode.toString().replace(blankFuncRegex, funcName),
   );
 
   // Write component file
@@ -261,7 +261,7 @@ export async function makeReport(
       .replace(defaultCompRegex, `${compName}`)
       .replace(defaultFuncRegex, `${funcName}`)
       .replace(/overlapFunction/g, `${funcName}`)
-      .replace(`"sum"`, `"${options.stat}"`) // for raster/vector overlap reports
+      .replace(`"sum"`, `"${options.stat}"`), // for raster/vector overlap reports
   );
 
   // Write component stories file
@@ -270,23 +270,23 @@ export async function makeReport(
     storiesComponentCode
       .toString()
       .replace(blankCompRegex, `${compName}`)
-      .replace(blankFuncRegex, `${funcName}`)
+      .replace(blankFuncRegex, `${funcName}`),
   );
 
   // Add function to geoprocessing.json
   const geoprocessingJson = JSON.parse(
     fs
       .readFileSync(path.join(basePath, "project", "geoprocessing.json"))
-      .toString()
+      .toString(),
   ) as GeoprocessingJsonConfig;
   geoprocessingJson.geoprocessingFunctions =
     geoprocessingJson.geoprocessingFunctions || [];
   geoprocessingJson.geoprocessingFunctions.push(
-    `src/functions/${options.title}.ts`
+    `src/functions/${options.title}.ts`,
   );
   fs.writeFileSync(
     path.join(basePath, "project", "geoprocessing.json"),
-    JSON.stringify(geoprocessingJson, null, "  ")
+    JSON.stringify(geoprocessingJson, null, "  "),
   );
 
   // Finish and show next steps
@@ -294,10 +294,10 @@ export async function makeReport(
   if (interactive) {
     console.log(chalk.blue(`\nReport successfully created!`));
     console.log(
-      chalk.blue(`Function: ${`${projectFunctionPath}/${funcName}.ts`}`)
+      chalk.blue(`Function: ${`${projectFunctionPath}/${funcName}.ts`}`),
     );
     console.log(
-      chalk.blue(`Component: ${`${projectComponentPath}/${compName}.tsx`}`)
+      chalk.blue(`Component: ${`${projectComponentPath}/${compName}.tsx`}`),
     );
     console.log(`\nNext Steps:
     * Add your new <${compName} /> component to one of your reports (e.g. src/clients/SimpleReport.tsx) or report pages (e.g. src/components/ViabilityPage.tsx)

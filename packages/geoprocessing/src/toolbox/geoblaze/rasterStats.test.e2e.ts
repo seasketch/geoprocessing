@@ -1,6 +1,5 @@
 import { describe, test, expect } from "vitest";
 import { rasterStats, defaultStatValues } from "./rasterStats.js";
-//@ts-ignore
 import geoblaze from "geoblaze";
 import testData from "./test/testData.js";
 import parseGeoraster from "georaster";
@@ -79,7 +78,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(multiBandRaster);
@@ -109,7 +108,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(multiBandRaster, {
@@ -142,7 +141,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(raster, {
@@ -171,7 +170,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(raster, {
@@ -200,7 +199,7 @@ describe("rasterStats", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const statsByBand = await rasterStats(raster, {

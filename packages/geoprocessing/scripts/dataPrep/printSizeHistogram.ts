@@ -1,12 +1,11 @@
 import Table from "cli-table";
 import { DatabasePoolConnection, sql } from "slonik";
 import bytes from "bytes";
-// @ts-ignore
 import { raw } from "slonik-sql-tag-raw";
 
 export default async (
   statsTable: string,
-  connection: DatabasePoolConnection
+  connection: DatabasePoolConnection,
 ) => {
   const statsRawTable = raw(statsTable);
   const histogram = await connection.many(sql.unsafe`

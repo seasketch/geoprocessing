@@ -7,15 +7,16 @@ import {
   Point,
   FeatureCollection,
 } from "../types/geojson.js";
+import { hasOwnProperty } from "./native.js";
 
 /**
  * Check if object is a Feature.  Any code inside a block guarded by a conditional call to this function will have type narrowed to Feature
  */
 export function isGeometry(geometry: any): geometry is Geometry {
   return (
-    geometry.hasOwnProperty("geometry") &&
-    geometry.hasOwnProperty("properties") &&
-    geometry.hasOwnProperty("type") &&
+    hasOwnProperty(geometry, "geometry") &&
+    hasOwnProperty(geometry, "properties") &&
+    hasOwnProperty(geometry, "type") &&
     geometry.type !== "Feature"
   );
 }
@@ -25,8 +26,8 @@ export function isGeometry(geometry: any): geometry is Geometry {
  */
 export function isFeature(feature: any): feature is Feature {
   return (
-    feature.hasOwnProperty("properties") &&
-    feature.hasOwnProperty("type") &&
+    hasOwnProperty(feature, "properties") &&
+    hasOwnProperty(feature, "type") &&
     feature.type === "Feature"
   );
 }
@@ -42,7 +43,7 @@ export function isPolygonFeature(feature: any): feature is Feature<Polygon> {
  * Check if object is an array of Polygon features.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
 export function isPolygonFeatureArray(
-  featureArray: any
+  featureArray: any,
 ): featureArray is Feature<Polygon>[] {
   return (
     Array.isArray(featureArray) &&
@@ -56,7 +57,7 @@ export function isPolygonFeatureArray(
  * Check if object is a MultiPolygon.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
 export function isMultiPolygonFeature(
-  feature: any
+  feature: any,
 ): feature is Feature<MultiPolygon> {
   return isFeature(feature) && feature.geometry.type === "MultiPolygon";
 }
@@ -65,7 +66,7 @@ export function isMultiPolygonFeature(
  * Check if object is a Polygon or MultiPolygon.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
 export function isPolygonAnyFeature(
-  feature: any
+  feature: any,
 ): feature is Feature<MultiPolygon> {
   return (
     isFeature(feature) &&
@@ -77,7 +78,7 @@ export function isPolygonAnyFeature(
  * Check if object is a Linestring.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
 export function isLineStringFeature(
-  feature: any
+  feature: any,
 ): feature is Feature<LineString> {
   return isFeature(feature) && feature.geometry.type === "LineString";
 }
@@ -93,11 +94,11 @@ export function isPointFeature(feature: any): feature is Feature<Point> {
  * Check if object is a Feature Collection.  Any code inside a block guarded by a conditional call to this function will have type narrowed
  */
 export function isFeatureCollection(
-  feature: any
+  feature: any,
 ): feature is FeatureCollection {
   return (
-    feature.hasOwnProperty("type") &&
-    feature.hasOwnProperty("features") &&
+    hasOwnProperty(feature, "type") &&
+    hasOwnProperty(feature, "features") &&
     feature.type === "FeatureCollection"
   );
 }
@@ -106,7 +107,7 @@ export function isFeatureCollection(
 export const collectionHasGeometry = (
   collection: FeatureCollection,
   /** one or more geometry types */
-  g: string | string[]
+  g: string | string[],
 ) => {
   const gTypes = Array.isArray(g) ? g : [g];
   return collection.features.reduce<boolean>(
@@ -115,6 +116,6 @@ export const collectionHasGeometry = (
       !!f.geometry &&
       !!f.geometry.type &&
       gTypes.includes(f.geometry.type),
-    true
+    true,
   );
 };

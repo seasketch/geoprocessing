@@ -29,7 +29,7 @@ import fs from "fs-extra";
 
   if (!project.geographies || !Array.isArray(project.geographies)) {
     console.log(
-      `Unable to load default geography, run extract:translation again after init`
+      `Unable to load default geography, run extract:translation again after init`,
     );
   } else {
     project.geographies.forEach((geography) => {

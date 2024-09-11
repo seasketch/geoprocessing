@@ -18,7 +18,7 @@ import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
  */
 export async function clipToOcean(
   feature: Feature | Sketch,
-  extraParams: DefaultExtraParams = {}
+  extraParams: DefaultExtraParams = {}, // eslint-disable-line @typescript-eslint/no-unused-vars
 ): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");

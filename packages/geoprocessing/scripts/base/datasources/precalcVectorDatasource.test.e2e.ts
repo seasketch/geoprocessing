@@ -60,7 +60,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
 
       // Verify explode option came out false in datasource
@@ -88,7 +88,6 @@ describe("precalcDatasources", () => {
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-      const validGeos = geographySchema.parse(savedGeos[0]);
 
       // Verify precalc
       const metrics = fs.readJSONSync(precalcFilePath);
@@ -101,13 +100,13 @@ describe("precalcDatasources", () => {
 
       const areaMetric = firstMatchingMetric(
         metrics,
-        (m) => m.metricId === "area"
+        (m) => m.metricId === "area",
       );
       expect(areaMetric).toBeTruthy();
 
       const countMetric = firstMatchingMetric(
         metrics,
-        (m) => m.metricId === "count"
+        (m) => m.metricId === "count",
       );
       expect(countMetric).toBeTruthy();
       expect(countMetric.value).toBe(1);
@@ -147,7 +146,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
       await importDatasource(
         projectClient,
@@ -165,7 +164,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
       // Create geography
       const eezGeog: Geography = {
@@ -198,7 +197,7 @@ describe("precalcDatasources", () => {
       const shelfTotalCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId}-total` && m.metricId === "count"
+          m.classId === `${classDatasourceId}-total` && m.metricId === "count",
       );
       expect(shelfTotalCountMetric).toBeTruthy();
       expect(shelfTotalCountMetric.value).toBe(7);
@@ -206,14 +205,14 @@ describe("precalcDatasources", () => {
       const shelfTotalAreaMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId}-total` && m.metricId === "area"
+          m.classId === `${classDatasourceId}-total` && m.metricId === "area",
       );
       expect(shelfTotalAreaMetric).toBeTruthy();
 
       const shelfMediumCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId}-medium` && m.metricId === "count"
+          m.classId === `${classDatasourceId}-medium` && m.metricId === "count",
       );
       expect(shelfMediumCountMetric).toBeTruthy();
       expect(shelfMediumCountMetric.value).toBe(2);
@@ -221,7 +220,7 @@ describe("precalcDatasources", () => {
       const shelfHighCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId}-high` && m.metricId === "count"
+          m.classId === `${classDatasourceId}-high` && m.metricId === "count",
       );
       expect(shelfHighCountMetric).toBeTruthy();
       expect(shelfHighCountMetric.value).toBe(5);
@@ -263,7 +262,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
       await importDatasource(
         projectClient,
@@ -281,7 +280,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
       // Create geography
       const eezGeog: Geography = {
@@ -320,7 +319,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
 
       // Precalc second datasource
@@ -346,7 +345,7 @@ describe("precalcDatasources", () => {
       const shelfTotalCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId1}-total` && m.metricId === "count"
+          m.classId === `${classDatasourceId1}-total` && m.metricId === "count",
       );
       expect(shelfTotalCountMetric).toBeTruthy();
       expect(shelfTotalCountMetric.value).toBe(7);
@@ -354,14 +353,15 @@ describe("precalcDatasources", () => {
       const shelfTotalAreaMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId1}-total` && m.metricId === "area"
+          m.classId === `${classDatasourceId1}-total` && m.metricId === "area",
       );
       expect(shelfTotalAreaMetric).toBeTruthy();
 
       const shelfMediumCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId1}-medium` && m.metricId === "count"
+          m.classId === `${classDatasourceId1}-medium` &&
+          m.metricId === "count",
       );
       expect(shelfMediumCountMetric).toBeTruthy();
       expect(shelfMediumCountMetric.value).toBe(2);
@@ -369,7 +369,7 @@ describe("precalcDatasources", () => {
       const shelfHighCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId1}-high` && m.metricId === "count"
+          m.classId === `${classDatasourceId1}-high` && m.metricId === "count",
       );
       expect(shelfHighCountMetric).toBeTruthy();
       expect(shelfHighCountMetric.value).toBe(5);
@@ -377,7 +377,7 @@ describe("precalcDatasources", () => {
       const deepwaterCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId2}-total` && m.metricId === "count"
+          m.classId === `${classDatasourceId2}-total` && m.metricId === "count",
       );
       expect(deepwaterCountMetric).toBeTruthy();
       expect(deepwaterCountMetric.value).toBe(8);
@@ -422,7 +422,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
       // Import second datasource
       await importDatasource(
@@ -441,7 +441,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
       // Create geography
       const eezGeog: Geography = {
@@ -480,7 +480,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
 
       // Precalc datasources again
@@ -506,7 +506,7 @@ describe("precalcDatasources", () => {
       const shelfTotalCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId1}-total` && m.metricId === "count"
+          m.classId === `${classDatasourceId1}-total` && m.metricId === "count",
       );
       expect(shelfTotalCountMetric).toBeTruthy();
       expect(shelfTotalCountMetric.value).toBe(5);
@@ -514,14 +514,14 @@ describe("precalcDatasources", () => {
       const shelfTotalAreaMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId1}-total` && m.metricId === "area"
+          m.classId === `${classDatasourceId1}-total` && m.metricId === "area",
       );
       expect(shelfTotalAreaMetric).toBeTruthy();
 
       const shelfHighCountMetric = firstMatchingMetric(
         metrics,
         (m) =>
-          m.classId === `${classDatasourceId1}-high` && m.metricId === "count"
+          m.classId === `${classDatasourceId1}-high` && m.metricId === "count",
       );
       expect(shelfHighCountMetric).toBeTruthy();
       expect(shelfHighCountMetric.value).toBe(5);
@@ -531,10 +531,10 @@ describe("precalcDatasources", () => {
           metrics,
           (m) =>
             m.classId === `${classDatasourceId1}-medium` &&
-            m.metricId === "count"
+            m.metricId === "count",
         );
         expect(shelfMediumCountMetric).toBeFalsy();
-      } catch (err: unknown) {
+      } catch {
         // Erroring is the correct behavior
       }
 
@@ -590,7 +590,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
 
       // Create geographies that reference this datasource
@@ -641,7 +641,7 @@ describe("precalcDatasources", () => {
 
       writeGeographies(
         [geogBoxFilter, geogSingleFilter, geogDoubleFilter],
-        geogFilePath
+        geogFilePath,
       );
 
       await precalcDatasources(projectClient, {
@@ -667,21 +667,21 @@ describe("precalcDatasources", () => {
 
       const boxFilterMetric = firstMatchingMetric(
         metrics,
-        (m) => m.geographyId === "geog-box-filter" && m.metricId === "area"
+        (m) => m.geographyId === "geog-box-filter" && m.metricId === "area",
       );
       // Largest area value
       expect(boxFilterMetric.value).toEqual(61990788175.99197);
 
       const singleFilterMetric = firstMatchingMetric(
         metrics,
-        (m) => m.geographyId === "geog-single-filter" && m.metricId === "area"
+        (m) => m.geographyId === "geog-single-filter" && m.metricId === "area",
       );
       // Smallest area value, samoa only
       expect(singleFilterMetric.value).toEqual(37822608708.98315);
 
       const doubleFilterMetric = firstMatchingMetric(
         metrics,
-        (m) => m.geographyId === "geog-double-filter" && m.metricId === "area"
+        (m) => m.geographyId === "geog-double-filter" && m.metricId === "area",
       );
       // Slightly larger area value, both samoa
       expect(doubleFilterMetric.value).toEqual(39734709577.15677);
@@ -734,7 +734,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
 
       // Create geographies that reference this datasource
@@ -788,7 +788,7 @@ describe("precalcDatasources", () => {
 
       writeGeographies(
         [geogBoxFilter, geogSingleFilter, geogDoubleFilter],
-        geogFilePath
+        geogFilePath,
       );
 
       await precalcDatasources(projectClient, {
@@ -814,21 +814,21 @@ describe("precalcDatasources", () => {
 
       const boxFilterMetric = firstMatchingMetric(
         metrics,
-        (m) => m.geographyId === "geog-box-filter" && m.metricId === "area"
+        (m) => m.geographyId === "geog-box-filter" && m.metricId === "area",
       );
       // Largest area value
       expect(boxFilterMetric.value).toEqual(59689842766.9754);
 
       const singleFilterMetric = firstMatchingMetric(
         metrics,
-        (m) => m.geographyId === "geog-single-filter" && m.metricId === "area"
+        (m) => m.geographyId === "geog-single-filter" && m.metricId === "area",
       );
       // Smallest area value, samoa only
       expect(singleFilterMetric.value).toEqual(35521663299.96643);
 
       const doubleFilterMetric = firstMatchingMetric(
         metrics,
-        (m) => m.geographyId === "geog-double-filter" && m.metricId === "area"
+        (m) => m.geographyId === "geog-double-filter" && m.metricId === "area",
       );
       // Slightly larger area value, both samoa
       expect(doubleFilterMetric.value).toEqual(37433764168.14005);
@@ -884,7 +884,6 @@ describe("precalcDatasources", () => {
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-      const validGeos = geographySchema.parse(savedGeos[0]);
 
       // Verify precalc
       const metrics = fs.readJSONSync(precalcFilePath);
@@ -897,13 +896,13 @@ describe("precalcDatasources", () => {
 
       const areaMetric = firstMatchingMetric(
         metrics,
-        (m) => m.metricId === "area"
+        (m) => m.metricId === "area",
       );
       expect(areaMetric).toBeTruthy();
 
       const countMetric = firstMatchingMetric(
         metrics,
-        (m) => m.metricId === "count"
+        (m) => m.metricId === "count",
       );
       expect(countMetric).toBeTruthy();
       expect(countMetric.value).toBe(1);
@@ -958,7 +957,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
 
       // Create geography
@@ -981,7 +980,6 @@ describe("precalcDatasources", () => {
       });
       const savedGeos = fs.readJSONSync(geogFilePath);
       expect(Array.isArray(savedGeos) && savedGeos.length === 1).toBe(true);
-      const validGeos = geographySchema.parse(savedGeos[0]);
 
       // Verify precalc
       const metrics = fs.readJSONSync(precalcFilePath);
@@ -1036,7 +1034,7 @@ describe("precalcDatasources", () => {
           newDatasourcePath: dsFilePath,
           newDstPath: dstPath,
           doPublish: false,
-        }
+        },
       );
 
       // Create geographies that reference this datasource

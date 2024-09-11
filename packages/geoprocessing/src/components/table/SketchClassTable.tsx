@@ -61,7 +61,7 @@ export const SketchClassTable: React.FunctionComponent<
           ? percentWithEdge(
               isNaN(row[curClass.classId] as number)
                 ? 0
-                : (row[curClass.classId] as number)
+                : (row[curClass.classId] as number),
             )
           : row[curClass.classId];
       },
@@ -83,7 +83,7 @@ export const SketchClassTable: React.FunctionComponent<
         className="styled"
         columns={columns}
         data={rows.sort((a, b) =>
-          (a.sketchName as string).localeCompare(b.sketchName as string)
+          (a.sketchName as string).localeCompare(b.sketchName as string),
         )}
       />
     </SketchClassTableStyled>

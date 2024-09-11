@@ -1,7 +1,9 @@
 import { DatabasePoolConnection } from "slonik";
 import { z } from "zod";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { sql } = require("slonik");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { raw } = require("slonik-sql-tag-raw");
 
 const indexInfoQuery = sql`
@@ -59,15 +61,16 @@ const geometryColumnsQuery = (tableName: string) => sql.type(recordObject)`
 const inspectTable = async (
   connection: DatabasePoolConnection,
   tableName: string,
-  pointsLimit: number
+  pointsLimit: number,
 ) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const row = await connection.one(
-      sql`SELECT count(*) from ${raw(tableName)} limit 1`
+      sql`SELECT count(*) from ${raw(tableName)} limit 1`,
     );
-  } catch (e) {
+  } catch {
     throw new Error(
-      `Problem querying input table "${tableName}". Does it exist?`
+      `Problem querying input table "${tableName}". Does it exist?`,
     );
   }
 
@@ -76,7 +79,7 @@ const inspectTable = async (
     index_type: z.string(),
     column: z.string(),
   });
-  let indexes = await connection.query(
+  const indexes = await connection.query(
     sql.type(indexRecord)`
       SELECT 
         is_primary, 
@@ -84,25 +87,25 @@ const inspectTable = async (
         index_keys[1] as column 
       from (${indexInfoQuery}) as q 
       where table_name = ${tableName}::regclass 
-        and array_length(index_keys, 1) = 1`
+        and array_length(index_keys, 1) = 1`,
   );
   if (!indexes.rows || !indexes.rows.length) {
     throw new Error(
-      "Cannot find any indexes. Both primary key and geometry columns should have indexes."
+      "Cannot find any indexes. Both primary key and geometry columns should have indexes.",
     );
   }
   // Make sure there is an integer pk that is indexed
   let primaryKeyInfo: { data_type: string; attname: string };
   try {
     primaryKeyInfo = await connection.one(primaryKeyQuery(tableName));
-  } catch (e) {
+  } catch {
     throw new Error(
-      "Problem finding primary key column. Table must include a unique primary key for each feature."
+      "Problem finding primary key column. Table must include a unique primary key for each feature.",
     );
   }
   if (primaryKeyInfo.data_type !== "integer") {
     throw new Error(
-      `Primary key must be integer type. Found ${primaryKeyInfo["attname"]}=${primaryKeyInfo["data_type"]}`
+      `Primary key must be integer type. Found ${primaryKeyInfo["attname"]}=${primaryKeyInfo["data_type"]}`,
     );
   }
   const pkColumn = primaryKeyInfo["attname"];
@@ -112,7 +115,7 @@ const inspectTable = async (
   }
   // Verify geometry field with srid = 4326
   const geometryColumns = await connection.query(
-    geometryColumnsQuery(tableName)
+    geometryColumnsQuery(tableName),
   );
   if (geometryColumns.rows.length === 0) {
     throw new Error("Could not find a geometry column");
@@ -123,13 +126,13 @@ const inspectTable = async (
   const geometryColumn = gColData.column;
   if (gColData.srid !== 4326) {
     throw new Error(
-      `SRID must be 4326. Set using SELECT UpdateGeometrySRID('${tableName}','${geometryColumn}',4326)`
+      `SRID must be 4326. Set using SELECT UpdateGeometrySRID('${tableName}','${geometryColumn}',4326)`,
     );
   }
 
   if (gColData.type !== "POLYGON" && gColData.type !== "LINESTRING") {
     throw new Error(
-      `Geometry type must be POLYGON. Found ${gColData.type}. Try ST_Dump or if already polygons, ALTER TABLE ${tableName} ALTER COLUMN ${geometryColumn} type geometry(Polygon, 4326);`
+      `Geometry type must be POLYGON. Found ${gColData.type}. Try ST_Dump or if already polygons, ALTER TABLE ${tableName} ALTER COLUMN ${geometryColumn} type geometry(Polygon, 4326);`,
     );
   }
   // // verify that there is a gist index on geometry
@@ -140,16 +143,16 @@ const inspectTable = async (
 
   // Make sure dataset is already subdivided
   const maxPoints = await connection.oneFirst(
-    sql`select max(st_npoints(${raw(geometryColumn)})) from ${raw(tableName)}`
+    sql`select max(st_npoints(${raw(geometryColumn)})) from ${raw(tableName)}`,
   );
   if (maxPoints && maxPoints > pointsLimit) {
     throw new Error(
-      `Features in table exceed bytes-limit (${maxPoints} > ${pointsLimit}). Subdivide large features first, or increase the limit using --points-limit option.`
+      `Features in table exceed bytes-limit (${maxPoints} > ${pointsLimit}). Subdivide large features first, or increase the limit using --points-limit option.`,
     );
   }
   // Get a count of features in the table
   const count = await connection.oneFirst(
-    sql`select count(*) from ${raw(tableName)}`
+    sql`select count(*) from ${raw(tableName)}`,
   );
 
   return {

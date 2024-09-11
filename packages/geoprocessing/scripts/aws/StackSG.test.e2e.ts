@@ -39,14 +39,14 @@ describe("GeoprocessingStack - sync geoprocessor only", () => {
     // Lambda stack assertions
 
     const lambdaStacks = stack.node.children.filter(
-      (child) => child instanceof NestedStack
+      (child) => child instanceof NestedStack,
     );
     expect(lambdaStacks.length).toBe(1);
 
     // Lambda stack CDK template assertions
 
     const lambdaStackTemplate = Template.fromStack(
-      lambdaStacks[0] as NestedStack
+      lambdaStacks[0] as NestedStack,
     );
 
     // Generate JSON snapshot.  Use to manually assess what cdk synth produces and write tests
@@ -59,14 +59,14 @@ describe("GeoprocessingStack - sync geoprocessor only", () => {
       rootTemplate.toJSON(),
       {
         spaces: 2,
-      }
+      },
     );
     fs.writeJSONSync(
       `${snapPath}/StackSG_lambdaStack.test.e2e.ts.snap`,
       lambdaStackTemplate.toJSON(),
       {
         spaces: 2,
-      }
+      },
     );
 
     // Root stack assertions

@@ -41,11 +41,11 @@ describe("createProject", () => {
         planningAreaNameQuestion: "yes",
       },
       false,
-      rootPath
+      rootPath,
     );
 
     const packageJson = JSON.parse(
-      fs.readFileSync(path.join(projectPath, "package.json")).toString()
+      fs.readFileSync(path.join(projectPath, "package.json")).toString(),
     );
 
     expect(packageJson.name).toBe(projectName);
@@ -54,7 +54,7 @@ describe("createProject", () => {
     expect(packageJson.author).toBe("Test");
 
     const gpConfig = JSON.parse(
-      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString()
+      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString(),
     ) as GeoprocessingJsonConfig;
 
     expect(gpConfig.author).toBe("Test <test@test.com>");
@@ -85,13 +85,13 @@ describe("createProject", () => {
         planningAreaNameQuestion: "yes",
       },
       false,
-      rootPath
+      rootPath,
     );
 
     const basicJson = JSON.parse(
       fs
         .readFileSync(path.join(projectPath, "project", "basic.json"))
-        .toString()
+        .toString(),
     );
 
     // Make sure in the right ballpark
@@ -101,7 +101,7 @@ describe("createProject", () => {
     expect(basicJson.bbox[1]).toBeLessThan(-1);
 
     const savedGeogs = fs.readJSONSync(
-      `${projectPath}/project/geographies.json`
+      `${projectPath}/project/geographies.json`,
     );
     const geogs = geographiesSchema.parse(savedGeogs);
     // console.log(JSON.stringify(geogs));
@@ -123,11 +123,11 @@ describe("createProject", () => {
       JSON.stringify({
         property: "GEONAME",
         values: ["Micronesian Exclusive Economic Zone"],
-      })
+      }),
     );
 
     const savedDatasources = fs.readJSONSync(
-      `${projectPath}/project/datasources.json`
+      `${projectPath}/project/datasources.json`,
     );
     const ds = datasourcesSchema.parse(savedDatasources);
     const globalEezDS = "global-eez-mr-v12";
@@ -165,11 +165,11 @@ describe("createProject", () => {
         planningAreaName: "Samoa",
       },
       false,
-      rootPath
+      rootPath,
     );
 
     const gpConfig = JSON.parse(
-      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString()
+      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString(),
     ) as GeoprocessingJsonConfig;
 
     expect(gpConfig.preprocessingFunctions.length).toBeGreaterThanOrEqual(1);
@@ -201,11 +201,11 @@ describe("createProject", () => {
         planningAreaNameQuestion: "no",
       },
       false,
-      rootPath
+      rootPath,
     );
 
     const packageJson = JSON.parse(
-      fs.readFileSync(path.join(projectPath, "package.json")).toString()
+      fs.readFileSync(path.join(projectPath, "package.json")).toString(),
     );
 
     expect(packageJson.name).toBe(projectName);
@@ -216,14 +216,14 @@ describe("createProject", () => {
     const basicJson = JSON.parse(
       fs
         .readFileSync(path.join(projectPath, "project", "basic.json"))
-        .toString()
+        .toString(),
     );
 
     expect(basicJson.bbox).toEqual([-180, -90, 180, 90]);
     expect(basicJson.planningAreaName).toEqual("Test Area");
 
     const gpConfig = JSON.parse(
-      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString()
+      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString(),
     ) as GeoprocessingJsonConfig;
 
     expect(gpConfig.author).toBe("");

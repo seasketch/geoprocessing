@@ -9,14 +9,14 @@ export const SegmentControl = (props: SegmentControlProps) => {
   const index = props.segments.findIndex((seg) => seg.id === props.value);
   // Initialize approximate segment width
   const [segmentWidth, setSegmentWidth] = useState<number>(
-    480 / props.segments.length
+    480 / props.segments.length,
   );
   const containerRef = useRef<HTMLDivElement>(null);
   if (index === -1) {
     throw new Error(
       `Unknown SegmentControl id ${props.value} for segments ${JSON.stringify(
-        props.segments
-      )}`
+        props.segments,
+      )}`,
     );
   }
 
@@ -62,7 +62,7 @@ export const SegmentControl = (props: SegmentControlProps) => {
       </span>
       {props.segments.map((segment) => (
         <span
-          onClick={(e) => {
+          onClick={() => {
             if (props.onClick) {
               props.onClick(segment.id);
             }

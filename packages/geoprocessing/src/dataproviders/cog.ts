@@ -1,7 +1,5 @@
 import { BBox } from "../types/index.js";
-// @ts-ignore
 import parseGeoraster from "georaster";
-// @ts-ignore
 import geoblaze from "geoblaze";
 import { maxWidth } from "../toolbox/index.js";
 import { buffer, bboxPolygon, bbox } from "@turf/turf";
@@ -61,7 +59,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
       // get largest pixel dimension
       const maxResolution = Math.max(
         georaster.pixelHeight,
-        georaster.pixelWidth
+        georaster.pixelWidth,
       );
       // Check if largest window dimension is smaller, or within .01 degrees of max pixel dimension
       // If so, buffer to make up the difference
@@ -95,7 +93,7 @@ export const loadCogWindow = async (url: string, options: CogOptions) => {
 
   if (!georaster.getValues)
     throw new Error(
-      "Missing getValues method, did you forget to load the raster via url?"
+      "Missing getValues method, did you forget to load the raster via url?",
     );
   const values = await georaster.getValues(rasterOptions);
 

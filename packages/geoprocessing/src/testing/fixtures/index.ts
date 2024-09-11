@@ -1,7 +1,5 @@
 import { randomInt, randomFloat } from "../../helpers/randomData.js";
 
-let fixtures = {};
-
 export interface HumanUse {
   name: string;
   count: number;

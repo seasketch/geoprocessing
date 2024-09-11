@@ -27,7 +27,7 @@ describe("isTrueAttributeValue", () => {
  * Returns true if contiguous zone should be included in the given sketch collection
  */
 export const sketchTest = (
-  collection: SketchCollection | NullSketchCollection
+  collection: SketchCollection | NullSketchCollection,
 ) => {
   const val = getUserAttribute(collection.properties, "test");
   return isTruthyAttributeValue(val);

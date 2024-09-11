@@ -29,7 +29,7 @@ export function clip<
   operation: "union" | "intersection" | "xor" | "difference",
   options: {
     properties?: P;
-  } = {}
+  } = {},
 ): Feature<Polygon | MultiPolygon> | null {
   if (!features || !features.features || features.features.length === 0)
     throw new ValidationError("Missing or empty features for clip");
@@ -37,7 +37,7 @@ export function clip<
   geomEach(features, (geom) => {
     coords.push(geom.coordinates);
   });
-  //@ts-ignore
+  //@ts-expect-error type mismatch
   const clipped = polygonClipping[operation](coords[0], ...coords.slice(1));
 
   if (clipped.length === 0) return null;
@@ -62,7 +62,7 @@ export function clipMultiMerge<
   operation: "union" | "intersection" | "xor" | "difference",
   options: {
     properties?: P;
-  } = {}
+  } = {},
 ): Feature<Polygon | MultiPolygon> | null {
   if (
     !feature1 ||
@@ -75,7 +75,6 @@ export function clipMultiMerge<
   const geom1 = getGeom(feature1);
   // Combine into one multipoly coordinate array
   const coords2 = (() => {
-    //@ts-ignore
     return features2.features.reduce<MultiPolygon["coordinates"]>(
       (acc, poly) => {
         if (poly.geometry.type === "Polygon") {
@@ -84,12 +83,12 @@ export function clipMultiMerge<
           return [...acc, ...poly.geometry.coordinates];
         }
       },
-      []
+      [],
     );
   })();
   const result = polygonClipping[operation](
     geom1.coordinates as any,
-    coords2 as any
+    coords2 as any,
   );
   if (result.length === 0) return null;
   if (result.length === 1)

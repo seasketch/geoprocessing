@@ -7,7 +7,8 @@ export interface ReportChartFigureProps {
 /**
  * Chart container styled with spacing for layout in report pages
  */
-export const ReportChartFigure: React.FunctionComponent<ReportChartFigureProps> =
-  ({ children }) => {
-    return <div style={{ margin: "1.75em 0em 2em 0em" }}>{children}</div>;
-  };
+export const ReportChartFigure: React.FunctionComponent<
+  ReportChartFigureProps
+> = ({ children }) => {
+  return <div style={{ margin: "1.75em 0em 2em 0em" }}>{children}</div>;
+};

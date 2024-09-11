@@ -63,7 +63,7 @@ export const extraParams = () => {
         functionName="area"
         extraParams={{ geography }}
       >
-        {(data: any) => (
+        {() => (
           <>
             <p>Cur geography: {geography}</p>
             <p>
@@ -181,7 +181,7 @@ export const errorBoundary = () => (
     }}
   >
     <ResultsCard title="Card Title" functionName="area">
-      {(data: any) => {
+      {() => {
         return <ThrowComponent />;
       }}
     </ResultsCard>

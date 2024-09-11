@@ -20,19 +20,19 @@ export async function deleteTasks(
   options: {
     /** Time in milliseconds to wait after each batch deleted, helps avoid throttling */
     waitTime?: number;
-  } = {}
+  } = {},
 ) {
   const { waitTime = 0 } = options;
   const tableName = `gp-${projectName}-tasks`;
   const docClient = DynamoDBDocument.from(
     new DynamoDBClient({
       region: region,
-    })
+    }),
   );
 
   const pager = scanTasks(docClient, tableName, serviceName);
 
-  let taskKeys: TaskKey[] = [];
+  const taskKeys: TaskKey[] = [];
   let hasItems = false;
   // let batchNum: number = 0;
   // Each page of results will often have less than number we can delete at a time so we build up batch until ready
@@ -67,7 +67,7 @@ export async function deleteTasks(
 
   if (hasItems === false) {
     console.log(
-      `No results found in DynamoDB table ${tableName} ${serviceName ? "for service " + serviceName : ""}`
+      `No results found in DynamoDB table ${tableName} ${serviceName ? "for service " + serviceName : ""}`,
     );
   }
 }

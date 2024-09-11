@@ -46,7 +46,7 @@ export const useFunction = <ResultType>(
   /** Title of geoprocessing function in this project to run.  @todo support external project function */
   functionTitle: string,
   /** Additional runtime parameters from report client for geoprocessing function.  Validation left to implementing function */
-  extraParams: GeoprocessingRequestParams = {}
+  extraParams: GeoprocessingRequestParams = {},
 ): FunctionState<ResultType> => {
   const context = useContext(ReportContext);
   if (!context) {
@@ -82,9 +82,9 @@ export const useFunction = <ResultType>(
         try {
           geoprocessingProject = await getGeoprocessingProject(
             context.projectUrl,
-            abortController.signal
+            abortController.signal,
           );
-        } catch (e) {
+        } catch {
           if (!abortController.signal.aborted) {
             setState({
               loading: false,
@@ -99,7 +99,7 @@ export const useFunction = <ResultType>(
           url = functionTitle;
         } else {
           const service = geoprocessingProject!.geoprocessingServices.find(
-            (s) => s.title === functionTitle
+            (s) => s.title === functionTitle,
           );
 
           if (!service) {
@@ -123,14 +123,14 @@ export const useFunction = <ResultType>(
           const theCacheKey = genTaskCacheKey(
             functionTitle,
             context.sketchProperties,
-            extraParams
+            extraParams,
           );
           payload.cacheKey = theCacheKey;
         }
 
         // check local results cache. may already be available
         if (payload.cacheKey) {
-          let task = localCache.get(payload.cacheKey) as
+          const task = localCache.get(payload.cacheKey) as
             | GeoprocessingTask<ResultType>
             | undefined;
           if (task) {
@@ -149,7 +149,7 @@ export const useFunction = <ResultType>(
           const pending = pendingRequests.find(
             (r) =>
               r.cacheKey === payload.cacheKey &&
-              r.functionName === functionTitle
+              r.functionName === functionTitle,
           );
           if (pending) {
             setState({
@@ -174,7 +174,7 @@ export const useFunction = <ResultType>(
             payload,
             abortController.signal,
             false,
-            false
+            false,
           );
 
           // add as pending request
@@ -196,16 +196,16 @@ export const useFunction = <ResultType>(
         // After task started, but still pending
         pendingRequest
           .then((task) => {
-            let currServiceName = task.service;
+            const currServiceName = task.service;
             if (currServiceName) {
               if (
                 task.status !== "completed" &&
                 task.wss?.length > 0 &&
                 executionMode === "async"
               ) {
-                let sname = encodeURIComponent(currServiceName);
-                let ck = encodeURIComponent(payload.cacheKey || "");
-                let wssUrl =
+                const sname = encodeURIComponent(currServiceName);
+                const ck = encodeURIComponent(payload.cacheKey || "");
+                const wssUrl =
                   task.wss +
                   "?" +
                   "serviceName=" +
@@ -224,7 +224,7 @@ export const useFunction = <ResultType>(
                   payload,
                   functionTitle,
                   abortController,
-                  socket
+                  socket,
                 );
               }
             }
@@ -282,7 +282,7 @@ export const useFunction = <ResultType>(
       // This is test or storybook environment, so load example data
       // or simulate loading and error states.
       const data = context.exampleOutputs.find(
-        (output) => output.functionName === functionTitle
+        (output) => output.functionName === functionTitle,
       );
       if (!data && !context.simulateLoading && !context.simulateError) {
         setState({
@@ -339,7 +339,7 @@ const getSocket = (
   payload,
   currServiceName,
   abortController,
-  socket
+  socket,
 ): WebSocket => {
   if (socket === undefined) {
     socket = new WebSocket(wssUrl);
@@ -361,17 +361,17 @@ const getSocket = (
     }
 
     // Check server-side cache next using checkCacheOnly true
-    let finishedRequest: Promise<GeoprocessingTask> = runTask(
+    const finishedRequest: Promise<GeoprocessingTask> = runTask(
       url,
       payload,
       abortController.signal,
       true,
-      true
+      true,
     );
 
     finishedRequest.then((finishedTask) => {
       if (finishedTask.service === currServiceName) {
-        let ft = JSON.stringify(finishedTask);
+        const ft = JSON.stringify(finishedTask);
         //if not cached, you'll get a "NO_CACHE_HIT"
         if (ft && finishedTask.id !== "NO_CACHE_HIT" && finishedTask.data) {
           setState({
@@ -390,7 +390,7 @@ const getSocket = (
   // if task complete message received on socket (the only message type supported)
   // then finish the task (because results aren't sent on the socket, too big)
   socket.onmessage = function (event) {
-    let incomingData = JSON.parse(event.data);
+    const incomingData = JSON.parse(event.data);
 
     if (event.data.timestamp) {
       const nowTime = Date.now();
@@ -422,15 +422,15 @@ const getSocket = (
           abortController,
           setState,
           currServiceName,
-          socket
+          socket,
         );
       }
     }
   };
-  socket.onclose = function (event) {
+  socket.onclose = function () {
     //no op
   };
-  socket.onerror = function (error) {
+  socket.onerror = function () {
     if (socket.url?.length > 0) {
       setState({
         loading: false,
@@ -447,7 +447,7 @@ const getSocket = (
  */
 const getGeoprocessingProject = async (
   url: string,
-  signal: AbortSignal
+  signal: AbortSignal,
 ): Promise<GeoprocessingProject> => {
   // TODO: eventually handle updated duration
   const pending = pendingMetadataRequests.find((r) => r.url === url);
@@ -465,7 +465,7 @@ const getGeoprocessingProject = async (
     } else {
       geoprocessingProjects[url] = geoprocessingProject;
       pendingMetadataRequests = pendingMetadataRequests.filter(
-        (r) => r.url !== url
+        (r) => r.url !== url,
       );
       return geoprocessingProject;
     }

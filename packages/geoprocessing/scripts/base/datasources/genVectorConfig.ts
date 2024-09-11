@@ -11,7 +11,7 @@ import { ProjectClientBase, hasOwnProperty } from "../../../src/index.js";
 export function genVectorConfig<C extends ProjectClientBase>(
   projectClient: C,
   options: ImportVectorDatasourceOptions | VectorDatasource,
-  newDstPath?: string
+  newDstPath?: string,
 ): ImportVectorDatasourceConfig {
   const src =
     hasOwnProperty(options, "src") && typeof options.src === "string"

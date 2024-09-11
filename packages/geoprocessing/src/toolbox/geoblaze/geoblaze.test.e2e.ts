@@ -2,8 +2,6 @@ import { describe, test, expect } from "vitest";
 import { Polygon, Sketch, Feature } from "../../types/index.js";
 import parseGeoraster from "georaster";
 import testData from "./test/testData.js";
-
-// @ts-ignore
 import geoblaze from "geoblaze";
 import { splitSketchAntimeridian } from "../split.js";
 
@@ -23,7 +21,7 @@ describe("geoblaze basics", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
     const sum = geoblaze.sum(raster, testData.quad2Poly)[0];
     expect(sum).toBe(1);
@@ -84,7 +82,7 @@ describe("geoblaze cog test", () => {
     };
     try {
       await geoblaze.sum(url, feature);
-    } catch (err) {
+    } catch {
       return;
     }
     throw new Error("should not reach here, feature smaller than pixel");
@@ -186,7 +184,7 @@ describe("geoblaze hole test", () => {
         ymax: 20, // top
         pixelWidth: 5,
         pixelHeight: 5,
-      }
+      },
     );
 
     const result = geoblaze.sum(raster, polyWithHole);

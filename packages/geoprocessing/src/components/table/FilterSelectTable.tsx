@@ -1,10 +1,11 @@
 import React, { ReactElement } from "react";
-import Table, { TableOptions, Column, Row } from "./Table.js";
+import Table, { TableOptions } from "./Table.js";
 import CheckboxGroup from "../checkbox/CheckboxGroup.js";
 import useCheckboxes from "../../hooks/useCheckboxes.js";
 import { styled } from "styled-components";
 
 /** Custom table data filter */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface FilterSelectOption<D extends object = {}> {
   /** The label displayed for the select filter */
   name: string;
@@ -15,6 +16,7 @@ export interface FilterSelectOption<D extends object = {}> {
 }
 
 /** Custom table data filters that are only active when selected by the user */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface FilterSelect<D extends object = {}> {
   /** Filter a row if `every` selected filter function returns true (logical AND), or at least `some` (logical OR) */
   type?: "every" | "some";
@@ -36,6 +38,7 @@ export const FilterSelectTableStyled = styled.div`
   }
 `;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface FilterSelectTableOptions<D extends object = {}>
   extends TableOptions<D> {
   filterSelect: FilterSelect<D>;
@@ -47,7 +50,7 @@ export interface FilterSelectTableOptions<D extends object = {}>
  * has to match for it to filter the row
  */
 export function FilterSelectTable<D extends object>(
-  props: FilterSelectTableOptions<D>
+  props: FilterSelectTableOptions<D>,
 ): ReactElement {
   const { filterSelect, data, ...otherProps } = props;
   const { type = "some", filterPosition = "bottom", filters } = filterSelect;
@@ -59,11 +62,11 @@ export function FilterSelectTable<D extends object>(
 
   const filteredData = React.useMemo(() => {
     const activeFilters = filters.filter(
-      (f, i) => checkboxState.checkboxes[i].checked
+      (f, i) => checkboxState.checkboxes[i].checked,
     );
     return data.filter((row) => {
       if (activeFilters.length === 0) return true;
-      return activeFilters[type]((f, i) => f.filterFn(row));
+      return activeFilters[type]((f) => f.filterFn(row));
     });
   }, [data, checkboxState.checkboxes]);
 

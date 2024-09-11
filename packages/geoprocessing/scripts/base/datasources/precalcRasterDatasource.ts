@@ -16,7 +16,6 @@ import {
 } from "../../../src/index.js";
 import { bbox } from "@turf/turf";
 
-// @ts-ignore
 import geoblaze from "geoblaze";
 import { getGeographyFeatures } from "../geographies/helpers.js";
 
@@ -38,7 +37,7 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
     newDstPath?: string;
     /** Alternative port to fetch data from */
     port?: number;
-  } = {}
+  } = {},
 ): Promise<Metric[]> {
   // need 8001 for unit tests
   const url = projectClient.getDatasourceUrl(datasource, {
@@ -54,7 +53,7 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
     datasource,
     geography,
     geogDs,
-    extraOptions
+    extraOptions,
   );
 
   return rasterMetrics;
@@ -77,7 +76,7 @@ export async function precalcRasterMetrics(
   extraOptions: {
     /** Alternative path to store precalc data. useful for testing */
     newDstPath?: string;
-  }
+  },
 ): Promise<Metric[]> {
   const dstPath = extraOptions.newDstPath || datasourceConfig.defaultDstPath;
 
@@ -90,7 +89,7 @@ export async function precalcRasterMetrics(
   const geographyFeatureColl = await getGeographyFeatures(
     geography,
     geogDs,
-    dstPath
+    dstPath,
   );
   // console.log("geographyFeatureColl", JSON.stringify(geographyFeatureColl));
 
@@ -160,6 +159,6 @@ export async function precalcRasterMetrics(
   }
 
   throw new Error(
-    `Something is malformed, check raster ${datasource.datasourceId} and geography ${geography.datasourceId}]`
+    `Something is malformed, check raster ${datasource.datasourceId} and geography ${geography.datasourceId}]`,
   );
 }

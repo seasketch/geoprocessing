@@ -17,7 +17,7 @@ const PROJECT_PATH = process.env.PROJECT_PATH || "UNDEFINED";
 const GP_PATH = process.env.GP_PATH || "UNDEFINED";
 
 const projectPkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
-  `${PROJECT_PATH}/package.json`
+  `${PROJECT_PATH}/package.json`,
 );
 const projectPkg = loadedPackageSchema.parse(projectPkgRaw);
 
@@ -39,7 +39,7 @@ spinner.start("Update i18n");
 
 const extraTerms = (await fs.readJson(
   "src/i18n/extraTerms.json",
-  "utf8"
+  "utf8",
 )) as Record<string, string>;
 
 await $`rm -rf src/i18n/baseLang`;
@@ -53,7 +53,7 @@ await $`mv src/i18n/supported.ts.bak src/i18n/supported.ts`;
 // Merge in new extra terms
 const newTerms = (await fs.readJson(
   `${GP_PATH}/dist/base-project/src/i18n/extraTerms.json`,
-  "utf8"
+  "utf8",
 )) as Record<string, string>;
 const updatedTerms = { ...extraTerms, ...newTerms };
 await fs.writeJson("src/i18n/extraTerms.json", updatedTerms, { spaces: 2 });
@@ -84,18 +84,18 @@ spinner.succeed("Update i18n");
 spinner.start("Update package.json");
 
 const basePkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
-  path.join(`${GP_PATH}/dist/base-project/package.json`)
+  path.join(`${GP_PATH}/dist/base-project/package.json`),
 );
 const basePkg = loadedPackageSchema.parse(basePkgRaw);
 
 const templatesPath = getTemplatesPath("starter-template");
 const starterTemplatePkgs = await getTemplatePackages(
   "starter-template",
-  templatesPath
+  templatesPath,
 );
 const addonTemplatePkgs = await getTemplatePackages(
   "add-on-template",
-  templatesPath
+  templatesPath,
 );
 
 const updatedPkg = updatePackageJson(projectPkg, basePkg, [
@@ -129,6 +129,8 @@ spinner.succeed("Update .vscode");
 
 //// migration ////
 
+spinner.start("Migrate config files");
+
 // add type module (esm enable)
 const pkg = fs.readJsonSync("package.json");
 pkg.type = "module";
@@ -154,6 +156,9 @@ const pc = await fs.readFile("project/projectClient.ts", "utf8");
 const newPc = pc.replace("../geoprocessing.json", "./geoprocessing.json");
 fs.writeFile("project/projectClient.ts", newPc, "utf8");
 
+// copy prettier config files
+await $`cp -r ${GP_PATH}/dist/base-project/.prettier* .`;
+
 //// rekey package.json ////
 
 fs.writeJSONSync(
@@ -173,11 +178,14 @@ fs.writeJSONSync(
     "author",
     "license",
     "scripts",
+    "lint-staged",
     "dependencies",
     "devDependencies",
   ]),
-  { spaces: 2 }
+  { spaces: 2 },
 );
+
+spinner.succeed("Migrate config files");
 
 console.log(`Upgrade complete!
 
@@ -196,7 +204,7 @@ function getTemplatesPath(templateType: TemplateType): string {
     "..",
     "..",
     "templates",
-    `${templateType}s`
+    `${templateType}s`,
   );
   if (fs.existsSync(publishedBundlePath)) {
     // Use bundled templates if user running published version, e.g. via geoprocessing init

@@ -28,7 +28,7 @@ export const rasterStatsToMetrics = (
     categoryMetricProperty?: MetricDimension;
     /** If categorical raster, array of values to create metrics for */
     categoryMetricValues?: string[];
-  } = {}
+  } = {},
 ): Metric[] => {
   const {
     metricId,
@@ -37,16 +37,16 @@ export const rasterStatsToMetrics = (
     truncate = true,
     bandMetricProperty = "groupId",
     bandMetricValues = [...Array(statsObjects.length).keys()].map(
-      (x) => `band-${x}`
+      (x) => `band-${x}`,
     ),
     categorical = false,
     categoryMetricProperty = "classId",
     categoryMetricValues,
   } = options;
-  let metrics: Metric[] = [];
+  const metrics: Metric[] = [];
   if (bandMetricProperty === categoryMetricProperty)
     throw new Error(
-      "bandMetricProperty and categoryMetricProperty cannot be the same"
+      "bandMetricProperty and categoryMetricProperty cannot be the same",
     );
 
   statsObjects.forEach((curStats, band) => {
@@ -55,6 +55,7 @@ export const rasterStatsToMetrics = (
       const value = curStats[statName];
 
       if (categorical) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         categoryMetricValues
           ? categoryMetricValues.forEach((category) => {
               metrics.push(
@@ -68,7 +69,7 @@ export const rasterStatsToMetrics = (
                   ...metricPartial,
                   [bandMetricProperty]: bandMetricValues[band],
                   [categoryMetricProperty]: category,
-                })
+                }),
               );
             })
           : Object.keys(value).forEach((category) => {
@@ -83,7 +84,7 @@ export const rasterStatsToMetrics = (
                   ...metricPartial,
                   [bandMetricProperty]: bandMetricValues[band],
                   [categoryMetricProperty]: category,
-                })
+                }),
               );
             });
       } else {
@@ -95,7 +96,7 @@ export const rasterStatsToMetrics = (
               : value,
             ...metricPartial,
             [bandMetricProperty]: bandMetricValues[band],
-          })
+          }),
         );
       }
     });

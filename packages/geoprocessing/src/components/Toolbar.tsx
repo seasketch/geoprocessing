@@ -1,4 +1,4 @@
-import React, { ReactNode, FC } from "react";
+import React, { ReactNode } from "react";
 import { styled } from "styled-components";
 import classnames from "classnames";
 
@@ -40,7 +40,7 @@ export const ToolbarStyled = styled.div`
   }
 `;
 
-export const Toolbar = ({
+export const Toolbar: React.FunctionComponent<ToolbarProps> = ({
   children,
   variant = "regular",
   useGutters = true,
@@ -56,7 +56,7 @@ export const Toolbar = ({
       "gp-toolbar-regular": variant === "regular",
       "gp-toolbar-dense": variant === "dense",
     },
-    toolbarCls
+    toolbarCls,
   );
 
   return (

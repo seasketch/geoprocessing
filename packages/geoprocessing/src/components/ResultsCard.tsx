@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import Card, { CardProps } from "./Card.js";
+import Card from "./Card.js";
 import { useFunction } from "../hooks/useFunction.js";
 import { styled } from "styled-components";
 import Skeleton from "./Skeleton.js";
@@ -80,7 +80,7 @@ export function ResultsCard<T>({
 
   const resultsCardNoResultMsg = t(
     "ResultsCard - no result message",
-    "Report run completed, but no results returned"
+    "Report run completed, but no results returned",
   );
 
   const cardProps = {
@@ -89,31 +89,28 @@ export function ResultsCard<T>({
     titleStyle,
   };
 
-  let { task, loading, error } = useFunction(functionName, extraParams);
+  const { task, loading, error } = useFunction(functionName, extraParams);
+  let theError = error;
   let taskEstimate = 5;
   if (task && task.estimate) {
     taskEstimate = Math.round(task.estimate / 1000);
   }
 
-  let showLabel = false;
-  if (task && task.estimate) {
-    showLabel = true;
-  }
   if (task && !task.data && !loading) {
     if (task.error) {
-      error = task.error;
+      theError = task.error;
     } else {
-      error = resultsCardNoResultMsg;
+      theError = resultsCardNoResultMsg;
     }
   }
 
   let contents: JSX.Element;
-  if (error) {
+  if (theError) {
     contents = (
       <Card {...cardProps}>
         <div role="alert">
           <ErrorIndicator />
-          {error}
+          {theError}
         </div>
       </Card>
     );

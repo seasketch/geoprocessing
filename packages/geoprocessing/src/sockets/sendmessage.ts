@@ -53,7 +53,7 @@ export const sendHandler = async (event) => {
       new ScanCommand({
         TableName: process.env.SUBSCRIPTIONS_TABLE,
         ProjectionExpression: "serviceName, connectionId, cacheKey",
-      })
+      }),
     );
   } catch (e: unknown) {
     console.warn("Error finding socket connection: ", e);
@@ -65,7 +65,7 @@ export const sendHandler = async (event) => {
 
   if (!responses || !responses.Items) {
     console.warn(
-      `Search for socket connection returned no items for ${serviceName} service, cache key ${cacheKey}`
+      `Search for socket connection returned no items for ${serviceName} service, cache key ${cacheKey}`,
     );
     return {
       statusCode: 500,
@@ -73,7 +73,7 @@ export const sendHandler = async (event) => {
     };
   }
 
-  let endpoint = `https://${event.requestContext.domainName}/${event.requestContext.stage}`;
+  const endpoint = `https://${event.requestContext.domainName}/${event.requestContext.stage}`;
 
   // console.log("endpoint", endpoint);
 
@@ -82,14 +82,14 @@ export const sendHandler = async (event) => {
   });
 
   interface ResultItem {
-    cacheKey: any;
-    serviceName: any;
+    cacheKey: string;
+    serviceName: string;
     failureMessage?: string;
   }
 
   // Find subscription matching serviceName and cacheKey
   // Send connectionId from that subscription
-  for (let responseItem of responses.Items) {
+  for (const responseItem of responses.Items) {
     const resultItem: ResultItem = {
       cacheKey: responseItem.cacheKey,
       serviceName: responseItem.serviceName,
@@ -102,14 +102,14 @@ export const sendHandler = async (event) => {
       responseItem.serviceName == serviceName
     ) {
       try {
-        let postData = JSON.stringify(resultItem);
+        const postData = JSON.stringify(resultItem);
 
         // console.log("connectionId", responseItem.connectionId);
         // console.log("data", postData);
 
         try {
           // Send socket message with cacheKey to clients listening so they can fetch result
-          const postResult = await apigwManagementApi.postToConnection({
+          await apigwManagementApi.postToConnection({
             ConnectionId: responseItem.connectionId,
             Data: Buffer.from(postData),
           });
@@ -117,7 +117,7 @@ export const sendHandler = async (event) => {
         } catch (e: any) {
           if (e.statusCode && e.statusCode === 410) {
             console.log(
-              `Found stale connection, deleting ${responseItem.connectionId}`
+              `Found stale connection, deleting ${responseItem.connectionId}`,
             );
             try {
               const command = new DeleteCommand({
@@ -127,7 +127,7 @@ export const sendHandler = async (event) => {
                 },
               });
               responses = await ddb.send(command);
-            } catch (e) {
+            } catch {
               console.info("failed to delete stale connection...");
             }
           }

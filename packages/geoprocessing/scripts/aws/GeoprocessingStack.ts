@@ -11,10 +11,7 @@ import {
   isSyncFunctionMetadata,
   isAsyncFunctionMetadata,
 } from "../manifest.js";
-import {
-  createPublicBuckets,
-  setupBucketFunctionAccess,
-} from "./publicBuckets.js";
+import { createPublicBuckets, setupBucketFunctionAccess } from "./buckets.js";
 import {
   createClientResources,
   setupClientFunctionAccess,
@@ -41,13 +38,8 @@ import { genOutputMeta } from "./outputMeta.js";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { LambdaStack } from "./LambdaStack.js";
 import { createLambdaStacks } from "./lambdaResources.js";
-import {
-  Effect,
-  PolicyStatement,
-  Role,
-  ServicePrincipal,
-} from "aws-cdk-lib/aws-iam";
 import { Function } from "aws-cdk-lib/aws-lambda";
+import { hasOwnProperty } from "../../client-core.js";
 
 /** StackProps extended with geoprocessing project metadata */
 export interface GeoprocessingStackProps extends StackProps {
@@ -148,7 +140,7 @@ export class GeoprocessingStack extends Stack {
   getAsyncRunLambdas(): Function[] {
     return this.lambdaStacks.reduce<Function[]>(
       (acc, curStack) => [...acc, ...curStack.getAsyncRunLambdas()],
-      []
+      [],
     );
   }
 
@@ -164,29 +156,29 @@ export class GeoprocessingStack extends Stack {
 
         return [...acc, ...asyncFunctions];
       },
-      []
+      [],
     );
   }
 
   /** Returns true if sync function with meta and narrows type */
   isSyncFunctionWithMeta(
-    funcWithMeta: any
+    funcWithMeta: any,
   ): funcWithMeta is SyncFunctionWithMeta {
     return (
-      funcWithMeta.hasOwnProperty("func") &&
-      funcWithMeta.hasOwnProperty("meta") &&
+      hasOwnProperty(funcWithMeta, "func") &&
+      hasOwnProperty(funcWithMeta, "meta") &&
       isSyncFunctionMetadata(funcWithMeta.meta)
     );
   }
 
   /** Returns true if async function with meta and narrows type */
   isAsyncFunctionWithMeta(
-    funcWithMeta: any
+    funcWithMeta: any,
   ): funcWithMeta is AsyncFunctionWithMeta {
     return (
-      funcWithMeta.hasOwnProperty("startFunc") &&
-      funcWithMeta.hasOwnProperty("runFunc") &&
-      funcWithMeta.hasOwnProperty("meta") &&
+      hasOwnProperty(funcWithMeta, "startFunc") &&
+      hasOwnProperty(funcWithMeta, "runFunc") &&
+      hasOwnProperty(funcWithMeta, "meta") &&
       isAsyncFunctionMetadata(funcWithMeta.meta)
     );
   }

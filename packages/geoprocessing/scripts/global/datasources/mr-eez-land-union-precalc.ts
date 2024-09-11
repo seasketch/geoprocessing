@@ -26,16 +26,16 @@ const infile = "/mnt/c/data/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp";
   await $`ogr2ogr -f GeoJSON -dialect sqlite -sql ${query} ${outfile} ${infile}`;
 
   // Calculate turf area (after subtracting osm land) and bbox, strip geometry to save space
-  let eezFeatures = fs.readJSONSync(outfile);
+  const eezFeatures = fs.readJSONSync(outfile);
   // calculate turf area = eez - osm land
   const landDs = project.getExternalVectorDatasourceById(
-    "global-clipping-osm-land"
+    "global-clipping-osm-land",
   );
   const landUrl = project.getDatasourceUrl(landDs);
   for (const eezFeat of eezFeatures.features) {
     // Get land features that overlap with eez
     const eezBbox = bbox(eezFeat);
-    let landFeatures = await getFeatures(landDs, landUrl, {
+    const landFeatures = await getFeatures(landDs, landUrl, {
       unionProperty: "gid", // gid is assigned per country
       bbox: eezBbox,
     });
@@ -63,11 +63,11 @@ const infile = "/mnt/c/data/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp";
       console.log(`chunk ${idx + 1} of ${chunks.length}`);
       remainder = clip(fc([remainder, ...curChunk]), "difference");
     });
-    remEezArea = !!remainder ? area(remainder) : remEezArea;
+    remEezArea = remainder ? area(remainder) : remEezArea;
 
     console.log("remEezArea: ", eezNoLandArea);
     console.log(
-      `${roundDecimal((remEezArea / eezNoLandArea) * 100, 1)}% decrease`
+      `${roundDecimal((remEezArea / eezNoLandArea) * 100, 1)}% decrease`,
     );
     console.log(" ");
     console.log(" ");

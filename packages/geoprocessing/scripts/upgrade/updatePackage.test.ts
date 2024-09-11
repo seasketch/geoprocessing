@@ -128,7 +128,7 @@ describe("updatePackage", () => {
       expect(devDependencyKeys.length).toEqual(4);
       expect(devDependencyKeys.includes("other-dev-dependency")).toBeTruthy();
       expect(updatedPkg.devDependencies["other-dev-dependency"]).toEqual(
-        "1.0.0"
+        "1.0.0",
       );
     }
   });

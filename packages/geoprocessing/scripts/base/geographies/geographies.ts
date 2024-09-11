@@ -12,7 +12,7 @@ import { geographyConfig } from "../../../src/geographies/config.js";
  * If geographies file not exist then start a new one and ensure directory exists
  */
 export function readGeographies(filePath?: string) {
-  let geos: Geographies = [];
+  const geos: Geographies = [];
 
   // Optional override
   const finalFilePath =
@@ -23,12 +23,12 @@ export function readGeographies(filePath?: string) {
       const geosString = fs.readFileSync(finalFilePath).toString();
       try {
         return JSON.parse(geosString);
-      } catch (err: unknown) {
+      } catch {
         throw new Error(
-          `Unable to parse JSON found in ${finalFilePath}, fix it and try again`
+          `Unable to parse JSON found in ${finalFilePath}, fix it and try again`,
         );
       }
-    } catch (err: unknown) {
+    } catch {
       console.log(`Geography file not found at ${finalFilePath}`);
       fs.ensureDirSync(path.dirname(geographyConfig.defaultSrcPath));
       // fallback to default

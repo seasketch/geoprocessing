@@ -17,7 +17,7 @@ if (process.argv.length < 3) {
         {
           cwd: process.cwd(),
           stdio: "inherit",
-        }
+        },
       );
       break;
     case "init:testProjects":
@@ -26,7 +26,7 @@ if (process.argv.length < 3) {
         {
           cwd: process.cwd(),
           stdio: "inherit",
-        }
+        },
       );
       break;
     case "add:template":
@@ -48,7 +48,7 @@ if (process.argv.length < 3) {
         {
           cwd: process.cwd(),
           stdio: "inherit",
-        }
+        },
       );
       break;
     case "precalc:data":
@@ -58,7 +58,7 @@ if (process.argv.length < 3) {
         {
           cwd: process.cwd(),
           stdio: "inherit",
-        }
+        },
       );
       break;
     case "precalc:data:clean":
@@ -68,7 +68,7 @@ if (process.argv.length < 3) {
         {
           cwd: process.cwd(),
           stdio: "inherit",
-        }
+        },
       );
       break;
     case "publish:data":
@@ -78,7 +78,7 @@ if (process.argv.length < 3) {
         {
           cwd: process.cwd(),
           stdio: "inherit",
-        }
+        },
       );
       break;
     case "create:function":
@@ -160,20 +160,7 @@ if (process.argv.length < 3) {
         {
           cwd: process.cwd(),
           stdio: "inherit",
-        }
-      );
-      break;
-    case "bundle-rasters":
-      spawn(
-        "node",
-        [
-          `${import.meta.dirname}/dataPrep/bundleRasterData.js`,
-          ...process.argv.slice(2),
-        ],
-        {
-          cwd: process.cwd(),
-          stdio: "inherit",
-        }
+        },
       );
       break;
     case "clear-results":
@@ -195,7 +182,7 @@ if (process.argv.length < 3) {
         {
           cwd: process.cwd(),
           stdio: "inherit",
-        }
+        },
       );
       break;
     case "upgrade":
@@ -205,7 +192,7 @@ if (process.argv.length < 3) {
         {
           cwd: process.cwd(),
           stdio: "inherit",
-        }
+        },
       );
       break;
     default:

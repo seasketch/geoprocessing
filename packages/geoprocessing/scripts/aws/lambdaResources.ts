@@ -13,7 +13,7 @@ import { Function } from "aws-cdk-lib/aws-lambda";
  */
 export const createLambdaStacks = (
   stack: GeoprocessingStack,
-  props: GeoprocessingNestedStackProps
+  props: GeoprocessingNestedStackProps,
 ): LambdaStack[] => {
   // assume can handle 20 functions per stack, even if all async
   const FUNCTIONS_PER_STACK = 20;
@@ -25,7 +25,7 @@ export const createLambdaStacks = (
 
   const functionGroups = chunk(
     functions.sort((a, b) => a.title.localeCompare(b.title)),
-    FUNCTIONS_PER_STACK
+    FUNCTIONS_PER_STACK,
   );
 
   const lambdaStacks = functionGroups.map((funcGroup, i) => {
@@ -35,10 +35,10 @@ export const createLambdaStacks = (
         // shave down manifest to just the functions in this group
         ...props.manifest,
         preprocessingFunctions: funcGroup.filter(
-          isPreprocessingFunctionMetadata
+          isPreprocessingFunctionMetadata,
         ),
         geoprocessingFunctions: funcGroup.filter(
-          isGeoprocessingFunctionMetadata
+          isGeoprocessingFunctionMetadata,
         ),
       },
     });
@@ -51,7 +51,7 @@ export const createLambdaStacks = (
     (acc, curStack) => {
       return [...acc, ...curStack.getAsyncRunLambdas()];
     },
-    []
+    [],
   );
   lambdaStacks.forEach((stack) => {
     stack.createLambdaSyncPolicies(runLambdas);

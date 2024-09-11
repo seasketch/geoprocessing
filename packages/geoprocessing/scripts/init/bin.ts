@@ -6,7 +6,7 @@ program
   .option(
     "--gpVersion <string>",
     "Git supported version string to install.  Can be local file url",
-    undefined
+    undefined,
   )
   .action(async function (options) {
     try {

@@ -17,7 +17,7 @@ import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
  */
 export async function clipToLand(
   feature: Feature | Sketch,
-  extraParams: DefaultExtraParams = {}
+  extraParams: DefaultExtraParams = {},
 ): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");

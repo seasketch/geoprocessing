@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { styled } from "styled-components";
 import Toolbar, { ToolbarProps } from "./Toolbar.js";
 import DataDownload, { DataDownloadProps } from "./DataDownload.js";

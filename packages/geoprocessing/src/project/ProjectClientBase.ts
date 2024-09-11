@@ -88,7 +88,7 @@ export interface ProjectClientInterface {
       | ExternalRasterDatasource
       | InternalRasterDatasource
       | ImportRasterDatasourceConfig
-      | ImportVectorDatasourceConfig
+      | ImportVectorDatasourceConfig,
   );
 }
 
@@ -195,7 +195,7 @@ export class ProjectClientBase implements ProjectClientInterface {
       local?: boolean;
       port?: number;
       subPath?: string;
-    } = {}
+    } = {},
   ) {
     const { format, local, port, subPath } = options;
     if (isInternalVectorDatasource(ds) || isImportVectorDatasourceConfig(ds)) {
@@ -213,7 +213,7 @@ export class ProjectClientBase implements ProjectClientInterface {
         }.${format}`;
       else
         throw new Error(
-          `getDatasourceUrl: format not found for datasource ${ds.datasourceId}`
+          `getDatasourceUrl: format not found for datasource ${ds.datasourceId}`,
         );
     } else if (
       isInternalRasterDatasource(ds) ||
@@ -233,7 +233,7 @@ export class ProjectClientBase implements ProjectClientInterface {
         }.${format}`;
       else
         throw new Error(
-          `getDatasourceUrl: format not found for datasource ${ds.datasourceId}`
+          `getDatasourceUrl: format not found for datasource ${ds.datasourceId}`,
         );
     } else if (
       isExternalVectorDatasource(ds) ||
@@ -242,11 +242,11 @@ export class ProjectClientBase implements ProjectClientInterface {
       if (ds.url) return ds.url;
       else
         throw new Error(
-          `getDatasourceUrl: url undefined for external datasource ${ds.datasourceId}`
+          `getDatasourceUrl: url undefined for external datasource ${ds.datasourceId}`,
         );
     }
     throw new Error(
-      `getDatasourceUrl: cannot generate url for datasource ${ds.datasourceId}`
+      `getDatasourceUrl: cannot generate url for datasource ${ds.datasourceId}`,
     );
   }
 
@@ -264,14 +264,14 @@ export class ProjectClientBase implements ProjectClientInterface {
 
   /** Returns InternalVectorDatasource given datasourceId, throws if not found */
   public getInternalVectorDatasourceById(
-    datasourceId: string
+    datasourceId: string,
   ): InternalVectorDatasource {
     return getInternalVectorDatasourceById(datasourceId, this._datasources);
   }
 
   /** Returns ExternalVectorDatasource given datasourceId, throws if not found */
   public getExternalVectorDatasourceById(
-    datasourceId: string
+    datasourceId: string,
   ): ExternalVectorDatasource {
     return getExternalVectorDatasourceById(datasourceId, this._datasources);
   }
@@ -283,14 +283,14 @@ export class ProjectClientBase implements ProjectClientInterface {
 
   /** Returns InternalRasterDatasource given datasourceId, throws if not found */
   public getInternalRasterDatasourceById(
-    datasourceId: string
+    datasourceId: string,
   ): InternalRasterDatasource {
     return getInternalRasterDatasourceById(datasourceId, this._datasources);
   }
 
   /** Returns ExternalRasterDatasource given datasourceId, throws if not found */
   public getExternalRasterDatasourceById(
-    datasourceId: string
+    datasourceId: string,
   ): ExternalRasterDatasource {
     return getExternalRasterDatasourceById(datasourceId, this._datasources);
   }
@@ -307,12 +307,12 @@ export class ProjectClientBase implements ProjectClientInterface {
    */
   public getGeographyById(
     geographyId?: string,
-    options: { fallbackGroup?: string } = {}
+    options: { fallbackGroup?: string } = {},
   ): Geography {
     const { fallbackGroup } = options;
     if (geographyId && geographyId.length > 0) {
       const curGeog = this._geographies.find(
-        (g) => g.geographyId === geographyId
+        (g) => g.geographyId === geographyId,
       );
       // verify matching geography exists
       if (curGeog) {
@@ -321,15 +321,15 @@ export class ProjectClientBase implements ProjectClientInterface {
     } else if (fallbackGroup) {
       // fallback to user-specified geography group
       const planGeogs = this._geographies.filter((g) =>
-        g.groups?.includes(fallbackGroup)
+        g.groups?.includes(fallbackGroup),
       );
       if (planGeogs.length === 0) {
         throw new Error(
-          `Could not find geography with fallback group ${fallbackGroup}`
+          `Could not find geography with fallback group ${fallbackGroup}`,
         );
       } else if (planGeogs.length > 1) {
         throw new Error(
-          `Found more than one geography with fallback group ${fallbackGroup}, there should be only one`
+          `Found more than one geography with fallback group ${fallbackGroup}, there should be only one`,
         );
       } else {
         return planGeogs[0];
@@ -337,7 +337,7 @@ export class ProjectClientBase implements ProjectClientInterface {
     }
 
     throw new Error(
-      `getGeographyById - did not receive geographyID or fallbackGroup`
+      `getGeographyById - did not receive geographyID or fallbackGroup`,
     );
   }
 
@@ -385,10 +385,10 @@ export class ProjectClientBase implements ProjectClientInterface {
   /** Returns all Objectives for MetricGroup, optionally translating short description, given i18n t function */
   public getMetricGroupObjectives(
     metricGroup: MetricGroup,
-    t?: TFunction
+    t?: TFunction,
   ): Objective[] {
     const objectives = getMetricGroupObjectiveIds(metricGroup).map(
-      (objectiveId) => this.getObjectiveById(objectiveId)
+      (objectiveId) => this.getObjectiveById(objectiveId),
     );
     if (!t) return objectives;
     return objectives.map((objective) => ({
@@ -407,7 +407,7 @@ export class ProjectClientBase implements ProjectClientInterface {
   public getPrecalcMetrics(
     mg?: MetricGroup,
     metricId?: string,
-    geographyId?: string
+    geographyId?: string,
   ): Metric[] {
     if (!mg && !metricId && !geographyId) {
       // default to return everything
@@ -435,13 +435,13 @@ export class ProjectClientBase implements ProjectClientInterface {
           // Throw error if metric is unable to be found
           if (!metric || metric.length === 0) {
             throw new Error(
-              `No matching total metric for ${datasourceId}-${curClass.classId}, ${metricId}, ${geographyId}`
+              `No matching total metric for ${datasourceId}-${curClass.classId}, ${metricId}, ${geographyId}`,
             );
           }
           if (metric.length > 1) {
             console.log(JSON.stringify(metric));
             throw new Error(
-              `Unexpectedly found more than one precalc metric for datasource-classId: ${datasourceId}-${curClass.classId}, metric: ${metricId}, geography: ${geographyId}`
+              `Unexpectedly found more than one precalc metric for datasource-classId: ${datasourceId}-${curClass.classId}, metric: ${metricId}, geography: ${geographyId}`,
             );
           }
 
@@ -460,11 +460,11 @@ export class ProjectClientBase implements ProjectClientInterface {
 
         if (!metric || !metric.length)
           throw new Error(
-            `Can't find precalc metric for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}.  Do you need to run the precalc:data command?`
+            `Can't find precalc metric for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}.  Do you need to run the precalc:data command?`,
           );
         if (metric.length > 1)
           throw new Error(
-            `Returned multiple precalc metrics for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}`
+            `Returned multiple precalc metrics for datasource ${datasourceId}, geography ${geographyId}, metric ${metricId}`,
           );
 
         // Returns metric, overwriting classId for easy match in report
@@ -474,7 +474,7 @@ export class ProjectClientBase implements ProjectClientInterface {
     }
 
     throw new Error(
-      "getPrecalcMetrics must be called with no parameters, or all 3 of mg, metricId, and geographyId"
+      "getPrecalcMetrics must be called with no parameters, or all 3 of mg, metricId, and geographyId",
     );
   }
 }

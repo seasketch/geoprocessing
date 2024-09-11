@@ -9,10 +9,10 @@ export const roundDecimal = (
   value: number,
   /** Number of digits after the decimal point to keep */
   decimals = 1,
-  options: RoundDecimalOptions = { keepSmallValues: false }
+  options: RoundDecimalOptions = { keepSmallValues: false },
 ) => {
   const roundedValue = Number(
-    Math.round(parseFloat(`${value}e${decimals}`)) + `e-${decimals}`
+    Math.round(parseFloat(`${value}e${decimals}`)) + `e-${decimals}`,
   );
 
   return options.keepSmallValues && value && !roundedValue
@@ -53,7 +53,7 @@ export const percentWithEdge = (
     digitsIfMatchLower: 0,
     lower: 0.001,
     lowerBound: 0,
-  }
+  },
 ) => {
   const {
     digits = 1,
@@ -110,7 +110,7 @@ export const percentGoalWithEdge = (
   /** Goal percent value */
   goal: number,
   /** Override options passed to percentWithEdge, supports same parameters */
-  options?: PercentEdgeOptions
+  options?: PercentEdgeOptions,
 ) => {
   return percentWithEdge(val, {
     upperBound: goal,

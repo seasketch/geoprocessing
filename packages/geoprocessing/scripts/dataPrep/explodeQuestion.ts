@@ -5,7 +5,7 @@ export interface ExplodeAnswers {
 }
 
 export async function explodeQuestion(
-  questionText?: string
+  questionText?: string,
 ): Promise<Pick<ExplodeAnswers, "explodeMulti">> {
   return inquirer.prompt<Pick<ExplodeAnswers, "explodeMulti">>([
     {

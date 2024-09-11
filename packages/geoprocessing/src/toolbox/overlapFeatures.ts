@@ -54,7 +54,7 @@ export async function overlapFeatures(
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>
     | Sketch<Polygon | MultiPolygon>[],
-  options?: Partial<OverlapFeatureOptions>
+  options?: Partial<OverlapFeatureOptions>,
 ): Promise<Metric[]> {
   const newOptions: OverlapFeatureOptions = {
     includeChildMetrics: true,
@@ -66,9 +66,9 @@ export async function overlapFeatures(
   const { includeChildMetrics } = newOptions;
   let sumValue: number = 0;
   let isOverlap = false;
-  let featureIndices: Set<number> = new Set();
+  const featureIndices: Set<number> = new Set();
   const sketches = (Array.isArray(sketch) ? sketch : toSketchArray(sketch)).map(
-    (s) => truncate(s)
+    (s) => truncate(s),
   );
   const finalFeatures = features.map((f) => truncate(f));
 
@@ -77,7 +77,7 @@ export async function overlapFeatures(
     const intersections = doIntersect(
       curSketch as Feature<Polygon | MultiPolygon>,
       finalFeatures as Feature<Polygon | MultiPolygon>[],
-      newOptions
+      newOptions,
     );
 
     intersections.indices.forEach((index) => featureIndices.add(index));
@@ -126,7 +126,7 @@ export async function overlapFeatures(
         const intersections = doIntersect(
           feat,
           finalFeatures as Feature<Polygon | MultiPolygon>[],
-          newOptions
+          newOptions,
         );
         sumValue += intersections.value;
       });
@@ -168,7 +168,7 @@ export async function overlapFeatures(
 const doIntersect = (
   featureA: Feature<Polygon | MultiPolygon>,
   featuresB: Feature<Polygon | MultiPolygon>[],
-  options: OverlapFeatureOptions
+  options: OverlapFeatureOptions,
 ) => {
   const { chunkSize, operation = "area" } = options;
   switch (operation) {
@@ -176,7 +176,7 @@ const doIntersect = (
       return getSketchPolygonIntersectSumValue(
         featureA,
         featuresB,
-        options.sumProperty
+        options.sumProperty,
       );
     default:
       return getSketchPolygonIntersectArea(featureA, featuresB, chunkSize);
@@ -193,7 +193,7 @@ const doIntersect = (
 const getSketchPolygonIntersectArea = (
   featureA: Feature<Polygon | MultiPolygon>,
   featuresB: Feature<Polygon | MultiPolygon>[],
-  chunkSize: number
+  chunkSize: number,
 ) => {
   // chunk to avoid blowing up intersect
   const chunks = chunk(featuresB, chunkSize || 5000);
@@ -203,7 +203,7 @@ const getSketchPolygonIntersectArea = (
       const rem = clipMultiMerge(
         featureA,
         featureCollection(curChunk),
-        "intersection"
+        "intersection",
       );
       return rem;
     })
@@ -223,15 +223,15 @@ const getSketchPolygonIntersectArea = (
 const getSketchPolygonIntersectSumValue = (
   featureA: Feature<Polygon | MultiPolygon>,
   featuresB: Feature<Polygon | MultiPolygon>[],
-  sumProperty?: string
+  sumProperty?: string,
 ) => {
-  let indices: number[] = [];
+  const indices: number[] = [];
   // intersect and get sum of remainder
   const sketchValue = featuresB
     .map((curFeature, index) => {
       const rem = clip(
         featureCollection([featureA, curFeature]),
-        "intersection"
+        "intersection",
       );
 
       if (!rem) return { count: 0 };

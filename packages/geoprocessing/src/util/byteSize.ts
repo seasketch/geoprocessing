@@ -4,6 +4,6 @@
  * @returns size in bytes
  */
 export const byteSize = (str: string) => {
-  let size = Buffer.from(str).length;
+  const size = Buffer.from(str).length;
   return size;
 };

@@ -1,8 +1,3 @@
-/**
- * @vitest-environment node
- */
-
-// @ts-ignore
 import geoblaze from "geoblaze";
 import parseGeoraster from "georaster";
 
@@ -28,7 +23,7 @@ describe("geoblaze multipolygon tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const whole = {
@@ -115,7 +110,7 @@ describe("geoblaze multipolygon tests", () => {
     const multipart = geoblaze.sum(raster, multipolygon);
 
     expect(
-      wholeSum[0] === 4 && singlepart[0] === 4 && multipart[0] === 4
+      wholeSum[0] === 4 && singlepart[0] === 4 && multipart[0] === 4,
     ).toBeTruthy();
   });
 
@@ -210,7 +205,7 @@ describe("geoblaze multipolygon tests", () => {
     // Expect the whole feature's sum to be equal to the sum of the 2 polygons
     // and the sume of the multipolygon
     expect(
-      wholeSum[0] === multipart[0] && multipart[0] === singlepart[0]
+      wholeSum[0] === multipart[0] && multipart[0] === singlepart[0],
     ).toBeTruthy();
   });
 
@@ -437,7 +432,7 @@ describe("geoblaze multipolygon tests", () => {
     expect(
       wholeSum[0] === singleColl[0] &&
         singleColl[0] === multipart[0] &&
-        multipart[0] === mixedCollSum[0]
+        multipart[0] === mixedCollSum[0],
     ).toBeTruthy();
   });
 
@@ -546,7 +541,7 @@ describe("geoblaze multipolygon tests", () => {
     // and the sum of a multipolygon with two parts which partially overlap
     // (the overlap should not be counted twice)
     expect(
-      wholeSum[0] === singlepart[0] && singlepart[0] === multipart[0]
+      wholeSum[0] === singlepart[0] && singlepart[0] === multipart[0],
     ).toBeTruthy();
   });
 
@@ -571,7 +566,7 @@ describe("geoblaze multipolygon tests", () => {
         ymax: 10, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const whole = {
@@ -658,7 +653,7 @@ describe("geoblaze multipolygon tests", () => {
     const multipart = geoblaze.sum(raster, multipolygon);
 
     expect(
-      wholeSum[0] === 4 && singlepart[0] === 4 && multipart[0] === 4
+      wholeSum[0] === 4 && singlepart[0] === 4 && multipart[0] === 4,
     ).toBeTruthy();
   });
 
@@ -683,7 +678,7 @@ describe("geoblaze multipolygon tests", () => {
         ymax: 20, // top
         pixelWidth: 10,
         pixelHeight: 10,
-      }
+      },
     );
 
     const whole = {
@@ -772,7 +767,7 @@ describe("geoblaze multipolygon tests", () => {
     const multipart = geoblaze.sum(raster, multipolygon);
 
     expect(
-      wholeSum[0] === 4 && singlepart[0] === 4 && multipart[0] === 4
+      wholeSum[0] === 4 && singlepart[0] === 4 && multipart[0] === 4,
     ).toBeTruthy();
   });
 });

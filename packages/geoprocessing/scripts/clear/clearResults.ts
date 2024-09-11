@@ -8,11 +8,11 @@ interface ClearCacheOptions {
 }
 
 const packageJson = JSON.parse(
-  fs.readFileSync(path.join("./", "package.json")).toString()
+  fs.readFileSync(path.join("./", "package.json")).toString(),
 );
 
 const geoprocessingJson = JSON.parse(
-  fs.readFileSync(path.join("./", "project", "geoprocessing.json")).toString()
+  fs.readFileSync(path.join("./", "project", "geoprocessing.json")).toString(),
 );
 
 export async function clearResults() {
@@ -30,7 +30,7 @@ export async function clearResults() {
 }
 
 export async function clearCachedResults(options: ClearCacheOptions) {
-  let serviceName = options.tableName;
+  const serviceName = options.tableName;
   await deleteTasks(packageJson.name, geoprocessingJson.region, serviceName);
 }
 

@@ -1,4 +1,4 @@
-import { describe, test, expect, vi, beforeEach } from "vitest";
+import { test, expect, vi, beforeEach } from "vitest";
 import React, { useState } from "react";
 import { render, act as domAct } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
@@ -9,12 +9,9 @@ import { SketchProperties } from "../types/index.js";
 import { GeoprocessingTaskStatus, GeoprocessingTask } from "../aws/tasks.js";
 import { renderHook, act } from "@testing-library/react";
 
-// @ts-ignore
 // switch to manual fetch mocking or vitest-fetch-mock
 // import fetchMock from "fetch-mock-jest";
-
 // import createFetchMock from "vitest-fetch-mock";
-
 // const fetchMock = createFetchMock(vi);
 const fetchMock: any = {};
 
@@ -58,7 +55,6 @@ const ContextWrapper: React.FunctionComponent<{
 //   ],
 // });
 
-const consoleError = console.error;
 beforeEach(() => {
   fetchMock.resetHistory();
 });
@@ -70,7 +66,7 @@ test.skip("useFunction won't accept unrecognizable responses", async () => {
     {},
     {
       overwriteRoutes: true,
-    }
+    },
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper,
@@ -103,7 +99,7 @@ test.skip("useFunction unsets loading prop and sets task upon completion of job 
         foo: "plenty",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper,
@@ -138,7 +134,7 @@ test.skip("useFunction handles errors thrown within geoprocessing function", asy
       status: "failed",
       error: "Task error",
     } as GeoprocessingTask,
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ContextWrapper,
@@ -190,7 +186,7 @@ const TestContainer: React.FC<TestContainerProps> = (props) => {
     <ReportContext.Provider
       value={{
         sketchProperties:
-          // @ts-ignore
+          // @ts-expect-error type mismatch
           props.sketchProperties || makeSketchProperties(sketchId.toString()),
         geometryUri: `https://example.com/geometry/${sketchId}`,
         projectUrl: "https://example.com/project",
@@ -205,10 +201,6 @@ const TestContainer: React.FC<TestContainerProps> = (props) => {
     </ReportContext.Provider>
   );
 };
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 test.skip("changing ReportContext.geometryUri fetches new results", async () => {
   vi.useFakeTimers();
@@ -229,12 +221,12 @@ test.skip("changing ReportContext.geometryUri fetches new results", async () => 
         foo: "plenty",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   const { getByRole, getByText, getAllByText } = render(
     <TestContainer>
       <TestReport />
-    </TestContainer>
+    </TestContainer>,
   );
   expect(getByRole("alert")).toHaveTextContent("loading...");
   await domAct(async () => {
@@ -264,7 +256,7 @@ test.skip("changing ReportContext.geometryUri fetches new results", async () => 
         foo: "lots!",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   await domAct(async () => {
     getByRole("button").click();
@@ -331,12 +323,12 @@ test.skip("useFunction called multiple times with the same arguments will only f
         foo: "plenty",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
-  const { getAllByRole, getByText, getAllByText } = render(
+  const { getAllByRole, getAllByText } = render(
     <TestContainer>
       <MultiCardTestReport />
-    </TestContainer>
+    </TestContainer>,
   );
   for (const el of getAllByRole("alert")) {
     expect(el).toHaveTextContent("loading...");
@@ -373,13 +365,13 @@ test.skip("useFunction uses a local cache for repeat requests", async () => {
         foo: "plenty",
       },
     } as GeoprocessingTask),
-    { overwriteRoutes: true }
+    { overwriteRoutes: true },
   );
   const { getByRole, getByText, getAllByText } = render(
-    // @ts-ignore
+    // @ts-expect-error type mismatch
     <TestContainer sketchProperties={sketchProperties}>
       <TestReport />
-    </TestContainer>
+    </TestContainer>,
   );
   expect(getByRole("alert")).toHaveTextContent("loading...");
   await domAct(async () => {
@@ -389,11 +381,12 @@ test.skip("useFunction uses a local cache for repeat requests", async () => {
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "plenty");
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const queries = render(
-    // @ts-ignore
+    // @ts-expect-error type mismatch
     <TestContainer sketchProperties={sketchProperties}>
       <TestReport />
-    </TestContainer>
+    </TestContainer>,
   );
   await domAct(async () => {
     vi.runAllTimers();
@@ -405,6 +398,7 @@ test.skip("Returns error if ReportContext does not include required values", () 
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ({ children }) => (
       <ContextWrapper
+        // eslint-disable-next-line react/no-children-prop
         children={children}
         value={{ projectUrl: null } as unknown as ReportContextValue}
       />
@@ -420,6 +414,7 @@ test.skip("Exposes error to client if project metadata can't be fetched", async 
   const { result } = renderHook(() => useFunction("calcFoo"), {
     wrapper: ({ children }) => (
       <ContextWrapper
+        // eslint-disable-next-line react/no-children-prop
         children={children}
         value={
           {

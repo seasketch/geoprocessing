@@ -18,7 +18,7 @@ describe("ProjectClientBase", () => {
     expect(objective.objectiveId).toEqual("eez_objective");
 
     expect(project.getDatasourceUrl(project.datasources[0])).toEqual(
-      "https://d3p1dsef9f0gjr.cloudfront.net/"
+      "https://d3p1dsef9f0gjr.cloudfront.net/",
     );
 
     const objectives = project.getMetricGroupObjectives(metricGroup);

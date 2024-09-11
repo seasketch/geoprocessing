@@ -26,7 +26,7 @@ export function createI18nAsyncInstance(
     langPath?: string;
     /** path to extra base language translations (for gp projects), which langPath strings merge with and override */
     baseLangPath?: string;
-  } = {}
+  } = {},
 ) {
   const { langPath = "./lang", baseLangPath = "./baseLang" } = options;
   const instance = createInstance();
@@ -44,14 +44,14 @@ export function createI18nAsyncInstance(
       read(
         language: string,
         namespace: string,
-        callback: (errorValue: unknown, translations: null | any) => void
+        callback: (errorValue: unknown, translations: null | any) => void,
       ) {
         const curLanguage = ((language: string) => {
           // language switcher sends zh when zh-Hans is selected, but we need zh-Hans
           if (language === "zh") return "zh-Hans";
 
           return languages.find(
-            (curLang) => curLang.code.toLowerCase() === language.toLowerCase()
+            (curLang) => curLang.code.toLowerCase() === language.toLowerCase(),
           )?.code;
         })(language);
 
@@ -67,9 +67,9 @@ export function createI18nAsyncInstance(
             const baseLangToLoadPath = `${baseLangPath}/${langToLoad}/${namespace}.json`;
             const curModule = baseLangModules[baseLangToLoadPath];
             baseLangResources = JSON.parse(
-              ((await curModule()) as unknown as any).default
+              ((await curModule()) as unknown as any).default,
             );
-          } catch (error: unknown) {
+          } catch {
             console.info(`Warning: failed to find base lang resource.`);
           }
           console.log("language baseLangResources", baseLangResources);
@@ -81,12 +81,12 @@ export function createI18nAsyncInstance(
                 const langToLoadPath = `${langPath}/${langToLoad}/${namespace}.json`;
                 const curModule = langModules[langToLoadPath];
                 langResources = JSON.parse(
-                  ((await curModule()) as unknown as any).default
+                  ((await curModule()) as unknown as any).default,
                 );
               } else {
                 langResources = {};
               }
-            } catch (error: unknown) {
+            } catch {
               console.info(`Warning: failed to find lang resource.`);
             }
           }

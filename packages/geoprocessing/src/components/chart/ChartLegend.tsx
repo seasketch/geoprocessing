@@ -68,7 +68,7 @@ const StyledLegend = styled.div<StyledLegendProps>`
       .legend li:nth-of-type(${index + 1}):before {
         background-color: ${blockGroupColor};
       }
-    `
+    `,
     )}
 
   @media screen and (min-width: 768px) {
@@ -111,8 +111,8 @@ export const ChartLegend: React.FunctionComponent<LegendProps> = ({
       <figure>
         <div className="x-axis">
           <ul className="legend">
-            {blockGroupNames.map((blockGroupName) => (
-              <li>{blockGroupName}</li>
+            {blockGroupNames.map((blockGroupName, index) => (
+              <li key={index}>{blockGroupName}</li>
             ))}
           </ul>
         </div>

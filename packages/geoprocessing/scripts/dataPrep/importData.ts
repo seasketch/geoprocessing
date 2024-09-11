@@ -42,18 +42,17 @@ interface ImportVectorDatasourceAnswers
   propertiesToKeep: string[];
 }
 
-interface ImportRasterDatasourceAnswers
-  extends Pick<
-    ImportRasterDatasourceOptions,
-    | "src"
-    | "datasourceId"
-    | "band"
-    | "geo_type"
-    | "formats"
-    | "noDataValue"
-    | "measurementType"
-    | "precalc"
-  > {}
+type ImportRasterDatasourceAnswers = Pick<
+  ImportRasterDatasourceOptions,
+  | "src"
+  | "datasourceId"
+  | "band"
+  | "geo_type"
+  | "formats"
+  | "noDataValue"
+  | "measurementType"
+  | "precalc"
+>;
 
 // Main function, wrapped in an IIFE to avoid top-level await
 void (async function () {
@@ -67,12 +66,12 @@ void (async function () {
       const layerNameAnswer = await layerNameQuestion(srcAnswer.src);
       const datasourceIdAnswer = await datasourceIdQuestion(
         datasources,
-        srcAnswer.src
+        srcAnswer.src,
       );
       const explodeAnswers = await explodeQuestion();
       const detailedVectorAnswers = await detailedVectorQuestions(
         srcAnswer.src,
-        layerNameAnswer.layerName!
+        layerNameAnswer.layerName!,
       );
       const precalcAnswers = await precalcQuestion();
 
@@ -84,7 +83,7 @@ void (async function () {
         ...{
           ...detailedVectorAnswers,
           formats: datasourceConfig.importDefaultVectorFormats.concat(
-            detailedVectorAnswers.formats
+            detailedVectorAnswers.formats,
           ),
         },
         ...precalcAnswers,
@@ -95,10 +94,10 @@ void (async function () {
       // Raster datasource
       const datasourceIdAnswer = await datasourceIdQuestion(
         datasources,
-        srcAnswer.src
+        srcAnswer.src,
       );
       const detailedRasterAnswers = await detailedRasterQuestions(
-        srcAnswer.src
+        srcAnswer.src,
       );
       const precalcAnswers = await precalcQuestion();
 
@@ -118,7 +117,7 @@ void (async function () {
 
 /** Maps answers object to options */
 function vectorMapper(
-  answers: ImportVectorDatasourceAnswers
+  answers: ImportVectorDatasourceAnswers,
 ): ImportVectorDatasourceOptions {
   const validOptions = importVectorDatasourceOptionsSchema.parse(answers);
   return validOptions;
@@ -126,9 +125,9 @@ function vectorMapper(
 
 /** Maps answers object to options */
 function rasterMapper(
-  answers: ImportRasterDatasourceAnswers
+  answers: ImportRasterDatasourceAnswers,
 ): ImportRasterDatasourceOptions {
-  let options: ImportRasterDatasourceOptions = {
+  const options: ImportRasterDatasourceOptions = {
     ...answers,
   };
   // a blank noDataValue will end up as nan, so just remove it as its optional
@@ -186,7 +185,7 @@ async function srcQuestion(): Promise<
 /** Get datasourceId */
 async function datasourceIdQuestion(
   datasources: Datasource[],
-  srcPath: string
+  srcPath: string,
 ): Promise<Pick<ImportVectorDatasourceAnswers, "datasourceId">> {
   const datasourceIds = datasources.map((ds) => ds.datasourceId);
   return inquirer.prompt<Pick<ImportVectorDatasourceAnswers, "datasourceId">>([
@@ -208,7 +207,7 @@ async function datasourceIdQuestion(
 
 /** Get layer name of vector file */
 async function layerNameQuestion(
-  srcPath: string
+  srcPath: string,
 ): Promise<Pick<ImportVectorDatasourceAnswers, "layerName">> {
   const { stdout } = await $`ogrinfo -json ${srcPath}`;
   const layers = JSON.parse(stdout).layers.map((layer) => layer.name);
@@ -231,7 +230,7 @@ async function layerNameQuestion(
 /** Get classKeys, propertiesToKeep, and formats */
 async function detailedVectorQuestions(
   srcPath: string,
-  layerName: string
+  layerName: string,
 ): Promise<
   Pick<
     ImportVectorDatasourceAnswers,
@@ -278,7 +277,7 @@ async function detailedVectorQuestions(
       type: "checkbox",
       name: "formats",
       message: `These formats are automatically created: ${datasourceConfig.importDefaultVectorFormats.join(
-        ", "
+        ", ",
       )}. Select any additional formats you want created`,
       choices: datasourceConfig.importExtraVectorFormats.map((name) => ({
         value: name,
@@ -291,7 +290,7 @@ async function detailedVectorQuestions(
 
 /** Get measurementType, export formats, band, and noDataValue */
 async function detailedRasterQuestions(
-  srcPath: string
+  srcPath: string,
 ): Promise<
   Pick<
     ImportRasterDatasourceAnswers,
@@ -334,7 +333,7 @@ async function detailedRasterQuestions(
   ]);
 
   const noDataValue = JSON.parse(stdout).bands.find(
-    (b) => b.band === answers.band
+    (b) => b.band === answers.band,
   ).noDataValue;
 
   return {

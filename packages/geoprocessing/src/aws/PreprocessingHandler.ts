@@ -33,7 +33,7 @@ export class PreprocessingHandler<
 > {
   func: (
     feature: Feature<G> | Sketch<G>,
-    extraParams: P
+    extraParams: P,
   ) => Promise<Feature<G> | Sketch<G>>;
   options: PreprocessingHandlerOptions;
   // Store last request id to avoid retries on a failure of the lambda
@@ -47,15 +47,15 @@ export class PreprocessingHandler<
    */
   constructor(
     func: (feature: Feature<G>, extraParams: P) => Promise<Feature<G>>,
-    options: PreprocessingHandlerOptions
+    options: PreprocessingHandlerOptions,
   );
   constructor(
     func: (feature: Sketch<G>, extraParams: P) => Promise<Sketch<G>>,
-    options: PreprocessingHandlerOptions
+    options: PreprocessingHandlerOptions,
   );
   constructor(
     func: (feature, extraParams) => Promise<any>,
-    options: PreprocessingHandlerOptions
+    options: PreprocessingHandlerOptions,
   ) {
     this.func = func;
     this.options = Object.assign({ memory: 1024 }, options);
@@ -63,7 +63,7 @@ export class PreprocessingHandler<
 
   async lambdaHandler(
     event: APIGatewayProxyEvent,
-    context: Context
+    context: Context,
   ): Promise<APIGatewayProxyResult> {
     // TODO: Rate limiting (probably in api gateway?)
     let request;
@@ -134,7 +134,7 @@ export class PreprocessingHandler<
     const json = JSON.parse(event.body);
     if (!json.feature || !json.feature.type) {
       throw new Error(
-        "Invalid request. body.feature must be specified as valid GeoJSON"
+        "Invalid request. body.feature must be specified as valid GeoJSON",
       );
     }
     return {

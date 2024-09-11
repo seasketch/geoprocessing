@@ -76,7 +76,7 @@ export const Tooltip = ({
           },
         },
       ],
-    }
+    },
   );
 
   const handleMouseEnter = () => {

@@ -16,6 +16,7 @@ export default ReportDecorator;
  */
 export const createReportDecorator =
   (reportContext?: Partial<ReportContextValue>) =>
+  // eslint-disable-next-line react/display-name
   (storyFn): JSX.Element => {
     return (
       <ReportStoryLayout value={reportContext}>{storyFn()}</ReportStoryLayout>

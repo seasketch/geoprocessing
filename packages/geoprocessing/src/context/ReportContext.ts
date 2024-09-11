@@ -43,8 +43,9 @@ export interface TestExampleOutput {
   results: any;
 }
 
-export const ReportContext =
-  React.createContext<ReportContextValue | null>(null);
+export const ReportContext = React.createContext<ReportContextValue | null>(
+  null,
+);
 
 export const defaultReportContext: ReportContextValue = {
   sketchProperties: {
@@ -80,7 +81,7 @@ export const defaultReportContext: ReportContextValue = {
  * Creates a ReportContextValue object for a Sketch with sample values.  overrides will be merged in, replacing default values
  */
 export const sampleSketchReportContextValue = (
-  overrides?: PartialReportContextValue
+  overrides?: PartialReportContextValue,
 ): ReportContextValue => {
   return {
     ...(defaultReportContext || {}),

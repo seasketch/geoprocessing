@@ -28,7 +28,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
     newDstPath?: string;
     /** string or regular expression to express with datasources to reimport, matching on datasourceId */
     matcher?: string[];
-  }
+  },
 ): Promise<Datasource[]> {
   const { newDatasourcePath, newDstPath, matcher } = extraOptions;
 
@@ -39,7 +39,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
       return allDatasources;
     } else {
       const filteredDs = allDatasources.filter((ds) =>
-        matcher.includes(ds.datasourceId)
+        matcher.includes(ds.datasourceId),
       );
       return filteredDs;
     }
@@ -53,7 +53,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
   // Process one at a time
   let failed = 0;
   let updated = 0;
-  let finalDatasources: Datasource[] = [];
+  const finalDatasources: Datasource[] = [];
   for (const ds of filteredDatasources) {
     if (isInternalVectorDatasource(ds) && ds.geo_type === "vector") {
       try {
@@ -72,7 +72,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
             } else if (format === "fgb") {
               await genFlatgeobuf(config);
             }
-          })
+          }),
         );
 
         // Datasource record with new or updated timestamp
@@ -90,7 +90,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
             console.log(e.message);
             console.log(e.stack);
             console.log(
-              `Updating datasource ${ds.datasourceId} failed, moving to next`
+              `Updating datasource ${ds.datasourceId} failed, moving to next`,
             );
           }
           failed += 1;
@@ -123,7 +123,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
             console.log(e.message);
             console.log(e.stack);
             console.log(
-              `Updating datasource ${ds.datasourceId} failed, moving to next`
+              `Updating datasource ${ds.datasourceId} failed, moving to next`,
             );
           }
           failed += 1;
@@ -139,7 +139,7 @@ export async function reimportDatasources<C extends ProjectClientBase>(
     console.log(`${updated} datasources reimported successfully`);
     if (failed > 0) {
       console.log(
-        `${failed} datasources failed to reimported.  Fix them and try again`
+        `${failed} datasources failed to reimported.  Fix them and try again`,
       );
     }
   }

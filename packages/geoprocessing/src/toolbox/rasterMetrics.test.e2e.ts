@@ -1,13 +1,7 @@
-import { describe, test, expect } from "vitest";
+import { describe, test } from "vitest";
 import { rasterMetrics } from "./rasterMetrics.js";
-//@ts-ignore
 import geoblaze from "geoblaze";
-import {
-  MultiPolygon,
-  Polygon,
-  Sketch,
-  SketchCollection,
-} from "../types/index.js";
+import { MultiPolygon, Polygon, SketchCollection } from "../types/index.js";
 
 describe("rasterMetrics", () => {
   test("rasterMetrics - special", async () => {
@@ -103,7 +97,7 @@ describe("rasterMetrics", () => {
       },
     };
 
-    const metrics = await rasterMetrics(raster, { feature: sketch });
+    await rasterMetrics(raster, { feature: sketch });
     // console.log(JSON.stringify(metrics, null, 2));
   }, 10000);
 
@@ -200,7 +194,7 @@ describe("rasterMetrics", () => {
       },
     };
 
-    const metrics = await rasterMetrics(raster, { feature: sketch });
+    await rasterMetrics(raster, { feature: sketch });
     // console.log(JSON.stringify(metrics, null, 2));
   }, 10000);
 });

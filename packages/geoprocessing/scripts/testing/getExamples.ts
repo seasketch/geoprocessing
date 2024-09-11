@@ -33,22 +33,22 @@ import {
  * Optionally filters out those that don't match partialName
  */
 export async function getExampleSketchAll(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch | SketchCollection>> {
   const sketches: Array<Sketch | SketchCollection> = [];
   if (fs.existsSync("examples/sketches")) {
-    let filenames = await fs.readdir("examples/sketches");
+    const filenames = await fs.readdir("examples/sketches");
     await Promise.all(
       filenames
         .filter((fname) => /\.json/.test(fname))
         .map(async (f) => {
           const sketch = await fs.readJSON(`examples/sketches/${f}`);
           sketches.push(sketch);
-        })
+        }),
     );
   }
   const filtered = sketches.filter((f) =>
-    partialName ? f.properties?.name.includes(partialName) : f
+    partialName ? f.properties?.name.includes(partialName) : f,
   );
   return filtered;
 }
@@ -59,10 +59,10 @@ export async function getExampleSketchAll(
  * TODO: remove cast if possible
  */
 export async function getExamplePolygonSketchAll(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch<Polygon> | SketchCollection<Polygon>>> {
   return (await getExampleSketchAll(partialName)).filter(
-    (s) => isPolygonFeature(s) || isPolygonSketchCollection(s)
+    (s) => isPolygonFeature(s) || isPolygonSketchCollection(s),
   ) as Sketch<Polygon>[];
 }
 
@@ -72,10 +72,10 @@ export async function getExamplePolygonSketchAll(
  * TODO: remove cast if possible
  */
 export async function getExampleMultiPolygonSketchAll(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch<MultiPolygon> | SketchCollection<MultiPolygon>>> {
   return (await getExampleSketchAll(partialName)).filter(
-    (s) => isMultiPolygonFeature(s) || isMultiPolygonSketchCollection(s)
+    (s) => isMultiPolygonFeature(s) || isMultiPolygonSketchCollection(s),
   ) as Sketch<MultiPolygon>[];
 }
 
@@ -86,14 +86,14 @@ export async function getExampleMultiPolygonSketchAll(
  * TODO: remove cast if possible
  */
 export async function getExamplePolygonAllSketchAll(
-  partialName?: string
+  partialName?: string,
 ): Promise<
   Array<
     Sketch<Polygon | MultiPolygon> | SketchCollection<Polygon | MultiPolygon>
   >
 > {
   return (await getExampleSketchAll(partialName)).filter(
-    (s) => isPolygonAnyFeature(s) || isPolygonAllSketchCollection(s)
+    (s) => isPolygonAnyFeature(s) || isPolygonAllSketchCollection(s),
   ) as Sketch<Polygon | MultiPolygon>[];
 }
 
@@ -103,10 +103,10 @@ export async function getExamplePolygonAllSketchAll(
  * TODO: remove cast if possible
  */
 export async function getExampleLineStringSketchAll(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch<LineString> | SketchCollection<LineString>>> {
   return (await getExampleSketchAll(partialName)).filter(
-    (s) => isLineStringFeature(s) || isLineStringSketchCollection(s)
+    (s) => isLineStringFeature(s) || isLineStringSketchCollection(s),
   ) as Sketch<LineString>[];
 }
 
@@ -116,10 +116,10 @@ export async function getExampleLineStringSketchAll(
  * TODO: remove cast if possible
  */
 export async function getExamplePointSketchAll(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch<Point> | SketchCollection<Point>>> {
   return (await getExampleSketchAll(partialName)).filter(
-    (s) => isPointFeature(s) || isPointSketchCollection(s)
+    (s) => isPointFeature(s) || isPointSketchCollection(s),
   ) as Sketch<Point>[];
 }
 
@@ -128,7 +128,7 @@ export async function getExamplePointSketchAll(
  * Optionally filters out those that don't match partialName
  */
 export async function getExampleSketches(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch>> {
   return (await getExampleSketchAll(partialName)).filter(isSketch);
 }
@@ -139,10 +139,10 @@ export async function getExampleSketches(
  * TODO: remove cast if possible
  */
 export async function getExamplePolygonSketches(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch<Polygon>>> {
   return (await getExampleSketches(partialName)).filter(
-    isPolygonFeature
+    isPolygonFeature,
   ) as Sketch<Polygon>[];
 }
 
@@ -152,10 +152,10 @@ export async function getExamplePolygonSketches(
  * TODO: remove cast if possible
  */
 export async function getExampleMultiPolygonSketches(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch<MultiPolygon>>> {
   return (await getExampleSketches(partialName)).filter(
-    isMultiPolygonFeature
+    isMultiPolygonFeature,
   ) as Sketch<MultiPolygon>[];
 }
 
@@ -165,10 +165,10 @@ export async function getExampleMultiPolygonSketches(
  * TODO: remove cast if possible
  */
 export async function getExamplePolygonAllSketches(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch<Polygon | MultiPolygon>>> {
   return (await getExampleSketches(partialName)).filter(
-    isPolygonAnyFeature
+    isPolygonAnyFeature,
   ) as Sketch<Polygon | MultiPolygon>[];
 }
 
@@ -178,10 +178,10 @@ export async function getExamplePolygonAllSketches(
  * TODO: remove cast if possible
  */
 export async function getExampleLineStringSketches(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch<LineString>>> {
   return (await getExampleSketches(partialName)).filter(
-    isLineStringFeature
+    isLineStringFeature,
   ) as Sketch<LineString>[];
 }
 
@@ -191,10 +191,10 @@ export async function getExampleLineStringSketches(
  * TODO: remove cast if possible
  */
 export async function getExamplePointSketches(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<Sketch<Point>>> {
   return (await getExampleSketches(partialName)).filter(
-    isPointFeature
+    isPointFeature,
   ) as Sketch<Point>[];
 }
 
@@ -203,7 +203,7 @@ export async function getExamplePointSketches(
  * Optionally filters out those that don't match partialName
  */
 export async function getExampleSketchCollections(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<SketchCollection>> {
   return (await getExampleSketchAll(partialName)).filter(isSketchCollection);
 }
@@ -214,10 +214,10 @@ export async function getExampleSketchCollections(
  * TODO: remove cast if possible
  */
 export async function getExamplePolygonSketchCollections(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<SketchCollection<Polygon>>> {
   return (await getExampleSketchCollections(partialName)).filter(
-    isPolygonSketchCollection
+    isPolygonSketchCollection,
   ) as SketchCollection<Polygon>[];
 }
 
@@ -227,10 +227,10 @@ export async function getExamplePolygonSketchCollections(
  * TODO: remove cast if possible
  */
 export async function getExampleLineStringSketchCollections(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<SketchCollection<LineString>>> {
   return (await getExampleSketchCollections(partialName)).filter(
-    isLineStringSketchCollection
+    isLineStringSketchCollection,
   ) as SketchCollection<LineString>[];
 }
 
@@ -240,10 +240,10 @@ export async function getExampleLineStringSketchCollections(
  * TODO: remove cast if possible
  */
 export async function getExamplePointSketchCollections(
-  partialName?: string
+  partialName?: string,
 ): Promise<Array<SketchCollection<Point>>> {
   return (await getExampleSketchCollections(partialName)).filter(
-    isPointSketchCollection
+    isPointSketchCollection,
   ) as SketchCollection<Point>[];
 }
 
@@ -253,7 +253,7 @@ export async function getExamplePointSketchCollections(
  * @deprecated use partialName support in getExample*Sketches(partialName) functions
  */
 export async function getExampleSketchesByName(
-  partialName?: string
+  partialName?: string,
 ): Promise<SketchMap> {
   const sketches = await getExampleSketches(partialName);
   return sketches.reduce<SketchMap>((sketchObject, s) => {
@@ -269,9 +269,9 @@ export async function getExampleSketchesByName(
  * Optionally filters out those that don't match partialName
  */
 export async function getExampleFeaturesAll(partialName?: string) {
-  let features: Feature<SketchGeometryTypes>[] = [];
+  const features: Feature<SketchGeometryTypes>[] = [];
   if (fs.existsSync("examples/features")) {
-    let filenames = await fs.readdir("examples/features");
+    const filenames = await fs.readdir("examples/features");
     await Promise.all(
       filenames
         .filter((fname) => /\.json/.test(fname))
@@ -280,11 +280,11 @@ export async function getExampleFeaturesAll(partialName?: string) {
           feature.properties = feature.properties || {};
           feature.properties.name = feature.properties.name || path.basename(f);
           features.push(feature);
-        })
+        }),
     );
   }
   const filtered = features.filter((f) =>
-    partialName ? f.properties?.name.includes(partialName) : f
+    partialName ? f.properties?.name.includes(partialName) : f,
   );
   return filtered;
 }
@@ -295,7 +295,7 @@ export async function getExampleFeaturesAll(partialName?: string) {
  */
 export async function getExampleFeatures(partialName?: string) {
   return (await getExampleFeaturesAll(partialName)).filter(
-    isFeature
+    isFeature,
   ) as Feature[];
 }
 
@@ -305,7 +305,7 @@ export async function getExampleFeatures(partialName?: string) {
  */
 export async function getExamplePolygonFeatures(partialName?: string) {
   return (await getExampleFeaturesAll(partialName)).filter(
-    isPolygonFeature
+    isPolygonFeature,
   ) as Feature<Polygon>[];
 }
 
@@ -314,7 +314,7 @@ export async function getExamplePolygonFeatures(partialName?: string) {
  * Optionally filters out those that don't match partialName
  */
 export async function getExampleFeaturesByName(
-  partialName?: string
+  partialName?: string,
 ): Promise<FeatureMap> {
   const features = await getExampleFeatures(partialName);
   return features.reduce<FeatureMap>((featureMap, f) => {

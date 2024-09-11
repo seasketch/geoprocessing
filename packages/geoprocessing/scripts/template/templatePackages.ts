@@ -5,7 +5,7 @@ import { TemplateType } from "../types.js";
 
 export async function getTemplatePackages(
   templateType: TemplateType,
-  templatesPath
+  templatesPath,
 ) {
   // console.log("templatesPath", templatesPath);
 
@@ -13,7 +13,7 @@ export async function getTemplatePackages(
     throw new Error(
       "Templates path does not exist: " +
         templatesPath +
-        " (getTemplatePackages)"
+        " (getTemplatePackages)",
     );
   }
 
@@ -27,7 +27,7 @@ export async function getTemplatePackages(
       const templatePackageMetaPath = path.join(
         templatesPath,
         name,
-        "package.json"
+        "package.json",
       );
       // console.log("templatePackageMetaPath", templatePackageMetaPath);
       const rawPkg = fs.readJSONSync(templatePackageMetaPath);

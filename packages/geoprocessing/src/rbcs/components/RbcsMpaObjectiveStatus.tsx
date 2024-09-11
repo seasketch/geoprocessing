@@ -6,7 +6,7 @@ import { ObjectiveStatus } from "../../components/index.js";
 
 export type RbcsMpaObjectiveRenderMsgFunction = (
   objective: RbcsObjective,
-  level: RbcsMpaProtectionLevel
+  level: RbcsMpaProtectionLevel,
 ) => JSX.Element;
 
 export interface RbcsMpaObjectiveStatusProps {
@@ -18,18 +18,19 @@ export interface RbcsMpaObjectiveStatusProps {
   renderMsg?: RbcsMpaObjectiveRenderMsgFunction;
 }
 
-export const RbcsMpaObjectiveStatus: React.FunctionComponent<RbcsMpaObjectiveStatusProps> =
-  ({ level, objective, renderMsg }) => {
-    const msg = renderMsg
-      ? renderMsg(objective, level)
-      : defaultMsg(objective, level);
+export const RbcsMpaObjectiveStatus: React.FunctionComponent<
+  RbcsMpaObjectiveStatusProps
+> = ({ level, objective, renderMsg }) => {
+  const msg = renderMsg
+    ? renderMsg(objective, level)
+    : defaultMsg(objective, level);
 
-    return <ObjectiveStatus status={objective.countsToward[level]} msg={msg} />;
-  };
+  return <ObjectiveStatus status={objective.countsToward[level]} msg={msg} />;
+};
 
 const defaultMsg = (
   objective: RbcsObjective,
-  level: RbcsMpaProtectionLevel
+  level: RbcsMpaProtectionLevel,
 ) => {
   if (objective.countsToward[level] === OBJECTIVE_YES) {
     return (

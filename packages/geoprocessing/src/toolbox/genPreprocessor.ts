@@ -16,9 +16,9 @@ import { ClipOptions, FeatureClipOperation } from "../types/dataProcessor.js";
 export const genPreprocessor = (
   /** Clip loader function */
   clipLoader: (
-    feature: Feature<Polygon | MultiPolygon>
+    feature: Feature<Polygon | MultiPolygon>,
   ) => Promise<FeatureClipOperation[]>,
-  options: ClipOptions = {}
+  options: ClipOptions = {},
 ) => {
   const func = async (feature: Feature): Promise<Feature> => {
     return clipToPolygonFeatures(feature, clipLoader, options);
@@ -36,9 +36,9 @@ export async function clipToPolygonFeatures(
   feature: Feature,
   /** Load clip features from datasources for clip operations */
   clipLoader: (
-    feature: Feature<Polygon | MultiPolygon>
+    feature: Feature<Polygon | MultiPolygon>,
   ) => Promise<FeatureClipOperation[]>,
-  options: ClipOptions = {}
+  options: ClipOptions = {},
 ): Promise<Feature<Polygon | MultiPolygon>> {
   const {
     maxSize = 500000,
@@ -56,7 +56,7 @@ export async function clipToPolygonFeatures(
 
   if (enforceMaxSize && area(feature) > MAX_SIZE_KM) {
     throw new ValidationError(
-      `Please limit sketches to under ${MAX_SIZE_KM} square km`
+      `Please limit sketches to under ${MAX_SIZE_KM} square km`,
     );
   }
 
@@ -78,7 +78,7 @@ export async function clipToPolygonFeatures(
         clipped = clipMultiMerge(
           clipped,
           fc(clipOp.clipFeatures),
-          "intersection"
+          "intersection",
         );
       } else if (clipOp.operation === "difference") {
         clipped = clip(fc([clipped, ...clipOp.clipFeatures]), "difference");
@@ -93,7 +93,7 @@ export async function clipToPolygonFeatures(
       // If multipolygon, keep only the biggest piece
       const flattened = flatten(clipped);
       let biggest = [0, 0];
-      for (var i = 0; i < flattened.features.length; i++) {
+      for (let i = 0; i < flattened.features.length; i++) {
         const a = area(flattened.features[i]);
         if (a > biggest[0]) {
           biggest = [a, i];

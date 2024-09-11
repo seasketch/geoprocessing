@@ -11,7 +11,9 @@ export interface PublishAnswers {
 
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
-const internalDatasources = projectClient.datasources.filter((ds) => isinternalDatasource(ds));
+const internalDatasources = projectClient.datasources.filter((ds) =>
+  isinternalDatasource(ds),
+);
 const numDs = internalDatasources.length;
 
 void (async function () {
@@ -26,7 +28,7 @@ void (async function () {
 })();
 
 export async function publishAllQuestion(
-  numDs: number
+  numDs: number,
 ): Promise<Pick<PublishAnswers, "publish">> {
   return inquirer.prompt<Pick<PublishAnswers, "publish">>([
     {
@@ -53,7 +55,7 @@ export interface DatasourcesAnswers {
 }
 
 export async function datasourcesQuestion(
-  datasources: Datasource[]
+  datasources: Datasource[],
 ): Promise<DatasourcesAnswers> {
   const datasourcesQuestion = await getDatasourcesQuestion(datasources);
   const answer = await inquirer.prompt<DatasourcesAnswers>([

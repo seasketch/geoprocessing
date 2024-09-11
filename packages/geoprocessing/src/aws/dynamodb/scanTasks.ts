@@ -11,7 +11,7 @@ export function scanTasks(
   /** Task table name */
   tableName: string,
   /** Optional serviceName to filter by */
-  serviceName?: string
+  serviceName?: string,
 ) {
   // Get all task keys.
   const paginatorConfig: DynamoDBDocumentPaginationConfiguration = {

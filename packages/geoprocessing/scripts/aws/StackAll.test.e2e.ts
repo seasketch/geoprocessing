@@ -3,7 +3,7 @@ import { GeoprocessingStack, getHandlerPointer } from "./GeoprocessingStack.js";
 import config from "./config.js";
 import { setupBuildDirs, cleanupBuildDirs } from "../testing/lifecycle.js";
 import path from "node:path";
-import { describe, it, expect, afterAll } from "vitest";
+import { describe, expect, afterAll } from "vitest";
 import { Template } from "aws-cdk-lib/assertions";
 import fs from "fs-extra";
 import createTestBuild from "../testing/createTestBuild.js";
@@ -42,14 +42,14 @@ describe("GeoprocessingStack - all components", () => {
     // Lambda stack assertions
 
     const lambdaStacks = stack.node.children.filter(
-      (child) => child instanceof NestedStack
+      (child) => child instanceof NestedStack,
     );
     expect(lambdaStacks.length).toBe(1);
 
     // Lambda stack CDK template assertions
 
     const lambdaStackTemplate = Template.fromStack(
-      lambdaStacks[0] as NestedStack
+      lambdaStacks[0] as NestedStack,
     );
 
     // Generate JSON snapshot.  Use to manually assess what cdk synth produces and write tests
@@ -62,14 +62,14 @@ describe("GeoprocessingStack - all components", () => {
       rootTemplate.toJSON(),
       {
         spaces: 2,
-      }
+      },
     );
     fs.writeJSONSync(
       `${snapPath}/StackAll_lambdaStack.test.e2e.ts.snap`,
       lambdaStackTemplate.toJSON(),
       {
         spaces: 2,
-      }
+      },
     );
 
     // Root stack assertions

@@ -9,7 +9,7 @@ export default function fastChunkString(
   }: {
     size: number;
     unicodeAware?: boolean;
-  }
+  },
 ): string[] {
   str = str || "";
   if (!unicodeAware) {

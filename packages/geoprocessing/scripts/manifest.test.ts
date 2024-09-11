@@ -53,7 +53,7 @@ describe("manifest validators", () => {
     ]);
     expect(manifest.geoprocessingFunctions.length).toEqual(1);
     expect(
-      isGeoprocessingFunctionMetadata(manifest.geoprocessingFunctions[0])
+      isGeoprocessingFunctionMetadata(manifest.geoprocessingFunctions[0]),
     ).toEqual(true);
   });
 
@@ -63,7 +63,7 @@ describe("manifest validators", () => {
     ]);
     expect(manifest.geoprocessingFunctions.length).toEqual(1);
     expect(
-      isGeoprocessingFunctionMetadata(manifest.geoprocessingFunctions[0])
+      isGeoprocessingFunctionMetadata(manifest.geoprocessingFunctions[0]),
     ).toEqual(true);
   });
 
@@ -71,7 +71,7 @@ describe("manifest validators", () => {
     const manifest = await createTestProjectManifest("test", ["preprocessor"]);
     expect(manifest.geoprocessingFunctions.length).toEqual(0);
     expect(
-      isGeoprocessingFunctionMetadata(manifest.preprocessingFunctions[0])
+      isGeoprocessingFunctionMetadata(manifest.preprocessingFunctions[0]),
     ).toEqual(false);
   });
 
@@ -79,7 +79,7 @@ describe("manifest validators", () => {
     const manifest = await createTestProjectManifest("test", ["preprocessor"]);
     expect(manifest.preprocessingFunctions.length).toEqual(1);
     expect(
-      isPreprocessingFunctionMetadata(manifest.preprocessingFunctions[0])
+      isPreprocessingFunctionMetadata(manifest.preprocessingFunctions[0]),
     ).toEqual(true);
   });
 
@@ -89,7 +89,7 @@ describe("manifest validators", () => {
     ]);
     expect(manifest.preprocessingFunctions.length).toEqual(0);
     expect(
-      isPreprocessingFunctionMetadata(manifest.geoprocessingFunctions[0])
+      isPreprocessingFunctionMetadata(manifest.geoprocessingFunctions[0]),
     ).toEqual(false);
   });
 
@@ -99,7 +99,7 @@ describe("manifest validators", () => {
     ]);
     expect(manifest.geoprocessingFunctions.length).toEqual(1);
     expect(isSyncFunctionMetadata(manifest.geoprocessingFunctions[0])).toEqual(
-      true
+      true,
     );
   });
 
@@ -109,7 +109,7 @@ describe("manifest validators", () => {
     ]);
     expect(manifest.geoprocessingFunctions.length).toEqual(1);
     expect(isSyncFunctionMetadata(manifest.geoprocessingFunctions[0])).toEqual(
-      false
+      false,
     );
   });
 
@@ -119,7 +119,7 @@ describe("manifest validators", () => {
     ]);
     expect(manifest.geoprocessingFunctions.length).toEqual(1);
     expect(isAsyncFunctionMetadata(manifest.geoprocessingFunctions[0])).toEqual(
-      true
+      true,
     );
   });
 
@@ -129,7 +129,7 @@ describe("manifest validators", () => {
     ]);
     expect(manifest.geoprocessingFunctions.length).toEqual(1);
     expect(isAsyncFunctionMetadata(manifest.geoprocessingFunctions[0])).toEqual(
-      false
+      false,
     );
   });
 });

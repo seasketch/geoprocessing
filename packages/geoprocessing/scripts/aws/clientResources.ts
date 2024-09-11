@@ -10,9 +10,7 @@ import {
 import {
   CloudFrontWebDistribution,
   OriginAccessIdentity,
-  ViewerProtocolPolicy,
 } from "aws-cdk-lib/aws-cloudfront";
-import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 
 /**
  * Create client bucket and deploy client build into it.  Serve via Cloudfront
@@ -40,7 +38,7 @@ export const createClientResources = (stack: GeoprocessingStack) => {
     // Give permission for cloudfront to serve files from the bucket.
     const originAccessIdentity = new OriginAccessIdentity(
       stack,
-      "OriginAccessIdentity"
+      "OriginAccessIdentity",
     );
     clientBucket.grantRead(originAccessIdentity);
 
@@ -58,7 +56,7 @@ export const createClientResources = (stack: GeoprocessingStack) => {
             behaviors: [{ isDefaultBehavior: true }],
           },
         ],
-      }
+      },
     );
 
     /**
@@ -89,7 +87,7 @@ export const setupClientFunctionAccess = (stack: GeoprocessingStack) => {
   if (stack.clientDistribution) {
     stack.projectFunctions.serviceRootFunction.addEnvironment(
       "clientDistributionUrl",
-      stack.clientDistribution.distributionDomainName
+      stack.clientDistribution.distributionDomainName,
     );
   }
 };

@@ -67,12 +67,12 @@ export const createMetrics = (metrics: Partial<Metric>[]): Metric[] =>
  */
 export const rekeyMetrics = (
   metrics: Metric[],
-  idOrder: MetricProperty[] = [...MetricProperties]
+  idOrder: MetricProperty[] = [...MetricProperties],
 ) => {
   return metrics.map((curMetric) => {
-    var newMetric: Record<string, any> = {};
+    const newMetric: Record<string, any> = {};
     idOrder.forEach((id) => {
-      if (curMetric.hasOwnProperty(id)) newMetric[id] = curMetric[id];
+      if (hasOwnProperty(curMetric, id)) newMetric[id] = curMetric[id];
     });
     return newMetric;
   }) as Metric[];
@@ -92,11 +92,11 @@ export const packMetrics = (inMetrics: Metric[]): MetricPack => {
 
   const packData: MetricPack["data"] = [];
   // Pack data values, for-loop for speed
-  for (var a = 0, ml = metrics.length; a < ml; ++a) {
+  for (let a = 0, ml = metrics.length; a < ml; ++a) {
     const curMetric = metrics[a];
     const curRow: MetricPack["data"][0] = [];
-    for (var b = 0, kl = keys.length; b < kl; ++b) {
-      let curKey = keys[b];
+    for (let b = 0, kl = keys.length; b < kl; ++b) {
+      const curKey = keys[b];
       curRow.push(curMetric[curKey]);
     }
     packData.push(curRow);
@@ -112,12 +112,12 @@ export const packMetrics = (inMetrics: Metric[]): MetricPack => {
  */
 export const unpackMetrics = (inMetricPack: MetricPack): Metric[] => {
   const metricPack = cloneDeep(inMetricPack);
-  let metrics: Metric[] = [];
+  const metrics: Metric[] = [];
 
-  for (var a = 0, ml = metricPack.data.length; a < ml; ++a) {
-    let curRow = metricPack.data[a];
-    let curMetric = createMetric({});
-    for (var b = 0, kl = metricPack.dimensions.length; b < kl; ++b) {
+  for (let a = 0, ml = metricPack.data.length; a < ml; ++a) {
+    const curRow = metricPack.data[a];
+    const curMetric = createMetric({});
+    for (let b = 0, kl = metricPack.dimensions.length; b < kl; ++b) {
       const curDimension = metricPack.dimensions[b];
       curMetric[curDimension] = curRow[b];
     }
@@ -161,11 +161,11 @@ export const isMetric = (metric: any): metric is Metric => {
     MetricDimensions.reduce(
       (soFar, curDim) =>
         soFar &&
-        metric.hasOwnProperty(curDim) &&
+        hasOwnProperty(metric, curDim) &&
         (metric[curDim] === null || !!metric[curDim]),
-      true
+      true,
     ) &&
-    metric.hasOwnProperty("value")
+    hasOwnProperty(metric, "value")
   );
 };
 
@@ -180,7 +180,7 @@ export const sortMetrics = (
     "metricId",
     "classId",
     "sketchId",
-  ]
+  ],
 ) => {
   return metrics.sort((a, b) => {
     return sortIds.reduce((sortResult, idName) => {
@@ -207,7 +207,7 @@ export const sortMetrics = (
 export const sortMetricsDisplayOrder = (
   metrics: Metric[],
   sortId: MetricDimension = "classId",
-  displayOrder: string[]
+  displayOrder: string[],
 ) => {
   return metrics.sort((a, b) => {
     const aVal = a[sortId];
@@ -228,7 +228,7 @@ export const sortMetricsDisplayOrder = (
 export const findAndUpdateMetricValue = <T extends Metric>(
   sketchMetrics: T[],
   matcher: (sk: T) => boolean,
-  value: number
+  value: number,
 ) => {
   const index = sketchMetrics.findIndex(matcher);
   if (index === -1) {
@@ -251,7 +251,7 @@ export const findAndUpdateMetricValue = <T extends Metric>(
  */
 export const firstMatchingMetric = <M extends Metric>(
   metrics: M[],
-  metricFilter: (metric: M) => boolean
+  metricFilter: (metric: M) => boolean,
 ) => {
   const metric = metrics.find((m) => metricFilter(m));
   if (!metric) throw new Error(`firstMatchingMetrics: metric not found`);
@@ -262,7 +262,7 @@ export const firstMatchingMetric = <M extends Metric>(
  * Given sketch(es), returns ID(s)
  */
 export const sketchToId = (
-  sketch: Sketch | NullSketch | Sketch[] | NullSketch[]
+  sketch: Sketch | NullSketch | Sketch[] | NullSketch[],
 ) =>
   Array.isArray(sketch)
     ? sketch.map((sk) => sk.properties.id)
@@ -279,12 +279,12 @@ export const metricsSketchIds = <M extends Metric>(metrics: M[]) =>
  */
 export const metricsWithSketchId = <M extends Metric>(
   metrics: M[],
-  sketchId: string | string[]
+  sketchId: string | string[],
 ) =>
   metrics.filter((m) =>
     Array.isArray(sketchId)
       ? m.sketchId && sketchId.includes(m.sketchId)
-      : sketchId === m.sketchId
+      : sketchId === m.sketchId,
   );
 
 /**
@@ -292,12 +292,12 @@ export const metricsWithSketchId = <M extends Metric>(
  */
 export const metricsWithClassId = <M extends Metric>(
   metrics: M[],
-  classId: string | string[]
+  classId: string | string[],
 ) =>
   metrics.filter((m) =>
     Array.isArray(classId)
       ? classId.includes(m.classId || "undefined")
-      : classId === m.classId
+      : classId === m.classId,
   );
 
 /**
@@ -305,7 +305,7 @@ export const metricsWithClassId = <M extends Metric>(
  */
 export const metricsForSketch = <M extends Metric>(
   metrics: M[],
-  sketch: Sketch | NullSketch | Sketch[] | NullSketch[]
+  sketch: Sketch | NullSketch | Sketch[] | NullSketch[],
 ) => metricsWithSketchId(metrics, sketchToId(sketch));
 
 /**
@@ -338,7 +338,7 @@ export const toPercentMetric = (
     metricIdOverride?: string;
     idProperty?: string;
     debug?: boolean;
-  } = {}
+  } = {},
 ): Metric[] => {
   const { metricIdOverride, idProperty = "classId", debug = true } = options;
 
@@ -351,7 +351,7 @@ export const toPercentMetric = (
   return numerators.map((numerMetric) => {
     if (!numerMetric || numerMetric.value === undefined)
       throw new Error(
-        `Malformed numerator metric: ${JSON.stringify(numerMetric)}`
+        `Malformed numerator metric: ${JSON.stringify(numerMetric)}`,
       );
 
     const idValue = numerMetric[idProperty];
@@ -359,21 +359,21 @@ export const toPercentMetric = (
     if (idValue === null || idValue === undefined)
       throw new Error(
         `Invalid ${idProperty} found in numerator metric: ${JSON.stringify(
-          numerMetric
-        )}`
+          numerMetric,
+        )}`,
       );
 
     const denomMetric = totalsByKey[idValue];
     if (!denomMetric) {
       throw new Error(
         `Missing matching denominator metric with ${idProperty} of ${idValue} for numerator: ${JSON.stringify(
-          numerMetric
-        )}`
+          numerMetric,
+        )}`,
       );
     }
     if (denomMetric.value === null || denomMetric.value === undefined) {
       throw new Error(
-        `Malformed denominator metric: ${JSON.stringify(numerMetric)}`
+        `Malformed denominator metric: ${JSON.stringify(numerMetric)}`,
       );
     }
 
@@ -382,7 +382,7 @@ export const toPercentMetric = (
       if (denomMetric.value === 0) {
         if (debug)
           console.log(
-            `Denominator metric with ${idProperty} of ${idValue} has 0 value, returning 0 percent metric`
+            `Denominator metric with ${idProperty} of ${idValue} has 0 value, returning 0 percent metric`,
           );
         return NaN;
       } else {
@@ -406,7 +406,7 @@ export const toPercentMetric = (
  */
 export const nestMetrics = (
   metrics: Metric[],
-  ids: MetricDimension[]
+  ids: MetricDimension[],
 ): Record<string, any> => {
   const grouped = groupBy(metrics, (curMetric) => curMetric[ids[0]]!);
   if (ids.length === 1) {
@@ -420,7 +420,7 @@ export const nestMetrics = (
         [curId]: nestMetrics(groupMetrics, ids.slice(1)),
       };
     },
-    {}
+    {},
   );
 };
 
@@ -437,14 +437,14 @@ export const flattenBySketchAllClass = (
   metrics: Metric[],
   classes: DataClass[],
   sketches: Sketch[] | NullSketch[],
-  sortFn?: (a: DataClass, b: DataClass) => number
+  sortFn?: (a: DataClass, b: DataClass) => number,
 ): Record<string, string | number>[] => {
   const metricsByClassId = groupBy(
     metrics,
-    (metric) => metric.classId || "error"
+    (metric) => metric.classId || "error",
   );
 
-  let sketchRows: Record<string, string | number>[] = [];
+  const sketchRows: Record<string, string | number>[] = [];
 
   sketches.forEach((curSketch) => {
     // For current sketch, transform classes into an object mapping classId to its one metric value
@@ -490,7 +490,7 @@ export const flattenBySketchAllClass = (
 export const flattenByGroupAllClass = (
   collection: SketchCollection | NullSketchCollection,
   groupMetrics: Metric[],
-  totalMetrics: Metric[]
+  totalMetrics: Metric[],
 ): {
   value: number;
   groupId: string;
@@ -501,11 +501,12 @@ export const flattenByGroupAllClass = (
 
   return Object.keys(metricsByGroup).map((curGroupId) => {
     const collGroupMetrics = metricsByGroup[curGroupId].filter(
-      (m) => m.sketchId === collection.properties.id && m.groupId === curGroupId
+      (m) =>
+        m.sketchId === collection.properties.id && m.groupId === curGroupId,
     );
     const collGroupMetricsByClass = keyBy(
       collGroupMetrics,
-      (m) => m.classId || "undefined"
+      (m) => m.classId || "undefined",
     );
 
     const classAgg = Object.keys(collGroupMetricsByClass).reduce(
@@ -514,14 +515,14 @@ export const flattenByGroupAllClass = (
           (m) =>
             m.sketchId !== collection.properties.id &&
             m.groupId === curGroupId &&
-            m.classId === curClassId
+            m.classId === curClassId,
         );
 
         const curValue = collGroupMetricsByClass[curClassId]?.value;
 
         const classTotal = firstMatchingMetric(
           totalMetrics,
-          (totalMetric) => totalMetric.classId === curClassId
+          (totalMetric) => totalMetric.classId === curClassId,
         ).value;
 
         return {
@@ -531,12 +532,12 @@ export const flattenByGroupAllClass = (
           value: rowsSoFar.value + curValue,
         };
       },
-      { value: 0 }
+      { value: 0 },
     );
 
     const groupTotal = firstMatchingMetric(
       totalMetrics,
-      (m) => !m.groupId // null groupId identifies group total metric
+      (m) => !m.groupId, // null groupId identifies group total metric
     ).value;
     return {
       groupId: curGroupId,
@@ -560,10 +561,10 @@ export const flattenByGroupSketchAllClass = (
   /** Group metrics for collection and its child sketches */
   groupMetrics: Metric[],
   /** Totals by class */
-  totals: Metric[]
+  totals: Metric[],
 ): GroupMetricSketchAgg[] => {
   const sketchIds = sketches.map((sk) => sk.properties.id);
-  let sketchRows: GroupMetricSketchAgg[] = [];
+  const sketchRows: GroupMetricSketchAgg[] = [];
 
   // Stratify in order by Group -> Sketch -> Class. Then flatten
 
@@ -571,14 +572,14 @@ export const flattenByGroupSketchAllClass = (
 
   Object.keys(metricsByGroup).forEach((curGroupId) => {
     const groupSketchMetrics = metricsByGroup[curGroupId].filter(
-      (m) => m.sketchId && sketchIds.includes(m.sketchId)
+      (m) => m.sketchId && sketchIds.includes(m.sketchId),
     );
     const groupSketchMetricsByClass = groupBy(
       groupSketchMetrics,
-      (m) => m.classId || "undefined"
+      (m) => m.classId || "undefined",
     );
     const groupSketchMetricIds = Object.keys(
-      groupBy(groupSketchMetrics, (m) => m.sketchId || "missing")
+      groupBy(groupSketchMetrics, (m) => m.sketchId || "missing"),
     );
 
     groupSketchMetricIds.forEach((curSketchId) => {
@@ -588,11 +589,11 @@ export const flattenByGroupSketchAllClass = (
         (classAggSoFar, curClassId) => {
           const classMetric = firstMatchingMetric(
             groupSketchMetricsByClass[curClassId],
-            (m) => m.sketchId === curSketchId
+            (m) => m.sketchId === curSketchId,
           );
           const classTotal = firstMatchingMetric(
             totals,
-            (totalMetric) => totalMetric.classId === curClassId
+            (totalMetric) => totalMetric.classId === curClassId,
           ).value;
 
           return {
@@ -601,7 +602,7 @@ export const flattenByGroupSketchAllClass = (
             [curClassId]: classMetric.value / classTotal,
           };
         },
-        { value: 0 }
+        { value: 0 },
       );
 
       const groupTotal = firstMatchingMetric(totals, (m) => !m.classId).value;
@@ -622,7 +623,7 @@ export const flattenByGroupSketchAllClass = (
  * @deprecated
  */
 export const getSketchCollectionChildIds = (
-  collection: SketchCollection | NullSketchCollection
+  collection: SketchCollection | NullSketchCollection,
 ) => collection.features.map((sk) => sk.properties.id);
 
 /**
@@ -631,7 +632,7 @@ export const getSketchCollectionChildIds = (
  * @deprecated
  */
 export const toShortSketches = (
-  input: Sketch | SketchCollection | NullSketch | NullSketchCollection
+  input: Sketch | SketchCollection | NullSketch | NullSketchCollection,
 ): { id: string; name: string }[] => {
   if (isSketch(input) || isNullSketch(input)) {
     return [{ id: input.properties.id, name: input.properties.name }];
@@ -661,7 +662,7 @@ export const flattenSketchAllId = (
   idProperty: MetricDimension,
   options: {
     extraIdProperty?: MetricDimension;
-  } = {}
+  } = {},
 ): Record<MetricProperty | string, MetricIdTypes>[] => {
   const { extraIdProperty } = options;
   const flatMetrics = groupBy(metrics, (m) => {
@@ -669,13 +670,13 @@ export const flattenSketchAllId = (
       return m[idProperty] as MetricIdTypes;
     }
     throw new Error(
-      `Metric is missing idProperty ${idProperty}: ${JSON.stringify(m)}`
+      `Metric is missing idProperty ${idProperty}: ${JSON.stringify(m)}`,
     );
   });
 
   const metricsBySketchId = groupBy(
     metrics,
-    (metric) => metric.sketchId || "missing"
+    (metric) => metric.sketchId || "missing",
   );
 
   const sketchRows = Object.keys(metricsBySketchId).reduce<
@@ -685,7 +686,7 @@ export const flattenSketchAllId = (
       Record<string, string | number>
     >((aggSoFar, curIdValue) => {
       const curMetric = metricsBySketchId[curSketchId].find(
-        (m) => m[idProperty] === curIdValue
+        (m) => m[idProperty] === curIdValue,
       );
 
       if (curMetric === undefined) return aggSoFar;

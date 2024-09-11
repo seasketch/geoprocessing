@@ -12,7 +12,7 @@ import {
   MetricProperties,
 } from "./helpers.js";
 import { NullSketch, NullSketchCollection, Metric } from "../types/index.js";
-import { toPercentMetric } from "../../client-core.js";
+import { hasOwnProperty, toPercentMetric } from "../../client-core.js";
 import deepEqual from "fast-deep-equal";
 
 const metricName = "metric1";
@@ -276,8 +276,8 @@ describe("Metric checks", () => {
     const falseMetric = { value: 15 };
     expect(isMetric(falseMetric)).toBe(false);
     const falseMetric2 = createMetric({ value: 15 });
-    //@ts-ignore
-    falseMetric2.groupId = undefined; // not allowed
+    //@ts-expect-error not allowed to assign undefined but we will force it
+    falseMetric2.groupId = undefined;
     expect(isMetric(falseMetric2)).toBe(false);
   });
 
@@ -314,8 +314,8 @@ describe("MetricPack", () => {
     ];
 
     const packed = packMetrics(metrics);
-    expect(packed.hasOwnProperty("dimensions")).toBe(true);
-    expect(packed.hasOwnProperty("data")).toBe(true);
+    expect(hasOwnProperty(packed, "dimensions")).toBe(true);
+    expect(hasOwnProperty(packed, "data")).toBe(true);
     expect(packed.dimensions).toHaveLength(6);
     expect(packed.data).toHaveLength(2);
     expect(packed.data[0]).toHaveLength(6);
@@ -332,8 +332,8 @@ describe("MetricPack", () => {
       }),
     ];
     const packed = packMetrics(metrics);
-    expect(packed.hasOwnProperty("dimensions")).toBe(true);
-    expect(packed.hasOwnProperty("data")).toBe(true);
+    expect(hasOwnProperty(packed, "dimensions")).toBe(true);
+    expect(hasOwnProperty(packed, "data")).toBe(true);
     expect(packed.dimensions).toHaveLength(7);
     expect(packed.data).toHaveLength(1);
     expect(packed.data[0]).toHaveLength(7);
@@ -357,8 +357,8 @@ test("MetricPack", async () => {
     },
   ];
   const packed = packMetrics(metrics);
-  expect(packed.hasOwnProperty("dimensions")).toBe(true);
-  expect(packed.hasOwnProperty("data")).toBe(true);
+  expect(hasOwnProperty(packed, "dimensions")).toBe(true);
+  expect(hasOwnProperty(packed, "data")).toBe(true);
   expect(packed.dimensions).toHaveLength(6);
   expect(packed.data).toHaveLength(1);
   expect(packed.data[0]).toHaveLength(6);
@@ -417,7 +417,7 @@ describe("flattenSketchAllClass", () => {
       ],
       {
         debug: false,
-      }
+      },
     );
     percMetrics.forEach((m) => {
       expect(m.value).toEqual(0.25);
@@ -447,7 +447,7 @@ describe("flattenSketchAllClass", () => {
       ],
       {
         debug: false,
-      }
+      },
     );
     percMetrics.forEach((m) => {
       expect(m.value).toEqual(NaN);
@@ -485,7 +485,7 @@ describe("flattenSketchAllClass", () => {
       ],
       {
         idProperty: "geographyId",
-      }
+      },
     );
     percMetrics.forEach((m) => {
       expect(m.value).toEqual(0.25);
@@ -497,7 +497,7 @@ describe("flattenSketchAllClass", () => {
     const rows = flattenByGroupAllClass(
       collection,
       groupMetrics,
-      PRECALC_TOTALS
+      PRECALC_TOTALS,
     );
 
     const answer = [
@@ -535,7 +535,7 @@ test("flattenByGroupSketch", async () => {
   const rows = flattenByGroupSketchAllClass(
     sketches,
     groupMetrics,
-    PRECALC_TOTALS
+    PRECALC_TOTALS,
   );
 
   const answer = [
@@ -585,7 +585,7 @@ test("flattenByGroupSketch", async () => {
 test("nestMetrics", async () => {
   const result = nestMetrics(
     groupMetrics.filter((m) => m.sketchId === "AAAA"),
-    ["sketchId", "classId", "groupId"]
+    ["sketchId", "classId", "groupId"],
   );
 
   const answer = {

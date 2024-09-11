@@ -13,7 +13,7 @@ interface Props {
   $duration: number;
 }
 
-export const ProgressBar = styled.div.attrs<Props>((props) => ({
+export const ProgressBar = styled.div.attrs<Props>(() => ({
   $duration: 1,
 }))`
   background: #ddd;
@@ -28,7 +28,6 @@ export const ProgressBar = styled.div.attrs<Props>((props) => ({
   position: relative;
 `;
 
-//@ts-ignore
 export const ProgressBarWrapper = styled.div`
   position: absolute;
   bottom: 0;

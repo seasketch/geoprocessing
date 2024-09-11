@@ -33,7 +33,7 @@ export async function vectorFunction(
   sketch:
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>,
-  extraParams: DefaultExtraParams = {}
+  extraParams: DefaultExtraParams = {},
 ): Promise<ReportResult> {
   // Use caller-provided geographyId if provided
   const geographyId = getFirstFromParam("geographyIds", extraParams);
@@ -53,7 +53,7 @@ export async function vectorFunction(
   const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   // Chached features
-  let cachedFeatures: Record<string, Feature<Polygon | MultiPolygon>[]> = {};
+  const cachedFeatures: Record<string, Feature<Polygon | MultiPolygon>[]> = {};
 
   // Calculate overlap metrics for each class in metric group
   const metricGroup = project.getMetricGroup("vectorFunction");
@@ -90,7 +90,7 @@ export async function vectorFunction(
         const overlapResult = await overlapFeatures(
           metricGroup.metricId,
           finalFeatures,
-          clippedSketch
+          clippedSketch,
         );
 
         return overlapResult.map(
@@ -98,14 +98,14 @@ export async function vectorFunction(
             ...metric,
             classId: curClass.classId,
             geographyId: curGeography.geographyId,
-          })
+          }),
         );
-      })
+      }),
     )
   ).reduce(
     // merge
     (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
-    []
+    [],
   );
 
   // Return a report result with metrics and a null sketch

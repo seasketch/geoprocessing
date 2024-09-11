@@ -30,7 +30,7 @@ describe("overlapFeatures", () => {
       fix.sketch1,
       {
         truncate: false,
-      }
+      },
     );
     expect(metricsNoTruncation[0].value).toBe(0.012364345868141814);
 
@@ -40,14 +40,14 @@ describe("overlapFeatures", () => {
       fix.sketch1,
       {
         truncate: true,
-      }
+      },
     );
     expect(metricsTruncation[0].value).toBe(0.012364);
 
     const metricsTruncationDefault = await overlapFeatures(
       "test",
       [fix.tiny],
-      fix.sketch1
+      fix.sketch1,
     );
     expect(metricsTruncationDefault[0].value).toBe(0.012364);
   });
@@ -56,7 +56,7 @@ describe("overlapFeatures", () => {
     const metrics = await overlapFeatures(
       "test",
       [fix.outer],
-      fix.sketchMultiPoly1
+      fix.sketchMultiPoly1,
     );
     expect(metrics[0].value).toBeCloseTo(area(fix.sketchMultiPoly1));
   });
@@ -65,7 +65,7 @@ describe("overlapFeatures", () => {
     const metrics = await overlapFeatures(
       "test",
       [fix.sketchMultiPoly1],
-      fix.sketchMultiPoly1
+      fix.sketchMultiPoly1,
     );
     expect(metrics[0].value).toBeCloseTo(area(fix.sketchMultiPoly1));
   });
@@ -84,14 +84,14 @@ describe("overlapFeatures", () => {
     const metrics = await overlapFeatures(
       "test",
       [sk.wholePoly],
-      sk.holeBlPoly
+      sk.holeBlPoly,
     );
 
     // 3487699295400.2056 qgis area result
     // 3473074014471.342  turf is close
 
     expect(metrics.length).toEqual(1);
-    const wholeArea = area(sk.wholePoly);
+    // const wholeArea = area(sk.wholePoly);
     // console.log("wholeArea", wholeArea);
     const holeArea = area(sk.holeBlPoly);
     // console.log("holeArea", holeArea);
@@ -113,7 +113,7 @@ describe("overlapFeatures", () => {
     const metrics = await overlapFeatures(
       "test",
       [fix.outer],
-      fix.mixedPolySketchCollection
+      fix.mixedPolySketchCollection,
     );
     expect(metrics.length).toBe(3);
     const ids = [
@@ -129,7 +129,7 @@ describe("overlapFeatures", () => {
       // console.log("index", index);
       testWithinPerc(
         firstMatchingMetric(metrics, (m) => m.sketchId === curSketchId).value,
-        areas[index] * percs[index]
+        areas[index] * percs[index],
       );
     });
   });
@@ -143,7 +143,7 @@ describe("overlapFeatures", () => {
       "test",
       [sk.outer],
       sk.twoPolyInsideSC,
-      { operation: "sum" }
+      { operation: "sum" },
     );
     expect(metrics.length).toBe(3);
     metrics.forEach((metric) => {
@@ -155,7 +155,7 @@ describe("overlapFeatures", () => {
     const metrics = await overlapFeatures(
       "test",
       [fix.outer],
-      fix.sketchCollection
+      fix.sketchCollection,
     );
     expect(metrics.length).toBe(4);
     const ids = [
@@ -170,7 +170,7 @@ describe("overlapFeatures", () => {
     ids.forEach((curSketchId, index) => {
       testWithinPerc(
         firstMatchingMetric(metrics, (m) => m.sketchId === curSketchId).value,
-        areas[index] * percs[index]
+        areas[index] * percs[index],
       );
     });
   });

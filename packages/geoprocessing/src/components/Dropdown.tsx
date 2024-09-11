@@ -1,4 +1,4 @@
-import React, { FC, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { styled } from "styled-components";
 import { usePopper } from "react-popper";
 import popper from "@popperjs/core";
@@ -92,7 +92,7 @@ export const Dropdown = ({
           },
         },
       ],
-    }
+    },
   );
 
   function handleDropdownClick(e: any) {

@@ -39,17 +39,17 @@ import { ReportContextValue } from "../context/index.js";
  */
 export function getUserAttribute<T>(
   sketchOrProps: Sketch | SketchCollection | SketchProperties,
-  exportid: string
+  exportid: string,
 ): T | undefined;
 export function getUserAttribute<T>(
   sketchOrProps: Sketch | SketchCollection | SketchProperties,
   exportid: string,
-  defaultValue: T
+  defaultValue: T,
 ): T;
 export function getUserAttribute<T>(
   sketchOrProps: Sketch | SketchCollection | SketchProperties,
   exportid: string,
-  defaultValue?: T
+  defaultValue?: T,
 ) {
   const props = (() => {
     if (isSketch(sketchOrProps)) {
@@ -60,7 +60,7 @@ export function getUserAttribute<T>(
       return sketchOrProps;
     }
   })();
-  let found = props.userAttributes.find((a) => a.exportId === exportid);
+  const found = props.userAttributes.find((a) => a.exportId === exportid);
   return found && found.value !== undefined && found.value !== null
     ? found.value
     : defaultValue;
@@ -69,7 +69,7 @@ export function getUserAttribute<T>(
 export function getJsonUserAttribute<T>(
   sketchOrProps: Sketch | SketchProperties,
   exportid: string,
-  defaultValue: T
+  defaultValue: T,
 ): T {
   const value = getUserAttribute(sketchOrProps, exportid, defaultValue);
   if (typeof value === "string") {
@@ -81,7 +81,7 @@ export function getJsonUserAttribute<T>(
 
 /** Helper to convert a Sketch or SketchCollection to a Sketch array, maintaining geometry type */
 export function toSketchArray<G>(
-  input: Sketch<G> | SketchCollection<G>
+  input: Sketch<G> | SketchCollection<G>,
 ): Sketch<G>[] {
   if (isSketch(input)) {
     return [input];
@@ -93,7 +93,7 @@ export function toSketchArray<G>(
 
 /** Helper to convert a NullSketch or NullSketchCollection to a NullSketch array */
 export function toNullSketchArray(
-  input: NullSketch | NullSketchCollection
+  input: NullSketch | NullSketchCollection,
 ): NullSketch[] {
   if (isSketch(input)) {
     return [input];
@@ -108,17 +108,19 @@ export function toNullSketchArray(
  */
 export function toNullSketch(
   sketch: Sketch | SketchCollection,
-  useNull: boolean = false
+  useNull: boolean = false,
 ): NullSketch | NullSketchCollection {
   if (isSketchCollection(sketch)) {
     return {
       ...sketch,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       features: sketch.features.map(({ geometry, ...nonGeom }) => ({
         ...nonGeom,
         ...(useNull ? { geometry: null } : {}),
       })),
     };
   } else {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { geometry, ...nonGeom } = sketch;
     return {
       ...nonGeom,
@@ -152,7 +154,7 @@ export const isPolygonSketch = (sketch: any): sketch is Sketch<Polygon> => {
  * Checks if sketch is a MultiPolygon. Any code inside a block guarded by a conditional call to this function will have type narrowed to Sketch
  */
 export const isMultiPolygonSketch = (
-  sketch: any
+  sketch: any,
 ): sketch is Sketch<MultiPolygon> => {
   return sketch && isSketch(sketch) && isMultiPolygonFeature(sketch);
 };
@@ -161,7 +163,7 @@ export const isMultiPolygonSketch = (
  * Check if object is a SketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to SketchCollection
  */
 export const isSketchCollection = (
-  collection: any
+  collection: any,
 ): collection is SketchCollection => {
   return (
     collection &&
@@ -171,7 +173,7 @@ export const isSketchCollection = (
     hasOwnProperty(collection.properties as Record<string, any>, "name") &&
     hasOwnProperty(
       collection.properties as Record<string, any>,
-      "sketchClassId"
+      "sketchClassId",
     ) &&
     collection.features.map(isSketch).reduce((acc, cur) => acc && cur, true)
   );
@@ -196,7 +198,7 @@ export const isNullSketch = (feature: any): feature is NullSketch => {
  * Check if object is a NullSketchCollection.  Any code inside a block guarded by a conditional call to this function will have type narrowed to NullSketchCollection
  */
 export const isNullSketchCollection = (
-  collection: any
+  collection: any,
 ): collection is NullSketchCollection => {
   return (
     collection &&
@@ -209,7 +211,7 @@ export const isNullSketchCollection = (
 };
 
 export const isPolygonSketchCollection = (
-  collection: any
+  collection: any,
 ): collection is SketchCollection<Polygon> => {
   return (
     collection &&
@@ -219,7 +221,7 @@ export const isPolygonSketchCollection = (
 };
 
 export const isMultiPolygonSketchCollection = (
-  collection: any
+  collection: any,
 ): collection is SketchCollection<MultiPolygon> => {
   return (
     collection &&
@@ -229,7 +231,7 @@ export const isMultiPolygonSketchCollection = (
 };
 
 export const isPolygonAllSketchCollection = (
-  collection: any
+  collection: any,
 ): collection is SketchCollection<Polygon | MultiPolygon> => {
   return (
     collection &&
@@ -239,7 +241,7 @@ export const isPolygonAllSketchCollection = (
 };
 
 export const isLineStringSketchCollection = (
-  collection: any
+  collection: any,
 ): collection is SketchCollection<LineString> => {
   return (
     collection &&
@@ -249,7 +251,7 @@ export const isLineStringSketchCollection = (
 };
 
 export const isPointSketchCollection = (
-  collection: any
+  collection: any,
 ): collection is SketchCollection<Point> => {
   return (
     collection &&
@@ -300,7 +302,7 @@ export const genSketch = <G extends Geometry = SketchGeometryTypes>(
     sketchClassId?: string;
     createdAt?: string;
     updatedAt?: string;
-  } = {}
+  } = {},
 ): Sketch<G> => {
   const {
     feature = polygon([
@@ -350,7 +352,7 @@ export const genSketchCollection = <G extends Geometry = SketchGeometryTypes>(
     sketchClassId?: string;
     createdAt?: string;
     updatedAt?: string;
-  } = {}
+  } = {},
 ): SketchCollection<G> => {
   const collId = options.id || uuid();
   const {
@@ -396,7 +398,7 @@ export const genSampleSketch = <
   G extends Geometry = Polygon | MultiPolygon | LineString,
 >(
   geometry: G,
-  name?: string
+  name?: string,
 ): Sketch<G> => ({
   type: "Feature",
   properties: {
@@ -435,7 +437,7 @@ export const genSampleNullSketch = (name?: string): NullSketch => ({
  */
 export const genSampleSketchCollection = <G extends Geometry = Polygon>(
   fc: FeatureCollection<G>,
-  name?: string
+  name?: string,
 ): SketchCollection<G> => {
   // Convert features to sketches
   const sketches = fc.features.map((f) => genSampleSketch(f.geometry));
@@ -465,7 +467,7 @@ export const genSampleSketchCollectionFromSketches = <
   G extends Geometry = Polygon | LineString,
 >(
   sketches: Sketch<G>[],
-  name?: string
+  name?: string,
 ): SketchCollection<G> => {
   // Rebuild into sketch collection
   return {
@@ -491,7 +493,7 @@ export const genSampleSketchCollectionFromSketches = <
  */
 export const genSampleNullSketchCollection = (
   sketches: NullSketch[],
-  name?: string
+  name?: string,
 ): NullSketchCollection => {
   // Rebuild into sketch collection
   return {
@@ -556,7 +558,7 @@ export const genSampleSketchContext = (): ReportContextValue => ({
  * @param sketch
  */
 export function getSketchFeatures(
-  sketch: Sketch | SketchCollection | NullSketchCollection | NullSketch
+  sketch: Sketch | SketchCollection | NullSketchCollection | NullSketch,
 ) {
   if (isSketch(sketch) || isNullSketch(sketch)) {
     return [sketch];
@@ -575,7 +577,7 @@ export function getSketchFeatures(
 export const featureToSketch = <G extends SketchGeometryTypes>(
   feat: Feature<G>,
   name: string = "sketches",
-  sketchProperties: Partial<SketchProperties> = {}
+  sketchProperties: Partial<SketchProperties> = {},
 ) => {
   const sk = genSketch({
     feature: feat,
@@ -594,7 +596,7 @@ export const featureToSketch = <G extends SketchGeometryTypes>(
 export const featureToSketchCollection = <G extends SketchGeometryTypes>(
   fc: FeatureCollection<G>,
   name: string = "sketches",
-  sketchProperties: Partial<SketchProperties> = {}
+  sketchProperties: Partial<SketchProperties> = {},
 ) => {
   const sketchFeatures = fc.features.map((feat, idx) => {
     const idValue = feat.properties?.id || idx + 1;

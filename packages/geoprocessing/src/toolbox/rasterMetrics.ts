@@ -12,8 +12,6 @@ import {
 import { featureEach } from "@turf/turf";
 import { RasterStatsOptions, rasterStats } from "./geoblaze/index.js";
 import { rasterStatsToMetrics } from "./geoblaze/rasterStatsToMetrics.js";
-
-// @ts-ignore
 import { Georaster } from "geoblaze";
 
 interface OverlapRasterOptions extends RasterStatsOptions {
@@ -43,7 +41,7 @@ interface OverlapRasterOptions extends RasterStatsOptions {
 export async function rasterMetrics(
   /** Cloud-optimized geotiff, loaded via loadCog or geoblaze.parse() */
   raster: Georaster,
-  options: OverlapRasterOptions = {}
+  options: OverlapRasterOptions = {},
 ): Promise<Metric[]> {
   const {
     metricId,
@@ -77,7 +75,7 @@ export async function rasterMetrics(
             categoryMetricProperty,
             categoryMetricValues,
             ...(statOptions ?? {}),
-          })
+          }),
         );
         features.push(curSketch);
       });

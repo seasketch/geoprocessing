@@ -9,12 +9,11 @@ if (!PROJECT_PATH) throw new Error("Missing PROJECT_PATH");
 const buildPath = path.join(PROJECT_PATH, `.build`);
 
 const manifest = JSON.parse(
-  fs.readFileSync(`${buildPath}/manifest.json`).toString()
+  fs.readFileSync(`${buildPath}/manifest.json`).toString(),
 ) as Manifest;
 if (!manifest) throw new Error(`Missing manifest in ${buildPath}`);
 
 const bucket = `gp-${manifest.title}-client`;
-const indexPath = bucket + "/index.html";
 
 // If no clients configured then there is no bucket to update
 if (manifest.clients.length === 0) {
@@ -34,12 +33,12 @@ s3.copyObject(
     ContentType: "text/html",
     MetadataDirective: "REPLACE",
   },
-  (err, data) => {
+  (err) => {
     if (err) {
       throw err;
     } else {
       // console.log("updated cache-control header on " + indexPath);
       process.exit();
     }
-  }
+  },
 );

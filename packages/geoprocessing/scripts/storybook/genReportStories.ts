@@ -25,7 +25,7 @@ if (!fs.existsSync(sketchDir)) {
 const outputDir = path.join(PROJECT_PATH, "examples", "output");
 if (!fs.existsSync(outputDir)) {
   console.error(
-    `Example output path ${outputDir} does not exist.  Have you added to examples/sketches and run the test suite?`
+    `Example output path ${outputDir} does not exist.  Have you added to examples/sketches and run the test suite?`,
   );
   process.exit();
 }
@@ -46,7 +46,7 @@ const storyPaths = await globby(
   path.join(storyDir, "**/*.example-stories.ts"),
   {
     onlyFiles: true,
-  }
+  },
 );
 const storyConfigs: GpStoryConfig[] = [];
 for (const storyPath of storyPaths) {
@@ -56,7 +56,7 @@ for (const storyPath of storyPaths) {
       ...storyConfig,
       path: storyPath,
     });
-  } catch (e) {
+  } catch {
     console.log(`Trouble parsing example ${storyPath}`);
   }
 }
@@ -67,18 +67,18 @@ const sketchFilenames = fs
   .filter((sketchFilename) => path.extname(sketchFilename) === ".json")
   .filter(
     (sketchFilename) =>
-      path.basename(sketchFilename).startsWith("gp", 0) === false
+      path.basename(sketchFilename).startsWith("gp", 0) === false,
   );
 const sketches: (Sketch | SketchCollection)[] = [];
 for (const sketchFilename of sketchFilenames) {
   try {
     const sketch: Sketch | SketchCollection = fs.readJSONSync(
-      path.join(sketchDir, sketchFilename)
+      path.join(sketchDir, sketchFilename),
     ) as Sketch;
     if (sketch && sketch.properties.name) {
       sketches.push(sketch);
     }
-  } catch (e) {
+  } catch {
     console.log(`Trouble parsing example ${sketchFilename}`);
   }
 }
@@ -112,7 +112,7 @@ for (const storyConfig of storyConfigs) {
 
     if (!fs.existsSync(storyConfig.path!)) {
       console.log(
-        `Story config path ${storyConfig.path} does not exist, skipping`
+        `Story config path ${storyConfig.path} does not exist, skipping`,
       );
       continue;
     }
@@ -125,11 +125,11 @@ for (const storyConfig of storyConfigs) {
     const storyName = storyTitleSplit[storyTitleSplit.length - 1];
     const storyOutDir = path.join(
       path.dirname(storyConfig.path!),
-      ".story-cache"
+      ".story-cache",
     );
     const storyOutPath = path.join(
       storyOutDir,
-      `${storyName}-${sketch.properties.name}.stories.tsx`
+      `${storyName}-${sketch.properties.name}.stories.tsx`,
     );
 
     const exampleOutputs = outputs.filter((output) => {
@@ -137,7 +137,7 @@ for (const storyConfig of storyConfigs) {
     });
     if (!exampleOutputs) {
       console.log(
-        `No results found for sketch ${sketch.properties.name}, skipping`
+        `No results found for sketch ${sketch.properties.name}, skipping`,
       );
       continue;
     }

@@ -6,6 +6,7 @@ export const ReportTextDirection: React.FunctionComponent<{
   children: ReactNode;
   style?: React.CSSProperties;
 }> = ({ style, children }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [language, changeLanguage, isRtl] = useLanguage();
   return (
     <div style={style} dir={isRtl ? "rtl" : "ltr"}>

@@ -5,7 +5,7 @@ import ProjectClientBase from "../../../src/project/ProjectClientBase.js";
  * Precalc one or more datasources for a project, for one or more defined geographies, and return the freshly filtered metrics
  */
 export function precalcCleanup<C extends ProjectClientBase>(
-  projectClient: C
+  projectClient: C,
 ): Metric[] {
   let metrics = projectClient.getPrecalcMetrics();
 
@@ -28,7 +28,7 @@ export function precalcCleanup<C extends ProjectClientBase>(
       if (!curDatasource) return false;
       if (curGeog.precalc === false && curDatasource.precalc === false)
         return false;
-    } catch (e: unknown) {
+    } catch {
       return false;
     }
     return true;

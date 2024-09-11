@@ -1,12 +1,16 @@
 import React from "react";
 import { RbcsObjective } from "../types.js";
-import { OBJECTIVE_YES, OBJECTIVE_NO, ObjectiveAnswer } from "../../types/index.js";
+import {
+  OBJECTIVE_YES,
+  OBJECTIVE_NO,
+  ObjectiveAnswer,
+} from "../../types/index.js";
 import { percentWithEdge } from "../../helpers/index.js";
 import { ObjectiveStatus } from "../../components/ObjectiveStatus.js";
 
 export type RbcsNetworkObjectiveRenderMsgFunction = (
   objective: RbcsObjective,
-  objectiveMet: ObjectiveAnswer
+  objectiveMet: ObjectiveAnswer,
 ) => JSX.Element;
 
 export interface RbcsNetworkObjectiveProps {
@@ -21,18 +25,19 @@ export interface RbcsNetworkObjectiveProps {
 /**
  * Displays status toward meeting Network objective
  */
-export const RbcsNetworkObjectiveStatus: React.FunctionComponent<RbcsNetworkObjectiveProps> =
-  ({ objective, objectiveMet, renderMsg }) => {
-    const msg = renderMsg
-      ? renderMsg(objective, objectiveMet)
-      : defaultMsg(objective, objectiveMet);
+export const RbcsNetworkObjectiveStatus: React.FunctionComponent<
+  RbcsNetworkObjectiveProps
+> = ({ objective, objectiveMet, renderMsg }) => {
+  const msg = renderMsg
+    ? renderMsg(objective, objectiveMet)
+    : defaultMsg(objective, objectiveMet);
 
-    return <ObjectiveStatus status={objectiveMet} msg={msg} />;
-  };
+  return <ObjectiveStatus status={objectiveMet} msg={msg} />;
+};
 
 const defaultMsg = (
   objective: RbcsObjective,
-  objectiveMet: ObjectiveAnswer
+  objectiveMet: ObjectiveAnswer,
 ) => {
   if (objectiveMet === OBJECTIVE_YES) {
     return (

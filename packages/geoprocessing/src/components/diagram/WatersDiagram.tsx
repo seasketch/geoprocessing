@@ -67,7 +67,7 @@ export const WatersDiagram: React.FunctionComponent<LabelProps> = ({
   labels?.forEach((label) => {
     // Find matching label if exists
     const foundIndex = labelsFinal.findIndex(
-      (curLabel) => label.key === curLabel.key
+      (curLabel) => label.key === curLabel.key,
     );
 
     // If no matching label key, add label

@@ -21,7 +21,7 @@ export const maxWidth = (geojson: AllGeoJSON | BBox) => {
     }),
     distance(boxPoints.features[1], boxPoints.features[2], {
       units: "degrees",
-    })
+    }),
   );
 };
 
@@ -45,6 +45,6 @@ export const minWidth = (geojson: AllGeoJSON | BBox) => {
     }),
     distance(boxPoints.features[1], boxPoints.features[2], {
       units: "degrees",
-    })
+    }),
   );
 };

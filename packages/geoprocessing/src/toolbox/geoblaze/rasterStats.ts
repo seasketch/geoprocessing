@@ -54,7 +54,7 @@ export interface RasterStatsOptions extends CalcStatsOptions {
  */
 export const rasterStats = async (
   raster: Georaster,
-  options: RasterStatsOptions = {}
+  options: RasterStatsOptions = {},
 ) => {
   const {
     numBands = 1,
@@ -62,7 +62,6 @@ export const rasterStats = async (
     feature,
     filterFn,
     categorical = false,
-    categoryMetricProperty = "classId",
     categoryMetricValues,
     ...restCalcOptions
   } = options;
@@ -93,7 +92,7 @@ export const rasterStats = async (
         categorical &&
         categoryMetricValues
       ) {
-        let hist = {};
+        const hist = {};
         categoryMetricValues.forEach((c) => (hist[c] = 0)); // load zero for each histogram category
         defaultStats[i][statsToPublish[j]] = hist;
       } else {
@@ -117,7 +116,7 @@ export const rasterStats = async (
         return defaultStats;
       } else {
         statsByBand = histogram.map((h) => {
-          let hist = {};
+          const hist = {};
           if (!categoryMetricValues || categoryMetricValues.length === 0) {
             return { histogram: h };
           } else {
@@ -132,11 +131,11 @@ export const rasterStats = async (
         projectedFeat,
         {
           stats: statsToCalculate.filter((stat) =>
-            GEOBLAZE_RASTER_STATS.includes(stat)
+            GEOBLAZE_RASTER_STATS.includes(stat),
           ), // filter to only native geoblaze stats
           ...restCalcOptions,
         },
-        filterFn
+        filterFn,
       );
     }
 
@@ -161,15 +160,15 @@ export const rasterStats = async (
               : rawValue;
           return { ...soFar, [curStat]: curValue };
         },
-        {}
+        {},
       );
       // Transfer calculated stats if valid number
       finalStats.push(finalStatsBand);
     });
-  } catch (err) {
+  } catch {
     if (process.env.NODE_ENV !== "test")
       console.log(
-        "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry"
+        "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry",
       );
     return defaultStats;
   }

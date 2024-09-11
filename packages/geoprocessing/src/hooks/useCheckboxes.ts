@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Checkbox } from "../components/checkbox/types.js";
 
 /**
@@ -12,7 +12,7 @@ export default function useCheckboxes(defaultState: Checkbox[]) {
       newCheckboxes[index].checked = checked;
       setCheckboxes(newCheckboxes);
     },
-    [checkboxes]
+    [checkboxes],
   );
   return {
     setCheckbox,

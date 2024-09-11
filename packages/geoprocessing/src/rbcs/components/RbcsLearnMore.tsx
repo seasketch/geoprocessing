@@ -81,6 +81,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
         <a
           target="_blank"
           href="https://www.sciencedirect.com/science/article/pii/S0308597X16300197"
+          rel="noreferrer"
         >
           image source
         </a>
@@ -110,7 +111,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
                   <td>{rbcsAquacultureActivities[aquacultureActivity]}</td>
                 </tr>
               );
-            }
+            },
           )}
           {Object.keys(rbcsAnchoringActivities).map(
             (anchoringActivity, index) => {
@@ -120,7 +121,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
                   <td>{rbcsAnchoringActivities[anchoringActivity]}</td>
                 </tr>
               );
-            }
+            },
           )}
         </tbody>
       </table>
@@ -143,6 +144,7 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
         <a
           target="_blank"
           href="https://www.sciencedirect.com/science/article/pii/S0308597X16300197"
+          rel="noreferrer"
         >
           image source
         </a>
@@ -151,7 +153,11 @@ export const RbcsLearnMore: React.FunctionComponent<RbcsLearnMoreProps> = ({
       <p>
         This system of assigning protection based on perceived impact is called
         the{" "}
-        <a target="_blank" href="https://doi.org/10.1016/j.marpol.2016.06.021">
+        <a
+          target="_blank"
+          href="https://doi.org/10.1016/j.marpol.2016.06.021"
+          rel="noreferrer"
+        >
           regulation-based classification system
         </a>
         (RBCS). To learn more, please read the original published research

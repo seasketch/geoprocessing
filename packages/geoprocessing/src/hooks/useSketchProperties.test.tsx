@@ -1,8 +1,8 @@
-import { describe, test, expect, vi } from "vitest";
+import { test, expect } from "vitest";
 import React from "react";
 import "@testing-library/jest-dom/vitest";
 import { ReportContext } from "../context/index.js";
-import { renderHook, act } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import useSketchProperties from "./useSketchProperties.js";
 
 const ContextWrapper: React.FunctionComponent<{
@@ -59,6 +59,7 @@ test("useSketchProperties passes sketch properties from context", () => {
 test("useSketchProperties provides a means of getting values by exportId", () => {
   const {
     result: {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       current: [_, getByExportId],
     },
   } = renderHook(() => useSketchProperties(), {

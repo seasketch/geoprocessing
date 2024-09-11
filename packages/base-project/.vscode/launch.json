@@ -5,18 +5,19 @@
   "version": "0.2.0",
   "configurations": [
     {
-        "name": "Debug Tests",
-        "type": "node",
-        "request": "launch",
-        "runtimeArgs": [
-          "--inspect-brk",
-          "${workspaceRoot}/node_modules/.bin/geoprocessing",
-          "test"
-        ],
-        "console": "integratedTerminal",
-        "internalConsoleOptions": "neverOpen",
-        "port": 9229        
-    },{
+      "name": "Debug Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/.bin/geoprocessing",
+        "test"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229
+    },
+    {
       "name": "Debug tests - with pattern",
       "type": "node",
       "request": "launch",
@@ -29,19 +30,15 @@
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "port": 9229        
-  },{
-    "type": "node",
-    "request": "launch",
-    "name": "debug single script",
-    "runtimeArgs": [
-        "--import",
-        "tsx",
-    ],
-    "args": [
-        "${workspaceRoot}/${input:scriptPath}"
-    ]
-  }
+      "port": 9229
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "debug single script",
+      "runtimeArgs": ["--import", "tsx"],
+      "args": ["${workspaceRoot}/${input:scriptPath}"]
+    }
   ],
   "inputs": [
     {
@@ -49,7 +46,8 @@
       "id": "scriptPath",
       "description": "",
       "default": "scripts/myscript.ts"
-    },{
+    },
+    {
       "type": "promptString",
       "id": "testNamePattern",
       "description": "vitest -t 'regex pattern to select tests'",

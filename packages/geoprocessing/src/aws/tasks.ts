@@ -80,7 +80,6 @@ export default class TasksModel {
     startedAt?: string,
     duration?: number,
     status?: GeoprocessingTaskStatus,
-    data?: any
   ) {
     id = id || uuid();
     const location = `/${service}/tasks/${id}`;
@@ -107,15 +106,15 @@ export default class TasksModel {
       /** websocket url */
       wss?: string;
       disableCache?: boolean;
-    } = {}
+    } = {},
   ) {
     const task = this.init(service, options.id, options.wss);
     task.disableCache = options.disableCache;
 
     try {
-      let estimate = await this.getMeanEstimate(task);
+      const estimate = await this.getMeanEstimate(task);
       task.estimate = estimate;
-    } catch (e) {
+    } catch {
       //can happen when testing, will default to 1 if can't get an estimate
     }
 
@@ -129,7 +128,7 @@ export default class TasksModel {
           Item: {
             ...task,
           },
-        })
+        }),
       );
     }
     return task;
@@ -144,7 +143,7 @@ export default class TasksModel {
   async complete(
     task: GeoprocessingTask,
     results: any,
-    options: { minSplitSizeBytes?: number } = {}
+    options: { minSplitSizeBytes?: number } = {},
   ): Promise<APIGatewayProxyResult> {
     task.data = results;
     task.status = GeoprocessingTaskStatus.Completed;
@@ -167,7 +166,6 @@ export default class TasksModel {
       const updateCommands: UpdateCommand[] = [];
 
       // push root task
-      const tsRootChunk = Date.now();
       updateCommands.push(
         new UpdateCommand({
           TableName: this.table,
@@ -187,7 +185,7 @@ export default class TasksModel {
             ":status": task.status,
             ":duration": task.duration,
           },
-        })
+        }),
       );
 
       // const jsonStringsHash = jsonStrings.reduce<Record<string, string>>(
@@ -222,7 +220,7 @@ export default class TasksModel {
               ":status": task.status,
               ":duration": task.duration,
             },
-          })
+          }),
         );
       });
 
@@ -245,8 +243,8 @@ export default class TasksModel {
   }
 
   async updateEstimate(task: GeoprocessingTask) {
-    let duration: number = task.duration ? task.duration : 0;
-    let service: string = task.service;
+    const duration: number = task.duration ? task.duration : 0;
+    const service: string = task.service;
     let meanEstimate = 0;
 
     try {
@@ -256,23 +254,21 @@ export default class TasksModel {
           Key: {
             service,
           },
-        })
+        }),
       );
 
-      let taskItem = response.Item;
+      const taskItem = response.Item;
 
-      //@ts-ignore
       if (taskItem && taskItem?.allEstimates) {
-        //@ts-ignore
-        let allEstimates: number[] = taskItem?.allEstimates;
+        const allEstimates: number[] = taskItem?.allEstimates;
         //cap it at five for estimate avg
         if (allEstimates.length >= 5) {
           allEstimates.pop();
         }
         allEstimates.push(duration);
 
-        let meanEstimate = Math.round(
-          allEstimates.reduce((a, b) => a + b, 0) / allEstimates.length
+        const meanEstimate = Math.round(
+          allEstimates.reduce((a, b) => a + b, 0) / allEstimates.length,
         );
 
         await this.db.send(
@@ -291,7 +287,7 @@ export default class TasksModel {
               ":allEstimates": allEstimates,
               ":meanEstimate": meanEstimate,
             },
-          })
+          }),
         );
       } else {
         meanEstimate = duration;
@@ -312,7 +308,7 @@ export default class TasksModel {
               ":allEstimates": [duration],
               ":meanEstimate": meanEstimate,
             },
-          })
+          }),
         );
       }
       return meanEstimate;
@@ -324,7 +320,7 @@ export default class TasksModel {
   async fail(
     task: GeoprocessingTask,
     errorDescription: string,
-    error?: Error
+    error?: Error,
   ): Promise<APIGatewayProxyResult> {
     if (error) console.error(error);
     task.status = GeoprocessingTaskStatus.Failed;
@@ -354,7 +350,7 @@ export default class TasksModel {
             ":status": task.status,
             ":duration": task.duration,
           },
-        })
+        }),
       );
     }
 
@@ -370,7 +366,7 @@ export default class TasksModel {
 
   async get(
     service: string,
-    taskId: string
+    taskId: string,
   ): Promise<GeoprocessingTask | undefined> {
     try {
       // Get all items under the same partition key (task id)
@@ -412,17 +408,17 @@ export default class TasksModel {
 
       // Filter down to root and chunk items for service
       const serviceItems = items.filter((item) =>
-        item.service.includes(service)
+        item.service.includes(service),
       );
 
       // console.log("serviceItemsLength", serviceItems.length);
       console.log(
         "serviceItems",
-        serviceItems.map((item) => item.service).join(", ")
+        serviceItems.map((item) => item.service).join(", "),
       );
 
       const rootItemIndex = serviceItems.findIndex(
-        (item) => item.service === service
+        (item) => item.service === service,
       );
 
       // console.log("rootItemIndex", rootItemIndex);
@@ -438,7 +434,7 @@ export default class TasksModel {
 
       // Filter for chunk items for this service, just in case there's more under partition key
       const chunkItems = serviceItems.filter((item) =>
-        item.service.includes(`${service}-chunk`)
+        item.service.includes(`${service}-chunk`),
       );
 
       // console.log("chunkItemsLength", chunkItems.length);
@@ -483,16 +479,16 @@ export default class TasksModel {
   }
 
   async getMeanEstimate(task: GeoprocessingTask): Promise<number> {
-    let service = task.service;
+    const service = task.service;
     const response = await this.db.send(
       new GetCommand({
         TableName: this.estimatesTable,
         Key: {
           service,
         },
-      })
+      }),
     );
-    let meanEstimate: number = response.Item?.meanEstimate;
+    const meanEstimate: number = response.Item?.meanEstimate;
     return meanEstimate;
   }
 
@@ -504,7 +500,7 @@ export default class TasksModel {
    */
   private toJsonStrings(
     rootResult: JSONValue,
-    options: { minSplitSizeBytes?: number } = {}
+    options: { minSplitSizeBytes?: number } = {},
   ): string[] {
     const rootString = JSON.stringify(rootResult, null, 1); // add spaces to string for chunking on
     const minSplitSizeBytes = options.minSplitSizeBytes || 350 * 1024;

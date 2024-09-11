@@ -3,7 +3,7 @@ import {
   GeoprocessingServiceMetadata,
   PreprocessingServiceMetadata,
 } from "../src/types/index.js";
-import { VectorDataSourceDetails } from "../src/index.js";
+import { hasOwnProperty, VectorDataSourceDetails } from "../src/index.js";
 
 /**
  * Select metadata of GeoprocessingBundle for manifest
@@ -56,21 +56,22 @@ export const hasClients = (manifest: Manifest): boolean => {
 };
 
 export const getSyncFunctionMetadata = (
-  manifest: Manifest
+  manifest: Manifest,
 ): ProcessingFunctionMetadata[] => {
   return [
     ...manifest.preprocessingFunctions,
     ...manifest.geoprocessingFunctions.filter(
-      (func) => func.executionMode === "sync"
+      (func) => func.executionMode === "sync",
     ),
   ];
 };
 
 export const getAsyncFunctionMetadata = (
-  manifest: Manifest
+  manifest: Manifest,
 ): GeoprocessingFunctionMetadata[] => {
   return manifest.geoprocessingFunctions.filter(
-    (func) => func.executionMode === "async" && func.purpose !== "preprocessing"
+    (func) =>
+      func.executionMode === "async" && func.purpose !== "preprocessing",
   );
 };
 
@@ -78,32 +79,32 @@ export const getAsyncFunctionMetadata = (
 
 /** Returns true if metadata is for geoprocessing function and narrows type */
 export const isGeoprocessingFunctionMetadata = (
-  meta: any
+  meta: any,
 ): meta is GeoprocessingFunctionMetadata => {
   return (
     meta &&
-    meta.hasOwnProperty("purpose") &&
+    hasOwnProperty(meta, "purpose") &&
     meta.purpose === "geoprocessing" &&
-    meta.hasOwnProperty("executionMode") &&
+    hasOwnProperty(meta, "executionMode") &&
     (meta.executionMode === "async" || meta.executionMode === "sync")
   );
 };
 
 /** Returns true if metadata is for preprocessing function and narrows type */
 export const isPreprocessingFunctionMetadata = (
-  meta: any
+  meta: any,
 ): meta is PreprocessingFunctionMetadata => {
   return (
     meta &&
-    meta.hasOwnProperty("purpose") &&
+    hasOwnProperty(meta, "purpose") &&
     meta.purpose === "preprocessing" &&
-    !meta.hasOwnProperty("executionMode")
+    !hasOwnProperty(meta, "executionMode")
   );
 };
 
 /** Returns true if metadata is for sync function and narrows type */
 export const isSyncFunctionMetadata = (
-  meta: any
+  meta: any,
 ): meta is SyncFunctionMetadata => {
   return (
     isPreprocessingFunctionMetadata(meta) ||
@@ -113,7 +114,7 @@ export const isSyncFunctionMetadata = (
 
 /** Returns true if metadata is for async function and narrows type */
 export const isAsyncFunctionMetadata = (
-  meta: any
+  meta: any,
 ): meta is AsyncFunctionMetadata => {
   return (
     isGeoprocessingFunctionMetadata(meta) && meta.executionMode === "async"

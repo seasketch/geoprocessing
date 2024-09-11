@@ -20,7 +20,7 @@ describe("overlapArea", () => {
 
   test("overlapArea - undefined sketch throws", async () => {
     expect(
-      async () => await overlapArea("test", undefined!, 500)
+      async () => await overlapArea("test", undefined!, 500),
     ).rejects.toThrow(ValidationError);
   });
 
@@ -33,7 +33,7 @@ describe("overlapArea", () => {
 
   test("overlapSubarea - undefined sketch throws", async () => {
     expect(
-      async () => await overlapSubarea("test", undefined!, fix.outer)
+      async () => await overlapSubarea("test", undefined!, fix.outer),
     ).rejects.toThrow(ValidationError);
   });
 });
@@ -80,15 +80,15 @@ describe("overlapSubarea", () => {
     const metrics = await overlapArea(
       "test",
       fix.sketchCollection,
-      fix.outerOuterArea
+      fix.outerOuterArea,
     );
     const collPercMetric = firstMatchingMetric(
       metrics,
-      (m) => m.sketchId === "CCCC" && m.metricId === "testPerc"
+      (m) => m.sketchId === "CCCC" && m.metricId === "testPerc",
     );
     expect(collPercMetric.value).toBeCloseTo(0.25); // takes up 4 out of 16 squares of outerOuter
     const sketchPercMetrics = metrics.filter(
-      (m) => m.sketchId !== "CCCC" && m.metricId === "testPerc"
+      (m) => m.sketchId !== "CCCC" && m.metricId === "testPerc",
     );
     expect(sketchPercMetrics.length).toBe(fix.sketchCollection.features.length);
   });
@@ -97,13 +97,13 @@ describe("overlapSubarea", () => {
     const metrics = await overlapSubarea(
       "test",
       fix.sketchCollection,
-      fix.outer
+      fix.outer,
     );
     expect(area(fix.sketchCollection)).toBe(fix.scArea);
 
     const collAreaMetric = firstMatchingMetric(
       metrics,
-      (m) => m.sketchId === "CCCC" && m.metricId === "test"
+      (m) => m.sketchId === "CCCC" && m.metricId === "test",
     );
     // Expect about half, but not exactly same as inside
     testWithinPerc(collAreaMetric.value, fix.scArea / 2, {
@@ -112,13 +112,13 @@ describe("overlapSubarea", () => {
 
     const collAreaPercMetric = firstMatchingMetric(
       metrics,
-      (m) => m.sketchId === "CCCC" && m.metricId === "testPerc"
+      (m) => m.sketchId === "CCCC" && m.metricId === "testPerc",
     );
     expect(collAreaPercMetric.value).toBeCloseTo(2 / 4); // 2 of 4 squares in outer
 
     const sketchPercMetrics = metrics.filter((m) => m.sketchId !== "CCCC");
     expect(sketchPercMetrics.length).toBe(
-      fix.sketchCollection.features.length * 2
+      fix.sketchCollection.features.length * 2,
     ); // 2 metrics per sketch
   });
 
@@ -130,25 +130,25 @@ describe("overlapSubarea", () => {
       {
         operation: "difference",
         outerArea: fix.outerOuterArea,
-      }
+      },
     );
 
     const collAreaMetric = firstMatchingMetric(
       metrics,
-      (m) => m.sketchId === "CCCC" && m.metricId === "test"
+      (m) => m.sketchId === "CCCC" && m.metricId === "test",
     );
     // Expect about half, but not exactly same as inside
     testWithinPerc(collAreaMetric.value, fix.scArea / 2);
 
     const collAreaPercMetric = firstMatchingMetric(
       metrics,
-      (m) => m.sketchId === "CCCC" && m.metricId === "testPerc"
+      (m) => m.sketchId === "CCCC" && m.metricId === "testPerc",
     );
     expect(collAreaPercMetric.value).toBeCloseTo(2 / 12); // 2 of 12 squares in outerOuter
 
     const sketchPercMetrics = metrics.filter((m) => m.sketchId !== "CCCC");
     expect(sketchPercMetrics.length).toBe(
-      fix.sketchCollection.features.length * 2
+      fix.sketchCollection.features.length * 2,
     ); // 2 metrics per sketch
   });
 });

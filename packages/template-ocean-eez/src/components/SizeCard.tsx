@@ -80,7 +80,7 @@ export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
   const precalcMetrics = project.getPrecalcMetrics(
     metricGroup,
     "area",
-    curGeography.geographyId
+    curGeography.geographyId,
   );
 
   const notFoundString = t("Results not found");
@@ -133,6 +133,7 @@ export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
                   <a
                     target="_blank"
                     href="https://en.wikipedia.org/wiki/Territorial_waters"
+                    rel="noreferrer"
                   >
                     <Trans i18nKey="SizeCard - learn more source">
                       Source: Wikipedia - Territorial Waters
@@ -163,18 +164,15 @@ const genSingleSizeTable = (
   data: ReportResult,
   precalcMetrics: Metric[],
   mg: MetricGroup,
-  t: TFunction
+  t: TFunction,
 ) => {
   const boundaryLabel = t("Boundary");
   const foundWithinLabel = t("Found Within Plan");
-  const areaWithinLabel = t("Area Within Plan");
-  const areaPercWithinLabel = t("% Within Plan");
   const mapLabel = t("Map");
   const sqKmLabel = t("km²");
 
-  const classesById = keyBy(mg.classes, (c) => c.classId);
-  let singleMetrics = data.metrics.filter(
-    (m) => m.sketchId === data.sketch.properties.id
+  const singleMetrics = data.metrics.filter(
+    (m) => m.sketchId === data.sketch.properties.id,
   );
 
   const finalMetrics = sortMetricsDisplayOrder(
@@ -185,7 +183,7 @@ const genSingleSizeTable = (
       }),
     ],
     "classId",
-    ["eez", "offshore", "contiguous"]
+    ["eez", "offshore", "contiguous"],
   );
 
   return (
@@ -208,9 +206,9 @@ const genSingleSizeTable = (
               Number.format(
                 Math.round(
                   squareMeterToKilometer(
-                    typeof val === "string" ? parseInt(val) : val
-                  )
-                )
+                    typeof val === "string" ? parseInt(val) : val,
+                  ),
+                ),
               ),
             valueLabel: sqKmLabel,
             width: 20,
@@ -228,15 +226,11 @@ const genSingleSizeTable = (
               barHeight: 11,
             },
             width: 40,
-            targetValueFormatter: (
-              value: number,
-              row: number,
-              numRows: number
-            ) => {
+            targetValueFormatter: (_value: number, row: number) => {
               if (row === 0) {
                 return (value: number) =>
                   `${valueFormatter(value / 100, "percent0dig")} ${t(
-                    "Target"
+                    "Target",
                   )}`;
               } else {
                 return (value: number) =>
@@ -259,13 +253,13 @@ const genNetworkSizeTable = (
   data: ReportResult,
   precalcMetrics: Metric[],
   mg: MetricGroup,
-  t: TFunction
+  t: TFunction,
 ) => {
   const sketches = toNullSketchArray(data.sketch);
   const sketchesById = keyBy(sketches, (sk) => sk.properties.id);
   const sketchIds = sketches.map((sk) => sk.properties.id);
   const sketchMetrics = data.metrics.filter(
-    (m) => m.sketchId && sketchIds.includes(m.sketchId)
+    (m) => m.sketchId && sketchIds.includes(m.sketchId),
   );
   const finalMetrics = [
     ...sketchMetrics,
@@ -318,7 +312,7 @@ const genNetworkSizeTable = (
           },
         ],
       };
-    }
+    },
   );
 
   const columns: Column<any>[] = [

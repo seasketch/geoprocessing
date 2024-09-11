@@ -53,52 +53,52 @@ export const IucnMatrix = () => {
     RESEARCH_NE: t("IUCN activity - research", "Research: non-extractive"),
     TRAD_USE_NE: t(
       "IUCN activity - traditional use",
-      "Traditional use: non-extractive"
+      "Traditional use: non-extractive",
     ),
     RESTORE_CON: t(
       "IUCN activity - restoration",
-      "Restoration/enhancement for conservation"
+      "Restoration/enhancement for conservation",
     ),
     TRAD_FISH_COLLECT: t(
       "IUCN activity - traditional fishing",
-      "Traditional fishing/collection"
+      "Traditional fishing/collection",
     ),
     RECREATE_NE: t(
       "IUCN activity - non-extractive",
-      "Non-extractive recreation"
+      "Non-extractive recreation",
     ),
     TOURISM: t("IUCN activity - tourism", "Large scale high intensity tourism"),
     SHIPPING: t("IUCN activity - shipping", "Shipping"),
     RESEARCH: t("IUCN activity - research extractive", "Research: extractive"),
     RENEWABLE_ENERGY: t(
       "IUCN activity - renewable",
-      "Renewable energy generation"
+      "Renewable energy generation",
     ),
     RESTORE_OTH: t(
       "IUCN activity - restoration",
-      "Restoration/enhancement for other reasons"
+      "Restoration/enhancement for other reasons",
     ),
     FISH_COLLECT_REC: t(
       "IUCN activity - fishing sustainable",
-      "Fishing/collection: recreational (sustainable)"
+      "Fishing/collection: recreational (sustainable)",
     ),
     FISH_COLLECT_LOCAL: t(
       "IUCN activity - local fishing",
-      "Fishing/collection: local fishing (sustainable)"
+      "Fishing/collection: local fishing (sustainable)",
     ),
     FISH_AQUA_INDUSTRIAL: t(
       "IUCN activity - industrial fishing",
-      "Industrial fishing, industrial scale aquaculture"
+      "Industrial fishing, industrial scale aquaculture",
     ),
     AQUA_SMALL: t("IUCN activity - aquaculture", "Aquaculture - small scale"),
     WORKS: t("IUCN activity - works", "Works (harbors, ports, dredging)"),
     UNTREATED_WATER: t(
       "IUCN activity - untreated water",
-      "Untreated water discharge"
+      "Untreated water discharge",
     ),
     MINING_OIL_GAS: t(
       "IUCN activity - extraction",
-      "Mining, oil and gas extraction"
+      "Mining, oil and gas extraction",
     ),
     HABITATION: t("IUCN activity - habitation", "Habitation"),
   };
@@ -113,11 +113,11 @@ export const IucnMatrix = () => {
       id: "nobut",
       desc: t(
         "IUCN rank - special no description",
-        "Generally no, a strong prerogative against unless special circumstances apply"
+        "Generally no, a strong prerogative against unless special circumstances apply",
       ),
       display: `${t(
         "IUCN rank - shorthand label for no, with extra meaning",
-        "N*"
+        "N*",
       )}`,
     },
     yes: {
@@ -129,18 +129,18 @@ export const IucnMatrix = () => {
       id: "yesbut",
       desc: t(
         "IUCN rank - special yes description",
-        "Yes because no alternative exists, but special approval is essential"
+        "Yes because no alternative exists, but special approval is essential",
       ),
       display: `${t(
         "IUCN rank - shorthand label for yes, with extra meaning",
-        "Y*"
+        "Y*",
       )}`,
     },
     variable: {
       id: "variable",
       desc: t(
         "IUCN rank - special 'variable' description",
-        "Variable; depends on whether this activity can be managed in such a way that it is compatible with the MPA’s objectives"
+        "Variable; depends on whether this activity can be managed in such a way that it is compatible with the MPA’s objectives",
       ),
       display: "*",
     },

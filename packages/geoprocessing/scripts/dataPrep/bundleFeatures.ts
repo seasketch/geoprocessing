@@ -18,9 +18,6 @@ import prettyBytes from "pretty-bytes";
 import expandBBox from "./expand.js";
 import z from "zod";
 
-// Warn users if index is over 500kb
-const INDEX_THRESHOLD_SIZE = 500000;
-
 interface BundleOptions {
   /** Name for data source. Will be used to automatically create s3 bucket */
   name: string;
@@ -50,11 +47,10 @@ const DEFAULTS = {
  */
 const bundleFeatures = async (
   _options: BundleOptions,
-  callback?: (id: number, geobuf: Uint8Array, bbox: BBox) => Promise<any>
+  callback?: (id: number, geobuf: Uint8Array, bbox: BBox) => Promise<any>,
 ): Promise<string> => {
   const options = { ...DEFAULTS, ..._options };
   const pool = await createPool(options.connection, {});
-  const outstandingPromises: Promise<any>[] = [];
   const statsTableName = `${options.tableName}_bundles`;
   await pool.connect(async (connection) => {
     const startTime = new Date().getTime();
@@ -64,7 +60,7 @@ const bundleFeatures = async (
     const { columns, count } = await inspectTable(
       connection,
       options.tableName,
-      options.pointsLimit
+      options.pointsLimit,
     );
     spinner.succeed(`Input table meets requirements. ${count} features found.`);
 
@@ -112,7 +108,7 @@ const bundleFeatures = async (
     // envelope size limits
     const progressBar = new cliProgress.SingleBar(
       { etaBuffer: 10000, clearOnComplete: true },
-      cliProgress.Presets.shades_classic
+      cliProgress.Presets.shades_classic,
     );
     let bundles = 0;
     let totalSize = 0;
@@ -140,7 +136,7 @@ const bundleFeatures = async (
           sourceTable,
           i.geom,
           i.pk,
-          i.statsTable
+          i.statsTable,
         );
         bundles++;
         totalSize += geobuf.byteLength;
@@ -160,8 +156,8 @@ const bundleFeatures = async (
     progressBar.stop();
     spinner.succeed(
       `Created ${bundles} geobuf bundles in ${humanizeDuration(
-        new Date().getTime() - startTime
-      )}. Total size is ${prettyBytes(totalSize)}`
+        new Date().getTime() - startTime,
+      )}. Total size is ${prettyBytes(totalSize)}`,
     );
   });
   return statsTableName;
@@ -173,7 +169,7 @@ async function createGeobuf(
   table: IdentifierSqlToken,
   geom: IdentifierSqlToken,
   pk: IdentifierSqlToken,
-  statsTable: IdentifierSqlToken
+  statsTable: IdentifierSqlToken,
 ) {
   if (ids.length === 0) {
     throw new Error("createGeobuf called without any ids");
@@ -185,7 +181,7 @@ async function createGeobuf(
     extent: z.string(),
   });
   const { collection, extent } = await connection.one(sql.type(
-    collectionObject
+    collectionObject,
   )`
     select json_build_object(
       'type', 'FeatureCollection',
@@ -210,7 +206,7 @@ async function createGeobuf(
   // feature.properties.b_box to feature.bbox
   for (const feature of fc.features) {
     feature.bbox = feature.properties!.b_box.map((f: number) =>
-      parseFloat(f.toFixed(6))
+      parseFloat(f.toFixed(6)),
     );
     delete feature.properties!.b_box;
     // remove geometries from geojson properties

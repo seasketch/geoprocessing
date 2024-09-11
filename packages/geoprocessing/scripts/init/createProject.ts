@@ -48,7 +48,7 @@ export interface CreateProjectMetadata extends TemplateMetadata {
 export async function createProject(
   metadata: CreateProjectMetadata,
   interactive = true,
-  basePath = ""
+  basePath = "",
 ) {
   const {
     organization,
@@ -83,7 +83,7 @@ export async function createProject(
 
   // Get version of geoprocessing currently running
   const curGpPackage: Package = JSON.parse(
-    fs.readFileSync(`${getGeoprocessingPath()}/package.json`).toString()
+    fs.readFileSync(`${getGeoprocessingPath()}/package.json`).toString(),
   );
   const curGpVersion = curGpPackage.version;
 
@@ -109,7 +109,7 @@ export async function createProject(
 
   const packageJSON: Package = {
     ...JSON.parse(
-      fs.readFileSync(`${baseProjectPath}/package.json`).toString()
+      fs.readFileSync(`${baseProjectPath}/package.json`).toString(),
     ),
     name,
     description,
@@ -151,7 +151,7 @@ export async function createProject(
 
   await fs.writeFile(
     `${projectPath}/package.json`,
-    JSON.stringify(packageJSON, null, "  ")
+    JSON.stringify(packageJSON, null, "  "),
   );
 
   spinner.succeed("updated package.json");
@@ -170,8 +170,8 @@ export async function createProject(
         geoprocessingFunctions: [],
       },
       null,
-      "  "
-    )
+      "  ",
+    ),
   );
   spinner.succeed("created geoprocessing.json");
 
@@ -221,14 +221,14 @@ export async function createProject(
   if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
     const globalEezDS = "global-eez-mr-v12";
     const eezDs = globalDatasources.find(
-      (ds) => ds.datasourceId === globalEezDS
+      (ds) => ds.datasourceId === globalEezDS,
     );
     if (isVectorDatasource(eezDs)) {
       if (validBasic.planningAreaType === "eez") {
         spinner.start("updating geographies.json");
         // read default geographies and disable them by setting precalc to false
         // also clear default-boundary group
-        let geos: Geography[] = geographiesSchema
+        const geos: Geography[] = geographiesSchema
           .parse(fs.readJSONSync(`${projectPath}/project/geographies.json`))
           .map((g) => ({ ...g, precalc: false, groups: [] }));
         // assign initial eez geography with proper filters and precalc true
@@ -251,17 +251,17 @@ export async function createProject(
           geos,
           {
             spaces: 2,
-          }
+          },
         );
         spinner.succeed("updated geographies.json");
 
         spinner.start("updating eez in datasources.json");
         try {
-          let ds = datasourcesSchema.parse(
-            fs.readJSONSync(`${projectPath}/project/datasources.json`)
+          const ds = datasourcesSchema.parse(
+            fs.readJSONSync(`${projectPath}/project/datasources.json`),
           );
           const eezIndex = ds.findIndex(
-            (d) => d.datasourceId === "global-eez-mr-v12"
+            (d) => d.datasourceId === "global-eez-mr-v12",
           );
           // Narrow the global eez datasource to the planning area and turn on precalc
           ds[eezIndex] = {
@@ -278,7 +278,7 @@ export async function createProject(
             ds,
             {
               spaces: 2,
-            }
+            },
           );
         } catch (err: unknown) {
           if (err instanceof Error) {
@@ -303,7 +303,7 @@ export async function createProject(
       }
     } else {
       console.error(
-        `Expected vector datasource for ${globalEezDS}, geographies.json not updated`
+        `Expected vector datasource for ${globalEezDS}, geographies.json not updated`,
       );
     }
   }
@@ -323,7 +323,7 @@ export async function createProject(
   spinner.start("add i18n");
   await fs.copy(
     `${getGeoprocessingPath()}/src/i18n`,
-    projectPath + "/src/i18n"
+    projectPath + "/src/i18n",
   );
   // Create i18n.json with project-specific config
   const configPath = `${projectPath}/project/i18n.json`;
@@ -371,14 +371,14 @@ export async function createProject(
   }
   if (interactive) {
     console.log(
-      chalk.blue(`\nYour geoprocessing project has been initialized!`)
+      chalk.blue(`\nYour geoprocessing project has been initialized!`),
     );
     console.log(`\nNext Steps:
   * ${chalk.yellow(
-    `Tutorials`
+    `Tutorials`,
   )} are available to create your first geoprocessing function and report client at https://github.com/seasketch/geoprocessing/wiki/Tutorials
   * ${chalk.yellow(
-    `Translations`
+    `Translations`,
   )} need to be synced if you are using POEditor.  Make sure POEDITOR_PROJECT and POEDITOR_API_TOKEN environemnt variables are set in your shell environment and then run 'npm run sync:translation'.  See tutorials for more information
 `);
   }

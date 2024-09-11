@@ -1,9 +1,11 @@
-[{
-  "geographyId": "eez",
-  "datasourceId": "global-eez-mr-v12",
-  "geographyProperty": "GEONAME",
-  "propertyValue": "Micronesian Exclusive Economic Zone",
-  "display": "Micronesia",
-  "groups": ["default-boundary"],
-  "precalc": true
-}]
+[
+  {
+    "geographyId": "eez",
+    "datasourceId": "global-eez-mr-v12",
+    "geographyProperty": "GEONAME",
+    "propertyValue": "Micronesian Exclusive Economic Zone",
+    "display": "Micronesia",
+    "groups": ["default-boundary"],
+    "precalc": true
+  }
+]

@@ -1,7 +1,6 @@
 import fs from "fs-extra";
 import path from "path";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
-import { Package } from "../../src/types/index.js";
 import { createServer } from "vite";
 import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
@@ -14,15 +13,7 @@ const destBuildPath = path.join(PROJECT_PATH, ".build-web");
 const geoprocessing: GeoprocessingJsonConfig = JSON.parse(
   fs
     .readFileSync(path.join(PROJECT_PATH, "project", "geoprocessing.json"))
-    .toString()
-);
-
-const packageGp: Package = JSON.parse(
-  fs.readFileSync("./package.json").toString()
-);
-
-const packageProject: Package = JSON.parse(
-  fs.readFileSync(path.join(PROJECT_PATH, "package.json")).toString()
+    .toString(),
 );
 
 if (
@@ -47,7 +38,7 @@ const clientImportStr = geoprocessing.clients
 reportClients["${c.name}"] = React.lazy(
   () => import(/* @vite-ignore */"../${c.source}")
 );
-`
+`,
   )
   .join("");
 
@@ -73,7 +64,7 @@ fs.writeFileSync(
   };
 
   ReactDOM.render(<ReportApp />, document.getElementById("root"));
-`
+`,
 );
 
 // Create top-level index.html that loads report client
@@ -96,10 +87,8 @@ fs.writeFileSync(
       <script type="module" src="ReportApp.tsx"></script>
     </body>
   </html>
-`
+`,
 );
-
-const minify = process.env.NOMINIFY ? false : true;
 
 const server = await createServer({
   // any valid user config options, plus `mode` and `configFile`

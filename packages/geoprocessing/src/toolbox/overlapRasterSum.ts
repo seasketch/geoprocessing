@@ -9,8 +9,6 @@ import { isSketchCollection, roundDecimal } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
 import { featureEach } from "@turf/turf";
 import { getSum } from "./geoblaze/index.js";
-
-// @ts-ignore
 import { Georaster } from "geoblaze";
 
 interface OverlapRasterOptions {
@@ -31,7 +29,7 @@ export async function overlapRasterSum(
   sketch:
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>,
-  options?: Partial<OverlapRasterOptions>
+  options?: Partial<OverlapRasterOptions>,
 ): Promise<Metric[]> {
   const newOptions: OverlapRasterOptions = {
     truncate: true,
@@ -49,7 +47,7 @@ export async function overlapRasterSum(
   });
 
   // await results and create metrics
-  let sketchMetrics: Metric[] = [];
+  const sketchMetrics: Metric[] = [];
   (await Promise.all(sumPromises)).forEach((curSum, index) => {
     sketchMetrics.push(
       createMetric({
@@ -61,7 +59,7 @@ export async function overlapRasterSum(
         extra: {
           sketchName: sumFeatures[index].properties.name,
         },
-      })
+      }),
     );
   });
 
@@ -79,7 +77,7 @@ export async function overlapRasterSum(
           sketchName: sketch.properties.name,
           isCollection: true,
         },
-      })
+      }),
     );
   }
 

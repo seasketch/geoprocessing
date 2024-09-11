@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable i18next/no-literal-string */
 import fs from "fs-extra";
 import * as path from "path";
 import { Translations } from "./publishTerms.js";
@@ -23,7 +22,7 @@ const projectPath = (() => {
     return monoProjectPath;
   }
   throw new Error(
-    `Could not find path to project dir, tried ${installedProjectPath} and ${monoProjectPath}`
+    `Could not find path to project dir, tried ${installedProjectPath} and ${monoProjectPath}`,
   );
 })();
 
@@ -45,7 +44,7 @@ const config = await fs.readJSON(`${projectPath}/i18n.json`);
     {
       method: "POST",
       body: enTermsForm,
-    }
+    },
   );
 
   const enTermsResult = await enTermsResponse.json();
@@ -72,7 +71,7 @@ const config = await fs.readJSON(`${projectPath}/i18n.json`);
   enTerms.sort((a, b) => a.term.localeCompare(b.term));
 
   console.log(
-    `Importing strings with context '${config.remoteContext}' to namespace '${config.localNamespace}'`
+    `Importing strings with context '${config.remoteContext}' to namespace '${config.localNamespace}'`,
   );
   const langForm = new FormData();
   langForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
@@ -83,7 +82,7 @@ const config = await fs.readJSON(`${projectPath}/i18n.json`);
     {
       method: "POST",
       body: langForm,
-    }
+    },
   );
 
   const langResult = await langResponse.json();
@@ -99,12 +98,12 @@ const config = await fs.readJSON(`${projectPath}/i18n.json`);
   for (const curLang of languages.filter((curLang) => curLang.code !== "en")) {
     if (curLang.percentage === 0) {
       console.log(
-        `${curLang.code}: skipping ${curLang.name} (${curLang.percentage}% translated)`
+        `${curLang.code}: skipping ${curLang.name} (${curLang.percentage}% translated)`,
       );
       continue;
     }
     console.log(
-      `${curLang.code}: importing ${curLang.name} (${curLang.percentage}% translated)`
+      `${curLang.code}: importing ${curLang.name} (${curLang.percentage}% translated)`,
     );
 
     const curLangInfoForm = new FormData();
@@ -120,7 +119,7 @@ const config = await fs.readJSON(`${projectPath}/i18n.json`);
       {
         method: "POST",
         body: curLangInfoForm,
-      }
+      },
     );
 
     const projectsResult = await curLangInfoResponse.json();

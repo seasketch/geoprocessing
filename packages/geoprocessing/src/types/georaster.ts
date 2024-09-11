@@ -9,13 +9,13 @@ export type TypedArray =
   | Float32Array
   | Float64Array;
 
-declare function parseGeoraster(
+export declare function parseGeoraster(
   /** raster pixel data, accepts variety of forms */
   data: object | string | Buffer | ArrayBuffer | TypedArray[][],
   /** raster metadata */
   metadata?: GeorasterMetadata,
   /** whether or not to print debug statements */
-  debug?: boolean
+  debug?: boolean,
 ): Promise<Georaster>;
 
 /** defines the new raster image to generate as a window in the source raster image.  Resolution (cell size) is determined from this */

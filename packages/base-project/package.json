@@ -17,6 +17,7 @@
     "test:matching": "npm run __test -- -t",
     "add:template": "geoprocessing add:template",
     "import:data": "geoprocessing import:data",
+    "lint:prettier": "prettier --write --ignore-unknown .",
     "reimport:data": "geoprocessing reimport:data",
     "precalc:data": "start-server-and-test 'http-server data/dist -c-1 -p 8001' http://localhost:8001 precalc:data_",
     "precalc:data_": "geoprocessing precalc:data",

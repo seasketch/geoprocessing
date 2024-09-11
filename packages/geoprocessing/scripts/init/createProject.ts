@@ -111,6 +111,7 @@ export async function createProject(
     ...JSON.parse(
       fs.readFileSync(`${baseProjectPath}/package.json`).toString(),
     ),
+    version: "0.1.0",
     name,
     description,
     author,

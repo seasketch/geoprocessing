@@ -173,6 +173,7 @@ fs.writeJSONSync(
     "author",
     "license",
     "scripts",
+    "lint-staged",
     "dependencies",
     "devDependencies",
   ]),

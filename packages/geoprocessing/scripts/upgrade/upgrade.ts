@@ -129,6 +129,8 @@ spinner.succeed("Update .vscode");
 
 //// migration ////
 
+spinner.start("Migrate config files");
+
 // add type module (esm enable)
 const pkg = fs.readJsonSync("package.json");
 pkg.type = "module";
@@ -153,6 +155,9 @@ if (fs.existsSync("geoprocessing.json")) {
 const pc = await fs.readFile("project/projectClient.ts", "utf8");
 const newPc = pc.replace("../geoprocessing.json", "./geoprocessing.json");
 fs.writeFile("project/projectClient.ts", newPc, "utf8");
+
+// copy prettier config files
+await $`cp -r ${GP_PATH}/dist/base-project/.prettier* .prettier*`;
 
 //// rekey package.json ////
 
@@ -179,6 +184,8 @@ fs.writeJSONSync(
   ]),
   { spaces: 2 },
 );
+
+spinner.succeed("Migrate config files");
 
 console.log(`Upgrade complete!
 

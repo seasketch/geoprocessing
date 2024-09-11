@@ -55,7 +55,7 @@
     "publish:stable": "npm run test && CI=1 lerna publish",
     "publish:backport": "npm run test && CI=1 lerna publish --preid backport --dist-tag=backport",
     "e2e_test": "./packages/geoprocessing/scripts/testing/initTestProjects.mjs",
-    "prepare": "npx husky",
+    "prepare": "husky",
     "publish:translation": "npx tsx packages/geoprocessing/src/i18n/bin/publishTerms.ts",
     "import:translation": "npx tsx packages/geoprocessing/src/i18n/bin/importTerms.ts",
     "sync:translation": "npm run extract:translationt && npm run publish:translation && npm run import:translation",

@@ -44,9 +44,6 @@
     "upgrade": "geoprocessing upgrade"
   },
   "lint-staged": {
-    "**/*.{js,mjs,cjs,ts,jsx,tsx}": [
-      "eslint --fix"
-    ],
     "*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
@@ -66,6 +63,7 @@
     "geojson-antimeridian-cut": "^0.1.0",
     "globby": "^14.0.2",
     "husky": "^9.1.5",
+    "prettier": "^3.3.3",
     "prop-types": "^15.8.1",
     "react-i18next": "^15.0.1",
     "storybook": "^8.2.9",

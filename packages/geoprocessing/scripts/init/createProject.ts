@@ -111,7 +111,6 @@ export async function createProject(
     ...JSON.parse(
       fs.readFileSync(`${baseProjectPath}/package.json`).toString(),
     ),
-    version: "0.1.0",
     name,
     description,
     author,
@@ -134,17 +133,17 @@ export async function createProject(
   };
 
   if (gpVersion) {
-    if (packageJSON.dependencies) {
-      packageJSON.dependencies["@seasketch/geoprocessing"] = gpVersion;
+    if (packageJSON.devDependencies) {
+      packageJSON.devDependencies["@seasketch/geoprocessing"] = gpVersion;
     } else {
-      packageJSON.dependencies = { "@seasketch/geoprocessing": gpVersion };
+      packageJSON.devDependencies = { "@seasketch/geoprocessing": gpVersion };
     }
     spinner.succeed(`Installing user-defined GP version ${gpVersion}`);
   } else {
-    if (packageJSON.dependencies) {
-      packageJSON.dependencies["@seasketch/geoprocessing"] = curGpVersion;
+    if (packageJSON.devDependencies) {
+      packageJSON.devDependencies["@seasketch/geoprocessing"] = curGpVersion;
     } else {
-      packageJSON.dependencies = {
+      packageJSON.devDependencies = {
         "@seasketch/geoprocessing": curGpVersion,
       };
     }

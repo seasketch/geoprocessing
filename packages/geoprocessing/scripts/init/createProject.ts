@@ -133,17 +133,17 @@ export async function createProject(
   };
 
   if (gpVersion) {
-    if (packageJSON.devDependencies) {
-      packageJSON.devDependencies["@seasketch/geoprocessing"] = gpVersion;
+    if (packageJSON.dependencies) {
+      packageJSON.dependencies["@seasketch/geoprocessing"] = gpVersion;
     } else {
-      packageJSON.devDependencies = { "@seasketch/geoprocessing": gpVersion };
+      packageJSON.dependencies = { "@seasketch/geoprocessing": gpVersion };
     }
     spinner.succeed(`Installing user-defined GP version ${gpVersion}`);
   } else {
-    if (packageJSON.devDependencies) {
-      packageJSON.devDependencies["@seasketch/geoprocessing"] = curGpVersion;
+    if (packageJSON.dependencies) {
+      packageJSON.dependencies["@seasketch/geoprocessing"] = curGpVersion;
     } else {
-      packageJSON.devDependencies = {
+      packageJSON.dependencies = {
         "@seasketch/geoprocessing": curGpVersion,
       };
     }

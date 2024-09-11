@@ -157,7 +157,7 @@ const newPc = pc.replace("../geoprocessing.json", "./geoprocessing.json");
 fs.writeFile("project/projectClient.ts", newPc, "utf8");
 
 // copy prettier config files
-await $`cp -r ${GP_PATH}/dist/base-project/.prettier* .prettier*`;
+await $`cp -r ${GP_PATH}/dist/base-project/.prettier* .`;
 
 //// rekey package.json ////
 

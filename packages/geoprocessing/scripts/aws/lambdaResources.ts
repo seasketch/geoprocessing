@@ -28,6 +28,14 @@ export const createLambdaStacks = (
     FUNCTIONS_PER_STACK,
   );
 
+  for (const group of functionGroups) {
+    console.log(
+      `Creating lambda stack with functions: ${group
+        .map((f) => f.title)
+        .join("\n ")}`,
+    );
+  }
+
   const lambdaStacks = functionGroups.map((funcGroup, i) => {
     const newStack = new LambdaStack(stack, `functions-group-${i}`, {
       ...props,

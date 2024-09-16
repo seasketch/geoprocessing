@@ -65,18 +65,6 @@ export const createWebSocketApi = (
     socketExecutePolicy,
   );
 
-  // Create custom routes for starting async geoprocessing functions via web socket
-  stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
-    const action = `start${asyncFunctionWithMeta.meta.title}`;
-    webSocketApi.addRoute(action, {
-      integration: new WebSocketLambdaIntegration(
-        `${action}Integration`,
-        asyncFunctionWithMeta.startFunc,
-      ),
-    });
-    // Note assume requestTemplates no longer needed
-  });
-
   /** Create auto-deployed production stage */
   createStage(stack, webSocketApi, config.STAGE_NAME);
 

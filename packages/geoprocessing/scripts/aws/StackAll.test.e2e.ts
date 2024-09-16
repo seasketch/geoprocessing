@@ -89,7 +89,7 @@ describe("GeoprocessingStack - all components", () => {
     rootTemplate.resourceCountIs("AWS::ApiGateway::Method", 10); // root (get, options), async (get, post, options), preprocessor (options, post), sync (get, post, options)
     rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Api", 1); // web socket api
     rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Stage", 1);
-    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Route", 4);
+    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Route", 3);
     rootTemplate.resourceCountIs("AWS::DynamoDB::Table", 3);
     rootTemplate.resourceCountIs("AWS::Lambda::Function", 6);
 

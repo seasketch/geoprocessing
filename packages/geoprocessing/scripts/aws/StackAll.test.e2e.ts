@@ -86,7 +86,7 @@ describe("GeoprocessingStack - all components", () => {
     rootTemplate.resourceCountIs("AWS::S3::Bucket", 3);
     rootTemplate.resourceCountIs("AWS::ApiGateway::RestApi", 1);
     rootTemplate.resourceCountIs("AWS::ApiGateway::Stage", 1);
-    rootTemplate.resourceCountIs("AWS::ApiGateway::Method", 2); // root (get, options), async (get, post, options), preprocessor (options, post), sync (get, post, options)
+    rootTemplate.resourceCountIs("AWS::ApiGateway::Method", 7); // root (get, options), async (get, post, options), preprocessor (options, post), sync (get, post, options)
     rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Api", 1); // web socket api
     rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Stage", 1);
     rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Route", 3);

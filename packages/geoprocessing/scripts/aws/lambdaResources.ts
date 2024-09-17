@@ -55,15 +55,15 @@ export const createLambdaStacks = (
   });
 
   // get all run lambdas and create policies for them to invoke sync lambdas
-  const runLambdas: Function[] = lambdaStacks.reduce<Function[]>(
-    (acc, curStack) => {
-      return [...acc, ...curStack.getAsyncRunLambdas()];
-    },
-    [],
-  );
-  lambdaStacks.forEach((stack) => {
-    stack.createLambdaSyncPolicies(runLambdas);
-  });
+  // const runLambdas: Function[] = lambdaStacks.reduce<Function[]>(
+  //   (acc, curStack) => {
+  //     return [...acc, ...curStack.getAsyncRunLambdas()];
+  //   },
+  //   [],
+  // );
+  // lambdaStacks.forEach((stack) => {
+  //   stack.createLambdaSyncPolicies(runLambdas);
+  // });
 
   return lambdaStacks;
 };

@@ -32,21 +32,21 @@ export const createRestApi = (stack: GeoprocessingStack) => {
   );
   restApi.root.addMethod("GET", metadataIntegration);
 
-  // Add route for each sync gp function
-  const syncFunctionsWithMeta = stack.getSyncFunctionsWithMeta();
-  syncFunctionsWithMeta.forEach((syncFunction) => {
-    const syncHandlerIntegration = new LambdaIntegration(syncFunction.func, {
-      requestTemplates: { "application/json": '{ "statusCode": "200" }' },
-    });
-    const resource = restApi.root.addResource(syncFunction.meta.title);
-    resource.addMethod("POST", syncHandlerIntegration);
-    // preprocessor has only POST
-    if (syncFunction.meta.purpose === "geoprocessing") {
-      resource.addMethod("GET", syncHandlerIntegration);
-    }
-  });
+  // // Add route for each sync gp function
+  // const syncFunctionsWithMeta = stack.getSyncFunctionsWithMeta();
+  // syncFunctionsWithMeta.forEach((syncFunction) => {
+  //   const syncHandlerIntegration = new LambdaIntegration(syncFunction.func, {
+  //     requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+  //   });
+  //   const resource = restApi.root.addResource(syncFunction.meta.title);
+  //   resource.addMethod("POST", syncHandlerIntegration);
+  //   // preprocessor has only POST
+  //   if (syncFunction.meta.purpose === "geoprocessing") {
+  //     resource.addMethod("GET", syncHandlerIntegration);
+  //   }
+  // });
 
-  // Add route for each async gp start function
+  // // Add route for each async gp start function
   // stack.getAsyncFunctionsWithMeta().forEach((asyncFunction) => {
   //   const asyncHandlerIntegration = new LambdaIntegration(
   //     asyncFunction.startFunc,

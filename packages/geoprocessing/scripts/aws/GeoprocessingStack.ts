@@ -46,6 +46,7 @@ export interface GeoprocessingStackProps extends StackProps {
   projectName: string;
   projectPath: string;
   manifest: Manifest;
+  functionsPerStack?: number;
 }
 
 /**
@@ -76,7 +77,7 @@ export class GeoprocessingStack extends Stack {
     super(scope, id, props);
     this.props = props;
 
-    this.lambdaStacks = createLambdaStacks(this, props);
+    this.lambdaStacks = createLambdaStacks(this, this.props);
     this.projectFunctions = createProjectFunctions(this);
     this.publicBuckets = createPublicBuckets(this);
 

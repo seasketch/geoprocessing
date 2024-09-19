@@ -28,7 +28,7 @@ export default async function createTestBuild(
     author: "Test",
     license: "UNLICENSED",
   };
-  fs.writeJSONSync(`${projectPath}/package.json`, pkgGeo);
+  fs.writeJSONSync(`${projectPath}/package.json`, pkgGeo, { spaces: 2 });
 
   // Create project assets
   let gpConfig: GeoprocessingJsonConfig = {
@@ -132,6 +132,38 @@ export default async function createTestBuild(
     );
   }
 
+  if (components.includes("asyncGeoprocessorWorker")) {
+    gpConfig = {
+      ...gpConfig,
+      geoprocessingFunctions: [
+        ...gpConfig.geoprocessingFunctions,
+        "src/functions/testAsyncGeoprocessorWorker.ts",
+      ],
+    };
+
+    fs.writeFileSync(
+      `${projectPath}/src/functions/testAsyncGeoprocessorWorker.ts`,
+      `
+    import { Feature, Point } from "geojson";
+    import { point } from "@turf/turf";
+    import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
+
+    const testAsyncGeoprocessorWorker = async (feature: Feature<Point>) => {
+      return point([0, 0]);
+    };
+
+    export default new PreprocessingHandler(testAsyncGeoprocessorWorker, {
+      title: "testAsyncGeoprocessorWorker",
+      description: "Test sync geoprocessor",
+      timeout: 40,
+      requiresProperties: [],
+      executionMode: "sync",
+      memory: 4096,
+    });
+    `,
+    );
+  }
+
   fs.ensureDirSync(`${projectPath}/project`);
 
   if (components.includes("client")) {
@@ -162,7 +194,9 @@ export default async function createTestBuild(
     );
   }
 
-  fs.writeJSONSync(`${projectPath}/project/geoprocessing.json`, gpConfig);
+  fs.writeJSONSync(`${projectPath}/project/geoprocessing.json`, gpConfig, {
+    spaces: 2,
+  });
 
   await buildProjectFunctions(projectPath, `${projectPath}/.build`);
 

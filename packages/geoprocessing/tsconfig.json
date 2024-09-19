@@ -76,6 +76,7 @@
     "cdk.out",
     "vitest*",
     "scripts/testing/*.mjs",
+    "scripts/__test__",
     "scripts/*.test.*"
   ]
 }

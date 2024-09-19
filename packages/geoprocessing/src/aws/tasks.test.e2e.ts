@@ -95,7 +95,7 @@ describe("DynamoDB local", () => {
         service: SERVICE_NAME,
       },
     });
-    console.log(JSON.stringify(item, null, 2));
+    // console.log(JSON.stringify(item, null, 2));
     expect(item.Item).toBeUndefined();
   }, 10000);
 
@@ -157,7 +157,7 @@ describe("DynamoDB local", () => {
     });
 
     // Should be three items under the one partition key (task id), the root and two chunks
-    console.log(JSON.stringify(items, null, 2));
+    // console.log(JSON.stringify(items, null, 2));
     expect(items.Count).toBe(3);
 
     const rootItem = items.Items?.find((item) => item.service === SERVICE_NAME);

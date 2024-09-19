@@ -63,6 +63,7 @@ export class LambdaStack extends NestedStack {
 
     // Create lambdas for all functions
     this.createProcessingFunctions();
+    this.createLambdaSyncPolicies();
   }
 
   getProcessingFunctions() {
@@ -214,8 +215,10 @@ export class LambdaStack extends NestedStack {
   /**
    * Given run lambda functions across all lambda stacks, creates policies allowing them to invoke sync lambdas within this lambda stack
    */
-  createLambdaSyncPolicies(runLambdas: Function[]) {
-    // Create invoke policy for each sync functions in this lambda stack
+  createLambdaSyncPolicies() {
+    const runLambdas: Function[] = this.getAsyncRunLambdas();
+
+    // Create invoke policy for each sync function in this lambda stack
     const invokeSyncLambdaPolicies = this.syncLambdaArns.map((arn) => {
       return new PolicyStatement({
         effect: Effect.ALLOW,

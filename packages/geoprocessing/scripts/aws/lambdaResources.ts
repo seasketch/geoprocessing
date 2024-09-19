@@ -6,7 +6,6 @@ import {
   isPreprocessingFunctionMetadata,
   ProcessingFunctionMetadata,
 } from "../manifest.js";
-import { Function } from "aws-cdk-lib/aws-lambda";
 import { keyBy } from "../../client-core.js";
 
 /**
@@ -126,17 +125,6 @@ export const createLambdaStacks = (
     });
 
     return newStack;
-  });
-
-  // get all run lambdas and create policies for them to invoke sync lambdas
-  const runLambdas: Function[] = lambdaStacks.reduce<Function[]>(
-    (acc, curStack) => {
-      return [...acc, ...curStack.getAsyncRunLambdas()];
-    },
-    [],
-  );
-  lambdaStacks.forEach((stack) => {
-    stack.createLambdaSyncPolicies(runLambdas);
   });
 
   return lambdaStacks;

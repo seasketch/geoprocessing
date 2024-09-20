@@ -91,11 +91,11 @@ export const createLambdaStacks = (
     }
   }
 
-  console.log(
-    "asyncFunctionWorkerMap",
-    JSON.stringify(asyncWorkerMap, null, 2),
-  );
-  console.log("workerAsyncMap", JSON.stringify(workerAsyncMap, null, 2));
+  // console.log(
+  //   "asyncFunctionWorkerMap",
+  //   JSON.stringify(asyncWorkerMap, null, 2),
+  // );
+  // console.log("workerAsyncMap", JSON.stringify(workerAsyncMap, null, 2));
 
   // top-level functions (no workers)
   const parentTitles = [...Object.keys(asyncWorkerMap), ...nonWorkerSyncTitles];

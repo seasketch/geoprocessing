@@ -85,7 +85,7 @@ export const createLambdaStacks = (
         asyncWorkerMap[baseTitle].includes(syncTitle) === false
       ) {
         throw new Error(
-          `If worker function ${syncTitle} is a worker of ${baseTitle} then it will need to be registered.  Use GeoprocessingHander workers option`,
+          `If function ${syncTitle} is a worker of ${baseTitle} then it will need to be registered in the ${baseTitle} GeoprocessingHandler using workers option. e.g. workers: ['${syncTitle}']`,
         );
       }
     }

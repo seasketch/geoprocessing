@@ -4,6 +4,7 @@ import { GeoprocessingNestedStackProps, LambdaStack } from "./LambdaStack.js";
 import {
   isGeoprocessingFunctionMetadata,
   isPreprocessingFunctionMetadata,
+  isSyncFunctionMetadata,
   ProcessingFunctionMetadata,
 } from "../manifest.js";
 import { keyBy } from "../../client-core.js";
@@ -17,7 +18,7 @@ export const createLambdaStacks = (
 ): LambdaStack[] => {
   const FUNCTIONS_PER_STACK = props.functionsPerStack || 20;
 
-  // create useful references to function metadata
+  // create useful arrays and mappings of function metadata
   const syncFunctionMetas = stack.getSyncFunctionMetas();
   const asyncFunctionMetas = stack.getAsyncFunctionMetas();
 
@@ -27,6 +28,7 @@ export const createLambdaStacks = (
   const asyncTitles = Object.keys(asyncFunctionMap);
   const syncTitles = Object.keys(syncFunctionMap);
 
+  // Map of async function titles to their worker function titles
   const asyncWorkerMap: Record<string, string[]> = {};
   for (const func of props.manifest.geoprocessingFunctions) {
     if (func.executionMode === "async") {
@@ -34,23 +36,66 @@ export const createLambdaStacks = (
     }
   }
 
-  const nonWorkerSyncTitles: string[] = [];
-
-  for (const syncTitle of syncTitles) {
-    if (syncTitle.includes("Worker")) {
-      const baseTitle = syncTitle.replace("Worker", "");
-      if (asyncTitles.includes(baseTitle)) {
-        asyncWorkerMap[baseTitle].push(syncTitle); // connect to worker
+  for (const asyncFuncMeta of asyncFunctionMetas) {
+    if (asyncFuncMeta.workers) {
+      for (const worker of asyncFuncMeta.workers) {
+        const workerMeta = syncFunctionMap[worker];
+        if (workerMeta && isSyncFunctionMetadata(workerMeta)) {
+          asyncWorkerMap[asyncFuncMeta.title].push(worker);
+        } else {
+          throw new Error(
+            `worker function ${worker} registered by ${asyncFuncMeta.title} not found in manifest or not a sync geoprocessing function`,
+          );
+        }
       }
-    } else {
-      nonWorkerSyncTitles.push(syncTitle); // non-worker
     }
   }
 
-  // console.log(
-  //   "asyncFunctionWorkerMap",
-  //   JSON.stringify(asyncWorkerMap, null, 2),
-  // );
+  // Map of worker function titles to their parent function title
+  const workerAsyncMap: Record<string, string> = {};
+  for (const func of props.manifest.geoprocessingFunctions) {
+    if (func.workers) {
+      for (const worker of func.workers) {
+        if (workerAsyncMap[worker]) {
+          throw new Error(
+            `Worker function ${worker} is used by more than one parent function: ${workerAsyncMap[worker]} and ${func.title}`,
+          );
+        } else {
+          workerAsyncMap[worker] = func.title;
+        }
+      }
+    }
+  }
+
+  // Compile list of sync functions that are not used as workers
+  const nonWorkerSyncTitles: string[] = [];
+  for (const syncTitle of syncTitles) {
+    if (!workerAsyncMap[syncTitle]) {
+      nonWorkerSyncTitles.push(syncTitle);
+    }
+  }
+
+  for (const syncTitle of syncTitles) {
+    // If worker function is same title as parent + 'Worker' but not registered with it, then throw
+    if (syncTitle.includes("Worker")) {
+      const baseTitle = syncTitle.replace("Worker", "");
+      if (
+        asyncTitles.includes(baseTitle) &&
+        asyncWorkerMap[baseTitle] &&
+        asyncWorkerMap[baseTitle].includes(syncTitle) === false
+      ) {
+        throw new Error(
+          `If worker function ${syncTitle} is a worker of ${baseTitle} then it will need to be registered.  Use GeoprocessingHander workers option`,
+        );
+      }
+    }
+  }
+
+  console.log(
+    "asyncFunctionWorkerMap",
+    JSON.stringify(asyncWorkerMap, null, 2),
+  );
+  console.log("workerAsyncMap", JSON.stringify(workerAsyncMap, null, 2));
 
   // top-level functions (no workers)
   const parentTitles = [...Object.keys(asyncWorkerMap), ...nonWorkerSyncTitles];

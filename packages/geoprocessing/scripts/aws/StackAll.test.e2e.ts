@@ -187,4 +187,69 @@ describe("GeoprocessingStack - all components", () => {
       Runtime: config.NODE_RUNTIME.name,
     });
   }, 200000);
+
+  test("GeoprocessingStack - double worker use should throw", async () => {
+    await setupBuildDirs(projectPath);
+
+    const manifest = await createTestBuild(
+      projectName + "_doubleWorker",
+      projectPath,
+      [
+        "preprocessor",
+        "syncGeoprocessor",
+        "asyncGeoprocessor",
+        "asyncGeoprocessorTwoSameWorker",
+        "asyncGeoprocessorWorker",
+        "client",
+      ],
+    );
+
+    expect(manifest.clients.length).toBe(1);
+    expect(manifest.preprocessingFunctions.length).toBe(1);
+    expect(manifest.geoprocessingFunctions.length).toBe(4);
+
+    const app = new App();
+    expect(
+      () =>
+        new GeoprocessingStack(app, projectName, {
+          env: { region: manifest.region },
+          projectName,
+          manifest,
+          projectPath,
+          functionsPerStack: 2,
+        }),
+    ).toThrowError();
+  }, 200000);
+
+  test("GeoprocessingStack - missing worker option should throw", async () => {
+    await setupBuildDirs(projectPath);
+
+    const manifest = await createTestBuild(
+      projectName + "_missingWorker",
+      projectPath,
+      [
+        "preprocessor",
+        "syncGeoprocessor",
+        "asyncGeoprocessorMissingWork",
+        "asyncGeoprocessorWorker",
+        "client",
+      ],
+    );
+
+    expect(manifest.clients.length).toBe(1);
+    expect(manifest.preprocessingFunctions.length).toBe(1);
+    expect(manifest.geoprocessingFunctions.length).toBe(3);
+
+    const app = new App();
+    expect(
+      () =>
+        new GeoprocessingStack(app, projectName, {
+          env: { region: manifest.region },
+          projectName,
+          manifest,
+          projectPath,
+          functionsPerStack: 2,
+        }),
+    ).toThrowError();
+  }, 200000);
 });

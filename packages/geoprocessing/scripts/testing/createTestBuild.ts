@@ -82,13 +82,13 @@ export default async function createTestBuild(
       `
     import { Feature, Point } from "geojson";
     import { point } from "@turf/turf";
-    import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
+    import { GeoprocessingHandler } from "../../../../../src/aws/GeoprocessingHandler.js";
 
     const testSyncGeoprocessor = async (feature: Feature<Point>) => {
       return point([0, 0]);
     };
 
-    export default new PreprocessingHandler(testSyncGeoprocessor, {
+    export default new GeoprocessingHandler(testSyncGeoprocessor, {
       title: "testSyncGeoprocessor",
       description: "Test sync geoprocessor",
       timeout: 40,
@@ -114,19 +114,85 @@ export default async function createTestBuild(
       `
     import { Feature, Point } from "geojson";
     import { point } from "@turf/turf";
-    import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
+    import { GeoprocessingHandler } from "../../../../../src/aws/GeoprocessingHandler.js";
 
     const testAsyncGeoprocessor = async (feature: Feature<Point>) => {
       return point([0, 0]);
     };
 
-    export default new PreprocessingHandler(testAsyncGeoprocessor, {
+    export default new GeoprocessingHandler(testAsyncGeoprocessor, {
       title: "testAsyncGeoprocessor",
       description: "Test async geoprocessor",
       timeout: 40,
       requiresProperties: [],
       executionMode: "async",
       memory: 4096,
+      workers: ['testWorker'],
+    });
+    `,
+    );
+  }
+
+  if (components.includes("asyncGeoprocessorMissingWork")) {
+    gpConfig = {
+      ...gpConfig,
+      geoprocessingFunctions: [
+        ...gpConfig.geoprocessingFunctions,
+        "src/functions/testAsyncGeoprocessorMissingWork.ts",
+      ],
+    };
+
+    fs.writeFileSync(
+      `${projectPath}/src/functions/testAsyncGeoprocessorMissingWork.ts`,
+      `
+    import { Feature, Point } from "geojson";
+    import { point } from "@turf/turf";
+    import { GeoprocessingHandler } from "../../../../../src/aws/GeoprocessingHandler.js";
+
+    const testAsyncGeoprocessorMissingWork = async (feature: Feature<Point>) => {
+      return point([0, 0]);
+    };
+
+    export default new GeoprocessingHandler(testAsyncGeoprocessorMissingWork, {
+      title: "test",
+      description: "Test async geoprocessor",
+      timeout: 40,
+      requiresProperties: [],
+      executionMode: "async",
+      memory: 4096
+    });
+    `,
+    );
+  }
+
+  if (components.includes("asyncGeoprocessorTwoSameWorker")) {
+    gpConfig = {
+      ...gpConfig,
+      geoprocessingFunctions: [
+        ...gpConfig.geoprocessingFunctions,
+        "src/functions/testAsyncGeoprocessorTwo.ts",
+      ],
+    };
+
+    fs.writeFileSync(
+      `${projectPath}/src/functions/testAsyncGeoprocessorTwo.ts`,
+      `
+    import { Feature, Point } from "geojson";
+    import { point } from "@turf/turf";
+    import { GeoprocessingHandler } from "../../../../../src/aws/GeoprocessingHandler.js";
+
+    const testAsyncGeoprocessorTwo = async (feature: Feature<Point>) => {
+      return point([0, 0]);
+    };
+
+    export default new GeoprocessingHandler(testAsyncGeoprocessorTwo, {
+      title: "testAsyncGeoprocessorTwo",
+      description: "Test async geoprocessor",
+      timeout: 40,
+      requiresProperties: [],
+      executionMode: "async",
+      memory: 4096,
+      workers: ['testWorker'],
     });
     `,
     );
@@ -146,14 +212,14 @@ export default async function createTestBuild(
       `
     import { Feature, Point } from "geojson";
     import { point } from "@turf/turf";
-    import { PreprocessingHandler } from "../../../../../src/aws/PreprocessingHandler.js";
+    import { GeoprocessingHandler } from "../../../../../src/aws/GeoprocessingHandler.js";
 
     const testAsyncGeoprocessorWorker = async (feature: Feature<Point>) => {
       return point([0, 0]);
     };
 
-    export default new PreprocessingHandler(testAsyncGeoprocessorWorker, {
-      title: "testAsyncGeoprocessorWorker",
+    export default new GeoprocessingHandler(testAsyncGeoprocessorWorker, {
+      title: "testWorker",
       description: "Test sync geoprocessor",
       timeout: 40,
       requiresProperties: [],

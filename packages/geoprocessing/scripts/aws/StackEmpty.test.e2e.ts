@@ -15,7 +15,7 @@ const projectPath = path.join(rootPath, projectName);
 describe("GeoprocessingStack - empty", () => {
   afterAll(() => cleanupBuildDirs(projectPath));
 
-  it("should create a valid stack", async () => {
+  it("GeoprocessingStack - empty", async () => {
     await setupBuildDirs(projectPath);
 
     const manifest = await createTestBuild(projectName, projectPath, []);

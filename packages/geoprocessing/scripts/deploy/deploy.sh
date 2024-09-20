@@ -11,5 +11,5 @@ else
   cd node_modules/@seasketch/geoprocessing
   export GP_ROOT=$(pwd)
 fi
-npx aws-cdk --app "node dist/scripts/deploy/createStack.js" --outputs-file ../../../cdk-outputs.json --require-approval never deploy
+npx aws-cdk --app "node dist/scripts/deploy/deployStack.js" --outputs-file ../../../cdk-outputs.json --require-approval never deploy
 node dist/scripts/deploy/fixIndexHtmlCacheControl.js

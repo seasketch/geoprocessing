@@ -16,7 +16,7 @@ const manifest: Manifest = JSON.parse(
     .toString(),
 );
 
-export async function createStack() {
+export async function deployStack() {
   const app = new App();
   const stack = new GeoprocessingStack(app, `gp-${manifest.title}`, {
     env: { region: manifest.region },
@@ -28,4 +28,4 @@ export async function createStack() {
   Tags.of(stack).add("Cost Center", "seasketch-geoprocessing");
   Tags.of(stack).add("Geoprocessing Project", manifest.title);
 }
-createStack();
+deployStack();

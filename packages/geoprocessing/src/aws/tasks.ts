@@ -152,15 +152,18 @@ export default class TasksModel {
     const shouldCache =
       task.disableCache === undefined || task.disableCache === false;
 
-    console.log("shouldCache", shouldCache);
+    if (process.env.NODE_ENV !== "test")
+      console.log("shouldCache", shouldCache);
 
     if (shouldCache) {
       const tsStrings = Date.now();
-      console.time(`split strings - ${tsStrings}`);
+      if (process.env.NODE_ENV !== "test")
+        console.time(`split strings - ${tsStrings}`);
       const jsonStrings = this.toJsonStrings(results, {
         minSplitSizeBytes: options.minSplitSizeBytes,
       });
-      console.timeEnd(`split strings - ${tsStrings}`);
+      if (process.env.NODE_ENV !== "test")
+        console.timeEnd(`split strings - ${tsStrings}`);
       const numJsonStrings = jsonStrings.length;
 
       const updateCommands: UpdateCommand[] = [];
@@ -199,8 +202,11 @@ export default class TasksModel {
       // Store each JSON substring as a separate dynamodb item, with chunk index
       // all under same partition key (task.id) as root item for easy retrieval
       jsonStrings.forEach((chunk, index) => {
-        console.log("chunk", chunk);
-        console.log(`Chunk ${index} - ${chunk.length} length`);
+        if (process.env.NODE_ENV !== "test") {
+          console.log("chunk", chunk);
+          console.log(`Chunk ${index} - ${chunk.length} length`);
+        }
+
         updateCommands.push(
           new UpdateCommand({
             TableName: this.table,
@@ -224,12 +230,18 @@ export default class TasksModel {
         );
       });
 
-      console.log(`Saving items, root + ${jsonStrings.length} chunks`);
-      const tsSaveChunk = Date.now();
+      if (process.env.NODE_ENV !== "test") {
+        console.log(`Saving items, root + ${jsonStrings.length} chunks`);
+      }
 
-      console.time(`save items - ${tsSaveChunk}`);
+      const tsSaveChunk = Date.now();
+      if (process.env.NODE_ENV !== "test")
+        console.time(`save items - ${tsSaveChunk}`);
+
       await updateCommandsSync(this.db, updateCommands);
-      console.timeEnd(`save items - ${tsSaveChunk}`);
+
+      if (process.env.NODE_ENV !== "test")
+        console.timeEnd(`save items - ${tsSaveChunk}`);
     }
 
     return {
@@ -412,10 +424,12 @@ export default class TasksModel {
       );
 
       // console.log("serviceItemsLength", serviceItems.length);
-      console.log(
-        "serviceItems",
-        serviceItems.map((item) => item.service).join(", "),
-      );
+
+      if (process.env.NODE_ENV !== "test")
+        console.log(
+          "serviceItems",
+          serviceItems.map((item) => item.service).join(", "),
+        );
 
       const rootItemIndex = serviceItems.findIndex(
         (item) => item.service === service,
@@ -449,7 +463,8 @@ export default class TasksModel {
 
       // If chunk data, merge it back into root item
       if (chunkItems.length > 0) {
-        console.log(`Merging ${chunkItems.length} chunks`);
+        if (process.env.NODE_ENV !== "test")
+          console.log(`Merging ${chunkItems.length} chunks`);
         // parse chunk number from service name and sort by chunk number
         const chunkStrings = chunkItems
           .sort((a, b) => {

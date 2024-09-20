@@ -91,6 +91,8 @@ export interface GeoprocessingHandlerOptions {
    * work with specified projects.
    */
   issAllowList?: string[];
+  /** Names of worker functions used by this function.  Must be sync geoprocessing functions */
+  workers?: string[];
 }
 
 export interface PreprocessingHandlerOptions {

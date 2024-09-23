@@ -46,7 +46,7 @@ describe("GeoprocessingStack - all components", () => {
     const lambdaStacks = stack.node.children.filter(
       (child) => child instanceof NestedStack,
     );
-    expect(lambdaStacks.length).toBe(2);
+    expect(lambdaStacks.length).toBe(3);
 
     // Lambda stack CDK template assertions
 
@@ -56,6 +56,11 @@ describe("GeoprocessingStack - all components", () => {
 
     const lambdaStackTemplate1 = Template.fromStack(
       lambdaStacks[1] as NestedStack,
+    );
+
+    // worker stack
+    const lambdaStackTemplate2 = Template.fromStack(
+      lambdaStacks[2] as NestedStack,
     );
 
     // Generate JSON snapshot.  Use to manually assess what cdk synth produces and write tests
@@ -166,10 +171,10 @@ describe("GeoprocessingStack - all components", () => {
       Runtime: config.NODE_RUNTIME.name,
     });
 
-    // and sync worker function
+    // and preprocessor resources
     lambdaStackTemplate0.hasResourceProperties("AWS::Lambda::Function", {
-      FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[2].title}`,
-      Handler: getHandlerPointer(manifest.geoprocessingFunctions[2]),
+      FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
+      Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
       Runtime: config.NODE_RUNTIME.name,
     });
 
@@ -180,10 +185,10 @@ describe("GeoprocessingStack - all components", () => {
       Runtime: config.NODE_RUNTIME.name,
     });
 
-    // and preprocessor resources
-    lambdaStackTemplate1.hasResourceProperties("AWS::Lambda::Function", {
-      FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
-      Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
+    // and worker function
+    lambdaStackTemplate2.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[2].title}`,
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[2]),
       Runtime: config.NODE_RUNTIME.name,
     });
   }, 200000);

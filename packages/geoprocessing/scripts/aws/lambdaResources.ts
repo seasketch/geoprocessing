@@ -8,6 +8,8 @@ import {
   ProcessingFunctionMetadata,
 } from "../manifest.js";
 import { keyBy } from "../../client-core.js";
+import { CfnOutput } from "aws-cdk-lib";
+import { chunk } from "../../src/index.js";
 
 /**
  * Creates lambda sub-stacks, as many as needed so as not to break resource limit
@@ -91,61 +93,24 @@ export const createLambdaStacks = (
     }
   }
 
-  // console.log(
-  //   "asyncFunctionWorkerMap",
-  //   JSON.stringify(asyncWorkerMap, null, 2),
-  // );
-  // console.log("workerAsyncMap", JSON.stringify(workerAsyncMap, null, 2));
+  const functionTitles = [
+    ...Object.keys(asyncWorkerMap),
+    ...nonWorkerSyncTitles,
+  ];
+  const workerTitles = Object.keys(workerAsyncMap);
 
-  // top-level functions (no workers)
-  const parentTitles = [...Object.keys(asyncWorkerMap), ...nonWorkerSyncTitles];
-
-  // create map of parent function titles to whether they've been allocated (default false)
-  const allocatedParentMap = parentTitles.reduce<Record<string, boolean>>(
-    (acc, cur) => {
-      return { ...acc, [cur]: false };
-    },
-    {},
+  const functionMetas = functionTitles.map(
+    (title) => asyncFunctionMap[title] || syncFunctionMap[title],
   );
+  const workerMetas = workerTitles.map((title) => syncFunctionMap[title]);
 
-  let numUnallocated = parentTitles.length;
-  const functionGroups: ProcessingFunctionMetadata[][] = [];
+  // console.log("functionMetas", JSON.stringify(functionMetas, null, 2));
+  // console.log("workerMetas", JSON.stringify(workerMetas, null, 2));
 
-  // allocate functions to stack groups
-  while (numUnallocated > 0) {
-    const curGroup: ProcessingFunctionMetadata[] = [];
-
-    for (const parentTitle of parentTitles) {
-      // Skip scenarios - all allocated, current stack is full, function already allocated
-      if (
-        numUnallocated === 0 ||
-        curGroup.length >= FUNCTIONS_PER_STACK ||
-        allocatedParentMap[parentTitle] === true
-      ) {
-        continue;
-      }
-
-      if (asyncWorkerMap[parentTitle]) {
-        // async - make sure enough room for parent + workers
-        const numFunctions = 1 + asyncWorkerMap[parentTitle].length;
-        if (curGroup.length + numFunctions <= FUNCTIONS_PER_STACK) {
-          curGroup.push(asyncFunctionMap[parentTitle]);
-          for (const workerTitle of asyncWorkerMap[parentTitle]) {
-            curGroup.push(syncFunctionMap[workerTitle]);
-          }
-        }
-      } else {
-        // sync
-        curGroup.push(syncFunctionMap[parentTitle]);
-      }
-
-      allocatedParentMap[parentTitle] = true;
-      numUnallocated -= 1;
-    }
-
-    // This function group is full as its gonna get
-    functionGroups.push(curGroup);
-  }
+  const functionGroups: ProcessingFunctionMetadata[][] = chunk(
+    functionMetas.sort((a, b) => a.title.localeCompare(b.title)),
+    FUNCTIONS_PER_STACK,
+  );
 
   functionGroups.forEach((group, index) => {
     console.log(
@@ -154,7 +119,27 @@ export const createLambdaStacks = (
     console.log("");
   });
 
-  const lambdaStacks = functionGroups.map((funcGroup, i) => {
+  const workerGroups: ProcessingFunctionMetadata[][] = chunk(
+    workerMetas.sort((a, b) => a.title.localeCompare(b.title)),
+    FUNCTIONS_PER_STACK,
+  );
+
+  workerGroups.forEach((group, index) => {
+    console.log(
+      `Worker stack ${index}:\n ${group.map((f) => f.title).join("\n ")}`,
+    );
+    console.log("");
+  });
+
+  new CfnOutput(stack, "functionGroups", {
+    value: JSON.stringify(functionGroups),
+  });
+
+  new CfnOutput(stack, "workerGroups", {
+    value: JSON.stringify(workerGroups),
+  });
+
+  const functionStacks = functionGroups.map((funcGroup, i) => {
     const newStack = new LambdaStack(stack, `functions-group-${i}`, {
       ...props,
       manifest: {
@@ -172,5 +157,23 @@ export const createLambdaStacks = (
     return newStack;
   });
 
-  return lambdaStacks;
+  const workerStacks = workerGroups.map((workerGroup, i) => {
+    const newStack = new LambdaStack(stack, `workers-group-${i}`, {
+      ...props,
+      manifest: {
+        // shave down manifest to just the functions in this group
+        ...props.manifest,
+        preprocessingFunctions: workerGroup.filter(
+          isPreprocessingFunctionMetadata,
+        ),
+        geoprocessingFunctions: workerGroup.filter(
+          isGeoprocessingFunctionMetadata,
+        ),
+      },
+    });
+
+    return newStack;
+  });
+
+  return [...functionStacks, ...workerStacks];
 };

@@ -29,11 +29,34 @@ cf.describeStacks({ StackName: `gp-${packageName}` }, (err, data) => {
   if (!data.Stacks || !data.Stacks.length) {
     throw new Error(`No stack named gp-${packageName}`);
   }
+
   const Outputs = data.Stacks[0].Outputs;
-  const output = Outputs?.find((o) => /apiEndpoint/.test(o.OutputKey || ""));
-  if (!output) {
-    throw new Error("Could not find output named ProjectRoot");
+  if (!Outputs) {
+    throw new Error("Missing outputs");
   }
-  console.log(output.OutputValue);
+
+  console.log(
+    `REST service URL:    ${
+      Outputs.find((o) => /restApiUrl/.test(o.OutputKey || ""))?.OutputValue
+    }`,
+  );
+  console.log(
+    `Web socket URL:      ${
+      Outputs.find((o) => /socketApiUrl/.test(o.OutputKey || ""))?.OutputValue
+    }`,
+  );
+  console.log(
+    `Dataset bucket:      ${
+      Outputs.find((o) => /datasetBucketUrl/.test(o.OutputKey || ""))
+        ?.OutputValue
+    }`,
+  );
+  console.log(
+    `Result bucket:       ${
+      Outputs.find((o) => /resultBucketUrl/.test(o.OutputKey || ""))
+        ?.OutputValue
+    }`,
+  );
+
   process.exit();
 });

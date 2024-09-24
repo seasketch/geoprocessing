@@ -31,6 +31,9 @@ export const createLambdaStacks = (
   const asyncTitles = Object.keys(asyncFunctionMap);
   const syncTitles = Object.keys(syncFunctionMap);
 
+  console.log("functionGroupsAlready", props.functionGroups);
+  console.log("workerGroupsAlready", props.workerGroups);
+
   // Map of async function titles to their worker function titles
   const asyncWorkerMap: Record<string, string[]> = {};
   for (const func of props.manifest.geoprocessingFunctions) {
@@ -133,11 +136,11 @@ export const createLambdaStacks = (
   });
 
   new CfnOutput(stack, "functionGroups", {
-    value: JSON.stringify(functionGroups),
+    value: JSON.stringify(functionGroups.map((g) => g.map((f) => f.title))),
   });
 
   new CfnOutput(stack, "workerGroups", {
-    value: JSON.stringify(workerGroups),
+    value: JSON.stringify(workerGroups.map((g) => g.map((f) => f.title))),
   });
 
   const functionStacks = functionGroups.map((funcGroup, i) => {

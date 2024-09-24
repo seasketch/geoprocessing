@@ -26,7 +26,8 @@ export interface GeoprocessingNestedStackProps extends NestedStackProps {
   projectPath: string;
   manifest: Manifest;
   functionsPerStack?: number;
-  functionGroups?: ProcessingFunctionMetadata[][];
+  functionGroups?: string[][];
+  workerGroups?: string[][];
 }
 
 /**

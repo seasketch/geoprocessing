@@ -47,6 +47,8 @@ export interface GeoprocessingStackProps extends StackProps {
   projectPath: string;
   manifest: Manifest;
   functionsPerStack?: number;
+  functionGroups?: string[][];
+  workerGroups?: string[][];
 }
 
 /**

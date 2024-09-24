@@ -30,7 +30,7 @@ export interface GeoprocessingNestedStackProps extends NestedStackProps {
   manifest: Manifest;
   /** maximum number of functions to allow per LambdaStack */
   functionsPerStack?: number;
-  /** State of function stacks if already deployed (by function title) */
+  /** State of function stacks if already deployed (by function title). */
   existingFunctionStacks?: string[][];
   /** State of worker stacks if already deployed (by function title) */
   existingWorkerStacks?: string[][];

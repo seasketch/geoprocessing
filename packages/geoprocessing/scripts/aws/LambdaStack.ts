@@ -22,12 +22,18 @@ import {
 import config from "./config.js";
 import path from "path";
 export interface GeoprocessingNestedStackProps extends NestedStackProps {
+  /** Name of the geoprocessing project */
   projectName: string;
+  /** Path to top-level of geoprocessing project */
   projectPath: string;
+  /** Manifest used to figure out what resources should be created for this stack */
   manifest: Manifest;
+  /** maximum number of functions to allow per LambdaStack */
   functionsPerStack?: number;
-  functionGroups?: string[][];
-  workerGroups?: string[][];
+  /** State of function stacks if already deployed (by function title) */
+  existingFunctionStacks?: string[][];
+  /** State of worker stacks if already deployed (by function title) */
+  existingWorkerStacks?: string[][];
 }
 
 /**

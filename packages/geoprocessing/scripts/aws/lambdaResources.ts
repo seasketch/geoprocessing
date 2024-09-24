@@ -2,6 +2,7 @@ import { GeoprocessingStack } from "./GeoprocessingStack.js";
 import { GeoprocessingNestedStackProps, LambdaStack } from "./LambdaStack.js";
 
 import {
+  GeoprocessingFunctionMetadata,
   isGeoprocessingFunctionMetadata,
   isPreprocessingFunctionMetadata,
   isSyncFunctionMetadata,
@@ -9,7 +10,6 @@ import {
 } from "../manifest.js";
 import { keyBy } from "../../client-core.js";
 import { CfnOutput } from "aws-cdk-lib";
-import { chunk } from "../../src/index.js";
 import { Function } from "aws-cdk-lib/aws-lambda";
 
 /**
@@ -31,8 +31,8 @@ export const createLambdaStacks = (
   const asyncTitles = Object.keys(asyncFunctionMap);
   const syncTitles = Object.keys(syncFunctionMap);
 
-  console.log("functionGroupsAlready", props.functionGroups);
-  console.log("workerGroupsAlready", props.workerGroups);
+  console.log("functionGroupsAlready", props.existingFunctionStacks);
+  console.log("workerGroupsAlready", props.existingWorkerStacks);
 
   // Map of async function titles to their worker function titles
   const asyncWorkerMap: Record<string, string[]> = {};
@@ -97,22 +97,32 @@ export const createLambdaStacks = (
     }
   }
 
+  // console.log("functionMetas", JSON.stringify(functionMetas, null, 2));
+  // console.log("workerMetas", JSON.stringify(workerMetas, null, 2));
+
+  // Allocate functions to stack groups
+
   const functionTitles = [
     ...Object.keys(asyncWorkerMap),
     ...nonWorkerSyncTitles,
   ];
-  const workerTitles = Object.keys(workerAsyncMap);
-
   const functionMetas = functionTitles.map(
     (title) => asyncFunctionMap[title] || syncFunctionMap[title],
   );
-  const workerMetas = workerTitles.map((title) => syncFunctionMap[title]);
+  const functionMap = keyBy(functionMetas, (f) => f.title);
 
-  // console.log("functionMetas", JSON.stringify(functionMetas, null, 2));
-  // console.log("workerMetas", JSON.stringify(workerMetas, null, 2));
+  const propFunctionGroups: GeoprocessingFunctionMetadata[][] =
+    props.existingFunctionStacks
+      ? props.existingFunctionStacks.map((g) =>
+          g
+            .filter((title) => functionTitles.includes(title)) // filter out any titles that are not in manifest this time
+            .map((title) => asyncFunctionMap[title] || syncFunctionMap[title]),
+        )
+      : [];
 
-  const functionGroups: ProcessingFunctionMetadata[][] = chunk(
-    functionMetas.sort((a, b) => a.title.localeCompare(b.title)),
+  const functionGroups = allocateFunctionsToGroups(
+    functionMap,
+    propFunctionGroups,
     FUNCTIONS_PER_STACK,
   );
 
@@ -123,24 +133,8 @@ export const createLambdaStacks = (
     console.log("");
   });
 
-  const workerGroups: ProcessingFunctionMetadata[][] = chunk(
-    workerMetas.sort((a, b) => a.title.localeCompare(b.title)),
-    FUNCTIONS_PER_STACK,
-  );
-
-  workerGroups.forEach((group, index) => {
-    console.log(
-      `Worker stack ${index}:\n ${group.map((f) => f.title).join("\n ")}`,
-    );
-    console.log("");
-  });
-
-  new CfnOutput(stack, "functionGroups", {
+  new CfnOutput(stack, "stacksFunction", {
     value: JSON.stringify(functionGroups.map((g) => g.map((f) => f.title))),
-  });
-
-  new CfnOutput(stack, "workerGroups", {
-    value: JSON.stringify(workerGroups.map((g) => g.map((f) => f.title))),
   });
 
   const functionStacks = functionGroups.map((funcGroup, i) => {
@@ -159,6 +153,39 @@ export const createLambdaStacks = (
     });
 
     return newStack;
+  });
+
+  // Allocate workers to stack groups
+
+  const workerTitles = Object.keys(workerAsyncMap);
+  const workerMetas = workerTitles.map((title) => syncFunctionMap[title]);
+  const workerMap = keyBy(workerMetas, (f) => f.title);
+
+  const propWorkerGroups: ProcessingFunctionMetadata[][] =
+    props.existingWorkerStacks
+      ? props.existingWorkerStacks.map(
+          (g) =>
+            g
+              .filter((title) => workerTitles.includes(title))
+              .map((title) => workerMap[title]), // filter out any titles that are not in manifest this time
+        )
+      : [];
+
+  const workerGroups = allocateFunctionsToGroups(
+    workerMap,
+    propWorkerGroups,
+    FUNCTIONS_PER_STACK,
+  );
+
+  workerGroups.forEach((group, index) => {
+    console.log(
+      `Worker stack ${index}:\n ${group.map((f) => f.title).join("\n ")}`,
+    );
+    console.log("");
+  });
+
+  new CfnOutput(stack, "stacksWorker", {
+    value: JSON.stringify(workerGroups.map((g) => g.map((f) => f.title))),
   });
 
   const workerStacks = workerGroups.map((workerGroup, i) => {
@@ -192,3 +219,75 @@ export const createLambdaStacks = (
 
   return [...functionStacks, ...workerStacks];
 };
+
+function allocateFunctionsToGroups(
+  functionMap: Record<string, ProcessingFunctionMetadata>,
+  existingGroups: ProcessingFunctionMetadata[][],
+  functionsPerStack: number,
+) {
+  const functionTitles = Object.keys(functionMap);
+  let numUnallocatedFunctions = functionTitles.length;
+  const functionGroups: ProcessingFunctionMetadata[][] = [];
+  let curGroupIndex = 0;
+
+  const allocatedFunctionMap = functionTitles.reduce<Record<string, boolean>>(
+    (acc, cur) => {
+      return { ...acc, [cur]: false };
+    },
+    {},
+  );
+
+  let curLoop = 0;
+  const maxLoops = 500;
+
+  while (numUnallocatedFunctions > 0) {
+    // Use existing function group if available
+    if (existingGroups.length > 0 && curGroupIndex < existingGroups.length) {
+      const existingFunctions = existingGroups[curGroupIndex];
+      // skip empty groups
+      if (existingFunctions.length === 0) {
+        curGroupIndex += 1;
+        continue;
+      }
+
+      if (existingFunctions) {
+        functionGroups.push(existingFunctions);
+        numUnallocatedFunctions -= existingFunctions.length;
+        existingFunctions.forEach(
+          (f) => (allocatedFunctionMap[f.title] = true),
+        );
+        // move on, do not try to fill group more
+        curGroupIndex += 1;
+        continue;
+      }
+    }
+
+    // We must be done with existing groups, so create new group
+    const curGroup: ProcessingFunctionMetadata[] = [];
+
+    for (const functionTitle of functionTitles) {
+      // Skip scenarios - all allocated, current stack is full, function already allocated
+      if (
+        numUnallocatedFunctions === 0 ||
+        curGroup.length >= functionsPerStack ||
+        allocatedFunctionMap[functionTitle] === true
+      ) {
+        continue;
+      }
+
+      curGroup.push(functionMap[functionTitle]);
+
+      allocatedFunctionMap[functionTitle] = true;
+      numUnallocatedFunctions -= 1;
+      curLoop += 1;
+      if (curLoop > maxLoops) {
+        throw new Error(`Too many loops while allocating functions to groups`);
+      }
+    }
+
+    // This function group is full as its gonna get
+    functionGroups.push(curGroup);
+  }
+
+  return functionGroups;
+}

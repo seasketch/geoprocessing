@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { App, Tags } from "aws-cdk-lib";
-import { Manifest, ProcessingFunctionMetadata } from "../manifest.js";
+import { Manifest } from "../manifest.js";
 import { GeoprocessingStack } from "../aws/GeoprocessingStack.js";
 import { CloudFormation } from "@aws-sdk/client-cloudformation";
 
@@ -33,8 +33,8 @@ const cf = new CloudFormation({
 });
 
 export async function deployStack() {
-  let functionGroups: string[][] = [];
-  let workerGroups: string[][] = [];
+  let existingFunctionStacks: string[][] = [];
+  let existingWorkerStacks: string[][] = [];
 
   try {
     const describeOutputs = await cf.describeStacks({
@@ -44,18 +44,18 @@ export async function deployStack() {
     if (describeOutputs.Stacks && describeOutputs.Stacks[0].Outputs) {
       const Outputs = describeOutputs.Stacks[0].Outputs;
 
-      const functionGroupsJson = Outputs.find(
-        (o) => o.OutputKey === "functionGroups",
+      const functionStackJson = Outputs.find(
+        (o) => o.OutputKey === "stacksFunction",
       )?.OutputValue;
-      const workerGroupsJson = Outputs.find(
-        (o) => o.OutputKey === "workeerGroups",
+      const workerStackJson = Outputs.find(
+        (o) => o.OutputKey === "stacksWorker",
       )?.OutputValue;
 
-      if (functionGroupsJson && functionGroupsJson.length > 0) {
-        functionGroups = JSON.parse(functionGroupsJson);
+      if (functionStackJson && functionStackJson.length > 0) {
+        existingFunctionStacks = JSON.parse(functionStackJson);
       }
-      if (workerGroupsJson && workerGroupsJson.length > 0) {
-        workerGroups = JSON.parse(workerGroupsJson);
+      if (workerStackJson && workerStackJson.length > 0) {
+        existingWorkerStacks = JSON.parse(workerStackJson);
       }
     }
   } catch (err) {
@@ -68,8 +68,8 @@ export async function deployStack() {
     projectName: manifest.title,
     manifest,
     projectPath: PROJECT_PATH,
-    functionGroups,
-    workerGroups,
+    existingFunctionStacks,
+    existingWorkerStacks,
   });
   Tags.of(stack).add("Author", manifest.author);
   Tags.of(stack).add("Cost Center", "seasketch-geoprocessing");

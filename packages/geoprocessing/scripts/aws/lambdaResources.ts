@@ -10,6 +10,7 @@ import {
 import { keyBy } from "../../client-core.js";
 import { CfnOutput } from "aws-cdk-lib";
 import { chunk } from "../../src/index.js";
+import { Function } from "aws-cdk-lib/aws-lambda";
 
 /**
  * Creates lambda sub-stacks, as many as needed so as not to break resource limit
@@ -173,6 +174,17 @@ export const createLambdaStacks = (
     });
 
     return newStack;
+  });
+
+  // get all run lambdas and create policies for them to invoke workers
+  const runLambdas: Function[] = functionStacks.reduce<Function[]>(
+    (acc, curStack) => {
+      return [...acc, ...curStack.getAsyncRunLambdas()];
+    },
+    [],
+  );
+  workerStacks.forEach((stack) => {
+    stack.createLambdaSyncPolicies(runLambdas);
   });
 
   return [...functionStacks, ...workerStacks];

@@ -21,7 +21,7 @@ describe("GeoprocessingStack - all components", () => {
     const manifest = await createTestBuild(projectName, projectPath, [
       "preprocessor",
       "syncGeoprocessor",
-      "asyncGeoprocessor",
+      "asyncGeoprocessorWithWorker",
       "asyncGeoprocessorWorker",
       "client",
     ]);

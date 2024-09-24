@@ -33,16 +33,16 @@ const cf = new CloudFormation({
 });
 
 export async function deployStack() {
-  const describeOutputs = await cf.describeStacks({
-    StackName: `gp-${packageName}`,
-  });
+  // const describeOutputs = await cf.describeStacks({
+  //   StackName: `gp-${packageName}`,
+  // });
 
-  if (describeOutputs.Stacks && describeOutputs.Stacks[0].Outputs) {
-    const Outputs = describeOutputs.Stacks[0].Outputs;
-    const lambdaStackList = Outputs.find(
-      (o) => o.OutputKey === "lambdaStackList",
-    )?.OutputValue;
-  }
+  // if (describeOutputs.Stacks && describeOutputs.Stacks[0].Outputs) {
+  //   const Outputs = describeOutputs.Stacks[0].Outputs;
+  //   const lambdaStackList = Outputs.find(
+  //     (o) => o.OutputKey === "lambdaStackList",
+  //   )?.OutputValue;
+  // }
 
   const app = new App();
   const stack = new GeoprocessingStack(app, `gp-${manifest.title}`, {

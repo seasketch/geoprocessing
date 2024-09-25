@@ -22,10 +22,18 @@ import {
 import config from "./config.js";
 import path from "path";
 export interface GeoprocessingNestedStackProps extends NestedStackProps {
+  /** Name of the geoprocessing project */
   projectName: string;
+  /** Path to top-level of geoprocessing project */
   projectPath: string;
+  /** Manifest used to figure out what resources should be created for this stack */
   manifest: Manifest;
+  /** maximum number of functions to allow per LambdaStack */
   functionsPerStack?: number;
+  /** State of function stacks if already deployed (by function title). */
+  existingFunctionStacks?: string[][];
+  /** State of worker stacks if already deployed (by function title) */
+  existingWorkerStacks?: string[][];
 }
 
 /**
@@ -63,7 +71,6 @@ export class LambdaStack extends NestedStack {
 
     // Create lambdas for all functions
     this.createProcessingFunctions();
-    this.createLambdaSyncPolicies();
   }
 
   getProcessingFunctions() {
@@ -215,10 +222,8 @@ export class LambdaStack extends NestedStack {
   /**
    * Given run lambda functions across all lambda stacks, creates policies allowing them to invoke sync lambdas within this lambda stack
    */
-  createLambdaSyncPolicies() {
-    const runLambdas: Function[] = this.getAsyncRunLambdas();
-
-    // Create invoke policy for each sync function in this lambda stack
+  createLambdaSyncPolicies(runLambdas: Function[]) {
+    // Create invoke policy for each worker function in this lambda stack
     const invokeSyncLambdaPolicies = this.syncLambdaArns.map((arn) => {
       return new PolicyStatement({
         effect: Effect.ALLOW,

@@ -127,6 +127,38 @@ export default async function createTestBuild(
       requiresProperties: [],
       executionMode: "async",
       memory: 4096,
+    });
+    `,
+    );
+  }
+
+  if (components.includes("asyncGeoprocessorWithWorker")) {
+    gpConfig = {
+      ...gpConfig,
+      geoprocessingFunctions: [
+        ...gpConfig.geoprocessingFunctions,
+        "src/functions/testAsyncGeoprocessor.ts",
+      ],
+    };
+
+    fs.writeFileSync(
+      `${projectPath}/src/functions/testAsyncGeoprocessor.ts`,
+      `
+    import { Feature, Point } from "geojson";
+    import { point } from "@turf/turf";
+    import { GeoprocessingHandler } from "../../../../../src/aws/GeoprocessingHandler.js";
+
+    const testAsyncGeoprocessor = async (feature: Feature<Point>) => {
+      return point([0, 0]);
+    };
+
+    export default new GeoprocessingHandler(testAsyncGeoprocessor, {
+      title: "testAsyncGeoprocessor",
+      description: "Test async geoprocessor",
+      timeout: 40,
+      requiresProperties: [],
+      executionMode: "async",
+      memory: 4096,
       workers: ['testWorker'],
     });
     `,

@@ -43,10 +43,18 @@ import { hasOwnProperty } from "../../client-core.js";
 
 /** StackProps extended with geoprocessing project metadata */
 export interface GeoprocessingStackProps extends StackProps {
+  /** Name of the geoprocessing project */
   projectName: string;
+  /** Path to top-level of geoprocessing project */
   projectPath: string;
+  /** Manifest used to figure out what resources should be created for this stack */
   manifest: Manifest;
+  /** maximum number of functions to allow per LambdaStack */
   functionsPerStack?: number;
+  /** State of function stacks if already deployed (by function title) */
+  existingFunctionStacks?: string[][];
+  /** State of worker stacks if already deployed (by function title) */
+  existingWorkerStacks?: string[][];
 }
 
 /**

@@ -21,7 +21,7 @@ describe("GeoprocessingStack - all components", () => {
     const manifest = await createTestBuild(projectName, projectPath, [
       "preprocessor",
       "syncGeoprocessor",
-      "asyncGeoprocessor",
+      "asyncGeoprocessorWithWorker",
       "asyncGeoprocessorWorker",
       "client",
     ]);
@@ -46,7 +46,7 @@ describe("GeoprocessingStack - all components", () => {
     const lambdaStacks = stack.node.children.filter(
       (child) => child instanceof NestedStack,
     );
-    expect(lambdaStacks.length).toBe(2);
+    expect(lambdaStacks.length).toBe(3);
 
     // Lambda stack CDK template assertions
 
@@ -56,6 +56,11 @@ describe("GeoprocessingStack - all components", () => {
 
     const lambdaStackTemplate1 = Template.fromStack(
       lambdaStacks[1] as NestedStack,
+    );
+
+    // worker stack
+    const lambdaStackTemplate2 = Template.fromStack(
+      lambdaStacks[2] as NestedStack,
     );
 
     // Generate JSON snapshot.  Use to manually assess what cdk synth produces and write tests
@@ -166,10 +171,10 @@ describe("GeoprocessingStack - all components", () => {
       Runtime: config.NODE_RUNTIME.name,
     });
 
-    // and sync worker function
+    // and preprocessor resources
     lambdaStackTemplate0.hasResourceProperties("AWS::Lambda::Function", {
-      FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[2].title}`,
-      Handler: getHandlerPointer(manifest.geoprocessingFunctions[2]),
+      FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
+      Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
       Runtime: config.NODE_RUNTIME.name,
     });
 
@@ -180,10 +185,107 @@ describe("GeoprocessingStack - all components", () => {
       Runtime: config.NODE_RUNTIME.name,
     });
 
-    // and preprocessor resources
-    lambdaStackTemplate1.hasResourceProperties("AWS::Lambda::Function", {
+    // and worker function
+    lambdaStackTemplate2.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[2].title}`,
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[2]),
+      Runtime: config.NODE_RUNTIME.name,
+    });
+  }, 200000);
+
+  test("GeoprocessingStack - all components with existing", async () => {
+    await setupBuildDirs(projectPath);
+
+    const manifest = await createTestBuild(projectName, projectPath, [
+      "preprocessor",
+      "syncGeoprocessor",
+      "asyncGeoprocessorWithWorker",
+      "asyncGeoprocessorWorker",
+      "client",
+    ]);
+
+    expect(manifest.clients.length).toBe(1);
+    expect(manifest.preprocessingFunctions.length).toBe(1);
+    expect(manifest.geoprocessingFunctions.length).toBe(3);
+
+    const app = new App();
+
+    // pass existing resources in different order than it typically would create, and include stale resources not present in manifest
+    const stack = new GeoprocessingStack(app, projectName, {
+      env: { region: manifest.region },
+      projectName,
+      manifest,
+      projectPath,
+      functionsPerStack: 2,
+      existingFunctionStacks: [
+        ["noLongerAsyncGeoprocessor"],
+        ["testSyncGeoprocessor"],
+        ["testAsyncGeoprocessor"],
+      ],
+      existingWorkerStacks: [["noLongerWorker", "testWorker"]],
+    });
+
+    // preprocessor is new and should get added to first stack
+    // noLonger* functions should be removed
+    // Expected stack order based on existing is [[testPreprocessor], ['testSyncGeoprocessor'], ['testAsyncGeoprocessor'], ['testWorker']]
+
+    // Lambda stack assertions
+
+    const lambdaStacks = stack.node.children.filter(
+      (child) => child instanceof NestedStack,
+    );
+    expect(lambdaStacks.length).toBe(4);
+
+    // Lambda stack CDK template assertions
+
+    const lambdaStackTemplate0 = Template.fromStack(
+      lambdaStacks[0] as NestedStack,
+    );
+
+    const lambdaStackTemplate1 = Template.fromStack(
+      lambdaStacks[1] as NestedStack,
+    );
+
+    const lambdaStackTemplate2 = Template.fromStack(
+      lambdaStacks[2] as NestedStack,
+    );
+
+    // worker stack
+    const lambdaStackTemplate3 = Template.fromStack(
+      lambdaStacks[3] as NestedStack,
+    );
+
+    // Check preprocessor resources in lambda stack index 2
+    lambdaStackTemplate0.hasResourceProperties("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
       Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
+      Runtime: config.NODE_RUNTIME.name,
+    });
+
+    // Check sync geoprocessing function resources in lambda stack 0
+    lambdaStackTemplate1.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[0].title}`,
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[0]),
+      Runtime: config.NODE_RUNTIME.name,
+    });
+
+    // Check async function resources in lambda stack 1
+    lambdaStackTemplate2.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-start`,
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
+      Runtime: config.NODE_RUNTIME.name,
+    });
+
+    lambdaStackTemplate2.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-run`,
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
+      Runtime: config.NODE_RUNTIME.name,
+    });
+
+    // and worker function
+    lambdaStackTemplate3.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[2].title}`,
+      Handler: getHandlerPointer(manifest.geoprocessingFunctions[2]),
       Runtime: config.NODE_RUNTIME.name,
     });
   }, 200000);

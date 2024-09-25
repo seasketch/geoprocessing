@@ -234,40 +234,37 @@ function allocateFunctionsToGroups(
     {},
   );
 
+  const allExistingFunctionTitles = existingGroups.reduce<string[]>(
+    (acc, cur) => [...acc, ...cur.map((f) => f.title)],
+    [],
+  );
+
   let curLoop = 0;
   const maxLoops = 500;
 
   while (numUnallocatedFunctions > 0) {
-    // Use existing function group if available
+    const curGroup: ProcessingFunctionMetadata[] = [];
+
+    // Start with existing function group if available
     if (existingGroups.length > 0 && curGroupIndex < existingGroups.length) {
       const existingFunctions = existingGroups[curGroupIndex];
-      // skip empty groups
-      if (existingFunctions.length === 0) {
-        curGroupIndex += 1;
-        continue;
-      }
 
       if (existingFunctions) {
-        functionGroups.push(existingFunctions);
+        curGroup.push(...existingFunctions);
         numUnallocatedFunctions -= existingFunctions.length;
         existingFunctions.forEach(
           (f) => (allocatedFunctionMap[f.title] = true),
         );
-        // move on, do not try to fill group more
-        curGroupIndex += 1;
-        continue;
       }
     }
 
-    // We must be done with existing groups, so create new group
-    const curGroup: ProcessingFunctionMetadata[] = [];
-
+    // Fill up the rest of the function group
     for (const functionTitle of functionTitles) {
-      // Skip scenarios - all allocated, current stack is full, function already allocated
       if (
-        numUnallocatedFunctions === 0 ||
-        curGroup.length >= functionsPerStack ||
-        allocatedFunctionMap[functionTitle] === true
+        numUnallocatedFunctions === 0 || // all allocated
+        curGroup.length >= functionsPerStack || // current stack is full
+        allocatedFunctionMap[functionTitle] === true || // function already allocated
+        allExistingFunctionTitles.includes(functionTitle) // function already exists in another stack
       ) {
         continue;
       }
@@ -278,12 +275,15 @@ function allocateFunctionsToGroups(
       numUnallocatedFunctions -= 1;
       curLoop += 1;
       if (curLoop > maxLoops) {
-        throw new Error(`Too many loops while allocating functions to groups`);
+        throw new Error(
+          `Too many loops while allocating functions to groups, something is wrong`,
+        );
       }
     }
 
-    // This function group is full as its gonna get
+    // This function group is full as its gonna get, move on to the next
     functionGroups.push(curGroup);
+    curGroupIndex += 1;
   }
 
   return functionGroups;

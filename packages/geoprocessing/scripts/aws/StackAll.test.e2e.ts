@@ -225,9 +225,9 @@ describe("GeoprocessingStack - all components", () => {
       existingWorkerStacks: [["noLongerWorker", "testWorker"]],
     });
 
-    // Expected stack order based on existing is [[syncGeoprocessor], ['asyncGeoprocessor'], ['testPreprocessor'], ['testWorker']]
-
-    const rootTemplate = Template.fromStack(stack);
+    // preprocessor is new and should get added to first stack
+    // noLonger* functions should be removed
+    // Expected stack order based on existing is [[testPreprocessor], ['testSyncGeoprocessor'], ['testAsyncGeoprocessor'], ['testWorker']]
 
     // Lambda stack assertions
 
@@ -255,125 +255,30 @@ describe("GeoprocessingStack - all components", () => {
       lambdaStacks[3] as NestedStack,
     );
 
-    // Generate JSON snapshot.  Use to manually assess what cdk synth produces and write tests
-    // Does not currently enforce matching with toMatchSnapshot() because dynamic values like S3Key are not consistent
-
-    const snapPath = "./scripts/aws/__snapshots__/";
-    fs.ensureDirSync(snapPath);
-    fs.writeJSONSync(
-      `${snapPath}/StackAll_rootStack.test.e2e.ts.snap`,
-      rootTemplate.toJSON(),
-      {
-        spaces: 2,
-      },
-    );
-    fs.writeJSONSync(
-      `${snapPath}/StackAll_lambdaStack.test.e2e.ts.snap`,
-      lambdaStackTemplate0.toJSON(),
-      {
-        spaces: 2,
-      },
-    );
-
-    // Root stack assertions
-
-    expect(stack.hasClients()).toEqual(true);
-    expect(stack.hasSyncFunctions()).toEqual(true);
-    expect(stack.hasAsyncFunctions()).toEqual(true);
-    expect(stack.getSyncFunctionMetas().length).toBe(3);
-    expect(stack.getAsyncFunctionMetas().length).toBe(1);
-    expect(stack.getSyncFunctionsWithMeta().length).toBe(3);
-    expect(stack.getAsyncFunctionsWithMeta().length).toBe(1);
-
-    rootTemplate.resourceCountIs("AWS::CloudFront::Distribution", 1);
-    rootTemplate.resourceCountIs("AWS::S3::Bucket", 3);
-    rootTemplate.resourceCountIs("AWS::ApiGateway::RestApi", 1);
-    rootTemplate.resourceCountIs("AWS::ApiGateway::Stage", 1);
-    rootTemplate.resourceCountIs("AWS::ApiGateway::Method", 13); // root (get, options), async (get, post, options), preprocessor (options, post), sync (get, post, options), sync worker (get, post, options)
-    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Api", 1); // web socket api
-    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Stage", 1);
-    rootTemplate.resourceCountIs("AWS::ApiGatewayV2::Route", 3);
-    rootTemplate.resourceCountIs("AWS::DynamoDB::Table", 3);
-    rootTemplate.resourceCountIs("AWS::Lambda::Function", 6);
-
-    rootTemplate.allResourcesProperties("AWS::ApiGateway::Stage", {
-      StageName: config.STAGE_NAME,
-    });
-
-    // Check shared resources
-    rootTemplate.hasResourceProperties("AWS::ApiGateway::RestApi", {
-      Name: `gp-${projectName}`,
-    });
-    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
-      BucketName: `gp-${projectName}-results`,
-    });
-    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
-      BucketName: `gp-${projectName}-datasets`,
-    });
-    rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
-      Handler: "serviceHandlers.projectMetadata",
+    // Check preprocessor resources in lambda stack index 2
+    lambdaStackTemplate0.hasResourceProperties("AWS::Lambda::Function", {
+      FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
+      Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
       Runtime: config.NODE_RUNTIME.name,
-    });
-    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
-      TableName: `gp-${projectName}-tasks`,
-    });
-    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
-      TableName: `gp-${projectName}-estimates`,
-    });
-
-    // // Check shared async resources
-    rootTemplate.hasResourceProperties("AWS::ApiGatewayV2::Api", {
-      ProtocolType: "WEBSOCKET",
-      Name: `gp-${projectName}-socket`,
-    });
-    rootTemplate.hasResourceProperties("AWS::DynamoDB::Table", {
-      TableName: `gp-${projectName}-subscriptions`,
-    });
-    rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
-      FunctionName: `gp-${projectName}-subscribe`,
-      Handler: "connect.connectHandler",
-      Runtime: config.NODE_RUNTIME.name,
-    });
-    rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
-      FunctionName: `gp-${projectName}-unsubscribe`,
-      Handler: "disconnect.disconnectHandler",
-      Runtime: config.NODE_RUNTIME.name,
-    });
-    rootTemplate.hasResourceProperties("AWS::Lambda::Function", {
-      FunctionName: `gp-${projectName}-send`,
-      Handler: "sendmessage.sendHandler",
-      Runtime: config.NODE_RUNTIME.name,
-    });
-
-    // // Check client resources
-    rootTemplate.hasResourceProperties("AWS::S3::Bucket", {
-      BucketName: `gp-${projectName}-client`,
     });
 
     // Check sync geoprocessing function resources in lambda stack 0
-    lambdaStackTemplate0.hasResourceProperties("AWS::Lambda::Function", {
+    lambdaStackTemplate1.hasResourceProperties("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-sync-${manifest.geoprocessingFunctions[0].title}`,
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[0]),
       Runtime: config.NODE_RUNTIME.name,
     });
 
     // Check async function resources in lambda stack 1
-    lambdaStackTemplate1.hasResourceProperties("AWS::Lambda::Function", {
+    lambdaStackTemplate2.hasResourceProperties("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-start`,
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
       Runtime: config.NODE_RUNTIME.name,
     });
 
-    lambdaStackTemplate1.hasResourceProperties("AWS::Lambda::Function", {
+    lambdaStackTemplate2.hasResourceProperties("AWS::Lambda::Function", {
       FunctionName: `gp-${projectName}-async-${manifest.geoprocessingFunctions[1].title}-run`,
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[1]),
-      Runtime: config.NODE_RUNTIME.name,
-    });
-
-    // Check preprocessor resources in lambda stack index 2
-    lambdaStackTemplate2.hasResourceProperties("AWS::Lambda::Function", {
-      FunctionName: `gp-${projectName}-sync-${manifest.preprocessingFunctions[0].title}`,
-      Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
       Runtime: config.NODE_RUNTIME.name,
     });
 

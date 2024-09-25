@@ -31,9 +31,6 @@ export const createLambdaStacks = (
   const asyncTitles = Object.keys(asyncFunctionMap);
   const syncTitles = Object.keys(syncFunctionMap);
 
-  console.log("functionGroupsAlready", props.existingFunctionStacks);
-  console.log("workerGroupsAlready", props.existingWorkerStacks);
-
   // Map of async function titles to their worker function titles
   const asyncWorkerMap: Record<string, string[]> = {};
   for (const func of props.manifest.geoprocessingFunctions) {

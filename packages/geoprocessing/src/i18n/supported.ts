@@ -23,6 +23,11 @@ export const otherLanguages: LangDetails[] = [
     code: "pt",
   },
   {
+    name: "Portuguese (Brazil)",
+    localName: "Portuguese (Brasil)",
+    code: "pt-br",
+  },
+  {
     name: "Norwegian",
     localName: "Norsk",
     code: "no",

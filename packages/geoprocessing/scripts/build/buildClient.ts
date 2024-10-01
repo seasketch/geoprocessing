@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import { buildProjectClients } from "./buildProjectClients.js";
 
 if (!process.env.PROJECT_PATH) throw new Error("Missing PROJECT_PATH");

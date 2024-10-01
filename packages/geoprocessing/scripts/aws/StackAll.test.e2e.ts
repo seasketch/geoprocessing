@@ -191,7 +191,7 @@ describe("GeoprocessingStack - all components", () => {
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[2]),
       Runtime: config.NODE_RUNTIME.name,
     });
-  }, 200000);
+  }, 200_000);
 
   test("GeoprocessingStack - all components with existing", async () => {
     await setupBuildDirs(projectPath);
@@ -288,7 +288,7 @@ describe("GeoprocessingStack - all components", () => {
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[2]),
       Runtime: config.NODE_RUNTIME.name,
     });
-  }, 200000);
+  }, 200_000);
 
   test("GeoprocessingStack - double worker use should throw", async () => {
     await setupBuildDirs(projectPath);
@@ -321,7 +321,7 @@ describe("GeoprocessingStack - all components", () => {
           functionsPerStack: 2,
         }),
     ).toThrowError();
-  }, 200000);
+  }, 200_000);
 
   test("GeoprocessingStack - missing worker option should throw", async () => {
     await setupBuildDirs(projectPath);
@@ -353,5 +353,5 @@ describe("GeoprocessingStack - all components", () => {
           functionsPerStack: 2,
         }),
     ).toThrowError();
-  }, 200000);
+  }, 200_000);
 });

@@ -68,8 +68,11 @@ export const OverlapCard: React.FunctionComponent<GeogProp> = (props) => {
 
         const objectives = (() => {
           const objectives = project.getMetricGroupObjectives(metricGroup, t);
-          if (!objectives.length) return undefined;
-          else return objectives;
+          if (objectives.length) {
+            return objectives;
+          } else {
+            return;
+          }
         })();
 
         return (

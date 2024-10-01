@@ -71,9 +71,9 @@ export const rekeyMetrics = (
 ) => {
   return metrics.map((curMetric) => {
     const newMetric: Record<string, any> = {};
-    idOrder.forEach((id) => {
+    for (const id of idOrder) {
       if (hasOwnProperty(curMetric, id)) newMetric[id] = curMetric[id];
-    });
+    }
     return newMetric;
   }) as Metric[];
 };
@@ -384,7 +384,7 @@ export const toPercentMetric = (
           console.log(
             `Denominator metric with ${idProperty} of ${idValue} has 0 value, returning 0 percent metric`,
           );
-        return NaN;
+        return Number.NaN;
       } else {
         return numerMetric.value / denomMetric.value;
       }
@@ -446,7 +446,7 @@ export const flattenBySketchAllClass = (
 
   const sketchRows: Record<string, string | number>[] = [];
 
-  sketches.forEach((curSketch) => {
+  for (const curSketch of sketches) {
     // For current sketch, transform classes into an object mapping classId to its one metric value
     const classMetricAgg = classes
       .sort(sortFn || classSortAlphaDisplay)
@@ -471,7 +471,7 @@ export const flattenBySketchAllClass = (
       sketchName: curSketch.properties.name,
       ...classMetricAgg,
     });
-  });
+  }
 
   return sketchRows;
 };
@@ -563,16 +563,16 @@ export const flattenByGroupSketchAllClass = (
   /** Totals by class */
   totals: Metric[],
 ): GroupMetricSketchAgg[] => {
-  const sketchIds = sketches.map((sk) => sk.properties.id);
+  const sketchIds = new Set(sketches.map((sk) => sk.properties.id));
   const sketchRows: GroupMetricSketchAgg[] = [];
 
   // Stratify in order by Group -> Sketch -> Class. Then flatten
 
   const metricsByGroup = groupBy(groupMetrics, (m) => m.groupId || "undefined");
 
-  Object.keys(metricsByGroup).forEach((curGroupId) => {
+  for (const curGroupId of Object.keys(metricsByGroup)) {
     const groupSketchMetrics = metricsByGroup[curGroupId].filter(
-      (m) => m.sketchId && sketchIds.includes(m.sketchId),
+      (m) => m.sketchId && sketchIds.has(m.sketchId),
     );
     const groupSketchMetricsByClass = groupBy(
       groupSketchMetrics,
@@ -582,7 +582,7 @@ export const flattenByGroupSketchAllClass = (
       groupBy(groupSketchMetrics, (m) => m.sketchId || "missing"),
     );
 
-    groupSketchMetricIds.forEach((curSketchId) => {
+    for (const curSketchId of groupSketchMetricIds) {
       const classAgg = Object.keys(groupSketchMetricsByClass).reduce<
         Record<string, number>
       >(
@@ -613,8 +613,8 @@ export const flattenByGroupSketchAllClass = (
         percValue: classAgg.value / groupTotal,
         ...classAgg,
       });
-    });
-  });
+    }
+  }
   return sketchRows;
 };
 
@@ -696,9 +696,8 @@ export const flattenSketchAllId = (
 
       return {
         ...aggSoFar,
-        ...{
-          [prop!]: curMetric?.value || 0,
-        },
+
+        [prop!]: curMetric?.value || 0,
       };
     }, {});
 

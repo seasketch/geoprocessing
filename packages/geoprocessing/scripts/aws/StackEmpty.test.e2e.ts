@@ -91,5 +91,5 @@ describe("GeoprocessingStack - empty", () => {
       (child) => child instanceof NestedStack,
     );
     expect(lambdaStacks.length).toBe(0);
-  }, 30000);
+  }, 30_000);
 });

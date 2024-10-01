@@ -5,8 +5,8 @@ import fetch, {
   RequestInit,
   RequestInfo,
 } from "node-fetch";
-import https from "https";
-import http from "http";
+import https from "node:https";
+import http from "node:http";
 
 // Custom agents that force connection to be closed after request complete (no reuse)
 // Overcomes Node 19+ change to set keepalive to true and reuse connections

@@ -121,5 +121,5 @@ describe("GeoprocessingStack - sync geoprocessor only", () => {
       Handler: getHandlerPointer(manifest.geoprocessingFunctions[0]),
       Runtime: config.NODE_RUNTIME.name,
     });
-  }, 60000);
+  }, 60_000);
 });

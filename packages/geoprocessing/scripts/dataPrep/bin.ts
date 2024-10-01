@@ -70,7 +70,7 @@ program
   .option("--dry-run", "Skip creating resources on s3")
   .action(async function (datasourceName, table, options) {
     let currentVersion = 0;
-    let lastPublished: Date | undefined = undefined;
+    let lastPublished: Date | undefined;
     let bucket: string | undefined;
     try {
       const spinner = ora(``);
@@ -155,7 +155,9 @@ program
       );
 
       // Output stats on bytes and # requests needed for each example sketch
-      if (!options.dryRun) {
+      if (options.dryRun) {
+        console.log(`To deploy this data source, omit --dry-run`);
+      } else {
         // Wait for putBundle tasks to complete
         spinner.start("Waiting for all S3 uploads to finish");
         await Promise.all(putBundlePromises);
@@ -206,12 +208,10 @@ program
             "Since this cloudfront distribution is new, it may take a few minutes before it can be accessed. Future updates to this data source should be immediate.",
           );
         }
-      } else {
-        console.log(`To deploy this data source, omit --dry-run`);
       }
-    } catch (e) {
+    } catch (error) {
       console.log("\n");
-      console.error(e);
+      console.error(error);
       process.exit(1);
     }
   });

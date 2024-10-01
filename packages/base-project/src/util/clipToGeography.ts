@@ -52,28 +52,9 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
 
   let finalSketches: Sketch<G>[] = [];
 
-  if (!geogFeatures[0]) {
-    console.log(
-      sketch.properties.name,
-      "has no overlap with geography",
-      geography.geographyId,
-    );
-
-    finalSketches = zeroSketchArray(toSketchArray(sketch));
-
-    if (isSketchCollection(sketch)) {
-      return {
-        properties: sketch.properties,
-        bbox: [0, 0, 0, 0],
-        type: "FeatureCollection",
-        features: finalSketches,
-      };
-    } else {
-      return { ...finalSketches[0], bbox: [0, 0, 0, 0] };
-    }
-  } else {
+  if (geogFeatures[0]) {
     const sketches = toSketchArray(sketch);
-    sketches.forEach((sketch) => {
+    for (const sketch of sketches) {
       const intersection = clipMultiMerge(
         sketch,
         featureCollection(geogFeatures),
@@ -96,7 +77,26 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
         sketch.bbox = [0, 0, 0, 0];
       }
       finalSketches.push(sketch);
-    });
+    }
+  } else {
+    console.log(
+      sketch.properties.name,
+      "has no overlap with geography",
+      geography.geographyId,
+    );
+
+    finalSketches = zeroSketchArray(toSketchArray(sketch));
+
+    if (isSketchCollection(sketch)) {
+      return {
+        properties: sketch.properties,
+        bbox: [0, 0, 0, 0],
+        type: "FeatureCollection",
+        features: finalSketches,
+      };
+    } else {
+      return { ...finalSketches[0], bbox: [0, 0, 0, 0] };
+    }
   }
 
   if (isSketchCollection(sketch)) {

@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 
 export function getJsonPath(dstPath: string, datasourceId: string) {
   return path.join(dstPath, datasourceId) + ".json";

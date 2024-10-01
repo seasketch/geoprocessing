@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import { metricsSchema } from "../../../src/types/index.js";
 import { precalcConfig } from "../../../src/precalc/config.js";
 import { Metric } from "../../../src/types/index.js";
@@ -35,14 +35,14 @@ export function readMetrics(filePath: string) {
   })();
 
   const result = metricsSchema.safeParse(diskPrecalc);
-  if (!result.success) {
+  if (result.success) {
+    return result.data;
+  } else {
     console.error(
       `${filePath} is invalid, either you need to delete it and run precalc, or manually fix it`,
     );
     console.log(JSON.stringify(result.error.issues, null, 2));
     throw new Error("Please fix or report this issue");
-  } else {
-    return result.data;
   }
 }
 
@@ -51,16 +51,16 @@ export function readMetrics(filePath: string) {
  */
 export function writeMetrics(metrics: Metric[], filePath: string) {
   const safeMetrics = metricsSchema.safeParse(metrics);
-  if (!safeMetrics.success) {
+  if (safeMetrics.success) {
+    fs.writeJSONSync(filePath, sortMetrics(rekeyMetrics(metrics)), {
+      spaces: 2,
+    });
+  } else {
     console.error(
       `precalculated metrics are invalid, this is a bug with the precalc script`,
     );
     console.log(JSON.stringify(safeMetrics.error.issues, null, 2));
     throw new Error("Please fix or report this issue");
-  } else {
-    fs.writeJSONSync(filePath, sortMetrics(rekeyMetrics(metrics)), {
-      spaces: 2,
-    });
   }
 }
 

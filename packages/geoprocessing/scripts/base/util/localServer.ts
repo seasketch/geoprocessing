@@ -1,4 +1,4 @@
-import http from "http";
+import http from "node:http";
 import finalhandler from "finalhandler";
 import serveStatic from "serve-static";
 

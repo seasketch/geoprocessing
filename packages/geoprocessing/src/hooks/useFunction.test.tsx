@@ -36,7 +36,7 @@ const ContextWrapper: React.FunctionComponent<{
         geometryUri: `https://localhost/${sketchProperties.id}`,
         sketchProperties,
         projectUrl: "https://example.com/project",
-        ...(props.value || {}),
+        ...props.value,
         visibleLayers: [],
         language: "en",
       }}
@@ -234,7 +234,7 @@ test.skip("changing ReportContext.geometryUri fetches new results", async () => 
   });
   // expect(fetchMock.calls("https://example.com/project").length).toBe(1);
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
-  expect(getAllByText(/Task Complete/i).length).toBe(1);
+  expect(getAllByText(/task complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "plenty");
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
 
@@ -261,7 +261,7 @@ test.skip("changing ReportContext.geometryUri fetches new results", async () => 
   await domAct(async () => {
     getByRole("button").click();
   });
-  expect(getAllByText(/Task Complete/i).length).toBe(1);
+  expect(getAllByText(/task complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "lots!");
   expect(fetchMock.calls(/calcFoo/).length).toBe(2);
 });
@@ -337,8 +337,8 @@ test.skip("useFunction called multiple times with the same arguments will only f
     vi.runAllTimers();
   });
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
-  expect(getAllByText(/Task Complete/i).length).toBe(2);
-  const completeEls = getAllByText(/Task Complete/i);
+  expect(getAllByText(/task complete/i).length).toBe(2);
+  const completeEls = getAllByText(/task complete/i);
   for (const el of completeEls) {
     expect(el).toHaveAttribute("data-results", "plenty");
   }
@@ -377,7 +377,7 @@ test.skip("useFunction uses a local cache for repeat requests", async () => {
   await domAct(async () => {
     vi.runAllTimers();
   });
-  expect(getAllByText(/Task Complete/i).length).toBe(1);
+  expect(getAllByText(/task complete/i).length).toBe(1);
   expect(getByText(/Task Complete/)).toHaveAttribute("data-results", "plenty");
   expect(fetchMock.calls(/calcFoo/).length).toBe(1);
 

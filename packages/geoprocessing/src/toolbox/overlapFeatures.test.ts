@@ -12,10 +12,10 @@ describe("overlapFeatures", () => {
   });
 
   test("outerArea", () => {
-    expect(fix.outerArea).toBeCloseTo(49447340364.08609);
+    expect(fix.outerArea).toBeCloseTo(49_447_340_364.086_09);
   });
   test("outerOuterArea", () => {
-    expect(fix.outerOuterArea).toBeCloseTo(197668873521.43488);
+    expect(fix.outerOuterArea).toBeCloseTo(197_668_873_521.434_88);
   });
 
   test("overlapFeatures - sketch polygon fully inside", async () => {
@@ -32,7 +32,7 @@ describe("overlapFeatures", () => {
         truncate: false,
       },
     );
-    expect(metricsNoTruncation[0].value).toBe(0.012364345868141814);
+    expect(metricsNoTruncation[0].value).toBe(0.012_364_345_868_141_814);
 
     const metricsTruncation = await overlapFeatures(
       "test",
@@ -42,14 +42,14 @@ describe("overlapFeatures", () => {
         truncate: true,
       },
     );
-    expect(metricsTruncation[0].value).toBe(0.012364);
+    expect(metricsTruncation[0].value).toBe(0.012_364);
 
     const metricsTruncationDefault = await overlapFeatures(
       "test",
       [fix.tiny],
       fix.sketch1,
     );
-    expect(metricsTruncationDefault[0].value).toBe(0.012364);
+    expect(metricsTruncationDefault[0].value).toBe(0.012_364);
   });
 
   test("overlapFeatures - sketch multipolygon fully inside", async () => {
@@ -125,13 +125,13 @@ describe("overlapFeatures", () => {
       ...fix.mixedPolySketchCollection.features.map((sk) => area(sk)),
     ];
     const percs = [0.5, 1, 1]; // the poly and multipoly overlap 100% so overlapFeatures area should be half
-    ids.forEach((curSketchId, index) => {
+    for (const [index, curSketchId] of ids.entries()) {
       // console.log("index", index);
       testWithinPerc(
         firstMatchingMetric(metrics, (m) => m.sketchId === curSketchId).value,
         areas[index] * percs[index],
       );
-    });
+    }
   });
 
   test("overlapFeatures - sketch collection two inside polys SUM", async () => {
@@ -146,9 +146,9 @@ describe("overlapFeatures", () => {
       { operation: "sum" },
     );
     expect(metrics.length).toBe(3);
-    metrics.forEach((metric) => {
+    for (const metric of metrics) {
       expect(metric.value).toBe(1);
-    });
+    }
   });
 
   test("overlapFeatures - sketch collection half inside", async () => {
@@ -167,12 +167,12 @@ describe("overlapFeatures", () => {
       ...fix.sketchCollection.features.map((sk) => area(sk)),
     ];
     const percs = [0.5, 1, 0.5, 0]; // expected percentage of sketch to overlap
-    ids.forEach((curSketchId, index) => {
+    for (const [index, curSketchId] of ids.entries()) {
       testWithinPerc(
         firstMatchingMetric(metrics, (m) => m.sketchId === curSketchId).value,
         areas[index] * percs[index],
       );
-    });
+    }
   });
 
   /**
@@ -185,8 +185,8 @@ describe("overlapFeatures", () => {
       operation: "area",
     });
     expect(metrics.length).toBe(1);
-    metrics.forEach((metric) => {
+    for (const metric of metrics) {
       expect(metric.value).toBe(0);
-    });
+    }
   });
 });

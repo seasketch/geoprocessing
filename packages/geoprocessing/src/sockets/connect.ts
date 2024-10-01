@@ -40,12 +40,12 @@ export const connectHandler = async (event) => {
         },
       }),
     );
-  } catch (err) {
+  } catch (error) {
     return {
       statusCode: 500,
       body:
         "Error with connect " +
-        err +
+        error +
         " ---> " +
         process.env.SUBSCRIPTIONS_TABLE +
         " ---> " +

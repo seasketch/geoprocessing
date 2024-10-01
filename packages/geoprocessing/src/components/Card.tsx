@@ -34,9 +34,9 @@ export const Card = ({
   };
 
   return (
-    <div style={{ position: "relative", ...styles.box, ...(style || {}) }}>
+    <div style={{ position: "relative", ...styles.box, ...style }}>
       {title && title !== "" && (
-        <div style={{ ...styles.title, ...(titleStyle || {}) }}>{title}</div>
+        <div style={{ ...styles.title, ...titleStyle }}>{title}</div>
       )}
       {children}
     </div>

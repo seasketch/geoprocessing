@@ -93,7 +93,7 @@ export const ReportStoryLayout: React.FunctionComponent<
           <LanguageSwitcher />
           <select
             value={width}
-            onChange={(e) => setWidth(parseInt(e.target.value))}
+            onChange={(e) => setWidth(Number.parseInt(e.target.value))}
           >
             <option value={500}>Desktop - Standard Size</option>
             <option value={800}>Desktop - Large</option>

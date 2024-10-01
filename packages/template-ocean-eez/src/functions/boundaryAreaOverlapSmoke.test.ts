@@ -19,5 +19,5 @@ describe("Basic smoke tests", () => {
       expect(result).toBeTruthy();
       writeResultOutput(result, "boundaryAreaOverlap", example.properties.name);
     }
-  }, 400000);
+  }, 400_000);
 });

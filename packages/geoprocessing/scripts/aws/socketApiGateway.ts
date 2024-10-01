@@ -131,10 +131,10 @@ const createStage = (
 export const setupWebSocketFunctionAccess = (stack: GeoprocessingStack) => {
   if (!stack.socketApi) return;
 
-  stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
+  for (const asyncFunctionWithMeta of stack.getAsyncFunctionsWithMeta()) {
     addAsyncEnv(stack, asyncFunctionWithMeta.startFunc);
     addAsyncEnv(stack, asyncFunctionWithMeta.runFunc);
-  });
+  }
 };
 
 const addAsyncEnv = (stack: GeoprocessingStack, func: Function) => {

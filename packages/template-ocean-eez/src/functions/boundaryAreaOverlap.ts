@@ -110,5 +110,5 @@ export default new GeoprocessingHandler(boundaryAreaOverlap, {
   executionMode: "async",
   timeout: 40,
   requiresProperties: [],
-  memory: 10240,
+  memory: 10_240,
 });

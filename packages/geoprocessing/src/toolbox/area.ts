@@ -40,7 +40,31 @@ export async function area(
         console.log(
           "Warning: feature or its properties are undefined, skipped",
         );
-      } else if (!curSketch.geometry) {
+      } else if (curSketch.geometry) {
+        const sketchArea = turfArea(curSketch);
+        sketchMetrics.push(
+          createMetric({
+            metricId,
+            sketchId: curSketch.properties.id,
+            value: sketchArea,
+            extra: {
+              sketchName: curSketch.properties.name,
+            },
+          }),
+        );
+        if (includePercMetric && isSketchCollection(sketch)) {
+          sketchMetrics.push(
+            createMetric({
+              metricId: percMetricId,
+              sketchId: curSketch.properties.id,
+              value: sketchArea / combinedSketchArea,
+              extra: {
+                sketchName: curSketch.properties.name,
+              },
+            }),
+          );
+        }
+      } else {
         console.log(
           `Warning: feature is missing geometry, zeroed: sketchId:${curSketch.properties.id}, name:${curSketch.properties.name}`,
         );
@@ -61,30 +85,6 @@ export async function area(
               metricId: percMetricId,
               sketchId: curSketch.properties.id,
               value: 0,
-              extra: {
-                sketchName: curSketch.properties.name,
-              },
-            }),
-          );
-        }
-      } else {
-        const sketchArea = turfArea(curSketch);
-        sketchMetrics.push(
-          createMetric({
-            metricId,
-            sketchId: curSketch.properties.id,
-            value: sketchArea,
-            extra: {
-              sketchName: curSketch.properties.name,
-            },
-          }),
-        );
-        if (includePercMetric && isSketchCollection(sketch)) {
-          sketchMetrics.push(
-            createMetric({
-              metricId: percMetricId,
-              sketchId: curSketch.properties.id,
-              value: sketchArea / combinedSketchArea,
               extra: {
                 sketchName: curSketch.properties.name,
               },

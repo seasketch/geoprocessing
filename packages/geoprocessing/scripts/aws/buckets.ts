@@ -57,7 +57,7 @@ export const createPublicBuckets = (
 /** Setup resource access to buckets */
 export const setupBucketFunctionAccess = (stack: GeoprocessingStack) => {
   // sync
-  stack.getSyncFunctionsWithMeta().forEach((syncFunctionWithMeta) => {
+  for (const syncFunctionWithMeta of stack.getSyncFunctionsWithMeta()) {
     if (stack.publicBuckets.result) {
       stack.publicBuckets.result.grantReadWrite(syncFunctionWithMeta.func);
       syncFunctionWithMeta.func.addEnvironment(
@@ -71,10 +71,10 @@ export const setupBucketFunctionAccess = (stack: GeoprocessingStack) => {
       "datasetBucketUrl",
       stack.publicBuckets.dataset.urlForObject(),
     );
-  });
+  }
 
   // async
-  stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
+  for (const asyncFunctionWithMeta of stack.getAsyncFunctionsWithMeta()) {
     if (stack.publicBuckets.result) {
       stack.publicBuckets.result.grantReadWrite(
         asyncFunctionWithMeta.startFunc,
@@ -91,5 +91,5 @@ export const setupBucketFunctionAccess = (stack: GeoprocessingStack) => {
       "datasetBucketUrl",
       stack.publicBuckets.dataset.urlForObject(),
     );
-  });
+  }
 };

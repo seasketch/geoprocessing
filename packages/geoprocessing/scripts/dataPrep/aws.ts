@@ -9,7 +9,7 @@ import { readPackageUp } from "read-package-up";
 import slugify from "../../src/util/slugify.js";
 import fetch from "node-fetch";
 import { CompositeIndexDetails } from "./indexes.js";
-import fs from "fs";
+import fs from "node:fs";
 
 // TODO: Set tags for Cost Center, Author, and Geoprocessing Project using
 // geoprocessing.json if available
@@ -100,7 +100,7 @@ export async function createBucket(
 }
 
 function bucketName(dataSourceName: string): string {
-  return slugify(`${dataSourceName}`.replace(/\W/g, "-").replace(/^-/, ""));
+  return slugify(`${dataSourceName}`.replaceAll(/\W/g, "-").replace(/^-/, ""));
 }
 
 function objectUrl(name: string, objectName: string): string {
@@ -158,7 +158,7 @@ export async function createCloudfrontDistribution(
           // Clients will get origin cache-control but we want cloudfront
           // to keep everything hot. Invalidations can be manually created
           // for metadata.json
-          MinTTL: 31536000,
+          MinTTL: 31_536_000,
           TrustedSigners: {
             Enabled: false,
             Quantity: 0,
@@ -169,7 +169,7 @@ export async function createCloudfrontDistribution(
             },
             QueryString: false,
           },
-          DefaultTTL: 31536000,
+          DefaultTTL: 31_536_000,
           ViewerProtocolPolicy: "redirect-to-https",
           AllowedMethods: {
             Quantity: 2,
@@ -362,7 +362,7 @@ export async function getCloudfrontDistributionDetails(
 ): Promise<CloudfrontDistributionDetails> {
   const id = bucketName(name);
   const result = await cloudfront.listDistributions({
-    MaxItems: 10000,
+    MaxItems: 10_000,
   });
   for (const distro of result.DistributionList?.Items || []) {
     const r = await cloudfront.listTagsForResource({
@@ -412,8 +412,7 @@ export async function scheduleObjectsForDeletion(
           // Keep rules around 24 hours after their expiration date to make sure
           // they execute
           return (
-            new Date().getTime() - Rule.Expiration.Date.getTime() <
-            1000 * 60 * 60 * 24
+            Date.now() - Rule.Expiration.Date.getTime() < 1000 * 60 * 60 * 24
           );
         } else {
           return true;

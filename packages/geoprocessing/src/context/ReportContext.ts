@@ -84,11 +84,11 @@ export const sampleSketchReportContextValue = (
   overrides?: PartialReportContextValue,
 ): ReportContextValue => {
   return {
-    ...(defaultReportContext || {}),
+    ...defaultReportContext,
     ...overrides,
     sketchProperties: {
       ...defaultReportContext.sketchProperties,
-      ...(overrides?.sketchProperties || {}),
+      ...overrides?.sketchProperties,
     },
   };
 };

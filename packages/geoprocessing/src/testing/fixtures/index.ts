@@ -11,7 +11,7 @@ const humanUse: HumanUse[] = [
   {
     name: "Motorboat, anchoring, swimming",
     count: 0,
-    perc: 0.0,
+    perc: 0,
     group: "high",
   },
   {
@@ -29,7 +29,7 @@ const humanUse: HumanUse[] = [
   {
     name: "Scuba or snorkel from shore",
     count: 0,
-    perc: 0.0,
+    perc: 0,
     group: "low",
   },
   {
@@ -41,7 +41,7 @@ const humanUse: HumanUse[] = [
   {
     name: "Commercial fishing",
     count: 0,
-    perc: 0.0,
+    perc: 0,
     group: "low",
   },
   {
@@ -53,7 +53,7 @@ const humanUse: HumanUse[] = [
   {
     name: "Surfing",
     count: 0,
-    perc: 0.0,
+    perc: 0,
     group: "med",
   },
 ];
@@ -111,9 +111,9 @@ export interface Categorical {
 }
 
 export const getRandomCategorical = (): Categorical[] => {
-  return [...Array(30)].map((r, index) => ({
+  return Array.from({ length: 30 }).map((r, index) => ({
     id: `${index + 1}`,
-    count: randomInt(10000000),
+    count: randomInt(10_000_000),
     low: randomFloat(0, 0.2),
     med: randomFloat(0.3, 0.5),
     high: randomFloat(0.7, 0.9),

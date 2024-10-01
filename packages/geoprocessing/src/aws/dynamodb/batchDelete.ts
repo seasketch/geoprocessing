@@ -48,12 +48,12 @@ export async function batchDelete(
         maxRetries,
       );
     }
-  } catch (e: any) {
+  } catch (error: any) {
     // console.log(JSON.stringify(e, null, 2));
     if (
-      e.$metadata &&
-      e.$metadata.httpStatusCode === 400 &&
-      e.$metadata.totalRetryDelay
+      error.$metadata &&
+      error.$metadata.httpStatusCode === 400 &&
+      error.$metadata.totalRetryDelay
     ) {
       // const id =
       //   deleteCommandInput!.RequestItems![tableName!][0].DeleteRequest!.Key!.id;
@@ -63,7 +63,7 @@ export async function batchDelete(
       // console.log(
       //   ` ThroughputError, retry in ${e.$metadata.totalRetryDelay}ms starting with ${id} - ${service}`
       // );
-      await wait(e.$metadata.totalRetryDelay);
+      await wait(error.$metadata.totalRetryDelay);
       await batchDelete(
         docClient,
         tableName,
@@ -72,7 +72,7 @@ export async function batchDelete(
         maxRetries,
       );
     } else {
-      throw new Error(e);
+      throw new Error(error);
     }
   }
 }

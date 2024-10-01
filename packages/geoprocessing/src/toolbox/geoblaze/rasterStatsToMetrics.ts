@@ -36,9 +36,9 @@ export const rasterStatsToMetrics = (
     metricPartial = {},
     truncate = true,
     bandMetricProperty = "groupId",
-    bandMetricValues = [...Array(statsObjects.length).keys()].map(
-      (x) => `band-${x}`,
-    ),
+    bandMetricValues = [
+      ...Array.from({ length: statsObjects.length }).keys(),
+    ].map((x) => `band-${x}`),
     categorical = false,
     categoryMetricProperty = "classId",
     categoryMetricValues,
@@ -49,9 +49,9 @@ export const rasterStatsToMetrics = (
       "bandMetricProperty and categoryMetricProperty cannot be the same",
     );
 
-  statsObjects.forEach((curStats, band) => {
+  for (const [band, curStats] of statsObjects.entries()) {
     const statNames = Object.keys(curStats);
-    statNames.forEach((statName) => {
+    for (const statName of statNames) {
       const value = curStats[statName];
 
       if (categorical) {
@@ -99,7 +99,7 @@ export const rasterStatsToMetrics = (
           }),
         );
       }
-    });
-  });
+    }
+  }
   return metrics;
 };

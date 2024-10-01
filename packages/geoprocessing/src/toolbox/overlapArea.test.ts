@@ -12,10 +12,10 @@ describe("overlapArea", () => {
   });
 
   test("outerArea", () => {
-    expect(fix.outerArea).toBeCloseTo(49447340364.08609);
+    expect(fix.outerArea).toBeCloseTo(49_447_340_364.086_09);
   });
   test("outerOuterArea", () => {
-    expect(fix.outerOuterArea).toBeCloseTo(197668873521.43488);
+    expect(fix.outerOuterArea).toBeCloseTo(197_668_873_521.434_88);
   });
 
   test("overlapArea - undefined sketch throws", async () => {
@@ -27,7 +27,7 @@ describe("overlapArea", () => {
   // sketch always assumed to be within outer boundary.  outerArea is passed as pre-calculated area avoiding need to compute it on the fly
   test("overlapArea overall - single polygon fully inside", async () => {
     const metrics = await overlapArea("test", fix.sketch1, fix.outerArea);
-    expect(metrics[0].value).toBeCloseTo(12363718145.180046);
+    expect(metrics[0].value).toBeCloseTo(12_363_718_145.180_046);
     expect(metrics[1].value).toBeCloseTo(0.25); // takes up bottom left quadrant of outer
   });
 
@@ -42,12 +42,12 @@ describe("overlapSubarea", () => {
   test("overlapSubarea - undefined subareaFeature returns zero value metrics", async () => {
     const metrics = await overlapSubarea("test", fix.sketch1, undefined!);
     expect(metrics.length).toBe(2);
-    metrics.forEach((m) => expect(m.value).toEqual(0));
+    for (const m of metrics) expect(m.value).toEqual(0);
   });
 
   test("overlapSubarea intersect - single polygon fully inside", async () => {
     const metrics = await overlapSubarea("test", fix.sketch1, fix.outer);
-    expect(metrics[0].value).toBeCloseTo(12363718145.180046);
+    expect(metrics[0].value).toBeCloseTo(12_363_718_145.180_046);
     expect(metrics[1].value).toBeCloseTo(0.25);
   });
 
@@ -71,8 +71,8 @@ describe("overlapSubarea", () => {
       operation: "difference",
       outerArea: fix.outerOuterArea,
     });
-    expect(metrics[0].value).toBeCloseTo(12341127230.89369);
-    expect(metrics[1].value).toBeCloseTo(0.08326); // should be 1 square of 16 in outerOuter
+    expect(metrics[0].value).toBeCloseTo(12_341_127_230.893_69);
+    expect(metrics[1].value).toBeCloseTo(0.083_26); // should be 1 square of 16 in outerOuter
   });
 
   // sketch always assumed to be within outer boundary.  outerArea is passed as pre-calculated area avoiding need to compute it on the fly

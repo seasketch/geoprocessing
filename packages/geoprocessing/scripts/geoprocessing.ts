@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 import runTests from "./testing/runner.js";
-import { spawn } from "child_process";
+import { spawn } from "node:child_process";
 
 if (process.argv.length < 3) {
   throw new Error("Missing command");
 } else {
   const command = process.argv[2];
   switch (command) {
-    case "test":
+    case "test": {
       runTests();
       break;
-    case "init":
+    }
+    case "init": {
       spawn(
         "node",
         [`${import.meta.dirname}/init/bin.js`, ...process.argv.slice(2)],
@@ -20,7 +21,8 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    case "init:testProjects":
+    }
+    case "init:testProjects": {
       spawn(
         `${import.meta.dirname}/../../scripts/testing/initTestProjects.sh`,
         {
@@ -29,19 +31,22 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    case "add:template":
+    }
+    case "add:template": {
       spawn("node", [`${import.meta.dirname}/template/addTemplate.js`], {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "import:data":
+    }
+    case "import:data": {
       spawn(`${import.meta.dirname}/../../scripts/dataPrep/import-data.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "reimport:data":
+    }
+    case "reimport:data": {
       spawn(
         `${import.meta.dirname}/../../scripts/dataPrep/reimport-data.sh`,
         process.argv.slice(2),
@@ -51,7 +56,8 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    case "precalc:data":
+    }
+    case "precalc:data": {
       spawn(
         `${import.meta.dirname}/../../scripts/dataPrep/precalc-data.sh`,
         process.argv.slice(2),
@@ -61,7 +67,8 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    case "precalc:data:clean":
+    }
+    case "precalc:data:clean": {
       spawn(
         `${import.meta.dirname}/../../scripts/dataPrep/precalc-data-clean.sh`,
         process.argv.slice(2),
@@ -71,7 +78,8 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    case "publish:data":
+    }
+    case "publish:data": {
       spawn(
         `${import.meta.dirname}/../../scripts/dataPrep/publish-data.sh`,
         process.argv.slice(2),
@@ -81,79 +89,92 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    case "create:function":
+    }
+    case "create:function": {
       spawn("node", [`${import.meta.dirname}/init/createFunction.js`], {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "create:client":
+    }
+    case "create:client": {
       spawn("node", [`${import.meta.dirname}/init/createClient.js`], {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "create:report":
+    }
+    case "create:report": {
       spawn("node", [`${import.meta.dirname}/init/createReport.js`], {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "build:lambda":
+    }
+    case "build:lambda": {
       spawn(`${import.meta.dirname}/../../scripts/build/build.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "start:client":
+    }
+    case "start:client": {
       spawn(`${import.meta.dirname}/../../scripts/build/start-client.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "build:client":
+    }
+    case "build:client": {
       spawn(`${import.meta.dirname}/../../scripts/build/build-client.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "synth":
+    }
+    case "synth": {
       spawn(`${import.meta.dirname}/../../scripts/deploy/synth.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "deploy":
+    }
+    case "deploy": {
       spawn(`${import.meta.dirname}/../../scripts/deploy/deploy.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "destroy":
+    }
+    case "destroy": {
       spawn(`${import.meta.dirname}/../../scripts/deploy/destroy.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "bootstrap":
+    }
+    case "bootstrap": {
       spawn(`${import.meta.dirname}/../../scripts/deploy/bootstrap.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "storybook":
+    }
+    case "storybook": {
       spawn(`${import.meta.dirname}/../../scripts/storybook/storybook.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "url":
+    }
+    case "url": {
       spawn(`${import.meta.dirname}/../../scripts/deploy/url.sh`, {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "bundle-features":
+    }
+    case "bundle-features": {
       spawn(
         "node",
         [`${import.meta.dirname}/dataPrep/bin.js`, ...process.argv.slice(2)],
@@ -163,19 +184,22 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    case "clear-results":
+    }
+    case "clear-results": {
       spawn("node", [`${import.meta.dirname}/clear/clearResults.js`], {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "clear-all-results":
+    }
+    case "clear-all-results": {
       spawn("node", [`${import.meta.dirname}/clear/clearAllResults.js`], {
         cwd: process.cwd(),
         stdio: "inherit",
       });
       break;
-    case "data":
+    }
+    case "data": {
       spawn(
         "node",
         [`${import.meta.dirname}/dataPrep/data.js`, ...process.argv.slice(3)],
@@ -185,7 +209,8 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    case "upgrade":
+    }
+    case "upgrade": {
       spawn(
         `${import.meta.dirname}/../../scripts/upgrade/upgrade.sh`,
         process.argv.slice(2),
@@ -195,7 +220,9 @@ if (process.argv.length < 3) {
         },
       );
       break;
-    default:
+    }
+    default: {
       throw new Error(`Command ${command} not supported.`);
+    }
   }
 }

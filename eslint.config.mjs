@@ -51,7 +51,6 @@ export default [
       "unicorn/no-array-for-each": "warn",
       "unicorn/explicit-length-check": "off",
       "unicorn/prefer-object-from-entries": "off",
-      "unicorn/prefer-logic-operator-over-ternary": "warn",
     },
   },
   {

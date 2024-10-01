@@ -74,14 +74,14 @@ export async function rasterMetrics(
             categorical,
             categoryMetricProperty,
             categoryMetricValues,
-            ...(statOptions ?? {}),
+            ...statOptions,
           }),
         );
         features.push(curSketch);
       });
 
       // convert individual feature/sketch level stats to metrics
-      (await Promise.all(promises)).forEach((curStats, index) => {
+      for (const [index, curStats] of (await Promise.all(promises)).entries()) {
         const curFeature = features[index];
         const metricPartial: Partial<Metric> = (() => {
           if (isSketch(curFeature)) {
@@ -107,7 +107,7 @@ export async function rasterMetrics(
           categoryMetricValues,
         });
         metrics = metrics.concat(curMetrics);
-      });
+      }
     }
 
     // SketchCollection level metrics
@@ -118,7 +118,7 @@ export async function rasterMetrics(
         categorical,
         categoryMetricProperty,
         categoryMetricValues,
-        ...(statOptions ?? {}),
+        ...statOptions,
       });
 
       const metricPartial: Partial<Metric> = (() => {
@@ -154,7 +154,7 @@ export async function rasterMetrics(
       categorical,
       categoryMetricProperty,
       categoryMetricValues,
-      ...(statOptions ?? {}),
+      ...statOptions,
     });
 
     const wholeMetrics = rasterStatsToMetrics(wholeStats, {

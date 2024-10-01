@@ -32,16 +32,18 @@ export function cleanCoords(
       }
       return cleanedCollection;
     }
-    case "LineString":
+    case "LineString": {
       newCoords = cleanLine(geojson);
       break;
+    }
     case "MultiLineString":
-    case "Polygon":
-      getCoords(geojson).forEach(function (line) {
+    case "Polygon": {
+      for (const line of getCoords(geojson)) {
         newCoords.push(cleanLine(line));
-      });
+      }
       break;
-    case "MultiPolygon":
+    }
+    case "MultiPolygon": {
       getCoords(geojson).forEach(function (polygons: any) {
         const polyPoints: Position[] = [];
         polygons.forEach(function (ring: Position[]) {
@@ -50,8 +52,10 @@ export function cleanCoords(
         newCoords.push(polyPoints);
       });
       break;
-    case "Point":
+    }
+    case "Point": {
       return geojson;
+    }
     case "MultiPoint": {
       const existing: Record<string, true> = {};
       getCoords(geojson).forEach(function (coord: any) {
@@ -63,8 +67,9 @@ export function cleanCoords(
       });
       break;
     }
-    default:
+    default: {
       throw new Error(type + " geometry not supported");
+    }
   }
 
   // Support input mutation
@@ -95,8 +100,8 @@ export function cleanCoords(
 function cleanLine(line: Position[]): any[] {
   const points = getCoords(line);
   const newPoints: number[][] = [];
-  for (let i = 0; i < points.length; i++) {
-    const newPoint = [longitude(points[i][0]), latitude(points[i][1])];
+  for (const point of points) {
+    const newPoint = [longitude(point[0]), latitude(point[1])];
     newPoints.push(newPoint);
   }
   return newPoints;

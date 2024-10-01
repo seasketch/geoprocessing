@@ -7,7 +7,7 @@ import awsRegions from "aws-regions";
 import { getTemplateQuestion } from "../template/addTemplate.js";
 import { createProject, CreateProjectMetadata } from "./createProject.js";
 import { eezColl } from "../global/datasources/mr-eez.js";
-import { pathToFileURL } from "url";
+import { pathToFileURL } from "node:url";
 import userMeta from "user-meta";
 
 const regions = awsRegions.list({ public: true }).map((v) => v.code);
@@ -52,7 +52,7 @@ async function init(gpVersion?: string) {
       validate: (value) =>
         value === "" ||
         value === null ||
-        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/gm.test(
+        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,./:;=?@[\]~\-]+$/gm.test(
           value,
         )
           ? true
@@ -74,7 +74,7 @@ async function init(gpVersion?: string) {
       message: "Your email",
       default: defaultEmail,
       validate: (value) =>
-        /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/g.test(value)
+        /[\d%+._a-z-]+@[\d.a-z-]+\.[a-z]{2,3}/g.test(value)
           ? true
           : "Please provide a valid email for use in your package.json file",
     },
@@ -163,8 +163,10 @@ async function init(gpVersion?: string) {
       message:
         "What is the projects minimum longitude (left) in degrees (-180.0 to 180.0)?",
       default: -180,
-      validate: (value) => (isNaN(parseFloat(value)) ? "Not a number!" : true),
-      filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
+      validate: (value) =>
+        isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
+      filter: (value) =>
+        isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value),
     },
     {
       when: (answers) => answers.planningAreaType === "other",
@@ -173,8 +175,10 @@ async function init(gpVersion?: string) {
       message:
         "What is the projects minimum latitude (bottom) in degrees (-90.0 to 90.0)?",
       default: -90,
-      validate: (value) => (isNaN(parseFloat(value)) ? "Not a number!" : true),
-      filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
+      validate: (value) =>
+        isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
+      filter: (value) =>
+        isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value),
     },
     {
       when: (answers) => answers.planningAreaType === "other",
@@ -183,8 +187,10 @@ async function init(gpVersion?: string) {
       message:
         "What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)?",
       default: 180,
-      validate: (value) => (isNaN(parseFloat(value)) ? "Not a number!" : true),
-      filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
+      validate: (value) =>
+        isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
+      filter: (value) =>
+        isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value),
     },
     {
       when: (answers) => answers.planningAreaType === "other",
@@ -193,8 +199,10 @@ async function init(gpVersion?: string) {
       message:
         "What is the projects maximum latitude (top) in degrees (-90.0 to 90.0)?",
       default: 90,
-      validate: (value) => (isNaN(parseFloat(value)) ? "Not a number!" : true),
-      filter: (value) => (isNaN(parseFloat(value)) ? value : parseFloat(value)),
+      validate: (value) =>
+        isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
+      filter: (value) =>
+        isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value),
     },
     templateQuestion,
   ]);

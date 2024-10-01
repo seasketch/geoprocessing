@@ -7,7 +7,7 @@ import {
 } from "../../../src/index.js";
 import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
 import { importDatasource } from "./importDatasource.js";
-import path from "path";
+import path from "node:path";
 import fs from "fs-extra";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
@@ -111,7 +111,7 @@ describe("Reimport datasources", () => {
       expect(reimportDss).toEqual(validReimportDss);
       expect(fs.existsSync(path.join(dstPath, `${vectorDatasourceId}.json`)));
       expect(fs.existsSync(path.join(dstPath, `${vectorDatasourceId}.fgb`)));
-    }, 60000);
+    }, 60_000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);

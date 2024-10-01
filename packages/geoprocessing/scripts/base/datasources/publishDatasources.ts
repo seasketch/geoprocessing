@@ -80,10 +80,10 @@ export async function publishDatasources<C extends ProjectClientBase>(
         console.log(`${ds.datasourceId} publish complete`);
         console.log(" ");
         updated += 1;
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          console.log(e.message);
-          console.log(e.stack);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.log(error.message);
+          console.log(error.stack);
           console.log(
             `Publishing datasource ${ds.datasourceId} failed, moving to next`,
           );
@@ -113,10 +113,10 @@ export async function publishDatasources<C extends ProjectClientBase>(
         console.log(`${ds.datasourceId} publish complete`);
         console.log();
         updated += 1;
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          console.log(e.message);
-          console.log(e.stack);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.log(error.message);
+          console.log(error.stack);
           console.log(
             `Publishing datasource ${ds.datasourceId} failed, moving to next`,
           );

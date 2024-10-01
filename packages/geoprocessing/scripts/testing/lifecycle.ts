@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 
 export async function setupProjectDirs(projectPath: string) {
   // Stub out code asset sources expected by CDK

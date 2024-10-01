@@ -22,7 +22,7 @@ export const simpleObjectives: Objective[] = [
   {
     objectiveId: "cold",
     shortDesc: "Protect 100% of Cold water corals",
-    target: 1.0,
+    target: 1,
     countsToward: { full: "yes" },
   },
   {
@@ -250,12 +250,12 @@ export const categoricalClassMetrics: Metric[] = createMetrics([
 export const NaNPercMetrics: Metric[] = createMetrics([
   {
     classId: "Bays and Coast",
-    value: NaN,
+    value: Number.NaN,
     metricId: categoricalMetricGroup.metricId,
   },
   {
     classId: "Madracis Reef",
-    value: 0.45532444,
+    value: 0.455_324_44,
     metricId: categoricalMetricGroup.metricId,
   },
 ]);
@@ -263,12 +263,12 @@ export const NaNPercMetrics: Metric[] = createMetrics([
 export const longClassMetrics: Metric[] = createMetrics([
   {
     classId: "Bays and Coast",
-    value: 0.133456532,
+    value: 0.133_456_532,
     metricId: categoricalMetricGroup.metricId,
   },
   {
     classId: "Madracis Reef",
-    value: 0.45532444,
+    value: 0.455_324_44,
     metricId: categoricalMetricGroup.metricId,
   },
 ]);

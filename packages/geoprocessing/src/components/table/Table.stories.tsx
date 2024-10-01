@@ -288,7 +288,7 @@ export const filterCheckboxes = () => {
       {
         name: "Show only odd IDs",
         defaultValue: true,
-        filterFn: (row) => parseInt(row.id) % 2 !== 0,
+        filterFn: (row) => Number.parseInt(row.id) % 2 !== 0,
       },
     ],
   };

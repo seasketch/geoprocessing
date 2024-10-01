@@ -20,7 +20,7 @@ export default function useClickOutside(
         ref.current &&
         !ref.current.contains(event.target as HTMLDivElement)
       ) {
-        callback.apply(null, [false]);
+        Reflect.apply(callback, null, [false]);
       }
     };
 

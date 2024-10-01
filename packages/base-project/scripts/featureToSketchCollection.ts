@@ -5,7 +5,7 @@ import {
   featureToSketchCollection,
 } from "@seasketch/geoprocessing";
 import fs from "fs-extra";
-import { pathToFileURL } from "url";
+import { pathToFileURL } from "node:url";
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   // module was not imported but called directly

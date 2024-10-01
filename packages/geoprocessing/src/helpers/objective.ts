@@ -14,10 +14,10 @@ export const getObjectiveById = (
   objectives: Objective[],
 ): Objective => {
   const obj = objectives.find((obj) => obj.objectiveId === objectiveId);
-  if (!obj) {
-    throw new Error(`Objective not found - ${objectiveId}`);
-  } else {
+  if (obj) {
     return obj;
+  } else {
+    throw new Error(`Objective not found - ${objectiveId}`);
   }
 };
 

@@ -41,7 +41,7 @@ export async function clipToPolygonFeatures(
   options: ClipOptions = {},
 ): Promise<Feature<Polygon | MultiPolygon>> {
   const {
-    maxSize = 500000,
+    maxSize = 500_000,
     enforceMaxSize = false,
     ensurePolygon = true,
   } = options;

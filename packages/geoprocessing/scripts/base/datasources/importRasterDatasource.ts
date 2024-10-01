@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import { $ } from "zx";
 import fs from "fs-extra";
 import {

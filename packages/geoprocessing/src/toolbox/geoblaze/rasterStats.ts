@@ -86,18 +86,13 @@ export const rasterStats = async (
   const defaultStats: StatsObject[] = [];
   for (let i = 0; i < numBands; i++) {
     defaultStats[i] = {};
-    for (let j = 0; j < statsToPublish.length; j++) {
-      if (
-        statsToPublish[j] === "histogram" &&
-        categorical &&
-        categoryMetricValues
-      ) {
+    for (const element of statsToPublish) {
+      if (element === "histogram" && categorical && categoryMetricValues) {
         const hist = {};
-        categoryMetricValues.forEach((c) => (hist[c] = 0)); // load zero for each histogram category
-        defaultStats[i][statsToPublish[j]] = hist;
+        for (const c of categoryMetricValues) hist[c] = 0; // load zero for each histogram category
+        defaultStats[i][element] = hist;
       } else {
-        defaultStats[i][statsToPublish[j]] =
-          defaultStatValues[statsToPublish[j]];
+        defaultStats[i][element] = defaultStatValues[element];
       }
     }
   }
@@ -120,7 +115,7 @@ export const rasterStats = async (
           if (!categoryMetricValues || categoryMetricValues.length === 0) {
             return { histogram: h };
           } else {
-            categoryMetricValues.forEach((c) => (hist[c] = h[c] ?? 0));
+            for (const c of categoryMetricValues) hist[c] = h[c] ?? 0;
             return { histogram: hist };
           }
         });
@@ -139,7 +134,7 @@ export const rasterStats = async (
       );
     }
 
-    statsByBand.forEach((statBand) => {
+    for (const statBand of statsByBand) {
       // Calculate area
       if (statsToCalculate.includes("area")) {
         statBand.area = statBand.valid
@@ -164,7 +159,7 @@ export const rasterStats = async (
       );
       // Transfer calculated stats if valid number
       finalStats.push(finalStatsBand);
-    });
+    }
   } catch {
     if (process.env.NODE_ENV !== "test")
       console.log(

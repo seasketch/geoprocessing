@@ -68,7 +68,7 @@ export const App = ({ reports }: AppProps) => {
           toggleLayerVisibility: (layerId: string) => {
             setReportContext((prev) => {
               if (prev) {
-                const wasToggled = prev.visibleLayers.indexOf(layerId) !== -1;
+                const wasToggled = prev.visibleLayers.includes(layerId);
                 let target: Window = window;
                 if (window.parent) {
                   target = window.parent;
@@ -126,20 +126,18 @@ export const App = ({ reports }: AppProps) => {
           });
         }
       }
-    } catch (e) {
+    } catch (error) {
       // Do nothing. Might not even be related to SeaSketch reporting
-      console.error(e);
+      console.error(error);
     }
   };
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "x") {
-      if (window.parent) {
-        window.parent.postMessage(
-          { type: "SeaSketchReportingKeydownEvent", key: "x" },
-          "*",
-        );
-      }
+    if (e.key === "x" && window.parent) {
+      window.parent.postMessage(
+        { type: "SeaSketchReportingKeydownEvent", key: "x" },
+        "*",
+      );
     }
   };
 

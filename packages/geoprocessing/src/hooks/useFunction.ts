@@ -65,7 +65,38 @@ export const useFunction = <ResultType>(
     setState({
       loading: true,
     });
-    if (!context.exampleOutputs) {
+    if (context.exampleOutputs) {
+      // This is test or storybook environment, so load example data
+      // or simulate loading and error states.
+      const data = context.exampleOutputs.find(
+        (output) => output.functionName === functionTitle,
+      );
+      if (!data && !context.simulateLoading && !context.simulateError) {
+        setState({
+          loading: false,
+          error: `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`,
+        });
+      }
+      // create a fake GeoprocessingTask record and set state, returning value
+      setState({
+        loading: context.simulateLoading ? context.simulateLoading : false,
+        task: {
+          id: "abc123",
+          location: "https://localhost/abc123",
+          service: "https://localhost",
+          logUriTemplate: "https://localhost/logs/abc123",
+          geometryUri: "https://localhost/geometry/abc123",
+          wss: "",
+          status: GeoprocessingTaskStatus.Completed,
+          startedAt: new Date().toISOString(),
+          duration: 0,
+          data: (data || {}).results as ResultType,
+          error: context.simulateError ? context.simulateError : undefined,
+          estimate: 0,
+        },
+        error: context.simulateError ? context.simulateError : undefined,
+      });
+    } else {
       if (!context.projectUrl && context.geometryUri) {
         setState({
           loading: false,
@@ -95,7 +126,7 @@ export const useFunction = <ResultType>(
         }
         let url: string;
         let executionMode: string;
-        if (/^https:/.test(functionTitle)) {
+        if (functionTitle.startsWith("https:")) {
           url = functionTitle;
         } else {
           const service = geoprocessingProject!.geoprocessingServices.find(
@@ -197,42 +228,41 @@ export const useFunction = <ResultType>(
         pendingRequest
           .then((task) => {
             const currServiceName = task.service;
-            if (currServiceName) {
-              if (
-                task.status !== "completed" &&
-                task.wss?.length > 0 &&
-                executionMode === "async"
-              ) {
-                const sname = encodeURIComponent(currServiceName);
-                const ck = encodeURIComponent(payload.cacheKey || "");
-                const wssUrl =
-                  task.wss +
-                  "?" +
-                  "serviceName=" +
-                  sname +
-                  "&cacheKey=" +
-                  ck +
-                  "&fromClient=true";
+            if (
+              currServiceName &&
+              task.status !== "completed" &&
+              task.wss?.length > 0 &&
+              executionMode === "async"
+            ) {
+              const sname = encodeURIComponent(currServiceName);
+              const ck = encodeURIComponent(payload.cacheKey || "");
+              const wssUrl =
+                task.wss +
+                "?" +
+                "serviceName=" +
+                sname +
+                "&cacheKey=" +
+                ck +
+                "&fromClient=true";
 
-                // set up the socket (async only)
-                getSocket(
-                  task,
-                  wssUrl,
-                  setState,
-                  payload.cacheKey,
-                  url,
-                  payload,
-                  functionTitle,
-                  abortController,
-                  socket,
-                );
-              }
+              // set up the socket (async only)
+              getSocket(
+                task,
+                wssUrl,
+                setState,
+                payload.cacheKey,
+                url,
+                payload,
+                functionTitle,
+                abortController,
+                socket,
+              );
             }
 
             // check for invalid status
             if (
               !task.status ||
-              ["pending", "completed", "failed"].indexOf(task.status) === -1
+              !["pending", "completed", "failed"].includes(task.status)
             ) {
               setState({
                 loading: false,
@@ -269,46 +299,15 @@ export const useFunction = <ResultType>(
               return;
             }
           })
-          .catch((e) => {
+          .catch((error) => {
             if (!abortController.signal.aborted) {
               setState({
                 loading: false,
-                error: e.toString(),
+                error: error.toString(),
               });
             }
           });
       })();
-    } else {
-      // This is test or storybook environment, so load example data
-      // or simulate loading and error states.
-      const data = context.exampleOutputs.find(
-        (output) => output.functionName === functionTitle,
-      );
-      if (!data && !context.simulateLoading && !context.simulateError) {
-        setState({
-          loading: false,
-          error: `Could not find example data for sketch "${context.sketchProperties.name}" and function "${functionTitle}". Run \`npm test\` to generate example outputs`,
-        });
-      }
-      // create a fake GeoprocessingTask record and set state, returning value
-      setState({
-        loading: context.simulateLoading ? context.simulateLoading : false,
-        task: {
-          id: "abc123",
-          location: "https://localhost/abc123",
-          service: "https://localhost",
-          logUriTemplate: "https://localhost/logs/abc123",
-          geometryUri: "https://localhost/geometry/abc123",
-          wss: "",
-          status: GeoprocessingTaskStatus.Completed,
-          startedAt: new Date().toISOString(),
-          duration: 0,
-          data: (data || {}).results as ResultType,
-          error: context.simulateError ? context.simulateError : undefined,
-          estimate: 0,
-        },
-        error: context.simulateError ? context.simulateError : undefined,
-      });
     }
 
     // Upon teardown any outstanding requests should be aborted. This useEffect
@@ -346,7 +345,7 @@ const getSocket = (
   }
 
   // once socket open, check if task completed before it opened
-  socket.onopen = function () {
+  socket.addEventListener("open", function () {
     // Check local cache first
     const task = localCache.get(cacheKey) as GeoprocessingTask | undefined;
 
@@ -385,7 +384,7 @@ const getSocket = (
         }
       }
     });
-  };
+  });
 
   // if task complete message received on socket (the only message type supported)
   // then finish the task (because results aren't sent on the socket, too big)
@@ -427,9 +426,9 @@ const getSocket = (
       }
     }
   };
-  socket.onclose = function () {
+  socket.addEventListener("close", function () {
     //no op
-  };
+  });
   socket.onerror = function () {
     if (socket.url?.length > 0) {
       setState({

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import fs from "fs-extra";
-import * as path from "path";
+import * as path from "node:path";
 import { Translations } from "./publishTerms.js";
 
 if (!process.env.POEDITOR_API_TOKEN) {

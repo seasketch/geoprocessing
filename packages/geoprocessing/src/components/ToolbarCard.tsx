@@ -49,9 +49,7 @@ export const ToolbarCard = ({
 
   return (
     <>
-      <div
-        style={{ position: "relative", ...styles.box, ...(toolbarStyle || {}) }}
-      >
+      <div style={{ position: "relative", ...styles.box, ...toolbarStyle }}>
         {title && title !== "" && (
           <Toolbar
             titleAlign="center"
@@ -62,7 +60,7 @@ export const ToolbarCard = ({
             <div
               style={{
                 ...styles.left,
-                ...(titleStyle || {}),
+                ...titleStyle,
               }}
             >
               {title}
@@ -70,7 +68,7 @@ export const ToolbarCard = ({
             <div
               style={{
                 ...styles.right,
-                ...(itemsStyle || {}),
+                ...itemsStyle,
               }}
             >
               {items}

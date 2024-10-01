@@ -58,7 +58,7 @@ export async function clipToOceanEez(
 
   // Wrap clip function into preprocessing function with additional clip options
   return clipToPolygonFeatures(feature, clipLoader, {
-    maxSize: 500000 * 1000 ** 2, // Default 500,000 KM
+    maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
     enforceMaxSize: false, // throws error if feature is larger than maxSize
     ensurePolygon: true, // don't allow multipolygon result, returns largest if multiple
   });

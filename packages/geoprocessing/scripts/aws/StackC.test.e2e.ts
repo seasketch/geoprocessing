@@ -96,5 +96,5 @@ describe("GeoprocessingStack - client only", () => {
       (child) => child instanceof NestedStack,
     );
     expect(lambdaStacks.length).toBe(0);
-  }, 60000);
+  }, 60_000);
 });

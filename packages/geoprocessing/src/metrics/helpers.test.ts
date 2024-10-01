@@ -419,10 +419,10 @@ describe("flattenSketchAllClass", () => {
         debug: false,
       },
     );
-    percMetrics.forEach((m) => {
+    for (const m of percMetrics) {
       expect(m.value).toEqual(0.25);
       expect(m.classId).toEqual("nearshore");
-    });
+    }
   });
 
   test("toPercentMetric - zero denominator value produces NaN", async () => {
@@ -449,10 +449,10 @@ describe("flattenSketchAllClass", () => {
         debug: false,
       },
     );
-    percMetrics.forEach((m) => {
-      expect(m.value).toEqual(NaN);
+    for (const m of percMetrics) {
+      expect(m.value).toEqual(Number.NaN);
       expect(m.classId).toEqual("nearshore");
-    });
+    }
   });
 
   test("toPercentMetric - set new percent metric ID", async () => {
@@ -460,7 +460,7 @@ describe("flattenSketchAllClass", () => {
     const percMetrics = toPercentMetric(groupMetrics, PRECALC_TOTALS, {
       metricIdOverride: percMetricName,
     });
-    percMetrics.forEach((m) => expect(m.metricId).toEqual(percMetricName));
+    for (const m of percMetrics) expect(m.metricId).toEqual(percMetricName);
   });
 
   test("toPercentMetric - set alternative idProperty", async () => {
@@ -487,10 +487,10 @@ describe("flattenSketchAllClass", () => {
         idProperty: "geographyId",
       },
     );
-    percMetrics.forEach((m) => {
+    for (const m of percMetrics) {
       expect(m.value).toEqual(0.25);
       expect(m.geographyId).toEqual("nearshore");
-    });
+    }
   });
 
   test("flattenByGroup - single class", async () => {

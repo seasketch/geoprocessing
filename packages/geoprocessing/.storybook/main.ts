@@ -1,5 +1,5 @@
 import type { StorybookConfig } from "@storybook/react-vite";
-import path from "path";
+import path from "node:path";
 
 /**
  * This function is used to resolve the absolute path of a package.

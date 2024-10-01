@@ -1,6 +1,6 @@
 import { ProjectClientBase } from "../../../src/project/ProjectClientBase.js";
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 
 export function getProjectClient(projectPath: string) {
   const datasources = fs.readJsonSync(

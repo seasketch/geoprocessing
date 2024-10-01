@@ -14,7 +14,8 @@ describe("getFeatures", () => {
     // console.log("url", url);
     const feats = await getFeatures(eezDatasource, url, {
       bbox: [
-        135.312441837621, -1.17311096529859, 165.676528225997, 13.4454329253893,
+        135.312_441_837_621, -1.173_110_965_298_59, 165.676_528_225_997,
+        13.445_432_925_389_3,
       ],
       // Without this filter, GUAM would also be included
       propertyFilter: {
@@ -25,7 +26,7 @@ describe("getFeatures", () => {
     expect(feats.length).toEqual(1);
     expect(feats[0].properties?.["UNION"]).toEqual("Micronesia");
     expect(1).toEqual(1);
-  }, 30000);
+  }, 30_000);
 
   test("should successfully fetch from external subdivided land datasource", async () => {
     const landDatasource = project.getExternalVectorDatasourceById(
@@ -38,14 +39,14 @@ describe("getFeatures", () => {
       project.getDatasourceUrl(landDatasource),
       {
         bbox: [
-          135.312441837621, -1.17311096529859, 165.676528225997,
-          13.4454329253893,
+          135.312_441_837_621, -1.173_110_965_298_59, 165.676_528_225_997,
+          13.445_432_925_389_3,
         ],
         unionProperty: "gid",
       },
     );
     expect(feats.length).toEqual(1050);
-  }, 30000);
+  }, 30_000);
 
   test("getFeatures - fetch subdivided with bbox crossing antimeridian greater than 180", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
@@ -57,12 +58,12 @@ describe("getFeatures", () => {
       eezDatasource,
       project.getDatasourceUrl(eezDatasource, { format: "fgb" }),
       {
-        bbox: [170.3874, -15.761472, 186.44315, -14.24049],
+        bbox: [170.3874, -15.761_472, 186.443_15, -14.240_49],
       },
     );
     // toJsonFile(featureCollection(feats), "SUB_FIJI_OUTSIDE_SUB.json");
     expect(feats.length).toEqual(4); // Only returns left side of antimeridian
-  }, 30000);
+  }, 30_000);
 
   test("getFeatures - fetch subdivided with bbox crossing antimeridian within 180", async () => {
     const eezDatasource = project.getExternalVectorDatasourceById(
@@ -74,12 +75,12 @@ describe("getFeatures", () => {
       eezDatasource,
       project.getDatasourceUrl(eezDatasource, { format: "fgb" }),
       {
-        bbox: [-180, -15.706455006156576, 180, -14.274583217973047],
+        bbox: [-180, -15.706_455_006_156_576, 180, -14.274_583_217_973_047],
       },
     );
     // toJsonFile(featureCollection(feats), "SUB_FIJI_INSIDE_SUB.json");
     expect(feats.length).toEqual(29); // Returns eez features across entire world crossing
-  }, 30000);
+  }, 30_000);
 
   // The same behavior is observed when using a flatgeobuf datasource, they just take a lot more time to run
 
@@ -90,12 +91,12 @@ describe("getFeatures", () => {
       fgbDatasourceId,
       project.getDatasourceUrl(fgbDatasourceId, { format: "fgb" }),
       {
-        bbox: [170.3874, -15.761472, 186.44315, -14.24049],
+        bbox: [170.3874, -15.761_472, 186.443_15, -14.240_49],
       },
     );
     // toJsonFile(featureCollection(feats), "SUB_FIJI_OUTSIDE_FGB.json");
     expect(feats.length).toEqual(4); // Returns eez features across entire world crossing
-  }, 90000);
+  }, 90_000);
 
   test("getFeatures - fetch flatgeobuf with bbox crossing antimeridian within 180 returns long way", async () => {
     const fgbDatasourceId =
@@ -104,10 +105,10 @@ describe("getFeatures", () => {
       fgbDatasourceId,
       project.getDatasourceUrl(fgbDatasourceId, { format: "fgb" }),
       {
-        bbox: [-180, -15.706455006156576, 180, -14.274583217973047],
+        bbox: [-180, -15.706_455_006_156_576, 180, -14.274_583_217_973_047],
       },
     );
     // toJsonFile(featureCollection(feats), "SUB_FIJI_INSIDE_FGB.json");
     expect(feats.length).toEqual(25); // Returns 50 eez features because bbox spans the world
-  }, 90000);
+  }, 90_000);
 });

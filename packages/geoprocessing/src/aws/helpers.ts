@@ -89,18 +89,18 @@ export function parseLambdaResponse(
 ): JSONValue {
   try {
     if (lambdaResult.StatusCode !== 200)
-      throw Error(
+      throw new Error(
         `Lambda result parsing failed: ${JSON.stringify(lambdaResult.Payload)}`,
       );
     if (!lambdaResult.Payload)
-      throw Error(
+      throw new Error(
         `Lambda result parsing failed: No payload in lambda response`,
       );
 
     const payload = JSON.parse(Buffer.from(lambdaResult.Payload).toString());
 
     if (payload.statusCode !== 200)
-      throw Error(
+      throw new Error(
         `Lambda result parsing failed: ${JSON.stringify(JSON.parse(payload.body))}`,
       );
 
@@ -110,6 +110,6 @@ export function parseLambdaResponse(
       "Failed to parse response from lambdaResult",
       JSON.stringify(lambdaResult, null, 2),
     );
-    throw Error(`Failed to parse response from AWS lambda`);
+    throw new Error(`Failed to parse response from AWS lambda`);
   }
 }

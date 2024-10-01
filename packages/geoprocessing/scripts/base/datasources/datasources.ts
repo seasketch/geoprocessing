@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import {
   datasourcesSchema,
   Datasource,
@@ -96,12 +96,12 @@ export function readDatasources(filePath?: string) {
   })();
 
   const result = datasourcesSchema.safeParse(diskPds);
-  if (!result.success) {
+  if (result.success) {
+    return result.data;
+  } else {
     console.error("Datasources file is invalid.  Did you make manual changes?");
     console.log(JSON.stringify(result.error.issues, null, 2));
     throw new Error("Please fix or report this issue");
-  } else {
-    return result.data;
   }
 }
 

@@ -13,8 +13,8 @@ import {
   importRasterDatasourceOptionsSchema,
   datasourceConfig,
 } from "../../src/index.js";
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 
 import { getProjectClient } from "../base/project/projectClient.js";
 import { precalcQuestion } from "./precalcQuestion.js";
@@ -80,12 +80,11 @@ void (async function () {
         ...srcAnswer,
         ...datasourceIdAnswer,
         ...layerNameAnswer,
-        ...{
-          ...detailedVectorAnswers,
-          formats: datasourceConfig.importDefaultVectorFormats.concat(
-            detailedVectorAnswers.formats,
-          ),
-        },
+
+        ...detailedVectorAnswers,
+        formats: datasourceConfig.importDefaultVectorFormats.concat(
+          detailedVectorAnswers.formats,
+        ),
         ...precalcAnswers,
         ...explodeAnswers,
       });
@@ -131,7 +130,7 @@ function rasterMapper(
     ...answers,
   };
   // a blank noDataValue will end up as nan, so just remove it as its optional
-  if (isNaN(parseFloat(`${answers.noDataValue}`))) {
+  if (isNaN(Number.parseFloat(`${answers.noDataValue}`))) {
     delete options.noDataValue;
   }
 
@@ -174,9 +173,11 @@ async function srcQuestion(): Promise<
       validate: (value) => {
         const fullPath = path.resolve(projectPath, value);
         if (!fs.existsSync(fullPath)) return "File does not exist";
-        else if (!fs.statSync(fullPath).isFile())
+        else if (fs.statSync(fullPath).isFile()) {
+          return true;
+        } else {
           return "Path does not point to a file";
-        else return true;
+        }
       },
     },
   ]);
@@ -187,7 +188,7 @@ async function datasourceIdQuestion(
   datasources: Datasource[],
   srcPath: string,
 ): Promise<Pick<ImportVectorDatasourceAnswers, "datasourceId">> {
-  const datasourceIds = datasources.map((ds) => ds.datasourceId);
+  const datasourceIds = new Set(datasources.map((ds) => ds.datasourceId));
   return inquirer.prompt<Pick<ImportVectorDatasourceAnswers, "datasourceId">>([
     {
       type: "input",
@@ -197,8 +198,8 @@ async function datasourceIdQuestion(
       default: path.basename(srcPath, path.extname(srcPath)),
       validate: (value) =>
         value === "" ||
-        (!datasourceIds.includes(value) &&
-          (/^[a-zA-Z0-9-_]+$/.test(value)
+        (!datasourceIds.has(value) &&
+          (/^[\w-]+$/.test(value)
             ? true
             : "Invalid or duplicate datasource name")),
     },

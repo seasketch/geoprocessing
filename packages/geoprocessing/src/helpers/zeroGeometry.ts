@@ -18,7 +18,7 @@ import {
 export function zeroPolygon() {
   return {
     type: "Polygon",
-    coordinates: [[[0.0, 0.0]], [[0.0, 0.0]], [[0.0, 0.0]]],
+    coordinates: [[[0, 0]], [[0, 0]], [[0, 0]]],
   };
 }
 

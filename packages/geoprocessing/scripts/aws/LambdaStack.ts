@@ -20,7 +20,7 @@ import {
 } from "aws-cdk-lib/aws-iam";
 
 import config from "./config.js";
-import path from "path";
+import path from "node:path";
 export interface GeoprocessingNestedStackProps extends NestedStackProps {
   /** Name of the geoprocessing project */
   projectName: string;
@@ -233,8 +233,11 @@ export class LambdaStack extends NestedStack {
     });
 
     // Allow all async run lambdas to invoke sync functions in this lambda stack using this policy
-    runLambdas.forEach((runLambda, index) => {
-      invokeSyncLambdaPolicies.forEach((curInvokeSyncLambdaPolicy, index2) => {
+    for (const [index, runLambda] of runLambdas.entries()) {
+      for (const [
+        index2,
+        curInvokeSyncLambdaPolicy,
+      ] of invokeSyncLambdaPolicies.entries()) {
         const syncLambdaRole = new Role(
           this,
           "GpSyncLambdaRole" + index + "_" + index2,
@@ -244,8 +247,8 @@ export class LambdaStack extends NestedStack {
         );
         syncLambdaRole.addToPolicy(curInvokeSyncLambdaPolicy);
         runLambda.addToRolePolicy(curInvokeSyncLambdaPolicy);
-      });
-    });
+      }
+    }
   }
 }
 

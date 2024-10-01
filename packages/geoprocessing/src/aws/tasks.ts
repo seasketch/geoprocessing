@@ -147,7 +147,7 @@ export default class TasksModel {
   ): Promise<APIGatewayProxyResult> {
     task.data = results;
     task.status = GeoprocessingTaskStatus.Completed;
-    task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
+    task.duration = Date.now() - new Date(task.startedAt).getTime();
 
     const shouldCache =
       task.disableCache === undefined || task.disableCache === false;
@@ -201,7 +201,7 @@ export default class TasksModel {
 
       // Store each JSON substring as a separate dynamodb item, with chunk index
       // all under same partition key (task.id) as root item for easy retrieval
-      jsonStrings.forEach((chunk, index) => {
+      for (const [index, chunk] of jsonStrings.entries()) {
         if (process.env.NODE_ENV !== "test") {
           console.log("chunk", chunk);
           console.log(`Chunk ${index} - ${chunk.length} length`);
@@ -228,7 +228,7 @@ export default class TasksModel {
             },
           }),
         );
-      });
+      }
 
       if (process.env.NODE_ENV !== "test") {
         console.log(`Saving items, root + ${jsonStrings.length} chunks`);
@@ -324,8 +324,8 @@ export default class TasksModel {
         );
       }
       return meanEstimate;
-    } catch (e) {
-      console.warn("unable to append duration estimate: ", e);
+    } catch (error) {
+      console.warn("unable to append duration estimate:", error);
     }
   }
 
@@ -336,7 +336,7 @@ export default class TasksModel {
   ): Promise<APIGatewayProxyResult> {
     if (error) console.error(error);
     task.status = GeoprocessingTaskStatus.Failed;
-    task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
+    task.duration = Date.now() - new Date(task.startedAt).getTime();
     task.error = errorDescription;
 
     const shouldCache =
@@ -468,8 +468,8 @@ export default class TasksModel {
         // parse chunk number from service name and sort by chunk number
         const chunkStrings = chunkItems
           .sort((a, b) => {
-            const aNum = parseInt(a.service.split("-chunk-")[1]);
-            const bNum = parseInt(b.service.split("-chunk-")[1]);
+            const aNum = Number.parseInt(a.service.split("-chunk-")[1]);
+            const bNum = Number.parseInt(b.service.split("-chunk-")[1]);
             return aNum - bNum;
           })
           .map((item) => item.data.chunk);
@@ -483,11 +483,11 @@ export default class TasksModel {
       }
 
       return rootItem as unknown as GeoprocessingTask;
-    } catch (e: unknown) {
+    } catch (error: unknown) {
       console.log("TasksModel get threw an error");
-      if (e instanceof Error) {
-        console.log(e.message);
-        console.log(e.stack);
+      if (error instanceof Error) {
+        console.log(error.message);
+        console.log(error.stack);
         return undefined;
       }
     }
@@ -553,9 +553,11 @@ export default class TasksModel {
     let parsedString = "";
     try {
       parsedString = JSON.parse(mergedString);
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        throw new Error("Error merging JSON string chunks: " + e.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new TypeError(
+          "Error merging JSON string chunks: " + error.message,
+        );
       }
     }
     return parsedString;

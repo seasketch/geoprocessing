@@ -17,7 +17,7 @@ export const testWithinPerc = (
       return;
     } else {
       // Zero edge case still worth testing, get it just up off of 0
-      expectedValue = testValue * 0.00000000001;
+      expectedValue = testValue * 0.000_000_000_01;
     }
   }
   const percDiff = Math.abs(testValue - expectedValue) / expectedValue;

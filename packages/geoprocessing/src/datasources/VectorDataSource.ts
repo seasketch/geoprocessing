@@ -194,12 +194,12 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
             return;
           }),
         )
-        .catch((e) => {
+        .catch((error) => {
           // It's easier to deal with these errors at the point of use later,
           // rather than as a side-effect of instantiation. Otherwise it's easy
           // to run into unhandled promise exceptions or rejections
           // The identifyBundles method will check for initError
-          console.error(e);
+          console.error(error);
           this.initError = new Error(
             `Problem fetching VectorDataSource manifest from ${metadataUrl}`,
           );
@@ -223,8 +223,8 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     try {
       const response = await fetch(this.url + i.location);
       data = await response.arrayBuffer();
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
       throw new Error(
         `Problem fetching or parsing index data at ${i.location}`,
       );
@@ -270,19 +270,17 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
       })
         .then((r) => {
           if (abortController.signal.aborted) {
-            return Promise.reject(new DOMException("Aborted", "AbortError"));
+            throw new DOMException("Aborted", "AbortError");
           }
           if (!r.ok) {
             this.pendingRequests.delete(key);
-            return Promise.reject(
-              new Error(`Problem fetching datasource bundle at ${url}`),
-            );
+            throw new Error(`Problem fetching datasource bundle at ${url}`);
           }
           return r.arrayBuffer();
         })
         .then((arrayBuffer) => {
           if (abortController.signal.aborted) {
-            return Promise.reject(new DOMException("Aborted", "AbortError"));
+            throw new DOMException("Aborted", "AbortError");
           }
           const geojson = geobuf.decode(
             new Pbf(arrayBuffer),
@@ -319,12 +317,12 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
           // Make sure this is always run
           this.pendingRequests.delete(key);
         })
-        .catch((err) => {
+        .catch((error) => {
           this.pendingRequests.delete(key);
-          if (err.name === "AbortError") {
+          if (error.name === "AbortError") {
             // do nothing. fetch aborted
           } else {
-            throw err;
+            throw error;
           }
         });
       this.pendingRequests.set(key, {
@@ -354,7 +352,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
 
   private cancelLowPriorityRequests(ignore: Array<number>) {
     for (const key of this.pendingRequests.keys()) {
-      if (ignore.indexOf(parseInt(key)) === -1) {
+      if (!ignore.includes(Number.parseInt(key))) {
         const { abortController, priority } = this.pendingRequests.get(key)!;
         if (priority === "low") {
           // debug(`Cancelling reqest for ${key}.proto`);
@@ -424,7 +422,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
       // extent
       const overlapping = await this.identifyBundles(getBBox(feature));
       for (const id of bundleIds) {
-        if (overlapping.indexOf(id) === -1) {
+        if (!overlapping.includes(id)) {
           overlapping.push(id);
         }
       }
@@ -494,13 +492,13 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     unionProperty?: string,
   ): Promise<FeatureCollection<T["geometry"], T["properties"]>> {
     const features = await this.fetch(bbox);
-    if (features.length !== 0) {
+    if (features.length === 0) {
+      return fc([]);
+    } else {
       return union(
         fc(features as unknown as Feature<Polygon | MultiPolygon>[]),
         unionProperty || undefined,
       );
-    } else {
-      return fc([]);
     }
   }
 
@@ -530,12 +528,12 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
           leaf: f as VectorFeature,
           ancestors: (f.properties ? f.properties._ancestors || "" : "")
             .split(",")
-            .map((a: string) => parseFloat(a))
+            .map((a: string) => Number.parseFloat(a))
             .reverse(),
         };
       });
       trees.push({
-        fid: parseInt(_id),
+        fid: Number.parseInt(_id),
         root: this.createAncestors(nodes).children![0],
       });
     }
@@ -565,7 +563,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
       // for each group, push a new node onto the node's children
       for (const key in groups) {
         const cutline = groups[key][0].ancestors[0];
-        groups[key].forEach((n) => (n.ancestors = n.ancestors.slice(1)));
+        for (const n of groups[key]) n.ancestors = n.ancestors.slice(1);
         if (cutline) {
           (node.children as Node[]).push(
             populateChildren(

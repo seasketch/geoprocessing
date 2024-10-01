@@ -43,8 +43,8 @@ const infile = "/mnt/c/data/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp";
     const eezNoLandArea = area(eezFeat);
     let remEezArea = 0;
     console.log(eezFeat.properties.UNION);
-    console.log("eezNoLandArea: ", eezNoLandArea);
-    console.log("numLandFeatures: ", landFeatures.length);
+    console.log("eezNoLandArea:", eezNoLandArea);
+    console.log("numLandFeatures:", landFeatures.length);
 
     const featToChunkSize = (numFeatures) => {
       if (numFeatures > 8000) return 100;
@@ -59,13 +59,13 @@ const infile = "/mnt/c/data/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp";
     console.log(`${chunks.length} chunks, ${chunkSize} features each`);
     // Start with whole eezFeat and subtract one chunk of land features at a time to not blow up clip
     let remainder = eezFeat;
-    chunks.forEach((curChunk, idx) => {
+    for (const [idx, curChunk] of chunks.entries()) {
       console.log(`chunk ${idx + 1} of ${chunks.length}`);
       remainder = clip(fc([remainder, ...curChunk]), "difference");
-    });
+    }
     remEezArea = remainder ? area(remainder) : remEezArea;
 
-    console.log("remEezArea: ", eezNoLandArea);
+    console.log("remEezArea:", eezNoLandArea);
     console.log(
       `${roundDecimal((remEezArea / eezNoLandArea) * 100, 1)}% decrease`,
     );

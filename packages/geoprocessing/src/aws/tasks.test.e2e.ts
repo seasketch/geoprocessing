@@ -69,7 +69,7 @@ describe("DynamoDB local", () => {
   });
 
   test("create new task", async () => {
-    const task = await Tasks.create(SERVICE_NAME, undefined);
+    const task = await Tasks.create(SERVICE_NAME);
     expect(typeof task.id).toBe("string");
     expect(task.status).toBe("pending");
     // make sure it saves to the db
@@ -81,7 +81,7 @@ describe("DynamoDB local", () => {
       },
     });
     expect(item && item.Item && item.Item.id).toBe(task.id);
-  }, 10000);
+  }, 10_000);
 
   test("create new task with cache disabled should have no record", async () => {
     const task = await Tasks.create(SERVICE_NAME, { disableCache: true });
@@ -97,7 +97,7 @@ describe("DynamoDB local", () => {
     });
     // console.log(JSON.stringify(item, null, 2));
     expect(item.Item).toBeUndefined();
-  }, 10000);
+  }, 10_000);
 
   test("create new async task", async () => {
     const task = await Tasks.create(SERVICE_NAME, { wss: "wssabc123" });
@@ -116,7 +116,7 @@ describe("DynamoDB local", () => {
   });
 
   test("get a created task", async () => {
-    const task = await Tasks.create(SERVICE_NAME, undefined);
+    const task = await Tasks.create(SERVICE_NAME);
     expect(typeof task.id).toBe("string");
     const retrieved = await Tasks.get(SERVICE_NAME, task.id);
     expect(retrieved && retrieved.id).toBe(task.id);
@@ -144,7 +144,7 @@ describe("DynamoDB local", () => {
 
   test("complete an existing task should split data into chunk item", async () => {
     const task = await Tasks.create(SERVICE_NAME);
-    const response = await Tasks.complete(task, { area: 1234556 });
+    const response = await Tasks.complete(task, { area: 1_234_556 });
     const items = await docClient.query({
       TableName: "tasks-core",
       KeyConditionExpression: "#id = :id",

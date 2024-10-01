@@ -3,8 +3,8 @@ import { fgbFetchAll } from "./flatgeobuf.js";
 import canonicalize from "../util/canonicalize.js";
 import { deserialize } from "flatgeobuf/lib/mjs/geojson.js";
 
-import { readFileSync } from "fs";
-import path from "path";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { isFeatureCollection } from "../index.js";
 
 test("flatgeobuf - local world fgb", async () => {
@@ -55,4 +55,4 @@ test("flatgeobuf - external world fgb", async () => {
   const features = await fgbFetchAll(url);
   expect(features.length).toEqual(1);
   // console.log(JSON.stringify(features))
-}, 20000);
+}, 20_000);

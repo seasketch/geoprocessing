@@ -18,7 +18,7 @@ describe("precalcCleanup", () => {
           classId: "foo-total", // nonexistent
           sketchId: null,
           groupId: null,
-          value: 131259350503.85864,
+          value: 131_259_350_503.858_64,
         },
         {
           geographyId: "eez",
@@ -45,7 +45,7 @@ describe("precalcCleanup", () => {
           classId: "global-eez-mr-v12-total", // nonexistent
           sketchId: null,
           groupId: null,
-          value: 131259350503.85864,
+          value: 131_259_350_503.858_64,
         },
         {
           geographyId: "foo",

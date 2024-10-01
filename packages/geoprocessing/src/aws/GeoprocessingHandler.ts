@@ -25,7 +25,7 @@ import {
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
 import { InvokeCommand, LambdaClient, LogType } from "@aws-sdk/client-lambda";
-import { unescape } from "querystring";
+import { unescape } from "node:querystring";
 import WebSocket from "ws";
 
 const Db = DynamoDBDocument.from(new DynamoDB());
@@ -164,58 +164,56 @@ export class GeoprocessingHandler<
       );
 
     // get cached result if available. standard method to get results for async function
-    if (request.checkCacheOnly) {
-      if (request.cacheKey) {
-        console.log(
-          "checkCacheOnly task get with",
-          serviceName,
-          request.cacheKey,
-        );
-        const timestamp = Date.now();
-        console.time(
-          `checkCacheOnly task get ${this.options.title} - ${timestamp}`,
-        );
-        const cachedResult = await Tasks.get(serviceName, request.cacheKey);
-        console.timeEnd(
-          `checkCacheOnly task get ${this.options.title} - ${timestamp}`,
-        );
+    if (request.checkCacheOnly && request.cacheKey) {
+      console.log(
+        "checkCacheOnly task get with",
+        serviceName,
+        request.cacheKey,
+      );
+      const timestamp = Date.now();
+      console.time(
+        `checkCacheOnly task get ${this.options.title} - ${timestamp}`,
+      );
+      const cachedResult = await Tasks.get(serviceName, request.cacheKey);
+      console.timeEnd(
+        `checkCacheOnly task get ${this.options.title} - ${timestamp}`,
+      );
 
-        if (
-          cachedResult &&
-          cachedResult?.status !== GeoprocessingTaskStatus.Pending
-        ) {
-          // cache hit
-          if (process.env.NODE_ENV !== "test")
-            console.log(
-              `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`,
-            );
-          return {
-            statusCode: 200,
-            headers: {
-              ...commonHeaders,
-              "x-gp-cache": "Cache hit",
-            },
-            body: JSON.stringify(cachedResult),
-          };
-        } else {
-          // cache miss
-          if (process.env.NODE_ENV !== "test")
-            console.log(
-              `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`,
-            );
-          return {
-            statusCode: 200,
-            headers: {
-              ...commonHeaders,
-              "x-gp-cache": "Cache miss",
-            },
-            body: JSON.stringify({
-              id: "NO_CACHE_HIT",
-              key: request.cacheKey,
-              serviceName: serviceName,
-            }),
-          };
-        }
+      if (
+        cachedResult &&
+        cachedResult?.status !== GeoprocessingTaskStatus.Pending
+      ) {
+        // cache hit
+        if (process.env.NODE_ENV !== "test")
+          console.log(
+            `checkCacheOnly cache hit for ${serviceName} using cacheKey ${request.cacheKey}`,
+          );
+        return {
+          statusCode: 200,
+          headers: {
+            ...commonHeaders,
+            "x-gp-cache": "Cache hit",
+          },
+          body: JSON.stringify(cachedResult),
+        };
+      } else {
+        // cache miss
+        if (process.env.NODE_ENV !== "test")
+          console.log(
+            `checkCacheOnly cache miss for ${serviceName} using cacheKey ${request.cacheKey}`,
+          );
+        return {
+          statusCode: 200,
+          headers: {
+            ...commonHeaders,
+            "x-gp-cache": "Cache miss",
+          },
+          body: JSON.stringify({
+            id: "NO_CACHE_HIT",
+            key: request.cacheKey,
+            serviceName: serviceName,
+          }),
+        };
       }
     }
 
@@ -304,8 +302,7 @@ export class GeoprocessingHandler<
 
           task.data = results;
           task.status = GeoprocessingTaskStatus.Completed;
-          task.duration =
-            new Date().getTime() - new Date(task.startedAt).getTime();
+          task.duration = Date.now() - new Date(task.startedAt).getTime();
 
           //the duration has been updated, now update the estimates table
           await Tasks.updateEstimate(task);
@@ -330,15 +327,15 @@ export class GeoprocessingHandler<
           console.timeEnd(`handler ${this.options.title} - ${handlerTime}`);
 
           return promise;
-        } catch (e: unknown) {
+        } catch (error: unknown) {
           let failureMessage = `Error while running geoprocessing function ${this.options.title}`;
-          if (e instanceof Error) {
-            failureMessage += `: ${e.message}`;
+          if (error instanceof Error) {
+            failureMessage += `: ${error.message}`;
           }
           console.log(failureMessage);
-          if (e instanceof Error) {
-            console.error(e.message);
-            console.error(e.stack);
+          if (error instanceof Error) {
+            console.error(error.message);
+            console.error(error.stack);
           }
 
           if (this.options.executionMode !== "sync") {
@@ -357,13 +354,13 @@ export class GeoprocessingHandler<
           const failedTask = await Tasks.fail(task, failureMessage);
           return failedTask;
         }
-      } catch (e: unknown) {
+      } catch (error: unknown) {
         return Tasks.fail(
           task,
           request.geometryUri
             ? `Failed to retrieve geometry from ${request.geometryUri}`
             : `Failed to extract geometry from request`,
-          e as Error,
+          error as Error,
         );
       }
     } else {
@@ -382,7 +379,7 @@ export class GeoprocessingHandler<
         const payload = JSON.stringify(event);
 
         const client = new LambdaClient({});
-        console.log("Invoking run handler: ", RUN_HANDLER_FUNCTION_NAME);
+        console.log("Invoking run handler:", RUN_HANDLER_FUNCTION_NAME);
         const command = new InvokeCommand({
           FunctionName: RUN_HANDLER_FUNCTION_NAME,
           Payload: payload,
@@ -401,8 +398,8 @@ export class GeoprocessingHandler<
           },
           body: JSON.stringify(task),
         };
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        console.error(error);
         const failMessage =
           `Could not launch async handler function: ` +
           RUN_HANDLER_FUNCTION_NAME;
@@ -472,9 +469,9 @@ export class GeoprocessingHandler<
   async getSocket(wss: string): Promise<WebSocket> {
     const socket = new WebSocket(wss) as WebSocket;
     return new Promise(function (resolve, reject) {
-      socket.onopen = () => {
+      socket.addEventListener("open", () => {
         resolve(socket);
-      };
+      });
       socket.onerror = (error: any) => {
         console.warn("Error connecting socket to " + wss + " error: ");
         console.warn(JSON.stringify(error));

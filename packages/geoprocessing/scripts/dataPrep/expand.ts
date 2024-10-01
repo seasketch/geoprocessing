@@ -6,9 +6,7 @@ import { BBox } from "../../src/types/index.js";
  * @param bboxB
  */
 export default function expand(bboxA: BBox | null, bboxB: BBox): BBox {
-  if (!bboxA) {
-    return bboxB;
-  } else {
+  if (bboxA) {
     const returnVal = [...bboxA] as BBox;
     if (bboxB[0] < bboxA[0]) {
       returnVal[0] = bboxB[0];
@@ -23,5 +21,7 @@ export default function expand(bboxA: BBox | null, bboxB: BBox): BBox {
       returnVal[3] = bboxB[3];
     }
     return returnVal;
+  } else {
+    return bboxB;
   }
 }

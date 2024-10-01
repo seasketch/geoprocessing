@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import chalk from "chalk";
 import { ExecutionMode, projectSchema } from "../../src/types/index.js";
 import camelcase from "camelcase";
@@ -12,7 +12,7 @@ import {
   getProjectConfigPath,
   getBlankFunctionPath,
 } from "../util/getPaths.js";
-import { pathToFileURL } from "url";
+import { pathToFileURL } from "node:url";
 
 async function createFunction() {
   const rawBasic = fs.readJSONSync(`${getProjectConfigPath("")}/basic.json`);
@@ -132,12 +132,12 @@ export async function makeGeoprocessingHandler(
     `${projectFunctionPath}/${options.title}.ts`,
     handlerCode
       .toString()
-      .replace(/simpleFunction/g, options.title)
-      .replace(
-        /SimpleFunction/g,
+      .replaceAll("simpleFunction", options.title)
+      .replaceAll(
+        "SimpleFunction",
         options.title.slice(0, 1).toUpperCase() + options.title.slice(1),
       )
-      .replace(/functionName/g, options.title)
+      .replaceAll("functionName", options.title)
       .replace(`"async"`, `"${options.executionMode}"`)
       .replace("Function description", options.description),
   );
@@ -145,7 +145,7 @@ export async function makeGeoprocessingHandler(
     `${projectFunctionPath}/${options.title}Smoke.test.ts`,
     testSmokeCode
       .toString()
-      .replace(/simpleFunction/g, options.title)
+      .replaceAll("simpleFunction", options.title)
       .replace("./simpleFunction", `./${options.title}`),
   );
   const geoprocessingJson = JSON.parse(
@@ -207,12 +207,13 @@ export async function makePreprocessingHandler(
     `${projectFunctionPath}/${options.title}.ts`,
     handlerCode
       .toString()
-      .replace(/clipToOceanEez/g, options.title)
+      .replaceAll("clipToOceanEez", options.title)
       .replace("Example-description", options.description)
       .replace(
         "EEZ_CLIP_OPERATION,",
-        options.clipToEez !== "no"
-          ? JSON.stringify(
+        options.clipToEez === "no"
+          ? ""
+          : JSON.stringify(
               {
                 datasourceId: "global-clipping-eez-land-union",
                 operation: "intersection",
@@ -225,13 +226,12 @@ export async function makePreprocessingHandler(
               },
               null,
               2,
-            ).replace(/"([^"]+)":/g, "$1:")
-          : "",
+            ).replaceAll(/"([^"]+)":/g, "$1:"),
       ),
   );
   await fs.writeFile(
     `${projectFunctionPath}/${options.title}Smoke.test.ts`,
-    testCode.toString().replace(/clipToOceanEez/g, options.title),
+    testCode.toString().replaceAll("clipToOceanEez", options.title),
   );
   const geoprocessingJson = JSON.parse(
     fs

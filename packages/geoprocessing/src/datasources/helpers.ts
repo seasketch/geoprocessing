@@ -125,10 +125,10 @@ export const getDatasourceById = (
   datasources: Datasource[],
 ): Datasource => {
   const ds = datasources.find((ds) => ds.datasourceId === datasourceId);
-  if (!ds) {
-    throw new Error(`Datasource not found - ${datasourceId}`);
-  } else {
+  if (ds) {
     return ds;
+  } else {
+    throw new Error(`Datasource not found - ${datasourceId}`);
   }
 };
 

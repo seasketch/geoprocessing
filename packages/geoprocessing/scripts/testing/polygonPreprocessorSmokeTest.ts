@@ -19,7 +19,7 @@ export const polygonPreprocessorSmokeTest = (
     debug?: boolean;
   } = {},
 ) => {
-  const { partialName = undefined, timeout = 10000, debug = false } = options;
+  const { partialName, timeout = 10_000, debug = false } = options;
 
   describe("Basic smoke tests", () => {
     test("handler function is present", () => {
@@ -58,12 +58,12 @@ export const polygonPreprocessorSmokeTest = (
               preprocessorName,
               example?.properties?.name,
             );
-          } catch (e) {
-            console.log("error", example?.properties?.name, e);
-            if (e instanceof ValidationError) {
+          } catch (error) {
+            console.log("error", example?.properties?.name, error);
+            if (error instanceof ValidationError) {
               // ValidationErrors don't indicate failures, just comprehensive tests
             } else {
-              throw e;
+              throw error;
             }
           }
         }

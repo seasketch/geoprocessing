@@ -32,30 +32,25 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
 }) => {
   let icon: JSX.Element = <></>;
   switch (status) {
-    case "yes":
+    case "yes": {
       icon = (
-        <CheckCircleFill
-          size={size}
-          style={{ ...{ color: "#78c679" }, ...style }}
-        />
+        <CheckCircleFill size={size} style={{ color: "#78c679", ...style }} />
       );
       break;
-    case "maybe":
+    }
+    case "maybe": {
       icon = (
         <QuestionCircleFill
           size={size}
-          style={{ ...{ color: "#fec44f" }, ...style }}
+          style={{ color: "#fec44f", ...style }}
         />
       );
       break;
-    case "no":
-      icon = (
-        <XCircleFill
-          size={size}
-          style={{ ...{ color: "#ED2C7C" }, ...style }}
-        />
-      );
+    }
+    case "no": {
+      icon = <XCircleFill size={size} style={{ color: "#ED2C7C", ...style }} />;
       break;
+    }
   }
 
   return (

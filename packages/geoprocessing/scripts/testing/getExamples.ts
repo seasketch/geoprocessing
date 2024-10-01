@@ -11,7 +11,7 @@ import {
   FeatureMap,
   SketchGeometryTypes,
 } from "../../src/types/index.js";
-import path from "path";
+import path from "node:path";
 import {
   isSketch,
   isSketchCollection,

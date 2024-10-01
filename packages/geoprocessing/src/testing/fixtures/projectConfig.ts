@@ -83,8 +83,8 @@ const loadedConfig: ProjectClientConfig = {
         values: ["Samoan Exclusive Economic Zone"],
       },
       bboxFilter: [
-        -174.51139447157757, -15.878383591829206, -170.54265693017294,
-        -10.960825304544073,
+        -174.511_394_471_577_57, -15.878_383_591_829_206,
+        -170.542_656_930_172_94, -10.960_825_304_544_073,
       ],
       groups: ["default-boundary"],
       precalc: true,
@@ -97,7 +97,7 @@ const loadedConfig: ProjectClientConfig = {
       classId: "global-eez-mr-v12-total",
       sketchId: null,
       groupId: null,
-      value: 131259350503.85864,
+      value: 131_259_350_503.858_64,
     },
     {
       geographyId: "eez",

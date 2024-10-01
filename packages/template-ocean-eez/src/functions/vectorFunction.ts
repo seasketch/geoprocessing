@@ -83,7 +83,7 @@ export async function vectorFunction(
                   feat.geometry &&
                   feat.properties![ds.classKeys[0]] === curClass.classId
                 );
-              }, [])
+              })
             : features;
 
         // Calculate overlap metrics

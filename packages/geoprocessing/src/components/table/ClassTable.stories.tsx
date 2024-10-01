@@ -96,7 +96,7 @@ export const numberThousands = () => {
       <ClassTable
         rows={simpleClassMetrics.map((m) => ({
           ...m,
-          value: m.value * 10000000,
+          value: m.value * 10_000_000,
         }))}
         metricGroup={simpleMetricGroup}
         objective={simpleObjectives}
@@ -148,7 +148,7 @@ export const percent = () => {
           createMetric({
             metricId: simpleMetricGroup.metricId,
             classId: "Plains",
-            value: 0.12345,
+            value: 0.123_45,
           }),
         ]}
         metricGroup={simpleMetricGroup}
@@ -177,7 +177,7 @@ export const percent1Digit = () => {
           createMetric({
             metricId: simpleMetricGroup.metricId,
             classId: "Plains",
-            value: 0.12345,
+            value: 0.123_45,
           }),
         ]}
         metricGroup={simpleMetricGroup}
@@ -206,7 +206,7 @@ export const percent2Digit = () => {
           createMetric({
             metricId: simpleMetricGroup.metricId,
             classId: "Plains",
-            value: 0.12345,
+            value: 0.123_45,
           }),
         ]}
         metricGroup={simpleMetricGroup}
@@ -235,7 +235,7 @@ export const percentThousands = () => {
           createMetric({
             metricId: simpleMetricGroup.metricId,
             classId: "Plains",
-            value: 10000.12345,
+            value: 10_000.123_45,
           }),
         ]}
         metricGroup={simpleMetricGroup}
@@ -413,7 +413,7 @@ export const valueFormatAndLabel = () => {
             type: "metricValue",
             metricId: simpleMetricGroup.metricId,
             valueFormatter: (val: string | number) =>
-              (typeof val === "string" ? parseFloat(val) : val) * 1000,
+              (typeof val === "string" ? Number.parseFloat(val) : val) * 1000,
             valueLabel: "ideas",
           },
         ]}

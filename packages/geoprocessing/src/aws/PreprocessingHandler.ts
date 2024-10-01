@@ -69,12 +69,13 @@ export class PreprocessingHandler<
     let request;
     try {
       request = this.parseRequest(event);
-    } catch (e: unknown) {
+    } catch (error: unknown) {
       return {
         statusCode: 500,
         headers: commonHeaders,
         body: JSON.stringify({
-          error: e instanceof Error ? e.message : "Internal server error",
+          error:
+            error instanceof Error ? error.message : "Internal server error",
           status: "error",
         }),
       };
@@ -104,13 +105,13 @@ export class PreprocessingHandler<
           status: "ok",
         } as PreprocessingResponse<Feature<G> | Sketch<G>>),
       };
-    } catch (e: unknown) {
-      if (e instanceof ValidationError) {
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) {
         return {
           statusCode: 200,
           headers: commonHeaders,
           body: JSON.stringify({
-            error: e.message,
+            error: error.message,
             status: "validationError",
           } as PreprocessingResponse),
         };
@@ -119,7 +120,8 @@ export class PreprocessingHandler<
           statusCode: 500,
           headers: commonHeaders,
           body: JSON.stringify({
-            error: e instanceof Error ? e.message : "Internal server error",
+            error:
+              error instanceof Error ? error.message : "Internal server error",
             status: "error",
           } as PreprocessingResponse),
         };

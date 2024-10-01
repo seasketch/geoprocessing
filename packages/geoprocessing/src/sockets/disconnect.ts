@@ -27,8 +27,8 @@ export const disconnectHandler = async (event) => {
         },
       }),
     );
-  } catch (err) {
-    console.warn(": error trying to disconnect: ", JSON.stringify(err));
+  } catch (error) {
+    console.warn(": error trying to disconnect:", JSON.stringify(error));
     return { statusCode: 200, body: "Disconnected." };
   }
 

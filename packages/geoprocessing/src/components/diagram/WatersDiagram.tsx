@@ -64,26 +64,27 @@ export const WatersDiagram: React.FunctionComponent<LabelProps> = ({
   }));
 
   // If no user-generated labels, use defaults
-  labels?.forEach((label) => {
-    // Find matching label if exists
-    const foundIndex = labelsFinal.findIndex(
-      (curLabel) => label.key === curLabel.key,
-    );
+  if (labels)
+    for (const label of labels) {
+      // Find matching label if exists
+      const foundIndex = labelsFinal.findIndex(
+        (curLabel) => label.key === curLabel.key,
+      );
 
-    // If no matching label key, add label
-    if (foundIndex === -1) labelsFinal.push(label);
-    else {
-      // If matching label found, update it
-      labelsFinal[foundIndex] = {
-        ...labelsFinal[foundIndex],
-        ...label,
-        style: {
-          ...labelsFinal[foundIndex].style,
-          ...label.style,
-        },
-      };
+      // If no matching label key, add label
+      if (foundIndex === -1) labelsFinal.push(label);
+      else {
+        // If matching label found, update it
+        labelsFinal[foundIndex] = {
+          ...labelsFinal[foundIndex],
+          ...label,
+          style: {
+            ...labelsFinal[foundIndex].style,
+            ...label.style,
+          },
+        };
+      }
     }
-  });
 
   return (
     <div>

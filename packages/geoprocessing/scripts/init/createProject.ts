@@ -11,13 +11,13 @@ import {
   geographiesSchema,
   datasourcesSchema,
 } from "../../src/types/index.js";
-import util from "util";
+import util from "node:util";
 import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths.js";
 import { getBbox } from "../global/datasources/mr-eez.js";
 import { $ } from "zx";
 import { globalDatasources } from "../../src/datasources/global.js";
 import { isVectorDatasource } from "../../src/index.js";
-import * as child from "child_process";
+import * as child from "node:child_process";
 
 $.verbose = false;
 
@@ -97,10 +97,10 @@ export async function createProject(
     await $`rm -rf ${projectPath}/examples/outputs/*.*`;
     await $`rm -rf ${projectPath}/examples/features/*.*`;
     await $`rm -rf ${projectPath}/examples/sketches/*/*`;
-  } catch (err: unknown) {
-    if (err instanceof Error) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
       console.log("Base project copy failed");
-      throw err;
+      throw error;
     }
   }
   spinner.succeed("copied base files");
@@ -129,7 +129,7 @@ export async function createProject(
           },
         }
       : {}),
-    ...{ private: false },
+    private: false,
   };
 
   if (gpVersion) {
@@ -280,10 +280,10 @@ export async function createProject(
               spaces: 2,
             },
           );
-        } catch (err: unknown) {
-          if (err instanceof Error) {
+        } catch (error: unknown) {
+          if (error instanceof Error) {
             console.log("EEZ datasource update failed");
-            throw err;
+            throw error;
           }
         }
         spinner.succeed("updated eez in datasources.json");
@@ -293,10 +293,10 @@ export async function createProject(
         try {
           await fs.ensureDir(projectPath);
           await $`cp -r ${baseProjectPath}/project/geographies.json ${projectPath}/project/geographies.json`;
-        } catch (err: unknown) {
-          if (err instanceof Error) {
+        } catch (error: unknown) {
+          if (error instanceof Error) {
             console.log("Default geography copy failed");
-            throw err;
+            throw error;
           }
         }
         spinner.succeed("updated geographies.json");
@@ -359,10 +359,10 @@ export async function createProject(
       await exec(`npm run extract:translation`, {
         cwd: metadata.name,
       });
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        console.log(e.message);
-        console.log(e.stack);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error.message);
+        console.log(error.stack);
         process.exit();
       }
     }

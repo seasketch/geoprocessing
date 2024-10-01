@@ -33,7 +33,7 @@ export const loadCog = async (url: string) => {
  * */
 export const loadCogWindow = async (url: string, options: CogOptions) => {
   if (process.env.NODE_ENV !== "test")
-    console.log("loadCogWindow", url, "options: ", JSON.stringify(options));
+    console.log("loadCogWindow", url, "options:", JSON.stringify(options));
 
   const georaster = await parseGeoraster(url);
   // Default to meta parsed from raster

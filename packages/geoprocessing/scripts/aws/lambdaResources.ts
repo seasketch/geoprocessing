@@ -123,12 +123,12 @@ export const createLambdaStacks = (
     FUNCTIONS_PER_STACK,
   );
 
-  functionGroups.forEach((group, index) => {
+  for (const [index, group] of functionGroups.entries()) {
     console.log(
       `Lambda stack ${index}:\n ${group.map((f) => f.title).join("\n ")}`,
     );
     console.log("");
-  });
+  }
 
   new CfnOutput(stack, "stacksFunction", {
     value: JSON.stringify(functionGroups.map((g) => g.map((f) => f.title))),
@@ -174,12 +174,12 @@ export const createLambdaStacks = (
     FUNCTIONS_PER_STACK,
   );
 
-  workerGroups.forEach((group, index) => {
+  for (const [index, group] of workerGroups.entries()) {
     console.log(
       `Worker stack ${index}:\n ${group.map((f) => f.title).join("\n ")}`,
     );
     console.log("");
-  });
+  }
 
   new CfnOutput(stack, "stacksWorker", {
     value: JSON.stringify(workerGroups.map((g) => g.map((f) => f.title))),
@@ -210,9 +210,9 @@ export const createLambdaStacks = (
     },
     [],
   );
-  workerStacks.forEach((stack) => {
+  for (const stack of workerStacks) {
     stack.createLambdaSyncPolicies(runLambdas);
-  });
+  }
 
   return [...functionStacks, ...workerStacks];
 };
@@ -252,9 +252,7 @@ function allocateFunctionsToGroups(
       if (existingFunctions) {
         curGroup.push(...existingFunctions);
         numUnallocatedFunctions -= existingFunctions.length;
-        existingFunctions.forEach(
-          (f) => (allocatedFunctionMap[f.title] = true),
-        );
+        for (const f of existingFunctions) allocatedFunctionMap[f.title] = true;
       }
     }
 

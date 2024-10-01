@@ -1,11 +1,11 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
-import util from "util";
+import util from "node:util";
 import { GeoprocessingJsonConfig, Package } from "../../src/types/index.js";
 import path from "node:path";
-import * as child from "child_process";
-import { pathToFileURL } from "url";
+import * as child from "node:child_process";
+import { pathToFileURL } from "node:url";
 import { TemplateType, TemplateMetadata } from "../types.js";
 
 const exec = util.promisify(child.exec);
@@ -135,7 +135,9 @@ export async function copyTemplates(
   },
 ) {
   const { interactive, projectPath, skipInstall } = {
-    ...{ interactive: true, projectPath: ".", skipInstall: false },
+    interactive: true,
+    projectPath: ".",
+    skipInstall: false,
     ...options,
   };
   const spinner = interactive
@@ -183,12 +185,12 @@ export async function copyTemplates(
     const packageJSON: Package = {
       ...projectPackage,
       dependencies: {
-        ...(projectPackage?.dependencies || {}),
-        ...(templatePackage?.dependencies || {}),
+        ...projectPackage?.dependencies,
+        ...templatePackage?.dependencies,
       },
       devDependencies: {
-        ...(projectPackage?.devDependencies || {}),
-        ...(templatePackage?.devDependencies || {}),
+        ...projectPackage?.devDependencies,
+        ...templatePackage?.devDependencies,
       },
     };
 
@@ -250,16 +252,18 @@ export async function copyTemplates(
           fs.mkdirSync(path.join(projectPath, "examples"));
         }
 
-        if (fs.existsSync(path.join(templatePath, "examples", "sketches"))) {
-          if (!fs.existsSync(path.join(projectPath, "examples", "sketches"))) {
-            fs.mkdirSync(path.join(projectPath, "examples", "sketches"));
-          }
+        if (
+          fs.existsSync(path.join(templatePath, "examples", "sketches")) &&
+          !fs.existsSync(path.join(projectPath, "examples", "sketches"))
+        ) {
+          fs.mkdirSync(path.join(projectPath, "examples", "sketches"));
         }
 
-        if (fs.existsSync(path.join(templatePath, "examples", "features"))) {
-          if (!fs.existsSync(path.join(projectPath, "examples", "features"))) {
-            fs.mkdirSync(path.join(projectPath, "examples", "features"));
-          }
+        if (
+          fs.existsSync(path.join(templatePath, "examples", "features")) &&
+          !fs.existsSync(path.join(projectPath, "examples", "features"))
+        ) {
+          fs.mkdirSync(path.join(projectPath, "examples", "features"));
         }
       }
 
@@ -286,9 +290,9 @@ export async function copyTemplates(
           fs.appendFile(path.join(projectPath, ".gitignore"), tplIgnoreLines);
         }
       }
-    } catch (err) {
+    } catch (error) {
       spinner.fail("Error");
-      console.error(err);
+      console.error(error);
       process.exit();
     }
 
@@ -336,10 +340,10 @@ export async function copyTemplates(
       await exec("npm install", {
         cwd: projectPath,
       });
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        console.log(e.message);
-        console.log(e.stack);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error.message);
+        console.log(error.stack);
         process.exit();
       }
     }

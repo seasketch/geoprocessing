@@ -23,36 +23,42 @@ export const valueFormatter = (
   if (formatter === "value") return value;
   if (formatter === "percent0dig")
     return percentWithEdge(
-      typeof value === "string" ? parseFloat(value) : value,
+      typeof value === "string" ? Number.parseFloat(value) : value,
       { digits: 0 },
     );
   if (formatter === "percent")
     return percentWithEdge(
-      typeof value === "string" ? parseFloat(value) : value,
+      typeof value === "string" ? Number.parseFloat(value) : value,
     );
   if (formatter === "percent1dig")
     return percentWithEdge(
-      typeof value === "string" ? parseFloat(value) : value,
+      typeof value === "string" ? Number.parseFloat(value) : value,
       { digits: 1 },
     );
   if (formatter === "percent2dig")
     return percentWithEdge(
-      typeof value === "string" ? parseFloat(value) : value,
+      typeof value === "string" ? Number.parseFloat(value) : value,
       { digits: 2 },
     );
   if (formatter === "number")
     return NumberFormatter.format(
-      typeof value === "string" ? parseFloat(value) : value,
+      typeof value === "string" ? Number.parseFloat(value) : value,
     );
   if (formatter === "number1dig")
     return NumberFormatter.format(
-      roundDecimal(typeof value === "string" ? parseFloat(value) : value, 1),
+      roundDecimal(
+        typeof value === "string" ? Number.parseFloat(value) : value,
+        1,
+      ),
     );
   if (formatter === "number2dig")
     return NumberFormatter.format(
-      roundDecimal(typeof value === "string" ? parseFloat(value) : value, 2),
+      roundDecimal(
+        typeof value === "string" ? Number.parseFloat(value) : value,
+        2,
+      ),
     );
   if (formatter === "integer")
-    return NumberFormatter.format(parseInt(`${value}`));
+    return NumberFormatter.format(Number.parseInt(`${value}`));
   return formatter(value);
 };

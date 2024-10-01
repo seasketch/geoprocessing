@@ -35,7 +35,7 @@ export const fetchGeoJSON = async <G extends Geometry>(
   if (request.geometry) {
     return request.geometry;
   } else if (request.geometryUri) {
-    if (/^data:/.test(request.geometryUri)) {
+    if (request.geometryUri.startsWith("data:")) {
       // data-uri
       const data = Buffer.from(request.geometryUri.split(",")[1], "base64");
       if (/application\/json/.test(request.geometryUri)) {

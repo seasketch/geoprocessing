@@ -34,7 +34,7 @@ export async function overlapRaster(
 ): Promise<Metric[]> {
   const newOptions: OverlapRasterOptions = {
     truncate: true,
-    ...(options || {}),
+    ...options,
   };
 
   // Get raster sum for each feature
@@ -49,7 +49,7 @@ export async function overlapRaster(
 
   // await results and create metrics
   const sketchMetrics: Metric[] = [];
-  (await Promise.all(sumPromises)).forEach((curSum, index) => {
+  for (const [index, curSum] of (await Promise.all(sumPromises)).entries()) {
     sketchMetrics.push(
       createMetric({
         metricId,
@@ -62,7 +62,7 @@ export async function overlapRaster(
         },
       }),
     );
-  });
+  }
 
   if (isSketchCollection(sketch)) {
     // Push collection with accumulated sumValue

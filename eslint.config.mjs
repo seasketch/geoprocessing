@@ -4,6 +4,7 @@ import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 import eslintConfigPrettier from "eslint-config-prettier";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
 
 export default [
   // standalone ignores object required to ignore whole directories
@@ -31,6 +32,7 @@ export default [
   pluginReact.configs.flat.recommended,
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
+  eslintPluginUnicorn.configs["flat/recommended"],
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     rules: {
@@ -38,6 +40,22 @@ export default [
       "@typescript-eslint/no-unused-vars": "warn",
       "react/no-unescaped-entities": "off",
       trailingComma: "off",
+      "unicorn/prevent-abbreviations": "off",
+      "unicorn/filename-case": "off",
+      "unicorn/prefer-spread": "off",
+      "unicorn/no-null": "off",
+      "unicorn/no-await-expression-member": "off",
+      "unicorn/no-nested-ternary": "off",
+      "unicorn/prefer-ternary": "off",
+      "unicorn/no-array-reduce": "off",
+      "unicorn/no-array-for-each": "warn",
+      "unicorn/explicit-length-check": "off",
+      "unicorn/prefer-object-from-entries": "off",
+      "unicorn/prefer-logic-operator-over-ternary": "warn",
     },
+  },
+  {
+    extends: ["plugin:storybook/recommended"],
+    files: ["**/.stories.{js,jsx,ts,tsx}"],
   },
 ];

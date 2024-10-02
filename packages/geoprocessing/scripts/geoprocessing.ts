@@ -185,15 +185,8 @@ if (process.argv.length < 3) {
       );
       break;
     }
-    case "clear-results": {
+    case "clear:results": {
       spawn("node", [`${import.meta.dirname}/clear/clearResults.js`], {
-        cwd: process.cwd(),
-        stdio: "inherit",
-      });
-      break;
-    }
-    case "clear-all-results": {
-      spawn("node", [`${import.meta.dirname}/clear/clearAllResults.js`], {
         cwd: process.cwd(),
         stdio: "inherit",
       });

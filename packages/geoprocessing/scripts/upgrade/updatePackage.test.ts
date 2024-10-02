@@ -9,9 +9,8 @@ const srcPkg: LoadedPackage = {
   private: true,
   type: "module",
   scripts: {
-    "start-data": "http-server data/dist -c-1",
-    "clear-results": "geoprocessing clear-results",
-    "clear-all-results": "geoprocessing clear-all-results",
+    "start:data": "http-server data/dist -c-1",
+    "clear:results": "geoprocessing clear:results",
   },
   keywords: ["@seasketch/geoprocessing"],
   dependencies: {
@@ -35,8 +34,7 @@ const basePkg: LoadedPackage = {
   private: true,
   type: "module",
   scripts: {
-    "clear-results": "geoprocessing clear-results",
-    "clear-all-results": "geoprocessing clear-all-results",
+    "clear:results": "geoprocessing clear:results",
     upgrade: "geoprocessing upgrade",
   },
   keywords: ["@seasketch/geoprocessing"],
@@ -83,9 +81,8 @@ describe("updatePackage", () => {
     const updatedPkg = updatePackageJson(srcPkg, basePkg);
     const keys = Object.keys(updatedPkg.scripts);
     expect(keys.length).toEqual(4);
-    expect(keys.includes("start-data")).toBeTruthy();
-    expect(keys.includes("clear-results")).toBeTruthy();
-    expect(keys.includes("clear-all-results")).toBeTruthy();
+    expect(keys.includes("start:data")).toBeTruthy();
+    expect(keys.includes("clear:results")).toBeTruthy();
     expect(keys.includes("upgrade")).toBeTruthy();
   });
 

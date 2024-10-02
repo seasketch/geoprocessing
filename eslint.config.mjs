@@ -63,6 +63,7 @@ export default [
       "unicorn/no-process-exit": "off",
       "unicorn/prefer-module": "warn",
       "unicorn/no-array-method-this-argument": "warn",
+      "unicorn/no-useless-undefined": "warn",
     },
   },
 ];

@@ -14,7 +14,7 @@ import { polygon } from "@turf/turf";
 
 describe("isTrueAttributeValue", () => {
   test("should return proper boolean", async () => {
-    expect(isTruthyAttributeValue()).toBe(false);
+    expect(isTruthyAttributeValue(undefined)).toBe(false);
     expect(isTruthyAttributeValue("No")).toBe(false);
     expect(isTruthyAttributeValue(false)).toBe(false);
     expect(isTruthyAttributeValue(true)).toBe(true);

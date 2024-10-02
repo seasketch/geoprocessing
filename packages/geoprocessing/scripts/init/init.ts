@@ -164,9 +164,11 @@ async function init(gpVersion?: string) {
         "What is the projects minimum longitude (left) in degrees (-180.0 to 180.0)?",
       default: -180,
       validate: (value) =>
-        isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
+        Number.isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
       filter: (value) =>
-        isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value),
+        Number.isNaN(Number.parseFloat(value))
+          ? value
+          : Number.parseFloat(value),
     },
     {
       when: (answers) => answers.planningAreaType === "other",
@@ -176,9 +178,11 @@ async function init(gpVersion?: string) {
         "What is the projects minimum latitude (bottom) in degrees (-90.0 to 90.0)?",
       default: -90,
       validate: (value) =>
-        isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
+        Number.isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
       filter: (value) =>
-        isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value),
+        Number.isNaN(Number.parseFloat(value))
+          ? value
+          : Number.parseFloat(value),
     },
     {
       when: (answers) => answers.planningAreaType === "other",
@@ -188,9 +192,11 @@ async function init(gpVersion?: string) {
         "What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)?",
       default: 180,
       validate: (value) =>
-        isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
+        Number.isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
       filter: (value) =>
-        isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value),
+        Number.isNaN(Number.parseFloat(value))
+          ? value
+          : Number.parseFloat(value),
     },
     {
       when: (answers) => answers.planningAreaType === "other",
@@ -200,9 +206,11 @@ async function init(gpVersion?: string) {
         "What is the projects maximum latitude (top) in degrees (-90.0 to 90.0)?",
       default: 90,
       validate: (value) =>
-        isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
+        Number.isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
       filter: (value) =>
-        isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value),
+        Number.isNaN(Number.parseFloat(value))
+          ? value
+          : Number.parseFloat(value),
     },
     templateQuestion,
   ]);

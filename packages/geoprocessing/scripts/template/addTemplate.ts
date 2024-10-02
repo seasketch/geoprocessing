@@ -119,7 +119,7 @@ async function addTemplate() {
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   // module was not imported but called directly
-  addTemplate();
+  await addTemplate();
 }
 
 /** Copies templates by name to gp project */

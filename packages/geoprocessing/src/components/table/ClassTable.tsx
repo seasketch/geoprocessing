@@ -159,7 +159,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                 }
               })();
               const suffix = (() => {
-                if (isNaN(value)) {
+                if (Number.isNaN(value)) {
                   const tooltipText =
                     (classesByName[row.classId || "missing"]?.display ||
                       "This feature class") +
@@ -184,7 +184,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
               })();
 
               const formattedValue = (() => {
-                const finalValue = isNaN(value) ? 0 : value;
+                const finalValue = Number.isNaN(value) ? 0 : value;
                 return colConfig.valueFormatter
                   ? valueFormatter(finalValue, colConfig.valueFormatter)
                   : finalValue;
@@ -268,7 +268,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                   {
                     title: (value: number) => (
                       <>
-                        {isNaN(value) ? (
+                        {Number.isNaN(value) ? (
                           <Tooltip
                             text={tooltipText}
                             placement="bottom"
@@ -289,7 +289,7 @@ export const ClassTable: React.FunctionComponent<ClassTableProps> = ({
                         ) : (
                           <></>
                         )}
-                        {percentWithEdge(isNaN(value) ? 0 : value / 100)}
+                        {percentWithEdge(Number.isNaN(value) ? 0 : value / 100)}
                       </>
                     ),
                   },

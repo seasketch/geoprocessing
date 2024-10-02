@@ -273,11 +273,9 @@ export async function overlapSubarea(
 
   // Choose inner or outer subarea for calculating percentage
   const operationArea = (() => {
-    if (operation === "difference" && options?.outerArea) {
-      return options?.outerArea - subareaArea;
-    } else {
-      return subareaArea;
-    }
+    return operation === "difference" && options?.outerArea
+      ? options?.outerArea - subareaArea
+      : subareaArea;
   })();
 
   const metrics: Metric[] = [];

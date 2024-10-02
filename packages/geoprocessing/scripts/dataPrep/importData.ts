@@ -130,7 +130,7 @@ function rasterMapper(
     ...answers,
   };
   // a blank noDataValue will end up as nan, so just remove it as its optional
-  if (isNaN(Number.parseFloat(`${answers.noDataValue}`))) {
+  if (Number.isNaN(Number.parseFloat(`${answers.noDataValue}`))) {
     delete options.noDataValue;
   }
 
@@ -340,6 +340,6 @@ async function detailedRasterQuestions(
   return {
     ...answers,
     formats: ["tif"],
-    noDataValue: isNaN(noDataValue) ? -9999 : noDataValue,
+    noDataValue: Number.isNaN(noDataValue) ? -9999 : noDataValue,
   };
 }

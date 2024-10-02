@@ -59,7 +59,7 @@ export const SketchClassTable: React.FunctionComponent<
         // if value for class is NaN then use 0 instead (occurs when sketch doesn't overlap with geography e.g. subregion)
         return formatPerc
           ? percentWithEdge(
-              isNaN(row[curClass.classId] as number)
+              Number.isNaN(row[curClass.classId] as number)
                 ? 0
                 : (row[curClass.classId] as number),
             )

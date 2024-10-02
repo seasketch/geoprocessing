@@ -150,7 +150,8 @@ export const rasterStats = async (
           const rawValue = statBand[curStat];
           const curValue =
             rawValue === undefined ||
-            (!categorical && (isNaN(rawValue) || typeof rawValue !== "number"))
+            (!categorical &&
+              (Number.isNaN(rawValue) || typeof rawValue !== "number"))
               ? defaultStatValues[curStat]
               : rawValue;
           return { ...soFar, [curStat]: curValue };

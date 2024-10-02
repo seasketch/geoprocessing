@@ -15,19 +15,16 @@ const internalDatasources = projectClient.datasources.filter((ds) =>
 );
 const numDs = internalDatasources.length;
 
-// Wrap in an IIFE to avoid top-level await
-void (async function () {
-  const reimportAllAnswers = await reimportAllQuestion(numDs);
+const reimportAllAnswers = await reimportAllQuestion(numDs);
 
-  if (reimportAllAnswers.reimportAll === "yes") {
-    await reimportDatasources(projectClient, {});
-  } else {
-    const dsAnswers = await datasourcesQuestion(internalDatasources);
-    await reimportDatasources(projectClient, {
-      matcher: dsAnswers.datasources,
-    });
-  }
-})();
+if (reimportAllAnswers.reimportAll === "yes") {
+  await reimportDatasources(projectClient, {});
+} else {
+  const dsAnswers = await datasourcesQuestion(internalDatasources);
+  await reimportDatasources(projectClient, {
+    matcher: dsAnswers.datasources,
+  });
+}
 
 export async function reimportAllQuestion(
   numDs: number,

@@ -14,4 +14,4 @@ export async function clearResults() {
   await deleteTasks(packageJson.name, geoprocessingJson.region);
 }
 
-clearResults();
+await clearResults();

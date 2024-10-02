@@ -1,14 +1,14 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
-import util from "node:util";
+import { promisify } from "node:util";
 import { GeoprocessingJsonConfig, Package } from "../../src/types/index.js";
 import path from "node:path";
 import * as child from "node:child_process";
 import { pathToFileURL } from "node:url";
 import { TemplateType, TemplateMetadata } from "../types.js";
 
-const exec = util.promisify(child.exec);
+const exec = promisify(child.exec);
 
 function getTemplatesPath(templateType: TemplateType): string {
   // published bundle path exists if this is being run from the published geoprocessing package

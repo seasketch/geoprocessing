@@ -11,7 +11,7 @@ import {
   geographiesSchema,
   datasourcesSchema,
 } from "../../src/types/index.js";
-import util from "node:util";
+import { promisify } from "node:util";
 import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths.js";
 import { getBbox } from "../global/datasources/mr-eez.js";
 import { $ } from "zx";
@@ -21,7 +21,7 @@ import * as child from "node:child_process";
 
 $.verbose = false;
 
-const exec = util.promisify(child.exec);
+const exec = promisify(child.exec);
 
 export interface CreateProjectMetadata extends TemplateMetadata {
   name: string;

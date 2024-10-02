@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import * as path from "node:path";
+import path from "node:path";
 import languages from "../supported.js";
 import extraTerms from "../extraTerms.json" with { type: "json" };
 
@@ -35,10 +35,8 @@ const config = await fs.readJSON(`${projectPath}/i18n.json`);
  * If you make local changes to the translation files, make sure you run this after importTerms.ts
  * so that POEditor is the source of truth.
  */
-(async () => {
-  const localEnglishTerms = await publishEnglish();
-  await publishNonEnglish(localEnglishTerms);
-})();
+const localEnglishTerms = await publishEnglish();
+await publishNonEnglish(localEnglishTerms);
 
 /**
  * Publishes terms and english translations extracted from source code to POEditor,

@@ -3,7 +3,7 @@ import { DatabasePoolConnection, sql } from "slonik";
 import bytes from "bytes";
 import { raw } from "slonik-sql-tag-raw";
 
-export default async (
+const printSizeHistogram = async (
   statsTable: string,
   connection: DatabasePoolConnection,
 ) => {
@@ -45,6 +45,7 @@ export default async (
   }
   return console.log(summary.toString());
 };
+export default printSizeHistogram;
 
 const noTableBorders = {
   top: "",

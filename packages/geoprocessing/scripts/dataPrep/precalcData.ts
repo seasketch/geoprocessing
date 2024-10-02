@@ -17,59 +17,54 @@ const numGeos = projectClient.geographies.filter(
   (g) => g.precalc === true,
 ).length;
 
-// Wrap in an IIFE to use async/await
-void (async function () {
-  if (numDs === 0) {
-    console.error("No precalc-able datasources found, exiting");
-    process.exit();
-  }
+if (numDs === 0) {
+  console.error("No precalc-able datasources found, exiting");
+  process.exit();
+}
 
-  if (numGeos === 0) {
-    console.error("No precalc-able geographies found, exiting");
-    process.exit();
-  }
+if (numGeos === 0) {
+  console.error("No precalc-able geographies found, exiting");
+  process.exit();
+}
 
-  const subsetAnswer = await precalcSubsetQuestion();
+const subsetAnswer = await precalcSubsetQuestion();
 
-  const dsOptions: PrecalcDatasourceOptions = {
-    datasourceMatcher: [],
-    geographyMatcher: [],
-  };
-  if (["all", "both", "datasource"].includes(subsetAnswer.subset)) {
-    if (subsetAnswer.subset === "all") {
-      dsOptions.datasourceMatcher = ["*"];
-    } else {
-      const precalcDs = projectClient.datasources.filter(
-        (ds) => ds.precalc === true,
-      );
-      // Ask user what they want to precalculate
-      const precalcDsAnswers = await precalcWhichDsQuestion(numDs);
-      if (precalcDsAnswers.precalcWhichDs === "list") {
-        const dsAnswers = await datasourcesQuestion(precalcDs);
-        dsOptions.datasourceMatcher = dsAnswers.datasources;
-      }
+const dsOptions: PrecalcDatasourceOptions = {
+  datasourceMatcher: [],
+  geographyMatcher: [],
+};
+if (["all", "both", "datasource"].includes(subsetAnswer.subset)) {
+  if (subsetAnswer.subset === "all") {
+    dsOptions.datasourceMatcher = ["*"];
+  } else {
+    const precalcDs = projectClient.datasources.filter(
+      (ds) => ds.precalc === true,
+    );
+    // Ask user what they want to precalculate
+    const precalcDsAnswers = await precalcWhichDsQuestion(numDs);
+    if (precalcDsAnswers.precalcWhichDs === "list") {
+      const dsAnswers = await datasourcesQuestion(precalcDs);
+      dsOptions.datasourceMatcher = dsAnswers.datasources;
     }
   }
+}
 
-  const geogOptions: PrecalcDatasourceOptions = {};
-  if (["all", "both", "geography"].includes(subsetAnswer.subset)) {
-    if (subsetAnswer.subset === "all") {
-      dsOptions.geographyMatcher = ["*"];
-    } else {
-      // Ask user what they want to precalculate
-      const precalcGeosAnswers = await precalcWhichGeosQuestion();
-      if (precalcGeosAnswers.precalcWhichGeos === "list") {
-        const geogAnswers = await geographiesQuestion(
-          projectClient.geographies,
-        );
-        geogOptions.geographyMatcher = geogAnswers.geographies;
-      }
+const geogOptions: PrecalcDatasourceOptions = {};
+if (["all", "both", "geography"].includes(subsetAnswer.subset)) {
+  if (subsetAnswer.subset === "all") {
+    dsOptions.geographyMatcher = ["*"];
+  } else {
+    // Ask user what they want to precalculate
+    const precalcGeosAnswers = await precalcWhichGeosQuestion();
+    if (precalcGeosAnswers.precalcWhichGeos === "list") {
+      const geogAnswers = await geographiesQuestion(projectClient.geographies);
+      geogOptions.geographyMatcher = geogAnswers.geographies;
     }
   }
+}
 
-  // Then precalculate
-  await precalcDatasources(projectClient, { ...dsOptions, ...geogOptions });
-})();
+// Then precalculate
+await precalcDatasources(projectClient, { ...dsOptions, ...geogOptions });
 
 export interface PrecalcSubsetAnswer {
   subset: string;

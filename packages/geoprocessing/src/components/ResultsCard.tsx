@@ -133,7 +133,7 @@ export function ResultsCard<T>({
       contents = <Card {...cardProps}>{renderedChildren}</Card>;
     }
   } else {
-    throw new Error(); // trigger ReportError boundary
+    throw new Error("ResultsCard error"); // trigger ReportError boundary
   }
 
   return <ReportError>{contents}</ReportError>;

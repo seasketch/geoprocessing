@@ -16,16 +16,14 @@ const internalDatasources = projectClient.datasources.filter((ds) =>
 );
 const numDs = internalDatasources.length;
 
-void (async function () {
-  const publishAllAnswers = await publishAllQuestion(numDs);
+const publishAllAnswers = await publishAllQuestion(numDs);
 
-  if (publishAllAnswers.publish === "yes") {
-    await publishDatasources(projectClient);
-  } else {
-    const dsAnswers = await datasourcesQuestion(internalDatasources);
-    await publishDatasources(projectClient, { matcher: dsAnswers.datasources });
-  }
-})();
+if (publishAllAnswers.publish === "yes") {
+  await publishDatasources(projectClient);
+} else {
+  const dsAnswers = await datasourcesQuestion(internalDatasources);
+  await publishDatasources(projectClient, { matcher: dsAnswers.datasources });
+}
 
 export async function publishAllQuestion(
   numDs: number,

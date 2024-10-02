@@ -60,8 +60,9 @@ export default [
       "unicorn/no-new-array": "warn",
       "unicorn/prefer-string-slice": "warn",
       "unicorn/consistent-function-scoping": "warn",
-      "unicorn/no-process-exit": "warn",
+      "unicorn/no-process-exit": "off",
       "unicorn/prefer-module": "warn",
+      "unicorn/no-array-method-this-argument": "warn",
     },
   },
   {

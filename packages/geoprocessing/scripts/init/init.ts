@@ -52,7 +52,7 @@ async function init(gpVersion?: string) {
       validate: (value) =>
         value === "" ||
         value === null ||
-        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,./:;=?@[\]~\-]+$/gm.test(
+        /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,./:;=?@[\]~-]+$/gm.test(
           value,
         )
           ? true
@@ -222,7 +222,7 @@ async function init(gpVersion?: string) {
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   // module was not imported but called directly
-  init();
+  await init();
 }
 
 export { init };

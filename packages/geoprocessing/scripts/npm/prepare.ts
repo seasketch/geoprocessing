@@ -225,17 +225,14 @@ async function bundleTemplates(templateType: TemplateType) {
   }
 }
 
-bundleAssets().then(() => {
-  console.log("finished bundling assets");
-});
+await bundleAssets();
+console.log("finished bundling assets");
 
-bundleTemplates("starter-template").then(() => {
-  console.log("finished bundling starter templates");
-});
-bundleTemplates("add-on-template").then(() => {
-  console.log("finished bundling add-on templates");
-});
+await bundleTemplates("starter-template");
+console.log("finished bundling starter templates");
 
-bundleBaseProject().then(() => {
-  console.log("finished bundling base project");
-});
+await bundleTemplates("add-on-template");
+console.log("finished bundling add-on templates");
+
+await bundleBaseProject();
+console.log("finished bundling base project");

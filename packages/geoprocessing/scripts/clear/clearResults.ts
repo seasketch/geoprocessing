@@ -34,4 +34,4 @@ export async function clearCachedResults(options: ClearCacheOptions) {
   await deleteTasks(packageJson.name, geoprocessingJson.region, serviceName);
 }
 
-clearResults();
+await clearResults();

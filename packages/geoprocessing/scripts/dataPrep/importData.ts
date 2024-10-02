@@ -54,65 +54,60 @@ type ImportRasterDatasourceAnswers = Pick<
   | "precalc"
 >;
 
-// Main function, wrapped in an IIFE to avoid top-level await
-void (async function () {
-  const datasources = readDatasources();
-  const geoTypeAnswer = await geoTypeQuestion();
-  const srcAnswer = await srcQuestion();
+const datasources = readDatasources();
+const geoTypeAnswer = await geoTypeQuestion();
+const srcAnswer = await srcQuestion();
 
-  const config = await (async () => {
-    if (geoTypeAnswer.geo_type === "vector") {
-      // Vector datasource
-      const layerNameAnswer = await layerNameQuestion(srcAnswer.src);
-      const datasourceIdAnswer = await datasourceIdQuestion(
-        datasources,
-        srcAnswer.src,
-      );
-      const explodeAnswers = await explodeQuestion();
-      const detailedVectorAnswers = await detailedVectorQuestions(
-        srcAnswer.src,
-        layerNameAnswer.layerName!,
-      );
-      const precalcAnswers = await precalcQuestion();
+const config = await (async () => {
+  if (geoTypeAnswer.geo_type === "vector") {
+    // Vector datasource
+    const layerNameAnswer = await layerNameQuestion(srcAnswer.src);
+    const datasourceIdAnswer = await datasourceIdQuestion(
+      datasources,
+      srcAnswer.src,
+    );
+    const explodeAnswers = await explodeQuestion();
+    const detailedVectorAnswers = await detailedVectorQuestions(
+      srcAnswer.src,
+      layerNameAnswer.layerName!,
+    );
+    const precalcAnswers = await precalcQuestion();
 
-      const config = vectorMapper({
-        ...geoTypeAnswer,
-        ...srcAnswer,
-        ...datasourceIdAnswer,
-        ...layerNameAnswer,
+    const config = vectorMapper({
+      ...geoTypeAnswer,
+      ...srcAnswer,
+      ...datasourceIdAnswer,
+      ...layerNameAnswer,
 
-        ...detailedVectorAnswers,
-        formats: datasourceConfig.importDefaultVectorFormats.concat(
-          detailedVectorAnswers.formats,
-        ),
-        ...precalcAnswers,
-        ...explodeAnswers,
-      });
-      return config;
-    } else {
-      // Raster datasource
-      const datasourceIdAnswer = await datasourceIdQuestion(
-        datasources,
-        srcAnswer.src,
-      );
-      const detailedRasterAnswers = await detailedRasterQuestions(
-        srcAnswer.src,
-      );
-      const precalcAnswers = await precalcQuestion();
+      ...detailedVectorAnswers,
+      formats: datasourceConfig.importDefaultVectorFormats.concat(
+        detailedVectorAnswers.formats,
+      ),
+      ...precalcAnswers,
+      ...explodeAnswers,
+    });
+    return config;
+  } else {
+    // Raster datasource
+    const datasourceIdAnswer = await datasourceIdQuestion(
+      datasources,
+      srcAnswer.src,
+    );
+    const detailedRasterAnswers = await detailedRasterQuestions(srcAnswer.src);
+    const precalcAnswers = await precalcQuestion();
 
-      const config = rasterMapper({
-        ...geoTypeAnswer,
-        ...srcAnswer,
-        ...datasourceIdAnswer,
-        ...detailedRasterAnswers,
-        ...precalcAnswers,
-      });
-      return config;
-    }
-  })();
-
-  await importDatasource(projectClient, config, {});
+    const config = rasterMapper({
+      ...geoTypeAnswer,
+      ...srcAnswer,
+      ...datasourceIdAnswer,
+      ...detailedRasterAnswers,
+      ...precalcAnswers,
+    });
+    return config;
+  }
 })();
+
+await importDatasource(projectClient, config, {});
 
 /** Maps answers object to options */
 function vectorMapper(

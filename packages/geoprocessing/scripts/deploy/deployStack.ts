@@ -76,4 +76,4 @@ export async function deployStack() {
   Tags.of(stack).add("Geoprocessing Project", manifest.title);
 }
 
-deployStack();
+await deployStack();

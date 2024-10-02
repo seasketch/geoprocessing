@@ -153,13 +153,12 @@ const createReport = async () => {
 };
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  createReport()
-    .then(async (answers) => {
-      await makeReport(answers, true, "");
-    })
-    .catch((error) => {
-      console.error("Error occurred:", error);
-    });
+  try {
+    const answers = await createReport();
+    await makeReport(answers, true, "");
+  } catch (error) {
+    console.error("Error occurred:", error);
+  }
 }
 
 export async function makeReport(

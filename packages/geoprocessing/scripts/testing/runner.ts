@@ -4,7 +4,7 @@ import { configDefaults } from "vitest/config";
 /**
  * Manually parse user-provided CLI arguments from geoprocessing test command and run vitest
  */
-export default async function () {
+export default async function runner() {
   // build vitest command from user-provided arguments, then parse it
   const argv = ["vitest", ...process.argv.slice(2)];
   const { filter, options } = parseCLI(argv);

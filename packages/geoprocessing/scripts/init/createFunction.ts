@@ -99,7 +99,7 @@ async function createFunction() {
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   // module was not imported but called directly
-  createFunction();
+  await createFunction();
 }
 
 export async function makeGeoprocessingHandler(

@@ -41,7 +41,7 @@ async function createClient() {
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   // module was not imported but called directly
-  createClient();
+  await createClient();
 }
 
 export async function makeClient(

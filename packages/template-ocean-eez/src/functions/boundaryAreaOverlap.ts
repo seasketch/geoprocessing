@@ -92,11 +92,7 @@ export async function boundaryAreaOverlap(
           );
         }),
       )
-    ).reduce(
-      // merge
-      (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
-      [],
-    );
+    ).flat();
 
   return {
     metrics: sortMetrics(rekeyMetrics(metrics)),

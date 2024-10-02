@@ -102,11 +102,7 @@ export async function vectorFunction(
         );
       }),
     )
-  ).reduce(
-    // merge
-    (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
-    [],
-  );
+  ).flat();
 
   // Return a report result with metrics and a null sketch
   return {

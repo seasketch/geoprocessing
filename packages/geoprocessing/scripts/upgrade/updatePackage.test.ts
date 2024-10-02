@@ -80,7 +80,7 @@ describe("updatePackage", () => {
   test("scripts are updated", async () => {
     const updatedPkg = updatePackageJson(srcPkg, basePkg);
     const keys = Object.keys(updatedPkg.scripts);
-    expect(keys.length).toEqual(4);
+    expect(keys.length).toEqual(3);
     expect(keys.includes("start:data")).toBeTruthy();
     expect(keys.includes("clear:results")).toBeTruthy();
     expect(keys.includes("upgrade")).toBeTruthy();
@@ -118,7 +118,7 @@ describe("updatePackage", () => {
     const dependencyKeys = Object.keys(updatedPkg.dependencies);
     if (updatedPkg.devDependencies) {
       const devDependencyKeys = Object.keys(updatedPkg.devDependencies);
-      expect(scriptKeys.length).toEqual(4);
+      expect(scriptKeys.length).toEqual(3);
       expect(scriptKeys.includes("other-script")).toBeFalsy();
       expect(dependencyKeys.length).toEqual(3);
       expect(dependencyKeys.includes("other-dependency")).toBeFalsy();

@@ -65,8 +65,4 @@ export default [
       "unicorn/no-array-method-this-argument": "warn",
     },
   },
-  {
-    extends: ["plugin:storybook/recommended"],
-    files: ["**/.stories.{js,jsx,ts,tsx}"],
-  },
 ];

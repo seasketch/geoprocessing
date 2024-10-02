@@ -6,14 +6,13 @@ program
   .option(
     "--gpVersion <string>",
     "Git supported version string to install.  Can be local file url",
-    undefined,
   )
   .action(async function (options) {
     try {
       await init(options.gpVersion);
-    } catch (e) {
+    } catch (error) {
       console.log("\n");
-      console.error(e);
+      console.error(error);
       process.exit(1);
     }
   });

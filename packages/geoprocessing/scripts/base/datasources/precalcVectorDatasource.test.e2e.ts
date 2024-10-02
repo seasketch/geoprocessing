@@ -8,7 +8,7 @@ import {
 } from "../../../src/index.js";
 import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import { precalcDatasources } from "./precalcDatasources.js";
 import { importDatasource } from "./importDatasource.js";
 import { writeGeographies } from "../geographies/geographies.js";
@@ -93,10 +93,10 @@ describe("precalcDatasources", () => {
       const metrics = fs.readJSONSync(precalcFilePath);
       metricsSchema.parse(metrics);
       expect(metrics.length).toBe(2);
-      metrics.forEach((metric) => {
+      for (const metric of metrics) {
         expect(metric.classId).toBe(`${geographyId}-total`);
         expect(metric.geographyId).toBe(geographyId);
-      });
+      }
 
       const areaMetric = firstMatchingMetric(
         metrics,
@@ -116,7 +116,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
-    }, 20000);
+    }, 20_000);
 
     test.skip("precalcVectorDatasource - single geog, internal datasource, multi-class", async () => {
       const dsFilename = "datasources_precalc_vector_test_2.json";
@@ -190,9 +190,9 @@ describe("precalcDatasources", () => {
       const metrics = fs.readJSONSync(precalcFilePath);
       metricsSchema.parse(metrics);
       expect(metrics.length).toBe(8);
-      metrics.forEach((metric) => {
+      for (const metric of metrics) {
         expect(metric.geographyId).toBe(geogDatasourceId);
-      });
+      }
 
       const shelfTotalCountMetric = firstMatchingMetric(
         metrics,
@@ -232,7 +232,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
-    }, 20000);
+    }, 20_000);
     test.skip("precalcVectorDatasource - single geog, two datasources should write metrics", async () => {
       const dsFilename = "datasources_precalc_vector_test_3.json";
       const dsFilePath = path.join(dstPath, dsFilename);
@@ -338,9 +338,9 @@ describe("precalcDatasources", () => {
       const metrics = fs.readJSONSync(precalcFilePath);
       metricsSchema.parse(metrics);
       expect(metrics.length).toBe(10);
-      metrics.forEach((metric) => {
+      for (const metric of metrics) {
         expect(metric.geographyId).toBe(geogDatasourceId);
-      });
+      }
 
       const shelfTotalCountMetric = firstMatchingMetric(
         metrics,
@@ -391,7 +391,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
-    }, 20000);
+    }, 20_000);
     test.skip("precalcVectorDatasource - single geog, update datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_4.json";
       const dsFilePath = path.join(dstPath, dsFilename);
@@ -499,9 +499,9 @@ describe("precalcDatasources", () => {
       const metrics = fs.readJSONSync(precalcFilePath);
       metricsSchema.parse(metrics);
       expect(metrics.length).toBe(6);
-      metrics.forEach((metric) => {
+      for (const metric of metrics) {
         expect(metric.geographyId).toBe(geogDatasourceId);
-      });
+      }
 
       const shelfTotalCountMetric = firstMatchingMetric(
         metrics,
@@ -547,7 +547,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
-    }, 20000);
+    }, 20_000);
 
     test.skip("precalcVectorDatasource - multiple geog scenarios with external subdivided datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_6.json";
@@ -601,8 +601,8 @@ describe("precalcDatasources", () => {
         datasourceId: externalDatasourceId,
         display: "geog-box-filter",
         bboxFilter: [
-          -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-          -10.024476331539347,
+          -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+          -165.200_833_333_191_610_6, -10.024_476_331_539_347,
         ],
         precalc: true,
       };
@@ -616,8 +616,8 @@ describe("precalcDatasources", () => {
           values: ["Samoa"],
         },
         bboxFilter: [
-          -173.7746906500533, -17.55526875286155, -165.2008333331916,
-          -10.024476331539347,
+          -173.774_690_650_053_3, -17.555_268_752_861_55,
+          -165.200_833_333_191_6, -10.024_476_331_539_347,
         ],
         display: "geog-single-filter",
         precalc: true,
@@ -632,8 +632,8 @@ describe("precalcDatasources", () => {
           values: ["Samoa", "American Samoa"], // Should include two polygons
         },
         bboxFilter: [
-          -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-          -10.024476331539347,
+          -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+          -165.200_833_333_191_610_6, -10.024_476_331_539_347,
         ],
         display: "geog-double-filter",
         precalc: true,
@@ -670,28 +670,28 @@ describe("precalcDatasources", () => {
         (m) => m.geographyId === "geog-box-filter" && m.metricId === "area",
       );
       // Largest area value
-      expect(boxFilterMetric.value).toEqual(61990788175.99197);
+      expect(boxFilterMetric.value).toEqual(61_990_788_175.991_97);
 
       const singleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-single-filter" && m.metricId === "area",
       );
       // Smallest area value, samoa only
-      expect(singleFilterMetric.value).toEqual(37822608708.98315);
+      expect(singleFilterMetric.value).toEqual(37_822_608_708.983_15);
 
       const doubleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-double-filter" && m.metricId === "area",
       );
       // Slightly larger area value, both samoa
-      expect(doubleFilterMetric.value).toEqual(39734709577.15677);
+      expect(doubleFilterMetric.value).toEqual(39_734_709_577.156_77);
 
       fs.removeSync(dsFilePath);
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
-    }, 20000);
+    }, 20_000);
 
     test.skip("precalcVectorDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_7.json";
@@ -745,8 +745,8 @@ describe("precalcDatasources", () => {
         datasourceId: externalDatasourceId,
         display: "geog-box-filter",
         bboxFilter: [
-          -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-          -10.024476331539347,
+          -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+          -165.200_833_333_191_610_6, -10.024_476_331_539_347,
         ],
         precalc: true,
       };
@@ -760,8 +760,8 @@ describe("precalcDatasources", () => {
           values: ["Samoan Exclusive Economic Zone"],
         },
         bboxFilter: [
-          -173.7746906500533, -17.55526875286155, -165.2008333331916,
-          -10.024476331539347,
+          -173.774_690_650_053_3, -17.555_268_752_861_55,
+          -165.200_833_333_191_6, -10.024_476_331_539_347,
         ],
         display: "geog-single-filter",
         precalc: true,
@@ -779,8 +779,8 @@ describe("precalcDatasources", () => {
           ], // Should include two polygons
         },
         bboxFilter: [
-          -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-          -10.024476331539347,
+          -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+          -165.200_833_333_191_610_6, -10.024_476_331_539_347,
         ],
         display: "geog-double-filter",
         precalc: true,
@@ -817,28 +817,28 @@ describe("precalcDatasources", () => {
         (m) => m.geographyId === "geog-box-filter" && m.metricId === "area",
       );
       // Largest area value
-      expect(boxFilterMetric.value).toEqual(59689842766.9754);
+      expect(boxFilterMetric.value).toEqual(59_689_842_766.9754);
 
       const singleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-single-filter" && m.metricId === "area",
       );
       // Smallest area value, samoa only
-      expect(singleFilterMetric.value).toEqual(35521663299.96643);
+      expect(singleFilterMetric.value).toEqual(35_521_663_299.966_43);
 
       const doubleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-double-filter" && m.metricId === "area",
       );
       // Slightly larger area value, both samoa
-      expect(doubleFilterMetric.value).toEqual(37433764168.14005);
+      expect(doubleFilterMetric.value).toEqual(37_433_764_168.140_05);
 
       fs.removeSync(dsFilePath);
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
-    }, 20000);
+    }, 20_000);
 
     test.skip("precalcVectorDatasource - world geog, external datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_8.json";
@@ -889,10 +889,10 @@ describe("precalcDatasources", () => {
       const metrics = fs.readJSONSync(precalcFilePath);
       metricsSchema.parse(metrics);
       expect(metrics.length).toBe(2);
-      metrics.forEach((metric) => {
+      for (const metric of metrics) {
         expect(metric.classId).toBe(`${geographyId}-total`);
         expect(metric.geographyId).toBe(geographyId);
-      });
+      }
 
       const areaMetric = firstMatchingMetric(
         metrics,
@@ -912,7 +912,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
-    }, 20000);
+    }, 20_000);
 
     test.skip("precalcVectorDatasource - world geog, internal datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_9.json";
@@ -991,7 +991,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(path.join(dstPath, `${datasourceId}.json`));
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
-    }, 20000);
+    }, 20_000);
 
     test.skip("precalcDatasource - all precalc false should precalculate nothing", async () => {
       const dsFilename = "datasources_precalc_false_test.json";
@@ -1045,8 +1045,8 @@ describe("precalcDatasources", () => {
         datasourceId: externalDatasourceId,
         display: "geog-box-filter",
         bboxFilter: [
-          -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-          -10.024476331539347,
+          -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+          -165.200_833_333_191_610_6, -10.024_476_331_539_347,
         ],
         precalc: false,
       };
@@ -1068,6 +1068,6 @@ describe("precalcDatasources", () => {
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.json`));
       fs.removeSync(geogFilePath);
-    }, 20000);
+    }, 20_000);
   });
 });

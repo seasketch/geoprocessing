@@ -10,7 +10,7 @@ export default {
 };
 
 const ThrowComponent = () => {
-  throw Error("error!");
+  throw new Error("error!");
   return <></>;
 };
 

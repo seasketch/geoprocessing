@@ -133,10 +133,10 @@ export async function precalcDatasources<C extends ProjectClientBase>(
         console.log(" ");
         successfulDs += 1;
         processed[`${ds.datasourceId}-${geog.geographyId}`] = true;
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          console.log(e.message);
-          console.log(e.stack);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.log(error.message);
+          console.log(error.stack);
           console.log(
             `Updating precalc metrics for ${ds.datasourceId} failed, moving to next`,
           );
@@ -179,9 +179,9 @@ export async function precalcDatasources<C extends ProjectClientBase>(
         console.log(`${ds.datasourceId} precalc complete`);
         console.log(" ");
         successfulGs += 1;
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          console.log(e.stack);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.log(error.stack);
           console.log(
             `Precalculating metrics for datasource ${ds.datasourceId} + geography ${geog.geographyId} failed, moving to next`,
           );

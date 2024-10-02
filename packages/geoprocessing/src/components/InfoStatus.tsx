@@ -15,10 +15,7 @@ export const InfoStatus: React.FunctionComponent<InfoStatusProps> = ({
   return (
     <div style={{ display: "flex" }}>
       <div style={{ paddingRight: 10 }}>
-        <InfoCircleFill
-          size={size}
-          style={{ ...{ color: "#83C6E6" }, ...style }}
-        />
+        <InfoCircleFill size={size} style={{ color: "#83C6E6", ...style }} />
       </div>
       <div>{msg}</div>
     </div>

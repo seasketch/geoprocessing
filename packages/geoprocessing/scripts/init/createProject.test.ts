@@ -63,7 +63,7 @@ describe("createProject", () => {
     expect(gpConfig.preprocessingFunctions.length).toBe(0);
     expect(gpConfig.geoprocessingFunctions.length).toBe(0);
     expect(gpConfig.clients.length).toBe(0);
-  }, 120000);
+  }, 120_000);
 
   it("createProject - should create project using eez selection", async () => {
     const projectName = "test-project-empty";
@@ -139,7 +139,7 @@ describe("createProject", () => {
       // expect(eezDs?.propertyFilter).toBeTruthy();
       // expect(eezDs?.bboxFilter).toBeTruthy();
     }
-  }, 120000);
+  }, 120_000);
 
   it("createProject - should create project with template", async () => {
     const projectName = "test-project-template";
@@ -175,7 +175,7 @@ describe("createProject", () => {
     expect(gpConfig.preprocessingFunctions.length).toBeGreaterThanOrEqual(1);
     expect(gpConfig.geoprocessingFunctions.length).toBeGreaterThan(0);
     expect(gpConfig.clients.length).toBeGreaterThan(0);
-  }, 120000);
+  }, 120_000);
 
   it("createProject - should create empty project with all defaults", async () => {
     const projectName = "test-project-empty-defaults";
@@ -232,5 +232,5 @@ describe("createProject", () => {
     expect(gpConfig.preprocessingFunctions.length).toBe(0);
     expect(gpConfig.geoprocessingFunctions.length).toBe(0);
     expect(gpConfig.clients.length).toBe(0);
-  }, 120000);
+  }, 120_000);
 });

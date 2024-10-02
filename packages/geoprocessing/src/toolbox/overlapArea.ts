@@ -55,13 +55,13 @@ export async function overlapArea(
 
       const combinedSketch = clip(featureCollection(sketches), "union");
       return combinedSketch ? turfArea(combinedSketch) : 0;
-    } catch (err: unknown) {
+    } catch (error: unknown) {
       if (
-        err instanceof Error &&
-        err.message.includes("Unable to complete output ring")
+        error instanceof Error &&
+        error.message.includes("Unable to complete output ring")
       ) {
         // Fallback to simplify
-        const tolerance = options?.simplifyTolerance || 0.000001;
+        const tolerance = options?.simplifyTolerance || 0.000_001;
         const combinedSketch = clip(
           simplify(featureCollection(sketches), {
             tolerance,
@@ -74,7 +74,7 @@ export async function overlapArea(
       } else {
         // Return zero to return something and flag error
         collectionExtra.error = true;
-        console.error(err);
+        console.error(error);
         console.log("Returning zero area with error flagged");
         return 0;
       }
@@ -88,7 +88,31 @@ export async function overlapArea(
         console.log(
           "Warning: feature or its properties are undefined, skipped",
         );
-      } else if (!curSketch.geometry) {
+      } else if (curSketch.geometry) {
+        const sketchArea = turfArea(curSketch);
+        sketchMetrics.push(
+          createMetric({
+            metricId,
+            sketchId: curSketch.properties.id,
+            value: sketchArea,
+            extra: {
+              sketchName: curSketch.properties.name,
+            },
+          }),
+        );
+        if (includePercMetric) {
+          sketchMetrics.push(
+            createMetric({
+              metricId: percMetricId,
+              sketchId: curSketch.properties.id,
+              value: sketchArea / outerArea,
+              extra: {
+                sketchName: curSketch.properties.name,
+              },
+            }),
+          );
+        }
+      } else {
         console.log(
           `Warning: feature is missing geometry, zeroed: sketchId:${curSketch.properties.id}, name:${curSketch.properties.name}`,
         );
@@ -109,30 +133,6 @@ export async function overlapArea(
               metricId: percMetricId,
               sketchId: curSketch.properties.id,
               value: 0,
-              extra: {
-                sketchName: curSketch.properties.name,
-              },
-            }),
-          );
-        }
-      } else {
-        const sketchArea = turfArea(curSketch);
-        sketchMetrics.push(
-          createMetric({
-            metricId,
-            sketchId: curSketch.properties.id,
-            value: sketchArea,
-            extra: {
-              sketchName: curSketch.properties.name,
-            },
-          }),
-        );
-        if (includePercMetric) {
-          sketchMetrics.push(
-            createMetric({
-              metricId: percMetricId,
-              sketchId: curSketch.properties.id,
-              value: sketchArea / outerArea,
               extra: {
                 sketchName: curSketch.properties.name,
               },
@@ -245,13 +245,13 @@ export async function overlapSubarea(
           ? clip(featureCollection(allSubsketches), "union")
           : featureCollection(allSubsketches);
       return allSubsketches && combinedSketch ? turfArea(combinedSketch) : 0;
-    } catch (err: unknown) {
+    } catch (error: unknown) {
       if (
-        err instanceof Error &&
-        err.message.includes("Unable to complete output ring")
+        error instanceof Error &&
+        error.message.includes("Unable to complete output ring")
       ) {
         // Fallback to simplify
-        const tolerance = options?.simplifyTolerance || 0.000001;
+        const tolerance = options?.simplifyTolerance || 0.000_001;
         const combinedSketch = clip(
           simplify(featureCollection(allSubsketches), {
             tolerance,
@@ -264,7 +264,7 @@ export async function overlapSubarea(
       } else {
         // Return zero to return something and flag error
         collectionExtra.error = true;
-        console.error(err);
+        console.error(error);
         console.log("Returning zero area with error flagged");
         return 0;
       }
@@ -273,16 +273,14 @@ export async function overlapSubarea(
 
   // Choose inner or outer subarea for calculating percentage
   const operationArea = (() => {
-    if (operation === "difference" && options?.outerArea) {
-      return options?.outerArea - subareaArea;
-    } else {
-      return subareaArea;
-    }
+    return operation === "difference" && options?.outerArea
+      ? options?.outerArea - subareaArea
+      : subareaArea;
   })();
 
   const metrics: Metric[] = [];
   if (subsketches) {
-    subsketches.forEach((feat, index) => {
+    for (const [index, feat] of subsketches.entries()) {
       const origSketch = sketches[index];
       if (feat) {
         const subsketchArea = turfArea(feat);
@@ -328,7 +326,7 @@ export async function overlapSubarea(
           }),
         );
       }
-    });
+    }
   }
 
   if (isSketchCollection(sketch)) {

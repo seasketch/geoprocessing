@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import * as esbuild from "esbuild";
 import { generateManifest } from "./generateManifest.js";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";

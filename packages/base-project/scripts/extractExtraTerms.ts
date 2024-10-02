@@ -11,30 +11,30 @@ import fs from "fs-extra";
   extraTerms[project.basic.planningAreaName] = project.basic.planningAreaName;
 
   // metrics: add terms for metric display
-  project.metricGroups.forEach((metric) => {
-    metric.classes.forEach((metricClass) => {
+  for (const metric of project.metricGroups) {
+    for (const metricClass of metric.classes) {
       if (metricClass.display) {
         extraTerms[metricClass.display] = metricClass.display;
       }
-    });
-  });
+    }
+  }
 
   // objectives: update terms for objective display
-  project.objectives.forEach((objective) => {
+  for (const objective of project.objectives) {
     extraTerms[objective.shortDesc] = objective.shortDesc;
-    Object.keys(objective.countsToward).forEach((level) => {
+    for (const level of Object.keys(objective.countsToward)) {
       extraTerms[level] = level;
-    });
-  });
+    }
+  }
 
   if (!project.geographies || !Array.isArray(project.geographies)) {
     console.log(
       `Unable to load default geography, run extract:translation again after init`,
     );
   } else {
-    project.geographies.forEach((geography) => {
+    for (const geography of project.geographies) {
       extraTerms[geography.display] = geography.display;
-    });
+    }
   }
 
   fs.writeJSONSync(`src/i18n/extraTerms.json`, extraTerms, { spaces: 2 });

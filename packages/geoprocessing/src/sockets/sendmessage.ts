@@ -55,11 +55,12 @@ export const sendHandler = async (event) => {
         ProjectionExpression: "serviceName, connectionId, cacheKey",
       }),
     );
-  } catch (e: unknown) {
-    console.warn("Error finding socket connection: ", e);
+  } catch (error: unknown) {
+    console.warn("Error finding socket connection:", error);
     return {
       statusCode: 500,
-      body: "Server Error" + (e instanceof Error ? ` - ${e.stack}` : ""),
+      body:
+        "Server Error" + (error instanceof Error ? ` - ${error.stack}` : ""),
     };
   }
 
@@ -114,8 +115,8 @@ export const sendHandler = async (event) => {
             Data: Buffer.from(postData),
           });
           // console.log("postResult", JSON.stringify(JSON.stringify(postResult)));
-        } catch (e: any) {
-          if (e.statusCode && e.statusCode === 410) {
+        } catch (error: any) {
+          if (error.statusCode && error.statusCode === 410) {
             console.log(
               `Found stale connection, deleting ${responseItem.connectionId}`,
             );
@@ -131,10 +132,10 @@ export const sendHandler = async (event) => {
               console.info("failed to delete stale connection...");
             }
           }
-          console.log("postToConnection failed", e);
+          console.log("postToConnection failed", error);
         }
-      } catch (e) {
-        console.info("blowing up with send message: ", e);
+      } catch (error) {
+        console.info("blowing up with send message:", error);
       }
     }
   }

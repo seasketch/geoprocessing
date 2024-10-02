@@ -61,7 +61,7 @@ export async function overlapFeatures(
     operation: "area",
     chunkSize: 5000,
     truncate: true,
-    ...(options || {}),
+    ...options,
   };
   const { includeChildMetrics } = newOptions;
   let sumValue: number = 0;
@@ -80,7 +80,7 @@ export async function overlapFeatures(
       newOptions,
     );
 
-    intersections.indices.forEach((index) => featureIndices.add(index));
+    for (const index of intersections.indices) featureIndices.add(index);
 
     return createMetric({
       metricId,
@@ -111,7 +111,7 @@ export async function overlapFeatures(
         : sketchColl;
 
     if (newOptions.operation === "sum") {
-      featureIndices.forEach((index) => {
+      for (const index of featureIndices) {
         const feature = finalFeatures[index];
 
         if (
@@ -120,7 +120,7 @@ export async function overlapFeatures(
         )
           sumValue += feature.properties![newOptions.sumProperty];
         else sumValue += 1;
-      });
+      }
     } else {
       featureEach(finalSketches, (feat) => {
         const intersections = doIntersect(
@@ -172,14 +172,16 @@ const doIntersect = (
 ) => {
   const { chunkSize, operation = "area" } = options;
   switch (operation) {
-    case "sum":
+    case "sum": {
       return getSketchPolygonIntersectSumValue(
         featureA,
         featuresB,
         options.sumProperty,
       );
-    default:
+    }
+    default: {
       return getSketchPolygonIntersectArea(featureA, featuresB, chunkSize);
+    }
   }
 };
 

@@ -13,19 +13,19 @@ export async function updateCommandsSync(
     const curCommand = commands[i];
     try {
       await db.send(curCommand);
-    } catch (e: any) {
+    } catch (error: any) {
       if (
-        e.$metadata &&
-        e.$metadata.httpStatusCode === 400 &&
-        e.$metadata.totalRetryDelay
+        error.$metadata &&
+        error.$metadata.httpStatusCode === 400 &&
+        error.$metadata.totalRetryDelay
       ) {
         console.log(
-          `ThroughputError saving item, retrying in ${e.$metadata.totalRetryDelay}ms`,
+          `ThroughputError saving item, retrying in ${error.$metadata.totalRetryDelay}ms`,
         );
-        await wait(e.$metadata.totalRetryDelay);
+        await wait(error.$metadata.totalRetryDelay);
         await updateCommandsSync(db, [curCommand]);
       } else {
-        throw new Error(e);
+        throw new Error(error);
       }
     }
   }

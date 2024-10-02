@@ -7,9 +7,6 @@ import { writePrecalcMetrics } from "../base/datasources/precalc.js";
 const projectPath = process.argv[2];
 const projectClient = getProjectClient(projectPath);
 
-// Wrap in an IIFE to use async/await
-void (async function () {
-  const cleanMetrics = await precalcCleanup(projectClient);
-  await writePrecalcMetrics(cleanMetrics);
-  console.log("Precalc cleanup complete");
-})();
+const cleanMetrics = await precalcCleanup(projectClient);
+await writePrecalcMetrics(cleanMetrics);
+console.log("Precalc cleanup complete");

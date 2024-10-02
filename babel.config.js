@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-module */
 // This is solely used to support i18next-extract
 // do not put anything in here that is not related to i18next-extract
 

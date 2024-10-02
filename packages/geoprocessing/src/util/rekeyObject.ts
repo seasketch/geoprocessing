@@ -9,15 +9,15 @@ export const rekeyObject = (
   idOrder: string[],
 ) => {
   const newObject: Record<string, JSONValue> = {};
-  idOrder.forEach((id) => {
+  for (const id of idOrder) {
     if (hasOwnProperty(inputObject, id)) newObject[id] = inputObject[id];
-  });
+  }
 
   // Put all other properties not in idOrder at the end
-  Object.keys(inputObject)
-    .filter((id) => !idOrder.includes(id))
-    .forEach((id) => {
-      newObject[id] = inputObject[id];
-    });
+  for (const id of Object.keys(inputObject).filter(
+    (id) => !idOrder.includes(id),
+  )) {
+    newObject[id] = inputObject[id];
+  }
   return newObject;
 };

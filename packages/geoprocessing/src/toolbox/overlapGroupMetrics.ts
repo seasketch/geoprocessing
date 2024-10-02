@@ -254,10 +254,7 @@ export async function overlapGroupMetrics(options: {
   );
 
   // Await and unroll result
-  const groupMetrics = (await Promise.all(groupMetricsPromises)).reduce(
-    (metricsSoFar, curMetrics) => [...metricsSoFar, ...curMetrics],
-    [],
-  );
+  const groupMetrics = (await Promise.all(groupMetricsPromises)).flat();
 
   return groupMetrics;
 }
@@ -305,10 +302,8 @@ const getClassGroupMetrics = async (options: {
     const higherGroupSketchMetrics = groups.reduce<Metric[]>(
       (otherSoFar, otherGroupName) => {
         // Append if lower index than current group
-        const groupIndex = groups.findIndex((grp) => grp === groupId);
-        const otherIndex = groups.findIndex(
-          (findGroupName) => otherGroupName === findGroupName,
-        );
+        const groupIndex = groups.indexOf(groupId);
+        const otherIndex = groups.indexOf(otherGroupName);
 
         const otherGroupMetrics = groupSketchMetrics.filter(
           (gm) => gm.groupId === otherGroupName,

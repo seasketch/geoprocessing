@@ -34,7 +34,7 @@ export const createRestApi = (stack: GeoprocessingStack) => {
 
   // Add route for each sync gp function
   const syncFunctionsWithMeta = stack.getSyncFunctionsWithMeta();
-  syncFunctionsWithMeta.forEach((syncFunction) => {
+  for (const syncFunction of syncFunctionsWithMeta) {
     const syncHandlerIntegration = new LambdaIntegration(syncFunction.func, {
       requestTemplates: { "application/json": '{ "statusCode": "200" }' },
     });
@@ -44,10 +44,10 @@ export const createRestApi = (stack: GeoprocessingStack) => {
     if (syncFunction.meta.purpose === "geoprocessing") {
       resource.addMethod("GET", syncHandlerIntegration);
     }
-  });
+  }
 
   // Add route for each async gp start function
-  stack.getAsyncFunctionsWithMeta().forEach((asyncFunction) => {
+  for (const asyncFunction of stack.getAsyncFunctionsWithMeta()) {
     const asyncHandlerIntegration = new LambdaIntegration(
       asyncFunction.startFunc,
       {
@@ -57,7 +57,7 @@ export const createRestApi = (stack: GeoprocessingStack) => {
     const resource = restApi.root.addResource(asyncFunction.meta.title);
     resource.addMethod("POST", asyncHandlerIntegration);
     resource.addMethod("GET", asyncHandlerIntegration);
-  });
+  }
 
   return restApi;
 };

@@ -13,8 +13,8 @@ import {
   importRasterDatasourceOptionsSchema,
   datasourceConfig,
 } from "../../src/index.js";
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 
 import { getProjectClient } from "../base/project/projectClient.js";
 import { precalcQuestion } from "./precalcQuestion.js";
@@ -54,66 +54,60 @@ type ImportRasterDatasourceAnswers = Pick<
   | "precalc"
 >;
 
-// Main function, wrapped in an IIFE to avoid top-level await
-void (async function () {
-  const datasources = readDatasources();
-  const geoTypeAnswer = await geoTypeQuestion();
-  const srcAnswer = await srcQuestion();
+const datasources = readDatasources();
+const geoTypeAnswer = await geoTypeQuestion();
+const srcAnswer = await srcQuestion();
 
-  const config = await (async () => {
-    if (geoTypeAnswer.geo_type === "vector") {
-      // Vector datasource
-      const layerNameAnswer = await layerNameQuestion(srcAnswer.src);
-      const datasourceIdAnswer = await datasourceIdQuestion(
-        datasources,
-        srcAnswer.src,
-      );
-      const explodeAnswers = await explodeQuestion();
-      const detailedVectorAnswers = await detailedVectorQuestions(
-        srcAnswer.src,
-        layerNameAnswer.layerName!,
-      );
-      const precalcAnswers = await precalcQuestion();
+const config = await (async () => {
+  if (geoTypeAnswer.geo_type === "vector") {
+    // Vector datasource
+    const layerNameAnswer = await layerNameQuestion(srcAnswer.src);
+    const datasourceIdAnswer = await datasourceIdQuestion(
+      datasources,
+      srcAnswer.src,
+    );
+    const explodeAnswers = await explodeQuestion();
+    const detailedVectorAnswers = await detailedVectorQuestions(
+      srcAnswer.src,
+      layerNameAnswer.layerName!,
+    );
+    const precalcAnswers = await precalcQuestion();
 
-      const config = vectorMapper({
-        ...geoTypeAnswer,
-        ...srcAnswer,
-        ...datasourceIdAnswer,
-        ...layerNameAnswer,
-        ...{
-          ...detailedVectorAnswers,
-          formats: datasourceConfig.importDefaultVectorFormats.concat(
-            detailedVectorAnswers.formats,
-          ),
-        },
-        ...precalcAnswers,
-        ...explodeAnswers,
-      });
-      return config;
-    } else {
-      // Raster datasource
-      const datasourceIdAnswer = await datasourceIdQuestion(
-        datasources,
-        srcAnswer.src,
-      );
-      const detailedRasterAnswers = await detailedRasterQuestions(
-        srcAnswer.src,
-      );
-      const precalcAnswers = await precalcQuestion();
+    const config = vectorMapper({
+      ...geoTypeAnswer,
+      ...srcAnswer,
+      ...datasourceIdAnswer,
+      ...layerNameAnswer,
 
-      const config = rasterMapper({
-        ...geoTypeAnswer,
-        ...srcAnswer,
-        ...datasourceIdAnswer,
-        ...detailedRasterAnswers,
-        ...precalcAnswers,
-      });
-      return config;
-    }
-  })();
+      ...detailedVectorAnswers,
+      formats: datasourceConfig.importDefaultVectorFormats.concat(
+        detailedVectorAnswers.formats,
+      ),
+      ...precalcAnswers,
+      ...explodeAnswers,
+    });
+    return config;
+  } else {
+    // Raster datasource
+    const datasourceIdAnswer = await datasourceIdQuestion(
+      datasources,
+      srcAnswer.src,
+    );
+    const detailedRasterAnswers = await detailedRasterQuestions(srcAnswer.src);
+    const precalcAnswers = await precalcQuestion();
 
-  await importDatasource(projectClient, config, {});
+    const config = rasterMapper({
+      ...geoTypeAnswer,
+      ...srcAnswer,
+      ...datasourceIdAnswer,
+      ...detailedRasterAnswers,
+      ...precalcAnswers,
+    });
+    return config;
+  }
 })();
+
+await importDatasource(projectClient, config, {});
 
 /** Maps answers object to options */
 function vectorMapper(
@@ -131,7 +125,7 @@ function rasterMapper(
     ...answers,
   };
   // a blank noDataValue will end up as nan, so just remove it as its optional
-  if (isNaN(parseFloat(`${answers.noDataValue}`))) {
+  if (Number.isNaN(Number.parseFloat(`${answers.noDataValue}`))) {
     delete options.noDataValue;
   }
 
@@ -174,9 +168,11 @@ async function srcQuestion(): Promise<
       validate: (value) => {
         const fullPath = path.resolve(projectPath, value);
         if (!fs.existsSync(fullPath)) return "File does not exist";
-        else if (!fs.statSync(fullPath).isFile())
+        else if (fs.statSync(fullPath).isFile()) {
+          return true;
+        } else {
           return "Path does not point to a file";
-        else return true;
+        }
       },
     },
   ]);
@@ -187,7 +183,7 @@ async function datasourceIdQuestion(
   datasources: Datasource[],
   srcPath: string,
 ): Promise<Pick<ImportVectorDatasourceAnswers, "datasourceId">> {
-  const datasourceIds = datasources.map((ds) => ds.datasourceId);
+  const datasourceIds = new Set(datasources.map((ds) => ds.datasourceId));
   return inquirer.prompt<Pick<ImportVectorDatasourceAnswers, "datasourceId">>([
     {
       type: "input",
@@ -197,8 +193,8 @@ async function datasourceIdQuestion(
       default: path.basename(srcPath, path.extname(srcPath)),
       validate: (value) =>
         value === "" ||
-        (!datasourceIds.includes(value) &&
-          (/^[a-zA-Z0-9-_]+$/.test(value)
+        (!datasourceIds.has(value) &&
+          (/^[\w-]+$/.test(value)
             ? true
             : "Invalid or duplicate datasource name")),
     },
@@ -339,6 +335,6 @@ async function detailedRasterQuestions(
   return {
     ...answers,
     formats: ["tif"],
-    noDataValue: isNaN(noDataValue) ? -9999 : noDataValue,
+    noDataValue: Number.isNaN(noDataValue) ? -9999 : noDataValue,
   };
 }

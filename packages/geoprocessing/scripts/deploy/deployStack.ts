@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { App, Tags } from "aws-cdk-lib";
 import { Manifest } from "../manifest.js";
 import { GeoprocessingStack } from "../aws/GeoprocessingStack.js";
@@ -58,7 +58,7 @@ export async function deployStack() {
         existingWorkerStacks = JSON.parse(workerStackJson);
       }
     }
-  } catch (err) {
+  } catch {
     // stack doesn't exist, keep going
   }
 
@@ -76,4 +76,4 @@ export async function deployStack() {
   Tags.of(stack).add("Geoprocessing Project", manifest.title);
 }
 
-deployStack();
+await deployStack();

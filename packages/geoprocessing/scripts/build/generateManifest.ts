@@ -16,7 +16,7 @@ export function generateManifest(
 ): Manifest {
   const manifest: Manifest = {
     title: slugify(
-      projectPkg.name.replace(/@/g, "").replace("gp-", "").replace("/", "-"),
+      projectPkg.name.replaceAll("@", "").replace("gp-", "").replace("/", "-"),
     ),
     author: slugify(config.author.replace(/<.*>/, "")),
     region: config.region,

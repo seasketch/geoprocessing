@@ -1,13 +1,13 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import chalk from "chalk";
 import camelcase from "camelcase";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import pascalcase from "pascalcase";
 import { getBlankProjectPath } from "../util/getPaths.js";
-import { pathToFileURL } from "url";
+import { pathToFileURL } from "node:url";
 
 async function createClient() {
   const answers = await inquirer.prompt([
@@ -41,7 +41,7 @@ async function createClient() {
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   // module was not imported but called directly
-  createClient();
+  await createClient();
 }
 
 export async function makeClient(
@@ -113,13 +113,13 @@ export async function makeClient(
     `${projectClientPath}/${options.title}.tsx`,
     clientCode
       .toString()
-      .replace(/SimpleReport/g, options.title)
-      .replace(/SimpleCard/g, `${options.title}Card`),
+      .replaceAll("SimpleReport", options.title)
+      .replaceAll("SimpleCard", `${options.title}Card`),
   );
 
   await fs.writeFile(
     `${projectClientPath}/${options.title}.stories.tsx`,
-    testClientCode.toString().replace(/SimpleReport/g, options.title),
+    testClientCode.toString().replaceAll("SimpleReport", options.title),
   );
 
   // CARD COMPONENT
@@ -138,7 +138,7 @@ export async function makeClient(
     `${projectComponentPath}/${options.title}Card.tsx`,
     componentCode
       .toString()
-      .replace(/SimpleCard/g, `${options.title}Card`)
+      .replaceAll("SimpleCard", `${options.title}Card`)
       .replace(`"simpleFunction"`, `"${functionName}"`)
       .replace(`functions/simpleFunction`, `functions/${functionName}`),
   );
@@ -147,7 +147,7 @@ export async function makeClient(
     `${projectComponentPath}/${options.title}Card.stories.tsx`,
     testComponentCode
       .toString()
-      .replace(/SimpleCard/g, `${options.title}Card`)
+      .replaceAll("SimpleCard", `${options.title}Card`)
       .replace(`"simpleFunction"`, `"${functionName}"`),
   );
 

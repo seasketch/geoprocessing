@@ -55,7 +55,7 @@ describe("overlapRasterArea test", () => {
     const raster = await parseGeoraster(
       [
         [
-          [1, 0.0023456],
+          [1, 0.002_345_6],
           [1, 1],
         ],
       ],

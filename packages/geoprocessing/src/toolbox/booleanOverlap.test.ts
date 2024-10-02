@@ -84,7 +84,7 @@ const polySketchD = genSampleSketch<Polygon>({
       [3, 5],
       [5, 5],
       [5, 3],
-      [3, 183827],
+      [3, 183_827],
     ],
   ],
 });

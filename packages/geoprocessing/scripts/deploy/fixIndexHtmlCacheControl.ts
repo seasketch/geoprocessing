@@ -1,7 +1,7 @@
 import { S3 } from "@aws-sdk/client-s3";
-import fs from "fs";
+import fs from "node:fs";
 import { Manifest } from "../manifest.js";
-import path from "path";
+import path from "node:path";
 
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) throw new Error("Missing PROJECT_PATH");

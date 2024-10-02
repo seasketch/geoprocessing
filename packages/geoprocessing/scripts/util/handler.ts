@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 
 /**
  * Returns filename of handler, given full path to source file

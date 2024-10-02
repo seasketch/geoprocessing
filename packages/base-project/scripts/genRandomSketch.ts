@@ -19,7 +19,7 @@ import {
 (async () => {
   const usage = "Usage: genRandomSketch [numSketches] [name] [outdir]";
   console.log(process.argv);
-  const numPolygons = parseInt(process.argv[2]) || 1;
+  const numPolygons = Number.parseInt(process.argv[2]) || 1;
   if (!numPolygons || numPolygons <= 0) throw new Error(usage);
 
   const name = (() => {

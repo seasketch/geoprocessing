@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import ora from "ora";
 import { loadedPackageSchema } from "../../src/types/package.js";
@@ -60,13 +60,7 @@ await fs.writeJson("src/i18n/extraTerms.json", updatedTerms, { spaces: 2 });
 
 // install and verify valid i18n config
 
-if (!fs.existsSync("project/i18n.json")) {
-  console.log("Creating new project/i18n.json");
-  await fs.writeJSON("project/i18n.json", {
-    localNamespace: "translation",
-    remoteContext: projectPkg.name,
-  });
-} else {
+if (fs.existsSync("project/i18n.json")) {
   const i18nConfig = await fs.readJson("project/i18n.json");
   if (!i18nConfig.localNamespace) {
     i18nConfig.localNamespace = "translation";
@@ -75,6 +69,12 @@ if (!fs.existsSync("project/i18n.json")) {
     i18nConfig.remoteContext = projectPkg.name;
   }
   await fs.writeJson("project/i18n.json", i18nConfig, { spaces: 2 });
+} else {
+  console.log("Creating new project/i18n.json");
+  await fs.writeJSON("project/i18n.json", {
+    localNamespace: "translation",
+    remoteContext: projectPkg.name,
+  });
 }
 
 spinner.succeed("Update i18n");

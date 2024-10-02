@@ -19,12 +19,12 @@ describe("rasterStatsToMetrics", () => {
   });
 
   test("rasterStatsToMetrics - default sum truncate", async () => {
-    const stats: StatsObject[] = [{ sum: 1.920482389239823 }];
+    const stats: StatsObject[] = [{ sum: 1.920_482_389_239_823 }];
     const metrics = rasterStatsToMetrics(stats);
     expect(metrics.length).toEqual(1);
     expect(metrics[0]).toEqual({
       metricId: "sum",
-      value: 1.920482,
+      value: 1.920_482,
       classId: null,
       groupId: "band-0",
       geographyId: null,
@@ -64,19 +64,19 @@ describe("rasterStatsToMetrics", () => {
     ];
     const metrics = rasterStatsToMetrics(stats);
     expect(metrics.length).toEqual(7);
-    metrics.forEach((m) => {
+    for (const m of metrics) {
       expect(m.value).toEqual(stats[0][m.metricId]);
-    });
+    }
   });
 
   test("rasterStatsToMetrics - multiple bands default", async () => {
     const stats: StatsObject[] = [{ sum: 1 }, { sum: 2 }];
     const metrics = rasterStatsToMetrics(stats);
     expect(metrics.length).toEqual(2);
-    metrics.forEach((m, i) => {
+    for (const [i, m] of metrics.entries()) {
       expect(m.value).toEqual(stats[i][m.metricId]);
       expect(m.groupId).toEqual(`band-${i}`);
-    });
+    }
   });
 
   test("rasterStatsToMetrics - multiple bands override", async () => {
@@ -87,10 +87,10 @@ describe("rasterStatsToMetrics", () => {
       bandMetricValues: bandGroups,
     });
     expect(metrics.length).toEqual(2);
-    metrics.forEach((m, i) => {
+    for (const [i, m] of metrics.entries()) {
       expect(m.value).toEqual(stats[i][m.metricId]);
       expect(m.groupId).toEqual(bandGroups[i]);
-    });
+    }
   });
 
   test("rasterStatsToMetrics - metricId override", async () => {

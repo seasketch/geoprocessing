@@ -52,15 +52,15 @@ export const getParamStringArray = <P extends DefaultExtraParams>(
       console.log(`Parameter ${paramName} is an empty array`);
       return undefined;
     }
-    paramValue.forEach((arrayVal) => {
+    for (const arrayVal of paramValue) {
       if (typeof arrayVal !== "string") {
-        throw new Error(
+        throw new TypeError(
           `${paramName} must contain all strings, received ${JSON.stringify(
             arrayVal,
           )}`,
         );
       }
-    });
+    }
     return paramValue;
   }
   return undefined;

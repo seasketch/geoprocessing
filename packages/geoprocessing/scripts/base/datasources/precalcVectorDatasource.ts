@@ -102,8 +102,8 @@ export async function genVectorMetrics(
   // key - class name e.g. geomorphology, reef type
   // values - array of all class values e.g. [hard, soft, mixed]
   const featureCollClasses: Record<string, string[]> = {};
-  datasource.classKeys.forEach((classProperty) => {
-    dsFeatureColl.features.forEach((feat) => {
+  for (const classProperty of datasource.classKeys) {
+    for (const feat of dsFeatureColl.features) {
       if (!feat.properties) throw new Error("Missing properties");
       if (!featureCollClasses[classProperty]) {
         featureCollClasses[classProperty] = [];
@@ -117,8 +117,8 @@ export async function genVectorMetrics(
           feat.properties[classProperty].toString(), // force string-based index
         );
       }
-    });
-  });
+    }
+  }
 
   // Clip vector data to geography boundaries
   const dsClippedFeatures = dsFeatureColl.features
@@ -128,7 +128,7 @@ export async function genVectorMetrics(
           properties: feat.properties,
         }) as Feature<Polygon | MultiPolygon>,
     )
-    .filter((e) => e);
+    .filter(Boolean);
 
   // Keeps metadata intact but overwrites geometry with clipped features
   const clippedFeatureColl = {
@@ -179,7 +179,7 @@ export async function genVectorMetrics(
 
   // Create class metrics
   const classMetrics: Metric[] = [];
-  datasource.classKeys.forEach((classProperty) => {
+  for (const classProperty of datasource.classKeys) {
     const classes = clippedFeatureColl.features.reduce<
       Record<string, { count: number; area: number }>
     >((classesSoFar, feat) => {
@@ -218,7 +218,7 @@ export async function genVectorMetrics(
     });
 
     // Creates zero metrics for features classes lost during clipping
-    featureCollClasses[classProperty].forEach((curClass) => {
+    for (const curClass of featureCollClasses[classProperty]) {
       if (!Object.keys(classes).includes(curClass)) {
         classMetrics.push(
           createMetric({
@@ -237,8 +237,8 @@ export async function genVectorMetrics(
           }),
         );
       }
-    });
-  });
+    }
+  }
 
   return totalMetrics.concat(classMetrics);
 }

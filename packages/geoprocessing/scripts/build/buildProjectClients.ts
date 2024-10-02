@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import { build } from "vite";
 import react from "@vitejs/plugin-react";
@@ -37,9 +37,8 @@ export async function buildProjectClients(
     {},
   );
   if (process.env.NODE_ENV !== "test")
-    Object.values(reportClients).forEach((clientPath) =>
-      console.log(clientPath),
-    );
+    for (const clientPath of Object.values(reportClients))
+      console.log(clientPath);
 
   // Generate top-level ReportApp.tsx with dynamic import of report clients
 

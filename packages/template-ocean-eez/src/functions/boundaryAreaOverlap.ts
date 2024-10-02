@@ -92,11 +92,7 @@ export async function boundaryAreaOverlap(
           );
         }),
       )
-    ).reduce(
-      // merge
-      (metricsSoFar, curClassMetrics) => [...metricsSoFar, ...curClassMetrics],
-      [],
-    );
+    ).flat();
 
   return {
     metrics: sortMetrics(rekeyMetrics(metrics)),
@@ -110,5 +106,5 @@ export default new GeoprocessingHandler(boundaryAreaOverlap, {
   executionMode: "async",
   timeout: 40,
   requiresProperties: [],
-  memory: 10240,
+  memory: 10_240,
 });

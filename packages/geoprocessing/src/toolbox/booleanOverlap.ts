@@ -48,8 +48,8 @@ export async function booleanOverlap<B extends Geometry>(
   const overlapFeatures: B[] = [];
   const overlapIds: string[] = [];
 
-  featuresA.forEach((featureA) => {
-    featuresB.forEach((featureB) => {
+  for (const featureA of featuresA) {
+    for (const featureB of featuresB) {
       // Don't test overlap if we already know it does
       if (isFeature(featureB) && idProperty) {
         const fb = featureB as Feature;
@@ -60,14 +60,14 @@ export async function booleanOverlap<B extends Geometry>(
         }
       } else {
         if (
-          overlapFeatures.findIndex((of) => deepEqual(featureB, of)) < 0 &&
+          !overlapFeatures.some((of) => deepEqual(featureB, of)) &&
           turfBoolOverlap(featureA, featureB)
         ) {
           overlapFeatures.push(featureB);
         }
       }
-    });
-  });
+    }
+  }
 
   return overlapFeatures;
 }

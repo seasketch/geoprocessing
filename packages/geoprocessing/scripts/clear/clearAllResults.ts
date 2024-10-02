@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { deleteTasks } from "./deleteTasks.js";
 
 const packageJson = JSON.parse(
@@ -14,4 +14,4 @@ export async function clearResults() {
   await deleteTasks(packageJson.name, geoprocessingJson.region);
 }
 
-clearResults();
+await clearResults();

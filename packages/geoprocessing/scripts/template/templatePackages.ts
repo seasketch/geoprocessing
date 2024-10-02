@@ -1,6 +1,6 @@
 import { loadedPackageSchema } from "../../src/types/index.js";
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import { TemplateType } from "../types.js";
 
 export async function getTemplatePackages(

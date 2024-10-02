@@ -53,7 +53,7 @@ const bundleFeatures = async (
   const pool = await createPool(options.connection, {});
   const statsTableName = `${options.tableName}_bundles`;
   await pool.connect(async (connection) => {
-    const startTime = new Date().getTime();
+    const startTime = Date.now();
     const sourceTable = sql.identifier([options.tableName]);
     // Check that source table meets all requirements
     const spinner = ora(`Inspecting input table`).start();
@@ -107,7 +107,7 @@ const bundleFeatures = async (
     // Iterate through features, creating bundles that are under the size and
     // envelope size limits
     const progressBar = new cliProgress.SingleBar(
-      { etaBuffer: 10000, clearOnComplete: true },
+      { etaBuffer: 10_000, clearOnComplete: true },
       cliProgress.Presets.shades_classic,
     );
     let bundles = 0;
@@ -156,7 +156,7 @@ const bundleFeatures = async (
     progressBar.stop();
     spinner.succeed(
       `Created ${bundles} geobuf bundles in ${humanizeDuration(
-        new Date().getTime() - startTime,
+        Date.now() - startTime,
       )}. Total size is ${prettyBytes(totalSize)}`,
     );
   });
@@ -206,7 +206,7 @@ async function createGeobuf(
   // feature.properties.b_box to feature.bbox
   for (const feature of fc.features) {
     feature.bbox = feature.properties!.b_box.map((f: number) =>
-      parseFloat(f.toFixed(6)),
+      Number.parseFloat(f.toFixed(6)),
     );
     delete feature.properties!.b_box;
     // remove geometries from geojson properties
@@ -267,7 +267,7 @@ function parseBBox(box: string): BBox {
   return box
     .match(/\((.+)\)/)![1]
     .split(/\s|,/)
-    .map(parseFloat) as BBox;
+    .map(Number.parseFloat) as BBox;
 }
 
 export default bundleFeatures;

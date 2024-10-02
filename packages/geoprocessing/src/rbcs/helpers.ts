@@ -93,9 +93,11 @@ export function getSketchToMpaProtectionLevel(
 ): Record<string, RbcsMpaProtectionLevel> {
   // Extract sketch features
   const sketchFeatures = getSketchFeatures(sketch);
-  const sketchFeatureIds = sketchFeatures.map((sk) => sk.properties.id);
+  const sketchFeatureIds = new Set(
+    sketchFeatures.map((sk) => sk.properties.id),
+  );
   const sketchFeatureAreaMetrics = metrics.filter((m) =>
-    sketchFeatureIds.includes(m.sketchId!),
+    sketchFeatureIds.has(m.sketchId!),
   );
   const areaBySketchFeature = keyBy(
     sketchFeatureAreaMetrics,

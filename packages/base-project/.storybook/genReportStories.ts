@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import { globby } from "globby";
 import {
   isSketchCollection,
@@ -39,9 +39,9 @@ const cachePaths = await globby(path.join(storyDir, "**/.story-cache"), {
   onlyDirectories: true,
 });
 // console.log("cachePaths", cachePaths);
-cachePaths.forEach((cachePath) => {
+for (const cachePath of cachePaths) {
   fs.rmSync(cachePath, { recursive: true });
-});
+}
 
 // load report story configs
 const storyPaths = await globby(
@@ -130,7 +130,7 @@ for (const storyConfig of storyConfigs) {
 
     const storyTitleSplit = storyConfig.title.split("/");
     // extract story name from title
-    const storyName = storyTitleSplit[storyTitleSplit.length - 1];
+    const storyName = storyTitleSplit.at(-1);
     const storyOutDir = path.join(
       path.dirname(storyConfig.path!),
       ".story-cache",
@@ -154,7 +154,7 @@ for (const storyConfig of storyConfigs) {
       if (isSketchCollection(sketch)) {
         return sketch.features.map((feature) => feature.properties);
       }
-      return undefined;
+      return;
     })();
 
     const newSketchProperties: SketchProperties = {
@@ -180,7 +180,7 @@ for (const storyConfig of storyConfigs) {
         language: "en"
       });
 
-      export const ${sketch.properties.name.replace(/-/g, "_")} = () => (
+      export const ${sketch.properties.name.replaceAll("-", "_")} = () => (
         <Translator>
           <${storyConfig.componentName} />
         </Translator>

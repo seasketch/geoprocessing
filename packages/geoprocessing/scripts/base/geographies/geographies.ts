@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import { geographiesSchema, Geographies } from "../../../src/types/index.js";
 import { geographyConfig } from "../../../src/geographies/config.js";
 
@@ -37,12 +37,12 @@ export function readGeographies(filePath?: string) {
   })();
 
   const result = geographiesSchema.safeParse(diskGeos);
-  if (!result.success) {
+  if (result.success) {
+    return result.data;
+  } else {
     console.error("Geographies file is invalid, fix it and try again");
     console.log(JSON.stringify(result.error.issues, null, 2));
     throw new Error("Please fix or report this issue");
-  } else {
-    return result.data;
   }
 }
 

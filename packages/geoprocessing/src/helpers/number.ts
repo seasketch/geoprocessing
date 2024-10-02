@@ -12,7 +12,7 @@ export const roundDecimal = (
   options: RoundDecimalOptions = { keepSmallValues: false },
 ) => {
   const roundedValue = Number(
-    Math.round(parseFloat(`${value}e${decimals}`)) + `e-${decimals}`,
+    Math.round(Number.parseFloat(`${value}e${decimals}`)) + `e-${decimals}`,
   );
 
   return options.keepSmallValues && value && !roundedValue
@@ -115,7 +115,7 @@ export const percentGoalWithEdge = (
   return percentWithEdge(val, {
     upperBound: goal,
     upper: goal - 0.001,
-    ...(options || {}),
+    ...options,
   });
 };
 

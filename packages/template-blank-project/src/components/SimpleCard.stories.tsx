@@ -13,10 +13,10 @@ const contextValue = sampleSketchReportContextValue({
       functionName: "simpleFunction",
       sketchName: "My Sketch",
       results: {
-        area: 92607364669.43335,
+        area: 92_607_364_669.433_35,
         nearbyEcoregions: ["Marshall Islands", "East Caroline Islands"],
-        minTemp: 28.011158,
-        maxTemp: 30.495605,
+        minTemp: 28.011_158,
+        maxTemp: 30.495_605,
       },
     },
   ],

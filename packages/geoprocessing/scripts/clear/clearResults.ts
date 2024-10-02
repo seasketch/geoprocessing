@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import inquirer from "inquirer";
 import { deleteTasks } from "./deleteTasks.js";
 
@@ -34,4 +34,4 @@ export async function clearCachedResults(options: ClearCacheOptions) {
   await deleteTasks(packageJson.name, geoprocessingJson.region, serviceName);
 }
 
-clearResults();
+await clearResults();

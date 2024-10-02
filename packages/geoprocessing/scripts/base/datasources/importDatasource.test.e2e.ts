@@ -6,7 +6,7 @@ import {
 } from "../../../src/index.js";
 import configFixtures from "../../../src/testing/fixtures/projectConfig.js";
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 
 const projectClient = new ProjectClientBase(configFixtures.simple);
 const srcPath = "data/in";
@@ -49,7 +49,7 @@ describe("importDatasource", () => {
       expect(returnedDs).toEqual(validDs);
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.json`)));
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.fgb`)));
-    }, 20000);
+    }, 20_000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);
@@ -93,7 +93,7 @@ describe("importDatasource", () => {
       expect(returnedDs).toEqual(validDs);
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.json`)));
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.fgb`)));
-    }, 20000);
+    }, 20_000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);
@@ -137,7 +137,7 @@ describe("importDatasource", () => {
       const validDs = internalRasterDatasourceSchema.parse(savedDs[0]);
       expect(returnedDs).toEqual(validDs);
       expect(fs.existsSync(path.join(dstPath, `${datasourceId}.tif`)));
-    }, 10000);
+    }, 10_000);
     afterEach(() => {
       // Remove the output
       fs.removeSync(dstConfigFilePath);

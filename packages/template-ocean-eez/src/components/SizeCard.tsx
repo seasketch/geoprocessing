@@ -206,7 +206,7 @@ const genSingleSizeTable = (
               Number.format(
                 Math.round(
                   squareMeterToKilometer(
-                    typeof val === "string" ? parseInt(val) : val,
+                    typeof val === "string" ? Number.parseInt(val) : val,
                   ),
                 ),
               ),
@@ -257,9 +257,9 @@ const genNetworkSizeTable = (
 ) => {
   const sketches = toNullSketchArray(data.sketch);
   const sketchesById = keyBy(sketches, (sk) => sk.properties.id);
-  const sketchIds = sketches.map((sk) => sk.properties.id);
+  const sketchIds = new Set(sketches.map((sk) => sk.properties.id));
   const sketchMetrics = data.metrics.filter(
-    (m) => m.sketchId && sketchIds.includes(m.sketchId),
+    (m) => m.sketchId && sketchIds.has(m.sketchId),
   );
   const finalMetrics = [
     ...sketchMetrics,

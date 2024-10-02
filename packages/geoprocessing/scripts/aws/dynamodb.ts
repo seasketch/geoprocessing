@@ -51,7 +51,7 @@ export const createTables = (stack: GeoprocessingStack): GpDynamoTables => {
 /** Setup function access to tables */
 export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
   // sync
-  stack.getSyncFunctionsWithMeta().forEach((syncFunctionWithMeta) => {
+  for (const syncFunctionWithMeta of stack.getSyncFunctionsWithMeta()) {
     if (stack.tables.tasks) {
       stack.tables.tasks.grantReadWriteData(syncFunctionWithMeta.func);
       syncFunctionWithMeta.func.addEnvironment(
@@ -67,10 +67,10 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
         stack.tables.estimates.tableName,
       );
     }
-  });
+  }
 
   // async
-  stack.getAsyncFunctionsWithMeta().forEach((asyncFunctionWithMeta) => {
+  for (const asyncFunctionWithMeta of stack.getAsyncFunctionsWithMeta()) {
     if (stack.tables.tasks) {
       stack.tables.tasks.grantReadWriteData(asyncFunctionWithMeta.startFunc);
       stack.tables.tasks.grantReadWriteData(asyncFunctionWithMeta.runFunc);
@@ -84,20 +84,20 @@ export const setupTableFunctionAccess = (stack: GeoprocessingStack) => {
 
     addAsyncEnv(stack, asyncFunctionWithMeta.startFunc);
     addAsyncEnv(stack, asyncFunctionWithMeta.runFunc);
-  });
+  }
 
   // socket
-  Object.values(stack.projectFunctions.socketFunctions).forEach(
-    (socketFunction) => {
-      if (socketFunction && stack.tables.subscriptions) {
-        stack.tables.subscriptions.grantReadWriteData(socketFunction);
-        socketFunction.addEnvironment(
-          "SUBSCRIPTIONS_TABLE",
-          stack.tables.subscriptions.tableName,
-        );
-      }
-    },
-  );
+  for (const socketFunction of Object.values(
+    stack.projectFunctions.socketFunctions,
+  )) {
+    if (socketFunction && stack.tables.subscriptions) {
+      stack.tables.subscriptions.grantReadWriteData(socketFunction);
+      socketFunction.addEnvironment(
+        "SUBSCRIPTIONS_TABLE",
+        stack.tables.subscriptions.tableName,
+      );
+    }
+  }
 
   if (stack.projectFunctions.socketFunctions.send && stack.tables.estimates)
     stack.tables.estimates.grantReadWriteData(

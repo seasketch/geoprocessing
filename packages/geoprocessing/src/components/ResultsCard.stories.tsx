@@ -170,7 +170,7 @@ export const noDataState = () => (
 );
 
 const ThrowComponent = () => {
-  throw Error("error!");
+  throw new Error("error!");
   return <></>;
 };
 

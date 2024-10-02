@@ -66,7 +66,8 @@ export const getArea = async (
     const result = await geoblaze.stats(raster, finalFeat, {
       stats: ["valid"],
     });
-    area = parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
+    area =
+      Number.parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
   } catch {
     if (process.env.NODE_ENV !== "test")
       console.log(

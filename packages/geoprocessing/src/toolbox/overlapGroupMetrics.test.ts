@@ -33,18 +33,18 @@ const sketch: SketchCollection<Polygon> = {
         type: "Polygon",
         coordinates: [
           [
-            [-27.10790911132778, 38.800381987950416],
-            [-27.08159664089168, 38.82880488801595],
-            [-27.0282582324215, 38.803592671882186],
-            [-26.971953300780854, 38.78753780560335],
-            [-26.99941912109336, 38.755417224646195],
-            [-27.046111015624632, 38.76398412706745],
-            [-27.10790911132778, 38.800381987950416],
+            [-27.107_909_111_327_78, 38.800_381_987_950_416],
+            [-27.081_596_640_891_68, 38.828_804_888_015_95],
+            [-27.028_258_232_421_5, 38.803_592_671_882_186],
+            [-26.971_953_300_780_854, 38.787_537_805_603_35],
+            [-26.999_419_121_093_36, 38.755_417_224_646_195],
+            [-27.046_111_015_624_632, 38.763_984_127_067_45],
+            [-27.107_909_111_327_78, 38.800_381_987_950_416],
           ],
         ],
         bbox: [
-          -27.10790911132778, 38.755417224646195, -26.971953300780854,
-          38.82880488801595,
+          -27.107_909_111_327_78, 38.755_417_224_646_195,
+          -26.971_953_300_780_854, 38.828_804_888_015_95,
         ],
       },
       properties: {
@@ -58,8 +58,8 @@ const sketch: SketchCollection<Polygon> = {
       },
       id: "1",
       bbox: [
-        -27.10790911132778, 38.755417224646195, -26.971953300780854,
-        38.82880488801595,
+        -27.107_909_111_327_78, 38.755_417_224_646_195, -26.971_953_300_780_854,
+        38.828_804_888_015_95,
       ],
     },
     {
@@ -68,19 +68,19 @@ const sketch: SketchCollection<Polygon> = {
         type: "Polygon",
         coordinates: [
           [
-            [-26.980193046874607, 38.728639026682224],
-            [-26.989806083983986, 38.7104241167164],
-            [-27.03787126953088, 38.7104241167164],
-            [-27.043364433593382, 38.72113933187681],
-            [-27.05847063476526, 38.720067882647086],
-            [-27.054350761718386, 38.725424968153256],
-            [-27.01589861328087, 38.728639026682224],
-            [-26.980193046874607, 38.728639026682224],
+            [-26.980_193_046_874_607, 38.728_639_026_682_224],
+            [-26.989_806_083_983_986, 38.710_424_116_716_4],
+            [-27.037_871_269_530_88, 38.710_424_116_716_4],
+            [-27.043_364_433_593_382, 38.721_139_331_876_81],
+            [-27.058_470_634_765_26, 38.720_067_882_647_086],
+            [-27.054_350_761_718_386, 38.725_424_968_153_256],
+            [-27.015_898_613_280_87, 38.728_639_026_682_224],
+            [-26.980_193_046_874_607, 38.728_639_026_682_224],
           ],
         ],
         bbox: [
-          -27.05847063476526, 38.7104241167164, -26.980193046874607,
-          38.728639026682224,
+          -27.058_470_634_765_26, 38.710_424_116_716_4, -26.980_193_046_874_607,
+          38.728_639_026_682_224,
         ],
       },
       properties: {
@@ -94,8 +94,8 @@ const sketch: SketchCollection<Polygon> = {
       },
       id: "2",
       bbox: [
-        -27.05847063476526, 38.7104241167164, -26.980193046874607,
-        38.728639026682224,
+        -27.058_470_634_765_26, 38.710_424_116_716_4, -26.980_193_046_874_607,
+        38.728_639_026_682_224,
       ],
     },
   ],
@@ -117,7 +117,7 @@ const protectionLevels = [
 const areaMetrics: Metric[] = [
   {
     metricId: "areaOverlap",
-    value: 46019945.50133726,
+    value: 46_019_945.501_337_26,
     classId: "eez",
     groupId: null,
     geographyId: null,
@@ -126,7 +126,7 @@ const areaMetrics: Metric[] = [
   },
   {
     metricId: "areaOverlap",
-    value: 10335531.293751433,
+    value: 10_335_531.293_751_433,
     classId: "eez",
     groupId: null,
     geographyId: null,
@@ -135,7 +135,7 @@ const areaMetrics: Metric[] = [
   },
   {
     metricId: "areaOverlap",
-    value: 56355476.795085385,
+    value: 56_355_476.795_085_385,
     classId: "eez",
     groupId: null,
     geographyId: null,
@@ -190,7 +190,7 @@ describe("overlapAreaGroupMetrics", () => {
     expect(collGroupMetrics.length).toBe(5);
 
     // Only protection levels with a sketch in it, will have a collection level metric value > 0
-    protectionLevels.forEach((level) => {
+    for (const level of protectionLevels) {
       const curLevelMetrics = collGroupMetrics.filter(
         (m) => m.groupId === level,
       );
@@ -204,7 +204,7 @@ describe("overlapAreaGroupMetrics", () => {
       } else {
         expect(curLevelMetric.value).toBe(0);
       }
-    });
+    }
   });
 
   test("function is present", () => {
@@ -215,7 +215,7 @@ describe("overlapAreaGroupMetrics", () => {
     const featMetrics: Metric[] = [
       {
         metricId: "test",
-        value: 46020431.777366,
+        value: 46_020_431.777_366,
         classId: "world",
         groupId: null,
         geographyId: null,
@@ -224,7 +224,7 @@ describe("overlapAreaGroupMetrics", () => {
       },
       {
         metricId: "test",
-        value: 10335615.29727,
+        value: 10_335_615.297_27,
         classId: "world",
         groupId: null,
         geographyId: null,
@@ -233,7 +233,7 @@ describe("overlapAreaGroupMetrics", () => {
       },
       {
         metricId: "test",
-        value: 56356047.074636,
+        value: 56_356_047.074_636,
         classId: "world",
         groupId: null,
         geographyId: null,
@@ -330,7 +330,7 @@ describe("overlapAreaGroupMetrics", () => {
     expect(metrics.length).toEqual(protectionLevels.length);
 
     // Only "High Protection" should have a value > 0
-    protectionLevels.forEach((level) => {
+    for (const level of protectionLevels) {
       const curLevelMetrics = metrics.filter((m) => m.groupId === level);
       expect(curLevelMetrics.length).toBe(1);
       const curLevelMetric = curLevelMetrics[0];
@@ -339,6 +339,6 @@ describe("overlapAreaGroupMetrics", () => {
       } else {
         expect(curLevelMetric.value).toBe(0);
       }
-    });
+    }
   });
 });

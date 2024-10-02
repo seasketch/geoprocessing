@@ -35,12 +35,12 @@ const indexInfoQuery = sql`
 `;
 
 const primaryKeyQuery = (tableName: string) => sql`
-SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type
-FROM   pg_index i
-JOIN   pg_attribute a ON a.attrelid = i.indrelid
-                     AND a.attnum = ANY(i.indkey)
-WHERE  i.indrelid = ${tableName}::regclass
-AND    i.indisprimary
+  SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type
+  FROM   pg_index i
+  JOIN   pg_attribute a ON a.attrelid = i.indrelid
+                       AND a.attnum = ANY(i.indkey)
+  WHERE  i.indrelid = ${tableName}::regclass
+  AND    i.indisprimary
 `;
 
 const recordObject = z.object({

@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import ora from "ora";
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import chalk from "chalk";
 import camelcase from "camelcase";
 import {
@@ -18,7 +18,7 @@ import {
   getProjectConfigPath,
   getProjectFunctionPath,
 } from "../util/getPaths.js";
-import { pathToFileURL } from "url";
+import { pathToFileURL } from "node:url";
 
 // CLI questions
 const createReport = async () => {
@@ -153,13 +153,12 @@ const createReport = async () => {
 };
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  createReport()
-    .then(async (answers) => {
-      await makeReport(answers, true, "");
-    })
-    .catch((error) => {
-      console.error("Error occurred:", error);
-    });
+  try {
+    const answers = await createReport();
+    await makeReport(answers, true, "");
+  } catch (error) {
+    console.error("Error occurred:", error);
+  }
 }
 
 export async function makeReport(
@@ -250,7 +249,7 @@ export async function makeReport(
   // Write function smoke test file
   await fs.writeFile(
     `${projectFunctionPath}/${funcName}Smoke.test.ts`,
-    testFuncCode.toString().replace(blankFuncRegex, funcName),
+    testFuncCode.toString().replaceAll(blankFuncRegex, funcName),
   );
 
   // Write component file
@@ -260,7 +259,7 @@ export async function makeReport(
       .toString()
       .replace(defaultCompRegex, `${compName}`)
       .replace(defaultFuncRegex, `${funcName}`)
-      .replace(/overlapFunction/g, `${funcName}`)
+      .replaceAll("overlapFunction", `${funcName}`)
       .replace(`"sum"`, `"${options.stat}"`), // for raster/vector overlap reports
   );
 
@@ -269,8 +268,8 @@ export async function makeReport(
     `${projectComponentPath}/${compName}.example-stories.ts`,
     storiesComponentCode
       .toString()
-      .replace(blankCompRegex, `${compName}`)
-      .replace(blankFuncRegex, `${funcName}`),
+      .replaceAll(blankCompRegex, `${compName}`)
+      .replaceAll(blankFuncRegex, `${funcName}`),
   );
 
   // Add function to geoprocessing.json

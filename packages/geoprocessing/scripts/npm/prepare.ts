@@ -65,10 +65,10 @@ async function bundleBaseProject() {
     await $`cp -R -P ${srcI18nPath}/. ${distI18nPath}`;
     await $`mkdir ${distI18nPath}/baseLang`;
     await $`mv ${distI18nPath}/lang/* ${distI18nPath}/baseLang`;
-  } catch (err: unknown) {
-    if (err instanceof Error) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
       console.log("Base project copy failed");
-      throw err;
+      throw error;
     }
   }
 }
@@ -185,20 +185,18 @@ async function bundleTemplates(templateType: TemplateType) {
         fs.mkdirSync(path.join(distTemplatePath, "examples"));
       }
 
-      if (fs.existsSync(path.join(templatePath, "examples", "features"))) {
-        if (
-          !fs.existsSync(path.join(distTemplatePath, "examples", "features"))
-        ) {
-          fs.mkdirSync(path.join(distTemplatePath, "examples", "features"));
-        }
+      if (
+        fs.existsSync(path.join(templatePath, "examples", "features")) &&
+        !fs.existsSync(path.join(distTemplatePath, "examples", "features"))
+      ) {
+        fs.mkdirSync(path.join(distTemplatePath, "examples", "features"));
       }
 
-      if (fs.existsSync(path.join(templatePath, "examples", "sketches"))) {
-        if (
-          !fs.existsSync(path.join(distTemplatePath, "examples", "sketches"))
-        ) {
-          fs.mkdirSync(path.join(distTemplatePath, "examples", "sketches"));
-        }
+      if (
+        fs.existsSync(path.join(templatePath, "examples", "sketches")) &&
+        !fs.existsSync(path.join(distTemplatePath, "examples", "sketches"))
+      ) {
+        fs.mkdirSync(path.join(distTemplatePath, "examples", "sketches"));
       }
 
       // data, copy everything except .env, docker-compose.yml
@@ -227,17 +225,14 @@ async function bundleTemplates(templateType: TemplateType) {
   }
 }
 
-bundleAssets().then(() => {
-  console.log("finished bundling assets");
-});
+await bundleAssets();
+console.log("finished bundling assets");
 
-bundleTemplates("starter-template").then(() => {
-  console.log("finished bundling starter templates");
-});
-bundleTemplates("add-on-template").then(() => {
-  console.log("finished bundling add-on templates");
-});
+await bundleTemplates("starter-template");
+console.log("finished bundling starter templates");
 
-bundleBaseProject().then(() => {
-  console.log("finished bundling base project");
-});
+await bundleTemplates("add-on-template");
+console.log("finished bundling add-on templates");
+
+await bundleBaseProject();
+console.log("finished bundling base project");

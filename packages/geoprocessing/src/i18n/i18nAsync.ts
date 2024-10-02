@@ -77,14 +77,14 @@ export function createI18nAsyncInstance(
           let langResources = {};
           if (langPath !== undefined) {
             try {
-              if (!isDefault) {
+              if (isDefault) {
+                langResources = {};
+              } else {
                 const langToLoadPath = `${langPath}/${langToLoad}/${namespace}.json`;
                 const curModule = langModules[langToLoadPath];
                 langResources = JSON.parse(
                   ((await curModule()) as unknown as any).default,
                 );
-              } else {
-                langResources = {};
               }
             } catch {
               console.info(`Warning: failed to find lang resource.`);

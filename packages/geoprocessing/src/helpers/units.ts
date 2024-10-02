@@ -1,5 +1,5 @@
 export function squareMeterToMile(value: number) {
-  return value / 2589988.110336;
+  return value / 2_589_988.110_336;
 }
 
 export function squareMeterToKilometer(value: number) {

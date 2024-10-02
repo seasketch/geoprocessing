@@ -14,7 +14,7 @@ export interface CreateFunctionOptions {
   publicBuckets: GpPublicBuckets;
   tables: GpDynamoTables;
 }
-import path from "path";
+import path from "node:path";
 
 /**
  * Create Lambda function constructs core to project

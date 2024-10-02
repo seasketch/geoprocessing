@@ -18,7 +18,7 @@ export function LayerToggle({
   const [visibleLayers, toggleLayer] = useVisibleLayers();
 
   if (!layerId) return <></>;
-  const on = visibleLayers.indexOf(layerId) !== -1;
+  const on = visibleLayers.includes(layerId);
 
   return (
     <span

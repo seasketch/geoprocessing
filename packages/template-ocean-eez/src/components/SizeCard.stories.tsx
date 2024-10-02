@@ -20,7 +20,7 @@ const contextValue = sampleSketchReportContextValue({
             classId: "eez",
             groupId: null,
             geographyId: null,
-            value: 75066892447.21024,
+            value: 75_066_892_447.210_24,
             extra: {
               sketchName: "fsm-east-west-sketch",
             },

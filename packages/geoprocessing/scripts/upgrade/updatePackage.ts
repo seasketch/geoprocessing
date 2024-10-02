@@ -27,50 +27,52 @@ export function updatePackageJson(
   const projectPkg = cloneDeep(srcPkg);
 
   // add/update projectPkg with basePkg
-  Object.keys(basePkg.scripts).forEach((key) => {
+  for (const key of Object.keys(basePkg.scripts)) {
     projectPkg.scripts[key] = basePkg.scripts[key];
-  });
+  }
 
-  Object.keys(basePkg.dependencies).forEach((key) => {
+  for (const key of Object.keys(basePkg.dependencies)) {
     if (key !== "@seasketch/geoprocessing") {
       projectPkg.dependencies[key] = basePkg.dependencies[key];
     }
-  });
+  }
 
   if (basePkg.devDependencies && projectPkg.devDependencies) {
-    Object.keys(basePkg.devDependencies).forEach((key) => {
-      if (basePkg.devDependencies && projectPkg.devDependencies) {
-        if (key !== "@seasketch/geoprocessing") {
-          projectPkg.devDependencies[key] = basePkg.devDependencies[key];
-        }
+    for (const key of Object.keys(basePkg.devDependencies)) {
+      if (
+        basePkg.devDependencies &&
+        projectPkg.devDependencies &&
+        key !== "@seasketch/geoprocessing"
+      ) {
+        projectPkg.devDependencies[key] = basePkg.devDependencies[key];
       }
-    });
+    }
   }
 
   // add otherPkgs to projectPkg if present, skip scripts
-  otherPkgs.forEach((otherPkg) => {
-    Object.keys(otherPkg.dependencies).forEach((key) => {
+  for (const otherPkg of otherPkgs) {
+    for (const key of Object.keys(otherPkg.dependencies)) {
       if (
         key !== "@seasketch/geoprocessing" &&
         hasOwnProperty(projectPkg.dependencies, key)
       ) {
         projectPkg.dependencies[key] = otherPkg.dependencies[key];
       }
-    });
+    }
 
     if (otherPkg.devDependencies) {
-      Object.keys(otherPkg.devDependencies).forEach((key) => {
-        if (projectPkg.devDependencies && otherPkg.devDependencies) {
-          if (
-            key !== "@seasketch/geoprocessing" &&
-            hasOwnProperty(projectPkg.devDependencies, key)
-          ) {
-            projectPkg.devDependencies[key] = otherPkg.devDependencies[key];
-          }
+      for (const key of Object.keys(otherPkg.devDependencies)) {
+        if (
+          projectPkg.devDependencies &&
+          otherPkg.devDependencies &&
+          key !== "@seasketch/geoprocessing" &&
+          hasOwnProperty(projectPkg.devDependencies, key)
+        ) {
+          projectPkg.devDependencies[key] = otherPkg.devDependencies[key];
         }
-      });
+      }
     }
-  });
+  }
 
   projectPkg.scripts = sortObjectKeys(projectPkg.scripts);
   projectPkg.dependencies = sortObjectKeys(projectPkg.dependencies);

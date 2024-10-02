@@ -50,7 +50,9 @@ export async function overlapRasterClass(
       histoFeatures.push(feat);
     });
 
-    (await Promise.all(histoPromises)).forEach((curHisto, index) => {
+    for (const [index, curHisto] of (
+      await Promise.all(histoPromises)
+    ).entries()) {
       const histoMetrics = histoToMetrics(
         metricId,
         histoFeatures[index],
@@ -58,7 +60,7 @@ export async function overlapRasterClass(
         mapping,
       );
       sketchMetrics.push(...histoMetrics);
-    });
+    }
   }
 
   // Calculate overall if sketch collection or no sketch
@@ -96,13 +98,13 @@ const histoToMetrics = (
   );
   // Merge in calculated histogram which will only include non-zero
   if (histo) {
-    Object.keys(histo).forEach((categoryId) => {
+    for (const categoryId of Object.keys(histo)) {
       finalHisto[categoryId] = histo[categoryId];
-    });
+    }
   }
 
   // Create one metric record per class
-  categoryIds.forEach((categoryId) => {
+  for (const categoryId of categoryIds) {
     metrics.push(
       createMetric({
         metricId,
@@ -117,6 +119,6 @@ const histoToMetrics = (
           : {},
       }),
     );
-  });
+  }
   return metrics;
 };

@@ -25,7 +25,7 @@ Tasks.prototype.fail.mockImplementation(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async (task: GeoprocessingTask, errorDescription: string, error?: Error) => {
     task.status = GeoprocessingTaskStatus.Failed;
-    task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
+    task.duration = Date.now() - new Date(task.startedAt).getTime();
     task.error = errorDescription;
     return {
       statusCode: 500,
@@ -49,7 +49,7 @@ Tasks.prototype.complete.mockImplementation(
   async (task: GeoprocessingTask, results: any) => {
     task.data = results;
     task.status = GeoprocessingTaskStatus.Completed;
-    task.duration = new Date().getTime() - new Date(task.startedAt).getTime();
+    task.duration = Date.now() - new Date(task.startedAt).getTime();
     lastSavedTask = task;
     return {
       statusCode: 200,

@@ -55,7 +55,7 @@ describe("overlapRasterSum test", () => {
     const raster = await parseGeoraster(
       [
         [
-          [1, 0.0023456],
+          [1, 0.002_345_6],
           [1, 1],
         ],
       ],
@@ -77,7 +77,7 @@ describe("overlapRasterSum test", () => {
       },
     );
     expect(metricsTruncationFalse.length).toBe(1);
-    expect(metricsTruncationFalse[0].value).toBe(0.0023456);
+    expect(metricsTruncationFalse[0].value).toBe(0.002_345_6);
 
     const metricsTruncationTrue = await overlapRasterSum(
       "test",
@@ -88,7 +88,7 @@ describe("overlapRasterSum test", () => {
       },
     );
     expect(metricsTruncationTrue.length).toBe(1);
-    expect(metricsTruncationTrue[0].value).toBe(0.002346);
+    expect(metricsTruncationTrue[0].value).toBe(0.002_346);
 
     const metricsTruncationDefault = await overlapRasterSum(
       "test",
@@ -96,7 +96,7 @@ describe("overlapRasterSum test", () => {
       fix.topRightPoly,
     );
     expect(metricsTruncationDefault.length).toBe(1);
-    expect(metricsTruncationDefault[0].value).toBe(0.002346);
+    expect(metricsTruncationDefault[0].value).toBe(0.002_346);
   });
 
   test("overlapRasterSum - top right raster cell - truncation with very small value", async () => {

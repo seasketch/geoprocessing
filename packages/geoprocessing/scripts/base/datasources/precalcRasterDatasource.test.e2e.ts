@@ -6,7 +6,7 @@ import {
   metricsSchema,
 } from "../../../src/index.js";
 import fs from "fs-extra";
-import path from "path";
+import path from "node:path";
 import { precalcDatasources } from "./precalcDatasources.js";
 import { importDatasource } from "./importDatasource.js";
 import { writeGeographies } from "../geographies/geographies.js";
@@ -129,7 +129,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(geogFilePath);
     fs.removeSync(path.join(dstPath, `${datasourceId}.tif`));
     fs.removeSync(precalcFilePath);
-  }, 60000);
+  }, 60_000);
 
   test.skip("precalcRasterDatasource - multiple geog scenarios with external subdivided datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_9.json";
@@ -185,8 +185,8 @@ describe("precalcRasterDatasource", () => {
       datasourceId: geogDatasourceId,
       display: "geog-box-filter",
       bboxFilter: [
-        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-        -10.024476331539347,
+        -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+        -165.200_833_333_191_610_6, -10.024_476_331_539_347,
       ],
       precalc: true,
     };
@@ -200,8 +200,8 @@ describe("precalcRasterDatasource", () => {
         values: ["Samoa"],
       },
       bboxFilter: [
-        -173.7746906500533, -17.55526875286155, -165.2008333331916,
-        -10.024476331539347,
+        -173.774_690_650_053_3, -17.555_268_752_861_55, -165.200_833_333_191_6,
+        -10.024_476_331_539_347,
       ],
       display: "geog-single-filter",
       precalc: true,
@@ -216,8 +216,8 @@ describe("precalcRasterDatasource", () => {
         values: ["Samoa", "American Samoa"], // Should include two polygons
       },
       bboxFilter: [
-        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-        -10.024476331539347,
+        -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+        -165.200_833_333_191_610_6, -10.024_476_331_539_347,
       ],
       display: "geog-double-filter",
       precalc: true,
@@ -254,7 +254,7 @@ describe("precalcRasterDatasource", () => {
       metrics,
       (m) => m.geographyId === "geog-box-filter" && m.metricId === "area",
     );
-    expect(boxFilterAreaMetric.value).toEqual(2617017582.013417); // Very close to QGIS calculated value
+    expect(boxFilterAreaMetric.value).toEqual(2_617_017_582.013_417); // Very close to QGIS calculated value
 
     const singleFilterSumMetric = firstMatchingMetric(
       metrics,
@@ -267,7 +267,7 @@ describe("precalcRasterDatasource", () => {
       (m) => m.geographyId === "geog-single-filter" && m.metricId === "area",
     );
     expect(singleFilterAreaMetric.value).toBeCloseTo(
-      (2617017582.013417 / 101) * 76,
+      (2_617_017_582.013_417 / 101) * 76,
     );
 
     const doubleFilterSumMetric = firstMatchingMetric(
@@ -282,7 +282,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
     fs.removeSync(geogFilePath);
     fs.removeSync(precalcFilePath);
-  }, 10000);
+  }, 10_000);
 
   test.skip("precalcRasterDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_8.json";
@@ -338,8 +338,8 @@ describe("precalcRasterDatasource", () => {
       datasourceId: geogDatasourceId,
       display: "geog-box-filter",
       bboxFilter: [
-        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-        -10.024476331539347,
+        -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+        -165.200_833_333_191_610_6, -10.024_476_331_539_347,
       ],
       precalc: true,
     };
@@ -353,8 +353,8 @@ describe("precalcRasterDatasource", () => {
         values: ["Samoan Exclusive Economic Zone"],
       },
       bboxFilter: [
-        -173.7746906500533, -17.55526875286155, -165.2008333331916,
-        -10.024476331539347,
+        -173.774_690_650_053_3, -17.555_268_752_861_55, -165.200_833_333_191_6,
+        -10.024_476_331_539_347,
       ],
       display: "geog-single-filter",
       precalc: true,
@@ -372,8 +372,8 @@ describe("precalcRasterDatasource", () => {
         ], // Should include two polygons
       },
       bboxFilter: [
-        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-        -10.024476331539347,
+        -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+        -165.200_833_333_191_610_6, -10.024_476_331_539_347,
       ],
       display: "geog-double-filter",
       precalc: true,
@@ -426,7 +426,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
     fs.removeSync(geogFilePath);
     fs.removeSync(precalcFilePath);
-  }, 30000);
+  }, 30_000);
 
   test.skip("precalcRasterDatasource - multiple geog scenarios with internal geojson datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_7.json";
@@ -501,8 +501,8 @@ describe("precalcRasterDatasource", () => {
         values: ["Samoan Exclusive Economic Zone"],
       },
       bboxFilter: [
-        -173.7746906500533, -17.55526875286155, -165.2008333331916,
-        -10.024476331539347,
+        -173.774_690_650_053_3, -17.555_268_752_861_55, -165.200_833_333_191_6,
+        -10.024_476_331_539_347,
       ],
       display: "geog-single-filter",
       precalc: true,
@@ -520,8 +520,8 @@ describe("precalcRasterDatasource", () => {
         ], // Should include two polygons
       },
       bboxFilter: [
-        -174.5113944715775744, -17.5552687528615508, -165.2008333331916106,
-        -10.024476331539347,
+        -174.511_394_471_577_574_4, -17.555_268_752_861_550_8,
+        -165.200_833_333_191_610_6, -10.024_476_331_539_347,
       ],
       display: "geog-double-filter",
       precalc: true,
@@ -573,5 +573,5 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(path.join(dstPath, `${geogDatasourceId}.json`));
     fs.removeSync(geogFilePath);
     fs.removeSync(precalcFilePath);
-  }, 20000);
+  }, 20_000);
 });

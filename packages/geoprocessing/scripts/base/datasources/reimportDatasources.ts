@@ -34,14 +34,14 @@ export async function reimportDatasources<C extends ProjectClientBase>(
 
   const allDatasources = await readDatasources(newDatasourcePath);
   const filteredDatasources = (() => {
-    if (!matcher) {
-      // Filter out external datasources or support them
-      return allDatasources;
-    } else {
+    if (matcher) {
       const filteredDs = allDatasources.filter((ds) =>
         matcher.includes(ds.datasourceId),
       );
       return filteredDs;
+    } else {
+      // Filter out external datasources or support them
+      return allDatasources;
     }
   })();
 
@@ -84,11 +84,11 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           console.log(" ");
         }
         updated += 1;
-      } catch (e: unknown) {
-        if (e instanceof Error) {
+      } catch (error: unknown) {
+        if (error instanceof Error) {
           if (process.env.NODE_ENV !== "test") {
-            console.log(e.message);
-            console.log(e.stack);
+            console.log(error.message);
+            console.log(error.stack);
             console.log(
               `Updating datasource ${ds.datasourceId} failed, moving to next`,
             );
@@ -117,11 +117,11 @@ export async function reimportDatasources<C extends ProjectClientBase>(
           console.log();
         }
         updated += 1;
-      } catch (e: unknown) {
-        if (e instanceof Error) {
+      } catch (error: unknown) {
+        if (error instanceof Error) {
           if (process.env.NODE_ENV !== "test") {
-            console.log(e.message);
-            console.log(e.stack);
+            console.log(error.message);
+            console.log(error.stack);
             console.log(
               `Updating datasource ${ds.datasourceId} failed, moving to next`,
             );

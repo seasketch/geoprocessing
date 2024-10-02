@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { CloudFormation } from "@aws-sdk/client-cloudformation";
 const PROJECT_PATH = process.env.PROJECT_PATH;
 if (!PROJECT_PATH) {

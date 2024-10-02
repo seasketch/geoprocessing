@@ -93,7 +93,7 @@ export const DataDownload = ({
   })();
 
   const sketchSegment =
-    addSketchName && name ? `__${name.replace(/\s/g, "_")}` : "";
+    addSketchName && name ? `__${name.replaceAll(/\s/g, "_")}` : "";
   const timeSegment = addTimestamp
     ? `__${new Date().toISOString().split(".")[0]}Z`
     : "";
@@ -109,16 +109,13 @@ export const DataDownload = ({
       json: () => JSON.stringify(data, null, 2),
     };
 
-    const dObjects = objectUrls.map(
-      (dOption) => {
-        const blob = new Blob([formatters[dOption.extension]()], {
-          type: dOption.contentType,
-        });
-        if (dOption.url != "") window.URL.revokeObjectURL(dOption.url); // clean up last first
-        return { ...dOption, url: window.URL.createObjectURL(blob) };
-      },
-      [data],
-    );
+    const dObjects = objectUrls.map((dOption) => {
+      const blob = new Blob([formatters[dOption.extension]()], {
+        type: dOption.contentType,
+      });
+      if (dOption.url != "") window.URL.revokeObjectURL(dOption.url); // clean up last first
+      return { ...dOption, url: window.URL.createObjectURL(blob) };
+    });
 
     setObjectUrls(dObjects);
   }, [data]);

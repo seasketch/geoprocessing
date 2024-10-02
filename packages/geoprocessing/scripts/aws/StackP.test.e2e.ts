@@ -120,5 +120,5 @@ describe("GeoprocessingStack - preprocessor only", () => {
       Handler: getHandlerPointer(manifest.preprocessingFunctions[0]),
       Runtime: config.NODE_RUNTIME.name,
     });
-  }, 60000);
+  }, 60_000);
 });

@@ -21,7 +21,7 @@ test("Table renders", () => {
     },
   ];
   render(<Table columns={columns} data={fixtures.humanUse} />);
-  fixtures.humanUse.forEach(({ name }) => {
+  for (const { name } of fixtures.humanUse) {
     expect(screen.getByText(name)).toBeInTheDocument();
-  });
+  }
 });

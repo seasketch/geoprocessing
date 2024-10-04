@@ -43,12 +43,10 @@ const extraTerms = (await fs.readJson(
 )) as Record<string, string>;
 
 await $`rm -rf src/i18n/baseLang`;
-// Update (overwrite) most i18n directory except lang dir and some config files
+// Update (overwrite) most i18n directory except lang dir
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/baseLang src/i18n`;
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/bin/* src/i18n/bin`;
-await $`mv src/i18n/supported.ts src/i18n/supported.ts.bak`;
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/*.* src/i18n`;
-await $`mv src/i18n/supported.ts.bak src/i18n/supported.ts`;
 
 // Merge in new extra terms
 const newTerms = (await fs.readJson(
@@ -75,6 +73,14 @@ if (fs.existsSync("project/i18n.json")) {
     localNamespace: "translation",
     remoteContext: projectPkg.name,
   });
+}
+
+const basic = await fs.readJson("project/basic.json");
+if (!basic.languages && Array.isArray(basic.languages)) {
+  basic.languages = [];
+  console.log(
+    "Project languages must now be configured in project/basic.json.  If you need language translations, add language codes found in `src/i18n/languages.json`.",
+  );
 }
 
 spinner.succeed("Update i18n");

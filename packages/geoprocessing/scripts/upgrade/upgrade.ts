@@ -78,7 +78,7 @@ if (fs.existsSync("project/i18n.json")) {
 
 const basic = await fs.readJson("project/basic.json");
 if (!basic.languages && Array.isArray(basic.languages)) {
-  basic.languages = [];
+  basic.languages = ["EN"];
   console.log(
     "Project languages must now be configured in project/basic.json.  If you need language translations, add language codes found in `src/i18n/languages.json`.",
   );

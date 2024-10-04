@@ -64,6 +64,7 @@ export default [
       "unicorn/prefer-module": "warn",
       "unicorn/no-array-method-this-argument": "warn",
       "unicorn/no-useless-undefined": "warn",
+      "unicorn/prefer-string-replace-all": "warn",
     },
   },
 ];

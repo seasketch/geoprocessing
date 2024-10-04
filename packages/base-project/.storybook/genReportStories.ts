@@ -180,7 +180,7 @@ for (const storyConfig of storyConfigs) {
         language: "en"
       });
 
-      export const ${sketch.properties.name.replaceAll("-", "_")} = () => (
+      export const ${sketch.properties.name.replace(/-/g, "_")} = () => (
         <Translator>
           <${storyConfig.componentName} />
         </Translator>

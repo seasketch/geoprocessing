@@ -83,6 +83,7 @@ if (!basic.languages && Array.isArray(basic.languages)) {
     "Project languages must now be configured in project/basic.json.  If you need language translations, add language codes found in `src/i18n/languages.json`.",
   );
 }
+await fs.writeJson("project/basic.json", basic, { spaces: 2 });
 
 spinner.succeed("Update i18n");
 

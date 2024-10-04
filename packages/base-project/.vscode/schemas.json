@@ -32,6 +32,10 @@
             }
           ]
         },
+        "languages": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
         "planningAreaType": { "type": "string", "enum": ["eez", "other"] },
         "planningAreaId": { "type": "string" },
         "planningAreaName": { "type": "string" },

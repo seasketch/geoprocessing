@@ -44,6 +44,7 @@ const extraTerms = (await fs.readJson(
 
 await $`rm -rf src/i18n/baseLang`;
 // Update (overwrite) most i18n directory except lang dir
+await $`rm -f src/i18n/supported.ts`;
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/baseLang src/i18n`;
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/bin/* src/i18n/bin`;
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/*.* src/i18n`;

@@ -208,7 +208,7 @@ export async function createProject(
   const validBasic = projectSchema.parse({
     ...basic,
     bbox,
-    languages,
+    languages: ["EN", ...languages], // insert EN as required language
     planningAreaType: metadata.planningAreaType,
     planningAreaId: metadata.planningAreaId,
     planningAreaName: metadata.planningAreaName

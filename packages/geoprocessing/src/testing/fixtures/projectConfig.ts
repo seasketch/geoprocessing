@@ -8,7 +8,7 @@ import cloneDeep from "lodash/cloneDeep.js";
 const simpleConfig: ProjectClientConfig = {
   basic: {
     bbox: [0, 0, 1, 1],
-    languages: [],
+    languages: ["EN"],
     planningAreaName: "undefined",
     planningAreaId: "undefined",
     planningAreaType: "eez",

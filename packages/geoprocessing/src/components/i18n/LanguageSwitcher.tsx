@@ -1,6 +1,6 @@
 import React from "react";
 import { useLanguage } from "../../hooks/useLanguage.js";
-import languages from "../../i18n/supported.js";
+import languages from "../../i18n/languages.json" with { type: "json" };
 
 export const LanguageSwitcher = () => {
   const [language, changeLanguage] = useLanguage();

@@ -38,7 +38,7 @@
     "prepare": "npm run build && npm run _prepare",
     "_prepare": "npx tsx scripts/npm/prepare.ts",
     "start:data": "http-server . -c-1",
-    "watch": "tsc --watch"
+    "build:watch": "tsc --watch"
   },
   "bin": {
     "run_tests": "dist/scripts/testing/runner.js",

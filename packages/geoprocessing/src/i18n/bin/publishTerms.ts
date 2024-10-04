@@ -1,7 +1,8 @@
 import fs from "fs-extra";
 import path from "node:path";
-import languages from "../supported.js";
+import languages from "../languages.json" with { type: "json" };
 import extraTerms from "../extraTerms.json" with { type: "json" };
+import { LangDetails } from "../languages.js";
 
 export type Translations = Record<string, string>;
 
@@ -27,6 +28,14 @@ const projectPath = (() => {
     `Could not find path to project dir, tried ${installedProjectPath} and ${monoProjectPath}`,
   );
 })();
+
+// read project languages
+let projectLanguages: LangDetails[] = languages;
+console.log(`${projectPath}/basic.json`);
+if (fs.existsSync(`${projectPath}/basic.json`)) {
+  const basic = fs.readJsonSync(`${projectPath}/basic.json`);
+  projectLanguages = languages.filter((l) => basic.languages.includes(l.code));
+}
 
 const config = await fs.readJSON(`${projectPath}/i18n.json`);
 
@@ -301,7 +310,7 @@ async function publishEnglish() {
  */
 async function publishNonEnglish(localEnglishTerms?: Translations) {
   if (!localEnglishTerms) return;
-  for (const curLang of languages) {
+  for (const curLang of projectLanguages) {
     if (curLang.code === "EN") continue;
 
     const curLangTermsForm = new FormData();

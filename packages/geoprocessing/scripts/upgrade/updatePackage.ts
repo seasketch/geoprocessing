@@ -79,5 +79,18 @@ export function updatePackageJson(
   if (projectPkg.devDependencies)
     projectPkg.devDependencies = sortObjectKeys(projectPkg.devDependencies);
 
+  // Add any other keys from basePkg that are not already updated
+  const baseKeys = Object.keys(basePkg);
+  const alreadyUpdatedKeys: Set<string> = new Set([
+    "scripts",
+    "dependencies",
+    "devDependencies",
+  ]);
+  for (const baseKey of baseKeys) {
+    if (!alreadyUpdatedKeys.has(baseKey)) {
+      projectPkg[baseKey] = basePkg[baseKey];
+    }
+  }
+
   return projectPkg;
 }

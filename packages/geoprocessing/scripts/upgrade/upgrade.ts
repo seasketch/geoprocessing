@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path from "node:path";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import ora from "ora";
-import { loadedPackageSchema } from "../../src/types/package.js";
+import { LoadedPackage, loadedPackageSchema } from "../../src/types/package.js";
 import { $ } from "zx";
 import { updatePackageJson } from "./updatePackage.js";
 import { getTemplatePackages } from "../template/templatePackages.js";
@@ -94,7 +94,9 @@ spinner.start("Update package.json");
 const basePkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
   path.join(`${GP_PATH}/dist/base-project/package.json`),
 );
-const basePkg = loadedPackageSchema.parse(basePkgRaw);
+
+loadedPackageSchema.parse(basePkgRaw); // parsing loses undefined fields so don't use result
+const validPkg = basePkgRaw as unknown as LoadedPackage; // use the raw object we know is valid and cast
 
 const templatesPath = getTemplatesPath("starter-template");
 const starterTemplatePkgs = await getTemplatePackages(
@@ -106,7 +108,7 @@ const addonTemplatePkgs = await getTemplatePackages(
   templatesPath,
 );
 
-const updatedPkg = updatePackageJson(projectPkg, basePkg, [
+const updatedPkg = updatePackageJson(projectPkg, validPkg, [
   ...addonTemplatePkgs,
   ...starterTemplatePkgs,
 ]);

@@ -31,10 +31,18 @@ const projectPath = (() => {
 
 // read project languages
 let projectLanguages: LangDetails[] = languages;
-console.log(`${projectPath}/basic.json`);
 if (fs.existsSync(`${projectPath}/basic.json`)) {
   const basic = fs.readJsonSync(`${projectPath}/basic.json`);
-  projectLanguages = languages.filter((l) => basic.languages.includes(l.code));
+  if (basic.languages && Array.isArray(basic.languages)) {
+    projectLanguages = languages.filter((l) =>
+      basic.languages.includes(l.code),
+    );
+  } else {
+    console.error(
+      `Missing language codes in ${projectPath}/basic.json, run upgrade command to add`,
+    );
+    process.exit(1);
+  }
 }
 
 const config = await fs.readJSON(`${projectPath}/i18n.json`);
@@ -44,6 +52,15 @@ const config = await fs.readJSON(`${projectPath}/i18n.json`);
  * If you make local changes to the translation files, make sure you run this after importTerms.ts
  * so that POEditor is the source of truth.
  */
+
+const numLanguages = projectLanguages.length;
+console.log(
+  `Publishing terms with context '${config.remoteContext}' to namespace '${config.localNamespace}' ${
+    projectLanguages ? "for " + numLanguages + " languages" : ""
+  } `,
+);
+console.log();
+
 const localEnglishTerms = await publishEnglish();
 await publishNonEnglish(localEnglishTerms);
 

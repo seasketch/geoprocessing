@@ -1,5 +1,6 @@
 import inquirer from "inquirer";
 import licenses from "spdx-license-ids/index.json" with { type: "json" };
+import languages from "../../src/i18n/languages.json" with { type: "json" };
 
 import fuzzy from "fuzzy-tools";
 import autocomplete from "inquirer-autocomplete-prompt";
@@ -108,6 +109,18 @@ async function init(gpVersion?: string) {
           return regions;
         }
       },
+    },
+    {
+      type: "checkbox",
+      name: "languages",
+      message:
+        "What languages will your reports be published in, other than English? (leave blank for none)",
+      choices: languages
+        .filter((lan) => lan.code !== "EN")
+        .map((lan) => ({
+          value: lan.code,
+          name: lan.name,
+        })),
     },
     {
       type: "list",

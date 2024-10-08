@@ -8,6 +8,7 @@ export const planningAreaTypesSchema = z.enum(PLANNING_AREA_TYPES);
 
 export const projectSchema = z.object({
   bbox: bboxSchema,
+  languages: z.array(z.string()),
   planningAreaType: planningAreaTypesSchema,
   planningAreaId: z.string(),
   planningAreaName: z.string(),

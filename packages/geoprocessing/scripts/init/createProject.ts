@@ -32,6 +32,7 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   license: string;
   repositoryUrl: string;
   region: string;
+  languages: string[];
   gpVersion?: string;
   planningAreaType: string;
   bbox?: BBox;
@@ -53,6 +54,7 @@ export async function createProject(
   const {
     organization,
     region,
+    languages,
     email,
     gpVersion,
     name,
@@ -206,6 +208,7 @@ export async function createProject(
   const validBasic = projectSchema.parse({
     ...basic,
     bbox,
+    languages: ["EN", ...languages], // insert EN as required language
     planningAreaType: metadata.planningAreaType,
     planningAreaId: metadata.planningAreaId,
     planningAreaName: metadata.planningAreaName

@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path from "node:path";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import ora from "ora";
-import { loadedPackageSchema } from "../../src/types/package.js";
+import { LoadedPackage, loadedPackageSchema } from "../../src/types/package.js";
 import { $ } from "zx";
 import { updatePackageJson } from "./updatePackage.js";
 import { getTemplatePackages } from "../template/templatePackages.js";
@@ -43,12 +43,11 @@ const extraTerms = (await fs.readJson(
 )) as Record<string, string>;
 
 await $`rm -rf src/i18n/baseLang`;
-// Update (overwrite) most i18n directory except lang dir and some config files
+// Update (overwrite) most i18n directory except lang dir
+await $`rm -f src/i18n/supported.ts`;
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/baseLang src/i18n`;
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/bin/* src/i18n/bin`;
-await $`mv src/i18n/supported.ts src/i18n/supported.ts.bak`;
 await $`cp -r ${GP_PATH}/dist/base-project/src/i18n/*.* src/i18n`;
-await $`mv src/i18n/supported.ts.bak src/i18n/supported.ts`;
 
 // Merge in new extra terms
 const newTerms = (await fs.readJson(
@@ -77,6 +76,15 @@ if (fs.existsSync("project/i18n.json")) {
   });
 }
 
+const basic = await fs.readJson("project/basic.json");
+if (!basic.languages || basic.languages.length === 0) {
+  basic.languages = ["EN"];
+  console.log(
+    " Project languages are now configured in project/basic.json.  You will need to add/re-add languages there besides English. Just look at the codes found in `src/i18n/languages.json`.",
+  );
+}
+await fs.writeJson("project/basic.json", basic, { spaces: 2 });
+
 spinner.succeed("Update i18n");
 
 //// package.json ////
@@ -86,7 +94,9 @@ spinner.start("Update package.json");
 const basePkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
   path.join(`${GP_PATH}/dist/base-project/package.json`),
 );
-const basePkg = loadedPackageSchema.parse(basePkgRaw);
+
+loadedPackageSchema.parse(basePkgRaw); // parsing loses undefined fields so don't use result
+const validPkg = basePkgRaw as unknown as LoadedPackage; // use the raw object we know is valid and cast
 
 const templatesPath = getTemplatesPath("starter-template");
 const starterTemplatePkgs = await getTemplatePackages(
@@ -98,7 +108,7 @@ const addonTemplatePkgs = await getTemplatePackages(
   templatesPath,
 );
 
-const updatedPkg = updatePackageJson(projectPkg, basePkg, [
+const updatedPkg = updatePackageJson(projectPkg, validPkg, [
   ...addonTemplatePkgs,
   ...starterTemplatePkgs,
 ]);

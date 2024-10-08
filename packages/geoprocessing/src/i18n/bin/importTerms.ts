@@ -10,7 +10,7 @@ if (!process.env.POEDITOR_PROJECT) {
   throw new Error("POEDITOR_PROJECT is not defined");
 }
 
-const installedProjectPath = path.join("project"); // assumes script running from top-level
+const installedProjectPath = "./project"; // assumes script running from top-level
 const monoProjectPath = path.join("packages/geoprocessing/src/project");
 
 const projectPath = (() => {
@@ -25,6 +25,38 @@ const projectPath = (() => {
     `Could not find path to project dir, tried ${installedProjectPath} and ${monoProjectPath}`,
   );
 })();
+
+// read project languages
+let projectLanguages: string[] | undefined;
+if (fs.existsSync(`${projectPath}/basic.json`)) {
+  const basic = fs.readJsonSync(`${projectPath}/basic.json`);
+  if (
+    basic.languages &&
+    Array.isArray(basic.languages) &&
+    basic.languages.length > 0
+  ) {
+    projectLanguages = basic.languages;
+  } else {
+    console.error(
+      `Missing language codes in ${projectPath}/basic.json, run upgrade command to add`,
+    );
+    process.exit(1);
+  }
+
+  if (!basic.languages.includes("EN")) {
+    console.error(
+      'Expected "EN" to be included in the languages array in basic.json',
+    );
+    process.exit(1);
+  }
+
+  if (basic.languages.length < 2) {
+    console.log(
+      `No languages found to import in ${projectPath}/basic.json, add more languages codes to basic.json`,
+    );
+    process.exit(1);
+  }
+}
 
 const config = await fs.readJSON(`${projectPath}/i18n.json`);
 
@@ -67,9 +99,18 @@ const enTerms: {
 }[] = enTermsResult.result.terms;
 enTerms.sort((a, b) => a.term.localeCompare(b.term));
 
-console.log(
-  `Importing strings with context '${config.remoteContext}' to namespace '${config.localNamespace}'`,
-);
+const numNonEngLanguages = projectLanguages ? projectLanguages.length - 1 : 0;
+if (numNonEngLanguages > 0) {
+  console.log(
+    `Importing terms from remote context '${config.remoteContext}' ${
+      projectLanguages ? "for " + numNonEngLanguages + " languages" : ""
+    } `,
+  );
+  console.log();
+} else {
+  process.exit(1);
+}
+
 const langForm = new FormData();
 langForm.append("api_token", process.env.POEDITOR_API_TOKEN!);
 langForm.append("id", process.env.POEDITOR_PROJECT!);
@@ -89,7 +130,12 @@ const languages = langResult.result.languages as {
   percentage: number;
 }[];
 
-for (const curLang of languages.filter((curLang) => curLang.code !== "en")) {
+for (const curLang of languages.filter(
+  (curLang) =>
+    curLang.code !== "en" &&
+    projectLanguages &&
+    projectLanguages.includes(curLang.code),
+)) {
   if (curLang.percentage === 0) {
     console.log(
       `${curLang.code}: skipping ${curLang.name} (${curLang.percentage}% translated)`,

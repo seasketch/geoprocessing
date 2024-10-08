@@ -1,7 +1,8 @@
 import fs from "fs-extra";
 import path from "node:path";
-import languages from "../supported.js";
+import languages from "../languages.json" with { type: "json" };
 import extraTerms from "../extraTerms.json" with { type: "json" };
+import { LangDetails } from "../languages.js";
 
 export type Translations = Record<string, string>;
 
@@ -28,6 +29,34 @@ const projectPath = (() => {
   );
 })();
 
+// read project languages
+let projectLanguages: LangDetails[] = languages;
+if (fs.existsSync(`${projectPath}/basic.json`)) {
+  const basic = fs.readJsonSync(`${projectPath}/basic.json`);
+  if (basic.languages && Array.isArray(basic.languages)) {
+    projectLanguages = languages.filter((l) =>
+      basic.languages.includes(l.code),
+    );
+  } else {
+    console.error(
+      `Missing language codes in ${projectPath}/basic.json, run upgrade command to add`,
+    );
+    process.exit(1);
+  }
+
+  if (!basic.languages.includes("EN")) {
+    console.error(
+      'Expected "EN" to be included in the languages array in basic.json',
+    );
+    process.exit(1);
+  }
+
+  if (basic.languages.length < 1) {
+    console.log(`No languages found to publish in ${projectPath}/basic.json`);
+    process.exit(1);
+  }
+}
+
 const config = await fs.readJSON(`${projectPath}/i18n.json`);
 
 /**
@@ -35,6 +64,15 @@ const config = await fs.readJSON(`${projectPath}/i18n.json`);
  * If you make local changes to the translation files, make sure you run this after importTerms.ts
  * so that POEditor is the source of truth.
  */
+
+const numLanguages = projectLanguages.length;
+console.log(
+  `Publishing terms with context '${config.remoteContext}' to namespace '${config.localNamespace}' ${
+    projectLanguages ? "for " + numLanguages + " languages" : ""
+  } `,
+);
+console.log();
+
 const localEnglishTerms = await publishEnglish();
 await publishNonEnglish(localEnglishTerms);
 
@@ -301,7 +339,7 @@ async function publishEnglish() {
  */
 async function publishNonEnglish(localEnglishTerms?: Translations) {
   if (!localEnglishTerms) return;
-  for (const curLang of languages) {
+  for (const curLang of projectLanguages) {
     if (curLang.code === "EN") continue;
 
     const curLangTermsForm = new FormData();

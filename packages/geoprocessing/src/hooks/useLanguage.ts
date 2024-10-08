@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { ReportContext } from "../context/index.js";
-import languages from "../i18n/supported.js";
+import languages from "../i18n/languages.json" with { type: "json" };
 
 /**
  * Hook that returns current language from report context, and provides function to change the language

@@ -1,6 +1,7 @@
 import { updatePackageJson } from "./updatePackage.js";
 import { LoadedPackage } from "../../src/types/package.js";
 import { describe, test, expect } from "vitest";
+import { hasOwnProperty } from "../../client-core.js";
 
 const srcPkg: LoadedPackage = {
   name: "@seasketch/base-project",
@@ -128,5 +129,17 @@ describe("updatePackage", () => {
         "1.0.0",
       );
     }
+  });
+
+  test("extra properties are not lost", async () => {
+    const extraPkg = { ...srcPkg, extra: "extra" } as LoadedPackage;
+    const extraBasePkg = {
+      ...basePkg,
+      extraBase: "extraBase",
+    } as LoadedPackage;
+    const updatedPkg = updatePackageJson(extraPkg, extraBasePkg, [otherPkg]);
+    console.log("updatedPkgz", updatedPkg);
+    expect(hasOwnProperty(updatedPkg, "extra")).toBeTruthy();
+    expect(hasOwnProperty(updatedPkg, "extraBase")).toBeTruthy();
   });
 });

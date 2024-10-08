@@ -40,6 +40,7 @@ export const loadedPackageSchema = z.object({
   type: z.string().optional(),
   keywords: z.array(z.string()),
   repositoryUrl: z.string().optional(),
+  "lint-staged": z.record(z.string()).optional(),
 });
 
 //// INFERRED TYPES ////

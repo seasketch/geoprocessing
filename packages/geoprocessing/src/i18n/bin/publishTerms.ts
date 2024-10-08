@@ -43,6 +43,18 @@ if (fs.existsSync(`${projectPath}/basic.json`)) {
     );
     process.exit(1);
   }
+
+  if (!basic.languages.includes("EN")) {
+    console.error(
+      'Expected "EN" to be included in the languages array in basic.json',
+    );
+    process.exit(1);
+  }
+
+  if (basic.languages.length < 1) {
+    console.log(`No languages found to publish in ${projectPath}/basic.json`);
+    process.exit(1);
+  }
 }
 
 const config = await fs.readJSON(`${projectPath}/i18n.json`);

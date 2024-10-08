@@ -30,11 +30,29 @@ const projectPath = (() => {
 let projectLanguages: string[] | undefined;
 if (fs.existsSync(`${projectPath}/basic.json`)) {
   const basic = fs.readJsonSync(`${projectPath}/basic.json`);
-  if (basic.languages && Array.isArray(basic.languages)) {
+  if (
+    basic.languages &&
+    Array.isArray(basic.languages) &&
+    basic.languages.length > 0
+  ) {
     projectLanguages = basic.languages;
   } else {
     console.error(
       `Missing language codes in ${projectPath}/basic.json, run upgrade command to add`,
+    );
+    process.exit(1);
+  }
+
+  if (!basic.languages.includes("EN")) {
+    console.error(
+      'Expected "EN" to be included in the languages array in basic.json',
+    );
+    process.exit(1);
+  }
+
+  if (basic.languages.length < 2) {
+    console.log(
+      `No languages found to import in ${projectPath}/basic.json, add more languages codes to basic.json`,
     );
     process.exit(1);
   }
@@ -81,13 +99,17 @@ const enTerms: {
 }[] = enTermsResult.result.terms;
 enTerms.sort((a, b) => a.term.localeCompare(b.term));
 
-const numLanguages = projectLanguages ? projectLanguages.length : 0;
-console.log(
-  `Importing terms from remote context '${config.remoteContext}' ${
-    projectLanguages ? "for " + numLanguages + " languages" : ""
-  } `,
-);
-console.log();
+const numNonEngLanguages = projectLanguages ? projectLanguages.length - 1 : 0;
+if (numNonEngLanguages > 0) {
+  console.log(
+    `Importing terms from remote context '${config.remoteContext}' ${
+      projectLanguages ? "for " + numNonEngLanguages + " languages" : ""
+    } `,
+  );
+  console.log();
+} else {
+  process.exit(1);
+}
 
 const langForm = new FormData();
 langForm.append("api_token", process.env.POEDITOR_API_TOKEN!);

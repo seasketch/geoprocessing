@@ -137,6 +137,7 @@ export async function createProject(
 
   console.log("gpVersion", gpVersion);
   console.log("packageJSON", packageJSON);
+  console.log("curGpVersion", curGpVersion);
 
   if (gpVersion) {
     spinner.start(`Installing user-defined GP version ${gpVersion}`);

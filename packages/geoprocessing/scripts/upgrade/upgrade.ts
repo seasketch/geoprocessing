@@ -83,7 +83,7 @@ if (!basic.languages || basic.languages.length === 0) {
     " Project languages are now configured in project/basic.json.  You will need to add/re-add languages there besides English. Just look at the codes found in `src/i18n/languages.json`.",
   );
 }
-await fs.writeJson("project/basic.json", basic, { spaces: 2 });
+await fs.writeJson("project/basic.json", basic);
 
 spinner.succeed("Update i18n");
 

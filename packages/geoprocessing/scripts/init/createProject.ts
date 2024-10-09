@@ -135,21 +135,15 @@ export async function createProject(
     private: false,
   };
 
+  console.log("gpVersion", gpVersion);
+  console.log("packageJSON", packageJSON);
+
   if (gpVersion) {
-    if (packageJSON.devDependencies) {
-      packageJSON.devDependencies["@seasketch/geoprocessing"] = gpVersion;
-    } else {
-      packageJSON.devDependencies = { "@seasketch/geoprocessing": gpVersion };
-    }
+    spinner.start(`Installing user-defined GP version ${gpVersion}`);
+    packageJSON.dependencies!["@seasketch/geoprocessing"] = gpVersion;
     spinner.succeed(`Installing user-defined GP version ${gpVersion}`);
   } else {
-    if (packageJSON.devDependencies) {
-      packageJSON.devDependencies["@seasketch/geoprocessing"] = curGpVersion;
-    } else {
-      packageJSON.devDependencies = {
-        "@seasketch/geoprocessing": curGpVersion,
-      };
-    }
+    packageJSON.dependencies!["@seasketch/geoprocessing"] = curGpVersion;
   }
 
   await fs.writeFile(

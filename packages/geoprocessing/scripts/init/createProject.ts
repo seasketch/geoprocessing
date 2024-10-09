@@ -114,6 +114,7 @@ export async function createProject(
       fs.readFileSync(`${baseProjectPath}/package.json`).toString(),
     ),
     name,
+    version: "0.1.0",
     description,
     author,
     license,

@@ -79,15 +79,27 @@ export function updatePackageJson(
   if (projectPkg.devDependencies)
     projectPkg.devDependencies = sortObjectKeys(projectPkg.devDependencies);
 
-  // Add any other keys from basePkg that are not already updated
+  // Allow new properties in basePkg to be merged in
   const baseKeys = Object.keys(basePkg);
-  const alreadyUpdatedKeys: Set<string> = new Set([
-    "scripts",
+  // Define keys to not update
+  const keysNotToUpdate: Set<string> = new Set([
+    "author",
+    "bugs",
     "dependencies",
+    "description",
     "devDependencies",
+    "homepage",
+    "keywords",
+    "license",
+    "name",
+    "private",
+    "repositoryUrl",
+    "scripts",
+    "type",
+    "version",
   ]);
   for (const baseKey of baseKeys) {
-    if (!alreadyUpdatedKeys.has(baseKey)) {
+    if (!keysNotToUpdate.has(baseKey)) {
       projectPkg[baseKey] = basePkg[baseKey];
     }
   }

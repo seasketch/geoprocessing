@@ -55,7 +55,7 @@ const newTerms = (await fs.readJson(
   "utf8",
 )) as Record<string, string>;
 const updatedTerms = { ...extraTerms, ...newTerms };
-await fs.writeJson("src/i18n/extraTerms.json", updatedTerms, { spaces: 2 });
+await fs.writeJson("src/i18n/extraTerms.json", updatedTerms);
 
 // install and verify valid i18n config
 
@@ -67,7 +67,7 @@ if (fs.existsSync("project/i18n.json")) {
   if (!i18nConfig.remoteContext) {
     i18nConfig.remoteContext = projectPkg.name;
   }
-  await fs.writeJson("project/i18n.json", i18nConfig, { spaces: 2 });
+  await fs.writeJson("project/i18n.json", i18nConfig);
 } else {
   console.log("Creating new project/i18n.json");
   await fs.writeJSON("project/i18n.json", {
@@ -83,7 +83,7 @@ if (!basic.languages || basic.languages.length === 0) {
     " Project languages are now configured in project/basic.json.  You will need to add/re-add languages there besides English. Just look at the codes found in `src/i18n/languages.json`.",
   );
 }
-await fs.writeJson("project/basic.json", basic, { spaces: 2 });
+await fs.writeJson("project/basic.json", basic);
 
 spinner.succeed("Update i18n");
 
@@ -117,7 +117,7 @@ const updatedPkg = updatePackageJson(projectPkg, validPkg, [
 delete updatedPkg.scripts["install:scripts"];
 delete updatedPkg.scripts["translation:install"];
 
-fs.writeJSONSync(`${PROJECT_PATH}/package.json`, updatedPkg, { spaces: 2 });
+fs.writeJSONSync(`${PROJECT_PATH}/package.json`, updatedPkg);
 
 spinner.succeed("Update package.json");
 
@@ -144,7 +144,7 @@ spinner.start("Migrate config files");
 // add type module (esm enable)
 const pkg = fs.readJsonSync("package.json");
 pkg.type = "module";
-fs.writeJSONSync("package.json", pkg, { spaces: 2 });
+fs.writeJSONSync("package.json", pkg);
 
 // move babel to have cjs extension
 if (fs.existsSync("babel.config.js")) {
@@ -196,6 +196,10 @@ fs.writeJSONSync(
 );
 
 spinner.succeed("Migrate config files");
+
+spinner.start("Run prettier code formatting");
+await $`npx prettier --write --log-level=silent .`;
+spinner.succeed("Run prettier code formatting");
 
 console.log(`Upgrade complete!
 

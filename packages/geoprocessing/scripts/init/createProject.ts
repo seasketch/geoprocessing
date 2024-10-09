@@ -135,8 +135,9 @@ export async function createProject(
     private: false,
   };
 
+  console.log();
   console.log("gpVersion", gpVersion);
-  console.log("packageJSON", packageJSON);
+  console.log("packageJSON before", packageJSON);
   console.log("curGpVersion", curGpVersion);
 
   if (gpVersion) {
@@ -147,9 +148,11 @@ export async function createProject(
     packageJSON.dependencies!["@seasketch/geoprocessing"] = curGpVersion;
   }
 
+  console.log("packageJSON after", packageJSON);
+
   await fs.writeFile(
     `${projectPath}/package.json`,
-    JSON.stringify(packageJSON, null, "  "),
+    JSON.stringify(packageJSON, null, 2),
   );
 
   spinner.succeed("updated package.json");

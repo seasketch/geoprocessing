@@ -18,7 +18,6 @@ const licenseDefaults = ["MIT", "UNLICENSED", "BSD-3-Clause", "APACHE-2.0"];
 const allLicenseOptions = [...licenses, "UNLICENSED"];
 
 async function init(gpVersion?: string) {
-  console.log("gpVersion top init", gpVersion);
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
 

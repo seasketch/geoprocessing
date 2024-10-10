@@ -155,6 +155,11 @@ export async function createProject(
     JSON.stringify(packageJSON, null, 2),
   );
 
+  const savedPackage: Package = JSON.parse(
+    fs.readFileSync(`${getGeoprocessingPath()}/package.json`).toString(),
+  );
+  console.log("savedPackage", savedPackage);
+
   spinner.succeed("updated package.json");
 
   spinner.start("creating geoprocessing.json");

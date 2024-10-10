@@ -357,22 +357,27 @@ export async function createProject(
   // Install dependencies including adding GP.
   if (interactive) {
     spinner.start("installing dependencies with npm");
-    try {
-      await exec(`npm install`, {
-        cwd: metadata.name,
-      });
-      spinner.succeed("installed dependencies");
-      spinner.start("extracting translations");
-      await exec(`npm run extract:translation`, {
-        cwd: metadata.name,
-      });
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.log(error.message);
-        console.log(error.stack);
-        process.exit();
-      }
-    }
+    const savedPackage: Package = JSON.parse(
+      fs.readFileSync(`${projectPath}/package.json`).toString(),
+    );
+    console.log("savedPackageBeforeInstall", savedPackage);
+
+    // try {
+    //   await exec(`npm install`, {
+    //     cwd: metadata.name,
+    //   });
+    //   spinner.succeed("installed dependencies");
+    //   spinner.start("extracting translations");
+    //   await exec(`npm run extract:translation`, {
+    //     cwd: metadata.name,
+    //   });
+    // } catch (error: unknown) {
+    //   if (error instanceof Error) {
+    //     console.log(error.message);
+    //     console.log(error.stack);
+    //     process.exit();
+    //   }
+    // }
 
     spinner.succeed("extracted initial translations");
   }

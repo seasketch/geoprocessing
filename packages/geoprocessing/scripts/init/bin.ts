@@ -17,5 +17,4 @@ program
     }
   });
 
-console.log("process.argv", JSON.stringify(process.argv, null, 2));
 program.parse(process.argv);

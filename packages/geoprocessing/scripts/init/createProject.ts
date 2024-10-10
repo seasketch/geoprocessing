@@ -156,7 +156,7 @@ export async function createProject(
   );
 
   const savedPackage: Package = JSON.parse(
-    fs.readFileSync(`${getGeoprocessingPath()}/package.json`).toString(),
+    fs.readFileSync(`${baseProjectPath}/package.json`).toString(),
   );
   console.log("savedPackage", savedPackage);
 

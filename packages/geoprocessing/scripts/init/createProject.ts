@@ -156,9 +156,9 @@ export async function createProject(
   );
 
   const savedPackage: Package = JSON.parse(
-    fs.readFileSync(`${baseProjectPath}/package.json`).toString(),
+    fs.readFileSync(`${projectPath}/package.json`).toString(),
   );
-  console.log("savedPackage", savedPackage);
+  console.log("savedPackageAfterWrite", savedPackage);
 
   spinner.succeed("updated package.json");
 

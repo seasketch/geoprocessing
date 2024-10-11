@@ -114,6 +114,7 @@ export async function createProject(
       fs.readFileSync(`${baseProjectPath}/package.json`).toString(),
     ),
     name,
+    version: "0.1.0",
     description,
     author,
     license,
@@ -135,25 +136,16 @@ export async function createProject(
   };
 
   if (gpVersion) {
-    if (packageJSON.devDependencies) {
-      packageJSON.devDependencies["@seasketch/geoprocessing"] = gpVersion;
-    } else {
-      packageJSON.devDependencies = { "@seasketch/geoprocessing": gpVersion };
-    }
+    spinner.start(`Installing user-defined GP version ${gpVersion}`);
+    packageJSON.dependencies!["@seasketch/geoprocessing"] = gpVersion;
     spinner.succeed(`Installing user-defined GP version ${gpVersion}`);
   } else {
-    if (packageJSON.devDependencies) {
-      packageJSON.devDependencies["@seasketch/geoprocessing"] = curGpVersion;
-    } else {
-      packageJSON.devDependencies = {
-        "@seasketch/geoprocessing": curGpVersion,
-      };
-    }
+    packageJSON.dependencies!["@seasketch/geoprocessing"] = curGpVersion;
   }
 
   await fs.writeFile(
     `${projectPath}/package.json`,
-    JSON.stringify(packageJSON, null, "  "),
+    JSON.stringify(packageJSON, null, 2),
   );
 
   spinner.succeed("updated package.json");
@@ -353,6 +345,7 @@ export async function createProject(
   // Install dependencies including adding GP.
   if (interactive) {
     spinner.start("installing dependencies with npm");
+
     try {
       await exec(`npm install`, {
         cwd: metadata.name,

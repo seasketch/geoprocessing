@@ -235,7 +235,7 @@ async function init(gpVersion?: string) {
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   // module was not imported but called directly
-  await init();
+  await init(process.argv[2]);
 }
 
 export { init };

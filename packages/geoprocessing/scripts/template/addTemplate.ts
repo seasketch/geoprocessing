@@ -177,8 +177,8 @@ export async function copyTemplates(
       fs.readFileSync(`${templatePath}/package.json`).toString(),
     );
     // Remove the templates seasketch dependency, the version will not match if running from canary gp release, and don't want it to overwrite
-    if (templatePackage.devDependencies)
-      delete templatePackage.devDependencies["@seasketch/geoprocessing"];
+    if (templatePackage.dependencies)
+      delete templatePackage.dependencies["@seasketch/geoprocessing"];
     const projectPackage: Package = JSON.parse(
       fs.readFileSync(`${projectPath}/package.json`).toString(),
     );

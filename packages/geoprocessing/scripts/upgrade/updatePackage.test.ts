@@ -138,8 +138,22 @@ describe("updatePackage", () => {
       extraBase: "extraBase",
     } as LoadedPackage;
     const updatedPkg = updatePackageJson(extraPkg, extraBasePkg, [otherPkg]);
-    console.log("updatedPkgz", updatedPkg);
     expect(hasOwnProperty(updatedPkg, "extra")).toBeTruthy();
     expect(hasOwnProperty(updatedPkg, "extraBase")).toBeTruthy();
+  });
+
+  test("devDependencies are removed if they are also in dependencies", async () => {
+    const updatedPkg = updatePackageJson(
+      {
+        ...srcPkg,
+        dependencies: { ...srcPkg.dependencies, extra: "1.0.0" },
+      } as LoadedPackage,
+      { ...basePkg, devDependencies: { extra: "1.0.0" } } as LoadedPackage,
+    );
+    if (updatedPkg.devDependencies) {
+      expect(hasOwnProperty(updatedPkg.devDependencies, "extra")).toBeFalsy();
+    } else {
+      throw new Error("devDependencies is undefined");
+    }
   });
 });

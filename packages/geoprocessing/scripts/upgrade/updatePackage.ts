@@ -74,6 +74,15 @@ export function updatePackageJson(
     }
   }
 
+  // Remove any devDependencies that are also in dependencies
+  if (projectPkg.devDependencies) {
+    for (const key of Object.keys(projectPkg.dependencies)) {
+      if (hasOwnProperty(projectPkg.devDependencies, key)) {
+        delete projectPkg.devDependencies[key];
+      }
+    }
+  }
+
   projectPkg.scripts = sortObjectKeys(projectPkg.scripts);
   projectPkg.dependencies = sortObjectKeys(projectPkg.dependencies);
   if (projectPkg.devDependencies)

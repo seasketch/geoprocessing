@@ -116,6 +116,10 @@ const updatedPkg = updatePackageJson(projectPkg, validPkg, [
 // Remove old scripts
 delete updatedPkg.scripts["install:scripts"];
 delete updatedPkg.scripts["translation:install"];
+delete updatedPkg.scripts["translation:extract"];
+delete updatedPkg.scripts["translation:import"];
+delete updatedPkg.scripts["translation:publish"];
+delete updatedPkg.scripts["translation:sync"];
 
 fs.writeJSONSync(`${PROJECT_PATH}/package.json`, updatedPkg);
 

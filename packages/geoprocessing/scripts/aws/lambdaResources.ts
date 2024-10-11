@@ -123,11 +123,13 @@ export const createLambdaStacks = (
     FUNCTIONS_PER_STACK,
   );
 
-  for (const [index, group] of functionGroups.entries()) {
-    console.log(
-      `Lambda stack ${index}:\n ${group.map((f) => f.title).join("\n ")}`,
-    );
-    console.log("");
+  if (process.env.NODE_ENV !== "test") {
+    for (const [index, group] of functionGroups.entries()) {
+      console.log(
+        `Lambda stack ${index}:\n ${group.map((f) => f.title).join("\n ")}`,
+      );
+      console.log("");
+    }
   }
 
   new CfnOutput(stack, "stacksFunction", {

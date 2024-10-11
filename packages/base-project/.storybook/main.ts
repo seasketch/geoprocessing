@@ -10,7 +10,6 @@ const config: StorybookConfig = {
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
-
     "@storybook/addon-interactions",
   ],
   framework: {
@@ -26,8 +25,8 @@ const config: StorybookConfig = {
     },
     disableTelemetry: true,
   },
-  docs: {
-    autodocs: "tag",
+  typescript: {
+    reactDocgen: false,
   },
 };
 export default config;

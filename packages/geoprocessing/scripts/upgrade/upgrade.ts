@@ -170,8 +170,45 @@ const pc = await fs.readFile("project/projectClient.ts", "utf8");
 const newPc = pc.replace("../geoprocessing.json", "./geoprocessing.json");
 fs.writeFile("project/projectClient.ts", newPc, "utf8");
 
-// copy prettier config files
-await $`cp -r ${GP_PATH}/dist/base-project/.prettier* .`;
+// copy prettier config file
+await $`cp -r ${GP_PATH}/dist/base-project/.prettierrc.json .`;
+
+// Merge prettier ignore file if exists
+if (fs.existsSync(`${PROJECT_PATH}/.prettierignore`)) {
+  // Convert to array of lines
+  const projIgnoreArray = fs
+    .readFileSync(`${PROJECT_PATH}/.prettierignore`)
+    .toString()
+    .split("\n");
+
+  const gpIgnoreArray = fs
+    .readFileSync(`${GP_PATH}/dist/base-project/.prettierignore`)
+    .toString()
+    .split("\n");
+
+  for (const line of projIgnoreArray) {
+    if (gpIgnoreArray.includes(line)) {
+      continue;
+    } else {
+      gpIgnoreArray.push(line);
+    }
+  }
+
+  // Convert back to string, with strings separates by newlines
+  const ignoreLines = gpIgnoreArray.reduce<string>((acc, line, curIndex) => {
+    if (line.length === 0) {
+      return "";
+    }
+    if (curIndex === gpIgnoreArray.length - 1) {
+      return acc.concat(line);
+    }
+    return acc.concat(line + "\n");
+  }, "");
+
+  await fs.writeFile(`${PROJECT_PATH}/.prettierignore`, ignoreLines);
+} else {
+  await $`cp -r ${GP_PATH}/dist/base-project/.prettierignore .`;
+}
 
 //// rekey package.json ////
 

@@ -194,10 +194,16 @@ if (fs.existsSync(`${PROJECT_PATH}/.prettierignore`)) {
     }
   }
 
-  // Convert back to string of lines
-  const ignoreLines = gpIgnoreArray.reduce<string>((acc, line) => {
-    return line.length > 0 ? acc.concat(line + "\n") : "";
-  }, "\n");
+  // Convert back to string, with strings separates by newlines
+  const ignoreLines = gpIgnoreArray.reduce<string>((acc, line, curIndex) => {
+    if (line.length === 0) {
+      return "";
+    }
+    if (curIndex === gpIgnoreArray.length - 1) {
+      return acc.concat(line);
+    }
+    return acc.concat(line + "\n");
+  }, "");
 
   await fs.writeFile(`${PROJECT_PATH}/.prettierignore`, ignoreLines);
 } else {

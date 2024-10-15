@@ -17,7 +17,7 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Create your project with a combination of VSCode, Typescript, React,
-        Storybook, CLI and more.
+        Storybook, Vite and a toolbox of spatial functions.
       </>
     ),
   },
@@ -27,8 +27,8 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
     description: (
       <>
-        Built-in publish to AWS using Cloud Development Kit (CDK) and
-        cloud-optimized spatial data formats.
+        Automated project deploy to AWS and data conversion to cloud-optimized
+        spatial data formats.
       </>
     ),
   },
@@ -37,7 +37,10 @@ const FeatureList: FeatureItem[] = [
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
     description: (
-      <>Auto-scales to meet high demand, zero cost when not in use.</>
+      <>
+        Build bite-size serverless geoprocessing functions that auto-scale to
+        meet demand and spin down to zero cost when not in use.
+      </>
     ),
   },
 ];

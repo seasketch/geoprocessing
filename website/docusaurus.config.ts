@@ -4,7 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "SeaSketch Geoprocessing",
-  tagline: "Bite-sized spatial analysis for SeaSketch",
+  tagline: "Low cost spatial analysis and reporting for the SeaSketch platform",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -40,21 +40,7 @@ const config: Config = {
           editUrl:
             "https://github.com/seasketch/geoprocessing/tree/main/website/templates/shared/",
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ["rss", "atom"],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
-          // Useful options to enforce blogging best practices
-          onInlineTags: "warn",
-          onInlineAuthors: "warn",
-          onUntruncatedBlogPosts: "warn",
-        },
+        blog: false,
         theme: {
           customCss: "./src/css/custom.css",
         },
@@ -66,21 +52,31 @@ const config: Config = {
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     navbar: {
-      title: "My Site",
+      title: "Geoprocessing",
       logo: {
-        alt: "My Site Logo",
-        src: "img/logo.svg",
+        alt: "Site Logo",
+        src: "img/ss-logo.png",
       },
       items: [
         {
           type: "docSidebar",
           sidebarId: "tutorialSidebar",
           position: "left",
-          label: "Tutorial",
+          label: "Docs",
+          to: "/docs",
         },
-        { to: "/blog", label: "Blog", position: "left" },
         {
-          href: "https://github.com/facebook/docusaurus",
+          href: "https://seasketch.github.io/geoprocessing/api/index.html",
+          label: "Typescript library",
+          position: "left",
+        },
+        {
+          href: "https://seasketch.github.io/geoprocessing/storybook/index.html",
+          label: "UI Component Library",
+          position: "left",
+        },
+        {
+          href: "https://github.com/seasketch/geoprocessing",
           label: "GitHub",
           position: "right",
         },
@@ -99,32 +95,23 @@ const config: Config = {
           ],
         },
         {
-          title: "Community",
-          items: [
-            {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
-            {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus",
-            },
-          ],
-        },
-        {
           title: "More",
           items: [
             {
-              label: "Blog",
-              to: "/blog",
+              label: "Docs",
+              to: "/docs",
+            },
+            {
+              label: "Typescript library",
+              href: "https://seasketch.github.io/geoprocessing/api/index.html",
+            },
+            {
+              label: "UI Component Library",
+              href: "https://seasketch.github.io/geoprocessing/storybook/index.html",
             },
             {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/seasketch/geoprocessing",
             },
           ],
         },

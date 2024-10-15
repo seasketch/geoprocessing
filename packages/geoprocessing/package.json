@@ -31,7 +31,7 @@
     "test:e2e:matching": "vitest run -c vitest.config.e2e.js -t",
     "test:scripts:update": "npm run test:scripts -- --updateSnapshot",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build -o ./docs/storybook",
+    "build-storybook": "storybook build -o ../../website/build/storybook",
     "start-typedoc": "npx typedoc --watch --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none",
     "build-typedoc": "npx typedoc --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none",
     "build-docs": "npm run build-typedoc && npm run build-storybook",

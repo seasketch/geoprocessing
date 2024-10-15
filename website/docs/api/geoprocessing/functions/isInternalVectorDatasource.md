@@ -1,14 +1,14 @@
 # isInternalVectorDatasource()
 
 ```ts
-function isInternalVectorDatasource(ds): ds is Object;
+function isInternalVectorDatasource(ds): ds is Object
 ```
 
 ## Parameters
 
-| Parameter | Type  | Description                     |
-| --------- | ----- | ------------------------------- |
-| `ds`      | `any` | InternalVectorDatasource object |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ds` | `any` | InternalVectorDatasource object |
 
 ## Returns
 

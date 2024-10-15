@@ -10,7 +10,7 @@ children: ReactNode;
 
 React component to put inside the circle
 
----
+***
 
 ### group
 
@@ -20,7 +20,7 @@ group: string;
 
 Group to use for this circle
 
----
+***
 
 ### groupColorMap
 

@@ -8,7 +8,7 @@
 apiVersion: string;
 ```
 
----
+***
 
 ### author
 
@@ -16,7 +16,7 @@ apiVersion: string;
 author: string;
 ```
 
----
+***
 
 ### clients
 
@@ -24,7 +24,7 @@ author: string;
 clients: ReportClient[];
 ```
 
----
+***
 
 ### feedbackClients
 
@@ -32,7 +32,7 @@ clients: ReportClient[];
 feedbackClients: DigitizingFeedbackClient[];
 ```
 
----
+***
 
 ### geoprocessingServices
 
@@ -40,7 +40,7 @@ feedbackClients: DigitizingFeedbackClient[];
 geoprocessingServices: GeoprocessingServiceMetadata[];
 ```
 
----
+***
 
 ### organization?
 
@@ -48,7 +48,7 @@ geoprocessingServices: GeoprocessingServiceMetadata[];
 optional organization: string;
 ```
 
----
+***
 
 ### preprocessingServices
 
@@ -56,7 +56,7 @@ optional organization: string;
 preprocessingServices: PreprocessingService[];
 ```
 
----
+***
 
 ### published
 
@@ -64,7 +64,7 @@ preprocessingServices: PreprocessingService[];
 published: string;
 ```
 
----
+***
 
 ### relatedUri?
 
@@ -72,7 +72,7 @@ published: string;
 optional relatedUri: string;
 ```
 
----
+***
 
 ### sourceUri?
 
@@ -80,7 +80,7 @@ optional relatedUri: string;
 optional sourceUri: string;
 ```
 
----
+***
 
 ### title
 
@@ -88,7 +88,7 @@ optional sourceUri: string;
 title: string;
 ```
 
----
+***
 
 ### uri
 

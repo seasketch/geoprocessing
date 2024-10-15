@@ -1,4 +1,4 @@
-# EXTRA_RASTER_STATS
+# EXTRA\_RASTER\_STATS
 
 ```ts
 const EXTRA_RASTER_STATS: ReadonlyArray<string>;

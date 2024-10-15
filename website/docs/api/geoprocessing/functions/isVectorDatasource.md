@@ -1,14 +1,14 @@
 # isVectorDatasource()
 
 ```ts
-function isVectorDatasource(ds): ds is Object;
+function isVectorDatasource(ds): ds is Object
 ```
 
 ## Parameters
 
-| Parameter | Type  | Description             |
-| --------- | ----- | ----------------------- |
-| `ds`      | `any` | VectorDatasource object |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ds` | `any` | VectorDatasource object |
 
 ## Returns
 

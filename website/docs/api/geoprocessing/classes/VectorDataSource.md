@@ -2,9 +2,9 @@
 
 ## Type Parameters
 
-| Type Parameter                                                                                                                                  |
-| ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `T` _extends_ [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md)\> |
+| Type Parameter |
+| ------ |
+| `T` *extends* [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md)\> |
 
 ## Constructors
 
@@ -20,10 +20,10 @@ commands.
 
 #### Parameters
 
-| Parameter | Type                                                                               | Description |
-| --------- | ---------------------------------------------------------------------------------- | ----------- |
-| `url`     | `string`                                                                           |             |
-| `options` | `Partial`\<[`VectorDataSourceOptions`](../interfaces/VectorDataSourceOptions.md)\> |             |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `url` | `string` |  |
+| `options` | `Partial`\<[`VectorDataSourceOptions`](../interfaces/VectorDataSourceOptions.md)\> |  |
 
 #### Returns
 
@@ -45,7 +45,7 @@ clear(): Promise<void>
 
 `Promise`\<`void`\>
 
----
+***
 
 ### fetch()
 
@@ -57,15 +57,15 @@ Fetches bundles of features within bbox
 
 #### Parameters
 
-| Parameter | Type                              | Description |
-| --------- | --------------------------------- | ----------- |
-| `bbox`    | [`BBox`](../type-aliases/BBox.md) |             |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `bbox` | [`BBox`](../type-aliases/BBox.md) |  |
 
 #### Returns
 
 `Promise`\<`T`[]\>
 
----
+***
 
 ### fetchBundle()
 
@@ -75,16 +75,16 @@ fetchBundle(id, priority): Promise<FeatureCollection<Geometry, GeoJsonProperties
 
 #### Parameters
 
-| Parameter  | Type                | Default value |
-| ---------- | ------------------- | ------------- |
-| `id`       | `number`            | `undefined`   |
-| `priority` | `"high"` \| `"low"` | `"low"`       |
+| Parameter | Type | Default value |
+| ------ | ------ | ------ |
+| `id` | `number` | `undefined` |
+| `priority` | `"high"` \| `"low"` | `"low"` |
 
 #### Returns
 
 `Promise`\<[`FeatureCollection`](../interfaces/FeatureCollection.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\>\>
 
----
+***
 
 ### fetchOverlapping()
 
@@ -94,15 +94,15 @@ fetchOverlapping(feature): Promise<T[]>
 
 #### Parameters
 
-| Parameter | Type                                                                                                                                            |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `feature` | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
 
 #### Returns
 
 `Promise`\<`T`[]\>
 
----
+***
 
 ### fetchUnion()
 
@@ -111,21 +111,21 @@ fetchUnion(bbox, unionProperty?): Promise<FeatureCollection<T["geometry"], T["pr
 ```
 
 Fetches bundles of subdivided Polygon or MultiPolygon features within bbox and merges
-them back into their original features. Merge performance is faster if passed an
+them back into their original features.  Merge performance is faster if passed an
 additional unionProperty, a property that exists in each subdivided feature.
 
 #### Parameters
 
-| Parameter        | Type                              |
-| ---------------- | --------------------------------- |
-| `bbox`           | [`BBox`](../type-aliases/BBox.md) |
-| `unionProperty`? | `string`                          |
+| Parameter | Type |
+| ------ | ------ |
+| `bbox` | [`BBox`](../type-aliases/BBox.md) |
+| `unionProperty`? | `string` |
 
 #### Returns
 
 `Promise`\<[`FeatureCollection`](../interfaces/FeatureCollection.md)\<`T`\[`"geometry"`\], `T`\[`"properties"`\]\>\>
 
----
+***
 
 ### hint()
 
@@ -142,9 +142,9 @@ user pans a web map in anticipation of using this source.
 
 #### Parameters
 
-| Parameter | Type                              |
-| --------- | --------------------------------- |
-| `bbox`    | [`BBox`](../type-aliases/BBox.md) |
+| Parameter | Type |
+| ------ | ------ |
+| `bbox` | [`BBox`](../type-aliases/BBox.md) |
 
 #### Returns
 
@@ -156,7 +156,7 @@ Resolves when all requests are complete
 
 VectorDataSource
 
----
+***
 
 ### prefetch()
 
@@ -167,17 +167,17 @@ prefetch(bbox, feature?): Promise<void>
 Prefetch bundles for the given extent. If a Feature is provided, those
 bundles that overlap will be prioritized for download first.
 
-This operation is _not_ effected by `hintPrefetchLimit`. It's best used in
+This operation is *not* effected by `hintPrefetchLimit`. It's best used in
 situations where the datasource will be used for analysis in the immediate
 future. For example, when a user has started to draw a feature of interest
 which will be overlaid.
 
 #### Parameters
 
-| Parameter  | Type                                                                                                                                            | Description |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `bbox`     | [`BBox`](../type-aliases/BBox.md)                                                                                                               | -           |
-| `feature`? | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |             |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `bbox` | [`BBox`](../type-aliases/BBox.md) | - |
+| `feature`? | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |  |
 
 #### Returns
 
@@ -187,7 +187,7 @@ which will be overlaid.
 
 VectorDataSource
 
----
+***
 
 ### clearRegisteredSources()
 
@@ -199,7 +199,7 @@ static clearRegisteredSources(): void
 
 `void`
 
----
+***
 
 ### getRegisteredSources()
 
@@ -219,7 +219,7 @@ static getRegisteredSources(): VectorDataSourceDetails[]
 optional metadata: DataSourceMetadata;
 ```
 
----
+***
 
 ### options
 

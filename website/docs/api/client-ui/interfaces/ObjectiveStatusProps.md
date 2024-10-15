@@ -8,7 +8,7 @@
 msg: Element;
 ```
 
----
+***
 
 ### size?
 
@@ -16,7 +16,7 @@ msg: Element;
 optional size: number;
 ```
 
----
+***
 
 ### status
 
@@ -24,7 +24,7 @@ optional size: number;
 status: "yes" | "no" | "maybe";
 ```
 
----
+***
 
 ### style?
 

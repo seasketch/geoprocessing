@@ -1,15 +1,13 @@
 # isPolygonSketchCollection()
 
 ```ts
-function isPolygonSketchCollection(
-  collection,
-): collection is SketchCollection<Polygon>;
+function isPolygonSketchCollection(collection): collection is SketchCollection<Polygon>
 ```
 
 ## Parameters
 
-| Parameter    | Type  |
-| ------------ | ----- |
+| Parameter | Type |
+| ------ | ------ |
 | `collection` | `any` |
 
 ## Returns

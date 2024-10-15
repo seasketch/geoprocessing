@@ -1,13 +1,13 @@
 # gearTypeScore()
 
 ```ts
-function gearTypeScore(regulation): number;
+function gearTypeScore(regulation): number
 ```
 
 ## Parameters
 
-| Parameter    | Type     |
-| ------------ | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `regulation` | `string` |
 
 ## Returns

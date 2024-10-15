@@ -4,24 +4,14 @@
 const geographySchema: ZodObject<object, "strip", ZodTypeAny, object, object>;
 ```
 
-A geographic area (Polygon) for planning. Typically used to represent a planning area
+A geographic area (Polygon) for planning.  Typically used to represent a planning area
 
 ## Type declaration
 
 ### bboxFilter
 
 ```ts
-bboxFilter: ZodOptional<
-  ZodUnion<
-    [
-      ZodTuple<[ZodNumber, ZodNumber, ZodNumber, ZodNumber], null>,
-      ZodTuple<
-        [ZodNumber, ZodNumber, ZodNumber, ZodNumber, ZodNumber, ZodNumber],
-        null
-      >,
-    ]
-  >
->;
+bboxFilter: ZodOptional<ZodUnion<[ZodTuple<[ZodNumber, ZodNumber, ZodNumber, ZodNumber], null>, ZodTuple<[ZodNumber, ZodNumber, ZodNumber, ZodNumber, ZodNumber, ZodNumber], null>]>>;
 ```
 
 Optional, constrain geography to only features within a bounding box
@@ -77,9 +67,7 @@ Optional, defines whether or not precalc should be run for this geography
 ### propertyFilter
 
 ```ts
-propertyFilter: ZodOptional<
-  ZodObject<object, "strip", ZodTypeAny, object, object>
->;
+propertyFilter: ZodOptional<ZodObject<object, "strip", ZodTypeAny, object, object>>;
 ```
 
 Required if external datasource used, defines filter to constrain geography features, matches feature property having one or more specific values

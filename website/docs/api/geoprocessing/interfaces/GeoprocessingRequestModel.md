@@ -4,9 +4,9 @@ Geoprocessing request internal data model, with full objects, no JSON strings
 
 ## Type Parameters
 
-| Type Parameter | Default type                                                    |
-| -------------- | --------------------------------------------------------------- |
-| `G`            | [`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md) |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `G` | [`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md) |
 
 ## Properties
 
@@ -18,7 +18,7 @@ optional cacheKey: string;
 
 Cache key for this task
 
----
+***
 
 ### checkCacheOnly?
 
@@ -28,7 +28,7 @@ optional checkCacheOnly: string;
 
 If true, only check cache and do not run worker
 
----
+***
 
 ### disableCache?
 
@@ -36,9 +36,9 @@ If true, only check cache and do not run worker
 optional disableCache: boolean;
 ```
 
-If true, task state and result is not cached server-side. Only use for sync functions in a worker use case where its results are not needed
+If true, task state and result is not cached server-side.  Only use for sync functions in a worker use case where its results are not needed
 
----
+***
 
 ### extraParams?
 
@@ -48,7 +48,7 @@ optional extraParams: GeoprocessingRequestParams;
 
 Additional runtime parameters
 
----
+***
 
 ### geometry?
 
@@ -58,7 +58,7 @@ optional geometry: Sketch<G> | SketchCollection<G>;
 
 Sketch JSON
 
----
+***
 
 ### geometryGeobuf?
 
@@ -68,7 +68,7 @@ optional geometryGeobuf: string;
 
 Sketch Geobuf base64 string
 
----
+***
 
 ### geometryUri?
 
@@ -78,7 +78,7 @@ optional geometryUri: string;
 
 URL to fetch Sketch JSON
 
----
+***
 
 ### onSocketConnect?
 
@@ -86,7 +86,7 @@ URL to fetch Sketch JSON
 optional onSocketConnect: string;
 ```
 
----
+***
 
 ### token?
 
@@ -94,7 +94,7 @@ optional onSocketConnect: string;
 optional token: string;
 ```
 
----
+***
 
 ### wss?
 

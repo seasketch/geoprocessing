@@ -10,7 +10,7 @@ dstPath: string;
 
 Path to store imported datasets after transformation, ready to be published or accessed via local web server for tests
 
----
+***
 
 ### gp
 
@@ -56,7 +56,7 @@ preprocessingFunctions: string[];
 region: string;
 ```
 
----
+***
 
 ### package
 

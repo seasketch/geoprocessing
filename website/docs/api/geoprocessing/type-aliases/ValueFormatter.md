@@ -1,7 +1,7 @@
 # ValueFormatter
 
 ```ts
-type ValueFormatter:
+type ValueFormatter: 
   | "value"
   | "number"
   | "number1dig"

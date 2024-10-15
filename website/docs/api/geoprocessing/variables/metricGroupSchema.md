@@ -11,10 +11,7 @@ Defines a metric in combination with a datasource, with one or more data classes
 ### classes
 
 ```ts
-classes: ZodArray<
-  ZodObject<object, "strip", ZodTypeAny, object, object>,
-  "many"
->;
+classes: ZodArray<ZodObject<object, "strip", ZodTypeAny, object, object>, "many">;
 ```
 
 data classes used by group

@@ -18,7 +18,7 @@ classId: null | string;
 
 `Omit.classId`
 
----
+***
 
 ### extra?
 
@@ -50,7 +50,7 @@ optional gearTypes: string[];
 optional label: string;
 ```
 
----
+***
 
 ### geographyId
 
@@ -62,7 +62,7 @@ geographyId: null | string;
 
 `Omit.geographyId`
 
----
+***
 
 ### groupId
 
@@ -74,7 +74,7 @@ groupId: null | string;
 
 `Omit.groupId`
 
----
+***
 
 ### metricId
 
@@ -86,7 +86,7 @@ metricId: string;
 
 `Omit.metricId`
 
----
+***
 
 ### sketchId
 
@@ -98,7 +98,7 @@ sketchId: string;
 
 `Omit.sketchId`
 
----
+***
 
 ### value
 

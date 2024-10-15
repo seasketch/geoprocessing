@@ -4,10 +4,9 @@
 
 ```ts
 function booleanOverlap<B>(
-  featureAInput,
-  featureBInput,
-  idProperty?,
-): Promise<B[]>;
+   featureAInput, 
+   featureBInput, 
+idProperty?): Promise<B[]>
 ```
 
 Returns all B items that overlap with a A items
@@ -16,17 +15,17 @@ A and B must have the same geometry dimension (single or multi). Builds on @turf
 
 ### Type Parameters
 
-| Type Parameter                                                                                                            |
-| ------------------------------------------------------------------------------------------------------------------------- |
-| `B` _extends_ [`Feature`](../interfaces/Feature.md)\<`any`, [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
+| Type Parameter |
+| ------ |
+| `B` *extends* [`Feature`](../interfaces/Feature.md)\<`any`, [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
 
 ### Parameters
 
-| Parameter       | Type                                                                                                                                                                                                                                                                                                 | Description                                                                                                                                      |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `featureAInput` | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> \| [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\>[] | -                                                                                                                                                |
-| `featureBInput` | `B` \| `B`[]                                                                                                                                                                                                                                                                                         | -                                                                                                                                                |
-| `idProperty`?   | `string`                                                                                                                                                                                                                                                                                             | property in Feature B to track if overlap already found. Useful if multiple features have same property value and you only want the first match. |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `featureAInput` | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> \| [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\>[] | - |
+| `featureBInput` | `B` \| `B`[] | - |
+| `idProperty`? | `string` | property in Feature B to track if overlap already found. Useful if multiple features have same property value and you only want the first match. |
 
 ### Returns
 
@@ -36,25 +35,24 @@ A and B must have the same geometry dimension (single or multi). Builds on @turf
 
 ```ts
 function booleanOverlap<B>(
-  featureAInput,
-  featureBInput,
-  idProperty?,
-): Promise<B[]>;
+   featureAInput, 
+   featureBInput, 
+idProperty?): Promise<B[]>
 ```
 
 ### Type Parameters
 
-| Type Parameter                                                                                                                                                |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `B` _extends_ [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
+| Type Parameter |
+| ------ |
+| `B` *extends* [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
 
 ### Parameters
 
-| Parameter       | Type                                        |
-| --------------- | ------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `featureAInput` | [`Geometry`](../type-aliases/Geometry.md)[] |
-| `featureBInput` | `B` \| `B`[]                                |
-| `idProperty`?   | `string`                                    |
+| `featureBInput` | `B` \| `B`[] |
+| `idProperty`? | `string` |
 
 ### Returns
 
@@ -64,25 +62,24 @@ function booleanOverlap<B>(
 
 ```ts
 function booleanOverlap<B>(
-  featureAInput,
-  featureBInput,
-  idProperty?,
-): Promise<B[]>;
+   featureAInput, 
+   featureBInput, 
+idProperty?): Promise<B[]>
 ```
 
 ### Type Parameters
 
-| Type Parameter                                          |
-| ------------------------------------------------------- |
-| `B` _extends_ [`Geometry`](../type-aliases/Geometry.md) |
+| Type Parameter |
+| ------ |
+| `B` *extends* [`Geometry`](../type-aliases/Geometry.md) |
 
 ### Parameters
 
-| Parameter       | Type                                                                                                                                                                                                                                                                                                 |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `featureAInput` | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> \| [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\>[] |
-| `featureBInput` | `B` \| `B`[]                                                                                                                                                                                                                                                                                         |
-| `idProperty`?   | `string`                                                                                                                                                                                                                                                                                             |
+| `featureBInput` | `B` \| `B`[] |
+| `idProperty`? | `string` |
 
 ### Returns
 
@@ -92,25 +89,24 @@ function booleanOverlap<B>(
 
 ```ts
 function booleanOverlap<B>(
-  featureAInput,
-  featureBInput,
-  idProperty?,
-): Promise<B[]>;
+   featureAInput, 
+   featureBInput, 
+idProperty?): Promise<B[]>
 ```
 
 ### Type Parameters
 
-| Type Parameter                                          |
-| ------------------------------------------------------- |
-| `B` _extends_ [`Geometry`](../type-aliases/Geometry.md) |
+| Type Parameter |
+| ------ |
+| `B` *extends* [`Geometry`](../type-aliases/Geometry.md) |
 
 ### Parameters
 
-| Parameter       | Type                                                                                     |
-| --------------- | ---------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `featureAInput` | [`Geometry`](../type-aliases/Geometry.md) \| [`Geometry`](../type-aliases/Geometry.md)[] |
-| `featureBInput` | `B` \| `B`[]                                                                             |
-| `idProperty`?   | `string`                                                                                 |
+| `featureBInput` | `B` \| `B`[] |
+| `idProperty`? | `string` |
 
 ### Returns
 

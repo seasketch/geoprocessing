@@ -12,7 +12,7 @@
 description: string;
 ```
 
----
+***
 
 ### memory?
 
@@ -22,7 +22,7 @@ optional memory: number;
 
 Megabytes, 128 - 3008, defaults to 1024
 
----
+***
 
 ### requiresProperties
 
@@ -30,7 +30,7 @@ Megabytes, 128 - 3008, defaults to 1024
 requiresProperties: string[];
 ```
 
----
+***
 
 ### timeout
 
@@ -40,7 +40,7 @@ timeout: number;
 
 Seconds
 
----
+***
 
 ### title
 

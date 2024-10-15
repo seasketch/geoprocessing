@@ -7,8 +7,8 @@
 ## Type Parameters
 
 | Type Parameter | Default type |
-| -------------- | ------------ |
-| `ResultType`   | `any`        |
+| ------ | ------ |
+| `ResultType` | `any` |
 
 ## Properties
 
@@ -22,7 +22,7 @@ optional data: ResultType;
 
 [`MetricGroupItem`](MetricGroupItem.md).[`data`](MetricGroupItem.md#data)
 
----
+***
 
 ### duration?
 
@@ -34,7 +34,7 @@ optional duration: number;
 
 [`MetricGroupItem`](MetricGroupItem.md).[`duration`](MetricGroupItem.md#duration)
 
----
+***
 
 ### metricGroupItems
 
@@ -42,7 +42,7 @@ optional duration: number;
 metricGroupItems: string[];
 ```
 
----
+***
 
 ### status
 

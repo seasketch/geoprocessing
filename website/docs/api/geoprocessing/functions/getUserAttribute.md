@@ -3,7 +3,7 @@
 ## getUserAttribute(sketchOrProps, exportid)
 
 ```ts
-function getUserAttribute<T>(sketchOrProps, exportid): T | undefined;
+function getUserAttribute<T>(sketchOrProps, exportid): T | undefined
 ```
 
 UserAttributes are those filled in via the attributes form specified as
@@ -14,15 +14,15 @@ easier to use with typescript.
 ### Type Parameters
 
 | Type Parameter |
-| -------------- |
-| `T`            |
+| ------ |
+| `T` |
 
 ### Parameters
 
-| Parameter       | Type                                                                                                                                                                                                                                                                                              |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `sketchOrProps` | [`SketchProperties`](../type-aliases/SketchProperties.md) \| [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> \| [`SketchCollection`](../interfaces/SketchCollection.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> |
-| `exportid`      | `string`                                                                                                                                                                                                                                                                                          |
+| `exportid` | `string` |
 
 ### Returns
 
@@ -31,22 +31,25 @@ easier to use with typescript.
 ## getUserAttribute(sketchOrProps, exportid, defaultValue)
 
 ```ts
-function getUserAttribute<T>(sketchOrProps, exportid, defaultValue): T;
+function getUserAttribute<T>(
+   sketchOrProps, 
+   exportid, 
+   defaultValue): T
 ```
 
 ### Type Parameters
 
 | Type Parameter |
-| -------------- |
-| `T`            |
+| ------ |
+| `T` |
 
 ### Parameters
 
-| Parameter       | Type                                                                                                                                                                                                                                                                                              |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `sketchOrProps` | [`SketchProperties`](../type-aliases/SketchProperties.md) \| [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> \| [`SketchCollection`](../interfaces/SketchCollection.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> |
-| `exportid`      | `string`                                                                                                                                                                                                                                                                                          |
-| `defaultValue`  | `T`                                                                                                                                                                                                                                                                                               |
+| `exportid` | `string` |
+| `defaultValue` | `T` |
 
 ### Returns
 

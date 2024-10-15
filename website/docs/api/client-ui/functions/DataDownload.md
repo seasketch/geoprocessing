@@ -1,7 +1,7 @@
 # DataDownload()
 
 ```ts
-function DataDownload(__namedParameters): Element;
+function DataDownload(__namedParameters): Element
 ```
 
 Dropdown menu for transforming data to CSV/JSON format and initiating a browser download
@@ -10,8 +10,8 @@ and current timestamp
 
 ## Parameters
 
-| Parameter           | Type                                                      |
-| ------------------- | --------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`DataDownloadProps`](../interfaces/DataDownloadProps.md) |
 
 ## Returns

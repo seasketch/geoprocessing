@@ -2,8 +2,8 @@
 
 ## Type Parameters
 
-| Type Parameter | Default type            |
-| -------------- | ----------------------- |
+| Type Parameter | Default type |
+| ------ | ------ |
 | `ResponseType` | [`Feature`](Feature.md) |
 
 ## Properties
@@ -14,7 +14,7 @@
 optional data: ResponseType;
 ```
 
----
+***
 
 ### error?
 
@@ -22,7 +22,7 @@ optional data: ResponseType;
 optional error: string;
 ```
 
----
+***
 
 ### status
 

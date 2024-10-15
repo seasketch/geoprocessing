@@ -1,7 +1,7 @@
 # toSketchArray()
 
 ```ts
-function toSketchArray<G>(input): Sketch<G>[];
+function toSketchArray<G>(input): Sketch<G>[]
 ```
 
 Helper to convert a Sketch or SketchCollection to a Sketch array, maintaining geometry type
@@ -9,14 +9,14 @@ Helper to convert a Sketch or SketchCollection to a Sketch array, maintaining ge
 ## Type Parameters
 
 | Type Parameter |
-| -------------- |
-| `G`            |
+| ------ |
+| `G` |
 
 ## Parameters
 
-| Parameter | Type                                                                                                         |
-| --------- | ------------------------------------------------------------------------------------------------------------ |
-| `input`   | [`Sketch`](../interfaces/Sketch.md)\<`G`\> \| [`SketchCollection`](../interfaces/SketchCollection.md)\<`G`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `input` | [`Sketch`](../interfaces/Sketch.md)\<`G`\> \| [`SketchCollection`](../interfaces/SketchCollection.md)\<`G`\> |
 
 ## Returns
 

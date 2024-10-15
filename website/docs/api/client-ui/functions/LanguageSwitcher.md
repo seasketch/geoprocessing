@@ -1,7 +1,7 @@
 # LanguageSwitcher()
 
 ```ts
-function LanguageSwitcher(): Element;
+function LanguageSwitcher(): Element
 ```
 
 ## Returns

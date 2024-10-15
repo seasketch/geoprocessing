@@ -3,8 +3,8 @@
 ## Type Parameters
 
 | Type Parameter |
-| -------------- |
-| `T`            |
+| ------ |
+| `T` |
 
 ## Properties
 
@@ -17,14 +17,14 @@ children: (results) => ReactNode;
 #### Parameters
 
 | Parameter | Type |
-| --------- | ---- |
-| `results` | `T`  |
+| ------ | ------ |
+| `results` | `T` |
 
 #### Returns
 
 `ReactNode`
 
----
+***
 
 ### extraParams?
 
@@ -34,7 +34,7 @@ optional extraParams: GeoprocessingRequestParams;
 
 Additional runtime parameters from report client for geoprocessing function.
 
----
+***
 
 ### functionName
 
@@ -42,7 +42,7 @@ Additional runtime parameters from report client for geoprocessing function.
 functionName: string;
 ```
 
----
+***
 
 ### skeleton?
 
@@ -50,7 +50,7 @@ functionName: string;
 optional skeleton: ReactNode;
 ```
 
----
+***
 
 ### style?
 
@@ -58,7 +58,7 @@ optional skeleton: ReactNode;
 optional style: object;
 ```
 
----
+***
 
 ### title?
 
@@ -66,7 +66,7 @@ optional style: object;
 optional title: ReactNode;
 ```
 
----
+***
 
 ### titleStyle?
 
@@ -74,7 +74,7 @@ optional title: ReactNode;
 optional titleStyle: CSSProperties;
 ```
 
----
+***
 
 ### useChildCard?
 

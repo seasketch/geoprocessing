@@ -1,21 +1,21 @@
 # metricsSketchIds()
 
 ```ts
-function metricsSketchIds<M>(metrics): string[];
+function metricsSketchIds<M>(metrics): string[]
 ```
 
 Returns metrics with matching sketchId (can be an array of sketchids)
 
 ## Type Parameters
 
-| Type Parameter         |
-| ---------------------- |
-| `M` _extends_ `object` |
+| Type Parameter |
+| ------ |
+| `M` *extends* `object` |
 
 ## Parameters
 
-| Parameter | Type  |
-| --------- | ----- |
+| Parameter | Type |
+| ------ | ------ |
 | `metrics` | `M`[] |
 
 ## Returns

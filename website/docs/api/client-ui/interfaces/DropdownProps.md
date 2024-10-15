@@ -10,7 +10,7 @@ Renders an element with a dropdown list
 children: ReactNode;
 ```
 
----
+***
 
 ### offset?
 
@@ -30,7 +30,7 @@ horizontal: number;
 vertical: number;
 ```
 
----
+***
 
 ### placement?
 
@@ -38,7 +38,7 @@ vertical: number;
 optional placement: Placement;
 ```
 
----
+***
 
 ### titleElement?
 

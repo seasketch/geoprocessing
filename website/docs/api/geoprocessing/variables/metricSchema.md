@@ -15,9 +15,7 @@ classId: ZodNullable<ZodString>;
 ### extra
 
 ```ts
-extra: ZodOptional<
-  ZodRecord<ZodString, ZodType<JSONValue, ZodTypeDef, JSONValue>>
->;
+extra: ZodOptional<ZodRecord<ZodString, ZodType<JSONValue, ZodTypeDef, JSONValue>>>;
 ```
 
 ### geographyId

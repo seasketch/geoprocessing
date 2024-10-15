@@ -8,7 +8,7 @@
 children: ReactNode;
 ```
 
----
+***
 
 ### collapsed?
 
@@ -16,7 +16,7 @@ children: ReactNode;
 optional collapsed: boolean;
 ```
 
----
+***
 
 ### title
 

@@ -8,7 +8,7 @@
 displayName: string;
 ```
 
----
+***
 
 ### displayValue?
 
@@ -16,7 +16,7 @@ displayName: string;
 optional displayValue: boolean;
 ```
 
----
+***
 
 ### group?
 
@@ -26,7 +26,7 @@ optional group: string;
 
 Group to use for this circle
 
----
+***
 
 ### groupColorMap?
 
@@ -36,7 +36,7 @@ optional groupColorMap: Record<string, string>;
 
 Mapping of group names to color
 
----
+***
 
 ### size?
 
@@ -44,7 +44,7 @@ Mapping of group names to color
 optional size: number;
 ```
 
----
+***
 
 ### value
 

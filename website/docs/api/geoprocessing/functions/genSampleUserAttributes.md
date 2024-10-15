@@ -1,7 +1,7 @@
 # genSampleUserAttributes()
 
 ```ts
-function genSampleUserAttributes(): UserAttribute[];
+function genSampleUserAttributes(): UserAttribute[]
 ```
 
 ## Returns

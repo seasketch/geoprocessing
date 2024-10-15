@@ -8,19 +8,19 @@ Object mapping answers for whether sketch counts toward objective to stop light 
 
 ## Type declaration
 
-### OBJECTIVE_MAYBE
+### OBJECTIVE\_MAYBE
 
 ```ts
 OBJECTIVE_MAYBE: string = OBJECTIVE_YELLOW;
 ```
 
-### OBJECTIVE_NO
+### OBJECTIVE\_NO
 
 ```ts
 OBJECTIVE_NO: string = OBJECTIVE_RED;
 ```
 
-### OBJECTIVE_YES
+### OBJECTIVE\_YES
 
 ```ts
 OBJECTIVE_YES: string = OBJECTIVE_GREEN;

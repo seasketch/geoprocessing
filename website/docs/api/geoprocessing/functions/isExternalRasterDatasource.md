@@ -1,14 +1,14 @@
 # isExternalRasterDatasource()
 
 ```ts
-function isExternalRasterDatasource(ds): ds is Object & Object;
+function isExternalRasterDatasource(ds): ds is Object & Object
 ```
 
 ## Parameters
 
-| Parameter | Type  | Description                     |
-| --------- | ----- | ------------------------------- |
-| `ds`      | `any` | ExternalRasterDatasource object |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ds` | `any` | ExternalRasterDatasource object |
 
 ## Returns
 

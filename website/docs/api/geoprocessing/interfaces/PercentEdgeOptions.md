@@ -8,9 +8,9 @@
 optional digits: number;
 ```
 
-Number of decimal digits to round value to if is within lower or upper edge range. defaults to 1. Override with this option
+Number of decimal digits to round value to if is within lower or upper edge range.  defaults to 1.  Override with this option
 
----
+***
 
 ### digitsIfMatchLower?
 
@@ -20,7 +20,7 @@ optional digitsIfMatchLower: number;
 
 Number of decimal digits to round value to if exactly matches lowerBound, defaults to 0 (whole number)
 
----
+***
 
 ### lower?
 
@@ -28,9 +28,9 @@ Number of decimal digits to round value to if exactly matches lowerBound, defaul
 optional lower: number;
 ```
 
-Enable special formatting of values from lowerBound up to lower value. Defaults to .001 aka 1/10 of a percent
+Enable special formatting of values from lowerBound up to lower value.  Defaults to .001 aka 1/10 of a percent
 
----
+***
 
 ### lowerBound?
 
@@ -38,9 +38,9 @@ Enable special formatting of values from lowerBound up to lower value. Defaults 
 optional lowerBound: number;
 ```
 
-Define a lower value bound. Defaults to 0 (zero).
+Define a lower value bound.  Defaults to 0 (zero).
 
----
+***
 
 ### lowerOverride?
 
@@ -48,9 +48,9 @@ Define a lower value bound. Defaults to 0 (zero).
 optional lowerOverride: string;
 ```
 
-Optional string value to display if between zero and lower. Overrides default special handling, no use of percent formatter. Example - "< 0.1% for real"
+Optional string value to display if between zero and lower.  Overrides default special handling, no use of percent formatter.  Example - "< 0.1% for real"
 
----
+***
 
 ### upper?
 
@@ -58,9 +58,9 @@ Optional string value to display if between zero and lower. Overrides default sp
 optional upper: number;
 ```
 
-Define lower bound to upper value. Enable special formatting of values from upper to upperBound
+Define lower bound to upper value.  Enable special formatting of values from upper to upperBound
 
----
+***
 
 ### upperBound?
 
@@ -68,9 +68,9 @@ Define lower bound to upper value. Enable special formatting of values from uppe
 optional upperBound: number;
 ```
 
-Define an upper value bound. Enable special formatting of values from upper to upperBound
+Define an upper value bound.  Enable special formatting of values from upper to upperBound
 
----
+***
 
 ### upperOverride?
 
@@ -78,4 +78,4 @@ Define an upper value bound. Enable special formatting of values from upper to u
 optional upperOverride: string;
 ```
 
-Optional string value to display if between upper and upperBound. Overrides default special handling, no use of percent formatter. Example - "almost 20%, keep going!"
+Optional string value to display if between upper and upperBound.  Overrides default special handling, no use of percent formatter.  Example - "almost 20%, keep going!"

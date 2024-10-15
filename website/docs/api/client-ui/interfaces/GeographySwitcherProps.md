@@ -8,7 +8,7 @@
 changeGeography: ChangeEventHandler<HTMLSelectElement>;
 ```
 
----
+***
 
 ### curGeographyId
 
@@ -16,7 +16,7 @@ changeGeography: ChangeEventHandler<HTMLSelectElement>;
 curGeographyId: string;
 ```
 
----
+***
 
 ### geographies
 

@@ -11,20 +11,20 @@ optional getValues: (options) => Promise<TypedArray[][]>;
 if raster initialized with a URL, this method is available to fetch a
 specific subset or 'window' without reading the entire raster into memory.
 If the window options do not align exactly with the source image then a new
-one is generated using the resampleMethod. The best available overview will
+one is generated using the resampleMethod.  The best available overview will
 also be used if they are available.
 
 #### Parameters
 
-| Parameter | Type                                |
-| --------- | ----------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `options` | [`WindowOptions`](WindowOptions.md) |
 
 #### Returns
 
 `Promise`\<[`TypedArray`](../type-aliases/TypedArray.md)[][]\>
 
----
+***
 
 ### height
 
@@ -34,7 +34,7 @@ height: number;
 
 raster height in units of projection
 
----
+***
 
 ### maxs
 
@@ -42,9 +42,9 @@ raster height in units of projection
 maxs: number[];
 ```
 
-Maximum cell value for each raster band. Indexed by band number
+Maximum cell value for each raster band.  Indexed by band number
 
----
+***
 
 ### mins
 
@@ -52,9 +52,9 @@ Maximum cell value for each raster band. Indexed by band number
 mins: number[];
 ```
 
-Minimum cell value for each raster band. Indexed by band number
+Minimum cell value for each raster band.  Indexed by band number
 
----
+***
 
 ### noDataValue
 
@@ -64,7 +64,7 @@ noDataValue: number;
 
 cell value representing "no data" in raster
 
----
+***
 
 ### numberOfRasters
 
@@ -74,7 +74,7 @@ numberOfRasters: number;
 
 number of raster bands
 
----
+***
 
 ### pixelHeight
 
@@ -84,7 +84,7 @@ pixelHeight: number;
 
 raster height in pixels
 
----
+***
 
 ### pixelWidth
 
@@ -94,7 +94,7 @@ pixelWidth: number;
 
 raster width in pixels
 
----
+***
 
 ### projection
 
@@ -104,7 +104,7 @@ projection: number;
 
 Projection identifier
 
----
+***
 
 ### ranges
 
@@ -112,9 +112,9 @@ Projection identifier
 ranges: number[];
 ```
 
-difference between max and min for each raster band. Indexed by band number
+difference between max and min for each raster band.  Indexed by band number
 
----
+***
 
 ### toCanvas()
 
@@ -126,17 +126,17 @@ experimental! returns a canvas picture of the data.
 
 #### Parameters
 
-| Parameter         | Type     |
-| ----------------- | -------- |
-| `options`         | `object` |
+| Parameter | Type |
+| ------ | ------ |
+| `options` | `object` |
 | `options.height`? | `number` |
-| `options.width`?  | `number` |
+| `options.width`? | `number` |
 
 #### Returns
 
 `ImageData`
 
----
+***
 
 ### values
 
@@ -144,9 +144,9 @@ experimental! returns a canvas picture of the data.
 values: TypedArray[][];
 ```
 
-raster values for one or more bands. Represented as [band, column, row]
+raster values for one or more bands.  Represented as [band, column, row]
 
----
+***
 
 ### width
 
@@ -156,7 +156,7 @@ width: number;
 
 raster width in units of projection
 
----
+***
 
 ### xmax
 
@@ -166,7 +166,7 @@ xmax: number;
 
 right boundary, in units of projection
 
----
+***
 
 ### xmin
 
@@ -176,7 +176,7 @@ xmin: number;
 
 left boundary, in units of projection
 
----
+***
 
 ### ymax
 
@@ -186,7 +186,7 @@ ymax: number;
 
 top boundary, in units of projection
 
----
+***
 
 ### ymin
 

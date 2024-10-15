@@ -1,16 +1,16 @@
 # createMetric()
 
 ```ts
-function createMetric(metric): object;
+function createMetric(metric): object
 ```
 
-Creates a new metric. Defaults to ID values of null and then copies in passed metric properties
+Creates a new metric.  Defaults to ID values of null and then copies in passed metric properties
 
 ## Parameters
 
-| Parameter | Type                  | Description    |
-| --------- | --------------------- | -------------- |
-| `metric`  | `Partial`\<`object`\> | partial metric |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `metric` | `Partial`\<`object`\> | partial metric |
 
 ## Returns
 

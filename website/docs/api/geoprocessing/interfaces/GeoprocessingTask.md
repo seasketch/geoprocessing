@@ -3,8 +3,8 @@
 ## Type Parameters
 
 | Type Parameter | Default type |
-| -------------- | ------------ |
-| `ResultType`   | `any`        |
+| ------ | ------ |
+| `ResultType` | `any` |
 
 ## Properties
 
@@ -14,7 +14,7 @@
 optional data: ResultType;
 ```
 
----
+***
 
 ### disableCache?
 
@@ -22,7 +22,7 @@ optional data: ResultType;
 optional disableCache: boolean;
 ```
 
----
+***
 
 ### duration?
 
@@ -30,7 +30,7 @@ optional disableCache: boolean;
 optional duration: number;
 ```
 
----
+***
 
 ### error?
 
@@ -38,7 +38,7 @@ optional duration: number;
 optional error: string;
 ```
 
----
+***
 
 ### estimate
 
@@ -46,7 +46,7 @@ optional error: string;
 estimate: number;
 ```
 
----
+***
 
 ### geometryUri
 
@@ -54,7 +54,7 @@ estimate: number;
 geometryUri: string;
 ```
 
----
+***
 
 ### id
 
@@ -62,7 +62,7 @@ geometryUri: string;
 id: string;
 ```
 
----
+***
 
 ### location
 
@@ -70,7 +70,7 @@ id: string;
 location: string;
 ```
 
----
+***
 
 ### logUriTemplate
 
@@ -78,7 +78,7 @@ location: string;
 logUriTemplate: string;
 ```
 
----
+***
 
 ### service
 
@@ -86,7 +86,7 @@ logUriTemplate: string;
 service: string;
 ```
 
----
+***
 
 ### startedAt
 
@@ -94,7 +94,7 @@ service: string;
 startedAt: string;
 ```
 
----
+***
 
 ### status
 
@@ -102,7 +102,7 @@ startedAt: string;
 status: GeoprocessingTaskStatus;
 ```
 
----
+***
 
 ### wss
 

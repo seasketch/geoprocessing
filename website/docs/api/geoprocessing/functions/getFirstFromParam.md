@@ -1,25 +1,28 @@
 # getFirstFromParam()
 
 ```ts
-function getFirstFromParam<P>(paramName, params, options): undefined | string;
+function getFirstFromParam<P>(
+   paramName, 
+   params, 
+   options): undefined | string
 ```
 
-Returns first element from param object at paramName key. Parameter can be string or array of strings
+Returns first element from param object at paramName key.  Parameter can be string or array of strings
 
 ## Type Parameters
 
-| Type Parameter                                                            |
-| ------------------------------------------------------------------------- |
-| `P` _extends_ [`DefaultExtraParams`](../interfaces/DefaultExtraParams.md) |
+| Type Parameter |
+| ------ |
+| `P` *extends* [`DefaultExtraParams`](../interfaces/DefaultExtraParams.md) |
 
 ## Parameters
 
-| Parameter           | Type      | Description                                         |
-| ------------------- | --------- | --------------------------------------------------- |
-| `paramName`         | `string`  | name of array parameter to extract from extraParams |
-| `params`            | `P`       | the object containing parameters                    |
-| `options`           | `object`  | -                                                   |
-| `options.required`? | `boolean` | -                                                   |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `paramName` | `string` | name of array parameter to extract from extraParams |
+| `params` | `P` | the object containing parameters |
+| `options` | `object` | - |
+| `options.required`? | `boolean` | - |
 
 ## Returns
 

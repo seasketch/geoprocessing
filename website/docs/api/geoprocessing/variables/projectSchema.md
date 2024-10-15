@@ -9,15 +9,7 @@ const projectSchema: ZodObject<object, "strip", ZodTypeAny, object, object>;
 ### bbox
 
 ```ts
-bbox: ZodUnion<
-  [
-    ZodTuple<[ZodNumber, ZodNumber, ZodNumber, ZodNumber], null>,
-    ZodTuple<
-      [ZodNumber, ZodNumber, ZodNumber, ZodNumber, ZodNumber, ZodNumber],
-      null
-    >,
-  ]
-> = bboxSchema;
+bbox: ZodUnion<[ZodTuple<[ZodNumber, ZodNumber, ZodNumber, ZodNumber], null>, ZodTuple<[ZodNumber, ZodNumber, ZodNumber, ZodNumber, ZodNumber, ZodNumber], null>]> = bboxSchema;
 ```
 
 ### externalLinks

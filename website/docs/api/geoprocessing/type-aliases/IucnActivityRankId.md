@@ -1,7 +1,7 @@
 # IucnActivityRankId
 
 ```ts
-type IucnActivityRankId:
+type IucnActivityRankId: 
   | "yes"
   | "yesbut"
   | "no"

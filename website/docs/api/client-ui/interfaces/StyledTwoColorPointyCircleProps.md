@@ -8,7 +8,7 @@
 optional $bottomColor: string;
 ```
 
----
+***
 
 ### $perc
 
@@ -16,7 +16,7 @@ optional $bottomColor: string;
 $perc: number;
 ```
 
----
+***
 
 ### $size?
 
@@ -24,7 +24,7 @@ $perc: number;
 optional $size: number;
 ```
 
----
+***
 
 ### $topColor?
 

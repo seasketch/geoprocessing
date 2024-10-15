@@ -1,7 +1,7 @@
 # zeroPolygon()
 
 ```ts
-function zeroPolygon(): object;
+function zeroPolygon(): object
 ```
 
 Returns a zero polygon geometry (three [0,0] coordinates)

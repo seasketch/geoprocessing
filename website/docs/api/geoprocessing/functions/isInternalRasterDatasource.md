@@ -1,14 +1,14 @@
 # isInternalRasterDatasource()
 
 ```ts
-function isInternalRasterDatasource(ds): ds is Object;
+function isInternalRasterDatasource(ds): ds is Object
 ```
 
 ## Parameters
 
-| Parameter | Type  | Description                     |
-| --------- | ----- | ------------------------------- |
-| `ds`      | `any` | InternalRasterDatasource object |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ds` | `any` | InternalRasterDatasource object |
 
 ## Returns
 

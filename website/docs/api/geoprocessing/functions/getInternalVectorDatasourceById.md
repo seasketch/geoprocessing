@@ -1,17 +1,17 @@
 # getInternalVectorDatasourceById()
 
 ```ts
-function getInternalVectorDatasourceById(datasourceId, datasources): object;
+function getInternalVectorDatasourceById(datasourceId, datasources): object
 ```
 
 find and return internal vector datasource from passed datasources
 
 ## Parameters
 
-| Parameter      | Type                                                                   |
-| -------------- | ---------------------------------------------------------------------- |
-| `datasourceId` | `string`                                                               |
-| `datasources`  | (`object` \| `object` \| `object` & `object` \| `object` & `object`)[] |
+| Parameter | Type |
+| ------ | ------ |
+| `datasourceId` | `string` |
+| `datasources` | (`object` \| `object` \| `object` & `object` \| `object` & `object`)[] |
 
 ## Returns
 
@@ -31,7 +31,7 @@ Optional, constrain datasource to smaller bbox
 classKeys: string[];
 ```
 
-keys to generate classes for. Vector - property names
+keys to generate classes for.  Vector - property names
 
 ### created
 
@@ -65,7 +65,7 @@ formats: ("fgb" | "json" | "tif" | "subdivided")[];
 
 Available formats
 
-### geo_type
+### geo\_type
 
 ```ts
 geo_type: "vector" | "raster" = geoTypesSchema;

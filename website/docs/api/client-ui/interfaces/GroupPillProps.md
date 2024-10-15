@@ -8,7 +8,7 @@
 children: ReactNode;
 ```
 
----
+***
 
 ### group
 
@@ -16,7 +16,7 @@ children: ReactNode;
 group: string;
 ```
 
----
+***
 
 ### groupColorMap
 

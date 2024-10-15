@@ -1,16 +1,19 @@
 # rbcsMpaToMetric()
 
 ```ts
-function rbcsMpaToMetric(sketchId, score, label): RegBasedClassificationMetric;
+function rbcsMpaToMetric(
+   sketchId, 
+   score, 
+   label): RegBasedClassificationMetric
 ```
 
 ## Parameters
 
-| Parameter  | Type     |
-| ---------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `sketchId` | `string` |
-| `score`    | `number` |
-| `label`    | `string` |
+| `score` | `number` |
+| `label` | `string` |
 
 ## Returns
 

@@ -1,13 +1,7 @@
 # geoprocessingConfigSchema
 
 ```ts
-const geoprocessingConfigSchema: ZodObject<
-  object,
-  "strip",
-  ZodTypeAny,
-  object,
-  object
->;
+const geoprocessingConfigSchema: ZodObject<object, "strip", ZodTypeAny, object, object>;
 ```
 
 Represents a single JS package
@@ -23,10 +17,7 @@ author: ZodString;
 ### clients
 
 ```ts
-clients: ZodArray<
-  ZodObject<object, "strip", ZodTypeAny, object, object>,
-  "many"
->;
+clients: ZodArray<ZodObject<object, "strip", ZodTypeAny, object, object>, "many">;
 ```
 
 ### geoprocessingFunctions

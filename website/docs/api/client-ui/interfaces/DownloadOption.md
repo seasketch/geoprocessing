@@ -10,7 +10,7 @@ contentType: string;
 
 MIME type of associated with data format
 
----
+***
 
 ### extension
 
@@ -20,7 +20,7 @@ extension: "json" | "csv";
 
 File extension for format, also used to uniquely identify each format
 
----
+***
 
 ### label
 
@@ -30,7 +30,7 @@ label: string;
 
 Label to display for download option
 
----
+***
 
 ### url
 

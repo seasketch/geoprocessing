@@ -1,20 +1,20 @@
 # getDatasetBucketName()
 
 ```ts
-function getDatasetBucketName<C>(config): string;
+function getDatasetBucketName<C>(config): string
 ```
 
 ## Type Parameters
 
-| Type Parameter                                                                            |
-| ----------------------------------------------------------------------------------------- |
-| `C` _extends_ [`BaseImportDatasourceConfig`](../interfaces/BaseImportDatasourceConfig.md) |
+| Type Parameter |
+| ------ |
+| `C` *extends* [`BaseImportDatasourceConfig`](../interfaces/BaseImportDatasourceConfig.md) |
 
 ## Parameters
 
 | Parameter | Type |
-| --------- | ---- |
-| `config`  | `C`  |
+| ------ | ------ |
+| `config` | `C` |
 
 ## Returns
 

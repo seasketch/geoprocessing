@@ -1,13 +1,13 @@
 # KeySection()
 
 ```ts
-function KeySection(__namedParameters): Element;
+function KeySection(__namedParameters): Element
 ```
 
 ## Parameters
 
-| Parameter           | Type                                                  |
-| ------------------- | ----------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`KeySectionProps`](../interfaces/KeySectionProps.md) |
 
 ## Returns

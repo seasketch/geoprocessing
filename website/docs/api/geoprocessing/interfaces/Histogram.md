@@ -2,4 +2,4 @@
 
 ## Indexable
 
-\[`binKey`: `string`\]: `number`
+ \[`binKey`: `string`\]: `number`

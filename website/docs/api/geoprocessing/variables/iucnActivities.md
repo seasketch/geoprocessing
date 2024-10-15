@@ -6,73 +6,73 @@ const iucnActivities: object;
 
 ## Type declaration
 
-### AQUA_SMALL
+### AQUA\_SMALL
 
 ```ts
 AQUA_SMALL: object;
 ```
 
-### AQUA_SMALL.display
+### AQUA\_SMALL.display
 
 ```ts
 display: string = "Aquaculture - small scale";
 ```
 
-### AQUA_SMALL.id
+### AQUA\_SMALL.id
 
 ```ts
 id: string = "AQUA_SMALL";
 ```
 
-### FISH_AQUA_INDUSTRIAL
+### FISH\_AQUA\_INDUSTRIAL
 
 ```ts
 FISH_AQUA_INDUSTRIAL: object;
 ```
 
-### FISH_AQUA_INDUSTRIAL.display
+### FISH\_AQUA\_INDUSTRIAL.display
 
 ```ts
 display: string = "Industrial fishing, industrial scale aquaculture";
 ```
 
-### FISH_AQUA_INDUSTRIAL.id
+### FISH\_AQUA\_INDUSTRIAL.id
 
 ```ts
 id: string = "FISH_AQUA_INDUSTRIAL";
 ```
 
-### FISH_COLLECT_LOCAL
+### FISH\_COLLECT\_LOCAL
 
 ```ts
 FISH_COLLECT_LOCAL: object;
 ```
 
-### FISH_COLLECT_LOCAL.display
+### FISH\_COLLECT\_LOCAL.display
 
 ```ts
 display: string = "Fishing/collection: local fishing (sustainable)";
 ```
 
-### FISH_COLLECT_LOCAL.id
+### FISH\_COLLECT\_LOCAL.id
 
 ```ts
 id: string = "FISH_COLLECT_LOCAL";
 ```
 
-### FISH_COLLECT_REC
+### FISH\_COLLECT\_REC
 
 ```ts
 FISH_COLLECT_REC: object;
 ```
 
-### FISH_COLLECT_REC.display
+### FISH\_COLLECT\_REC.display
 
 ```ts
 display: string = "Fishing/collection: recreational (sustainable)";
 ```
 
-### FISH_COLLECT_REC.id
+### FISH\_COLLECT\_REC.id
 
 ```ts
 id: string = "FISH_COLLECT_REC";
@@ -96,55 +96,55 @@ display: string = "Habitation";
 id: string = "HABITATION";
 ```
 
-### MINING_OIL_GAS
+### MINING\_OIL\_GAS
 
 ```ts
 MINING_OIL_GAS: object;
 ```
 
-### MINING_OIL_GAS.display
+### MINING\_OIL\_GAS.display
 
 ```ts
 display: string = "Mining, oil and gas extraction";
 ```
 
-### MINING_OIL_GAS.id
+### MINING\_OIL\_GAS.id
 
 ```ts
 id: string = "MINING_OIL_GAS";
 ```
 
-### RECREATE_NE
+### RECREATE\_NE
 
 ```ts
 RECREATE_NE: object;
 ```
 
-### RECREATE_NE.display
+### RECREATE\_NE.display
 
 ```ts
 display: string = "Non-extractive recreation";
 ```
 
-### RECREATE_NE.id
+### RECREATE\_NE.id
 
 ```ts
 id: string = "RECREATE_NE";
 ```
 
-### RENEWABLE_ENERGY
+### RENEWABLE\_ENERGY
 
 ```ts
 RENEWABLE_ENERGY: object;
 ```
 
-### RENEWABLE_ENERGY.display
+### RENEWABLE\_ENERGY.display
 
 ```ts
 display: string = "Renewable energy generation";
 ```
 
-### RENEWABLE_ENERGY.id
+### RENEWABLE\_ENERGY.id
 
 ```ts
 id: string = "RENEWABLE_ENERGY";
@@ -168,55 +168,55 @@ display: string = "Research: extractive";
 id: string = "RESEARCH";
 ```
 
-### RESEARCH_NE
+### RESEARCH\_NE
 
 ```ts
 RESEARCH_NE: object;
 ```
 
-### RESEARCH_NE.display
+### RESEARCH\_NE.display
 
 ```ts
 display: string = "Research: non-extractive";
 ```
 
-### RESEARCH_NE.id
+### RESEARCH\_NE.id
 
 ```ts
 id: string = "RESEARCH_NE";
 ```
 
-### RESTORE_CON
+### RESTORE\_CON
 
 ```ts
 RESTORE_CON: object;
 ```
 
-### RESTORE_CON.display
+### RESTORE\_CON.display
 
 ```ts
 display: string = "Restoration/enhancement for conservation";
 ```
 
-### RESTORE_CON.id
+### RESTORE\_CON.id
 
 ```ts
 id: string = "RESTORE_CON";
 ```
 
-### RESTORE_OTH
+### RESTORE\_OTH
 
 ```ts
 RESTORE_OTH: object;
 ```
 
-### RESTORE_OTH.display
+### RESTORE\_OTH.display
 
 ```ts
 display: string = "Restoration/enhancement for other reasons";
 ```
 
-### RESTORE_OTH.id
+### RESTORE\_OTH.id
 
 ```ts
 id: string = "RESTORE_OTH";
@@ -258,55 +258,55 @@ display: string = "Large scale high intensity tourism";
 id: string = "TOURISM";
 ```
 
-### TRAD_FISH_COLLECT
+### TRAD\_FISH\_COLLECT
 
 ```ts
 TRAD_FISH_COLLECT: object;
 ```
 
-### TRAD_FISH_COLLECT.display
+### TRAD\_FISH\_COLLECT.display
 
 ```ts
 display: string = "Traditional fishing/collection";
 ```
 
-### TRAD_FISH_COLLECT.id
+### TRAD\_FISH\_COLLECT.id
 
 ```ts
 id: string = "TRAD_FISH_COLLECT";
 ```
 
-### TRAD_USE_NE
+### TRAD\_USE\_NE
 
 ```ts
 TRAD_USE_NE: object;
 ```
 
-### TRAD_USE_NE.display
+### TRAD\_USE\_NE.display
 
 ```ts
 display: string = "Traditional use: non-extractive";
 ```
 
-### TRAD_USE_NE.id
+### TRAD\_USE\_NE.id
 
 ```ts
 id: string = "TRAD_USE_NE";
 ```
 
-### UNTREATED_WATER
+### UNTREATED\_WATER
 
 ```ts
 UNTREATED_WATER: object;
 ```
 
-### UNTREATED_WATER.display
+### UNTREATED\_WATER.display
 
 ```ts
 display: string = "Untreated water discharge";
 ```
 
-### UNTREATED_WATER.id
+### UNTREATED\_WATER.id
 
 ```ts
 id: string = "UNTREATED_WATER";

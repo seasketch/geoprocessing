@@ -10,7 +10,7 @@ Parameters for clip operation using a datasource
 datasourceId: string;
 ```
 
----
+***
 
 ### operation
 
@@ -18,7 +18,7 @@ datasourceId: string;
 operation: ClipOperations;
 ```
 
----
+***
 
 ### options?
 

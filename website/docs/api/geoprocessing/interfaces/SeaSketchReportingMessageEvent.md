@@ -8,7 +8,7 @@
 client: string;
 ```
 
----
+***
 
 ### geometryUri
 
@@ -16,7 +16,7 @@ client: string;
 geometryUri: string;
 ```
 
----
+***
 
 ### language?
 
@@ -24,7 +24,7 @@ geometryUri: string;
 optional language: string;
 ```
 
----
+***
 
 ### sketchProperties
 
@@ -32,7 +32,7 @@ optional language: string;
 sketchProperties: SketchProperties;
 ```
 
----
+***
 
 ### type
 
@@ -40,7 +40,7 @@ sketchProperties: SketchProperties;
 type: "SeaSketchReportingMessageEventType";
 ```
 
----
+***
 
 ### visibleLayers?
 

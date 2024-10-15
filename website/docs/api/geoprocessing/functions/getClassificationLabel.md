@@ -1,26 +1,24 @@
 # getClassificationLabel()
 
 ```ts
-function getClassificationLabel(
-  index,
-):
+function getClassificationLabel(index): 
   | "Fully Protected Area"
   | "Highly Protected Area"
   | "Moderately Protected Area"
   | "Poorly Protected Area"
-  | "Unprotected Area";
+  | "Unprotected Area"
 ```
 
 ## Parameters
 
-| Parameter | Type  |
-| --------- | ----- |
-| `index`   | `any` |
+| Parameter | Type |
+| ------ | ------ |
+| `index` | `any` |
 
 ## Returns
 
-\| `"Fully Protected Area"`
-\| `"Highly Protected Area"`
-\| `"Moderately Protected Area"`
-\| `"Poorly Protected Area"`
-\| `"Unprotected Area"`
+  \| `"Fully Protected Area"`
+  \| `"Highly Protected Area"`
+  \| `"Moderately Protected Area"`
+  \| `"Poorly Protected Area"`
+  \| `"Unprotected Area"`

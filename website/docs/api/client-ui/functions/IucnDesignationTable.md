@@ -1,7 +1,7 @@
 # IucnDesignationTable()
 
 ```ts
-function IucnDesignationTable(): Element;
+function IucnDesignationTable(): Element
 ```
 
 ## Returns

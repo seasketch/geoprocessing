@@ -8,7 +8,7 @@
 children: ReactNode;
 ```
 
----
+***
 
 ### style?
 
@@ -16,7 +16,7 @@ children: ReactNode;
 optional style: object;
 ```
 
----
+***
 
 ### title?
 
@@ -24,7 +24,7 @@ optional style: object;
 optional title: ReactNode;
 ```
 
----
+***
 
 ### titleStyle?
 

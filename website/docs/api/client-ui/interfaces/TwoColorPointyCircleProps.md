@@ -10,7 +10,7 @@ optional bottomColor: string;
 
 Bottom color of circle
 
----
+***
 
 ### children
 
@@ -18,7 +18,7 @@ Bottom color of circle
 children: ReactNode;
 ```
 
----
+***
 
 ### perc
 
@@ -28,7 +28,7 @@ perc: number;
 
 Percent height bottom color will take up
 
----
+***
 
 ### size?
 
@@ -38,7 +38,7 @@ optional size: number;
 
 Radius of circle in pixels, minimum 5
 
----
+***
 
 ### topColor?
 

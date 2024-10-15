@@ -1,14 +1,14 @@
 # isImportRasterDatasourceConfig()
 
 ```ts
-function isImportRasterDatasourceConfig(ds): ds is ImportRasterDatasourceConfig;
+function isImportRasterDatasourceConfig(ds): ds is ImportRasterDatasourceConfig
 ```
 
 ## Parameters
 
-| Parameter | Type  | Description                         |
-| --------- | ----- | ----------------------------------- |
-| `ds`      | `any` | ImportRasterDatasourceConfig object |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ds` | `any` | ImportRasterDatasourceConfig object |
 
 ## Returns
 

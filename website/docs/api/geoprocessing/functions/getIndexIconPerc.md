@@ -1,7 +1,12 @@
 # getIndexIconPerc()
 
 ```ts
-function getIndexIconPerc(index): 0 | 25 | 50 | 75 | 100;
+function getIndexIconPerc(index): 
+  | 0
+  | 25
+  | 50
+  | 75
+  | 100
 ```
 
 Returns percent protection given index value,
@@ -10,14 +15,14 @@ e.g. index = 5.4 means bottom icon color should take 25% of icon and top color 7
 
 ## Parameters
 
-| Parameter | Type     | Description                                      |
-| --------- | -------- | ------------------------------------------------ |
-| `index`   | `number` | classification index value for sketch collection |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `index` | `number` | classification index value for sketch collection |
 
 ## Returns
 
-\| `0`
-\| `25`
-\| `50`
-\| `75`
-\| `100`
+  \| `0`
+  \| `25`
+  \| `50`
+  \| `75`
+  \| `100`

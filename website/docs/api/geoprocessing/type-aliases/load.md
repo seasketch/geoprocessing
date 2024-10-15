@@ -6,8 +6,8 @@ type load: (urlOrFile) => Promise<Georaster>;
 
 ## Parameters
 
-| Parameter   | Type                 |
-| ----------- | -------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `urlOrFile` | `object` \| `string` |
 
 ## Returns

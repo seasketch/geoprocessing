@@ -7,8 +7,8 @@
 ## Type Parameters
 
 | Type Parameter | Default type |
-| -------------- | ------------ |
-| `ResultType`   | `any`        |
+| ------ | ------ |
+| `ResultType` | `any` |
 
 ## Properties
 
@@ -18,7 +18,7 @@
 optional data: ResultType;
 ```
 
----
+***
 
 ### duration?
 
@@ -26,7 +26,7 @@ optional data: ResultType;
 optional duration: number;
 ```
 
----
+***
 
 ### status
 

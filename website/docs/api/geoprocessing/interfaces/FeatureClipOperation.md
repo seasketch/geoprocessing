@@ -7,10 +7,10 @@ Parameters for clip operation using polygon features
 ### clipFeatures
 
 ```ts
-clipFeatures: Feature < Polygon, GeoJsonProperties > [];
+clipFeatures: Feature<Polygon, GeoJsonProperties>[];
 ```
 
----
+***
 
 ### operation
 

@@ -1,15 +1,15 @@
 # useCheckboxes()
 
 ```ts
-function useCheckboxes(defaultState): object;
+function useCheckboxes(defaultState): object
 ```
 
 Hook to maintain checkbox state
 
 ## Parameters
 
-| Parameter      | Type         |
-| -------------- | ------------ |
+| Parameter | Type |
+| ------ | ------ |
 | `defaultState` | `Checkbox`[] |
 
 ## Returns
@@ -30,9 +30,9 @@ setCheckbox: (index, checked) => void;
 
 #### Parameters
 
-| Parameter | Type  |
-| --------- | ----- |
-| `index`   | `any` |
+| Parameter | Type |
+| ------ | ------ |
+| `index` | `any` |
 | `checked` | `any` |
 
 #### Returns

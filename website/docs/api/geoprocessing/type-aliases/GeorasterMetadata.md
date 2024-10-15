@@ -1,7 +1,7 @@
 # GeorasterMetadata
 
 ```ts
-type GeorasterMetadata: Pick<Georaster,
+type GeorasterMetadata: Pick<Georaster, 
   | "noDataValue"
   | "projection"
   | "xmin"

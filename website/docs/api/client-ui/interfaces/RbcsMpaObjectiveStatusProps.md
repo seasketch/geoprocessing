@@ -5,7 +5,7 @@
 ### level
 
 ```ts
-level:
+level: 
   | "Fully Protected Area"
   | "Highly Protected Area"
   | "Moderately Protected Area"
@@ -15,7 +15,7 @@ level:
 
 RBCS protection level for MPA to give status for
 
----
+***
 
 ### objective
 
@@ -25,7 +25,7 @@ objective: RbcsObjective;
 
 RBCS objective to weigh protection level against
 
----
+***
 
 ### renderMsg?
 

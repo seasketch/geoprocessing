@@ -2,10 +2,9 @@
 
 ```ts
 function flattenByGroupSketchAllClass(
-  sketches,
-  groupMetrics,
-  totals,
-): GroupMetricSketchAgg[];
+   sketches, 
+   groupMetrics, 
+   totals): GroupMetricSketchAgg[]
 ```
 
 Flattens group class metrics, one for each group and sketch.
@@ -14,11 +13,11 @@ groupId, sketchId, class1, class2, ..., total
 
 ## Parameters
 
-| Parameter      | Type                                                                                                                                                      | Description                                                        |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `sketches`     | [`NullSketch`](../interfaces/NullSketch.md)[] \| [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\>[] | ToDo: is this needed? can the caller just pre-filter groupMetrics? |
-| `groupMetrics` | `object`[]                                                                                                                                                | group metric data                                                  |
-| `totals`       | `object`[]                                                                                                                                                | Totals by class                                                    |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `sketches` | [`NullSketch`](../interfaces/NullSketch.md)[] \| [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\>[] | ToDo: is this needed? can the caller just pre-filter groupMetrics? |
+| `groupMetrics` | `object`[] | group metric data |
+| `totals` | `object`[] | Totals by class |
 
 ## Returns
 

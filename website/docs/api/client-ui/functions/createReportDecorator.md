@@ -1,7 +1,7 @@
 # createReportDecorator()
 
 ```ts
-function createReportDecorator(reportContext?): (storyFn) => Element;
+function createReportDecorator(reportContext?): (storyFn) => Element
 ```
 
 Think of this as a ReportDecorator generator, that allows you to pass in context and override the default
@@ -9,8 +9,8 @@ The only reason to use this instead of ReportDecorator directly is to pass conte
 
 ## Parameters
 
-| Parameter        | Type                                                                                      |
-| ---------------- | ----------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `reportContext`? | `Partial`\<[`ReportContextValue`](../../geoprocessing/interfaces/ReportContextValue.md)\> |
 
 ## Returns
@@ -19,8 +19,8 @@ The only reason to use this instead of ReportDecorator directly is to pass conte
 
 ### Parameters
 
-| Parameter | Type  |
-| --------- | ----- |
+| Parameter | Type |
+| ------ | ------ |
 | `storyFn` | `any` |
 
 ### Returns

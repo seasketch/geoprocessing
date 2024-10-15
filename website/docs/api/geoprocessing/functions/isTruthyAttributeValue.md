@@ -1,14 +1,14 @@
 # isTruthyAttributeValue()
 
 ```ts
-function isTruthyAttributeValue(value): boolean;
+function isTruthyAttributeValue(value): boolean
 ```
 
 ## Parameters
 
-| Parameter | Type      |
-| --------- | --------- |
-| `value`   | `unknown` |
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `unknown` |
 
 ## Returns
 

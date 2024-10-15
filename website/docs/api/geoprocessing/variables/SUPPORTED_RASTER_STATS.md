@@ -1,4 +1,4 @@
-# SUPPORTED_RASTER_STATS
+# SUPPORTED\_RASTER\_STATS
 
 ```ts
 const SUPPORTED_RASTER_STATS: ReadonlyArray<string>;

@@ -1,6 +1,5 @@
 # seaSketchReportingVisibleLayersChangeEvent
 
 ```ts
-const seaSketchReportingVisibleLayersChangeEvent: "SeaSketchReportingVisibleLayersChangeEvent" =
-  "SeaSketchReportingVisibleLayersChangeEvent";
+const seaSketchReportingVisibleLayersChangeEvent: "SeaSketchReportingVisibleLayersChangeEvent" = "SeaSketchReportingVisibleLayersChangeEvent";
 ```

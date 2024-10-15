@@ -8,7 +8,7 @@
 children: ReactNode;
 ```
 
----
+***
 
 ### color?
 
@@ -16,7 +16,7 @@ children: ReactNode;
 optional color: string;
 ```
 
----
+***
 
 ### size?
 

@@ -11,8 +11,7 @@ Base planning objective, extend as needed for specific classification system or 
 ### countsToward
 
 ```ts
-countsToward: ZodRecord<ZodString, ZodEnum<["yes", "no", "maybe"]>> =
-  objectiveAnswerMapSchema;
+countsToward: ZodRecord<ZodString, ZodEnum<["yes", "no", "maybe"]>> = objectiveAnswerMapSchema;
 ```
 
 Generic map of MPA protection levels to whether they count towards objective

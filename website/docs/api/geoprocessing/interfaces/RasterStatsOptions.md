@@ -16,12 +16,12 @@ optional categorical: boolean;
 
 If categorical raster, set to true
 
----
+***
 
 ### categoryMetricProperty?
 
 ```ts
-optional categoryMetricProperty:
+optional categoryMetricProperty: 
   | "classId"
   | "metricId"
   | "geographyId"
@@ -31,7 +31,7 @@ optional categoryMetricProperty:
 
 If categorical raster, metric property name that categories are organized. Defaults to classId
 
----
+***
 
 ### categoryMetricValues?
 
@@ -41,7 +41,7 @@ optional categoryMetricValues: string[];
 
 If categorical raster, array of values to create metrics for
 
----
+***
 
 ### chunked?
 
@@ -55,7 +55,7 @@ Whether or not to chunk calculations
 
 [`CalcStatsOptions`](CalcStatsOptions.md).[`chunked`](CalcStatsOptions.md#chunked)
 
----
+***
 
 ### feature?
 
@@ -65,7 +65,7 @@ optional feature: FeatureCollection<Polygon | MultiPolygon, GeoJsonProperties> |
 
 single sketch or sketch collection filter to overlap with raster when calculating metrics.
 
----
+***
 
 ### filter()?
 
@@ -77,10 +77,10 @@ Filter function to ignore raster values in stat calc
 
 #### Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
-| `index`   | `number` |
-| `value`   | `number` |
+| Parameter | Type |
+| ------ | ------ |
+| `index` | `number` |
+| `value` | `number` |
 
 #### Returns
 
@@ -90,7 +90,7 @@ Filter function to ignore raster values in stat calc
 
 [`CalcStatsOptions`](CalcStatsOptions.md).[`filter`](CalcStatsOptions.md#filter)
 
----
+***
 
 ### filterFn()?
 
@@ -102,15 +102,15 @@ undocumented filter function (how different from filter option above?), for exam
 
 #### Parameters
 
-| Parameter   | Type     |
-| ----------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `cellValue` | `number` |
 
 #### Returns
 
 `boolean`
 
----
+***
 
 ### noData?
 
@@ -124,7 +124,7 @@ Override nodata value, which is ignored in calculations
 
 [`CalcStatsOptions`](CalcStatsOptions.md).[`noData`](CalcStatsOptions.md#nodata)
 
----
+***
 
 ### numBands?
 
@@ -134,7 +134,7 @@ optional numBands: number;
 
 Optional number of bands in the raster, defaults to 1, used to initialize zero values
 
----
+***
 
 ### stats?
 

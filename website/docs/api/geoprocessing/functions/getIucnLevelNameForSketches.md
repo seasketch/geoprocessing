@@ -1,15 +1,15 @@
 # getIucnLevelNameForSketches()
 
 ```ts
-function getIucnLevelNameForSketches(sketches): Record<string, string>;
+function getIucnLevelNameForSketches(sketches): Record<string, string>
 ```
 
 Return level name for each sketch keyed by sketchId
 
 ## Parameters
 
-| Parameter  | Type                                                                                                     |
-| ---------- | -------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `sketches` | [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\>[] |
 
 ## Returns

@@ -1,7 +1,7 @@
 # IucnActivitiesCard()
 
 ```ts
-function IucnActivitiesCard(): Element;
+function IucnActivitiesCard(): Element
 ```
 
 ## Returns

@@ -1,20 +1,17 @@
 # genPreprocessor()
 
 ```ts
-function genPreprocessor(
-  clipLoader,
-  options,
-): (feature) => Promise<Feature<Geometry, GeoJsonProperties>>;
+function genPreprocessor(clipLoader, options): (feature) => Promise<Feature<Geometry, GeoJsonProperties>>
 ```
 
 Returns a preprocessor function given clipLoader function
 
 ## Parameters
 
-| Parameter    | Type                                                                                          | Description          |
-| ------------ | --------------------------------------------------------------------------------------------- | -------------------- |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
 | `clipLoader` | (`feature`) => `Promise`\<[`FeatureClipOperation`](../interfaces/FeatureClipOperation.md)[]\> | Clip loader function |
-| `options`    | [`ClipOptions`](../interfaces/ClipOptions.md)                                                 | -                    |
+| `options` | [`ClipOptions`](../interfaces/ClipOptions.md) | - |
 
 ## Returns
 
@@ -22,8 +19,8 @@ Returns a preprocessor function given clipLoader function
 
 ### Parameters
 
-| Parameter | Type                                                                                                                                            |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `feature` | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
 
 ### Returns

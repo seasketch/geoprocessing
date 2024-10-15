@@ -18,7 +18,7 @@ Add sketch name to filename, default to true
 
 [`DataDownloadProps`](DataDownloadProps.md).[`addSketchName`](DataDownloadProps.md#addsketchname)
 
----
+***
 
 ### addTimestamp?
 
@@ -32,7 +32,7 @@ Add timestamp to filename, defaults to true
 
 [`DataDownloadProps`](DataDownloadProps.md).[`addTimestamp`](DataDownloadProps.md#addtimestamp)
 
----
+***
 
 ### data
 
@@ -46,7 +46,7 @@ Raw data to format and allow to download, nested objects and arrays will get fla
 
 [`DataDownloadProps`](DataDownloadProps.md).[`data`](DataDownloadProps.md#data)
 
----
+***
 
 ### filename?
 
@@ -60,7 +60,7 @@ Name minus extension
 
 [`DataDownloadProps`](DataDownloadProps.md).[`filename`](DataDownloadProps.md#filename)
 
----
+***
 
 ### formats?
 
@@ -74,7 +74,7 @@ Formats to offer, defaults to csv only
 
 [`DataDownloadProps`](DataDownloadProps.md).[`formats`](DataDownloadProps.md#formats)
 
----
+***
 
 ### offset?
 
@@ -98,7 +98,7 @@ vertical: number;
 
 [`DataDownloadProps`](DataDownloadProps.md).[`offset`](DataDownloadProps.md#offset)
 
----
+***
 
 ### placement?
 
@@ -110,7 +110,7 @@ optional placement: Placement;
 
 [`DataDownloadProps`](DataDownloadProps.md).[`placement`](DataDownloadProps.md#placement)
 
----
+***
 
 ### style?
 
@@ -122,7 +122,7 @@ optional style: CSSProperties;
 
 `Omit.style`
 
----
+***
 
 ### title
 
@@ -130,12 +130,12 @@ optional style: CSSProperties;
 title: string;
 ```
 
----
+***
 
 ### titleAlign?
 
 ```ts
-optional titleAlign:
+optional titleAlign: 
   | "center"
   | "stretch"
   | "flex-end"
@@ -147,7 +147,7 @@ optional titleAlign:
 
 `Omit.titleAlign`
 
----
+***
 
 ### titleElement?
 
@@ -159,7 +159,7 @@ optional titleElement: Element;
 
 [`DataDownloadProps`](DataDownloadProps.md).[`titleElement`](DataDownloadProps.md#titleelement)
 
----
+***
 
 ### useGutters?
 
@@ -171,7 +171,7 @@ optional useGutters: boolean;
 
 `Omit.useGutters`
 
----
+***
 
 ### variant?
 

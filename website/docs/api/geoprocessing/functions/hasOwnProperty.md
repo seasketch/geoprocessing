@@ -1,7 +1,7 @@
 # hasOwnProperty()
 
 ```ts
-function hasOwnProperty<X, Y>(obj, prop): obj is X & Record<Y, unknown>;
+function hasOwnProperty<X, Y>(obj, prop): obj is X & Record<Y, unknown>
 ```
 
 Type narrowing to allow property checking when object can be multiple types
@@ -10,17 +10,17 @@ Any code inside a block guarded by a conditional call to this function will have
 
 ## Type Parameters
 
-| Type Parameter              |
-| --------------------------- |
-| `X` _extends_ `object`      |
-| `Y` _extends_ `PropertyKey` |
+| Type Parameter |
+| ------ |
+| `X` *extends* `object` |
+| `Y` *extends* `PropertyKey` |
 
 ## Parameters
 
 | Parameter | Type |
-| --------- | ---- |
-| `obj`     | `X`  |
-| `prop`    | `Y`  |
+| ------ | ------ |
+| `obj` | `X` |
+| `prop` | `Y` |
 
 ## Returns
 

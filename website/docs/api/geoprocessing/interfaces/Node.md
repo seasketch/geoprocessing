@@ -8,7 +8,7 @@
 ancestors: number[];
 ```
 
----
+***
 
 ### children?
 
@@ -16,7 +16,7 @@ ancestors: number[];
 optional children: Node[];
 ```
 
----
+***
 
 ### cutline?
 
@@ -24,7 +24,7 @@ optional children: Node[];
 optional cutline: number;
 ```
 
----
+***
 
 ### leaf?
 
@@ -32,7 +32,7 @@ optional cutline: number;
 optional leaf: VectorFeature;
 ```
 
----
+***
 
 ### nodeId
 

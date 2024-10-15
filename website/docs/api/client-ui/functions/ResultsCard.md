@@ -1,19 +1,19 @@
 # ResultsCard()
 
 ```ts
-function ResultsCard<T>(__namedParameters): Element;
+function ResultsCard<T>(__namedParameters): Element
 ```
 
 ## Type Parameters
 
 | Type Parameter |
-| -------------- |
-| `T`            |
+| ------ |
+| `T` |
 
 ## Parameters
 
-| Parameter           | Type                                                           |
-| ------------------- | -------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`ResultsCardProps`](../interfaces/ResultsCardProps.md)\<`T`\> |
 
 ## Returns

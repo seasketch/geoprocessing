@@ -1,7 +1,7 @@
 # Table()
 
 ```ts
-function Table<D>(props): ReactElement;
+function Table<D>(props): ReactElement
 ```
 
 Table component suited to geoprocessing client reports.
@@ -10,15 +10,15 @@ so reference those API docs to suit your needs.
 
 ## Type Parameters
 
-| Type Parameter         |
-| ---------------------- |
-| `D` _extends_ `object` |
+| Type Parameter |
+| ------ |
+| `D` *extends* `object` |
 
 ## Parameters
 
-| Parameter | Type                                                   | Description |
-| --------- | ------------------------------------------------------ | ----------- |
-| `props`   | [`TableOptions`](../interfaces/TableOptions.md)\<`D`\> |             |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`TableOptions`](../interfaces/TableOptions.md)\<`D`\> |  |
 
 ## Returns
 

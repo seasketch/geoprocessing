@@ -15,7 +15,7 @@ humanUse: HumanUse[];
 ### nested
 
 ```ts
-nested: Record < string, any > [];
+nested: Record<string, any>[];
 ```
 
 ### randomCategorical

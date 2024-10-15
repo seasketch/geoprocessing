@@ -10,7 +10,7 @@ Alternative JSON format for metrics data that is smaller in size, better suited 
 data: JSONValue[][];
 ```
 
----
+***
 
 ### dimensions
 

@@ -8,7 +8,7 @@
 optional autoHide: boolean;
 ```
 
----
+***
 
 ### mappings?
 
@@ -20,9 +20,9 @@ Map from value IDs to human readable for one or more exportIds
 
 #### Index Signature
 
-\[`exportId`: `string`\]: `object`
+ \[`exportId`: `string`\]: `object`
 
----
+***
 
 ### title?
 

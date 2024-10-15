@@ -1,29 +1,22 @@
 # fetchGeoJSON()
 
 ```ts
-function fetchGeoJSON<G>(
-  request,
-): Promise<
-  | Feature<G, GeoJsonProperties>
-  | FeatureCollection<G, GeoJsonProperties>
-  | Sketch<G>
-  | SketchCollection<G>
->;
+function fetchGeoJSON<G>(request): Promise<Feature<G, GeoJsonProperties> | FeatureCollection<G, GeoJsonProperties> | Sketch<G> | SketchCollection<G>>
 ```
 
 Given geoprocessing function request, fetches the GeoJSON, which can also be sketch JSON
 
 ## Type Parameters
 
-| Type Parameter                                          |
-| ------------------------------------------------------- |
-| `G` _extends_ [`Geometry`](../type-aliases/Geometry.md) |
+| Type Parameter |
+| ------ |
+| `G` *extends* [`Geometry`](../type-aliases/Geometry.md) |
 
 ## Parameters
 
-| Parameter | Type                                                                                                                                                         | Description |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| `request` | [`GeoprocessingRequestModel`](../interfaces/GeoprocessingRequestModel.md)\<`G`\> \| [`GeoprocessingRequest`](../type-aliases/GeoprocessingRequest.md)\<`G`\> |             |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `request` | [`GeoprocessingRequestModel`](../interfaces/GeoprocessingRequestModel.md)\<`G`\> \| [`GeoprocessingRequest`](../type-aliases/GeoprocessingRequest.md)\<`G`\> |  |
 
 ## Returns
 

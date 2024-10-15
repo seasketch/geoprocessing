@@ -14,8 +14,8 @@ optional changeLanguage: (language) => void;
 
 #### Parameters
 
-| Parameter  | Type     |
-| ---------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `language` | `string` |
 
 #### Returns
@@ -76,8 +76,8 @@ optional toggleLayerVisibility: (layerId) => void;
 
 #### Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `layerId` | `string` |
 
 #### Returns

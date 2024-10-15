@@ -14,7 +14,7 @@ description: string;
 
 Appears in service metadata
 
----
+***
 
 ### executionMode
 
@@ -25,7 +25,7 @@ executionMode: ExecutionMode;
 Choose `sync` for functions that are expected to return quickly (< 2s)
 and `async` for longer running functions, especially contain/docker jobs.
 
----
+***
 
 ### issAllowList?
 
@@ -37,7 +37,7 @@ List domains, e.g. myproject.seasketch.org.
 When restrictedAccess is enabled, this function can be configured to only
 work with specified projects.
 
----
+***
 
 ### memory?
 
@@ -47,7 +47,7 @@ optional memory: number;
 
 Megabytes, 128 - 3008
 
----
+***
 
 ### rateLimit?
 
@@ -55,7 +55,7 @@ Megabytes, 128 - 3008
 optional rateLimit: number;
 ```
 
----
+***
 
 ### rateLimited?
 
@@ -65,7 +65,7 @@ optional rateLimited: boolean;
 
 Whether to rate limit beyond basic DDoS protection
 
----
+***
 
 ### rateLimitPeriod?
 
@@ -75,7 +75,7 @@ optional rateLimitPeriod: RateLimitPeriod;
 
 `daily` or `monthly`
 
----
+***
 
 ### requiresProperties
 
@@ -86,7 +86,7 @@ requiresProperties: string[];
 Specify the ids of any Sketch Class form fields that must be provided in
 order to run the function
 
----
+***
 
 ### restrictedAccess?
 
@@ -96,7 +96,7 @@ optional restrictedAccess: boolean;
 
 Whether function should respect group access-control headers
 
----
+***
 
 ### timeout
 
@@ -106,7 +106,7 @@ timeout: number;
 
 Seconds
 
----
+***
 
 ### title
 
@@ -116,7 +116,7 @@ title: string;
 
 Title will appear in service metadata and be referenced by clients
 
----
+***
 
 ### workers?
 
@@ -124,4 +124,4 @@ Title will appear in service metadata and be referenced by clients
 optional workers: string[];
 ```
 
-Names of worker functions used by this function. Must be sync geoprocessing functions
+Names of worker functions used by this function.  Must be sync geoprocessing functions

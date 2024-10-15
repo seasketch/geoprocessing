@@ -18,9 +18,9 @@ see https://gist.github.com/ggascoigne/646e14c9d54258e40588a13aabf0102d for more
 
 ## Type Parameters
 
-| Type Parameter         | Default type |
-| ---------------------- | ------------ |
-| `D` _extends_ `object` | `object`     |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `D` *extends* `object` | `object` |
 
 ## Properties
 
@@ -34,7 +34,7 @@ optional autoResetExpanded: boolean;
 
 [`TableOptions`](TableOptions.md).[`autoResetExpanded`](TableOptions.md#autoresetexpanded)
 
----
+***
 
 ### autoResetGlobalFilter?
 
@@ -46,7 +46,7 @@ optional autoResetGlobalFilter: boolean;
 
 [`TableOptions`](TableOptions.md).[`autoResetGlobalFilter`](TableOptions.md#autoresetglobalfilter)
 
----
+***
 
 ### autoResetHiddenColumns?
 
@@ -58,7 +58,7 @@ optional autoResetHiddenColumns: boolean;
 
 [`TableOptions`](TableOptions.md).[`autoResetHiddenColumns`](TableOptions.md#autoresethiddencolumns)
 
----
+***
 
 ### autoResetPage?
 
@@ -70,7 +70,7 @@ optional autoResetPage: boolean;
 
 [`TableOptions`](TableOptions.md).[`autoResetPage`](TableOptions.md#autoresetpage)
 
----
+***
 
 ### autoResetSortBy?
 
@@ -82,7 +82,7 @@ optional autoResetSortBy: boolean;
 
 [`TableOptions`](TableOptions.md).[`autoResetSortBy`](TableOptions.md#autoresetsortby)
 
----
+***
 
 ### cellProps()?
 
@@ -94,9 +94,9 @@ Function called for each table cell allowing style/className/role props to be ov
 
 #### Parameters
 
-| Parameter | Type                 |
-| --------- | -------------------- |
-| `cell`    | `Cell`\<`D`, `any`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `cell` | `Cell`\<`D`, `any`\> |
 
 #### Returns
 
@@ -106,7 +106,7 @@ Function called for each table cell allowing style/className/role props to be ov
 
 [`TableOptions`](TableOptions.md).[`cellProps`](TableOptions.md#cellprops)
 
----
+***
 
 ### className?
 
@@ -114,13 +114,13 @@ Function called for each table cell allowing style/className/role props to be ov
 optional className: string;
 ```
 
-Optional method to pass style. Added to table element
+Optional method to pass style.  Added to table element
 
 #### Inherited from
 
 [`TableOptions`](TableOptions.md).[`className`](TableOptions.md#classname)
 
----
+***
 
 ### columnProps()?
 
@@ -132,9 +132,9 @@ Function called for each table column allowing style/className/role props to be 
 
 #### Parameters
 
-| Parameter | Type                                         |
-| --------- | -------------------------------------------- |
-| `column`  | [`Column`](../type-aliases/Column.md)\<`D`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `column` | [`Column`](../type-aliases/Column.md)\<`D`\> |
 
 #### Returns
 
@@ -144,7 +144,7 @@ Function called for each table column allowing style/className/role props to be 
 
 [`TableOptions`](TableOptions.md).[`columnProps`](TableOptions.md#columnprops)
 
----
+***
 
 ### columns
 
@@ -156,7 +156,7 @@ columns: readonly Column<D>[];
 
 [`TableOptions`](TableOptions.md).[`columns`](TableOptions.md#columns)
 
----
+***
 
 ### data
 
@@ -168,7 +168,7 @@ data: D[];
 
 [`TableOptions`](TableOptions.md).[`data`](TableOptions.md#data)
 
----
+***
 
 ### defaultCanSort?
 
@@ -180,7 +180,7 @@ optional defaultCanSort: boolean;
 
 [`TableOptions`](TableOptions.md).[`defaultCanSort`](TableOptions.md#defaultcansort)
 
----
+***
 
 ### defaultColumn?
 
@@ -192,7 +192,7 @@ optional defaultColumn: Partial<Column<D>>;
 
 [`TableOptions`](TableOptions.md).[`defaultColumn`](TableOptions.md#defaultcolumn)
 
----
+***
 
 ### disabledMultiRemove?
 
@@ -204,7 +204,7 @@ optional disabledMultiRemove: boolean;
 
 [`TableOptions`](TableOptions.md).[`disabledMultiRemove`](TableOptions.md#disabledmultiremove)
 
----
+***
 
 ### disableGlobalFilter?
 
@@ -216,7 +216,7 @@ optional disableGlobalFilter: boolean;
 
 [`TableOptions`](TableOptions.md).[`disableGlobalFilter`](TableOptions.md#disableglobalfilter)
 
----
+***
 
 ### disableMultiSort?
 
@@ -228,7 +228,7 @@ optional disableMultiSort: boolean;
 
 [`TableOptions`](TableOptions.md).[`disableMultiSort`](TableOptions.md#disablemultisort)
 
----
+***
 
 ### disableSortBy?
 
@@ -240,7 +240,7 @@ optional disableSortBy: boolean;
 
 [`TableOptions`](TableOptions.md).[`disableSortBy`](TableOptions.md#disablesortby)
 
----
+***
 
 ### disableSortRemove?
 
@@ -252,7 +252,7 @@ optional disableSortRemove: boolean;
 
 [`TableOptions`](TableOptions.md).[`disableSortRemove`](TableOptions.md#disablesortremove)
 
----
+***
 
 ### downloadEnabled?
 
@@ -266,7 +266,7 @@ Enable toolbar with download option
 
 [`TableOptions`](TableOptions.md).[`downloadEnabled`](TableOptions.md#downloadenabled)
 
----
+***
 
 ### downloadFilename?
 
@@ -278,7 +278,7 @@ optional downloadFilename: string;
 
 [`TableOptions`](TableOptions.md).[`downloadFilename`](TableOptions.md#downloadfilename)
 
----
+***
 
 ### downloadFormats?
 
@@ -290,7 +290,7 @@ optional downloadFormats: ("json" | "csv")[];
 
 [`TableOptions`](TableOptions.md).[`downloadFormats`](TableOptions.md#downloadformats)
 
----
+***
 
 ### expandSubRows?
 
@@ -302,7 +302,7 @@ optional expandSubRows: boolean;
 
 [`TableOptions`](TableOptions.md).[`expandSubRows`](TableOptions.md#expandsubrows)
 
----
+***
 
 ### filterSelect
 
@@ -310,7 +310,7 @@ optional expandSubRows: boolean;
 filterSelect: FilterSelect<D>;
 ```
 
----
+***
 
 ### filterTypes?
 
@@ -322,7 +322,7 @@ optional filterTypes: FilterTypes<D>;
 
 [`TableOptions`](TableOptions.md).[`filterTypes`](TableOptions.md#filtertypes)
 
----
+***
 
 ### getRowId()?
 
@@ -332,11 +332,11 @@ optional getRowId: (originalRow, relativeIndex, parent?) => string;
 
 #### Parameters
 
-| Parameter       | Type                   |
-| --------------- | ---------------------- |
-| `originalRow`   | `D`                    |
-| `relativeIndex` | `number`               |
-| `parent`?       | [`Row`](Row.md)\<`D`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `originalRow` | `D` |
+| `relativeIndex` | `number` |
+| `parent`? | [`Row`](Row.md)\<`D`\> |
 
 #### Returns
 
@@ -346,7 +346,7 @@ optional getRowId: (originalRow, relativeIndex, parent?) => string;
 
 [`TableOptions`](TableOptions.md).[`getRowId`](TableOptions.md#getrowid)
 
----
+***
 
 ### getSubRows()?
 
@@ -356,9 +356,9 @@ optional getSubRows: (originalRow, relativeIndex) => D[];
 
 #### Parameters
 
-| Parameter       | Type     |
-| --------------- | -------- |
-| `originalRow`   | `D`      |
+| Parameter | Type |
+| ------ | ------ |
+| `originalRow` | `D` |
 | `relativeIndex` | `number` |
 
 #### Returns
@@ -369,7 +369,7 @@ optional getSubRows: (originalRow, relativeIndex) => D[];
 
 [`TableOptions`](TableOptions.md).[`getSubRows`](TableOptions.md#getsubrows)
 
----
+***
 
 ### globalFilter?
 
@@ -381,7 +381,7 @@ optional globalFilter: string | (rows, columnIds, filterValue) => Row<D>[];
 
 [`TableOptions`](TableOptions.md).[`globalFilter`](TableOptions.md#globalfilter)
 
----
+***
 
 ### headerProps()?
 
@@ -393,9 +393,9 @@ Function called for each table header allowing style/className/role props to be 
 
 #### Parameters
 
-| Parameter | Type                 |
-| --------- | -------------------- |
-| `header`  | `HeaderGroup`\<`D`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `header` | `HeaderGroup`\<`D`\> |
 
 #### Returns
 
@@ -405,7 +405,7 @@ Function called for each table header allowing style/className/role props to be 
 
 [`TableOptions`](TableOptions.md).[`headerProps`](TableOptions.md#headerprops)
 
----
+***
 
 ### initialState?
 
@@ -417,7 +417,7 @@ optional initialState: Partial<TableState<D>>;
 
 [`TableOptions`](TableOptions.md).[`initialState`](TableOptions.md#initialstate)
 
----
+***
 
 ### isMultiSortEvent()?
 
@@ -427,9 +427,9 @@ optional isMultiSortEvent: (e) => boolean;
 
 #### Parameters
 
-| Parameter | Type                                    |
-| --------- | --------------------------------------- |
-| `e`       | `MouseEvent`\<`Element`, `MouseEvent`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `e` | `MouseEvent`\<`Element`, `MouseEvent`\> |
 
 #### Returns
 
@@ -439,7 +439,7 @@ optional isMultiSortEvent: (e) => boolean;
 
 [`TableOptions`](TableOptions.md).[`isMultiSortEvent`](TableOptions.md#ismultisortevent)
 
----
+***
 
 ### manualExpandedKey?
 
@@ -451,7 +451,7 @@ optional manualExpandedKey: IdType<D>;
 
 [`TableOptions`](TableOptions.md).[`manualExpandedKey`](TableOptions.md#manualexpandedkey)
 
----
+***
 
 ### manualGlobalFilter?
 
@@ -463,7 +463,7 @@ optional manualGlobalFilter: boolean;
 
 [`TableOptions`](TableOptions.md).[`manualGlobalFilter`](TableOptions.md#manualglobalfilter)
 
----
+***
 
 ### manualPagination?
 
@@ -475,7 +475,7 @@ optional manualPagination: boolean;
 
 [`TableOptions`](TableOptions.md).[`manualPagination`](TableOptions.md#manualpagination)
 
----
+***
 
 ### manualSortBy?
 
@@ -487,7 +487,7 @@ optional manualSortBy: boolean;
 
 [`TableOptions`](TableOptions.md).[`manualSortBy`](TableOptions.md#manualsortby)
 
----
+***
 
 ### maxMultiSortColCount?
 
@@ -499,7 +499,7 @@ optional maxMultiSortColCount: number;
 
 [`TableOptions`](TableOptions.md).[`maxMultiSortColCount`](TableOptions.md#maxmultisortcolcount)
 
----
+***
 
 ### orderByFn()?
 
@@ -509,11 +509,11 @@ optional orderByFn: (rows, sortFns, directions) => Row<D>[];
 
 #### Parameters
 
-| Parameter    | Type                     |
-| ------------ | ------------------------ |
-| `rows`       | [`Row`](Row.md)\<`D`\>[] |
-| `sortFns`    | `OrderByFn`\<`D`\>[]     |
-| `directions` | `boolean`[]              |
+| Parameter | Type |
+| ------ | ------ |
+| `rows` | [`Row`](Row.md)\<`D`\>[] |
+| `sortFns` | `OrderByFn`\<`D`\>[] |
+| `directions` | `boolean`[] |
 
 #### Returns
 
@@ -523,7 +523,7 @@ optional orderByFn: (rows, sortFns, directions) => Row<D>[];
 
 [`TableOptions`](TableOptions.md).[`orderByFn`](TableOptions.md#orderbyfn)
 
----
+***
 
 ### pageCount?
 
@@ -535,7 +535,7 @@ optional pageCount: number;
 
 [`TableOptions`](TableOptions.md).[`pageCount`](TableOptions.md#pagecount)
 
----
+***
 
 ### paginateExpandedRows?
 
@@ -547,7 +547,7 @@ optional paginateExpandedRows: boolean;
 
 [`TableOptions`](TableOptions.md).[`paginateExpandedRows`](TableOptions.md#paginateexpandedrows)
 
----
+***
 
 ### rowProps()?
 
@@ -559,9 +559,9 @@ Function called for each table row allowing style/className/role props to be ove
 
 #### Parameters
 
-| Parameter | Type                   |
-| --------- | ---------------------- |
-| `row`     | [`Row`](Row.md)\<`D`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `row` | [`Row`](Row.md)\<`D`\> |
 
 #### Returns
 
@@ -571,7 +571,7 @@ Function called for each table row allowing style/className/role props to be ove
 
 [`TableOptions`](TableOptions.md).[`rowProps`](TableOptions.md#rowprops)
 
----
+***
 
 ### sortTypes?
 
@@ -583,7 +583,7 @@ optional sortTypes: Record<string, SortByFn<D>>;
 
 [`TableOptions`](TableOptions.md).[`sortTypes`](TableOptions.md#sorttypes)
 
----
+***
 
 ### stateReducer()?
 
@@ -593,12 +593,12 @@ optional stateReducer: (newState, action, previousState, instance?) => TableStat
 
 #### Parameters
 
-| Parameter       | Type                   |
-| --------------- | ---------------------- |
-| `newState`      | `TableState`\<`D`\>    |
-| `action`        | `ActionType`           |
-| `previousState` | `TableState`\<`D`\>    |
-| `instance`?     | `TableInstance`\<`D`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `newState` | `TableState`\<`D`\> |
+| `action` | `ActionType` |
+| `previousState` | `TableState`\<`D`\> |
+| `instance`? | `TableInstance`\<`D`\> |
 
 #### Returns
 
@@ -608,7 +608,7 @@ optional stateReducer: (newState, action, previousState, instance?) => TableStat
 
 [`TableOptions`](TableOptions.md).[`stateReducer`](TableOptions.md#statereducer)
 
----
+***
 
 ### title?
 
@@ -622,7 +622,7 @@ Toolbar title
 
 [`TableOptions`](TableOptions.md).[`title`](TableOptions.md#title)
 
----
+***
 
 ### useControlledState()?
 
@@ -632,10 +632,10 @@ optional useControlledState: (state, meta) => TableState<D>;
 
 #### Parameters
 
-| Parameter | Type                |
-| --------- | ------------------- |
-| `state`   | `TableState`\<`D`\> |
-| `meta`    | `MetaBase`\<`D`\>   |
+| Parameter | Type |
+| ------ | ------ |
+| `state` | `TableState`\<`D`\> |
+| `meta` | `MetaBase`\<`D`\> |
 
 #### Returns
 

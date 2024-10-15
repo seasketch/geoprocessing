@@ -1,14 +1,14 @@
 # isObject()
 
 ```ts
-function isObject(val): boolean;
+function isObject(val): boolean
 ```
 
 ## Parameters
 
-| Parameter | Type      |
-| --------- | --------- |
-| `val`     | `unknown` |
+| Parameter | Type |
+| ------ | ------ |
+| `val` | `unknown` |
 
 ## Returns
 

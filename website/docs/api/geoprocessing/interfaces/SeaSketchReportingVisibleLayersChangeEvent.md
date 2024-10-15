@@ -8,7 +8,7 @@
 type: "SeaSketchReportingVisibleLayersChangeEvent";
 ```
 
----
+***
 
 ### visibleLayers
 

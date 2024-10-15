@@ -10,15 +10,15 @@ optional onClick: (segment) => void;
 
 #### Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `segment` | `string` |
 
 #### Returns
 
 `void`
 
----
+***
 
 ### segments
 
@@ -26,7 +26,7 @@ optional onClick: (segment) => void;
 segments: object[];
 ```
 
----
+***
 
 ### value
 

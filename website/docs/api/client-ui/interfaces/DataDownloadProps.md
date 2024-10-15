@@ -18,7 +18,7 @@ optional addSketchName: boolean;
 
 Add sketch name to filename, default to true
 
----
+***
 
 ### addTimestamp?
 
@@ -28,7 +28,7 @@ optional addTimestamp: boolean;
 
 Add timestamp to filename, defaults to true
 
----
+***
 
 ### data
 
@@ -38,7 +38,7 @@ data: object[];
 
 Raw data to format and allow to download, nested objects and arrays will get flattened
 
----
+***
 
 ### filename?
 
@@ -48,7 +48,7 @@ optional filename: string;
 
 Name minus extension
 
----
+***
 
 ### formats?
 
@@ -58,7 +58,7 @@ optional formats: ("json" | "csv")[];
 
 Formats to offer, defaults to csv only
 
----
+***
 
 ### offset?
 
@@ -82,7 +82,7 @@ vertical: number;
 
 `DataDownloadDropdownProps.offset`
 
----
+***
 
 ### placement?
 
@@ -94,7 +94,7 @@ optional placement: Placement;
 
 `DataDownloadDropdownProps.placement`
 
----
+***
 
 ### titleElement?
 

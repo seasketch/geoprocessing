@@ -4,9 +4,9 @@ Custom table data filters that are only active when selected by the user
 
 ## Type Parameters
 
-| Type Parameter         | Default type |
-| ---------------------- | ------------ |
-| `D` _extends_ `object` | `object`     |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `D` *extends* `object` | `object` |
 
 ## Properties
 
@@ -16,17 +16,17 @@ Custom table data filters that are only active when selected by the user
 optional filterPosition: "bottom" | "top";
 ```
 
----
+***
 
 ### filters
 
 ```ts
-filters: FilterSelectOption < D > [];
+filters: FilterSelectOption<D>[];
 ```
 
 filter functions called for every data row
 
----
+***
 
 ### type?
 

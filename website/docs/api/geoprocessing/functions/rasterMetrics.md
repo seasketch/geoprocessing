@@ -1,7 +1,7 @@
 # rasterMetrics()
 
 ```ts
-function rasterMetrics(raster, options): Promise<Metric[]>;
+function rasterMetrics(raster, options): Promise<Metric[]>
 ```
 
 Calculates stats on the provided raster and returns as an array of Metric objects (defaults to sum stat)
@@ -9,10 +9,10 @@ If sketch, then calculate overlap metrics, sketch collection will calculate metr
 
 ## Parameters
 
-| Parameter | Type                   | Description                                                     |
-| --------- | ---------------------- | --------------------------------------------------------------- |
-| `raster`  | `Georaster`            | Cloud-optimized geotiff, loaded via loadCog or geoblaze.parse() |
-| `options` | `OverlapRasterOptions` | -                                                               |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `raster` | `Georaster` | Cloud-optimized geotiff, loaded via loadCog or geoblaze.parse() |
+| `options` | `OverlapRasterOptions` | - |
 
 ## Returns
 

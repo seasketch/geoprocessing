@@ -8,7 +8,7 @@
 optional barHeight: number;
 ```
 
----
+***
 
 ### blockGroupNames
 
@@ -16,7 +16,7 @@ optional barHeight: number;
 blockGroupNames: string[];
 ```
 
----
+***
 
 ### blockGroupStyles?
 
@@ -26,7 +26,7 @@ optional blockGroupStyles: CSSProperties[];
 
 Style for each block group
 
----
+***
 
 ### max
 
@@ -36,7 +36,7 @@ max: number;
 
 Maximum value for each row
 
----
+***
 
 ### rowConfigs
 
@@ -46,7 +46,7 @@ rowConfigs: RowConfig[];
 
 row config
 
----
+***
 
 ### rows
 
@@ -56,7 +56,7 @@ rows: HorizontalStackedBarRow[];
 
 row data
 
----
+***
 
 ### showLegend?
 
@@ -64,7 +64,7 @@ row data
 optional showLegend: boolean;
 ```
 
----
+***
 
 ### showTargetLabel?
 
@@ -72,7 +72,7 @@ optional showLegend: boolean;
 optional showTargetLabel: boolean;
 ```
 
----
+***
 
 ### showTitle?
 
@@ -80,7 +80,7 @@ optional showTargetLabel: boolean;
 optional showTitle: boolean;
 ```
 
----
+***
 
 ### showTotalLabel?
 
@@ -88,7 +88,7 @@ optional showTitle: boolean;
 optional showTotalLabel: boolean;
 ```
 
----
+***
 
 ### target?
 
@@ -96,7 +96,7 @@ optional showTotalLabel: boolean;
 optional target: number;
 ```
 
----
+***
 
 ### targetLabelPosition?
 
@@ -104,7 +104,7 @@ optional target: number;
 optional targetLabelPosition: "bottom" | "top";
 ```
 
----
+***
 
 ### targetLabelStyle?
 
@@ -112,7 +112,7 @@ optional targetLabelPosition: "bottom" | "top";
 optional targetLabelStyle: "normal" | "tight";
 ```
 
----
+***
 
 ### targetReachedColor?
 
@@ -120,7 +120,7 @@ optional targetLabelStyle: "normal" | "tight";
 optional targetReachedColor: string;
 ```
 
----
+***
 
 ### targetValueFormatter()?
 
@@ -130,15 +130,15 @@ optional targetValueFormatter: (value) => string | Element;
 
 #### Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
-| `value`   | `number` |
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `number` |
 
 #### Returns
 
 `string` \| `Element`
 
----
+***
 
 ### titleWidth?
 
@@ -146,7 +146,7 @@ optional targetValueFormatter: (value) => string | Element;
 optional titleWidth: number;
 ```
 
----
+***
 
 ### valueFormatter()?
 
@@ -156,9 +156,9 @@ optional valueFormatter: (value) => string | Element;
 
 #### Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
-| `value`   | `number` |
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `number` |
 
 #### Returns
 

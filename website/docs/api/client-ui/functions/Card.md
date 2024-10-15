@@ -1,13 +1,13 @@
 # Card()
 
 ```ts
-function Card(__namedParameters): Element;
+function Card(__namedParameters): Element
 ```
 
 ## Parameters
 
-| Parameter           | Type                                      |
-| ------------------- | ----------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`CardProps`](../interfaces/CardProps.md) |
 
 ## Returns

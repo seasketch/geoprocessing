@@ -10,7 +10,7 @@ objective: RbcsObjective;
 
 Objective to display status
 
----
+***
 
 ### objectiveMet
 
@@ -20,7 +20,7 @@ objectiveMet: "yes" | "no" | "maybe";
 
 Answer to whether objective is met
 
----
+***
 
 ### renderMsg?
 

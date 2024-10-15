@@ -16,8 +16,8 @@ new ValidationError(message?): ValidationError
 
 #### Parameters
 
-| Parameter  | Type     |
-| ---------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `message`? | `string` |
 
 #### Returns
@@ -36,9 +36,9 @@ new ValidationError(message?, options?): ValidationError
 
 #### Parameters
 
-| Parameter  | Type           |
-| ---------- | -------------- |
-| `message`? | `string`       |
+| Parameter | Type |
+| ------ | ------ |
+| `message`? | `string` |
 | `options`? | `ErrorOptions` |
 
 #### Returns
@@ -61,9 +61,9 @@ Create .stack property on a target object
 
 #### Parameters
 
-| Parameter         | Type       |
-| ----------------- | ---------- |
-| `targetObject`    | `object`   |
+| Parameter | Type |
+| ------ | ------ |
+| `targetObject` | `object` |
 | `constructorOpt`? | `Function` |
 
 #### Returns
@@ -86,7 +86,7 @@ optional cause: unknown;
 
 `Error.cause`
 
----
+***
 
 ### message
 
@@ -98,7 +98,7 @@ message: string;
 
 `Error.message`
 
----
+***
 
 ### name
 
@@ -110,7 +110,7 @@ name: string;
 
 `Error.name`
 
----
+***
 
 ### stack?
 
@@ -122,7 +122,7 @@ optional stack: string;
 
 `Error.stack`
 
----
+***
 
 ### prepareStackTrace()?
 
@@ -134,9 +134,9 @@ Optional override for formatting stack traces
 
 #### Parameters
 
-| Parameter     | Type         |
-| ------------- | ------------ |
-| `err`         | `Error`      |
+| Parameter | Type |
+| ------ | ------ |
+| `err` | `Error` |
 | `stackTraces` | `CallSite`[] |
 
 #### Returns
@@ -151,7 +151,7 @@ https://v8.dev/docs/stack-trace-api#customizing-stack-traces
 
 `Error.prepareStackTrace`
 
----
+***
 
 ### stackTraceLimit
 

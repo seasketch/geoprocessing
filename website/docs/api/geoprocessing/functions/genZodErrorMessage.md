@@ -1,14 +1,14 @@
 # genZodErrorMessage()
 
 ```ts
-function genZodErrorMessage(issues): string;
+function genZodErrorMessage(issues): string
 ```
 
 ## Parameters
 
-| Parameter | Type         |
-| --------- | ------------ |
-| `issues`  | `ZodIssue`[] |
+| Parameter | Type |
+| ------ | ------ |
+| `issues` | `ZodIssue`[] |
 
 ## Returns
 

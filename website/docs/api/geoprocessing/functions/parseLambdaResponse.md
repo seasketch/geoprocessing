@@ -1,15 +1,15 @@
 # parseLambdaResponse()
 
 ```ts
-function parseLambdaResponse(lambdaResult): JSONValue;
+function parseLambdaResponse(lambdaResult): JSONValue
 ```
 
 Parses result from worker lambda
 
 ## Parameters
 
-| Parameter      | Type                 |
-| -------------- | -------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `lambdaResult` | `InvocationResponse` |
 
 ## Returns

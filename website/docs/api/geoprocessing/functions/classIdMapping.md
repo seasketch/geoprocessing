@@ -1,15 +1,15 @@
 # classIdMapping()
 
 ```ts
-function classIdMapping(classes): Record<string, string>;
+function classIdMapping(classes): Record<string, string>
 ```
 
 Returns mapping of class ID to class DataClass objects
 
 ## Parameters
 
-| Parameter | Type       |
-| --------- | ---------- |
+| Parameter | Type |
+| ------ | ------ |
 | `classes` | `object`[] |
 
 ## Returns

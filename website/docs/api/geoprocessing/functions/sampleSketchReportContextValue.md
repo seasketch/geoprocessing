@@ -1,15 +1,15 @@
 # sampleSketchReportContextValue()
 
 ```ts
-function sampleSketchReportContextValue(overrides?): ReportContextValue;
+function sampleSketchReportContextValue(overrides?): ReportContextValue
 ```
 
-Creates a ReportContextValue object for a Sketch with sample values. overrides will be merged in, replacing default values
+Creates a ReportContextValue object for a Sketch with sample values.  overrides will be merged in, replacing default values
 
 ## Parameters
 
-| Parameter    | Type                  |
-| ------------ | --------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `overrides`? | `Partial`\<`object`\> |
 
 ## Returns

@@ -3,21 +3,21 @@
 ## SimpleButtonStyled(props)
 
 ```ts
-function SimpleButtonStyled<AsTarget, ForwardedAsTarget>(props): Element;
+function SimpleButtonStyled<AsTarget, ForwardedAsTarget>(props): Element
 ```
 
 ### Type Parameters
 
-| Type Parameter                                      | Default type |
-| --------------------------------------------------- | ------------ |
-| `AsTarget` _extends_ `void` \| `WebTarget`          | `void`       |
-| `ForwardedAsTarget` _extends_ `void` \| `WebTarget` | `void`       |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `AsTarget` *extends* `void` \| `WebTarget` | `void` |
+| `ForwardedAsTarget` *extends* `void` \| `WebTarget` | `void` |
 
 ### Parameters
 
-| Parameter | Type                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `props`   | `PolymorphicComponentProps`\<`"web"`, `FastOmit`\<`DetailedHTMLProps`\<`ButtonHTMLAttributes`\<`HTMLButtonElement`\>, `HTMLButtonElement`\>, `never`\>, `AsTarget`, `ForwardedAsTarget`, `AsTarget` _extends_ `KnownTarget` ? `ComponentPropsWithRef`\<`AsTarget`\<`AsTarget`\>\> : `object`, `ForwardedAsTarget` _extends_ `KnownTarget` ? `ComponentPropsWithRef`\<`ForwardedAsTarget`\<`ForwardedAsTarget`\>\> : `object`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `props` | `PolymorphicComponentProps`\<`"web"`, `FastOmit`\<`DetailedHTMLProps`\<`ButtonHTMLAttributes`\<`HTMLButtonElement`\>, `HTMLButtonElement`\>, `never`\>, `AsTarget`, `ForwardedAsTarget`, `AsTarget` *extends* `KnownTarget` ? `ComponentPropsWithRef`\<`AsTarget`\<`AsTarget`\>\> : `object`, `ForwardedAsTarget` *extends* `KnownTarget` ? `ComponentPropsWithRef`\<`ForwardedAsTarget`\<`ForwardedAsTarget`\>\> : `object`\> |
 
 ### Returns
 
@@ -26,14 +26,14 @@ function SimpleButtonStyled<AsTarget, ForwardedAsTarget>(props): Element;
 ## SimpleButtonStyled(props)
 
 ```ts
-function SimpleButtonStyled(props): ReactNode;
+function SimpleButtonStyled(props): ReactNode
 ```
 
 ### Parameters
 
-| Parameter | Type                                                                                                             |
-| --------- | ---------------------------------------------------------------------------------------------------------------- |
-| `props`   | `FastOmit`\<`DetailedHTMLProps`\<`ButtonHTMLAttributes`\<`HTMLButtonElement`\>, `HTMLButtonElement`\>, `never`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `props` | `FastOmit`\<`DetailedHTMLProps`\<`ButtonHTMLAttributes`\<`HTMLButtonElement`\>, `HTMLButtonElement`\>, `never`\> |
 
 ### Returns
 

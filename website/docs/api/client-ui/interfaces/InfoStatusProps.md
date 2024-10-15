@@ -8,7 +8,7 @@
 msg: Element;
 ```
 
----
+***
 
 ### size?
 
@@ -16,7 +16,7 @@ msg: Element;
 optional size: number;
 ```
 
----
+***
 
 ### style?
 

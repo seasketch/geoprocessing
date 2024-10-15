@@ -1,15 +1,15 @@
 # getCogFilename()
 
 ```ts
-function getCogFilename(datasource, postfix?): string;
+function getCogFilename(datasource, postfix?): string
 ```
 
 ## Parameters
 
-| Parameter    | Type                                                                                                      |
-| ------------ | --------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasource` | `object` \| `object` \| [`ImportRasterDatasourceConfig`](../type-aliases/ImportRasterDatasourceConfig.md) |
-| `postfix`?   | `string`                                                                                                  |
+| `postfix`? | `string` |
 
 ## Returns
 

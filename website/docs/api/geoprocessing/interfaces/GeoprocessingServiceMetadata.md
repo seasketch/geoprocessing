@@ -14,7 +14,7 @@ Expected public service metadata for each function
 optional clientSideBundle: ClientCode;
 ```
 
----
+***
 
 ### description
 
@@ -28,7 +28,7 @@ Appears in service metadata
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`description`](GeoprocessingHandlerOptions.md#description)
 
----
+***
 
 ### endpoint
 
@@ -36,7 +36,7 @@ Appears in service metadata
 endpoint: string;
 ```
 
----
+***
 
 ### executionMode
 
@@ -51,7 +51,7 @@ and `async` for longer running functions, especially contain/docker jobs.
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`executionMode`](GeoprocessingHandlerOptions.md#executionmode)
 
----
+***
 
 ### issAllowList
 
@@ -67,7 +67,7 @@ work with specified projects.
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`issAllowList`](GeoprocessingHandlerOptions.md#issallowlist)
 
----
+***
 
 ### medianCost
 
@@ -77,7 +77,7 @@ medianCost: number;
 
 USD
 
----
+***
 
 ### medianDuration
 
@@ -87,7 +87,7 @@ medianDuration: number;
 
 Seconds
 
----
+***
 
 ### memory?
 
@@ -101,7 +101,7 @@ Megabytes, 128 - 3008
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`memory`](GeoprocessingHandlerOptions.md#memory)
 
----
+***
 
 ### rateLimit
 
@@ -113,7 +113,7 @@ rateLimit: number;
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`rateLimit`](GeoprocessingHandlerOptions.md#ratelimit)
 
----
+***
 
 ### rateLimitConsumed
 
@@ -121,7 +121,7 @@ rateLimit: number;
 rateLimitConsumed: number;
 ```
 
----
+***
 
 ### rateLimited
 
@@ -135,7 +135,7 @@ Whether to rate limit beyond basic DDoS protection
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`rateLimited`](GeoprocessingHandlerOptions.md#ratelimited)
 
----
+***
 
 ### rateLimitPeriod
 
@@ -149,7 +149,7 @@ rateLimitPeriod: RateLimitPeriod;
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`rateLimitPeriod`](GeoprocessingHandlerOptions.md#ratelimitperiod)
 
----
+***
 
 ### requiresProperties
 
@@ -164,7 +164,7 @@ order to run the function
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`requiresProperties`](GeoprocessingHandlerOptions.md#requiresproperties)
 
----
+***
 
 ### restrictedAccess?
 
@@ -178,7 +178,7 @@ Whether function should respect group access-control headers
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`restrictedAccess`](GeoprocessingHandlerOptions.md#restrictedaccess)
 
----
+***
 
 ### timeout
 
@@ -192,7 +192,7 @@ Seconds
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`timeout`](GeoprocessingHandlerOptions.md#timeout)
 
----
+***
 
 ### title
 
@@ -206,7 +206,7 @@ Title will appear in service metadata and be referenced by clients
 
 [`GeoprocessingHandlerOptions`](GeoprocessingHandlerOptions.md).[`title`](GeoprocessingHandlerOptions.md#title)
 
----
+***
 
 ### type
 
@@ -214,7 +214,7 @@ Title will appear in service metadata and be referenced by clients
 type: GeoprocessingServiceType;
 ```
 
----
+***
 
 ### uri?
 
@@ -222,7 +222,7 @@ type: GeoprocessingServiceType;
 optional uri: string;
 ```
 
----
+***
 
 ### workers?
 
@@ -230,7 +230,7 @@ optional uri: string;
 optional workers: string[];
 ```
 
-Names of worker functions used by this function. Must be sync geoprocessing functions
+Names of worker functions used by this function.  Must be sync geoprocessing functions
 
 #### Inherited from
 

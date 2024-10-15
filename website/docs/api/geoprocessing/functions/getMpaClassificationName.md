@@ -1,28 +1,26 @@
 # getMpaClassificationName()
 
 ```ts
-function getMpaClassificationName(
-  index,
-):
+function getMpaClassificationName(index): 
   | "Fully Protected Area"
   | "Highly Protected Area"
   | "Moderately Protected Area"
   | "Poorly Protected Area"
-  | "Unprotected Area";
+  | "Unprotected Area"
 ```
 
 Returns protection level given MPA classification index value
 
 ## Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
-| `index`   | `number` |
+| Parameter | Type |
+| ------ | ------ |
+| `index` | `number` |
 
 ## Returns
 
-\| `"Fully Protected Area"`
-\| `"Highly Protected Area"`
-\| `"Moderately Protected Area"`
-\| `"Poorly Protected Area"`
-\| `"Unprotected Area"`
+  \| `"Fully Protected Area"`
+  \| `"Highly Protected Area"`
+  \| `"Moderately Protected Area"`
+  \| `"Poorly Protected Area"`
+  \| `"Unprotected Area"`

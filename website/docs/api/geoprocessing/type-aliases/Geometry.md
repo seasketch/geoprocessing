@@ -1,7 +1,7 @@
 # Geometry
 
 ```ts
-type Geometry:
+type Geometry: 
   | Point
   | MultiPoint
   | LineString

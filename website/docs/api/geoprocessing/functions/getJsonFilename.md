@@ -1,15 +1,15 @@
 # getJsonFilename()
 
 ```ts
-function getJsonFilename(datasource): string;
+function getJsonFilename(datasource): string
 ```
 
 Returns datasource filename in geojson format
 
 ## Parameters
 
-| Parameter    | Type                                                                                                      |
-| ------------ | --------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasource` | `object` \| `object` \| [`ImportVectorDatasourceConfig`](../type-aliases/ImportVectorDatasourceConfig.md) |
 
 ## Returns

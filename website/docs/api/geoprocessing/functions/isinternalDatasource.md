@@ -1,16 +1,14 @@
 # isinternalDatasource()
 
 ```ts
-function isinternalDatasource(
-  ds,
-): ds is Object | Object | (Object & Object) | (Object & Object);
+function isinternalDatasource(ds): ds is Object | Object | Object & Object | Object & Object
 ```
 
 ## Parameters
 
-| Parameter | Type  | Description       |
-| --------- | ----- | ----------------- |
-| `ds`      | `any` | Datasource object |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ds` | `any` | Datasource object |
 
 ## Returns
 

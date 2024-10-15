@@ -8,7 +8,7 @@
 layerId: string;
 ```
 
----
+***
 
 ### on
 
@@ -16,7 +16,7 @@ layerId: string;
 on: boolean;
 ```
 
----
+***
 
 ### type
 

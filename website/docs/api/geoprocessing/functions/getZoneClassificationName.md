@@ -1,14 +1,14 @@
 # getZoneClassificationName()
 
 ```ts
-function getZoneClassificationName(zoneId): string;
+function getZoneClassificationName(zoneId): string
 ```
 
 ## Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
-| `zoneId`  | `number` |
+| Parameter | Type |
+| ------ | ------ |
+| `zoneId` | `number` |
 
 ## Returns
 

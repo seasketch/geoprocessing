@@ -1,13 +1,13 @@
 # anchorScore()
 
 ```ts
-function anchorScore(regulation): number;
+function anchorScore(regulation): number
 ```
 
 ## Parameters
 
-| Parameter    | Type     |
-| ------------ | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `regulation` | `string` |
 
 ## Returns

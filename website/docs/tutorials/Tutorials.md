@@ -800,7 +800,7 @@ If the import fails, try again double checking everything. It is most likely one
 
 ##### Vector data with key parameter
 
-What if you have a vector file with multiple classes you want to group metrics by? The other [downloaded example data](#Example-data-for-tutorial) `benthic.gpkg` separates different benthic habitats (Sand, Seagrass, Coral) by a `class` parameter. The import for this datasource looks as follows:
+What if you have a vector file with multiple classes you want to group metrics by? The other [downloaded example data](#example-data-for-tutorial) `benthic.gpkg` separates different benthic habitats (Sand, Seagrass, Coral) by a `class` parameter. The import for this datasource looks as follows:
 
 ```bash
 npm run import:data -> Vector -> data/src/benthic.gpkg -> Micronesian Exclusive Economic Zone -> benthic -> class -> {none} -> Yes -> {none} -> Yes

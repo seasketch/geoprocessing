@@ -1,7 +1,7 @@
 # RbcsActivitiesCard()
 
 ```ts
-function RbcsActivitiesCard(): Element;
+function RbcsActivitiesCard(): Element
 ```
 
 ## Returns

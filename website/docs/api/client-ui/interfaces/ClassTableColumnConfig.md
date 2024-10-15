@@ -10,7 +10,7 @@ optional chartOptions: Partial<HorizontalStackedBarProps>;
 
 override options for metricChart column type
 
----
+***
 
 ### colStyle?
 
@@ -20,7 +20,7 @@ optional colStyle: CSSProperties;
 
 additional style properties for column
 
----
+***
 
 ### columnLabel?
 
@@ -30,7 +30,7 @@ optional columnLabel: string;
 
 column header label
 
----
+***
 
 ### metricId?
 
@@ -40,7 +40,7 @@ optional metricId: string;
 
 metricId to use for column - metricGoal will access its values via the metricGroup
 
----
+***
 
 ### percentFormatterOptions?
 
@@ -48,9 +48,9 @@ metricId to use for column - metricGoal will access its values via the metricGro
 optional percentFormatterOptions: PercentEdgeOptions;
 ```
 
-config options for percent value formatting. see percentWithEdge function for more details
+config options for percent value formatting.  see percentWithEdge function for more details
 
----
+***
 
 ### targetValueFormatter?
 
@@ -60,12 +60,12 @@ optional targetValueFormatter: TargetFormatter;
 
 formatting of target value based on the location of the row in the table
 
----
+***
 
 ### type
 
 ```ts
-type:
+type: 
   | "class"
   | "metricValue"
   | "metricChart"
@@ -75,7 +75,7 @@ type:
 
 column display type
 
----
+***
 
 ### valueFormatter?
 
@@ -85,7 +85,7 @@ optional valueFormatter: ValueFormatter;
 
 formatting to apply to values in column row, defaults to as-is 'value' formatting.
 
----
+***
 
 ### valueLabel?
 
@@ -95,7 +95,7 @@ optional valueLabel: string | (value) => string;
 
 unit string to display after value, or a format function that is passed the row value
 
----
+***
 
 ### width?
 

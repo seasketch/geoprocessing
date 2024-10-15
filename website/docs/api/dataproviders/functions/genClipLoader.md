@@ -1,7 +1,7 @@
 # genClipLoader()
 
 ```ts
-function genClipLoader<P>(project, operations): (feature) => Promise<object[]>;
+function genClipLoader<P>(project, operations): (feature) => Promise<object[]>
 ```
 
 Given a project client and 1 or more clip operations, returns a function that when called
@@ -10,15 +10,15 @@ Pass this function to genPreprocessor() and it will take care of the rest.
 
 ## Type Parameters
 
-| Type Parameter                                                                                     |
-| -------------------------------------------------------------------------------------------------- |
-| `P` _extends_ [`ProjectClientInterface`](../../geoprocessing/interfaces/ProjectClientInterface.md) |
+| Type Parameter |
+| ------ |
+| `P` *extends* [`ProjectClientInterface`](../../geoprocessing/interfaces/ProjectClientInterface.md) |
 
 ## Parameters
 
-| Parameter    | Type                                                                                     |
-| ------------ | ---------------------------------------------------------------------------------------- |
-| `project`    | `P`                                                                                      |
+| Parameter | Type |
+| ------ | ------ |
+| `project` | `P` |
 | `operations` | [`DatasourceClipOperation`](../../geoprocessing/interfaces/DatasourceClipOperation.md)[] |
 
 ## Returns
@@ -27,8 +27,8 @@ Pass this function to genPreprocessor() and it will take care of the rest.
 
 ### Parameters
 
-| Parameter | Type                                                                                                                                                                                                                                                               |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Parameter | Type |
+| ------ | ------ |
 | `feature` | [`Feature`](../../geoprocessing/interfaces/Feature.md)\<[`Polygon`](../../geoprocessing/interfaces/Polygon.md) \| [`MultiPolygon`](../../geoprocessing/interfaces/MultiPolygon.md), [`GeoJsonProperties`](../../geoprocessing/type-aliases/GeoJsonProperties.md)\> |
 
 ### Returns

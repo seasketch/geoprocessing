@@ -1,14 +1,14 @@
 # squareMeterToKilometer()
 
 ```ts
-function squareMeterToKilometer(value): number;
+function squareMeterToKilometer(value): number
 ```
 
 ## Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
-| `value`   | `number` |
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `number` |
 
 ## Returns
 

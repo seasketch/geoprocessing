@@ -10,7 +10,7 @@ optional classType: "equal-interval" | "quantile";
 
 required for ratio scaleType
 
----
+***
 
 ### numClasses?
 
@@ -20,7 +20,7 @@ optional numClasses: number;
 
 required for ratio scaleType
 
----
+***
 
 ### scaleType
 

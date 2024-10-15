@@ -4,9 +4,9 @@ Custom table data filter
 
 ## Type Parameters
 
-| Type Parameter         | Default type |
-| ---------------------- | ------------ |
-| `D` _extends_ `object` | `object`     |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `D` *extends* `object` | `object` |
 
 ## Properties
 
@@ -18,7 +18,7 @@ defaultValue: boolean;
 
 Whether to select by default
 
----
+***
 
 ### filterFn()
 
@@ -31,14 +31,14 @@ The function used to filter the set.
 #### Parameters
 
 | Parameter | Type |
-| --------- | ---- |
-| `row`     | `D`  |
+| ------ | ------ |
+| `row` | `D` |
 
 #### Returns
 
 `boolean`
 
----
+***
 
 ### name
 

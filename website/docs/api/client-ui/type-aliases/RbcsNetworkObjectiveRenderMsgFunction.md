@@ -6,9 +6,9 @@ type RbcsNetworkObjectiveRenderMsgFunction: (objective, objectiveMet) => JSX.Ele
 
 ## Parameters
 
-| Parameter      | Type                                                                     |
-| -------------- | ------------------------------------------------------------------------ |
-| `objective`    | [`RbcsObjective`](../../geoprocessing/interfaces/RbcsObjective.md)       |
+| Parameter | Type |
+| ------ | ------ |
+| `objective` | [`RbcsObjective`](../../geoprocessing/interfaces/RbcsObjective.md) |
 | `objectiveMet` | [`ObjectiveAnswer`](../../geoprocessing/type-aliases/ObjectiveAnswer.md) |
 
 ## Returns

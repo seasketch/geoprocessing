@@ -7,5 +7,5 @@ type Nullable<T>: T | null;
 ## Type Parameters
 
 | Type Parameter |
-| -------------- |
-| `T`            |
+| ------ |
+| `T` |

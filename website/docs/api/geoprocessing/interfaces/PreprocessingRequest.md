@@ -10,7 +10,7 @@ optional extraParams: string;
 
 Additional runtime parameters
 
----
+***
 
 ### feature
 
@@ -20,7 +20,7 @@ feature: Feature<Polygon | Point | LineString, GeoJsonProperties>;
 
 Geometry drawn by the user. Typically simple
 
----
+***
 
 ### responseFormat?
 

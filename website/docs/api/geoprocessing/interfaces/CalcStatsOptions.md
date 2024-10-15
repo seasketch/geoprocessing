@@ -17,7 +17,7 @@ optional chunked: boolean;
 
 Whether or not to chunk calculations
 
----
+***
 
 ### filter()?
 
@@ -29,16 +29,16 @@ Filter function to ignore raster values in stat calc
 
 #### Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
-| `index`   | `number` |
-| `value`   | `number` |
+| Parameter | Type |
+| ------ | ------ |
+| `index` | `number` |
+| `value` | `number` |
 
 #### Returns
 
 `boolean`
 
----
+***
 
 ### noData?
 
@@ -48,7 +48,7 @@ optional noData: number;
 
 Override nodata value, which is ignored in calculations
 
----
+***
 
 ### stats?
 

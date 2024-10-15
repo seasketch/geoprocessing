@@ -13,15 +13,15 @@ optional changeLanguage: (language) => void;
 
 #### Parameters
 
-| Parameter  | Type     |
-| ---------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `language` | `string` |
 
 #### Returns
 
 `void`
 
----
+***
 
 ### exampleOutputs?
 
@@ -29,7 +29,7 @@ optional changeLanguage: (language) => void;
 optional exampleOutputs: TestExampleOutput[];
 ```
 
----
+***
 
 ### geometryUri
 
@@ -39,7 +39,7 @@ geometryUri: string;
 
 uri where the sketch can be fetched
 
----
+***
 
 ### language
 
@@ -47,7 +47,7 @@ uri where the sketch can be fetched
 language: string;
 ```
 
----
+***
 
 ### projectUrl
 
@@ -57,7 +57,7 @@ projectUrl: string;
 
 Geoprocessing project metadata with details on functions, clients, uris
 
----
+***
 
 ### simulateError?
 
@@ -65,7 +65,7 @@ Geoprocessing project metadata with details on functions, clients, uris
 optional simulateError: string;
 ```
 
----
+***
 
 ### simulateLoading?
 
@@ -73,7 +73,7 @@ optional simulateError: string;
 optional simulateLoading: boolean;
 ```
 
----
+***
 
 ### sketchProperties
 
@@ -81,7 +81,7 @@ optional simulateLoading: boolean;
 sketchProperties: SketchProperties;
 ```
 
----
+***
 
 ### toggleLayerVisibility()?
 
@@ -91,15 +91,15 @@ optional toggleLayerVisibility: (layerId) => void;
 
 #### Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `layerId` | `string` |
 
 #### Returns
 
 `void`
 
----
+***
 
 ### visibleLayers
 

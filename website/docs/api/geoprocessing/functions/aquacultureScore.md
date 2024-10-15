@@ -1,13 +1,13 @@
 # aquacultureScore()
 
 ```ts
-function aquacultureScore(regulation): number;
+function aquacultureScore(regulation): number
 ```
 
 ## Parameters
 
-| Parameter    | Type     |
-| ------------ | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `regulation` | `string` |
 
 ## Returns

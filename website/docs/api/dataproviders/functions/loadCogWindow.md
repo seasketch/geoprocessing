@@ -1,7 +1,7 @@
 # ~~loadCogWindow()~~
 
 ```ts
-function loadCogWindow(url, options): Promise<any>;
+function loadCogWindow(url, options): Promise<any>
 ```
 
 Returns georaster window (image subset) defined by options.windowBox, otherwise loads the whole raster
@@ -10,9 +10,9 @@ This function front loads the raster values, so subsequent geoblaze calls (e.g. 
 
 ## Parameters
 
-| Parameter | Type         |
-| --------- | ------------ |
-| `url`     | `string`     |
+| Parameter | Type |
+| ------ | ------ |
+| `url` | `string` |
 | `options` | `CogOptions` |
 
 ## Returns

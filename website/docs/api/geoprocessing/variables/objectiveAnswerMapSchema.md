@@ -1,8 +1,5 @@
 # objectiveAnswerMapSchema
 
 ```ts
-const objectiveAnswerMapSchema: ZodRecord<
-  ZodString,
-  ZodEnum<["yes", "no", "maybe"]>
->;
+const objectiveAnswerMapSchema: ZodRecord<ZodString, ZodEnum<["yes", "no", "maybe"]>>;
 ```

@@ -6,23 +6,23 @@
 
 ## Type Parameters
 
-| Type Parameter         | Default type |
-| ---------------------- | ------------ |
-| `D` _extends_ `object` | `object`     |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `D` *extends* `object` | `object` |
 
 ## Properties
 
 ### allCells
 
 ```ts
-allCells: Cell < D, any > [];
+allCells: Cell<D, any>[];
 ```
 
 #### Inherited from
 
 `UseTableRowProps.allCells`
 
----
+***
 
 ### canExpand
 
@@ -30,19 +30,19 @@ allCells: Cell < D, any > [];
 canExpand: boolean;
 ```
 
----
+***
 
 ### cells
 
 ```ts
-cells: Cell < D, any > [];
+cells: Cell<D, any>[];
 ```
 
 #### Inherited from
 
 `UseTableRowProps.cells`
 
----
+***
 
 ### depth
 
@@ -50,7 +50,7 @@ cells: Cell < D, any > [];
 depth: number;
 ```
 
----
+***
 
 ### getRowProps()
 
@@ -60,8 +60,8 @@ getRowProps: (propGetter?) => TableRowProps;
 
 #### Parameters
 
-| Parameter     | Type                   |
-| ------------- | ---------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `propGetter`? | `RowPropGetter`\<`D`\> |
 
 #### Returns
@@ -72,7 +72,7 @@ getRowProps: (propGetter?) => TableRowProps;
 
 `UseTableRowProps.getRowProps`
 
----
+***
 
 ### getToggleRowExpandedProps()
 
@@ -82,15 +82,15 @@ getToggleRowExpandedProps: (props?) => TableExpandedToggleProps;
 
 #### Parameters
 
-| Parameter | Type                                    |
-| --------- | --------------------------------------- |
-| `props`?  | `Partial`\<`TableExpandedToggleProps`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `props`? | `Partial`\<`TableExpandedToggleProps`\> |
 
 #### Returns
 
 `TableExpandedToggleProps`
 
----
+***
 
 ### getToggleRowSelectedProps()
 
@@ -100,15 +100,15 @@ getToggleRowSelectedProps: (props?) => TableToggleRowsSelectedProps;
 
 #### Parameters
 
-| Parameter | Type                                        |
-| --------- | ------------------------------------------- |
-| `props`?  | `Partial`\<`TableToggleRowsSelectedProps`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `props`? | `Partial`\<`TableToggleRowsSelectedProps`\> |
 
 #### Returns
 
 `TableToggleRowsSelectedProps`
 
----
+***
 
 ### groupByID
 
@@ -116,7 +116,7 @@ getToggleRowSelectedProps: (props?) => TableToggleRowsSelectedProps;
 groupByID: IdType<D>;
 ```
 
----
+***
 
 ### groupByVal
 
@@ -124,7 +124,7 @@ groupByID: IdType<D>;
 groupByVal: string;
 ```
 
----
+***
 
 ### id
 
@@ -136,7 +136,7 @@ id: string;
 
 `UseTableRowProps.id`
 
----
+***
 
 ### index
 
@@ -148,7 +148,7 @@ index: number;
 
 `UseTableRowProps.index`
 
----
+***
 
 ### isExpanded
 
@@ -156,7 +156,7 @@ index: number;
 isExpanded: boolean;
 ```
 
----
+***
 
 ### isGrouped
 
@@ -164,7 +164,7 @@ isExpanded: boolean;
 isGrouped: boolean;
 ```
 
----
+***
 
 ### isSelected
 
@@ -172,7 +172,7 @@ isGrouped: boolean;
 isSelected: boolean;
 ```
 
----
+***
 
 ### isSomeSelected
 
@@ -180,15 +180,15 @@ isSelected: boolean;
 isSomeSelected: boolean;
 ```
 
----
+***
 
 ### leafRows
 
 ```ts
-leafRows: Row < D > [];
+leafRows: Row<D>[];
 ```
 
----
+***
 
 ### original
 
@@ -200,7 +200,7 @@ original: D;
 
 `UseTableRowProps.original`
 
----
+***
 
 ### setState()
 
@@ -210,15 +210,15 @@ setState: (updater) => void;
 
 #### Parameters
 
-| Parameter | Type      |
-| --------- | --------- |
+| Parameter | Type |
+| ------ | ------ |
 | `updater` | `unknown` |
 
 #### Returns
 
 `void`
 
----
+***
 
 ### state
 
@@ -226,19 +226,19 @@ setState: (updater) => void;
 state: UseRowStateLocalState<D, unknown>;
 ```
 
----
+***
 
 ### subRows
 
 ```ts
-subRows: Row < D > [];
+subRows: Row<D>[];
 ```
 
 #### Inherited from
 
 `UseTableRowProps.subRows`
 
----
+***
 
 ### toggleRowExpanded()
 
@@ -248,15 +248,15 @@ toggleRowExpanded: (value?) => void;
 
 #### Parameters
 
-| Parameter | Type      |
-| --------- | --------- |
-| `value`?  | `boolean` |
+| Parameter | Type |
+| ------ | ------ |
+| `value`? | `boolean` |
 
 #### Returns
 
 `void`
 
----
+***
 
 ### toggleRowSelected()
 
@@ -266,15 +266,15 @@ toggleRowSelected: (set?) => void;
 
 #### Parameters
 
-| Parameter | Type      |
-| --------- | --------- |
-| `set`?    | `boolean` |
+| Parameter | Type |
+| ------ | ------ |
+| `set`? | `boolean` |
 
 #### Returns
 
 `void`
 
----
+***
 
 ### values
 

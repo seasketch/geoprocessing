@@ -1,7 +1,7 @@
 # IucnMatrix()
 
 ```ts
-function IucnMatrix(): Element;
+function IucnMatrix(): Element
 ```
 
 ## Returns

@@ -8,7 +8,7 @@
 desc: string;
 ```
 
----
+***
 
 ### display
 
@@ -16,7 +16,7 @@ desc: string;
 display: string;
 ```
 
----
+***
 
 ### id
 

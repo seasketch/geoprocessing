@@ -1,14 +1,14 @@
 # fgBoundingBox()
 
 ```ts
-function fgBoundingBox(box): object;
+function fgBoundingBox(box): object
 ```
 
 ## Parameters
 
-| Parameter | Type                                               |
-| --------- | -------------------------------------------------- |
-| `box`     | [`BBox`](../../geoprocessing/type-aliases/BBox.md) |
+| Parameter | Type |
+| ------ | ------ |
+| `box` | [`BBox`](../../geoprocessing/type-aliases/BBox.md) |
 
 ## Returns
 

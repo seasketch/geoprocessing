@@ -10,7 +10,7 @@ optional formatPerc: boolean;
 
 Whether to format values as percentages, defaults to false
 
----
+***
 
 ### metricGroup
 
@@ -76,12 +76,12 @@ type: string;
 
 Metric type
 
----
+***
 
 ### rows
 
 ```ts
-rows: Record < string, string | (number > []);
+rows: Record<string, string | number>[];
 ```
 
 Table rows, expected to have sketchName property and one property for each classId in classes

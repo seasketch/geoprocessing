@@ -1,10 +1,7 @@
 # genFeatureCollection()
 
 ```ts
-function genFeatureCollection<G>(
-  features,
-  options,
-): FeatureCollection<G, GeoJsonProperties>;
+function genFeatureCollection<G>(features, options): FeatureCollection<G, GeoJsonProperties>
 ```
 
 Given array of features, return a feature collection with given properties.
@@ -14,18 +11,18 @@ Properties of features are retained
 
 ## Type Parameters
 
-| Type Parameter                                          | Default type                                                    |
-| ------------------------------------------------------- | --------------------------------------------------------------- |
-| `G` _extends_ [`Geometry`](../type-aliases/Geometry.md) | [`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md) |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `G` *extends* [`Geometry`](../type-aliases/Geometry.md) | [`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md) |
 
 ## Parameters
 
-| Parameter       | Type                                                                                                        |
-| --------------- | ----------------------------------------------------------------------------------------------------------- |
-| `features`      | [`Feature`](../interfaces/Feature.md)\<`G`, [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\>[] |
-| `options`       | `object`                                                                                                    |
-| `options.id`?   | `string`                                                                                                    |
-| `options.name`? | `string`                                                                                                    |
+| Parameter | Type |
+| ------ | ------ |
+| `features` | [`Feature`](../interfaces/Feature.md)\<`G`, [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\>[] |
+| `options` | `object` |
+| `options.id`? | `string` |
+| `options.name`? | `string` |
 
 ## Returns
 

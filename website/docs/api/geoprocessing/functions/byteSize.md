@@ -1,16 +1,16 @@
 # byteSize()
 
 ```ts
-function byteSize(str): number;
+function byteSize(str): number
 ```
 
 Get length of string in bytes
 
 ## Parameters
 
-| Parameter | Type     | Description |
-| --------- | -------- | ----------- |
-| `str`     | `string` |             |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `str` | `string` |  |
 
 ## Returns
 

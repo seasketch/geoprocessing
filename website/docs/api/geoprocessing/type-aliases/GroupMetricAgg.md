@@ -9,7 +9,7 @@ Useful for rendering table rows with the values of multiple classes for a group
 
 ## Index Signature
 
-\[`className`: `string`\]: `string` \| `number`
+ \[`className`: `string`\]: `string` \| `number`
 
 ## Type declaration
 

@@ -1,13 +1,13 @@
 # SketchAttributesCard()
 
 ```ts
-function SketchAttributesCard(__namedParameters): null | Element;
+function SketchAttributesCard(__namedParameters): null | Element
 ```
 
 ## Parameters
 
-| Parameter           | Type                                                                      |
-| ------------------- | ------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`SketchAttributesCardProps`](../interfaces/SketchAttributesCardProps.md) |
 
 ## Returns

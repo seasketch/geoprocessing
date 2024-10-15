@@ -56,7 +56,7 @@ planningAreaName: string;
 planningAreaType: "eez" | "other" = planningAreaTypesSchema;
 ```
 
----
+***
 
 ### datasources
 
@@ -70,7 +70,7 @@ Returns typed config from datasources.json
 
 (`object` \| `object` \| `object` & `object` \| `object` & `object`)[]
 
----
+***
 
 ### externalDatasources
 
@@ -84,7 +84,7 @@ Return external datasources from datasources.json
 
 (`object` \| `object` \| `object` & `object` \| `object` & `object`)[]
 
----
+***
 
 ### geographies
 
@@ -98,7 +98,7 @@ Returns typed config from geographies.json
 
 `object`[]
 
----
+***
 
 ### geoprocessing
 
@@ -148,7 +148,7 @@ preprocessingFunctions: string[];
 region: string;
 ```
 
----
+***
 
 ### internalDatasources
 
@@ -162,7 +162,7 @@ Returns internal datasources from datasources.json
 
 (`object` \| `object` \| `object` & `object` \| `object` & `object`)[]
 
----
+***
 
 ### metricGroups
 
@@ -176,7 +176,7 @@ Returns typed config from metrics.json
 
 `object`[]
 
----
+***
 
 ### objectives
 
@@ -190,7 +190,7 @@ Returns typed config from objectives.json
 
 `object`[]
 
----
+***
 
 ### package
 
@@ -294,7 +294,7 @@ optional type: string;
 version: string;
 ```
 
----
+***
 
 ### precalc
 
@@ -318,9 +318,9 @@ new ProjectClientBase(config): ProjectClientBase
 
 #### Parameters
 
-| Parameter | Type                                                          |
-| --------- | ------------------------------------------------------------- |
-| `config`  | [`ProjectClientConfig`](../interfaces/ProjectClientConfig.md) |
+| Parameter | Type |
+| ------ | ------ |
+| `config` | [`ProjectClientConfig`](../interfaces/ProjectClientConfig.md) |
 
 #### Returns
 
@@ -334,13 +334,13 @@ new ProjectClientBase(config): ProjectClientBase
 dataBucketUrl(options): string
 ```
 
-Returns URL to dataset bucket for project. In test environment or if local parameter is true, will
+Returns URL to dataset bucket for project.  In test environment or if local parameter is true, will
 return local URL expected to serve up dist data folder
 
 #### Parameters
 
-| Parameter | Type                   |
-| --------- | ---------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `options` | `DataBucketUrlOptions` |
 
 #### Returns
@@ -351,7 +351,7 @@ return local URL expected to serve up dist data folder
 
 [`ProjectClientInterface`](../interfaces/ProjectClientInterface.md).[`dataBucketUrl`](../interfaces/ProjectClientInterface.md#databucketurl)
 
----
+***
 
 ### getDatasourceById()
 
@@ -363,8 +363,8 @@ Returns Datasource given datasourceId
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
@@ -375,7 +375,7 @@ Returns Datasource given datasourceId
 
 [`ProjectClientInterface`](../interfaces/ProjectClientInterface.md).[`getDatasourceById`](../interfaces/ProjectClientInterface.md#getdatasourcebyid)
 
----
+***
 
 ### getDatasourceUrl()
 
@@ -385,14 +385,14 @@ getDatasourceUrl(ds, options): string
 
 #### Parameters
 
-| Parameter          | Type                                                                                                                                                                                                                                                                    |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ds`               | \| `object` \| `object` \| `object` \| `object` \| `object` & `object` \| `object` & `object` \| [`ImportVectorDatasourceConfig`](../type-aliases/ImportVectorDatasourceConfig.md) \| [`ImportRasterDatasourceConfig`](../type-aliases/ImportRasterDatasourceConfig.md) |
-| `options`          | `object`                                                                                                                                                                                                                                                                |
-| `options.format`?  | `"fgb"` \| `"json"` \| `"tif"` \| `"subdivided"`                                                                                                                                                                                                                        |
-| `options.local`?   | `boolean`                                                                                                                                                                                                                                                               |
-| `options.port`?    | `number`                                                                                                                                                                                                                                                                |
-| `options.subPath`? | `string`                                                                                                                                                                                                                                                                |
+| Parameter | Type |
+| ------ | ------ |
+| `ds` | \| `object` \| `object` \| `object` \| `object` \| `object` & `object` \| `object` & `object` \| [`ImportVectorDatasourceConfig`](../type-aliases/ImportVectorDatasourceConfig.md) \| [`ImportRasterDatasourceConfig`](../type-aliases/ImportRasterDatasourceConfig.md) |
+| `options` | `object` |
+| `options.format`? | `"fgb"` \| `"json"` \| `"tif"` \| `"subdivided"` |
+| `options.local`? | `boolean` |
+| `options.port`? | `number` |
+| `options.subPath`? | `string` |
 
 #### Returns
 
@@ -402,7 +402,7 @@ getDatasourceUrl(ds, options): string
 
 [`ProjectClientInterface`](../interfaces/ProjectClientInterface.md).[`getDatasourceUrl`](../interfaces/ProjectClientInterface.md#getdatasourceurl)
 
----
+***
 
 ### getExternalRasterDatasourceById()
 
@@ -414,15 +414,15 @@ Returns ExternalRasterDatasource given datasourceId, throws if not found
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
 
 `object` & `object`
 
----
+***
 
 ### getExternalVectorDatasourceById()
 
@@ -434,15 +434,15 @@ Returns ExternalVectorDatasource given datasourceId, throws if not found
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
 
 `object` & `object`
 
----
+***
 
 ### getGeographyByGroup()
 
@@ -452,9 +452,9 @@ getGeographyByGroup(group): object[]
 
 #### Parameters
 
-| Parameter | Type     | Description                     |
-| --------- | -------- | ------------------------------- |
-| `group`   | `string` | the name of the geography group |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `group` | `string` | the name of the geography group |
 
 #### Returns
 
@@ -462,7 +462,7 @@ getGeographyByGroup(group): object[]
 
 geographies with group name assigned
 
----
+***
 
 ### getGeographyById()
 
@@ -474,10 +474,10 @@ Returns project geography matching the provided ID, with optional fallback geogr
 
 #### Parameters
 
-| Parameter                | Type     | Description                                                                                                              |
-| ------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `geographyId`?           | `string` | The geography ID to search for                                                                                           |
-| `options`?               | `object` |                                                                                                                          |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `geographyId`? | `string` | The geography ID to search for |
+| `options`? | `object` |  |
 | `options.fallbackGroup`? | `string` | The default group name to lookup if no geographyId is provided. expects there is only one geography with that group name |
 
 #### Returns
@@ -564,7 +564,7 @@ values: (string | number)[];
 
 if geography does not exist
 
----
+***
 
 ### getInternalRasterDatasourceById()
 
@@ -576,8 +576,8 @@ Returns InternalRasterDatasource given datasourceId, throws if not found
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
@@ -616,7 +616,7 @@ formats: ("fgb" | "json" | "tif" | "subdivided")[];
 
 Available formats
 
-##### geo_type
+##### geo\_type
 
 ```ts
 geo_type: "vector" | "raster" = geoTypesSchema;
@@ -718,7 +718,7 @@ src: string;
 
 Import - Path to source data, with filename
 
----
+***
 
 ### getInternalVectorDatasourceById()
 
@@ -730,8 +730,8 @@ Returns InternalVectorDatasource given datasourceId, throws if not found
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
@@ -752,7 +752,7 @@ Optional, constrain datasource to smaller bbox
 classKeys: string[];
 ```
 
-keys to generate classes for. Vector - property names
+keys to generate classes for.  Vector - property names
 
 ##### created
 
@@ -786,7 +786,7 @@ formats: ("fgb" | "json" | "tif" | "subdivided")[];
 
 Available formats
 
-##### geo_type
+##### geo\_type
 
 ```ts
 geo_type: "vector" | "raster" = geoTypesSchema;
@@ -924,7 +924,7 @@ src: string;
 
 Import - Path to source data, with filename
 
----
+***
 
 ### getMetricGroup()
 
@@ -936,10 +936,10 @@ Returns MetricGroup given metricId, optional translating display name, given i18
 
 #### Parameters
 
-| Parameter  | Type                                        |
-| ---------- | ------------------------------------------- |
-| `metricId` | `string`                                    |
-| `t`?       | `TFunction`\<`"translation"`, `undefined`\> |
+| Parameter | Type |
+| ------ | ------ |
+| `metricId` | `string` |
+| `t`? | `TFunction`\<`"translation"`, `undefined`\> |
 
 #### Returns
 
@@ -1001,7 +1001,7 @@ type: string;
 
 Metric type
 
----
+***
 
 ### getMetricGroupObjectives()
 
@@ -1013,23 +1013,23 @@ Returns all Objectives for MetricGroup, optionally translating short description
 
 #### Parameters
 
-| Parameter                   | Type                                        | Description                                           |
-| --------------------------- | ------------------------------------------- | ----------------------------------------------------- |
-| `metricGroup`               | `object`                                    | -                                                     |
-| `metricGroup.classes`       | `object`[]                                  | data classes used by group                            |
-| `metricGroup.classKey`?     | `string`                                    | Optional datasource class key used to source classIds |
-| `metricGroup.datasourceId`? | `string`                                    | Datasource to generate metrics from                   |
-| `metricGroup.layerId`?      | `string`                                    | Optional ID of map layer associated with this metric  |
-| `metricGroup.metricId`?     | `string`                                    | Unique id of metric in project                        |
-| `metricGroup.objectiveId`?  | `string`                                    | group level objective, applies to all classes         |
-| `metricGroup.type`?         | `string`                                    | Metric type                                           |
-| `t`?                        | `TFunction`\<`"translation"`, `undefined`\> | -                                                     |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `metricGroup` | `object` | - |
+| `metricGroup.classes` | `object`[] | data classes used by group |
+| `metricGroup.classKey`? | `string` | Optional datasource class key used to source classIds |
+| `metricGroup.datasourceId`? | `string` | Datasource to generate metrics from |
+| `metricGroup.layerId`? | `string` | Optional ID of map layer associated with this metric |
+| `metricGroup.metricId`? | `string` | Unique id of metric in project |
+| `metricGroup.objectiveId`? | `string` | group level objective, applies to all classes |
+| `metricGroup.type`? | `string` | Metric type |
+| `t`? | `TFunction`\<`"translation"`, `undefined`\> | - |
 
 #### Returns
 
 `object`[]
 
----
+***
 
 ### getMetricGroupPercId()
 
@@ -1041,16 +1041,16 @@ Simple helper that given MetricGroup, returns a consistent ID string for a perce
 
 #### Parameters
 
-| Parameter          | Type       | Description                                           |
-| ------------------ | ---------- | ----------------------------------------------------- |
-| `mg`               | `object`   | the MetricGroup                                       |
-| `mg.classes`       | `object`[] | data classes used by group                            |
-| `mg.classKey`?     | `string`   | Optional datasource class key used to source classIds |
-| `mg.datasourceId`? | `string`   | Datasource to generate metrics from                   |
-| `mg.layerId`?      | `string`   | Optional ID of map layer associated with this metric  |
-| `mg.metricId`      | `string`   | Unique id of metric in project                        |
-| `mg.objectiveId`?  | `string`   | group level objective, applies to all classes         |
-| `mg.type`          | `string`   | Metric type                                           |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `mg` | `object` | the MetricGroup |
+| `mg.classes` | `object`[] | data classes used by group |
+| `mg.classKey`? | `string` | Optional datasource class key used to source classIds |
+| `mg.datasourceId`? | `string` | Datasource to generate metrics from |
+| `mg.layerId`? | `string` | Optional ID of map layer associated with this metric |
+| `mg.metricId` | `string` | Unique id of metric in project |
+| `mg.objectiveId`? | `string` | group level objective, applies to all classes |
+| `mg.type` | `string` | Metric type |
 
 #### Returns
 
@@ -1058,7 +1058,7 @@ Simple helper that given MetricGroup, returns a consistent ID string for a perce
 
 - ID string
 
----
+***
 
 ### getObjectiveById()
 
@@ -1070,8 +1070,8 @@ Returns Objective given objectiveId
 
 #### Parameters
 
-| Parameter     | Type     |
-| ------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `objectiveId` | `string` |
 
 #### Returns
@@ -1108,33 +1108,33 @@ target: number;
 
 Value required for objective to be met
 
----
+***
 
 ### getPrecalcMetrics()
 
 ```ts
 getPrecalcMetrics(
-   mg?,
-   metricId?,
+   mg?, 
+   metricId?, 
    geographyId?): object[]
 ```
 
-Returns precalc metrics from precalc.json. Optionally filters down to specific metricGroup and geographyId
+Returns precalc metrics from precalc.json.  Optionally filters down to specific metricGroup and geographyId
 
 #### Parameters
 
-| Parameter          | Type       | Description                                           |
-| ------------------ | ---------- | ----------------------------------------------------- |
-| `mg`?              | `object`   | MetricGroup to get precalculated metrics for          |
-| `mg.classes`?      | `object`[] | data classes used by group                            |
-| `mg.classKey`?     | `string`   | Optional datasource class key used to source classIds |
-| `mg.datasourceId`? | `string`   | Datasource to generate metrics from                   |
-| `mg.layerId`?      | `string`   | Optional ID of map layer associated with this metric  |
-| `mg.metricId`?     | `string`   | Unique id of metric in project                        |
-| `mg.objectiveId`?  | `string`   | group level objective, applies to all classes         |
-| `mg.type`?         | `string`   | Metric type                                           |
-| `metricId`?        | `string`   | string, "area", "count", or "sum"                     |
-| `geographyId`?     | `string`   | string, geographyId to get precalculated metrics for  |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `mg`? | `object` | MetricGroup to get precalculated metrics for |
+| `mg.classes`? | `object`[] | data classes used by group |
+| `mg.classKey`? | `string` | Optional datasource class key used to source classIds |
+| `mg.datasourceId`? | `string` | Datasource to generate metrics from |
+| `mg.layerId`? | `string` | Optional ID of map layer associated with this metric |
+| `mg.metricId`? | `string` | Unique id of metric in project |
+| `mg.objectiveId`? | `string` | group level objective, applies to all classes |
+| `mg.type`? | `string` | Metric type |
+| `metricId`? | `string` | string, "area", "count", or "sum" |
+| `geographyId`? | `string` | string, geographyId to get precalculated metrics for |
 
 #### Returns
 
@@ -1142,7 +1142,7 @@ Returns precalc metrics from precalc.json. Optionally filters down to specific m
 
 Metric[] of precalculated metrics
 
----
+***
 
 ### getRasterDatasourceById()
 
@@ -1154,8 +1154,8 @@ Returns RasterDatasource given datasourceId, throws if not found
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
@@ -1186,7 +1186,7 @@ formats: ("fgb" | "json" | "tif" | "subdivided")[];
 
 Available formats
 
-##### geo_type
+##### geo\_type
 
 ```ts
 geo_type: "vector" | "raster" = geoTypesSchema;
@@ -1276,7 +1276,7 @@ Optional, defines whether or not precalc should be run for this datasource
 
 [`ProjectClientInterface`](../interfaces/ProjectClientInterface.md).[`getRasterDatasourceById`](../interfaces/ProjectClientInterface.md#getrasterdatasourcebyid)
 
----
+***
 
 ### getVectorDatasourceById()
 
@@ -1288,8 +1288,8 @@ Returns VectorDatasource given datasourceId, throws if not found
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
@@ -1310,7 +1310,7 @@ Optional, constrain datasource to smaller bbox
 classKeys: string[];
 ```
 
-keys to generate classes for. Vector - property names
+keys to generate classes for.  Vector - property names
 
 ##### datasourceId
 
@@ -1328,7 +1328,7 @@ formats: ("fgb" | "json" | "tif" | "subdivided")[];
 
 Available formats
 
-##### geo_type
+##### geo\_type
 
 ```ts
 geo_type: "vector" | "raster" = geoTypesSchema;

@@ -1,13 +1,7 @@
 # loadedPackageSchema
 
 ```ts
-const loadedPackageSchema: ZodObject<
-  object,
-  "strip",
-  ZodTypeAny,
-  object,
-  object
->;
+const loadedPackageSchema: ZodObject<object, "strip", ZodTypeAny, object, object>;
 ```
 
 Stricter schema for npm package.json metadata, with most fields guaranteed present

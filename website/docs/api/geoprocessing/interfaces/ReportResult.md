@@ -10,7 +10,7 @@ Report results consist of collections of metrics for sketches
 metrics: object[];
 ```
 
----
+***
 
 ### sketch
 

@@ -6,6 +6,6 @@ type Column<D>: ColumnGroup<D> | ColumnWithLooseAccessor<D> | ColumnWithStrictAc
 
 ## Type Parameters
 
-| Type Parameter         | Default type |
-| ---------------------- | ------------ |
-| `D` _extends_ `object` | `object`     |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `D` *extends* `object` | `object` |

@@ -1,7 +1,7 @@
 # genSampleSketchContext()
 
 ```ts
-function genSampleSketchContext(): ReportContextValue;
+function genSampleSketchContext(): ReportContextValue
 ```
 
 ## Returns

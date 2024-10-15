@@ -1,15 +1,13 @@
 # isLineStringSketchCollection()
 
 ```ts
-function isLineStringSketchCollection(
-  collection,
-): collection is SketchCollection<LineString>;
+function isLineStringSketchCollection(collection): collection is SketchCollection<LineString>
 ```
 
 ## Parameters
 
-| Parameter    | Type  |
-| ------------ | ----- |
+| Parameter | Type |
+| ------ | ------ |
 | `collection` | `any` |
 
 ## Returns

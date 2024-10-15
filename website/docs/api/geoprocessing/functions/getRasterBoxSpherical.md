@@ -1,14 +1,14 @@
 # getRasterBoxSpherical()
 
 ```ts
-function getRasterBoxSpherical(raster): BBox;
+function getRasterBoxSpherical(raster): BBox
 ```
 
 ## Parameters
 
-| Parameter | Type        | Description |
-| --------- | ----------- | ----------- |
-| `raster`  | `Georaster` |             |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `raster` | `Georaster` |  |
 
 ## Returns
 

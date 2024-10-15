@@ -1,14 +1,14 @@
 # isRasterDatasource()
 
 ```ts
-function isRasterDatasource(ds): ds is Object;
+function isRasterDatasource(ds): ds is Object
 ```
 
 ## Parameters
 
-| Parameter | Type  | Description             |
-| --------- | ----- | ----------------------- |
-| `ds`      | `any` | RasterDatasource object |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ds` | `any` | RasterDatasource object |
 
 ## Returns
 

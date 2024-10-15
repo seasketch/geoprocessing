@@ -1,16 +1,16 @@
 # isPolygonSketch()
 
 ```ts
-function isPolygonSketch(sketch): sketch is Sketch<Polygon>;
+function isPolygonSketch(sketch): sketch is Sketch<Polygon>
 ```
 
 Checks if sketch is a Polygon
 
 ## Parameters
 
-| Parameter | Type  |
-| --------- | ----- |
-| `sketch`  | `any` |
+| Parameter | Type |
+| ------ | ------ |
+| `sketch` | `any` |
 
 ## Returns
 

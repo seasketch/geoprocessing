@@ -1,10 +1,7 @@
 # useSketchProperties()
 
 ```ts
-function useSketchProperties(): [
-  SketchProperties,
-  (exportId, defaultValue?) => any,
-];
+function useSketchProperties(): [SketchProperties, (exportId, defaultValue?) => any]
 ```
 
 ## Returns

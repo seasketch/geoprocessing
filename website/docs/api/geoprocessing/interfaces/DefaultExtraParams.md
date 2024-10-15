@@ -14,7 +14,7 @@ optional countryIds: string[];
 
 IDs of one or more countries to operate on
 
----
+***
 
 ### eezNames?
 
@@ -24,7 +24,7 @@ optional eezNames: string[];
 
 Names of one or more eez to operate on
 
----
+***
 
 ### geographyIds?
 

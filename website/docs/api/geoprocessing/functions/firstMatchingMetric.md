@@ -1,22 +1,22 @@
 # firstMatchingMetric()
 
 ```ts
-function firstMatchingMetric<M>(metrics, metricFilter): M;
+function firstMatchingMetric<M>(metrics, metricFilter): M
 ```
 
 Returns the first metric that returns true for metricFilter
 
 ## Type Parameters
 
-| Type Parameter         |
-| ---------------------- |
-| `M` _extends_ `object` |
+| Type Parameter |
+| ------ |
+| `M` *extends* `object` |
 
 ## Parameters
 
-| Parameter      | Type                    |
-| -------------- | ----------------------- |
-| `metrics`      | `M`[]                   |
+| Parameter | Type |
+| ------ | ------ |
+| `metrics` | `M`[] |
 | `metricFilter` | (`metric`) => `boolean` |
 
 ## Returns

@@ -1,15 +1,15 @@
 # getFlatGeobufFilename()
 
 ```ts
-function getFlatGeobufFilename(datasource): string;
+function getFlatGeobufFilename(datasource): string
 ```
 
 Returns datasource filename in flatgeobuf format
 
 ## Parameters
 
-| Parameter    | Type                                                                                                      |
-| ------------ | --------------------------------------------------------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasource` | `object` \| `object` \| [`ImportVectorDatasourceConfig`](../type-aliases/ImportVectorDatasourceConfig.md) |
 
 ## Returns

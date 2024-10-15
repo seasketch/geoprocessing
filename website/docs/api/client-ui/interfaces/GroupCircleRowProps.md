@@ -8,7 +8,7 @@
 optional circleText: string | number;
 ```
 
----
+***
 
 ### group
 
@@ -16,7 +16,7 @@ optional circleText: string | number;
 group: string;
 ```
 
----
+***
 
 ### groupColorMap
 
@@ -24,7 +24,7 @@ group: string;
 groupColorMap: Record<string, string>;
 ```
 
----
+***
 
 ### rowText?
 

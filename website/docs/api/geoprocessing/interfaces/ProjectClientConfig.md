@@ -8,7 +8,7 @@
 basic: any;
 ```
 
----
+***
 
 ### datasources
 
@@ -16,7 +16,7 @@ basic: any;
 datasources: any;
 ```
 
----
+***
 
 ### geographies
 
@@ -24,7 +24,7 @@ datasources: any;
 geographies: any;
 ```
 
----
+***
 
 ### geoprocessing
 
@@ -32,7 +32,7 @@ geographies: any;
 geoprocessing: any;
 ```
 
----
+***
 
 ### metricGroups
 
@@ -40,7 +40,7 @@ geoprocessing: any;
 metricGroups: any;
 ```
 
----
+***
 
 ### objectives
 
@@ -48,7 +48,7 @@ metricGroups: any;
 objectives: any;
 ```
 
----
+***
 
 ### package
 
@@ -56,7 +56,7 @@ objectives: any;
 package: any;
 ```
 
----
+***
 
 ### precalc
 

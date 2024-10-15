@@ -1,13 +1,13 @@
 # Dropdown()
 
 ```ts
-function Dropdown(__namedParameters): Element;
+function Dropdown(__namedParameters): Element
 ```
 
 ## Parameters
 
-| Parameter           | Type                                              |
-| ------------------- | ------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`DropdownProps`](../interfaces/DropdownProps.md) |
 
 ## Returns

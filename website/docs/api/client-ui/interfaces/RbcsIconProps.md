@@ -8,7 +8,7 @@
 optional displayValue: boolean;
 ```
 
----
+***
 
 ### size?
 
@@ -16,7 +16,7 @@ optional displayValue: boolean;
 optional size: number;
 ```
 
----
+***
 
 ### value
 

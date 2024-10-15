@@ -1,7 +1,7 @@
 # genSketchCollection()
 
 ```ts
-function genSketchCollection<G>(sketches, options): SketchCollection<G>;
+function genSketchCollection<G>(sketches, options): SketchCollection<G>
 ```
 
 Given array of sketches, return a sketch collection with given properties.
@@ -11,21 +11,21 @@ Properties of sketches are retained
 
 ## Type Parameters
 
-| Type Parameter                                          | Default type                                                    |
-| ------------------------------------------------------- | --------------------------------------------------------------- |
-| `G` _extends_ [`Geometry`](../type-aliases/Geometry.md) | [`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md) |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `G` *extends* [`Geometry`](../type-aliases/Geometry.md) | [`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md) |
 
 ## Parameters
 
-| Parameter                 | Type                                                  |
-| ------------------------- | ----------------------------------------------------- |
-| `sketches`                | [`Sketch`](../interfaces/Sketch.md)\<`G`\>[]          |
-| `options`                 | `object`                                              |
-| `options.createdAt`?      | `string`                                              |
-| `options.id`?             | `string`                                              |
-| `options.name`?           | `string`                                              |
-| `options.sketchClassId`?  | `string`                                              |
-| `options.updatedAt`?      | `string`                                              |
+| Parameter | Type |
+| ------ | ------ |
+| `sketches` | [`Sketch`](../interfaces/Sketch.md)\<`G`\>[] |
+| `options` | `object` |
+| `options.createdAt`? | `string` |
+| `options.id`? | `string` |
+| `options.name`? | `string` |
+| `options.sketchClassId`? | `string` |
+| `options.updatedAt`? | `string` |
 | `options.userAttributes`? | [`UserAttribute`](../type-aliases/UserAttribute.md)[] |
 
 ## Returns

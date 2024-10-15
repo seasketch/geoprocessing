@@ -8,7 +8,7 @@
 description: string;
 ```
 
----
+***
 
 ### endpoint
 
@@ -16,7 +16,7 @@ description: string;
 endpoint: string;
 ```
 
----
+***
 
 ### requiresProperties
 
@@ -24,7 +24,7 @@ endpoint: string;
 requiresProperties: string[];
 ```
 
----
+***
 
 ### title
 

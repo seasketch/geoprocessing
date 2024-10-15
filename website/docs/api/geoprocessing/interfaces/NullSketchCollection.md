@@ -12,7 +12,7 @@
 optional bbox: BBox;
 ```
 
----
+***
 
 ### features
 
@@ -20,7 +20,7 @@ optional bbox: BBox;
 features: NullSketch[];
 ```
 
----
+***
 
 ### properties
 
@@ -32,7 +32,7 @@ properties: SketchProperties;
 
 `Omit.properties`
 
----
+***
 
 ### type
 

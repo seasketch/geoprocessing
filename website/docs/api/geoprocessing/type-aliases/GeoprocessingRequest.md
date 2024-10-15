@@ -16,6 +16,6 @@ optional extraParams: string;
 
 ## Type Parameters
 
-| Type Parameter | Default type                                    |
-| -------------- | ----------------------------------------------- |
-| `G`            | [`SketchGeometryTypes`](SketchGeometryTypes.md) |
+| Type Parameter | Default type |
+| ------ | ------ |
+| `G` | [`SketchGeometryTypes`](SketchGeometryTypes.md) |

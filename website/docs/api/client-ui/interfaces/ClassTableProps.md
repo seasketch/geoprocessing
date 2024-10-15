@@ -10,7 +10,7 @@ columnConfig: ClassTableColumnConfig[];
 
 configuration of one or more columns to display
 
----
+***
 
 ### metricGroup
 
@@ -76,7 +76,7 @@ type: string;
 
 Metric type
 
----
+***
 
 ### objective?
 
@@ -86,7 +86,7 @@ optional objective: object | object[];
 
 Optional objective for metric
 
----
+***
 
 ### rows
 

@@ -12,7 +12,7 @@
 allowedActivities: string[];
 ```
 
----
+***
 
 ### categories?
 
@@ -20,7 +20,7 @@ allowedActivities: string[];
 optional categories: object[];
 ```
 
----
+***
 
 ### category
 
@@ -32,7 +32,7 @@ category: string;
 
 [`IucnCategory`](IucnCategory.md).[`category`](IucnCategory.md#category)
 
----
+***
 
 ### level
 
@@ -44,7 +44,7 @@ level: string;
 
 [`IucnCategory`](IucnCategory.md).[`level`](IucnCategory.md#level)
 
----
+***
 
 ### name
 

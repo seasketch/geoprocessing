@@ -8,7 +8,7 @@
 children: ReactNode;
 ```
 
----
+***
 
 ### style?
 
@@ -16,12 +16,12 @@ children: ReactNode;
 optional style: CSSProperties;
 ```
 
----
+***
 
 ### titleAlign?
 
 ```ts
-optional titleAlign:
+optional titleAlign: 
   | "center"
   | "stretch"
   | "flex-end"
@@ -29,7 +29,7 @@ optional titleAlign:
   | "baseline";
 ```
 
----
+***
 
 ### toolbarCls?
 
@@ -37,7 +37,7 @@ optional titleAlign:
 optional toolbarCls: string;
 ```
 
----
+***
 
 ### useGutters?
 
@@ -45,7 +45,7 @@ optional toolbarCls: string;
 optional useGutters: boolean;
 ```
 
----
+***
 
 ### variant?
 

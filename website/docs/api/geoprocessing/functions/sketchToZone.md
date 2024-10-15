@@ -1,15 +1,15 @@
 # sketchToZone()
 
 ```ts
-function sketchToZone(sketch, sketchArea): Zone;
+function sketchToZone(sketch, sketchArea): Zone
 ```
 
 ## Parameters
 
-| Parameter    | Type                                                                                                                                                  |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sketch`     | [`NullSketch`](../interfaces/NullSketch.md) \| [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> |
-| `sketchArea` | `number`                                                                                                                                              |
+| Parameter | Type |
+| ------ | ------ |
+| `sketch` | [`NullSketch`](../interfaces/NullSketch.md) \| [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> |
+| `sketchArea` | `number` |
 
 ## Returns
 

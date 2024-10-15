@@ -14,9 +14,9 @@ new ReportError(props): ReportError
 
 #### Parameters
 
-| Parameter | Type               |
-| --------- | ------------------ |
-| `props`   | `ReportErrorProps` |
+| Parameter | Type |
+| ------ | ------ |
+| `props` | `ReportErrorProps` |
 
 #### Returns
 
@@ -25,10 +25,9 @@ new ReportError(props): ReportError
 #### Inherited from
 
 `React.Component<
-ReportErrorProps,
-ReportErrorState
-
-> .constructor`
+  ReportErrorProps,
+  ReportErrorState
+>.constructor`
 
 ### new ReportError()
 
@@ -38,10 +37,10 @@ new ReportError(props, context): ReportError
 
 #### Parameters
 
-| Parameter | Type               |
-| --------- | ------------------ |
-| `props`   | `ReportErrorProps` |
-| `context` | `any`              |
+| Parameter | Type |
+| ------ | ------ |
+| `props` | `ReportErrorProps` |
+| `context` | `any` |
 
 #### Returns
 
@@ -56,10 +55,9 @@ new ReportError(props, context): ReportError
 #### Inherited from
 
 `React.Component<
-ReportErrorProps,
-ReportErrorState
-
-> .constructor`
+  ReportErrorProps,
+  ReportErrorState
+>.constructor`
 
 ## Methods
 
@@ -71,10 +69,10 @@ componentDidCatch(error, info): void
 
 #### Parameters
 
-| Parameter | Type  |
-| --------- | ----- |
-| `error`   | `any` |
-| `info`    | `any` |
+| Parameter | Type |
+| ------ | ------ |
+| `error` | `any` |
+| `info` | `any` |
 
 #### Returns
 
@@ -84,7 +82,7 @@ componentDidCatch(error, info): void
 
 `React.Component.componentDidCatch`
 
----
+***
 
 ### componentDidMount()?
 
@@ -102,14 +100,14 @@ Called immediately after a component is mounted. Setting state here will trigger
 
 `React.Component.componentDidMount`
 
----
+***
 
 ### componentDidUpdate()?
 
 ```ts
 optional componentDidUpdate(
-   prevProps,
-   prevState,
+   prevProps, 
+   prevState, 
    snapshot?): void
 ```
 
@@ -119,11 +117,11 @@ The snapshot is only present if [getSnapshotBeforeUpdate](ReportError.md#getsnap
 
 #### Parameters
 
-| Parameter   | Type                             |
-| ----------- | -------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `prevProps` | `Readonly`\<`ReportErrorProps`\> |
 | `prevState` | `Readonly`\<`ReportErrorState`\> |
-| `snapshot`? | `any`                            |
+| `snapshot`? | `any` |
 
 #### Returns
 
@@ -133,7 +131,7 @@ The snapshot is only present if [getSnapshotBeforeUpdate](ReportError.md#getsnap
 
 `React.Component.componentDidUpdate`
 
----
+***
 
 ### ~~componentWillMount()?~~
 
@@ -158,14 +156,14 @@ this from being invoked.
 
 #### See
 
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state)
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
 
 #### Inherited from
 
 `React.Component.componentWillMount`
 
----
+***
 
 ### ~~componentWillReceiveProps()?~~
 
@@ -185,10 +183,10 @@ this from being invoked.
 
 #### Parameters
 
-| Parameter     | Type                             |
-| ------------- | -------------------------------- |
-| `nextProps`   | `Readonly`\<`ReportErrorProps`\> |
-| `nextContext` | `any`                            |
+| Parameter | Type |
+| ------ | ------ |
+| `nextProps` | `Readonly`\<`ReportErrorProps`\> |
+| `nextContext` | `any` |
 
 #### Returns
 
@@ -200,14 +198,14 @@ this from being invoked.
 
 #### See
 
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props)
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
 
 #### Inherited from
 
 `React.Component.componentWillReceiveProps`
 
----
+***
 
 ### componentWillUnmount()?
 
@@ -226,14 +224,14 @@ cancelled network requests, or cleaning up any DOM elements created in `componen
 
 `React.Component.componentWillUnmount`
 
----
+***
 
 ### ~~componentWillUpdate()?~~
 
 ```ts
 optional componentWillUpdate(
-   nextProps,
-   nextState,
+   nextProps, 
+   nextState, 
    nextContext): void
 ```
 
@@ -247,11 +245,11 @@ this from being invoked.
 
 #### Parameters
 
-| Parameter     | Type                             |
-| ------------- | -------------------------------- |
-| `nextProps`   | `Readonly`\<`ReportErrorProps`\> |
-| `nextState`   | `Readonly`\<`ReportErrorState`\> |
-| `nextContext` | `any`                            |
+| Parameter | Type |
+| ------ | ------ |
+| `nextProps` | `Readonly`\<`ReportErrorProps`\> |
+| `nextState` | `Readonly`\<`ReportErrorState`\> |
+| `nextContext` | `any` |
 
 #### Returns
 
@@ -263,14 +261,14 @@ this from being invoked.
 
 #### See
 
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update)
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
 
 #### Inherited from
 
 `React.Component.componentWillUpdate`
 
----
+***
 
 ### forceUpdate()
 
@@ -280,8 +278,8 @@ forceUpdate(callback?): void
 
 #### Parameters
 
-| Parameter   | Type         |
-| ----------- | ------------ |
+| Parameter | Type |
+| ------ | ------ |
 | `callback`? | () => `void` |
 
 #### Returns
@@ -292,7 +290,7 @@ forceUpdate(callback?): void
 
 `React.Component.forceUpdate`
 
----
+***
 
 ### getSnapshotBeforeUpdate()?
 
@@ -309,8 +307,8 @@ lifecycle events from running.
 
 #### Parameters
 
-| Parameter   | Type                             |
-| ----------- | -------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `prevProps` | `Readonly`\<`ReportErrorProps`\> |
 | `prevState` | `Readonly`\<`ReportErrorState`\> |
 
@@ -322,12 +320,12 @@ lifecycle events from running.
 
 `React.Component.getSnapshotBeforeUpdate`
 
----
+***
 
 ### render()
 
 ```ts
-render():
+render(): 
   | undefined
   | null
   | string
@@ -339,19 +337,19 @@ render():
 
 #### Returns
 
-\| `undefined`
-\| `null`
-\| `string`
-\| `number`
-\| `boolean`
-\| `Iterable`\<`ReactNode`\>
-\| `Element`
+  \| `undefined`
+  \| `null`
+  \| `string`
+  \| `number`
+  \| `boolean`
+  \| `Iterable`\<`ReactNode`\>
+  \| `Element`
 
 #### Overrides
 
 `React.Component.render`
 
----
+***
 
 ### setState()
 
@@ -361,16 +359,16 @@ setState<K>(state, callback?): void
 
 #### Type Parameters
 
-| Type Parameter                         |
-| -------------------------------------- |
-| `K` _extends_ keyof `ReportErrorState` |
+| Type Parameter |
+| ------ |
+| `K` *extends* keyof `ReportErrorState` |
 
 #### Parameters
 
-| Parameter   | Type                                                                                                                                                             |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `state`     | `null` \| `ReportErrorState` \| (`prevState`, `props`) => `null` \| `ReportErrorState` \| `Pick`\<`ReportErrorState`, `K`\> \| `Pick`\<`ReportErrorState`, `K`\> |
-| `callback`? | () => `void`                                                                                                                                                     |
+| Parameter | Type |
+| ------ | ------ |
+| `state` | `null` \| `ReportErrorState` \| (`prevState`, `props`) => `null` \| `ReportErrorState` \| `Pick`\<`ReportErrorState`, `K`\> \| `Pick`\<`ReportErrorState`, `K`\> |
+| `callback`? | () => `void` |
 
 #### Returns
 
@@ -380,14 +378,14 @@ setState<K>(state, callback?): void
 
 `React.Component.setState`
 
----
+***
 
 ### shouldComponentUpdate()?
 
 ```ts
 optional shouldComponentUpdate(
-   nextProps,
-   nextState,
+   nextProps, 
+   nextState, 
    nextContext): boolean
 ```
 
@@ -402,11 +400,11 @@ and `componentDidUpdate` will not be called.
 
 #### Parameters
 
-| Parameter     | Type                             |
-| ------------- | -------------------------------- |
-| `nextProps`   | `Readonly`\<`ReportErrorProps`\> |
-| `nextState`   | `Readonly`\<`ReportErrorState`\> |
-| `nextContext` | `any`                            |
+| Parameter | Type |
+| ------ | ------ |
+| `nextProps` | `Readonly`\<`ReportErrorProps`\> |
+| `nextState` | `Readonly`\<`ReportErrorState`\> |
+| `nextContext` | `any` |
 
 #### Returns
 
@@ -416,9 +414,9 @@ and `componentDidUpdate` will not be called.
 
 `React.Component.shouldComponentUpdate`
 
----
+***
 
-### ~~UNSAFE_componentWillMount()?~~
+### ~~UNSAFE\_componentWillMount()?~~
 
 ```ts
 optional UNSAFE_componentWillMount(): void
@@ -443,16 +441,16 @@ this from being invoked.
 
 #### See
 
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state)
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#initializing-state)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
 
 #### Inherited from
 
 `React.Component.UNSAFE_componentWillMount`
 
----
+***
 
-### ~~UNSAFE_componentWillReceiveProps()?~~
+### ~~UNSAFE\_componentWillReceiveProps()?~~
 
 ```ts
 optional UNSAFE_componentWillReceiveProps(nextProps, nextContext): void
@@ -472,10 +470,10 @@ this from being invoked.
 
 #### Parameters
 
-| Parameter     | Type                             |
-| ------------- | -------------------------------- |
-| `nextProps`   | `Readonly`\<`ReportErrorProps`\> |
-| `nextContext` | `any`                            |
+| Parameter | Type |
+| ------ | ------ |
+| `nextProps` | `Readonly`\<`ReportErrorProps`\> |
+| `nextContext` | `any` |
 
 #### Returns
 
@@ -487,21 +485,21 @@ this from being invoked.
 
 #### See
 
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props)
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#updating-state-based-on-props)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
 
 #### Inherited from
 
 `React.Component.UNSAFE_componentWillReceiveProps`
 
----
+***
 
-### ~~UNSAFE_componentWillUpdate()?~~
+### ~~UNSAFE\_componentWillUpdate()?~~
 
 ```ts
 optional UNSAFE_componentWillUpdate(
-   nextProps,
-   nextState,
+   nextProps, 
+   nextState, 
    nextContext): void
 ```
 
@@ -517,11 +515,11 @@ this from being invoked.
 
 #### Parameters
 
-| Parameter     | Type                             |
-| ------------- | -------------------------------- |
-| `nextProps`   | `Readonly`\<`ReportErrorProps`\> |
-| `nextState`   | `Readonly`\<`ReportErrorState`\> |
-| `nextContext` | `any`                            |
+| Parameter | Type |
+| ------ | ------ |
+| `nextProps` | `Readonly`\<`ReportErrorProps`\> |
+| `nextState` | `Readonly`\<`ReportErrorState`\> |
+| `nextContext` | `any` |
 
 #### Returns
 
@@ -533,14 +531,14 @@ this from being invoked.
 
 #### See
 
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update)
-- [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#reading-dom-properties-before-an-update)
+ - [https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html#gradual-migration-path)
 
 #### Inherited from
 
 `React.Component.UNSAFE_componentWillUpdate`
 
----
+***
 
 ### getDerivedStateFromError()
 
@@ -588,7 +586,7 @@ declare context: React.ContextType<typeof MyContext>
 
 `React.Component.context`
 
----
+***
 
 ### props
 
@@ -600,7 +598,7 @@ readonly props: Readonly<ReportErrorProps>;
 
 `React.Component.props`
 
----
+***
 
 ### ~~refs~~
 
@@ -610,7 +608,7 @@ refs: object;
 
 #### Index Signature
 
-\[`key`: `string`\]: `ReactInstance`
+ \[`key`: `string`\]: `ReactInstance`
 
 #### Deprecated
 
@@ -622,7 +620,7 @@ refs: object;
 
 `React.Component.refs`
 
----
+***
 
 ### state
 
@@ -670,7 +668,7 @@ componentStack: string = "";
 
 `React.Component.state`
 
----
+***
 
 ### contextType?
 
@@ -703,7 +701,7 @@ class Foo extends React.Component {
 
 `React.Component.contextType`
 
----
+***
 
 ### propTypes
 

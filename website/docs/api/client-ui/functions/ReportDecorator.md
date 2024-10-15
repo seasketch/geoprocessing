@@ -1,15 +1,15 @@
 # ReportDecorator()
 
 ```ts
-function ReportDecorator(storyFn): Element;
+function ReportDecorator(storyFn): Element
 ```
 
 Decorator that renders a story into ReportStoryLayout.
 
 ## Parameters
 
-| Parameter | Type  |
-| --------- | ----- |
+| Parameter | Type |
+| ------ | ------ |
 | `storyFn` | `any` |
 
 ## Returns

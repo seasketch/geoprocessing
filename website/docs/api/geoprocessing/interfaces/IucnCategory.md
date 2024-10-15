@@ -12,7 +12,7 @@
 category: string;
 ```
 
----
+***
 
 ### level
 
@@ -20,7 +20,7 @@ category: string;
 level: string;
 ```
 
----
+***
 
 ### name
 

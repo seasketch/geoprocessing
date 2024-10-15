@@ -1,17 +1,17 @@
 # getObjectiveById()
 
 ```ts
-function getObjectiveById(objectiveId, objectives): object;
+function getObjectiveById(objectiveId, objectives): object
 ```
 
 find and return objectives from passed objectives
 
 ## Parameters
 
-| Parameter     | Type       |
-| ------------- | ---------- |
-| `objectiveId` | `string`   |
-| `objectives`  | `object`[] |
+| Parameter | Type |
+| ------ | ------ |
+| `objectiveId` | `string` |
+| `objectives` | `object`[] |
 
 ## Returns
 

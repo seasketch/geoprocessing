@@ -12,7 +12,7 @@
 optional clientSideBundle: ClientCode;
 ```
 
----
+***
 
 ### description
 
@@ -24,7 +24,7 @@ description: string;
 
 [`PreprocessingHandlerOptions`](PreprocessingHandlerOptions.md).[`description`](PreprocessingHandlerOptions.md#description)
 
----
+***
 
 ### endpoint
 
@@ -32,7 +32,7 @@ description: string;
 endpoint: string;
 ```
 
----
+***
 
 ### issAllowList
 
@@ -40,7 +40,7 @@ endpoint: string;
 issAllowList: string[];
 ```
 
----
+***
 
 ### medianCost
 
@@ -50,7 +50,7 @@ medianCost: number;
 
 USD
 
----
+***
 
 ### medianDuration
 
@@ -60,7 +60,7 @@ medianDuration: number;
 
 Seconds
 
----
+***
 
 ### memory?
 
@@ -74,7 +74,7 @@ Megabytes, 128 - 3008, defaults to 1024
 
 [`PreprocessingHandlerOptions`](PreprocessingHandlerOptions.md).[`memory`](PreprocessingHandlerOptions.md#memory)
 
----
+***
 
 ### rateLimit
 
@@ -82,7 +82,7 @@ Megabytes, 128 - 3008, defaults to 1024
 rateLimit: number;
 ```
 
----
+***
 
 ### rateLimitConsumed
 
@@ -90,7 +90,7 @@ rateLimit: number;
 rateLimitConsumed: number;
 ```
 
----
+***
 
 ### rateLimited
 
@@ -98,7 +98,7 @@ rateLimitConsumed: number;
 rateLimited: boolean;
 ```
 
----
+***
 
 ### rateLimitPeriod
 
@@ -106,7 +106,7 @@ rateLimited: boolean;
 rateLimitPeriod: RateLimitPeriod;
 ```
 
----
+***
 
 ### requiresProperties
 
@@ -118,7 +118,7 @@ requiresProperties: string[];
 
 [`PreprocessingHandlerOptions`](PreprocessingHandlerOptions.md).[`requiresProperties`](PreprocessingHandlerOptions.md#requiresproperties)
 
----
+***
 
 ### restrictedAccess
 
@@ -126,7 +126,7 @@ requiresProperties: string[];
 restrictedAccess: boolean;
 ```
 
----
+***
 
 ### timeout
 
@@ -140,7 +140,7 @@ Seconds
 
 [`PreprocessingHandlerOptions`](PreprocessingHandlerOptions.md).[`timeout`](PreprocessingHandlerOptions.md#timeout)
 
----
+***
 
 ### title
 
@@ -152,7 +152,7 @@ title: string;
 
 [`PreprocessingHandlerOptions`](PreprocessingHandlerOptions.md).[`title`](PreprocessingHandlerOptions.md#title)
 
----
+***
 
 ### type
 
@@ -160,7 +160,7 @@ title: string;
 type: GeoprocessingServiceType;
 ```
 
----
+***
 
 ### uri
 

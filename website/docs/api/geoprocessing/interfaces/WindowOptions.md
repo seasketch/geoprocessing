@@ -1,6 +1,6 @@
 # WindowOptions
 
-defines the new raster image to generate as a window in the source raster image. Resolution (cell size) is determined from this
+defines the new raster image to generate as a window in the source raster image.  Resolution (cell size) is determined from this
 
 ## Properties
 
@@ -10,9 +10,9 @@ defines the new raster image to generate as a window in the source raster image.
 bottom: number;
 ```
 
-bottom of the image window in pixel coordinates. Should be greater than top
+bottom of the image window in pixel coordinates.  Should be greater than top
 
----
+***
 
 ### height
 
@@ -20,9 +20,9 @@ bottom of the image window in pixel coordinates. Should be greater than top
 height: number;
 ```
 
-height in pixels to make the resulting raster. Will resample and/or use overview if not same as bottom - top
+height in pixels to make the resulting raster.  Will resample and/or use overview if not same as bottom - top
 
----
+***
 
 ### left
 
@@ -32,7 +32,7 @@ left: number;
 
 left side of the image window in pixel coordinates
 
----
+***
 
 ### resampleMethod?
 
@@ -42,7 +42,7 @@ optional resampleMethod: string;
 
 method to map src raster values to result raster. Supports 'nearest' neighbor, defaults to 'bilinear'
 
----
+***
 
 ### right
 
@@ -50,9 +50,9 @@ method to map src raster values to result raster. Supports 'nearest' neighbor, d
 right: number;
 ```
 
-right of the image window in pixel coordinates. Should be greater than left
+right of the image window in pixel coordinates.  Should be greater than left
 
----
+***
 
 ### top
 
@@ -62,7 +62,7 @@ top: number;
 
 top of the image window in pixel coordinates
 
----
+***
 
 ### width
 
@@ -70,4 +70,4 @@ top of the image window in pixel coordinates
 width: number;
 ```
 
-width in pixels to make the resulting raster. Will resample and/or use overview if not same as right - left
+width in pixels to make the resulting raster.  Will resample and/or use overview if not same as right - left

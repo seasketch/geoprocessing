@@ -1,13 +1,13 @@
 # ToolbarCard()
 
 ```ts
-function ToolbarCard(__namedParameters): Element;
+function ToolbarCard(__namedParameters): Element
 ```
 
 ## Parameters
 
-| Parameter           | Type                                                    |
-| ------------------- | ------------------------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`ToolbarCardProps`](../interfaces/ToolbarCardProps.md) |
 
 ## Returns

@@ -8,7 +8,7 @@
 blockGroupNames: string[];
 ```
 
----
+***
 
 ### blockGroupStyles
 

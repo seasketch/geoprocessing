@@ -6,11 +6,11 @@ type get: (raster, geom, flat) => number[][] | number[][][];
 
 ## Parameters
 
-| Parameter | Type                                      |
-| --------- | ----------------------------------------- |
-| `raster`  | [`Georaster`](../interfaces/Georaster.md) |
-| `geom`    | `InputBBox` \| `null` \| `undefined`      |
-| `flat`    | `boolean`                                 |
+| Parameter | Type |
+| ------ | ------ |
+| `raster` | [`Georaster`](../interfaces/Georaster.md) |
+| `geom` | `InputBBox` \| `null` \| `undefined` |
+| `flat` | `boolean` |
 
 ## Returns
 

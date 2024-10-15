@@ -8,7 +8,7 @@
 optional circleText: string | number;
 ```
 
----
+***
 
 ### level
 
@@ -16,7 +16,7 @@ optional circleText: string | number;
 level: string;
 ```
 
----
+***
 
 ### rowText?
 

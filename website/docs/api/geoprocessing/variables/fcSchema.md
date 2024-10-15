@@ -11,10 +11,7 @@ Zod schema for FeatureCollection containing polygons or multipolygons
 ### features
 
 ```ts
-features: ZodArray<
-  ZodObject<object, "strip", ZodTypeAny, object, object>,
-  "many"
->;
+features: ZodArray<ZodObject<object, "strip", ZodTypeAny, object, object>, "many">;
 ```
 
 ### type

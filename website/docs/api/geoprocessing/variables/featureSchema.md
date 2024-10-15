@@ -11,12 +11,7 @@ Zod schema for Feature containing Polygon or MultiPolygon
 ### geometry
 
 ```ts
-geometry: ZodUnion<
-  [
-    ZodObject<object, "strip", ZodTypeAny, object, object>,
-    ZodObject<object, "strip", ZodTypeAny, object, object>,
-  ]
->;
+geometry: ZodUnion<[ZodObject<object, "strip", ZodTypeAny, object, object>, ZodObject<object, "strip", ZodTypeAny, object, object>]>;
 ```
 
 ### id

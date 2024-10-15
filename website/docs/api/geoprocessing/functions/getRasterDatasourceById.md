@@ -1,17 +1,17 @@
 # getRasterDatasourceById()
 
 ```ts
-function getRasterDatasourceById(datasourceId, datasources): object;
+function getRasterDatasourceById(datasourceId, datasources): object
 ```
 
 find and return raster datasource (internal or external) from passed datasources
 
 ## Parameters
 
-| Parameter      | Type                                                                   |
-| -------------- | ---------------------------------------------------------------------- |
-| `datasourceId` | `string`                                                               |
-| `datasources`  | (`object` \| `object` \| `object` & `object` \| `object` & `object`)[] |
+| Parameter | Type |
+| ------ | ------ |
+| `datasourceId` | `string` |
+| `datasources` | (`object` \| `object` \| `object` & `object` \| `object` & `object`)[] |
 
 ## Returns
 
@@ -41,7 +41,7 @@ formats: ("fgb" | "json" | "tif" | "subdivided")[];
 
 Available formats
 
-### geo_type
+### geo\_type
 
 ```ts
 geo_type: "vector" | "raster" = geoTypesSchema;

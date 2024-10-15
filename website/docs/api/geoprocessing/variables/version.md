@@ -24,7 +24,7 @@ bin: object;
 geoprocessing: string = "dist/scripts/geoprocessing.js";
 ```
 
-### bin.run_tests
+### bin.run\_tests
 
 ```ts
 run_tests: string = "dist/scripts/testing/runner.js";
@@ -1089,14 +1089,13 @@ build-storybook: string = "storybook build -o ../../website/build/storybook";
 ### scripts.build:typedoc
 
 ```ts
-build: typedoc: string =
-  "npx typedoc --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none";
+build:typedoc: string = "npx typedoc --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none";
 ```
 
 ### scripts.build:watch
 
 ```ts
-build: watch: string = "tsc --watch";
+build:watch: string = "tsc --watch";
 ```
 
 ### scripts.prepare
@@ -1108,14 +1107,13 @@ prepare: string = "npm run build && npm run _prepare";
 ### scripts.start:data
 
 ```ts
-start: data: string = "http-server . -c-1";
+start:data: string = "http-server . -c-1";
 ```
 
 ### scripts.start:typedoc
 
 ```ts
-start: typedoc: string =
-  "npx typedoc --watch --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none";
+start:typedoc: string = "npx typedoc --watch --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none";
 ```
 
 ### scripts.storybook
@@ -1133,44 +1131,43 @@ test: string = "npm run test:node && npm run test:browser";
 ### scripts.test:browser
 
 ```ts
-test: browser: string = "vitest run -c vitest.config.browser.js";
+test:browser: string = "vitest run -c vitest.config.browser.js";
 ```
 
 ### scripts.test:browser:matching
 
 ```ts
-test: browser: matching: string = "vitest run -c vitest.config.browser.js -t";
+test:browser:matching: string = "vitest run -c vitest.config.browser.js -t";
 ```
 
 ### scripts.test:e2e
 
 ```ts
-test: e2e: string =
-  "start-server-and-test start:data 8080 'vitest run -c vitest.config.e2e.js'";
+test:e2e: string = "start-server-and-test start:data 8080 'vitest run -c vitest.config.e2e.js'";
 ```
 
 ### scripts.test:e2e:matching
 
 ```ts
-test: e2e: matching: string = "vitest run -c vitest.config.e2e.js -t";
+test:e2e:matching: string = "vitest run -c vitest.config.e2e.js -t";
 ```
 
 ### scripts.test:node
 
 ```ts
-test: node: string = "vitest run -c vitest.config.node.js";
+test:node: string = "vitest run -c vitest.config.node.js";
 ```
 
 ### scripts.test:node:matching
 
 ```ts
-test: node: matching: string = "vitest run -c vitest.config.node.js -t";
+test:node:matching: string = "vitest run -c vitest.config.node.js -t";
 ```
 
 ### scripts.test:scripts:update
 
 ```ts
-test: scripts: update: string = "npm run test:scripts -- --updateSnapshot";
+test:scripts:update: string = "npm run test:scripts -- --updateSnapshot";
 ```
 
 ### type

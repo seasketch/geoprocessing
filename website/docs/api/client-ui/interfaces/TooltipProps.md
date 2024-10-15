@@ -10,7 +10,7 @@ Renders an element with a tooltip
 children: ReactElement<any, string | JSXElementConstructor<any>>;
 ```
 
----
+***
 
 ### offset?
 
@@ -30,7 +30,7 @@ horizontal: number;
 vertical: number;
 ```
 
----
+***
 
 ### placement?
 
@@ -38,7 +38,7 @@ vertical: number;
 optional placement: Placement;
 ```
 
----
+***
 
 ### text
 
@@ -46,7 +46,7 @@ optional placement: Placement;
 text: string;
 ```
 
----
+***
 
 ### width?
 

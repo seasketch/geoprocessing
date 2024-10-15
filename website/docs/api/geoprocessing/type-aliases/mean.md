@@ -6,10 +6,10 @@ type mean: (raster, geom) => number[];
 
 ## Parameters
 
-| Parameter | Type                                                |
-| --------- | --------------------------------------------------- |
-| `raster`  | [`Georaster`](../interfaces/Georaster.md)           |
-| `geom`    | `string` \| `InputPolygon` \| `null` \| `undefined` |
+| Parameter | Type |
+| ------ | ------ |
+| `raster` | [`Georaster`](../interfaces/Georaster.md) |
+| `geom` | `string` \| `InputPolygon` \| `null` \| `undefined` |
 
 ## Returns
 

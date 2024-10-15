@@ -1,13 +1,7 @@
 # internalDatasourceSchema
 
 ```ts
-const internalDatasourceSchema: ZodObject<
-  object,
-  "strip",
-  ZodTypeAny,
-  object,
-  object
->;
+const internalDatasourceSchema: ZodObject<object, "strip", ZodTypeAny, object, object>;
 ```
 
 Timestamp properties to ease syncing with local/published datasource files

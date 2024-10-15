@@ -1,13 +1,7 @@
 # baseDatasourceSchema
 
 ```ts
-const baseDatasourceSchema: ZodObject<
-  object,
-  "strip",
-  ZodTypeAny,
-  object,
-  object
->;
+const baseDatasourceSchema: ZodObject<object, "strip", ZodTypeAny, object, object>;
 ```
 
 ## Type declaration
@@ -28,7 +22,7 @@ formats: ZodArray<ZodEnum<["fgb", "json", "tif", "subdivided"]>, "many">;
 
 Available formats
 
-### geo_type
+### geo\_type
 
 ```ts
 geo_type: ZodEnum<["vector", "raster"]> = geoTypesSchema;

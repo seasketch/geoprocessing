@@ -15,14 +15,14 @@ this acts as an effective limit on subsequent analysis.
 #### Default
 
 ```ts
-250;
+250
 ```
 
 #### Memberof
 
 VectorDataSourceOptions
 
----
+***
 
 ### dissolvedFeatureCacheExcessLimit
 
@@ -38,14 +38,14 @@ than needed, and this variable sets a cap on that number.
 #### Default
 
 ```ts
-3;
+3
 ```
 
 #### Memberof
 
 VectorDataSourceOptions
 
----
+***
 
 ### hintPrefetchLimit
 
@@ -59,7 +59,7 @@ contains less than hintPrefetchLimit bundles.
 #### Default
 
 ```ts
-8;
+8
 ```
 
 #### Memberof

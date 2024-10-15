@@ -1,16 +1,14 @@
 # isExternalDatasource()
 
 ```ts
-function isExternalDatasource(
-  ds,
-): ds is Object | Object | (Object & Object) | (Object & Object);
+function isExternalDatasource(ds): ds is Object | Object | Object & Object | Object & Object
 ```
 
 ## Parameters
 
-| Parameter | Type  | Description       |
-| --------- | ----- | ----------------- |
-| `ds`      | `any` | Datasource object |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ds` | `any` | Datasource object |
 
 ## Returns
 

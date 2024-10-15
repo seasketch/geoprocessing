@@ -4,7 +4,7 @@
 type UserAttribute: Record<string, unknown> & object;
 ```
 
-User-defined attributes with values for Sketch. Defines known keys as well as unknown for extensiblity
+User-defined attributes with values for Sketch.  Defines known keys as well as unknown for extensiblity
 
 ## Type declaration
 
@@ -39,7 +39,7 @@ String to display for sketch attribute name
 ### value
 
 ```ts
-value:
+value: 
   | string
   | string[]
   | number

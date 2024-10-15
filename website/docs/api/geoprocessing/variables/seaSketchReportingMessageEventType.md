@@ -1,6 +1,5 @@
 # seaSketchReportingMessageEventType
 
 ```ts
-const seaSketchReportingMessageEventType: "SeaSketchReportingMessageEventType" =
-  "SeaSketchReportingMessageEventType";
+const seaSketchReportingMessageEventType: "SeaSketchReportingMessageEventType" = "SeaSketchReportingMessageEventType";
 ```

@@ -3,3 +3,4 @@
 **/.hg
 **/node_modules
 packages/*/examples
+website/docs/api

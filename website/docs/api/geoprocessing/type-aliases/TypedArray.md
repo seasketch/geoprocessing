@@ -1,7 +1,7 @@
 # TypedArray
 
 ```ts
-type TypedArray:
+type TypedArray: 
   | Uint8Array
   | Int8Array
   | Uint16Array

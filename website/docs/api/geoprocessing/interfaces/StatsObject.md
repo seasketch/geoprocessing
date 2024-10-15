@@ -10,7 +10,7 @@ optional area: number;
 
 Area of valid cells in raster in square meters
 
----
+***
 
 ### count?
 
@@ -20,7 +20,7 @@ optional count: number;
 
 Total number of cells in raster, valid or invalid
 
----
+***
 
 ### histogram?
 
@@ -30,7 +30,7 @@ optional histogram: Nullable<object>;
 
 Histogram object, for categorical raster, mapping category IDs to cell count
 
----
+***
 
 ### invalid?
 
@@ -40,7 +40,7 @@ optional invalid: number;
 
 Number of nodata cells in raster
 
----
+***
 
 ### max?
 
@@ -50,7 +50,7 @@ optional max: Nullable<number>;
 
 Maximum value of any one valid cell in raster
 
----
+***
 
 ### mean?
 
@@ -60,7 +60,7 @@ optional mean: Nullable<number>;
 
 Mean average value of valid cells in raster
 
----
+***
 
 ### median?
 
@@ -70,7 +70,7 @@ optional median: Nullable<number>;
 
 Median average value of valid cells in raster
 
----
+***
 
 ### min?
 
@@ -80,7 +80,7 @@ optional min: Nullable<number>;
 
 Minimum value of valid cells in raster
 
----
+***
 
 ### mode?
 
@@ -90,7 +90,7 @@ optional mode: Nullable<number>;
 
 Mode of valid cells in raster
 
----
+***
 
 ### range?
 
@@ -100,7 +100,7 @@ optional range: Nullable<number>;
 
 Different between min and max value
 
----
+***
 
 ### std?
 
@@ -110,7 +110,7 @@ optional std: Nullable<number>;
 
 Standard deviation of valid cells in raster
 
----
+***
 
 ### sum?
 
@@ -120,7 +120,7 @@ optional sum: number;
 
 Sum of all valid cennls in raster
 
----
+***
 
 ### valid?
 
@@ -130,7 +130,7 @@ optional valid: number;
 
 Number of cells that are not nodata
 
----
+***
 
 ### variance?
 

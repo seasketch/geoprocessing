@@ -1,7 +1,7 @@
 # ReportStoryLayout()
 
 ```ts
-function ReportStoryLayout(props, deprecatedLegacyContext?): ReactNode;
+function ReportStoryLayout(props, deprecatedLegacyContext?): ReactNode
 ```
 
 Wraps a story to look and behave like a sketch report
@@ -14,10 +14,10 @@ The caller must wrap the story in a Translator component to provide translations
 
 ## Parameters
 
-| Parameter                  | Type                                                                | Description                                                                                                                       |
-| -------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `props`                    | [`ReportStoryLayoutProps`](../interfaces/ReportStoryLayoutProps.md) | -                                                                                                                                 |
-| `deprecatedLegacyContext`? | `any`                                                               | **Deprecated** **See** [React Docs](https://legacy.reactjs.org/docs/legacy-context.html#referencing-context-in-lifecycle-methods) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `props` | [`ReportStoryLayoutProps`](../interfaces/ReportStoryLayoutProps.md) | - |
+| `deprecatedLegacyContext`? | `any` | **Deprecated** **See** [React Docs](https://legacy.reactjs.org/docs/legacy-context.html#referencing-context-in-lifecycle-methods) |
 
 ## Returns
 

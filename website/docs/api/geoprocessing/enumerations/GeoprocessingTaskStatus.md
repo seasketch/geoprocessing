@@ -2,8 +2,8 @@
 
 ## Enumeration Members
 
-| Enumeration Member | Value         |
-| ------------------ | ------------- |
-| `Completed`        | `"completed"` |
-| `Failed`           | `"failed"`    |
-| `Pending`          | `"pending"`   |
+| Enumeration Member | Value |
+| ------ | ------ |
+| `Completed` | `"completed"` |
+| `Failed` | `"failed"` |
+| `Pending` | `"pending"` |

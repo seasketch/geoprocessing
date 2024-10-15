@@ -1,13 +1,13 @@
 # App()
 
 ```ts
-function App(__namedParameters): Element;
+function App(__namedParameters): Element
 ```
 
 ## Parameters
 
-| Parameter           | Type                                    |
-| ------------------- | --------------------------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `__namedParameters` | [`AppProps`](../interfaces/AppProps.md) |
 
 ## Returns

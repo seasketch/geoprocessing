@@ -2,10 +2,9 @@
 
 ```ts
 function flattenSketchAllId(
-  metrics,
-  idProperty,
-  options,
-): Record<string, MetricIdTypes>[];
+   metrics, 
+   idProperty, 
+   options): Record<string, MetricIdTypes>[]
 ```
 
 Returns one aggregate object for every sketch ID present in metrics,
@@ -15,12 +14,12 @@ then each flattened object will have two extra properties per sketch, .classA an
 
 ## Parameters
 
-| Parameter                  | Type                                                                             | Description                  |
-| -------------------------- | -------------------------------------------------------------------------------- | ---------------------------- |
-| `metrics`                  | `object`[]                                                                       | metrics with assigned sketch |
-| `idProperty`               | \| `"classId"` \| `"metricId"` \| `"geographyId"` \| `"sketchId"` \| `"groupId"` | -                            |
-| `options`                  | `object`                                                                         | -                            |
-| `options.extraIdProperty`? | \| `"classId"` \| `"metricId"` \| `"geographyId"` \| `"sketchId"` \| `"groupId"` | -                            |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `metrics` | `object`[] | metrics with assigned sketch |
+| `idProperty` | \| `"classId"` \| `"metricId"` \| `"geographyId"` \| `"sketchId"` \| `"groupId"` | - |
+| `options` | `object` | - |
+| `options.extraIdProperty`? | \| `"classId"` \| `"metricId"` \| `"geographyId"` \| `"sketchId"` \| `"groupId"` | - |
 
 ## Returns
 

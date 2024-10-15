@@ -1,15 +1,13 @@
 # isPolygonAllSketchCollection()
 
 ```ts
-function isPolygonAllSketchCollection(
-  collection,
-): collection is SketchCollection<Polygon | MultiPolygon>;
+function isPolygonAllSketchCollection(collection): collection is SketchCollection<Polygon | MultiPolygon>
 ```
 
 ## Parameters
 
-| Parameter    | Type  |
-| ------------ | ----- |
+| Parameter | Type |
+| ------ | ------ |
 | `collection` | `any` |
 
 ## Returns

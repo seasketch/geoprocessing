@@ -10,7 +10,7 @@ children: ReactNode;
 
 Card body elements
 
----
+***
 
 ### items?
 
@@ -20,7 +20,7 @@ optional items: ReactNode;
 
 Toolbar items for right side
 
----
+***
 
 ### itemsStyle?
 
@@ -30,7 +30,7 @@ optional itemsStyle: CSSProperties;
 
 Optional style properties for items container
 
----
+***
 
 ### title?
 
@@ -40,7 +40,7 @@ optional title: ReactNode;
 
 Title string or elements for left side
 
----
+***
 
 ### titleStyle?
 
@@ -50,7 +50,7 @@ optional titleStyle: CSSProperties;
 
 Optional style properties for left side
 
----
+***
 
 ### toolbarStyle?
 

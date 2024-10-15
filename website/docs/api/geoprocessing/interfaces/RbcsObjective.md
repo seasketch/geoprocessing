@@ -18,7 +18,7 @@ Map of RBCS protection levels to whether they count towards objective
 
 `Objective.countsToward`
 
----
+***
 
 ### objectiveId
 
@@ -32,7 +32,7 @@ Unique identifier for objective
 
 `Objective.objectiveId`
 
----
+***
 
 ### shortDesc
 
@@ -44,7 +44,7 @@ shortDesc: string;
 
 `Objective.shortDesc`
 
----
+***
 
 ### target
 

@@ -10,7 +10,7 @@ optional bbox: BBox;
 
 Fetches features overlapping with bounding box
 
----
+***
 
 ### propertyFilter?
 
@@ -20,7 +20,7 @@ optional propertyFilter: VectorPropertyFilter;
 
 Filter features by property having one or more specific values
 
----
+***
 
 ### unionProperty?
 

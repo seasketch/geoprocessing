@@ -6,10 +6,10 @@ type bandArithmetic: (raster, operation) => Promise<Georaster>;
 
 ## Parameters
 
-| Parameter   | Type                                      |
-| ----------- | ----------------------------------------- |
-| `raster`    | [`Georaster`](../interfaces/Georaster.md) |
-| `operation` | `string`                                  |
+| Parameter | Type |
+| ------ | ------ |
+| `raster` | [`Georaster`](../interfaces/Georaster.md) |
+| `operation` | `string` |
 
 ## Returns
 

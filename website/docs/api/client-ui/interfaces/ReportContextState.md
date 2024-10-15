@@ -8,7 +8,7 @@
 clientName: string;
 ```
 
----
+***
 
 ### geometryUri
 
@@ -16,7 +16,7 @@ clientName: string;
 geometryUri: string;
 ```
 
----
+***
 
 ### language
 
@@ -24,7 +24,7 @@ geometryUri: string;
 language: string;
 ```
 
----
+***
 
 ### sketchProperties
 
@@ -32,7 +32,7 @@ language: string;
 sketchProperties: SketchProperties;
 ```
 
----
+***
 
 ### toggleLayerVisibility()
 
@@ -42,15 +42,15 @@ toggleLayerVisibility: (layerId) => void;
 
 #### Parameters
 
-| Parameter | Type     |
-| --------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `layerId` | `string` |
 
 #### Returns
 
 `void`
 
----
+***
 
 ### visibleLayers
 

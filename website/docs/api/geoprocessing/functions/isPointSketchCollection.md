@@ -1,15 +1,13 @@
 # isPointSketchCollection()
 
 ```ts
-function isPointSketchCollection(
-  collection,
-): collection is SketchCollection<Point>;
+function isPointSketchCollection(collection): collection is SketchCollection<Point>
 ```
 
 ## Parameters
 
-| Parameter    | Type  |
-| ------------ | ----- |
+| Parameter | Type |
+| ------ | ------ |
 | `collection` | `any` |
 
 ## Returns

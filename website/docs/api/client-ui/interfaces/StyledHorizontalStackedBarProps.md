@@ -8,7 +8,7 @@
 optional $barHeight: number;
 ```
 
----
+***
 
 ### $blockGroupColors
 
@@ -16,7 +16,7 @@ optional $barHeight: number;
 $blockGroupColors: (undefined | string)[];
 ```
 
----
+***
 
 ### $rowTotals
 
@@ -24,7 +24,7 @@ $blockGroupColors: (undefined | string)[];
 $rowTotals: number[];
 ```
 
----
+***
 
 ### $showTitle
 
@@ -32,7 +32,7 @@ $rowTotals: number[];
 $showTitle: boolean;
 ```
 
----
+***
 
 ### $target?
 
@@ -40,7 +40,7 @@ $showTitle: boolean;
 optional $target: number;
 ```
 
----
+***
 
 ### $targetLabelPosition?
 
@@ -48,7 +48,7 @@ optional $target: number;
 optional $targetLabelPosition: "bottom" | "top";
 ```
 
----
+***
 
 ### $targetLabelStyle?
 
@@ -56,7 +56,7 @@ optional $targetLabelPosition: "bottom" | "top";
 optional $targetLabelStyle: "normal" | "tight";
 ```
 
----
+***
 
 ### $titleWidth?
 

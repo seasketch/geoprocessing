@@ -1,14 +1,14 @@
 # isExternalVectorDatasource()
 
 ```ts
-function isExternalVectorDatasource(ds): ds is Object & Object;
+function isExternalVectorDatasource(ds): ds is Object & Object
 ```
 
 ## Parameters
 
-| Parameter | Type  | Description                     |
-| --------- | ----- | ------------------------------- |
-| `ds`      | `any` | ExternalVectorDatasource object |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ds` | `any` | ExternalVectorDatasource object |
 
 ## Returns
 

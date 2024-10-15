@@ -1,7 +1,7 @@
 # JSONValue
 
 ```ts
-type JSONValue:
+type JSONValue: 
   | string
   | number
   | boolean

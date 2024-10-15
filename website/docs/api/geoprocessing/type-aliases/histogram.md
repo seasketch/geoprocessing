@@ -6,10 +6,10 @@ type histogram: (raster, geom, options) => Histogram[];
 
 ## Parameters
 
-| Parameter | Type                                                    |
-| --------- | ------------------------------------------------------- |
-| `raster`  | [`Georaster`](../interfaces/Georaster.md)               |
-| `geom`    | `string` \| `InputPolygon` \| `null` \| `undefined`     |
+| Parameter | Type |
+| ------ | ------ |
+| `raster` | [`Georaster`](../interfaces/Georaster.md) |
+| `geom` | `string` \| `InputPolygon` \| `null` \| `undefined` |
 | `options` | [`HistogramOptions`](../interfaces/HistogramOptions.md) |
 
 ## Returns

@@ -1,13 +1,7 @@
 # clientJsonConfigSchema
 
 ```ts
-const clientJsonConfigSchema: ZodObject<
-  object,
-  "strip",
-  ZodTypeAny,
-  object,
-  object
->;
+const clientJsonConfigSchema: ZodObject<object, "strip", ZodTypeAny, object, object>;
 ```
 
 Represents a geoprocessing client object

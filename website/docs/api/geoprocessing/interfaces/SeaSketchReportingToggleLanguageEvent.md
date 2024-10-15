@@ -8,7 +8,7 @@
 language: string;
 ```
 
----
+***
 
 ### on
 
@@ -16,7 +16,7 @@ language: string;
 on: boolean;
 ```
 
----
+***
 
 ### type
 

@@ -1,7 +1,7 @@
 # nestMetrics()
 
 ```ts
-function nestMetrics(metrics, ids): Record<string, any>;
+function nestMetrics(metrics, ids): Record<string, any>
 ```
 
 Recursively groups metrics by ID in order of ids specified to create arbitrary nested hierarchy for fast lookup.
@@ -10,10 +10,10 @@ If an id property is not defined on a metric, then 'undefined' will be used for 
 
 ## Parameters
 
-| Parameter | Type                                                                                  |
-| --------- | ------------------------------------------------------------------------------------- |
-| `metrics` | `object`[]                                                                            |
-| `ids`     | ( \| `"classId"` \| `"metricId"` \| `"geographyId"` \| `"sketchId"` \| `"groupId"`)[] |
+| Parameter | Type |
+| ------ | ------ |
+| `metrics` | `object`[] |
+| `ids` | ( \| `"classId"` \| `"metricId"` \| `"geographyId"` \| `"sketchId"` \| `"groupId"`)[] |
 
 ## Returns
 

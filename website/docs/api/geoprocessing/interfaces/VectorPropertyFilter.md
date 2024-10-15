@@ -10,7 +10,7 @@ Specify one or more literal values for one or more vector Feature properties
 property: string;
 ```
 
----
+***
 
 ### values
 

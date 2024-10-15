@@ -10,15 +10,15 @@ dataBucketUrl(options): string
 
 #### Parameters
 
-| Parameter | Type                   |
-| --------- | ---------------------- |
+| Parameter | Type |
+| ------ | ------ |
 | `options` | `DataBucketUrlOptions` |
 
 #### Returns
 
 `string`
 
----
+***
 
 ### getDatasourceById()
 
@@ -28,15 +28,15 @@ getDatasourceById(datasourceId): object | object | object & object | object & ob
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
 
 `object` \| `object` \| `object` & `object` \| `object` & `object`
 
----
+***
 
 ### getDatasourceUrl()
 
@@ -46,15 +46,15 @@ getDatasourceUrl(ds): any
 
 #### Parameters
 
-| Parameter | Type                                                                                                                                                                                                                                                                    |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ds`      | \| `object` \| `object` \| `object` \| `object` \| `object` & `object` \| `object` & `object` \| [`ImportVectorDatasourceConfig`](../type-aliases/ImportVectorDatasourceConfig.md) \| [`ImportRasterDatasourceConfig`](../type-aliases/ImportRasterDatasourceConfig.md) |
+| Parameter | Type |
+| ------ | ------ |
+| `ds` | \| `object` \| `object` \| `object` \| `object` \| `object` & `object` \| `object` & `object` \| [`ImportVectorDatasourceConfig`](../type-aliases/ImportVectorDatasourceConfig.md) \| [`ImportRasterDatasourceConfig`](../type-aliases/ImportRasterDatasourceConfig.md) |
 
 #### Returns
 
 `any`
 
----
+***
 
 ### getRasterDatasourceById()
 
@@ -64,8 +64,8 @@ getRasterDatasourceById(datasourceId): object
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
@@ -96,7 +96,7 @@ formats: ("fgb" | "json" | "tif" | "subdivided")[];
 
 Available formats
 
-##### geo_type
+##### geo\_type
 
 ```ts
 geo_type: "vector" | "raster" = geoTypesSchema;
@@ -182,7 +182,7 @@ precalc: boolean;
 
 Optional, defines whether or not precalc should be run for this datasource
 
----
+***
 
 ### getVectorDatasourceById()
 
@@ -192,8 +192,8 @@ getVectorDatasourceById(datasourceId): object
 
 #### Parameters
 
-| Parameter      | Type     |
-| -------------- | -------- |
+| Parameter | Type |
+| ------ | ------ |
 | `datasourceId` | `string` |
 
 #### Returns
@@ -214,7 +214,7 @@ Optional, constrain datasource to smaller bbox
 classKeys: string[];
 ```
 
-keys to generate classes for. Vector - property names
+keys to generate classes for.  Vector - property names
 
 ##### datasourceId
 
@@ -232,7 +232,7 @@ formats: ("fgb" | "json" | "tif" | "subdivided")[];
 
 Available formats
 
-##### geo_type
+##### geo\_type
 
 ```ts
 geo_type: "vector" | "raster" = geoTypesSchema;

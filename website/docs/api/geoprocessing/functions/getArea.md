@@ -1,17 +1,17 @@
 # getArea()
 
 ```ts
-function getArea(raster, feat?): Promise<number>;
+function getArea(raster, feat?): Promise<number>
 ```
 
-Returns area of valid cells (not nodata) overlapping with feature. If no valid cells found, returns 0.
+Returns area of valid cells (not nodata) overlapping with feature.  If no valid cells found, returns 0.
 
 ## Parameters
 
-| Parameter | Type                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `raster`  | `Georaster`                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `feat`?   | [`FeatureCollection`](../interfaces/FeatureCollection.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> \| [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
+| Parameter | Type |
+| ------ | ------ |
+| `raster` | `Georaster` |
+| `feat`? | [`FeatureCollection`](../interfaces/FeatureCollection.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> \| [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
 
 ## Returns
 

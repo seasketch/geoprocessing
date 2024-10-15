@@ -1,1 +1,0 @@
-const o={parameters:{controls:{matchers:{color:/(background|color)$/i,date:/Date$/i}},options:{storySort:{method:"",order:["Project",["ReportClients","Components"]],locales:""}}}};export{o as default};

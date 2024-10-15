@@ -1,1 +1,0 @@
-import{j as r}from"./jsx-runtime-qGIIFXMu.js";import{a as t}from"./Card-Chsr0-0l.js";const a=o=>r.jsx(t,{children:o()});a.__docgenInfo={description:"Default decorator.  Create additional building on StoryLayout for more sophisticated needs",methods:[],displayName:"CardDecorator"};export{a as C};

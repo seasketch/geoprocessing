@@ -1,7 +1,0 @@
-import{j as e}from"./jsx-runtime-qGIIFXMu.js";import{R as s}from"./ReportError-Gzc7TVYo.js";import{R as d}from"./ReportDecorator-CVkrvWea.js";import{C as c}from"./Card-Chsr0-0l.js";import"./index-CDs2tPxN.js";import"./styled-components.browser.esm-Bui9LJgA.js";import"./index-BAMY2Nnw.js";import"./useTranslation-BpTe-nno.js";import"./context-CnTB_i5T.js";import"./ReportContext-BTL8L5yF.js";import"./_getPrototype-CLNpD7aq.js";import"./cloneDeep-DUn4YpqL.js";const T={component:s,title:"Components/ReportError",decorators:[d]},h=()=>{throw Error("error!")},r=()=>e.jsx(s,{children:e.jsx(h,{})}),o=()=>e.jsx(s,{children:e.jsx(c,{children:e.jsx("p",{children:"This message should display without error"})})});r.__docgenInfo={description:"",methods:[],displayName:"throws"};o.__docgenInfo={description:"",methods:[],displayName:"okay"};var t,p,a;r.parameters={...r.parameters,docs:{...(t=r.parameters)==null?void 0:t.docs,source:{originalSource:`() => <ReportError>
-    <ThrowComponent />
-  </ReportError>`,...(a=(p=r.parameters)==null?void 0:p.docs)==null?void 0:a.source}}};var m,i,n;o.parameters={...o.parameters,docs:{...(m=o.parameters)==null?void 0:m.docs,source:{originalSource:`() => <ReportError>
-    <Card>
-      <p>This message should display without error</p>
-    </Card>
-  </ReportError>`,...(n=(i=o.parameters)==null?void 0:i.docs)==null?void 0:n.source}}};const k=["throws","okay"];export{k as __namedExportsOrder,T as default,o as okay,r as throws};

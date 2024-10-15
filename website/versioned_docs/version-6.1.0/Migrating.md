@@ -1,4 +1,4 @@
-# Upgrading
+# Migration Guide
 
 Instructions to migrate existing geoprocessing projects to newer versions.
 

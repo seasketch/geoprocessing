@@ -94,14 +94,9 @@ const config: Config = {
           to: "/docs",
         },
         {
-          to: "/docs/api",
-          label: "Typescript API",
-          position: "left",
-        },
-        {
-          href: "https://seasketch.github.io/geoprocessing/storybook/index.html",
-          label: "UI Component Library",
-          position: "left",
+          type: "docsVersionDropdown",
+          position: "right",
+          dropdownActiveClassDisabled: true,
         },
         {
           href: "https://github.com/seasketch/geoprocessing",
@@ -119,10 +114,6 @@ const config: Config = {
             {
               label: "Getting Started",
               to: "/docs",
-            },
-            {
-              label: "Typescript API",
-              to: "/docs/api",
             },
           ],
         },

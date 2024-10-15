@@ -1,0 +1,34 @@
+{
+  "tutorialSidebar": [
+    {
+      "type": "category",
+      "label": "Getting Started",
+      "collapsed": false,
+      "items": [
+        "introduction",
+        "concepts/Concepts",
+        "tutorials/Tutorials",
+        "CLI",
+        "Tipsandtricks"
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Library",
+      "collapsed": false,
+      "items": ["Migrating", "Extending"]
+    },
+    {
+      "type": "category",
+      "label": "Advanced Guides",
+      "items": [
+        "architecture/Architecture",
+        "antimeridian/Antimeridian",
+        "gip/GIP-1-i18n",
+        "EdgesAndLimits",
+        "Testing",
+        "Contributing"
+      ]
+    }
+  ]
+}

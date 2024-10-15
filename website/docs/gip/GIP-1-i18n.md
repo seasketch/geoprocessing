@@ -196,7 +196,7 @@ export POEDITOR_PROJECT=[YOUR_PROJECT_ID_NUMBER]
 export POEDITOR_API_TOKEN=[YOUR_API_TOKEN]
 ```
 
-[How do I do that?](../tipsandtricks#editing-your-startup-bash-script-in-ubuntu)
+[How do I do that?](../Tipsandtricks.md#editing-your-startup-bash-script-in-ubuntu)
 
 Now, verify the environment variables are set
 

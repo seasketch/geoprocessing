@@ -4,7 +4,8 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "SeaSketch Geoprocessing",
-  tagline: "Low cost spatial analysis and reporting for the SeaSketch platform",
+  tagline:
+    "Spatial analysis and reporting framework for the SeaSketch platform",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -17,6 +18,7 @@ const config: Config = {
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "seasketch", // Usually your GitHub org/user name.
   projectName: "geoprocessing", // Usually your repo name.
+  trailingSlash: true,
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -28,7 +30,33 @@ const config: Config = {
     defaultLocale: "en",
     locales: ["en"],
   },
-
+  plugins: [
+    [
+      "docusaurus-plugin-typedoc",
+      {
+        entryPoints: [
+          "../packages/geoprocessing/src/index.ts",
+          "../packages/geoprocessing/client-ui.ts",
+          "../packages/geoprocessing/client-core.ts",
+          "../packages/geoprocessing/dataproviders.ts",
+        ],
+        tsconfig: "../packages/geoprocessing/tsconfig.json",
+        plugin: ["./typedoc-plugin.mjs"],
+        readme: "none",
+        indexFormat: "table",
+        disableSources: true,
+        groupOrder: ["Classes", "Interfaces", "Enums"],
+        sidebar: { pretty: true },
+        textContentMappings: {
+          "title.indexPage": "Typescript API",
+          "title.memberPage": "{name}",
+        },
+        parametersFormat: "table",
+        enumMembersFormat: "table",
+        useCodeBlocks: true,
+      },
+    ],
+  ],
   presets: [
     [
       "classic",
@@ -66,8 +94,8 @@ const config: Config = {
           to: "/docs",
         },
         {
-          href: "https://seasketch.github.io/geoprocessing/api/index.html",
-          label: "Typescript library",
+          to: "/docs/api",
+          label: "Typescript API",
           position: "left",
         },
         {
@@ -89,8 +117,12 @@ const config: Config = {
           title: "Docs",
           items: [
             {
-              label: "Tutorial",
-              to: "/docs/intro",
+              label: "Getting Started",
+              to: "/docs",
+            },
+            {
+              label: "Typescript API",
+              to: "/docs/api",
             },
           ],
         },
@@ -98,20 +130,20 @@ const config: Config = {
           title: "More",
           items: [
             {
-              label: "Docs",
-              to: "/docs",
-            },
-            {
-              label: "Typescript library",
-              href: "https://seasketch.github.io/geoprocessing/api/index.html",
-            },
-            {
               label: "UI Component Library",
               href: "https://seasketch.github.io/geoprocessing/storybook/index.html",
             },
             {
               label: "GitHub",
               href: "https://github.com/seasketch/geoprocessing",
+            },
+            {
+              label: "SeaSketch",
+              href: "https://seasketch.org",
+            },
+            {
+              label: "SeaSketch GitHub",
+              href: "https://github.com/seasketch/next",
             },
           ],
         },

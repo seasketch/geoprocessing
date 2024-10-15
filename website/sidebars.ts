@@ -29,6 +29,11 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "Library",
+      items: ["api/index"],
+    },
+    {
+      type: "category",
       label: "Advanced Guides",
       items: ["gip/GIP-1-i18n", "EdgesAndLimits", "Testing", "Contributing"],
     },

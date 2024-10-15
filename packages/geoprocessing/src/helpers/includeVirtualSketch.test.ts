@@ -14,6 +14,7 @@ import { polygon } from "@turf/turf";
 
 describe("isTrueAttributeValue", () => {
   test("should return proper boolean", async () => {
+    // eslint-disable-next-line unicorn/no-useless-undefined
     expect(isTruthyAttributeValue(undefined)).toBe(false);
     expect(isTruthyAttributeValue("No")).toBe(false);
     expect(isTruthyAttributeValue(false)).toBe(false);

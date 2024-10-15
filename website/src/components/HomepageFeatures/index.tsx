@@ -11,29 +11,34 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: "Tutorial",
+    title: "Powerful Developer Experience",
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
-    description: (
-      <>Tutorial for creating and deploying a geoprocessing project.</>
-    ),
-  },
-  {
-    title: "API Docs",
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
+    Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
     description: (
       <>
-        Typedocs for functions exported by the geoprocessing library for use in
-        projects.
+        Create your project with a combination of VSCode, Typescript, React,
+        Storybook, CLI and more.
       </>
     ),
   },
   {
-    title: "UI Component Library",
+    title: "Cloud Native",
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
-    description: <>Storybook of UI components available for reports</>,
+    Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
+    description: (
+      <>
+        Built-in publish to AWS using Cloud Development Kit (CDK) and
+        cloud-optimized spatial data formats.
+      </>
+    ),
+  },
+  {
+    title: "Low cost",
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
+    description: (
+      <>Auto-scales to meet high demand, zero cost when not in use.</>
+    ),
   },
 ];
 

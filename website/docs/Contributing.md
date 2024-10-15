@@ -57,7 +57,7 @@ CLI - from packages/geoprocessing folder
 
 ## Internationalization (i18n)
 
-The geoprocessign framework implements the [GIP-1](./gip/GIP-1-i18n) proposal for language translation, and uses POEditor as its third-party service for translators to provide translations.
+The geoprocessign framework implements the [GIP-1](./gip/GIP-1-i18n.md) proposal for language translation, and uses POEditor as its third-party service for translators to provide translations.
 
 The language translation [tutorial](/tutorials/Tutorials.md) contains a lot of useful information on workflow. Managing translations internally for the library is very similar with some differences.
 

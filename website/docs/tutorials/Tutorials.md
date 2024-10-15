@@ -2,7 +2,9 @@
 slug: /tutorials
 ---
 
-These tutorials will teach you the fundamentals of creating and deploying a seasketch `geoprocessing` project. They expect you have a basic working knowledge of your computer, command line interfaces, and web application development. There is also a limit to what the framework can do out of the box and at some point you will likely need to extend it to create custom reports. What follows is a short list of resources to help you:
+These tutorials will teach you the fundamentals of creating and deploying a seasketch `geoprocessing` project. They expect you already have a basic working knowledge of your computer, its operating system, command line interfaces, and web application development.
+
+If you don't have this knowledge, then skill building and potentially mentorship may be needed for you to succeed. Here is a list of resources that can help you get started:
 
 - [Git and Github](https://www.youtube.com/watch?v=RGOj5yH7evk)
 - [Node JS](https://www.freecodecamp.org/news/what-is-node-js/) development
@@ -16,9 +18,9 @@ These tutorials will teach you the fundamentals of creating and deploying a seas
 
 ## Assumptions
 
-Unless otherwise instructed:
+Unless otherwise instructed, assume:
 
-- You are working within VSCode, with your top-level directory open as the project workspace
+- You are working within the VSCode editor, with your top-level directory open as the project workspace
 - All commands are entered within a VSCode terminal, usually with the top-level project directory as the current working directory
 
 ## Initial System Setup
@@ -46,14 +48,7 @@ Web browser:
 
 You have 3 options for how to develop geoprocessing projects
 
-1. Github Codespace
-   - Github provides a server running Ubuntu Linux, pre-configured to develop your geoprocessing project. Your local VSCode editor connects to it.
-   - Best for: beginners trying things out
-   - Pros
-     - Easiest to get started. The codespace is managed by Github and connection to VSCode running locally is seamless.
-   - Cons
-     - Because the docker environment is completely in "the cloud", there are different limitations for bringing datasets into your environment. Syncing with network drives like Box and Google Drive is not yet solved but may be possible. Best-suited for projects utilizing external datasources, or reasonably sized files that can be kept directly in the repository.
-2. Local Docker environment
+1. Local Docker environment
    - Docker provides a sandboxed Ubuntu Linux environment on your local computer, setup specifically for geoprocessing projects.
    - Best for: intermediate to power users doing development every day
    - Pros
@@ -64,7 +59,7 @@ You have 3 options for how to develop geoprocessing projects
      - You will need to get comfortable with Docker Desktop software.
      - Docker is slower than running directly on your system (maybe 30%)
      - Syncing data from network drives like Box into the Docker container is more challenging.
-3. MacOS Bare Metal / Windows WSL
+2. MacOS Bare Metal / Windows WSL
    - All geoprocessing dependencies are installed and maintained directly by you on your local computer operating system. For MacOS this means no virtualization is done. For Windows, this means running Ubuntu via WSL2 aka the Windows Subsystem for Linux.
    - Best for - power user.
    - Pros - fastest speeds because you are running without virtualization (aka bare metal)
@@ -72,47 +67,7 @@ You have 3 options for how to develop geoprocessing projects
 
 Choose an option and follow the instructions below to get started. You can try out different options over time.
 
-### If Install Option #1 - Github Codespace
-
-- Install [VS Code](https://code.visualstudio.com)
-- Setup or log in to your [Github account](https://github.com/)
-
-If you are a developer on the SeaSketch team:
-
-- You will work directly with this [devcontainer repository](https://github.com/seasketch/geoprocessing-devcontainer). Skip to the next section.
-
-If you are a developer independent of seasketch:
-
-- You will need to create your own devcontainer repository in your own Github user account, or your own organization.
-- Go to this [devcontainer repository](https://github.com/seasketch/geoprocessing-devcontainer-tpl).
-- Click the green `Use this template` button and `Create a new repository`.
-
-![Create from template](assets/CreateFromTemplate.jpg "Create from template")
-
-- You can call this repository `geoprocessing-devcontainer`. And if you create it under a Github organization, then everyone in the organization will be able to utilize it.
-
-Now you're ready to setup codespaces for this devcontainer:
-
-- Configure Github secrets for all environment variables your codespace will need for accessing POEditor and Amazon Web Services.
-  - Go to your [Github codespace settings](https://github.com/settings/codespaces)
-  - Define each of the following Codespaces secrets found in the screenshot.
-  - your POEditor API token you can find here - https://poeditor.com/account/api. If you don't have one, then follow the instructions to [create your own](../gip/GIP-1-i18n.md#setup-poeditor-as-an-independent-developer)
-  - You can leave your AWS credentials blank until you set them up in a later tutorial when you want to deploy your project.
-
-![Add Secrets](assets/AddSecrets.jpg "Add Secrets")
-
-- Browse to `https://github.com/seasketch/geoprocessing-devcontainer`
-- Click the green `Code` button, then the `Codespaces` tab, then `New with options...`
-
-![Add Codespace](assets/AddCodespace.jpg "Add Codespace")
-
-- Accept all defaults, except choose a Machine type of `4-core` which provides the minimum 8GB of ram needed. This codespace can be run for 30 hours per month for free, and will cost $0.36 per hour after that. See [Github codespace pricing](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces) for more information.
-
-![Configure Codespace](assets/ConfigCodespace.jpg "Configure Codespace")
-
-- It will automatically attempt to open your local VSCode editor and connect it to the codespace. You will be prompted to allow this to happen.
-
-### If Install Option #2 - Local Docker Environment
+### If Install Option #1 - Local Docker Environment
 
 - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for either Apple chip or Intel chip as appropriate to your system and make sure it's running.
   - If you don't know which you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`
@@ -257,7 +212,7 @@ At this point your system is ready for you to `create a new project`, or `setup 
 
 This use case is where a geoprocessing project already exists, but it was developed on a different computer.
 
-First, clone your existing geoprocessing project to your work environment, whether this is in your codespace, local docker devcontainer, Windows WSL, or bare metal on your operating system.
+First, clone your existing geoprocessing project to your work environment, whether this is in your local docker devcontainer, Windows WSL, or bare metal on your operating system.
 
 ### Link your source data
 
@@ -311,17 +266,6 @@ First, we'll establish a remote place to store your code.
 - [Create a new Github repository](https://github.com/new) called `fsm-reports-test` (you can pick your own name but the tutorial will assume this name). When creating, do not initialize this repository with any files like a README.
 - In your VSCode terminal, make sure you are in your projects top-level directory. A shorthand way to do this is `cd ~/src/fsm-reports-test`.
 
-#### If running codespace (Install Option 1)
-
-When developing within a codespace, you need to give it permission to read and write files from other repositories. You should have VSCode open and connected to your devcontainer codespace, with no outstanding uncommitted work. Then do the following:
-
-- In VSCode, edit the .devcontainer/devcontainer.json and add your new geoprocessing project repository `[your_organization_or_username]/fsm-report-test` to the list. You will do this for each geoprocessing project you create and maintain in this devcontainer, which can be many.
-- Commit and push these changes.
-
-![Workspace Permissions](assets/WorkspacePermissions.jpg "Workspace Permissions")
-
-At this point, you need to close your VSCode codespace session and `delete` your existing codespace. Wait at least one minute for the codespace to be fully delete. Then recreate a new codespace and it will allow you to enable the new write permissions to your geoprocessing project repository. It's unfortunate that you need to delete your codespace and recreate it for you to be prompted to enable these permissions, hopefully it will be made simpler in the future. You can read more [here](https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces#authorizing-requested-permissions)
-
 ### Connect Git Repo
 
 Now enter the following commands to establish your project as a git repository, connect it to your Github repository you created as a remote called "origin", and finally push your code up to origin.
@@ -341,7 +285,7 @@ You should eventually see your code commit proceed in the VSCode terminal. You c
 
 After this point, you can continue using git commands right in the terminal to stage code changes and commit them, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
 
-#### If running devcontainer or codespace (Install Option 1 and 2)
+#### If running devcontainer (Install Option 1)
 
 - Ensure your VSCode workspace is connected to your devcontainer
 - You can now create as many geoprocessing projects as you want under `/workspaces` and they will persist as long as the associated docker volume is maintained. Each project you create should be backed by a Github repository which you should regularly commit your code to in order to ensure it's not lost.
@@ -351,7 +295,7 @@ To get started:
 - Open a terminal with Ctrl-J if not already open
 - `cd /workspaces`
 
-#### If Running Bare Metal (Install Option 3)
+#### If Running Bare Metal (Install Option 2)
 
 Windows:
 
@@ -477,7 +421,7 @@ The answers to these questions default to the extent of the entire world, which 
 
 Next, to take full advantage of VSCode you will need to open your new project and establish it as a workspace.
 
-#### If Running Devcontainer or Codespace (Install Option 1 and 2)
+#### If Running Devcontainer or (Install Option 1)
 
 Once you have more than one folder under `/workspaces` backed by a git repository, VSCode will be default to a `multi-root` workspace.
 
@@ -487,7 +431,7 @@ For the best experience, you will want open a single workspace in your VSCode fo
 
 VSCode should now reopen the under this new workspace, using the existing devcontainer, and you're ready to go.
 
-#### If Running Bare Metal (Install Option 3)
+#### If Running Bare Metal (Install Option 2)
 
 Type `Command-O` on MacOS or `Ctrl-O` on Windows or just click `File`->`Open` and select your project under `[your_username]/src/fsm-reports-test`
 
@@ -1263,7 +1207,7 @@ Expected cost: [free](https://aws.amazon.com/free) to a few dollars per month. Y
 
 #### AWSCLI
 
-If you are using a Docker devcontainer or Github codespace to develop reports you should already have access to the `aws` command. But if you are running directly on your host operating system you will need to install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) it with your IAM account credentials.
+If you are using a Docker devcontaine to develop reports you should already have access to the `aws` command. But if you are running directly on your host operating system you will need to install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) it with your IAM account credentials.
 
 ##### Extra steps for Windows
 

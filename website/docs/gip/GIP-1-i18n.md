@@ -1,4 +1,4 @@
-# GIP 1: i18n Localization
+# i18n
 
 Geoprocessing Improvement Proposal 1
 

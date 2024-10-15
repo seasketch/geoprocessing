@@ -27,8 +27,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
     description: (
       <>
-        Automated project deploy to AWS and data conversion to cloud-optimized
-        spatial data formats.
+        Automated deploy to AWS and conversion to cloud-optimized data formats.
       </>
     ),
   },
@@ -38,8 +37,8 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
     description: (
       <>
-        Build bite-size serverless geoprocessing functions that auto-scale to
-        meet demand and spin down to zero cost when not in use.
+        Build bite-size serverless functions that analyze user-drawn features
+        and report results. Spins down to zero cost when not in use.
       </>
     ),
   },

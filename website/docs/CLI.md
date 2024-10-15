@@ -2,7 +2,7 @@
 slug: "/cli"
 ---
 
-# Command Line Interface (CLI)
+# Command Line Interface
 
 Each geoprocessing project provides a number of commands to get work done. They are accessible via your projects package.json `scripts` and run using `npm run <command>`
 

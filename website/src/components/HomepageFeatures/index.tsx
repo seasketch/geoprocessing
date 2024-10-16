@@ -11,23 +11,13 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: "Powerful Developer Experience",
+    title: "Unified Developer Experience",
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
     description: (
       <>
-        Create your project with a combination of VSCode, Typescript, React,
+        Create a project with a combination of VSCode, Typescript, React,
         Storybook, Vite and a toolbox of spatial functions.
-      </>
-    ),
-  },
-  {
-    title: "Cloud Native",
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
-    description: (
-      <>
-        Automated deploy to AWS and conversion to cloud-optimized data formats.
       </>
     ),
   },
@@ -37,8 +27,19 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
     description: (
       <>
-        Build bite-size serverless functions that analyze user-drawn features
-        and report results. Spins down to zero cost when not in use.
+        Write bite-size serverless functions that analyze proposals on-demand.
+        Build reports to display the results.
+      </>
+    ),
+  },
+  {
+    title: "Cloud Native",
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
+    description: (
+      <>
+        Automated deploy to AWS and conversion of data to cloud-optimized
+        formats.
       </>
     ),
   },

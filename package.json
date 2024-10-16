@@ -2,8 +2,7 @@
   "name": "root",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "website"
+    "packages/*"
   ],
   "license": "BSD-3-Clause",
   "devDependencies": {

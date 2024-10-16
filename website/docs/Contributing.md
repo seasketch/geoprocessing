@@ -14,9 +14,15 @@ slug: "/contributing"
 
 The geoprocessing code repository is setup as a "monorepo" managed by [Lerna](https://github.com/lerna/lerna). It contains multiple `packages` including the core `geoprocessing` library, and then multiple user-installable `templates`. These templates are bundled into the core library at build time.
 
-## Documentation
+## Documentation Website
 
-documentation is maintained in the [wiki](https://github.com/seasketch/geoprocessing/wiki). You can edit the wiki using the Github web editor, or edit it locally and commit changes.
+A versioned documentation website is maintained using [Docusaurus](https://docusaurus.io/l) in the `website` directory. Docs should be updated in lockstep with code changes.
+
+- cd `website`
+- Dev - `npm start` to start dev server, generate new API documents. Edits will appear instantly in browser
+- Build - `npm build` and `npm serve` to test
+- Version - `npm run docusaurus docs:version <VERSION_NUMBER>` - snapshot a new version. Only do this when a new minor or major release is made. If point release should be unnecessary.
+- Deploy - `GIT_USER=<YOUR_GITHUB_USERNAME> npm run deploy` to build and deploy to Github Pages. You can deploy as often as needed. If a new release snapshot is not made then doc changes are limited to the "Next" version on the website.
 
 VSCode provides excellent features for [editing markdown](https://code.visualstudio.com/docs/languages/markdown#_editing-markdown) as well as [previewing](https://code.visualstudio.com/docs/languages/markdown#_markdown-preview) and is highly recommended for all but small changes.
 

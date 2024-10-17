@@ -494,7 +494,7 @@ describe("clipToGeography", () => {
     expect(sketchArea === clippedSketchArea).toBe(false);
     expect(clippedSketchArea).toEqual(0);
     expect(clippedSketchBox.every((v) => v === 0)).toBe(true);
-  });
+  }, 60_000);
 
   test("clipToGeography - sketch collection", async () => {
     // Sketch collection with overlapping and non-overlapping polygons

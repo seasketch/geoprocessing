@@ -1,0 +1,5 @@
+# SUPPORTED\_RASTER\_STAT
+
+```ts
+type SUPPORTED_RASTER_STAT: typeof SUPPORTED_RASTER_STATS[number];
+```

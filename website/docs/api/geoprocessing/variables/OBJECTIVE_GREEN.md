@@ -1,0 +1,5 @@
+# OBJECTIVE\_GREEN
+
+```ts
+const OBJECTIVE_GREEN: "#BEE4BE" = "#BEE4BE";
+```

@@ -1,0 +1,5 @@
+# SUPPORTED\_FORMAT
+
+```ts
+type SUPPORTED_FORMAT: typeof SUPPORTED_FORMATS[number];
+```

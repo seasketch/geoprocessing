@@ -19,11 +19,10 @@ export function precalcCleanup<C extends ProjectClientBase>(
       curGeog = projectClient.getGeographyById(m.geographyId);
       if (!curGeog) return false;
 
-      // precalc metrics should have a classId ending in -total
-      if (m.classId.endsWith("-total") === false) {
-        return false;
-      }
-      const datasourceId = m.classId.replace("-total", "");
+      // precalc metrics should have the format: "datasourceId-class"
+      if (!m.classId.includes("-")) return false;
+
+      const datasourceId = m.classId.slice(0, m.classId.lastIndexOf("-"));
       curDatasource = projectClient.getDatasourceById(datasourceId);
       if (!curDatasource) return false;
       if (curGeog.precalc === false && curDatasource.precalc === false)

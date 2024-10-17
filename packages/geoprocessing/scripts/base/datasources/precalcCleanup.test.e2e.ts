@@ -64,4 +64,34 @@ describe("precalcCleanup", () => {
       expect(m.geographyId).toBe("eez");
     });
   });
+
+  test("precalcCleanup - drop malformed metrics", () => {
+    const projectClient = new ProjectClientBase({
+      ...configFixtures.loaded,
+      precalc: configFixtures.loaded.precalc.concat([
+        {
+          geographyId: "eez",
+          metricId: "area",
+          classId: "global-eez-mr-v12", // Needs "-class"
+          sketchId: null,
+          groupId: null,
+          value: 131_259_350_503.858_64,
+        },
+        {
+          geographyId: "eez",
+          metricId: "count",
+          classId: "global-eez-mr-v12-california", // Formatted correctly
+          sketchId: null,
+          groupId: null,
+          value: 1,
+        },
+      ]),
+    });
+
+    const cleanMetrics = precalcCleanup(projectClient);
+    expect(cleanMetrics.length).toBe(3);
+    cleanMetrics.forEach((m: Metric) => {
+      expect(m.classId).not.toBe("global-eez-mr-v12");
+    });
+  });
 });

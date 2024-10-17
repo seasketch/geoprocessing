@@ -94,6 +94,15 @@ const config: Config = {
           to: "/docs",
         },
         {
+          to: "/storybook",
+          // Only one of "to" or "href" should be used
+          // href: 'https://www.facebook.com',
+          label: "Storybook",
+          // Only one of "label" or "html" should be used
+          // html: '<b>Introduction</b>'
+          position: "left",
+        },
+        {
           type: "docsVersionDropdown",
           position: "right",
           dropdownActiveClassDisabled: true,

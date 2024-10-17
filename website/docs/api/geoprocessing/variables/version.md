@@ -1080,16 +1080,10 @@ build: string = "tsc";
 build-docs: string = "npm run build-typedoc && npm run build-storybook";
 ```
 
-### scripts.build-storybook
+### scripts.build:storybook
 
 ```ts
-build-storybook: string = "storybook build -o ../../website/build/storybook";
-```
-
-### scripts.build:typedoc
-
-```ts
-build:typedoc: string = "npx typedoc --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none";
+build:storybook: string = "rm -rf ../../../gp-storybook/Next && storybook build -o ../../../gp-storybook/Next";
 ```
 
 ### scripts.build:watch

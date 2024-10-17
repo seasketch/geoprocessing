@@ -26,6 +26,18 @@ A versioned documentation website is maintained using [Docusaurus](https://docus
 
 VSCode provides excellent features for [editing markdown](https://code.visualstudio.com/docs/languages/markdown#_editing-markdown) as well as [previewing](https://code.visualstudio.com/docs/languages/markdown#_markdown-preview) and is highly recommended for all but small changes.
 
+## Storybook Website
+
+Storybooks are published for each major and minor version of geoprocessing.
+
+- Checkout a local copy of `geoprocessing/gp-storybook` repository alongside the `geoprocessing` library.
+  - `cd packages/geoprocessing`
+  - `npm run build:storybook` - will build static storybook site in packages/geoprocess/docs/storybook and copy it over to gp-storybook/Next overwriting the existing.
+- (optional) If you also want to take a release snapshot of the storybook
+  - `cd gp-storybook`
+  - `cp -r Next version-x.y.z`
+- Push all results to gp-storybook gh-pages branch (default) and will automatically build and update [https://seasketch.github.io/gp-storybook](https://seasketch.github.io/gp-storybook)
+
 ## Core library setup
 
 To contribute to the library, you'll need to set it up on your local system. First, follow the base [setup tutorial](./tutorials/Tutorials.md#initial-system-setup).

@@ -292,28 +292,62 @@ Further link troubleshooting steps:
 
 ## Publishing
 
+## Stable release
+
 New stable releases of the framework are published from the `main` branch. To do this:
 
-- Make sure the `main` branch has the latest code. Open a pull request from the `dev` branch if needed.
-- Update Changelog.md - using the commit log as a guide. If breaking changes, then you'll need to release a new major version. (e.g. 2.0.0 -> 3.0.0), otherwise a new minor version is typically fine. See [semantic versioning conventions](https://semver.org/).
-- Publish
-  - `npm run publish:stable`
-  - Choose the version number that matches what you put into the Changelog.
+- make sure all code has been committed and tests are passing.
+- Run `npm run publish:stable` from the top-level geoprocessing directory.
+- This will generate new build artifacts in the `dist` folder first using the `prepare` script.
+- Then you will be asked whether this is a patch, minor, or major release. Please follow [semantic versioning conventions](https://semver.org/).
+- On publish, the release package will be submitted to NPM and made available under the `latest` tag such that anyone installing geoprocessing or running its init script will get this latest version.
+- A git tag with the name of the version number will also be published to Github.
 
-By default, a stable release will be tagged as `latest` so that users installing from npm will get it by default.
+The final step is to publish [release](https://github.com/seasketch/geoprocessing/releases) notes. Go to the release page and
 
-Please follow [semantic versioning conventions](https://semver.org/). This will generate new build artifacts in the `dist` folder first using the `prepare` script.
+- Click `Draft a new release` button.
+- Choose the release tag just created in the publish step.
+- Click `Generate release notes` button.
+- Add subheadings (e.g 💥 Breaking Changes, 🚀 New Feature / Improvement) and organize the generated bullet list into them. Look at past releases for how to do this.
+- Be sure to review deeper into your commit logs and manually add additional bullet points to the release notes. Include any deprecations, internal enhacements, doc enhancements, etc.
+- Add one or more paragraphs at the top of the release notes summarizing the release and any steps the user needs to take on upgrade.
+- Publish the release notes.
 
-## Alpha and Beta Canary Releases
+## Alpha and Beta canary Prerelease
 
-You can also publish `alpha` or `beta` canary releases out-of-band to quickly test new features and publish them, without bumping the version number. These releases are not tagged as `latest`, so they aren't installed unless a user targets them specifically. Make sure that you create them from the dev branch.
+You can publish `alpha` and `beta` prereleases prior to a stable release. This will advance the version numbers in package.json and generate a release tag.
 
 ```sh
-npm run publish:alpha:canary
-npm run publish:beta:canary
+npm run publish:alpha
 ```
 
-Assuming the current GP version is say 0.15.0, and you've made 5 commits to the dev branch since the last release, this should publish a minor canary release called `0.15.1-alpha.5` or `0.15.1-beta.5`. As you push more commits to the dev branch, you can publish again at any time and the commit number will increment so that there isn't a name collision.
+or
+
+```sh
+npm run publish:beta
+```
+
+Then press the Enter key to choose `❯ Custom Prerelease`
+Then press the Enter key when it asks you Enter a prerelease identifier. It will use a default name, something like `7.0.0-beta.1`.
+
+As you create more beta releases, it will automatically increment the beta number and maintain the naming scheme.
+
+## Backport Release
+
+A backport release should be published when you backport features or bug fixes to a previous major version of the code. For example critical bug fixes developed for 7.x, backported to 6.x.
+
+A backport release is a normal release, in that you choose whether it is a patch or a minor release, and it will advance the version to the next number e.g. 6.1.2 would become either 6.1.3 (patch) or 6.2.0 (minor). The only different is that the `backport` distribution tag is applied to the release, rather than `latest`.
+
+The suggested method to do a backport release is to checkout a prior release tag, then create a new branch
+
+```sh
+git checkout tags/v6.1.2
+git checkout -b v6.2.0
+<edit, commit and push code>
+npm run publish:backport
+```
+
+Choose minor release 6.2.0
 
 ## Experimental Releases
 

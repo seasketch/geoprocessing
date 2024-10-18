@@ -36,6 +36,7 @@ const sidebars: SidebarsConfig = {
       items: [
         "architecture/Architecture",
         "antimeridian/Antimeridian",
+        "workers",
         "gip/GIP-1-i18n",
         "EdgesAndLimits",
         "Testing",

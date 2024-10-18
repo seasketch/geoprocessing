@@ -73,9 +73,17 @@ CLI - from packages/geoprocessing folder
 - `npm run watch` - build core library and watch for changes
 - `npm run watch:scripts` - build scripts only and watch for changes
 
+## Upgrading Dependencies
+
+Upgrading package dependencies should be done carefully. The `ncu` command is a good way to do this in chunks. Run the following command in each of the root geoprocessing directory, `geoprocessing/packages/geoprocessing`, and each of the `geoprocessing/packages/template-*` directories:
+
+`npx ncu --interactive --format group`
+
+Use the spacebar to select all the packages to update. `patch` and `minor` release updates should be safe to do without fear of breaking changes. `major` updates should be left for last and done carefully, possibly even one at a time. Any dependency that has co-dependencies, for example babel with its plugins, should be upgraded at the same time, and match version number appropriately. Brand new releases, particularly majore releases can have bugs and upgrading to the latest and greatest is not always the best idea. Test in stages and as you go so that the cause is easier to figure out. Even doing full deployments, checking storybook, etc. to make sure working properly. Dependency upgrades should be done at least quarterly, monthly is better.
+
 ## Internationalization (i18n)
 
-The geoprocessign framework implements the [GIP-1](./gip/GIP-1-i18n.md) proposal for language translation, and uses POEditor as its third-party service for translators to provide translations.
+The geoprocessing framework implements the [GIP-1](./gip/GIP-1-i18n.md) proposal for language translation, and uses POEditor as its third-party service for translators to provide translations.
 
 The language translation [tutorial](/tutorials/Tutorials.md) contains a lot of useful information on workflow. Managing translations internally for the library is very similar with some differences.
 
@@ -343,15 +351,14 @@ To add new namespaces as new features are launched, edit `packages/i18n/namespac
 
 ### Adding new languages
 
-To add new supported languages, add required metadata to `packages/i18n/supported.ts`. You will also need to add a matching entry to the POEditor project using their GUI.
+To add new supported languages, add required metadata to `packages/i18n/languages.json`. You will also need to add a matching entry to any POEditor projects using their GUI.
 
 ### Architecture
 
-extract:translation - extract translations from code to `packages/i18n/lang/en` using babel and i18next-extract plugin
-publish:translation - publish term namespaces to poeditor, updating existing terms and adding new terms
-import:translation - download poeditor translated terms to local cache in `packages/i18n/lang`
-
-sync:translation - runs both extract/publish and import to sync local with poeditor
+- extract:translation - extract translations from code to `packages/i18n/lang/en` using babel and i18next-extract plugin
+- publish:translation - publish term namespaces to poeditor, updating existing terms and adding new terms
+- import:translation - download poeditor translated terms to local cache in `packages/i18n/lang`
+- sync:translation - runs both extract/publish and import to sync local with poeditor
 
 POEDITOR_PROJECT and POEDITOR_API_TOKEN environment variables must be pre-loaded in your shell environment to publish and import from poeditor.com.
 

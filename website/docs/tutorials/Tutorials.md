@@ -1407,7 +1407,7 @@ Geoprocessing function initialized
 
 Next Steps:
   * Update your function definition in src/functions/simpleFunction.ts
-  * Smoke test in simpleFunctionSmoke.test.ts will be run the next time you execut 'npm test'
+  * Smoke test in simpleFunctionSmoke.test.ts will be run the next time you execute 'npm test'
   * Populate examples/sketches folder with sketches for smoke test to run against
 ```
 

@@ -21,6 +21,7 @@ const sidebars: SidebarsConfig = {
         "concepts/Concepts",
         "tutorials/Tutorials",
         "CLI",
+        "limitations",
         "Tipsandtricks",
       ],
     },

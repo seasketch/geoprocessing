@@ -450,12 +450,13 @@ There are a variety of project configuration files. Many have been pre-populated
 - `package.json` - Javascript [package](https://docs.npmjs.com/cli/v9/configuring-npm/package-json) configuration that defines things like the project name, author, and third-party dependencies. The [npm](https://docs.npmjs.com/cli/v6/commands) command is typically used to add, upgrade, or remove dependencies using `npm install`, otherwise it can be hand-edited.
 - `tsconfig.json` - contains configuration for the [Typescript](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) compiler
 - `project/` - contains project configuration files.
-  - `basic.json` - contains basic project configuration.
+  - `basic.json` - contains basic project configuration
     - `planningAreaType`: `eez` or `other`
     - bbox - the bounding box of the project as [bottom, top, left, right]. This generally represents the area that users will draw shapes. It can be used as a boundary for clipping, to generate examples sketches, and as a window for fetching from global datasources.
     - `planningAreaId` - the unique identifier of the planning region used by the boundary dataset. If your planningAreaType is `eez` and you want to change it, you'll find the full list [in github](https://raw.githubusercontent.com/seasketch/geoprocessing/dev/packages/geoprocessing/scripts/global/datasources/mr-eez-precalc.json), just look at the UNION property for the id to use
     - `planningAreaName` - the name of the planning region (e.g. Micronesia)
     - `externalLinks` - central store of links that you want to populate in your reports.
+    - `languages` - array of languages to enable for translation. Master list of language codes are in `src/i18n/languages.json`.
   - `geoprocessing.json` - file used to register assets to be bundled for deployment. If they aren't registered here, then they won't be included in the bundle.
   - `geographies.json` - contains one or more planning geographies for your project. If you chose to start with a blank project template, you will have a default geography of the entire world. If you chose to start with the Ocean EEZ template, you will have a default geography that is the EEZ you chose at creation time. Geographies must be manually added/edited in this file. You will then want to re-run `precalc` and `test` to process the changes and make sure they are working as expected. Learn more about [geographies](../concepts/Concepts.md#geographies)
   - `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided. Global datasources can be manually added/edited in this file, but local datasources should use the [import](#importing-your-data) process. After import, datasources can be manually added/edited in this file. You will then want to run `reimport:data`, `precalc:data`, `precalc:clean`, and `test` to process the changes and make sure they are working as expected. Learn more about [datasources](../concepts/Concepts.md#datasources)
@@ -487,7 +488,7 @@ The object structure in many of the JSON files, particularly the `project` folde
     - `extraTerms.json` - contains extra translations. Some are auto-generated from configuration on project init, and you can add more such as plural form of terms.
     - `i18nAsync.ts` - creates an i18next instance that lazy loads language translations on demand.
     - `i18nSync.ts` - creates an i18nnext instance that synchronously imports all language translations ahead of time. This is not quite functional, more for research.
-    - `supported.ts` - defines all of the supported languages.
+    - `languages.json` - defines all of the supported languages. New languages codes can be added manually, or using `upgrade` command.
 
 A [ProjectClient](https://seasketch.github.io/geoprocessing/api/classes/geoprocessing.ProjectClientBase.html) class is available in `project/projectClients.ts` that is used in project code for quick access to all project configuration including methods that ease working with them. This is the bridge that connects configuration with code and is the backbone of every geoprocessing function and report client.
 
@@ -1581,7 +1582,7 @@ When updating a datasource, you should try to take it all the way through the pr
 - `npm test` to run your smoke tests which read data from `data/dist` and make sure the geoprocessing function results change as you would expect based on the data changes. Are you expecting result values to go up or down? Stay about or exactly the same? Try not to accept changes that you don't understand.
 - Add additional sketches or features to your smoke tests as needed. Exporting sketches from SeaSketch as geojson and copying to `examples/sketches` is a great way to do this. Convince yourself the results are correct.
 - Publish your updated datasets with `npm run publish:data`.
-- Clear the cache for all reports that use this datasource with `npm run clear-results` and type the name of your geoprocessing function (e.g. `boundaryAreaOverlap`). You can also opt to just clear results for all reports with `npm run clear-all-results`. Cached results are cleared one record at a time in dynamodb so this can take quite a while. In fact, the process can run out of memory and suddenly die. In this case, you can simply rerun the clear command and it will continue. Eventually you will get through them all.
+- Clear the cache for all reports that use this datasource with `npm run clear:results` and type the name of your geoprocessing function (e.g. `boundaryAreaOverlap`) or simply `all`. Cached results are cleared one record at a time in dynamodb so this can take quite a while. In fact, the process can run out of memory and suddenly die. In this case, you can simply rerun the clear command and it will continue. Eventually you will get through them all.
 - Test your reports in SeaSketch. Any sketches you exported should produce the same numbers. Test with any really big sketches, make sure your data updates haven't reached any new limit. This can happen if your updated data is much larger, has more features, higher resolution, etc.
 
 ### Custom Sketch Attributes

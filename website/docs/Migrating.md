@@ -4,7 +4,7 @@ Instructions to migrate existing geoprocessing projects to newer versions.
 
 ## Initial upgrade
 
-An existing project will be pinned to a specific version of the geoprocessing library in package.json, under `devDependencies`. To update to the latest version you can simply run:
+Your project will be pinned to a specific version of the geoprocessing library in package.json, under `devDependencies`. To update to the latest version you can simply run:
 
 ```bash
 npm update @seasketch/geoprocessing@latest
@@ -12,7 +12,11 @@ npm install
 npm run upgrade
 ```
 
-If you are upgrading to a new major version (e.g 6.1.x to 7.0.x), then there will be breaking changes that may affect your project. It is suggested that you upgrade only one major version at a time if there are significant manual steps required to migrate your project. If you need to upgrade 2 or more major versions, consider simply creating a new project from scratch, them migrating everything over one at a time (datasources, metric groups, functions and report clients).
+The upgrade command may alter or overwrite a significant number of files including configuration, scripts, package.json dependencies and scripts, etc. It is recommended to start with a clean git state so that you can review all of the code changes. The ugprade command may overwrite any customizations you have made such as to scripts, in which case you would need to manually recover them by studying the git diffs.
+
+If you are upgrading to a new major version (e.g 6.1.x to 7.0.x), then there will be breaking changes that may affect your project, covered in this document.
+
+It is suggested that you upgrade only one major version at a time if there are significant manual steps required to migrate your project. If you need to upgrade 2 or more major versions, consider simply creating a new project from scratch, them migrating everything over one at a time (datasources, metric groups, functions and report clients).
 
 After upgrading you should always rerun your tests and storybook to verify everything is working properly and test output changes are as expected.
 
@@ -21,14 +25,14 @@ npm test
 npm run storybook
 ```
 
-Make sure to commit all of your changes to your git repo, and re-deploy your project to AWS when ready.
+Finally, rebuild and redeploy your project.
 
 ```bash
 npm run build
 npm run deploy
 ```
 
-After deploy, you may also need to reimport and republish all of your datasources using `reimport:data` and `publish:data` commands. Follow the steps for your particular migration below.
+After deploy, breaking changes may also require you to reimport and republish all of your datasources using `reimport:data` and `publish:data` commands. Follow the steps for your particular migration below.
 
 ## Test Stack
 

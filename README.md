@@ -4,8 +4,8 @@ All-in-one solution for developing low-cost and low-maintenance geoprocessing fu
 
 This framework is part of the [SeaSketch](https://seasketch.org) ecosystem.
 
-- [Documentation](https://github.com/seasketch/geoprocessing/wiki)
-- [Changelog](https://github.com/seasketch/geoprocessing/blob/dev/CHANGELOG.md)
+- [Documentation](https://seasketch.github.io/geoprocessing)
+- [Releases](https://github.com/seasketch/geoprocessing/releases)
 
 ## Who is this framework for?
 

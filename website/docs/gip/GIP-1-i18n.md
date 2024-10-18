@@ -47,19 +47,19 @@ Geoprocessing projects:
 
 CLI commands will be the main way developers work with translations.
 
-- `translation:extract`
+- `extract:translation`
   - extracts all translations using babel and [babel-plugin-i18next-extract](https://github.com/gilbsgilbs/babel-plugin-i18next-extract).
-- `translation:publish`
+- `publish:translation`
   - Posts translations for all languages to POEDITOR
   - Behavior is configured via `src/i18n/config.ts`. Translations with namespace specified by `localNamespace` are written to POEditor with context value specified by `remoteContext`.
   - All english translations are published, overwriting any in POEditor, since the code is their source of truth.
   - For non-english languages, POEditor is the source of truth, so if a translation is not defined in POEditor, then a local project translation is published if available, to seed it the first time.
-  - For GP projects, if a project translation is not available, then a base translation will be published as fallback if available. Running `translation:import` after that will then import those base translations back and seed the local project translations.
-- `translation:import`
+  - For GP projects, if a project translation is not available, then a base translation will be published as fallback if available. Running `import:translation` after that will then import those base translations back and seed the local project translations.
+- `import:translation`
   - fetches translations from POEditor for all non-english languages having context value specified by `remotextContex` property in `src/i18n/config.son`. Any existing translation values will be overwritten. Translations are saved to the namespace specified by the `localNamespace` property in `project/i18n.json`.
-- `translation:sync`
+- `sync:translation`
   - runs in succession `extract`, `publish`, then `import`.
-- `translation:install` (available in gp project only)
+- `install:translation` (available in gp project only)
   - copies base translations from the installed geoprocessing library to the projects `src/i18n/baseLang` directory, overwriting any previous version.
 
 Configuration files:
@@ -97,7 +97,7 @@ For geoprocessing projects:
 
 - CLI commands will live at the root of the project.
 - When creating a new geoprocessing project, the `base` translations for the current version of the gp library are installed to the project at `src/i18n/baseLang`. Report developers should not edit this.
-- Report developers working on a geoprocessing project should not need to make sure that they keep their base translations up to date. They should automatically upgrade on every run of `npm install` using the `prepare` command.
+- Report developers working on a geoprocessing project will need to make sure that they keep their base translations up to date. They do this by running `npm run extract:translation`.
 - Project translations are managed alongside base translations under `src/i18n/lang`. These can be edited but typically will be done via CLI commands (see use cases below).
 - When initially created, each geoprocessing project will have `base` translations installed.
 - On publish, always push all local English translations. For all non-english langauges, push translations if it doesn't already exist in POEditor. Additionally, for all languages, if there is no local project translation, fallback to base translation if it exists.
@@ -149,7 +149,7 @@ For geoprocessing projects:
 
 ### 3. Reports developed by external developer not using POEDITOR but in local repo
 
-- Developer will use `translation:extract` but not `translation:import` and `translation:publish`.
+- Developer will use `extract:translation` but not `import:translation` and `publish:translation`.
 - Developer uses `i18n-ally` (which vscode settings are established for) to translate strings.
 - A separate translation service could also be integrated other than POEditor.
 
@@ -163,11 +163,11 @@ You do not need to complete this step unless you want to support language transl
 
 POEditor offers free translation for open source projects, but you are not required to use it. You can maintain your translations locally.
 
-## Managing Translations Using POEditor
+### Managing Translations Using POEditor
 
-There are 4 commands you will commonly use in working with translations: `translation:extract`, `translation:publish`, `translation:import` and `translation:sync`. You can read more about them on the [CLI](/CLI.md) page.
+There are 4 commands you will commonly use in working with translations: `extract:translation`, `publish:translation`, `import:translation` and `sync:translation`. You can read more about them on the [CLI](/CLI.md) page.
 
-When you `init` a new project it will automatically run `translation:install` and `translation:extract`, so your local translatiions in `src/i18n/lang` will be up to date.
+When you `init` a new project it will automatically install the `src/i18n` directory and base translations from the geoprocessing library, and then run `extract:translation` to extract project-specific translation strings.
 
 ### Setup POEditor as a developer on the SeaSketch team
 
@@ -208,7 +208,7 @@ echo $POEDITOR_API_TOKEN
 
 ### Publishing Translations to POEditor
 
-Then `npm run translation:publish` to push the new/edited english strings to POEditor. The strings will be tagged in POEditor with the name of the project e.g the context for yours will be (`fsm-reports-test`).
+Then `npm run publish:translation` to push the new/edited english strings to POEditor. The strings will be tagged in POEditor with the name of the project e.g the context for yours will be (`fsm-reports-test`).
 
 ![POEditor Context](assets/PoeditorContext.png "POEditor Context")
 
@@ -216,7 +216,7 @@ with Someone will then need to translate the strings using the POEditor service 
 
 ## Importing Translations from POEditor
 
-You will then need to run `npm run translation:import` to bring these translations back into the project. You should see files added/updated for each language code in `src/i18n/lang`.
+You will then need to run `npm run import:translation` to bring these translations back into the project. You should see files added/updated for each language code in `src/i18n/lang`.
 
 Commit all translation files, including English and non-english, to the code repository. These will be bundled into your production app.
 
@@ -224,7 +224,7 @@ Commit all translation files, including English and non-english, to the code rep
 
 If you choose not to use POEditor then the easiest option is to maintain translations in your project code repository.
 
-You will still use the `translation:extract` command to extract your strings.
+You will still use the `extract:translation` command to extract your strings.
 
 You can then use the [i18n-ally](https://github.com/lokalise/i18n-ally) vscode extension to manage your translations. Your project already includes vscode settings for using this extension in `.vscode/settings.json`. Read the extension documentation to learn how to use for example the auto-translation feature.
 
@@ -236,10 +236,10 @@ If your translations are working in storybook, then there is nothing more to do.
 
 If your project needs to add a new language that is not already supported, follow these steps:
 
-- Add the new language to `src/i18n/supported.ts`. The language code should match what [SeaSketch uses](https://github.com/seasketch/next/blob/master/packages/client/src/lang/supported.ts).
-- Add the language in your POEditor project. Make sure the language code matches what SeaSketch Next is using, and what you have in supported.ts
+- Add more new language codes to the `project/basic.json` languages array. The full set of available languages codes can be found in `src/i18n/languages.json`. The language codes should match what [SeaSketch uses](https://github.com/seasketch/next/blob/master/packages/client/src/lang/supported.ts).
+- Make sure the language is defined in your POEditor project with the same language code.
 - Translate the strings in POEditor to the new language.
-- On your next run of `translation:import` a folder for the language will be added to `src/i18n/lang` and include a `translation.json` file with the strings that you translated in POEditor.
+- On your next run of `import:translation` a folder for the language will be added to `src/i18n/lang` and include a `translation.json` file with the strings that you translated in POEditor.
 
 ## Test report translations
 
@@ -289,7 +289,7 @@ export const TestComponent = () => {
 
 Both `t()` and `Trans` can be used within the same file, whatever combination gets the job done. Notice that the `Trans` example includes an `i18nKey` property. This is useful for providing context for where this string is in the codebase, as you'll soon see in the extracted strings. You can do the same thing with the `t` functions using `t('myKey', 'stringValue')`.
 
-Once you've added new strings to your component or edited existing ones, and wrapped them in translation calls, you will then need to run `npm run translation:extract`. You should then see all new/changed english string updated in `src/i18n/lang/en/translation.json`. Here's an example project and its [translations](https://github.com/seasketch/azores-nearshore-reports/blob/main/src/i18n/lang/en/translation.json)
+Once you've added new strings to your component or edited existing ones, and wrapped them in translation calls, you will then need to run `npm run extract:translation`. You should then see all new/changed english string updated in `src/i18n/lang/en/translation.json`. Here's an example project and its [translations](https://github.com/seasketch/azores-nearshore-reports/blob/main/src/i18n/lang/en/translation.json)
 
 Here is what should be the resulting extracted strings for translation:
 

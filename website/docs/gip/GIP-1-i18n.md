@@ -1,4 +1,4 @@
-# i18n
+# Internationalization (i18n)
 
 Geoprocessing Improvement Proposal 1
 
@@ -196,7 +196,7 @@ export POEDITOR_PROJECT=[YOUR_PROJECT_ID_NUMBER]
 export POEDITOR_API_TOKEN=[YOUR_API_TOKEN]
 ```
 
-[How do I do that?](../Tipsandtricks.md#editing-your-startup-bash-script-in-ubuntu)
+[How do I do that?](../skills.md#editing-your-startup-bash-script-in-ubuntu)
 
 Now, verify the environment variables are set
 

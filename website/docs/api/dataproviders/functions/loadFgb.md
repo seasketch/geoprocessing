@@ -1,7 +1,7 @@
-# ~~fgbFetchAll()~~
+# ~~loadFgb()~~
 
 ```ts
-function fgbFetchAll<F>(url, box?): Promise<F[]>
+function loadFgb<F>(url, box?): Promise<F[]>
 ```
 
 Fetch features within bounding box and deserializes them, awaiting all of them before returning.

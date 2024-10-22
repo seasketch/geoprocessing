@@ -1,4 +1,4 @@
-# overlapRasterClass()
+# ~~overlapRasterClass()~~
 
 ```ts
 function overlapRasterClass(
@@ -25,3 +25,7 @@ If sketch collection, then calculate overlap for all child sketches also
 ## Returns
 
 `Promise`\<[`Metric`](../type-aliases/Metric.md)[]\>
+
+## Deprecated
+
+use rasterMetrics instead

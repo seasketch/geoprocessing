@@ -4,7 +4,7 @@ Instructions to migrate existing geoprocessing projects to newer versions.
 
 ## Initial upgrade
 
-Your project will be pinned to a specific version of the geoprocessing library in package.json, under `devDependencies`. To update to the latest version you can simply run:
+Your project will be pinned to a specific version of the geoprocessing library in package.json, under `devDependencies`. To update to the latest version, first, make sure you don't have any unsaved work and your git repository is in a clean state. Then update the version, and run the upgrade script:
 
 ```bash
 npm update @seasketch/geoprocessing@latest
@@ -12,9 +12,9 @@ npm install
 npm run upgrade
 ```
 
-The upgrade command may alter or overwrite a significant number of files including configuration, scripts, package.json dependencies and scripts, etc. It is recommended to start with a clean git state so that you can review all of the code changes. The ugprade command may overwrite any customizations you have made such as to scripts, in which case you would need to manually recover them by studying the git diffs.
+The upgrade command may alter or overwrite a significant number of files including configuration, scripts, package.json dependencies and scripts, etc. The upgrade command may overwrite any customizations you have made such as to scripts, in which case you would need to manually recover them by studying the git diffs.
 
-If you are upgrading to a new major version (e.g 6.1.x to 7.0.x), then there will be breaking changes that may affect your project, covered in this document.
+If you are upgrading to a new major version (e.g 6.1.x to 7.0.x), then there will be breaking changes that may affect your project, covered in this document. Check the [release notes](https://github.com/seasketch/geoprocessing/releases) for any additional required steps.
 
 It is suggested that you upgrade only one major version at a time if there are significant manual steps required to migrate your project. If you need to upgrade 2 or more major versions, consider simply creating a new project from scratch, them migrating everything over one at a time (datasources, metric groups, functions and report clients).
 
@@ -32,7 +32,12 @@ npm run build
 npm run deploy
 ```
 
-After deploy, breaking changes may also require you to reimport and republish all of your datasources using `reimport:data` and `publish:data` commands. Follow the steps for your particular migration below.
+After deploy, breaking changes may require you to take additional steps. Follow the steps for your particular migration. If you are seeing errors or unexpected behavior, try any one of the following steps:
+
+- Rebuild dependencies: `rm -rf node_modules && rm package-lock.json && npm install`
+- Reimport all datasources: `npm run reimport:data`
+- Republish all datasources: `npm run publish:data`
+- Clear AWS cache: `npm run clear-results`, then `all`
 
 ## Test Stack
 
@@ -42,6 +47,8 @@ If you'd like to deploy to a test stack first, alongside your existing productio
 - Then `npm run build` and `npm run deploy`. This will deploy to a new AWS CloudFormation stack, separate from your production stack.
 - Once deployed, repoint your existing sketch classes to the new geoprocessing service, or create separate "admin only" sketch classes that point to your new test service. Make sure that all required sketch class attributes are in place.
 - When you are ready to update production, change the `name` in package.json back, and rerun `build` and `deploy`.
+
+# Migration
 
 ## 6.x to 7.x
 

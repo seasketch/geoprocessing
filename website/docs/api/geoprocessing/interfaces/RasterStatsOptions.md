@@ -6,6 +6,10 @@ options accepted by rasterStats
 
 - [`CalcStatsOptions`](CalcStatsOptions.md)
 
+## Extended by
+
+- [`OverlapRasterOptions`](OverlapRasterOptions.md)
+
 ## Properties
 
 ### categorical?
@@ -39,7 +43,7 @@ If categorical raster, metric property name that categories are organized. Defau
 optional categoryMetricValues: string[];
 ```
 
-If categorical raster, array of values to create metrics for
+If categorical raster, array of values to create metrics for.  Any values not provided won't be counted
 
 ***
 

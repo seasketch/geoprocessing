@@ -123,10 +123,11 @@ A [Sketch Collection](https://seasketch.github.io/geoprocessing/api/interfaces/g
 }
 ```
 
-
 ## Geographies
 
-A `Geography` represents one or more geographic boundaries for the project, and is primarily used to define project planning boundaries and clip sketches and datasources against them. Geographies are contained in `project/geographies.json`.  You are not required to use them.  Simple alternatives include pre-clipping your datasources to your planning boundary.
+A `Geography` represents one or more geographic boundaries for the project, and is primarily used to define project planning boundaries and clip sketches and datasources against them during analysis, especially when calculating percentage of total area/value of a class of data, that is within a sketch/sketch collection.
+
+Geographies are contained in `project/geographies.json`. You are not required to use the concept of Geographies, but support is built-in. A simple alternative for being able to calculate percent area/value is to pre-clip your datasources to your planning boundary, and manually pre-calculate the total area (the denominator). Then in your geoprocessing function you just need to calculate the area/value within your sketch/collection (numerator) and you can calculate your percentage.
 
 The default Geography for a new blank project is the entire world. The default Geography for a new Ocean EEZ project is the EEZ boundary you chose at creation time.
 
@@ -142,7 +143,7 @@ World geography:
 }
 ```
 
-EEZ geography:
+Example of EEZ geography using a global datasource:
 
 ```json
 {
@@ -179,10 +180,10 @@ Each `Geography` points to a [datasource](#datasources), which provides the poly
 
 The way that Geographies are used in reporting is that sketches and datasources are clipped to these geographies, in order to produce metrics that are representative of that geographic boundary. Project code is geography-aware at multiple points including:
 
-- preprocessing functions - when sketches should be clipped to a geography beforehand.
-- geoprocessing functions - when sketches should be clipped to a geography at runtime (common in multi-geography use case)
-- precalc - to calculate overall metrics (total area, count, sum of value) within each geography for each datasource. These precalc metrics are used in the denominator when calculating a sketches % overlap with a given datasource within a given geography.
-- report clients - to retrieve precalculated metrics, allow the user to potentially switch between geographies, and to pass the current user-selected geography to the geoprocessing functions.
+- Preprocessing functions - clipping a sketch to one or more geographies up front, usually the project planning boundary.
+- Geoprocessing functions - when sketches should be clipped to one or more geographies at runtime (common in multi-geography use case)
+- Precalc - to calculate overall metrics (total area, count, sum of value) within each geography for each datasource. These precalc metrics are used in the denominator when calculating a sketches % overlap with a given datasource within a given geography.
+- Report clients - to retrieve precalculated metrics, allow the user to potentially switch between geographies, and to pass the current user-selected geography to the geoprocessing functions.
 
 ### Geography Properties
 
@@ -288,7 +289,47 @@ This example is for an `eez` boundary datasets, that is imported from the `curre
 
 ## Metrics
 
+Metrics are measurements, whether statistical, geometric, or something more qualitative.
+
+In the geoprocessing framework a [Metric](../api/geoprocessing/type-aliases/Metric.md) refers specifically to a single recorded `value`, for one or more dimensions. A geoprocessing function might return an array with hundreds of `Metric` values.
+
+The following is an example of a single Metric object.
+
+```json
+{
+  "metricId": "boundary-area",
+  "sketchId": "abc123",
+  "classId": "eez",
+  "groupId": null,
+  "geographyId": null,
+  "value": 75066893245.88089,
+  "extra": {
+    "sketchName": "fsm-east-west"
+  }
+}
+```
+
+It's a metric measuring the area of boundaries for sketch `abc123`, measuring an overlap of `75066893245.88089 square meters` with the `eez` boundary. There is no associated group or geography. The name of the sketch is additionally included for human readability.
+
+The base properties for a `Metric` are:
+
+- `metricId` - the unique id of the metric
+- `value` - the numeric value of the measurement.
+- `extra` - additional properties that can be added as needed.
+
+A Metric has properties for one or more standard [dimensions](https://github.com/seasketch/geoprocessing/blob/d633b20/packages/geoprocessing/src/types/metrics.ts#L5). These are used for [stratifying](https://en.wikipedia.org/wiki/Stratified_sampling) data. A `null` value for an individual metric object property indicates the dimension does not apply.
+
+- `sketchId` - optional id of sketch this measurement is for.
+- `classId` - optional id of data class that this metric is for.
+  - Example - boundary overlap metrics may be categorized by boundary type (e.g. eez, offshore, nearshore). This ID can often be used to represent informal geographic boundaries instead of formal `Geographies` like with `geographyId`
+- `groupId` - optional id of group that this metric is for. Groups are typically not defined by the datasource, but by the planning process.
+  - Example - protections levels, where all of the sketches in a collection may be grouped by the protection level they achieve (low, high, full) and their metrics combined into an aggregate value for each level.
+- `geographyId` - optional id of a `Geography` that this metric is for.
+  - Example - you want to stratify by multiple jurisdictional boundaries (eez, nearshore, offshore) and you also want to stratify by multiple distinct environmental regions defined by natural clusterings of depth, species, seabottom, etc. (region 1, region 2, region 3). This allows you to answer for example how much does a sketch overlap with areas that are nearshore and environmental region 1? You can use classId for the jurisdictional boundaries and `groupId` for the environmental regions.
+
 ### What can be measured?
+
+A number of metrics can be calculated by overlaying a sketch with a vector or raster datasource. See the [geoprocessing](../geoprocessing.md) guide for more information. Common `metricIds` include:
 
 Vector:
 
@@ -331,11 +372,9 @@ variance?: Nullable<number>;
 **/
 ```
 
-See the [toolbox](../toolbox.md) page for information on how to calculate common metrics.
-
 ### Metric Group
 
-A [MetricGroup](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/metricGroup.ts#L11) represents a specific metric for your project, with a base metric type, and one or more data classes. Think of it as a unifying configuration object, that pulls everything together.
+A [MetricGroup](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/metricGroup.ts#L11) defines a specific type of metric for your project, with a base metric type, and one or more data classes. Think of it as a unifying configuration object, that pulls everything together.
 
 - [DataClass](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/dataclass.ts#L8) - represents a single class of data. It ties it to an underlying datasource, and holds attributes used for displaying the class in user interfaces.
 
@@ -377,43 +416,9 @@ This defines a `boundaryAreaOverlap` metric of type `areaOverlap`, which we defi
 - offshore - typically 12-200 nautical miles
 - nearshore - typically 0-12 nautical miles, aka territorial sea boundary.
 
-In thise case, each data class has their own datasource, each of which contains a polygon boundary. A single top-level datasource could also be used, with classes defined using an attribute, if the data happened to be structured that way. Each data class is tied to its own planning objective, and its own layer published on the map as a visual representation of its spatial extent.
+Each data class points to its own datasource. And you can assume each of those datasources contain a single polygon boundary. It's also acceptable to have a single datasource, with 3 different boundaries in it, and an attribute to differentiate them, which would become the `classId`.
 
-### Metric Value
-
-A metric value is a quantifiable measure of something, a single measurement. In this framework, the value is just called a [Metric](https://seasketch.github.io/geoprocessing/api/interfaces/geoprocessing.Metric.html)for short. It has the following base properties:
-
-- `metricId` - the unique id of the metric
-- `value` - the numeric value of the measurement.
-- `extra` - additional properties that can be added as needed.
-
-A Metric has properties for one or more standard [dimensions](https://github.com/seasketch/geoprocessing/blob/d633b20/packages/geoprocessing/src/types/metrics.ts#L5). These are used for [stratifying](https://en.wikipedia.org/wiki/Stratified_sampling) data. A `null` value for an individual metric object property indicates the dimension does not apply.
-
-- `sketchId` - optional id of sketch this measurement is for.
-- `classId` - optional id of data class that this metric is for.
-  - Example - boundary overlap metrics may be categorized by boundary type (e.g. eez, offshore, nearshore). This ID can often be used to represent informal geographic boundaries instead of formal `Geographies` like with `geographyId`
-- `groupId` - optional id of group that this metric is for. Groups are typically not defined by the datasource, but by the planning process.
-  - Example - protections levels, where all of the sketches in a collection may be grouped by the protection level they achieve (low, high, full) and their metrics combined into an aggregate value for each level.
-- `geographyId` - optional id of a `Geography` that this metric is for.
-  - Example - you want to stratify by multiple jurisdictional boundaries (eez, nearshore, offshore) and you also want to stratify by multiple distinct environmental regions defined by natural clusterings of depth, species, seabottom, etc. (region 1, region 2, region 3). This allows you to answer for example how much does a sketch overlap with areas that are nearshore and environmental region 1? You can use classId for the jurisdictional boundaries and `groupId` for the environmental regions.
-
-The following is an example of a single Metric object.
-
-```json
-{
-  "metricId": "boundary-area",
-  "sketchId": "abc123",
-  "classId": "eez",
-  "groupId": null,
-  "geographyId": null,
-  "value": 75066893245.88089,
-  "extra": {
-    "sketchName": "fsm-east-west"
-  }
-}
-```
-
-It's a metric measuring the area of boundaries for sketch `abc123`, measuring an overlap of `75066893245.88089 square meters` with the `eez` boundary. There is no associated group or geography. The name of the sketch is additionally included for human readability.
+Each data `class` can be tied to its own planning `objective`, and its own map `layer`.
 
 ## Objectives
 

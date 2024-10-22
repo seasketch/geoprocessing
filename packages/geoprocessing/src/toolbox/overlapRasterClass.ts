@@ -16,6 +16,7 @@ import { featureEach } from "@turf/turf";
 /**
  * Calculates sum of overlap between sketches and a categorical raster with numeric values representing feature classes
  * If sketch collection, then calculate overlap for all child sketches also
+ * @deprecated use rasterMetrics instead
  */
 export async function overlapRasterClass(
   /** metricId value to assign to each measurement */

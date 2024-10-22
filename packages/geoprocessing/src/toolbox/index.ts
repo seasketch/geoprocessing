@@ -2,7 +2,6 @@ export * from "./area.js";
 export * from "./width.js";
 export * from "./overlapArea.js";
 export * from "./overlapFeatures.js";
-export * from "./overlapRaster.js";
 export * from "./overlapRasterClass.js";
 export * from "./overlapGroupMetrics.js";
 export * from "./booleanOverlap.js";

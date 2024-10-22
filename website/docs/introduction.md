@@ -55,3 +55,5 @@ You will interact with a number of building blocks when creating a `geoprocessin
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) - software used to create and run instances of the `geoprocessing` container images on the users computer. For Windows users, it also provides a way to install and run the geoprocessing framework within the Windows Subsystem for Linux (WSL).
 - [VS Code](https://code.visualstudio.com/) - provides an integrated development environment (IDE) for managing a geoprocessing project including code editing, command-line terminal, Github integration, and more.
 - [Amazon Web Service (AWS)](https://aws.amazon.com/what-is-aws/) - AWS is the cloud service provider that ultimately hosts your geoprocessing project and integrates with a SeaSketch project to run reports on demand. It provisions the necessary storage, compute and database infrastructure automatically using [CDK](https://aws.amazon.com/cdk/).
+
+To learn more about , visit the [architecture](./architecture/Architecture.md) page.

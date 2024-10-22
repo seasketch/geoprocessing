@@ -14,13 +14,7 @@
     },
     {
       "type": "category",
-      "label": "Library",
-      "collapsed": false,
-      "items": ["Migrating", "Extending"]
-    },
-    {
-      "type": "category",
-      "label": "Advanced Guides",
+      "label": "Advanced",
       "items": [
         "architecture/Architecture",
         "antimeridian/Antimeridian",
@@ -29,6 +23,12 @@
         "Testing",
         "Contributing"
       ]
+    },
+    {
+      "type": "category",
+      "label": "Library",
+      "collapsed": false,
+      "items": ["Migrating", "Extending"]
     }
   ]
 }

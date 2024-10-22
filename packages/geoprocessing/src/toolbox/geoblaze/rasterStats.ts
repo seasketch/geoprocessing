@@ -43,12 +43,12 @@ export interface RasterStatsOptions extends CalcStatsOptions {
   categorical?: boolean;
   /** If categorical raster, metric property name that categories are organized. Defaults to classId */
   categoryMetricProperty?: MetricDimension;
-  /** If categorical raster, array of values to create metrics for */
+  /** If categorical raster, array of values to create metrics for.  Any values not provided won't be counted */
   categoryMetricValues?: string[];
 }
 
 /**
- * Calculates over 10 different raster stats, optionally constrains to raster cells overlapping with feature.
+ * Calculates over 10 different raster statistics, optionally constrains to raster cells overlapping with feature (zonal statistics).
  * Defaults to calculating only sum stat
  * If no cells found, returns 0 or null value for each stat as appropriate.
  */

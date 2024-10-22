@@ -35,8 +35,9 @@ interface OverlapRasterOptions extends RasterStatsOptions {
 }
 
 /**
- * Calculates stats on the provided raster and returns as an array of Metric objects (defaults to sum stat)
- * If sketch, then calculate overlap metrics, sketch collection will calculate metrics for each individual sketch within
+ * Calculates summary metrics (stats/area) on given raster, optionally intersecting raster with provided feature (zonal statistics).
+ * If feature is a collection, then calculate metrics for each individual feature as well as the collection as a whole.
+ * This can be disabled with includeChildMetrics: false.  Defaults to assuming a continuous raster but also supports categorical option
  */
 export async function rasterMetrics(
   /** Cloud-optimized geotiff, loaded via loadCog or geoblaze.parse() */

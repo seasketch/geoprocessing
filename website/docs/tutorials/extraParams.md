@@ -2,6 +2,8 @@
 
 Sometimes you want to pass additional parameters to a preprocessing or geoprocessing function that are defined outside of the sketch creation process by seasketch or through the report itself. These `extraParams` are separate from the `sketch`. They are an additional object passed to every preprocessing and geoprocessing function.
 
+Extra parameters should be JSON serializable. Strings, numbers, objects, etc. but no functions.
+
 Use Cases:
 
 - Preprocessor
@@ -127,7 +129,7 @@ export async function clipToOceanEez(
 }
 ```
 
-## Writing stories with extraParams
+## Writing smoke tests with extraParams
 
 Default smoke tests typically don't pass extraParams to the preprocessing or geoprocessing function but they can. Just know that each smoke test can only output results for one configuration of extraParams. And storybook can only load results for one smoke test run.
 This means that in order to test multiple variations of extraParams, you will need to create multiple smoke tests. You could even write multiple smoke tests that each write out results all in one file.

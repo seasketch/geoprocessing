@@ -124,6 +124,10 @@ const config: Config = {
               label: "Getting Started",
               to: "/docs",
             },
+            {
+              label: "Contributing",
+              to: "/docs/contributing",
+            },
           ],
         },
         {

@@ -75,27 +75,15 @@ const sidebars: SidebarsConfig = {
           type: "category",
           label: "Tutorials",
           items: [
-            "upgrade",
+            {
+              type: "doc",
+              id: "upgrade",
+              label: "Upgrade Project",
+            },
             {
               type: "doc",
               id: "tutorials/updateDatasource",
               label: "Update Datasource",
-            },
-            "tutorials/sketchAttributes",
-            {
-              type: "doc",
-              id: "tutorials/extraParams",
-              label: "Extra Function Parameters",
-            },
-            {
-              type: "doc",
-              id: "tutorials/storybook",
-              label: "Storybook",
-            },
-            {
-              type: "doc",
-              id: "tutorials/subdividing",
-              label: "Subdividing Data",
             },
           ],
         },
@@ -106,10 +94,25 @@ const sidebars: SidebarsConfig = {
             "preprocessing",
             "geoprocessing",
             "reportclient",
-            "antimeridian/Antimeridian",
             "workers",
+            "tutorials/sketchAttributes",
+            {
+              type: "doc",
+              id: "tutorials/extraParams",
+              label: "Extra Function Parameters",
+            },
+            {
+              type: "doc",
+              id: "tutorials/subdividing",
+              label: "Subdividing Data",
+            },
+            "antimeridian/Antimeridian",
             "Testing",
-            "Contributing",
+            {
+              type: "doc",
+              id: "tutorials/storybook",
+              label: "Storybook",
+            },
           ],
         },
         "architecture/Architecture",
@@ -122,6 +125,7 @@ const sidebars: SidebarsConfig = {
       items: [
         "api/index",
         { type: "doc", id: "Extending", label: "Extending" },
+        "Contributing",
       ],
     },
     {

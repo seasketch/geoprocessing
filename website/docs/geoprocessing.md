@@ -1,6 +1,37 @@
 # Geoprocessing
 
-A geoprocessing function accepts a `sketch` parameter and one or more `extraParams`. extraParams are advanced runtime parameters that can be passed by a [report client](./tutorials/extraParams.md), or passed by a parent geoprocessing function to a [worker](./workers.md).
+Geoprocessing functions are the analytical workhorse of SeaSketch reports. These functions are packaged and published as AWS Lambda functions which crunch numbers using spatial analysis libraries and organize the results into a payload to be returned to the caller.
+
+Geoprocessing functions are typically invoked in one of two ways:
+
+- By a [report client](./reportclient.md) using a ResultsCard UI component.
+- By another geoprocessing function such as a parent geoprocessing function calling a [worker](./workers.md) geoprocessing function.
+
+The first step of a geoprocessing function is to import everything you need. The top-level `@seasketch/geoprocessing` module and the dataproviders submodule has most things. See the [Typescript API](./api/index.md) docs to discover more of what they offer.
+
+```typescript
+import {
+  GeoprocessingHandler,
+  Metric,
+  Polygon,
+  ReportResult,
+  Sketch,
+  SketchCollection,
+  DefaultExtraParams,
+  toNullSketch,
+  rekeyMetrics,
+  sortMetrics,
+  getCogFilename,
+  MultiPolygon,
+  getFirstFromParam,
+  rasterMetrics,
+} from "@seasketch/geoprocessing";
+import { loadCog } from "@seasketch/geoprocessing/dataproviders";
+import project from "../../project";
+import { clipToGeography } from "../util/clipToGeography";
+```
+
+The geoprocessing function signature itself should accept a `Sketch` parameter and one or more [extraParams](./tutorials/extraParams.md) as input. [extraParams](./tutorials/extraParams.md) are extra runtime parameters that can be passed by a [report client](./reportclient.md), or passed by a parent geoprocessing function to a [worker](./workers.md).
 
 ```typescript
 export async function sdmValueOverlap(
@@ -36,7 +67,7 @@ const curGeography = project.getGeographyById(geographyId, {
 const finalSketch = await clipToGeography(sketch, curGeography);
 ```
 
-A next goal might be to extract custom attributes from the sketch and use that in analysis.
+Another goal might be to extract custom attributes from the sketch and use that in analysis.
 
 ```typescript
 const sketchFeatures = getSketchFeatures(sketch);
@@ -54,7 +85,7 @@ const protectionLevels = sketchFeatures.reduce<Record<string, number>>(
 );
 ```
 
-The key part of most geoprocessing functions is to take the parameters you've collected, load any datasources, usually using a MetricGroup, and run your analysis functions, to produce [Metrics](./concepts/AdvancedConcepts.md#metrics) and merge into a single result.
+The key part of most geoprocessing functions is to take the parameters you've collected, use a pre-defined MetricGroup to retrieve and load datasources, then finally run the an analysis function to produce [Metrics](./concepts/AdvancedConcepts.md#metrics), append additional IDs to those metrics (class, geography, etc.) so that it's explicitly clear what the value represents, and merge those metrics into a single result.
 
 ```typescript
 const metrics: Metric[] = (
@@ -87,12 +118,11 @@ const metrics: Metric[] = (
 );
 ```
 
-Then, you'll produce the final payload that the geoprocessing function will return.
+The final goal is to produce a payload to return to the caller. Sorting and rekeying metrics makes them more human readable.
 
 ```typescript
 return {
   metrics: sortMetrics(rekeyMetrics(metrics)),
-  sketch: toNullSketch(sketch),
 };
 ```
 

@@ -41,6 +41,8 @@ export async function clipToPolygonFeatures(
   options: ClipOptions = {},
 ): Promise<Feature<Polygon | MultiPolygon>> {
   const {
+    minSize = 0,
+    enforceMinSize = false,
     maxSize = 500_000,
     enforceMaxSize = false,
     ensurePolygon = true,
@@ -52,7 +54,14 @@ export async function clipToPolygonFeatures(
     throw new ValidationError("Input must be a polygon");
   }
 
-  const MAX_SIZE_KM = maxSize * 1000 ** 2;
+  const MIN_SIZE_KM = minSize * 1_000_000;
+  const MAX_SIZE_KM = maxSize * 1_000_000;
+
+  if (enforceMinSize && area(feature) < MIN_SIZE_KM) {
+    throw new ValidationError(
+      `Please limit sketches to under ${MIN_SIZE_KM} square km`,
+    );
+  }
 
   if (enforceMaxSize && area(feature) > MAX_SIZE_KM) {
     throw new ValidationError(

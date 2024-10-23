@@ -1,16 +1,38 @@
-# Workers
+# Worker Functions
 
-Worker functions are invoked by parent geoprocessing functions and allow work tasks to be split out across multiple lambdas, and the final result assembled and returned.
+Worker functions are sync geoprocessing functions that are invoked directly by parent geoprocessing functions, allowing computationally intensive or memory intensive tasks to be split out across multiple lambdas. Worker results are assembled in the parent function and returned back to the report client
 
-Anytime you are making calculations on multiple things (datasets, geographies, sketches), there is potential to split it out across workers.
+Anytime you are making calculations on multiple things (datasets, geographies, sketches), there is potential to split it out across worker functions.
 
 - Multiple datasources
 - Sketch collection with multiple sketches
 - Multiple geographies
 
-Here is an example of a parent geoprocessing function that invokes a worker for each datasource:
+Here is an example of a parent geoprocessing function that invokes a worker for each geography:
 
 ```typescript
+import {
+  Sketch,
+  SketchCollection,
+  Polygon,
+  MultiPolygon,
+  GeoprocessingHandler,
+  DefaultExtraParams,
+  runLambdaWorker,
+  parseLambdaResponse,
+} from "@seasketch/geoprocessing";
+import project from "../../project/projectClient.js";
+import {
+  GeoprocessingRequestModel,
+  Metric,
+  ReportResult,
+  isMetricArray,
+  rekeyMetrics,
+  sortMetrics,
+  toNullSketch,
+} from "@seasketch/geoprocessing/client-core";
+import { kelpMaxWorker } from "./kelpMaxWorker.js";
+
 export async function kelpMax(
   sketch:
     | Sketch<Polygon | MultiPolygon>
@@ -19,9 +41,7 @@ export async function kelpMax(
   request?: GeoprocessingRequestModel<Polygon | MultiPolygon>,
 ): Promise<ReportResult> {
   const metricGroup = project.getMetricGroup("kelpMax");
-  const geographies = project.geographies.filter(
-    (g) => g.geographyId !== "world",
-  );
+  const geographies = project.geographies;
 
   const metrics = (
     await Promise.all(
@@ -55,12 +75,7 @@ export async function kelpMax(
   );
 
   return {
-    metrics: sortMetrics(
-      rekeyMetrics([
-        ...metrics,
-        ...genWorldMetrics(sketch, metrics, metricGroup),
-      ]),
-    ),
+    metrics: sortMetrics(rekeyMetrics(metrics)),
     sketch: toNullSketch(sketch, true),
   };
 }
@@ -79,8 +94,8 @@ export default new GeoprocessingHandler(kelpMax, {
 
 Some things to notice:
 
-- The parent kelpMax function is async.
-- A `workers` option to GeoprocessingHandler registers a worker named `kelpMaxWorker`. It is required on publish that there be another sync geoprocessing function with the title `kelpMaxWorker`.
+- The kelpMax function is configured as `async`. Any geoprocessing function invoking workers will likely take long enough to run that it should just be async.
+- A `workers` option is defined that registers a worker named `kelpMaxWorker`. It is required on publish that there be another sync geoprocessing function with the title `kelpMaxWorker`.
 - kelpMax is set to use relatively low memory, because all the work is being done by the workers.
 - The worker function is invoked using the [runLambdaWorker](./api/geoprocessing/functions/runLambdaWorker.md) utility function. This function invokes the lambda with the given name.
 - kelpMaxWorker is being called once for each `geography` and also the set of `metricGroups`.

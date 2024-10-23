@@ -1,5 +1,9 @@
 # Report Client
 
+ResultsCard
+
+It's possible to invoke a geoprocessing function using the [useFunction](./) hook.
+
 ## Edge Cases
 
 ### Zero Geography - No Overlap With MetricGroup (NaN)

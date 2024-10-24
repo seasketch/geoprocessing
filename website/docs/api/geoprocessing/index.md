@@ -52,6 +52,7 @@
 | [Node](interfaces/Node.md) | - |
 | [NullSketch](interfaces/NullSketch.md) | - |
 | [NullSketchCollection](interfaces/NullSketchCollection.md) | - |
+| [OverlapRasterOptions](interfaces/OverlapRasterOptions.md) | options accepted by rasterStats |
 | [PercentEdgeOptions](interfaces/PercentEdgeOptions.md) | - |
 | [Point](interfaces/Point.md) | Point geometry object. https://tools.ietf.org/html/rfc7946#section-3.1.2 |
 | [Polygon](interfaces/Polygon.md) | Polygon geometry object. https://tools.ietf.org/html/rfc7946#section-3.1.6 |
@@ -234,7 +235,6 @@
 | [overlapFeatures](functions/overlapFeatures.md) | Calculates overlap between sketch(es) and an array of polygon features. Supports area or sum operation (given sumProperty), defaults to area If sketch collection includes overall and per sketch |
 | [overlapFeaturesGroupMetrics](functions/overlapFeaturesGroupMetrics.md) | Generate overlap group metrics using overlapFeatures operation |
 | [overlapGroupMetrics](functions/overlapGroupMetrics.md) | Given area overlap metrics stratified by class and sketch, returns new metrics also stratified by group Assumes a sketch is member of only one group, determined by caller-provided metricToGroup For each group+class, calculates area of overlap between sketches in group and featuresByClass (with overlap between group sketches removed first) Types of metrics returned: sketch metrics: copy of caller-provided sketch metrics with addition of group ID overall metric for each group+class: takes sketches in group, subtracts overlap between them and overlap with higher group sketches, and runs operation If a group has no sketches in it, then no group metrics will be included for that group, and group+class metric will be 0 |
-| [overlapRaster](functions/overlapRaster.md) | Returns metrics representing sketch overlap with raster. If sketch collection, then calculate overlap for all child sketches also |
 | [overlapRasterClass](functions/overlapRasterClass.md) | Calculates sum of overlap between sketches and a categorical raster with numeric values representing feature classes If sketch collection, then calculate overlap for all child sketches also |
 | [overlapRasterGroupMetrics](functions/overlapRasterGroupMetrics.md) | Generate overlap group metrics using rasterMetrics operation |
 | [overlapSubarea](functions/overlapSubarea.md) | Returns area stats for sketch input after performing overlay operation against a subarea feature. Includes both area overlap and percent area overlap metrics, because calculating percent later would be too complicated For sketch collections, dissolve is used when calculating total sketch area to prevent double counting |
@@ -245,8 +245,8 @@
 | [percentWithEdge](functions/percentWithEdge.md) | Special percent formatter designed to produce readable percent values for display with special handling of numbers within some edge range of user-defined lower or upper bounds. Defaults to handle only lower edge with lowerBound = 0 and lower = .001. All bound values are expected to be in decimal percent. So 1/10th of a percent is .001 |
 | [randomFloat](functions/randomFloat.md) | - |
 | [randomInt](functions/randomInt.md) | - |
-| [rasterMetrics](functions/rasterMetrics.md) | Calculates stats on the provided raster and returns as an array of Metric objects (defaults to sum stat) If sketch, then calculate overlap metrics, sketch collection will calculate metrics for each individual sketch within |
-| [rasterStats](functions/rasterStats.md) | Calculates over 10 different raster stats, optionally constrains to raster cells overlapping with feature. Defaults to calculating only sum stat If no cells found, returns 0 or null value for each stat as appropriate. |
+| [rasterMetrics](functions/rasterMetrics.md) | Calculates summary metrics (stats/area) on given raster, optionally intersecting raster with provided feature (zonal statistics). If feature is a collection, then calculate metrics for each individual feature as well as the collection as a whole. This can be disabled with includeChildMetrics: false. Defaults to assuming a continuous raster but also supports categorical option |
+| [rasterStats](functions/rasterStats.md) | Calculates over 10 different raster statistics, optionally constrains to raster cells overlapping with feature (zonal statistics). Defaults to calculating only sum stat If no cells found, returns 0 or null value for each stat as appropriate. |
 | [rasterStatsToMetrics](functions/rasterStatsToMetrics.md) | Converts an array of geoblaze raster StatsObjects to an array of Metrics |
 | [rbcsMpaToMetric](functions/rbcsMpaToMetric.md) | - |
 | [rbcsZoneToMetric](functions/rbcsZoneToMetric.md) | Transforms an rbcs zone object to a metric |
@@ -334,7 +334,7 @@
 | [max](type-aliases/max.md) | - |
 | [mean](type-aliases/mean.md) | - |
 | [median](type-aliases/median.md) | - |
-| [Metric](type-aliases/Metric.md) | Represents a single record of a metric with a value, stratified by one or more dimensions. The naming is a bit of a misnomer, you can think of it as a MetricValue |
+| [Metric](type-aliases/Metric.md) | Single record of value, stratified in one or more dimensions. The name Metric is an overgeneralization, you can think of it as a MetricValue. |
 | [MetricDimension](type-aliases/MetricDimension.md) | - |
 | [MetricGroup](type-aliases/MetricGroup.md) | Represents a single metric, having one DataGroup |
 | [MetricGroups](type-aliases/MetricGroups.md) | - |

@@ -29,7 +29,7 @@ export const geoblazeDefaultStatValues = {
 };
 
 /**
- * Returns sum of value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
+ * Returns sum of raster value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
  */
 export const getSum = async (
   raster: Georaster,
@@ -51,7 +51,7 @@ export const getSum = async (
 };
 
 /**
- * Returns area of valid cells (not nodata) overlapping with feature.  If no valid cells found, returns 0.
+ * Returns area of valid raster cells (not nodata) overlapping with feature.  If no valid cells found, returns 0.
  */
 export const getArea = async (
   raster: Georaster,

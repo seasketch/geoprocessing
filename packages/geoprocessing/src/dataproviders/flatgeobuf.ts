@@ -14,8 +14,8 @@ export function fgBoundingBox(box: BBox) {
 }
 
 /** Fetch features within bounding box and deserializes them, awaiting all of them before returning.
- * Useful when running a spatial function on the whole set is faster than running
- * one at a time as the deserialize generator provides them
+ * Useful when running a spatial function on the whole set.
+ * @deprecated Use `loadFgb` instead.
  */
 export async function fgbFetchAll<F extends Feature<Geometry>>(
   url: string,
@@ -39,3 +39,7 @@ export async function fgbFetchAll<F extends Feature<Geometry>>(
     throw new Error("Unexpected result from fgbFetchAll");
   return features;
 }
+
+const loadFgb = fgbFetchAll;
+
+export { loadFgb };

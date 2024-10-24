@@ -1,12 +1,22 @@
----
-slug: "/tipsandtricks"
----
+# Skill Building
 
-# Tips and Tricks
+There are a number of required skills for using this framework successfully. If you don't have this knowledge, then skill building and potentially mentorship may be needed for you to succeed. Here is a list of resources that can help you get started:
+
+- [Git and Github](https://www.youtube.com/watch?v=RGOj5yH7evk)
+- [Node JS](https://www.freecodecamp.org/news/what-is-node-js/) development
+- [VSCode](https://www.youtube.com/watch?v=WPqXP_kLzpo) integrated development environment (IDE)
+- [Code debugging](https://www.freecodecamp.org/news/what-is-debugging-how-to-debug-code/)
+- [Bash](https://www.freecodecamp.org/news/linux-command-line-bash-tutorial/) command line
+- [React](https://www.freecodecamp.org/learn/front-end-development-libraries/#react) user interface development
+- [Typescript](https://www.freecodecamp.org/news/programming-in-typescript/) code development
+- [QGIS](https://www.qgis.org/en/site/) and [tutorials](https://www.qgistutorials.com/en/)
+- [GDAL](https://gdal.org/index.html) and [tutorials](https://gdal.org/tutorials/index.html)
 
 Essential tips For configuring this framework using a specific operating system (usually Ubuntu).
 
-## Editing a file in Ubuntu using nano text editor
+## Other Tips
+
+### Editing a file in Ubuntu using nano text editor
 
 Assume you want to add some lines of text to a file called `foo.txt` in your home directory using nano.
 
@@ -28,7 +38,7 @@ echo ~/foo.txt
 
 6. Now delete the file with `rm ~/.foo.txt`
 
-## Editing your startup bash script in Ubuntu
+### Editing your startup bash script in Ubuntu
 
 On occasion, you'll need to modify your Ubuntu bash shell environment to load something on startup. Building on the last tip, you can edit your `.bashrc` file
 
@@ -40,7 +50,7 @@ On occasion, you'll need to modify your Ubuntu bash shell environment to load so
 
 /Users/MAC-OS-USER/Library/CloudStorage/Box-Box
 
-## Access Cloud Drive folder
+### Access Cloud Drive folder
 
 This is useful if you manage your spatial data in Box and collaborators sync it to their local computers. This lets you bring your Box Drive folder into your Ubuntu docker container so that you can symlink it to your `data/src` folder and import data in a consistent way across all users.
 
@@ -48,7 +58,7 @@ Note, this could be used with other drive share systems such as Google Drive.
 
 First, ensure you have Box Drive installed, and you have enabled sync of your data to your local computer.
 
-### MacOS
+#### MacOS
 
 Open a terminal and assuming your username is `alex` check that the following path exists
 
@@ -58,7 +68,7 @@ ls /Users/alex/Library/CloudStorage/Box-Box
 
 If you see the top-level of your synced files, then you are good to go.
 
-### Ubuntu on Windows WSL2
+#### Ubuntu on Windows WSL2
 
 Source - https://github.com/microsoft/WSL/issues/4310
 

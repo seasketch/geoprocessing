@@ -14,7 +14,7 @@ import { RasterStatsOptions, rasterStats } from "./geoblaze/index.js";
 import { rasterStatsToMetrics } from "./geoblaze/rasterStatsToMetrics.js";
 import { Georaster } from "geoblaze";
 
-interface OverlapRasterOptions extends RasterStatsOptions {
+export interface OverlapRasterOptions extends RasterStatsOptions {
   /** Optional metricId to be assigned.  Don't use if you are calculating more than one stat because you won't be able to tell them apart */
   metricId?: string;
   /** Optional caller-provided prefix to add to metricId in addition to stat name e.g. 'coral' with metrics of 'sum', 'count', 'area' will generate metric IDs of 'coral-sum', 'coral-count', 'coral-area' */
@@ -23,7 +23,7 @@ interface OverlapRasterOptions extends RasterStatsOptions {
   truncate?: boolean;
   /** If multi-band raster, metric property name that raster bands are organized by e.g. classID */
   bandMetricProperty?: MetricDimension;
-  /** If multi-band raster, object mapping band number (starting with 0 index) to unique ID value eg. { 0: 'mangroves', 1: 'coral' }.  Defaults to 'band 1', 'band 2'  */
+  /** If multi-band raster, object mapping band number (starting with 0 index) to unique ID value eg. ( 0: 'mangroves', 1: 'coral' ).  Defaults to 'band 1', 'band 2'  */
   bandMetricValues?: string[];
   includeChildMetrics?: boolean;
   /** If categorical raster, set to true */
@@ -35,8 +35,9 @@ interface OverlapRasterOptions extends RasterStatsOptions {
 }
 
 /**
- * Calculates stats on the provided raster and returns as an array of Metric objects (defaults to sum stat)
- * If sketch, then calculate overlap metrics, sketch collection will calculate metrics for each individual sketch within
+ * Calculates summary metrics (stats/area) on given raster, optionally intersecting raster with provided feature (zonal statistics).
+ * If feature is a collection, then calculate metrics for each individual feature as well as the collection as a whole.
+ * This can be disabled with includeChildMetrics: false.  Defaults to assuming a continuous raster but also supports categorical option
  */
 export async function rasterMetrics(
   /** Cloud-optimized geotiff, loaded via loadCog or geoblaze.parse() */

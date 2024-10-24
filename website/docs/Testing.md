@@ -4,6 +4,21 @@ slug: "/testing"
 
 # Testing
 
+## Run single unit or smoke test
+
+To run only tests matching a specific name/description, you just need a portion of the test name/description to match on. For example for the following test:
+
+`test("kelpPersist - tests run against all examples", async () => {`
+
+You could run
+`npm run test:matching 'kelpPersist - tests run against all examples'`
+
+or simply
+
+`npm run test:matching kelpPersist`
+
+If is a smoke test or any test requiring access to the dev data server then in a separate shell you will need to first run `npm run start:data`.
+
 ## Testing API calls using Postman
 
 A public collection of API calls for working with a report project is at

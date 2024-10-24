@@ -862,6 +862,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/dataproviders/functions/loadCogWindow",
             "label": "loadCogWindow"
+          },
+          {
+            "type": "doc",
+            "id": "api/dataproviders/functions/loadFgb",
+            "label": "loadFgb"
           }
         ]
       }
@@ -1079,6 +1084,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/interfaces/NullSketchCollection",
             "label": "NullSketchCollection"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/interfaces/OverlapRasterOptions",
+            "label": "OverlapRasterOptions"
           },
           {
             "type": "doc",
@@ -1951,11 +1961,6 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/overlapGroupMetrics",
             "label": "overlapGroupMetrics"
-          },
-          {
-            "type": "doc",
-            "id": "api/geoprocessing/functions/overlapRaster",
-            "label": "overlapRaster"
           },
           {
             "type": "doc",

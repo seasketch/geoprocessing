@@ -1,17 +1,30 @@
----
-slug: "/limits"
----
+# Accuracy/Limitations
 
-# Edge Cases & Limits
+### Javascript-only
 
-## Zero Geography - No Overlap With MetricGroup (NaN)
+- The geoprocessing library currently only supports geoprocessing functions that run in a NodeJS environment. You have the ability to invoke any Lambda function, the framework just doesn't have first class support for writing and publishing functions in any other languages.
 
-This use case happens when no features for some class of data within a datasource, overlap with a geography. This produces a zero (0) value metric in precalc. If this zero value metric gets passed as the denominator to `toPercentMetric(numeratorMetrics, denominatorMetrics)`, the function will return a `NaN` value, rather than 0. This is so that downstream consumers can understand this isn't just any 0. There's an opportunity to tell the user that no matter where they put their sketch within the geography, there is no way for the value to be more than zero. For example, the ClassTable component looks for `NaN` metric values and will automatically display 0%, along with an informative popover explaining that no data class features are within the current geography.
+### Coordinate System Support
 
-## Zero Geometries
+- Vector data, on import, is converted to WGS 84 (EPSG 4326). Vector toolbox functions expect data to be in this projection.
+- Raster data, on import, is converted to an equal area projection (NSIDC EASE-Grid 2.0 Global)[https://epsg.io/6933]. Raster toolbox functions should work with any grid-based projection but anything other than equal area will have accuract issues.
 
-In geoprocessing functions, sketches are clipped to the current geography using `clipToGeography()`. A georaphy can be as large as the extent of the entire world, or be a smaller boundary within the overall planning area.
+- Geoprocessing functions in this library currently only support GeoJSON data in the World Geodetic System 1984 (WGS 84) [WGS84] datum (aka Lat/Lon), with longitude and latitude units of decimal degrees.
 
-When the geography is a subset of the larger planning area, you can have sketches that fall completely outside the geography, and the intersection of the sketch and the geography will have nothing remaining because there's no overlap. In GeoJSON, this clip result could be represented with a `null` geometry value, but Turf and most other libraries don't handle null geometries well, so `overlap` toolbox functions would have unexpected results.
+### Calculation Error
 
-We could also have clipToGeography return a `null` value for the entire sketch, but that gets complex, especially when you're processing a whole SketchCollection. What we decided to do instead is to have `clipToGeography` return a `zero` geometry when a sketch has no overlap with the geography. We do this using the `zeroSketch` helper function.Given a Sketch it replaces the geometry with a polygon at [[0,0], [0,0], [0,0], [0,0]]. It's a valid geometry, but's it's located at [Null Island](https://en.wikipedia.org/wiki/Null_Island). What happens as a result is that downstream `overlap` toolbox functions receive a Sketch as they expect, but when they pass it to any overlap functions it will return zero value metrics, as long as Null Island is not withing the planning area.
+#### TurfJS
+
+TurfJS vector function (particularly those that use [Turf.JS](http://turfjs.org/docs/#distance)) measure distance and area by approximating them on a sphere. Turf.js functions strike a balance between speed and accuracy.
+
+- If the geographic area of your project is small, on the order of a few hundred to a thousand miles, and not at high latitudes (> 60), then the accuracy will be quite good, and the error quite small (within 5%) compared to more exact algorithms.
+- And if your planning objectives target creating areas that capture a given % of something, for example 20% of the rocky reef habitat in the entire planning area, then the effect of error in area calculations should be limited to none as long as the area calculations are done using the same algorithms.
+
+Sources:
+
+- [Fast Geodesic Approximations](https://blog.mapbox.com/fast-geodesic-approximations-with-cheap-ruler-106f229ad016)
+- [Calculate distance, bearing and more between Latitude/Longitude points](https://www.movable-type.co.uk/scripts/latlong.html)
+- [Haversine Formula on Wikipedia](https://en.wikipedia.org/wiki/Haversine_formula). Used by [turf-distance](https://github.com/Turfjs/turf/tree/master/packages/turf-distance). Error up to 0.5%
+- [Some algorithms for polygons on a sphere](https://sgp1.digitaloceanspaces.com/proletarian-library/books/5cc63c78dc09ee09864293f66e2716e2.pdf) - used by [turf-area](http://turfjs.org/docs/#area). Greater error at higher latitudes vs. Vincenty.
+- [Vincenty algorithm](https://en.wikipedia.org/wiki/Vincenty%27s_formulae) used by [turf-vincenty-inverse](https://github.com/Turfjs/turf-vincenty-inverse)
+- [GeoJSON spec WGS84 requirement](https://datatracker.ietf.org/doc/html/rfc7946#section-4).

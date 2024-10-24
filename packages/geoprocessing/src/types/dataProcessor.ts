@@ -37,6 +37,10 @@ export interface DatasourceClipOperation {
 export interface ClipOptions {
   /** Ensures result is a polygon. If clip results in multipolygon, returns the largest component */
   ensurePolygon?: boolean;
+  /** minSize in square kilometers that clipped polygon result can be.  Preprocessor function will throw if smaller. */
+  minSize?: number;
+  /** Whether or not minSize should be enforced and throw */
+  enforceMinSize?: boolean;
   /** maxSize in square kilometers that clipped polygon result can be.  Preprocessor function will throw if larger. */
   maxSize?: number;
   /** Whether or not maxSize should be enforced and throw */

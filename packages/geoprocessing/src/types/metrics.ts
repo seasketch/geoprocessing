@@ -30,8 +30,8 @@ export const metricSchema = z.object({
 export const metricsSchema = z.array(metricSchema);
 
 /**
- * Represents a single record of a metric with a value, stratified by one or more dimensions.
- * The naming is a bit of a misnomer, you can think of it as a MetricValue
+ * Single record of value, stratified in one or more dimensions.
+ * The name Metric is an overgeneralization, you can think of it as a MetricValue.
  */
 export type Metric = z.infer<typeof metricSchema>;
 export type Metrics = z.infer<typeof metricSchema>;

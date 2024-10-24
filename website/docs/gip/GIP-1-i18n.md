@@ -2,13 +2,9 @@
 
 Geoprocessing Improvement Proposal 1
 
-## Need
-
-- SeaSketch Next supports language translation and there is an opportunity for reports to offer language translation in sync (current active language and language switch events).
-- Over half of SeaSketch projects would benefit from supporting additional languages in reports, users may want to choose from 2-3 different languages.
-
 ## Glossary
 
+i18n - shorthand name for Internationalization.
 Term - A unique string to be translated. Typically it will be the exact string to translate in English language, or it may just be a descriptor.
 
 ## Requirements

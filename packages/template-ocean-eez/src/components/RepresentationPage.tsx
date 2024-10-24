@@ -1,7 +1,7 @@
 import React from "react";
 
-const ReportPage = () => {
+const RepresentationPage = () => {
   return <></>;
 };
 
-export default ReportPage;
+export default RepresentationPage;

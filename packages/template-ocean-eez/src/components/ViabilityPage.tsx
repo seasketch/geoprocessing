@@ -2,7 +2,7 @@ import React from "react";
 import { SizeCard } from "./SizeCard.js";
 import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
 
-const ReportPage = () => {
+const ViabilityPage = () => {
   return (
     <>
       <SizeCard />
@@ -11,4 +11,4 @@ const ReportPage = () => {
   );
 };
 
-export default ReportPage;
+export default ViabilityPage;

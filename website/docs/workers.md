@@ -29,7 +29,6 @@ import {
   isMetricArray,
   rekeyMetrics,
   sortMetrics,
-  toNullSketch,
 } from "@seasketch/geoprocessing/client-core";
 import { kelpMaxWorker } from "./kelpMaxWorker.js";
 
@@ -76,7 +75,6 @@ export async function kelpMax(
 
   return {
     metrics: sortMetrics(rekeyMetrics(metrics)),
-    sketch: toNullSketch(sketch, true),
   };
 }
 

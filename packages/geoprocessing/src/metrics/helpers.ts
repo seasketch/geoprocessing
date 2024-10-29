@@ -11,6 +11,7 @@ import {
   MetricIdTypes,
   GroupMetricSketchAgg,
   MetricDimensions,
+  SketchProperties,
 } from "../types/index.js";
 
 import {
@@ -436,7 +437,7 @@ export const nestMetrics = (
 export const flattenBySketchAllClass = (
   metrics: Metric[],
   classes: DataClass[],
-  sketches: Sketch[] | NullSketch[],
+  sketchProperties: SketchProperties[],
   sortFn?: (a: DataClass, b: DataClass) => number,
 ): Record<string, string | number>[] => {
   const metricsByClassId = groupBy(
@@ -446,7 +447,7 @@ export const flattenBySketchAllClass = (
 
   const sketchRows: Record<string, string | number>[] = [];
 
-  for (const curSketch of sketches) {
+  for (const curSketchProperties of sketchProperties) {
     // For current sketch, transform classes into an object mapping classId to its one metric value
     const classMetricAgg = classes
       .sort(sortFn || classSortAlphaDisplay)
@@ -461,14 +462,14 @@ export const flattenBySketchAllClass = (
 
         // Map current classId to extracted metric value
         aggSoFar[curClass.classId] =
-          sketchMetricsById[curSketch.properties.id].value;
+          sketchMetricsById[curSketchProperties.id].value;
 
         return aggSoFar;
       }, {});
 
     sketchRows.push({
-      sketchId: curSketch.properties.id,
-      sketchName: curSketch.properties.name,
+      sketchId: curSketchProperties.id,
+      sketchName: curSketchProperties.name,
       ...classMetricAgg,
     });
   }

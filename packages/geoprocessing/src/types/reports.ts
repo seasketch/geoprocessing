@@ -26,5 +26,5 @@ export interface ReportResultBase {
 export interface ReportResult {
   metrics: Metric[];
   /** The sketch used, without geometry */
-  sketch: NullSketch | NullSketchCollection;
+  sketch?: NullSketch | NullSketchCollection;
 }

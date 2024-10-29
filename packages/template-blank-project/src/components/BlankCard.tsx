@@ -3,6 +3,7 @@ import { Trans, useTranslation } from "react-i18next";
 import {
   ReportError,
   ResultsCard,
+  SketchAttributesCard,
   useSketchProperties,
 } from "@seasketch/geoprocessing/client-ui";
 import { GeogProp, ReportResult } from "@seasketch/geoprocessing/client-core";
@@ -36,6 +37,7 @@ export const BlankCard: React.FunctionComponent<GeogProp> = (props) => {
                 </Trans>
               )}
             </p>
+            <SketchAttributesCard />
           </ReportError>
         );
       }}

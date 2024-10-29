@@ -6,7 +6,6 @@ import {
   Polygon,
   ReportResult,
   SketchCollection,
-  toNullSketch,
   overlapFeatures,
   rekeyMetrics,
   sortMetrics,
@@ -96,7 +95,6 @@ export async function boundaryAreaOverlap(
 
   return {
     metrics: sortMetrics(rekeyMetrics(metrics)),
-    sketch: toNullSketch(sketch, true),
   };
 }
 

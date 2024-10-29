@@ -79,6 +79,21 @@ export function getJsonUserAttribute<T>(
   }
 }
 
+/**
+ * Converts Sketch or SketchCollection to array of SketchProperties
+ */
+export function toSketchPropertiesArray(
+  sketch: Sketch | Sketch[] | NullSketch[] | SketchCollection,
+): SketchProperties[] {
+  if (isSketch(sketch)) {
+    return [sketch.properties];
+  } else if (isSketchCollection(sketch)) {
+    return sketch.features.map((f) => f.properties);
+  } else {
+    return sketch.map((s) => s.properties);
+  }
+}
+
 /** Helper to convert a Sketch or SketchCollection to a Sketch array, maintaining geometry type */
 export function toSketchArray<G>(
   input: Sketch<G> | SketchCollection<G>,

@@ -7,15 +7,16 @@ import {
   getFirstFromParam,
   DefaultExtraParams,
   splitSketchAntimeridian,
+  Metric,
 } from "@seasketch/geoprocessing";
 import project from "../../project/projectClient.js";
 import {
   ReportResult,
   rekeyMetrics,
   sortMetrics,
-  toNullSketch,
 } from "@seasketch/geoprocessing/client-core";
 import { clipToGeography } from "../util/clipToGeography.js";
+import { bbox } from "@turf/turf";
 
 export async function blankFunction(
   sketch:
@@ -38,15 +39,17 @@ export async function blankFunction(
   const clippedSketch = await clipToGeography(splitSketch, curGeography);
 
   // Get bounding box of sketch remainder
-  // const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
+  const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
-  // Add functionality here to return in (most common) Metric[] format
+  // Fetch datasources as needed using bbox of sketch
+
+  // Add analysis code here that creates results in the common Metric[] format
   // Or create new type to return to component
+  const metrics: Metric[] = [];
 
   // Return a report result with metrics and a null sketch
   return {
-    metrics: sortMetrics(rekeyMetrics([])),
-    sketch: toNullSketch(clippedSketch, true),
+    metrics: sortMetrics(rekeyMetrics(metrics)),
   };
 }
 

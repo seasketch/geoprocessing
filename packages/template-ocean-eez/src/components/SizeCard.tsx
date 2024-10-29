@@ -3,13 +3,13 @@ import {
   ReportResult,
   percentWithEdge,
   keyBy,
-  toNullSketchArray,
   nestMetrics,
   valueFormatter,
   toPercentMetric,
   sortMetricsDisplayOrder,
   MetricGroup,
   GeogProp,
+  SketchProperties,
 } from "@seasketch/geoprocessing/client-core";
 import {
   ClassTable,
@@ -70,7 +70,8 @@ const TableStyled = styled(ReportTableStyled)`
 `;
 
 export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
-  const [{ isCollection }] = useSketchProperties();
+  const [{ isCollection, id: sketchId, childProperties }] =
+    useSketchProperties();
   const { t } = useTranslation();
 
   const curGeography = project.getGeographyById(props.geographyId, {
@@ -121,10 +122,22 @@ export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
                   targets for each boundary.
                 </Trans>
               </p>
-              {genSingleSizeTable(data, precalcMetrics, metricGroup, t)}
-              {isCollection && (
+              {genSingleSizeTable(
+                sketchId,
+                data,
+                precalcMetrics,
+                metricGroup,
+                t,
+              )}
+              {isCollection && childProperties && (
                 <Collapse title={t("Show by MPA")}>
-                  {genNetworkSizeTable(data, precalcMetrics, metricGroup, t)}
+                  {genNetworkSizeTable(
+                    data,
+                    precalcMetrics,
+                    metricGroup,
+                    childProperties,
+                    t,
+                  )}
                 </Collapse>
               )}
               <Collapse title={t("Learn more")}>
@@ -161,6 +174,7 @@ export const SizeCard: React.FunctionComponent<GeogProp> = (props) => {
 };
 
 const genSingleSizeTable = (
+  sketchId: string,
   data: ReportResult,
   precalcMetrics: Metric[],
   mg: MetricGroup,
@@ -171,9 +185,7 @@ const genSingleSizeTable = (
   const mapLabel = t("Map");
   const sqKmLabel = t("km²");
 
-  const singleMetrics = data.metrics.filter(
-    (m) => m.sketchId === data.sketch.properties.id,
-  );
+  const singleMetrics = data.metrics.filter((m) => m.sketchId === sketchId);
 
   const finalMetrics = sortMetricsDisplayOrder(
     [
@@ -206,7 +218,8 @@ const genSingleSizeTable = (
               Number.format(
                 Math.round(
                   squareMeterToKilometer(
-                    typeof val === "string" ? Number.parseInt(val) : val,
+                    // eslint-disable-next-line unicorn/prefer-number-properties
+                    typeof val === "string" ? parseInt(val) : val,
                   ),
                 ),
               ),
@@ -253,11 +266,13 @@ const genNetworkSizeTable = (
   data: ReportResult,
   precalcMetrics: Metric[],
   mg: MetricGroup,
+  childProperties: SketchProperties[],
   t: TFunction,
 ) => {
-  const sketches = toNullSketchArray(data.sketch);
-  const sketchesById = keyBy(sketches, (sk) => sk.properties.id);
-  const sketchIds = new Set(sketches.map((sk) => sk.properties.id));
+  const sketchIds = new Set(
+    childProperties ? childProperties.map((skp) => skp.id) : [],
+  );
+  const sketchPropertiesById = keyBy(childProperties, (skp) => skp.id);
   const sketchMetrics = data.metrics.filter(
     (m) => m.sketchId && sketchIds.has(m.sketchId),
   );
@@ -318,7 +333,7 @@ const genNetworkSizeTable = (
   const columns: Column<any>[] = [
     {
       Header: " ",
-      accessor: (row) => <b>{sketchesById[row.sketchId].properties.name}</b>,
+      accessor: (row) => <b>{sketchPropertiesById[row.sketchId].name}</b>,
     },
     ...(classColumns as Column<any>[]),
   ];

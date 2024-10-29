@@ -12,7 +12,11 @@ import {
   MetricProperties,
 } from "./helpers.js";
 import { NullSketch, NullSketchCollection, Metric } from "../types/index.js";
-import { hasOwnProperty, toPercentMetric } from "../../client-core.js";
+import {
+  hasOwnProperty,
+  toPercentMetric,
+  toSketchPropertiesArray,
+} from "../../client-core.js";
 import deepEqual from "fast-deep-equal";
 
 const metricName = "metric1";
@@ -391,7 +395,11 @@ describe("flattenSketchAllClass", () => {
       },
     ];
 
-    const rows = flattenBySketchAllClass(metrics, CLASSES, sketches);
+    const rows = flattenBySketchAllClass(
+      metrics,
+      CLASSES,
+      toSketchPropertiesArray(sketches),
+    );
     expect(rows).toEqual(answer);
   });
 

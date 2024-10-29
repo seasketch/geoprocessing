@@ -364,6 +364,6 @@ These 2 execution modes create 4 different request scenarios. A lambda is create
 - determining whether sketches within a collection overlap with each other and remove the overlap ensuring there is no double counting.
 - assessing the protection level of each sketch and calculating metrics by protection level. Overlap of sketches within each protection level can also be removed ensuring there is not double counting.
 
-The result can take any form but typically are [metrics](/concepts/Concepts.md#metrics).
+The result can take any form but typically are [metrics](../concepts/AdvancedConcepts.md#metrics)).
 
 [Boundary overlap example](https://github.com/seasketch/fsm-reports/blob/main/src/functions/boundaryAreaOverlap.ts#L23)

@@ -6,7 +6,7 @@ First, clone your existing geoprocessing project to your work environment, wheth
 
 ## Link your source data
 
-1. figure out [which option](#link-project-data) was used to bring data into your geoprocessing project, and follow the steps to set it up.
+1. figure out [which option](./newproject.md#link-project-data) was used to bring data into your geoprocessing project, and follow the steps to set it up.
 
 - Option 1, you're good to go, the data should already be in `data/src` and src paths in `project/datasources.json` should have relative paths pointing into it.
 - Option 2, Look at `project/datasources.json` for the existing datasource paths and if your data file paths and operating system match you may be good to go. Try re-importing your data as below, and if it fails consider migrating to Option 1 or 3.

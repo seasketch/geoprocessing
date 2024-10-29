@@ -14,6 +14,16 @@ Whether or not maxSize should be enforced and throw
 
 ***
 
+### enforceMinSize?
+
+```ts
+optional enforceMinSize: boolean;
+```
+
+Whether or not minSize should be enforced and throw
+
+***
+
 ### ensurePolygon?
 
 ```ts
@@ -31,3 +41,13 @@ optional maxSize: number;
 ```
 
 maxSize in square kilometers that clipped polygon result can be.  Preprocessor function will throw if larger.
+
+***
+
+### minSize?
+
+```ts
+optional minSize: number;
+```
+
+minSize in square kilometers that clipped polygon result can be.  Preprocessor function will throw if smaller.

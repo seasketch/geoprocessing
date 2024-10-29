@@ -91,15 +91,37 @@ const sidebars: SidebarsConfig = {
           type: "category",
           label: "Guides",
           items: [
-            "preprocessing",
-            "geoprocessing",
-            "reportclient",
+            {
+              type: "doc",
+              id: "projectclient",
+              label: "Project Client",
+            },
+            {
+              type: "doc",
+              id: "preprocessing",
+              label: "Preprocessing Functions",
+            },
+            {
+              type: "doc",
+              id: "geoprocessing",
+              label: "Geoprocessing Functions",
+            },
+            {
+              type: "doc",
+              id: "reportclient",
+              label: "Report Clients",
+            },
             "workers",
             "tutorials/sketchAttributes",
             {
               type: "doc",
               id: "tutorials/extraParams",
               label: "Extra Function Parameters",
+            },
+            {
+              type: "doc",
+              id: "multiBoundary/multiBoundary",
+              label: "Multi-Boundary",
             },
             {
               type: "doc",

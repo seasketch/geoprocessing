@@ -4,7 +4,7 @@
 function getSum(raster, feat?): Promise<number>
 ```
 
-Returns sum of value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
+Returns sum of raster value overlap with geometry.  If no cells with a value are found within the geometry overlap, returns 0.
 
 ## Parameters
 

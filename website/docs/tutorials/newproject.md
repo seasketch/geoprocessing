@@ -1,6 +1,6 @@
 # Create a New Geoprocessing Project
 
-Assuming [initial system setup](#initial-system-setup) is complete.
+Assuming [initial system setup](./Tutorials.md#initial-system-setup) is complete.
 
 This tutorial now walks through generating a new geoprocessing project codebase and committing it to Github.
 
@@ -203,10 +203,10 @@ There are a variety of project configuration files. Many have been pre-populated
     - `externalLinks` - central store of links that you want to populate in your reports.
     - `languages` - array of languages to enable for translation. Master list of language codes are in `src/i18n/languages.json`.
   - `geoprocessing.json` - file used to register assets to be bundled for deployment. If they aren't registered here, then they won't be included in the bundle.
-  - `geographies.json` - contains one or more planning geographies for your project. If you chose to start with a blank project template, you will have a default geography of the entire world. If you chose to start with the Ocean EEZ template, you will have a default geography that is the EEZ you chose at creation time. Geographies must be manually added/edited in this file. You will then want to re-run `precalc` and `test` to process the changes and make sure they are working as expected. Learn more about [geographies](../concepts/Concepts.md#geographies)
-  - `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided. Global datasources can be manually added/edited in this file, but local datasources should use the [import](#importing-your-data) process. After import, datasources can be manually added/edited in this file. You will then want to run `reimport:data`, `precalc:data`, `precalc:clean`, and `test` to process the changes and make sure they are working as expected. Learn more about [datasources](../concepts/Concepts.md#datasources)
-  - `metrics.json` - contains an array of one or more metric groups. Each group defines a metric to calculate, with one or more data classes, derived from one or more datasources, measuring progress towards a planning objective. An initial boundaryAreaOverlap metric group is included in the file by default that uses the global eez datasource. Learn more about [metrics](../concepts/Concepts.md#metrics)
-  - `objectives.json` - contains an array of one or more objectives for your planning process. A default objective is included for protection of `20%` of the EEZ. Objectives must be manually added/edited in this file. Learn more about [objectives](../concepts/Concepts.md#objectives)
+  - `geographies.json` - contains one or more planning geographies for your project. If you chose to start with a blank project template, you will have a default geography of the entire world. If you chose to start with the Ocean EEZ template, you will have a default geography that is the EEZ you chose at creation time. Geographies must be manually added/edited in this file. You will then want to re-run `precalc` and `test` to process the changes and make sure they are working as expected. Learn more about [geographies](../concepts/AdvancedConcepts.md#geographies)
+  - `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided. Global datasources can be manually added/edited in this file, but local datasources should use the [import](#importing-your-data) process. After import, datasources can be manually added/edited in this file. You will then want to run `reimport:data`, `precalc:data`, `precalc:clean`, and `test` to process the changes and make sure they are working as expected. Learn more about [datasources](../concepts/AdvancedConcepts.md#datasources)
+  - `metrics.json` - contains an array of one or more metric groups. Each group defines a metric to calculate, with one or more data classes, derived from one or more datasources, measuring progress towards a planning objective. An initial boundaryAreaOverlap metric group is included in the file by default that uses the global eez datasource. Learn more about [metrics](../concepts/AdvancedConcepts.md#metrics)
+  - `objectives.json` - contains an array of one or more objectives for your planning process. A default objective is included for protection of `20%` of the EEZ. Objectives must be manually added/edited in this file. Learn more about [objectives](../concepts/AdvancedConcepts.md#objectives)
   - `precalc.json` - contains precalculated metrics for combinations of geographies and datasources. Specifically it calculates for example the total area/count/sum of the portion of a datasources features that overlap with each geography. This file should not be manually edited. If you have custome metrics/precalculations to do, then use a separate file. Learn more about the [precalc](#precalc-data) command.
 
 The object structure in many of the JSON files, particularly the `project` folder, follow strict naming and structure (schema) that must be maintained or you will get validation errors when running commands. Adding additional undocumented properties may be possible, but is not tested. The schemas are defined here:
@@ -898,7 +898,7 @@ You can view the results of your smoke tests using Storybook. It's already confi
 npm run storybook
 ```
 
-Check out [advanced storybook usage](#advanced-storybook-usage) when necessary.
+Check out [advanced storybook usage](./storybook.md) when necessary.
 
 From here on, you can continue to extend your reports -- adding more, [adding language translation](../gip/GIP-1-i18n.md#language-translation-tutorial), adding additional data and new analytics, etc. After this point, we need to integrate with AWS so the reports can be hosted and connected to your seasketch.com project.
 

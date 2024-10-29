@@ -12,13 +12,13 @@ Potential use cases:
 
 ## Accessing sketch properties from report client
 
-The main way to access sketch attributes in a browser client is the [useSketchProperties()](https://seasketch.github.io/geoprocessing/api/modules/client_ui.html#useSketchProperties) hook. Examples include:
+The main way to access sketch attributes in a browser client is the [useSketchProperties()](../api/client-ui/functions/useSketchProperties.md) hook. Examples include:
 
-- [SketchAttributesCard](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/SketchAttributesCard.tsx) and [story](https://seasketch.github.io/geoprocessing/storybook/?path=/story/components-card-sketchattributescard--next) with [source](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/SketchAttributesNextCard.stories.tsx)
+- [SketchAttributesCard](../api/client-ui/functions/SketchAttributesCard.md) and [story](https://seasketch.github.io/gp-storybook/Next/index.html?path=/story/components-card-sketchattributescard--next) with [source](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/SketchAttributesNextCard.stories.tsx)
 
 ## Accessing sketch properties from function
 
-Withing a preprocessing or geoprocessing function, the [SketchProperties](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#SketchProperties) are provided within every sketch. Within that are [userAttributes](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#UserAttribute) that contain all of the user-defined attributes.
+Withing a preprocessing or geoprocessing function, the [SketchProperties](../api/geoprocessing/type-aliases/SketchProperties.md) are provided within every sketch. Within that are [userAttributes](../api/geoprocessing/type-aliases/UserAttribute.md) that contain all of the user-defined attributes.
 
 For example, assume your Polygon sketch class contains an attribute called `ACTIVITIES` which is an array of allowed activities for this sketch class. And you have a second attribute called `ISLAND` that is a string containing the name of the island this sketch is located. You can access it as follow:
 
@@ -32,8 +32,3 @@ export async function protection(
   // Simple attributes are simple strings or numbers that can be used directly
   const island = getUserAttribute(sketches[0], 'ISLAND')
 ```
-
-Examples of working with user attributes:
-
-- [getIucnCategoryForSketches](https://github.com/seasketch/geoprocessing/blob/1301dc787aeff59ed29ceb07ed2d925984da6abf/packages/geoprocessing/src/iucn/helpers.ts#L36) takes an array of sketches, extracts the list of IUCN `ACTIVITIES` the sketch designated as allowed for each sketch, and returns the category (protection level) for each sketch. The sketch array can be generated from the `sketch` parameter passed to a geoprocessing functions using [toSketchArray()`](https://github.com/seasketch/geoprocessing/blob/1301dc787aeff59ed29ceb07ed2d925984da6abf/packages/geoprocessing/src/helpers/sketch.ts#L83). toSketchArray helps you write single functions that work on either a single sketch or a collection of sketches.
-- [isContiguous](https://github.com/seasketch/fsm-reports/blob/main/src/functions/boundaryAreaOverlap.ts#L26) function that optionally merges the contiguous zone with the users sketch. Checks for existence of a [specific user attribute](https://github.com/seasketch/fsm-reports/blob/main/src/util/includeContiguousSketch.ts#L28)

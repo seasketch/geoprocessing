@@ -46,12 +46,14 @@ const createReport = async () => {
     {
       type: "input",
       name: "description",
-      message: "Describe what this report calculates",
+      message:
+        "Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)",
     },
     {
       type: "list",
       name: "executionMode",
-      message: "Choose an execution mode for this report",
+      message:
+        "Choose an execution mode for the geoprocessing function for this report",
       choices: [
         {
           value: "sync",

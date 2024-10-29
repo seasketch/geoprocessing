@@ -1,6 +1,6 @@
 # Preprocessing
 
-Preprocessing functions are sketch validators. These functions are packaged and published as AWS Lambda functions, which are then invoked by the SeaSketch platform right after a user finishes drawing a shape, which is different from [geoprocessing](./geoprocessing.md) functions. The other thing that makes them different from geoprocessing functions is that they receive as input a [Feature](https://datatracker.ietf.org/doc/html/rfc7946#section-3.2) Polygon instead of a Sketch, so no user-provided sketch attributes. A preprocessors purpose is validation and modification of the underlying polygon geometry, which often includes:
+Preprocessing functions are sketch validators. These functions are packaged and published as [AWS Lambda](https://aws.amazon.com/pm/lambda) functions, which are then invoked by the SeaSketch platform right after a user finishes drawing a shape, which is different from [geoprocessing](./geoprocessing.md) functions. The other thing that makes them different from geoprocessing functions is that they receive as input a [Feature](https://datatracker.ietf.org/doc/html/rfc7946#section-3.2) Polygon instead of a Sketch, so no user-provided sketch attributes. A preprocessors purpose is validation and modification of the underlying polygon geometry, which often includes:
 
 - Check geometry is a valid polygon, no self-crossing.
 - Check geometry is within the planning area boundary, and remove any portion that is outside of it.

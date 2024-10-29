@@ -143,7 +143,7 @@
 | [genSketchCollection](functions/genSketchCollection.md) | Given array of sketches, return a sketch collection with given properties. Generates reasonable default values for any properties not passed in The geometry type of the returned collection will match the one passed in Properties of sketches are retained |
 | [genTaskCacheKey](functions/genTaskCacheKey.md) | Generates a cache key for a geoprocessing request, given sketch properties and optional extra parameters (must be JSON compatible object) Extra parameters are canonicalized and hashed using md5 to ensure cache key is consistent. Canonicalization ensures object keys are consistent but not arrays. If you use arrays as extraParam values, make sure the order stays the same and sort first if needed to generate a consistent cache key. |
 | [genZodErrorMessage](functions/genZodErrorMessage.md) | - |
-| [getArea](functions/getArea.md) | Returns area of valid cells (not nodata) overlapping with feature. If no valid cells found, returns 0. |
+| [getArea](functions/getArea.md) | Returns area of valid raster cells (not nodata) overlapping with feature. If no valid cells found, returns 0. |
 | [getClassificationLabel](functions/getClassificationLabel.md) | - |
 | [getCogFilename](functions/getCogFilename.md) | - |
 | [getDatasetBucketName](functions/getDatasetBucketName.md) | - |
@@ -177,7 +177,7 @@
 | [getSketchCollectionChildIds](functions/getSketchCollectionChildIds.md) | Given sketch collection, returns IDs of sketches in the collection |
 | [getSketchFeatures](functions/getSketchFeatures.md) | Given sketch or sketch collection, returns just the individual sketch features inside. |
 | [getSketchToMpaProtectionLevel](functions/getSketchToMpaProtectionLevel.md) | Returns object mapping sketch id to MPA classification given sketch for rbcsMpa or collection of sketches for rbcsMpas with rbcs activity userAttributes, and area metrics for each sketch, assumes each mpa is a single zone mpa |
-| [getSum](functions/getSum.md) | Returns sum of value overlap with geometry. If no cells with a value are found within the geometry overlap, returns 0. |
+| [getSum](functions/getSum.md) | Returns sum of raster value overlap with geometry. If no cells with a value are found within the geometry overlap, returns 0. |
 | [getUserAttribute](functions/getUserAttribute.md) | UserAttributes are those filled in via the attributes form specified as part of a SketchClass. This getter function is easier to use than searching the Sketch.properties.userAttributes array, supports default values, and is easier to use with typescript. |
 | [getVectorDatasourceById](functions/getVectorDatasourceById.md) | find and return vector datasource (internal or external) from passed datasources |
 | [getZoneClassificationName](functions/getZoneClassificationName.md) | - |

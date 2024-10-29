@@ -4,7 +4,7 @@
 function getArea(raster, feat?): Promise<number>
 ```
 
-Returns area of valid cells (not nodata) overlapping with feature.  If no valid cells found, returns 0.
+Returns area of valid raster cells (not nodata) overlapping with feature.  If no valid cells found, returns 0.
 
 ## Parameters
 

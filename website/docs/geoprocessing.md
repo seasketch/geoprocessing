@@ -1,6 +1,6 @@
 # Geoprocessing
 
-Geoprocessing functions are the analytical workhorse of SeaSketch reports. These functions are packaged and published as AWS Lambda functions which crunch numbers using spatial analysis libraries and organize the results into a payload to be returned to the caller.
+Geoprocessing functions are the analytical workhorse of SeaSketch reports. These functions are packaged and published as [AWS Lambda](https://aws.amazon.com/pm/lambda) functions which crunch numbers using spatial analysis libraries and organize the results into a payload to be returned to the caller.
 
 Geoprocessing functions are typically invoked in one of two ways:
 

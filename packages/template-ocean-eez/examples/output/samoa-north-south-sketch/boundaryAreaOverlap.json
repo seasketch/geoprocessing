@@ -11,32 +11,5 @@
         "sketchName": "samoa-north-south-sketch"
       }
     }
-  ],
-  "sketch": {
-    "type": "Feature",
-    "properties": {
-      "id": "653ffbf7ddf3924f37da4f3c",
-      "name": "samoa-north-south-sketch",
-      "updatedAt": "2023-10-30T18:54:47.189Z",
-      "createdAt": "2023-10-30T18:54:47.189Z",
-      "sketchClassId": "609d871ec33f915a397225cb",
-      "isCollection": false,
-      "userAttributes": [
-        {
-          "label": "Notes",
-          "fieldType": "TextArea",
-          "exportId": "NOTES",
-          "value": ""
-        }
-      ]
-    },
-    "id": "1",
-    "bbox": [
-      -172.2969765148304,
-      -15.548920319504546,
-      -172.1681106784462,
-      -13.886258102223346
-    ],
-    "geometry": null
-  }
+  ]
 }

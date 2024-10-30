@@ -4,7 +4,7 @@
 function flattenBySketchAllClass(
    metrics, 
    classes, 
-   sketches, 
+   sketchProperties, 
    sortFn?): Record<string, string | number>[]
 ```
 
@@ -17,7 +17,7 @@ where each object contains sketch id, sketch name, and all metric values for eac
 | ------ | ------ | ------ |
 | `metrics` | `object`[] | List of metrics, expects one metric per sketch and class combination |
 | `classes` | `object`[] | Data classes represented in metrics |
-| `sketches` | [`NullSketch`](../interfaces/NullSketch.md)[] \| [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\>[] | Sketches contained in metrics |
+| `sketchProperties` | [`SketchProperties`](../type-aliases/SketchProperties.md)[] | SketchProperties of sketches represented in metrics |
 | `sortFn`? | (`a`, `b`) => `number` | Function to sort class configs using Array.sort (defaults to alphabetical by display name) |
 
 ## Returns

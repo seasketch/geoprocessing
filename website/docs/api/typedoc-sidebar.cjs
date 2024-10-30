@@ -2129,6 +2129,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/toChildProperties",
+            "label": "toChildProperties"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/toFeatureArray",
             "label": "toFeatureArray"
           },
@@ -2166,6 +2171,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/toSketchArray",
             "label": "toSketchArray"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/toSketchPropertiesArray",
+            "label": "toSketchPropertiesArray"
           },
           {
             "type": "doc",

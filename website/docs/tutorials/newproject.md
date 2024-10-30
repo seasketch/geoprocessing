@@ -257,7 +257,7 @@ npx tsx scripts/genRandomSketch.ts
 npx tsx scripts/genRandomSketch.ts 10
 ```
 
-`genRandomFeature` - generates random Feature Polygons within the extent of your planning area, which are most commonly used as input to preprocessing functions. Run it without any arguments to generate a single Sketch polygon in the `examples/features` directory of your project.
+`genRandomFeature` - generates random Feature Polygons within the extent of your planning area, which are most commonly used as input to preprocessing functions. Run it without any arguments to generate a single Feature polygon in the `examples/features` directory of your project.
 
 ```bash
 npx tsx scripts/genRandomFeature.ts
@@ -374,13 +374,11 @@ For all of these options, you can tell if your data is out of sync:
 - `data/src` is out of date if the `Date modified` timestamp for a file is older than the timestamp for the same file wherever you source and copy your data from.
 - `data/dist` is out of date with `data/src` if the `Date modified` timestamp for a file is older than the timestamp for the same file in `data/src`.
 
-#### Example data for tutorial
-
-This tutorial will use data for the Federated States of Micronesia downloaded from [Allen Coral Atlas](https://allencoralatlas.org/atlas/#8.67/-13.7942/-171.9575). (Note: you can download this data for free for any country. Turn on Maritime Boundaries, select your country’s EEZ, and download after creating an account.) Download `reefextent.gpkg` and `benthic.gpkg`, and make the data accessible to your project through one of the data linking methods described above.
-
 ### Importing Your Data
 
-The framework supports import of both vector and raster datasources and this tutorial assumes you have datasets that you want to import, accessible in the `data/src` directory, because you have [linked your project data](#link-project-data). If you are using the Allen Coral Atlas data described above, continue with [Import Vector Datasource](#import-vector-datasource).
+This tutorial will use data for the Federated States of Micronesia that has already been prepared.
+
+[Download FSM Data v1](https://github.com/seasketch/geoprocessing/files/10560856/FSM_MSP_Data_Example_v1.zip)
 
 ### Import vector datasource
 
@@ -522,7 +520,7 @@ Raster datasets can be any format supported by [GDAL](https://gdal.org/drivers/r
 
 Importing a raster dataset into your project will:
 
-- Reproject the data to the WGS84 spherical coordinate system, aka EPSG:4326.
+- Reproject the data to an equal area projection called WGS 84 / NSIDC EASE-Grid 2.0 Global, aka EPSG:6933.
 - Extract a single band of data
 - Transform the raster into a [cloud-optimized GeoTIFF](https://www.cogeo.org/)
 - Calculates overall statistics including total count and if categorical raster, a count per category
@@ -539,7 +537,7 @@ npm run import:data
 Assuming you are using the [FSM example data](#link-project-data) package and it is accessible via the `data/src` directory (using [data link option 2 or 3](#link-project-data)). Let's import the `yesson_octocorals` raster which is a `binary` raster containing cells with value 1 where octocorals are predicted to be present, and value 0 otherwise.
 
 ```bash
-? Enter path to src file (with filename) data/src/current-raster/offshore/inputs/features/yesson_octocorals.tif
+? Enter path to src file (with filename) data/src/yesson_octocorals.tif
 ```
 
 Choose a datasource name that is different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
@@ -554,13 +552,20 @@ If the raster has more than one band of data, select the band you want to import
 ? Enter band number to import 1
 ```
 
-Choose what the raster data represents
+Choose what the raster data represents. The octocorals raster is a binary 0/1 raster representing absence or presence, so choose Quantitative.
+
 `Quantitative` - measures one thing. This could be a binary 0 or 1 value thatidentifies the presence or absence of something, or a value that varies over the geographic surface such as temperature.
 `Categorical` - measures presence/absence of multiple groups. The value of each cell in the band is a numeric group identifier, and thus each cell can represent one and only one group at a time.
 
 ```bash
 ❯ Quantitative - values represent amounts, measurement of single thing
   Categorical - values represent groups
+```
+
+It will then ask you if there is a nodata value for this raster. QGIS or the gdalinfo command can tell you this. For octocorals, there is no nodata value so just hit Enter.
+
+```bash
+? Enter nodata value for raster or leave blank
 ```
 
 At this point the import will proceed and various log output will be generated.
@@ -579,6 +584,20 @@ If the import fails, try again double checking everything. It is most likely one
 ### Global datasource
 
 You are also able to use one of the global data sources already provided in `datasources.json`. They are already imported.
+
+### 3rd Party Datasources
+
+You can download additional data from sources like Allen Coral Atlas. Access this data as follows:
+
+- Go to [Allen Coral Atlas](https://allencoralatlas.org) and loging or register an account
+- Once logged in, go to Micronesia on the atlas page - https://allencoralatlas.org/atlas/#4.51/6.3220/153.7907
+- Turn on Maritime Boundaries in the layer menu on the right
+- Click the Micronesia EEZ on the map
+- Click the small Download button that appears in the map popup (icon of a page with a down arrow)
+- Agree to the terms and click to Prepare Download
+- Extract your downloaded zip file and look for `Reef-Extent/reefextent.gpkg` and `Benthic-Map/benthic.gpkg`, and make the data accessible to your project through one of the data linking methods described above.
+
+![Allen Coral Atlas Download](assets/AllenDownload.jpg "Allen Coral Atlas Download")
 
 ## Precalc Data
 

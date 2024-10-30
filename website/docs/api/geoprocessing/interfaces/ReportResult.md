@@ -12,10 +12,10 @@ metrics: object[];
 
 ***
 
-### sketch
+### sketch?
 
 ```ts
-sketch: NullSketch | NullSketchCollection;
+optional sketch: NullSketch | NullSketchCollection;
 ```
 
 The sketch used, without geometry

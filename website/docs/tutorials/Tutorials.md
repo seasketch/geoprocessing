@@ -55,7 +55,7 @@ Choose an option and follow the instructions below to get started. You can try o
 
 ### If Install Option #1 - Local Docker Environment
 
-- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for either Apple chip or Intel chip as appropriate to your system and make sure it's running.
+- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for either Apple processor or Intel processor as appropriate to your system and make sure it's running.
   - If you don't know which you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`
 - Install [VS Code](https://code.visualstudio.com) and open it
 - Clone the geoprocessing devcontainer repository to your system
@@ -75,7 +75,9 @@ git clone https://github.com/seasketch/geoprocessing-devcontainer
   - Remote Explorer
 - Once you have DevContainer support, you should be prompted to ”Reopen folder to develop in a container”. <b>_Do not do this yet._</b>
 - Under the `.devcontainer/local-dev` folder, make a copy of the `.env.template` file and rename it to `.env`.
-  - Fill in your POEditor API token for you account, which you can find here - https://poeditor.com/account/api. If you don't have one, then follow the instructions to [create your own](../gip//GIP-1-i18n.md#setup-poeditor-as-an-independent-developer).
+  - You don't need to do anything yet with your .env, it just needs to exist. But:
+  - If you want to use POEditor for translation, fill in your POEDITOR_PROJECT id, and POEDITOR_API_TOKEN for you account, which you can find here - https://poeditor.com/account/api. If you don't have an account, then follow the instructions to [create your own](../gip//GIP-1-i18n.md#setup-poeditor-as-an-independent-developer).
+  - If you have an AWS admin account already, you can enter your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY now as well. Or you can do it later when you are ready to deploy your project to AWS.
 - If you have a data folder to mount into the docker container from your host operating system, edit the `.devcontainer/local-dev/docker-compose.yml` file and uncomment the volume below this comment
   - `# Bound host volume for Box data folder`
   - The volume is preset to bind to your Box Sync folder in you home directory but you can change it to any path in your operating system where your data resides for all your projects.

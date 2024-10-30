@@ -430,7 +430,7 @@ export const nestMetrics = (
  * where each object contains sketch id, sketch name, and all metric values for each class
  * @param metrics List of metrics, expects one metric per sketch and class combination
  * @param classes Data classes represented in metrics
- * @param sketches Sketches contained in metrics
+ * @param sketchProperties SketchProperties of sketches represented in metrics
  * @param sortFn Function to sort class configs using Array.sort (defaults to alphabetical by display name)
  * @returns An array of objects with flattened sketch metrics
  */

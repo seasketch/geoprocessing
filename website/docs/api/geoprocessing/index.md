@@ -268,6 +268,7 @@
 | [squareMeterToKilometer](functions/squareMeterToKilometer.md) | - |
 | [squareMeterToMile](functions/squareMeterToMile.md) | - |
 | [testWithinPerc](functions/testWithinPerc.md) | Expects that testValue is equal to expectedValue or optionally within percentage (defaults to .01 or 1%) |
+| [toChildProperties](functions/toChildProperties.md) | Returns SketchProperties for each child sketch in a SketchCollection |
 | [toFeatureArray](functions/toFeatureArray.md) | Helper to convert a Feature or a FeatureCollection to a Feature array |
 | [toFeaturePolygonArray](functions/toFeaturePolygonArray.md) | - |
 | [toNullSketch](functions/toNullSketch.md) | Returns sketch or sketch collection with null geometry |
@@ -276,6 +277,7 @@
 | [toRasterProjection](functions/toRasterProjection.md) | Reprojects a feature to the same projection as the raster. |
 | [toShortSketches](functions/toShortSketches.md) | Returns an array of shorthand sketches (id + name) given a Sketch or SketchCollection. Includes a shorthand of parent collection also |
 | [toSketchArray](functions/toSketchArray.md) | Helper to convert a Sketch or SketchCollection to a Sketch array, maintaining geometry type |
+| [toSketchPropertiesArray](functions/toSketchPropertiesArray.md) | Converts array of sketches to an array of their SketchProperties |
 | [unpackMetrics](functions/unpackMetrics.md) | Converts MetricPack to a new Metric array. |
 | [updateCommandsSync](functions/updateCommandsSync.md) | Run dynamodb update commands synchronously to avoid throttling, retrying on ThroughputError |
 | [valueFormatter](functions/valueFormatter.md) | Given a number or string value and the name of a formatter function, returns a formatted value |

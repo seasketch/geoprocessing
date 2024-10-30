@@ -14,11 +14,15 @@ Properties of a Sketch, defines known keys as well as unknown for extensiblity
 optional childProperties: SketchProperties[];
 ```
 
+This is used on rare occasion to provide the sketch properties of a SketchCollections child sketches
+
 ### createdAt
 
 ```ts
 createdAt: ISO8601DateTime;
 ```
+
+Last updated ISO 8601 timestamp
 
 ### id
 
@@ -26,11 +30,15 @@ createdAt: ISO8601DateTime;
 id: string;
 ```
 
+Unique sketch ID
+
 ### isCollection
 
 ```ts
 isCollection: boolean;
 ```
+
+True if these are properties for a SketchCollection, false if Sketch
 
 ### name
 
@@ -46,14 +54,20 @@ Name specified by the author of the sketch
 sketchClassId: string;
 ```
 
+Unique ID of class of sketch
+
 ### updatedAt
 
 ```ts
 updatedAt: ISO8601DateTime;
 ```
 
+Last updated ISO 8601 timestamp
+
 ### userAttributes
 
 ```ts
 userAttributes: UserAttribute[];
 ```
+
+User-defined attributes with values for Sketch.  Defines known keys as well as unknown for extensiblity

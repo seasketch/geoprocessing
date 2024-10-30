@@ -1981,6 +1981,12 @@ Re-exports [testWithinPerc](../geoprocessing/functions/testWithinPerc.md)
 
 ***
 
+### toChildProperties
+
+Re-exports [toChildProperties](../geoprocessing/functions/toChildProperties.md)
+
+***
+
 ### toNullSketch
 
 Re-exports [toNullSketch](../geoprocessing/functions/toNullSketch.md)
@@ -2008,6 +2014,12 @@ Re-exports [toShortSketches](../geoprocessing/functions/toShortSketches.md)
 ### toSketchArray
 
 Re-exports [toSketchArray](../geoprocessing/functions/toSketchArray.md)
+
+***
+
+### toSketchPropertiesArray
+
+Re-exports [toSketchPropertiesArray](../geoprocessing/functions/toSketchPropertiesArray.md)
 
 ***
 

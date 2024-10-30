@@ -46,31 +46,27 @@ Web browser:
 
 ### Install Options
 
-You have 3 options for how to develop geoprocessing projects
+You have 2 options for how to develop geoprocessing projects
 
-1. Local Docker environment
+1. Docker Desktop environment (recommended)
    - Docker provides a sandboxed Ubuntu Linux environment on your local computer, setup specifically for geoprocessing projects.
-   - Best for: intermediate to power users doing development every day
    - Pros
-     - Provides a fully configured environment, with installation of many of the third-party dependencies already take care of.
-     - Docker workspace is isolated from your host operating system. You can remove or recreate these environment as needed.
+     - Provides a fully configured environment, with installation of many dependencies already done.
+     - Docker container is isolated from your host operating system. You can remove or recreate them.
      - You can work completely offline once you are setup.
    - Cons
-     - You will need to get comfortable with Docker Desktop software.
+     - You will need to learn how to work with Docker Desktop software.
      - Docker is slower than running directly on your system (maybe 30%)
      - Syncing data from network drives like Box into the Docker container is more challenging.
-2. MacOS Bare Metal / Windows WSL
-   - All geoprocessing dependencies are installed and maintained directly by you on your local computer operating system. For MacOS this means no virtualization is done. For Windows, this means running Ubuntu via WSL2 aka the Windows Subsystem for Linux.
+2. Bare Metal
+   - All geoprocessing dependencies are installed and maintained directly by you on your local computer operating system. For Windows, this means running Ubuntu via WSL2 aka the Windows Subsystem for Linux.
    - Best for - power user.
-   - Pros - fastest speeds because you are running without virtualization (aka bare metal)
    - Cons - prone to instability and issues due to progression of dependency versions or operating system changes. Difficult to test and ensure stable support for all operating systems and processors (amd64, arm64).
 
-Choose an option and follow the instructions below to get started. You can try out different options over time.
+### Install Option #1 - Docker Desktop Environment
 
-### If Install Option #1 - Local Docker Environment
-
-- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for either Apple chip or Intel chip as appropriate to your system and make sure it's running.
-  - If you don't know which you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`
+- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for either Apple processor or Intel processor as appropriate to your system and make sure it's running.
+  - If you don't know which Apple processor you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`
 - Install [VS Code](https://code.visualstudio.com) and open it
 - Clone the geoprocessing devcontainer repository to your system
 
@@ -89,14 +85,17 @@ git clone https://github.com/seasketch/geoprocessing-devcontainer
   - Remote Explorer
 - Once you have DevContainer support, you should be prompted to ”Reopen folder to develop in a container”. <b>_Do not do this yet._</b>
 - Under the `.devcontainer/local-dev` folder, make a copy of the `.env.template` file and rename it to `.env`.
-  - Fill in your POEditor API token for you account, which you can find here - https://poeditor.com/account/api. If you don't have one, then follow the instructions to [create your own](../gip//GIP-1-i18n.md#setup-poeditor-as-an-independent-developer).
+  - You don't need to do anything yet with your .env, it just needs to exist. But:
+  - If you want to use POEditor for translation, fill in your POEDITOR_PROJECT id, and POEDITOR_API_TOKEN for you account, which you can find here - https://poeditor.com/account/api. If you don't have an account, then follow the instructions to [create your own](../gip//GIP-1-i18n.md#setup-poeditor-as-an-independent-developer).
+  - If you have an AWS admin account already, you can enter your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY now as well. Or you can do it later when you are ready to deploy your project to AWS.
 - If you have a data folder to mount into the docker container from your host operating system, edit the `.devcontainer/local-dev/docker-compose.yml` file and uncomment the volume below this comment
   - `# Bound host volume for Box data folder`
   - The volume is preset to bind to your Box Sync folder in you home directory but you can change it to any path in your operating system where your data resides for all your projects.
 - To start the devcontainer at any time
   - `Cmd-Shift-P` to open command palette
   - type “Reopen in container” and select the Dev Container command to do so.
-  - VSCode will reload, pull the latest `geoprocessing-workspace` docker image, run it, and start a remote code experience inside the container.
+  - Select `Geoprocessing Local Pre-7.x`
+  - VSCode will reload, pull an version of the `geoprocessing-workspace` docker image that supports geoprocessing v6, which uses Node 16 and an older version of GDAL. It will then start the container, and start a remote code experience inside the container.
 - Once container starts
   - It will automatically clone the geoprocessing repository into your environment under `/workspaces/geoprocessing`, and then run `npm install` to install all dependencies. Wait for this process to finish which can take up to 3-4 minutes the first time.
   - `Ctrl-J` will open a terminal inside the container.
@@ -113,32 +112,35 @@ If success, then you're now ready to create a new geoprocessing project in your 
 - Notice the bottom left blue icon in your vscode window. It may say `Opening remote connection` and eventually will say `Dev Container: Geoprocessing`. This is telling you that this VSCode window is running in a devcontainer environment.
 - To exit your devcontainer:
   - Click the blue icon in the bottom left, and click `Reopen locally`. This will bring VSCode back out of the devcontainer session.
-- To delete a devcontainer:
-  - This is often the easiest way to "start over" with your devcontainer.
-  - First, make sure you've pushed all of your code work to Github.
-  - Make sure you stop your active VSCODE devcontainer session.
-  - Open the Remote Explorer panel in the left sidebar.
-  - You can right-click and delete any existing devcontainers and volumes to start over.
-  - You can also see and delete them from the Docker Desktop app, but it might not be obvious which containers and volumes are which. The VSCode Remote Explorer window gives you that context.
 
-![Manage Devcontainers](assets/ManageDevcontainers.jpg "Manage Devcontainers")
+### Option #2 - Bare Metal
 
-- To upgrade your devcontainer:
-  - The devcontainer settings in this repository may change/improve over time. You can always pull the latest changes for your `geoprocessing-devcontainer` repository, and then `Cmd-Shift-P` to open command palette and type `“DevContainers: Rebuild and Reopen locally”`.
-- To upgrade the `geoprocessing-workspace` Docker image
-  - This devcontainer builds on the `geoprocessing-workspace` Docker image published at [Docker Hub](https://hub.docker.com/r/seasketch/geoprocessing-workspace/tags). It will always install the latest version of this image when you setup your devcontainer for the first time.
-  - It is up to you to upgrade it after the initial installation. The most likely situation is:
-    - You see some changes in the [Changelog](https://github.com/seasketch/docker-gp-workspace/blob/main/Changelog.md) that you want to utilize.
-    - You are upgrading the `geoprocessing` library for your project to a newer version and it requires additional software that isn't in your current devcontainer. This situation should be flagged in the geoprocessing [changelog](https://github.com/seasketch/geoprocessing/blob/dev/CHANGELOG.md).
-  - In both cases you should be able to simply update your docker image to the latest. The easiest way to do this is to:
-    - Push all of your unsaved work in your devcontainer to Github. This is in case the Docker `named volume` where your code lives (which is separate from the devcontainer) is somehow lost. There are also ways to make a backup of a named volume and recover it if needed but that is an advanced exercise not discussed at this time.
-    - Stop your devcontainer session
-    - Go to the `Images` menu in Docker Desktop, finding your `seasketch/geoprocessing-workspace`.
-    - If it shows as "IN USE" then switch to the `Containers` menu and stop all containers using `seasketch/geoprocessing-workspace`.
-    - Now switch back to `Images` and pull a new version of the `seasketch/geoprocessing-image` by hovering your cursor over the image, clicking the 3-dot menu on the right side and the clicking `Pull`. This will pull the newest version of this image.
-    - Once complete, you should be able to restart your devcontainer and it will be running the latest `geoprocessing-workspace`.
+For Windows, your `geoprocessing` project and the underlying code will run in a Docker container running Ubuntu Linux. This is done using the Windows Subsystem for Linux (WSL2) so performance is actually quite good. Docker Desktop and VSCode both know how to work seamlessly with WSL2. Some of the building blocks you will install in Windows (Git, AWSCLI) and link them into the Ubuntu Docker container. The rest will be installed directly in the Ubuntu Docker container.
 
-### Option #3 - MacOS Bare Metal / Windows WSL
+#### Windows
+
+In Windows:
+
+- Install [WSL2 with Ubuntu distribution](https://learn.microsoft.com/en-us/windows/wsl/install)
+- Install [Docker Desktop with WSL2 support](https://docs.docker.com/desktop/windows/wsl/) and make sure Docker is running
+- Open start menu -> `Ubuntu on Windows`
+  - This will start a bash shell in your Ubuntu Linux home directory
+
+In WSL Ubuntu:
+
+- Install [Java runtime](https://stackoverflow.com/questions/63866813/what-is-the-proper-way-of-using-jdk-on-wsl2-on-windows-10) in Ubuntu (required by AWS CDK library)
+- Install [Git in Ubuntu and Windows](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git)
+- Install [VS Code](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) in Windows and setup with WSL2.
+  - Install recommended [extensions](https://code.visualstudio.com/docs/editor/extension-marketplace) when prompted. If not prompted, go to the `Extensions` panel on the left side and install the extensions named in [this file](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/templates/project/.vscode/extensions.json)
+- Install [Node JS](https://nodejs.org/en/download/) >= v16.0.0 in Ubuntu
+  - [nvm](https://github.com/nvm-sh/nvm) is great for this, then `nvm install v16`.
+  - Then open your Terminal app of choice and run `node -v` to check version
+- Install [NPM](https://www.npmjs.com/) package manager >= v8.5.0 after installing node. The version that comes with node may not be recent enough.
+  - `npm --version` to check
+  - `npm install -g latest`
+- Install [GDAL](https://gdal.org/)
+  - First install [homebrew](https://brew.sh/)
+  - `brew install gdal`
 
 #### MacOS
 
@@ -161,30 +163,6 @@ If success, then you're now ready to create a new geoprocessing project in your 
 - Create a free Github account if you don't have one already
   - Set your git username
 
-#### Windows
-
-For Windows, you won't actually be running bare metal. your `geoprocessing` project and the underlying code run in a Docker container running Ubuntu Linux. This is done using the Windows Subsystem for Linux (WSL2) so performance is actually quite good. Docker Desktop and VSCode both know how to work seamlessly with WSL2. Some of the building blocks you will install in Windows (Git, AWSCLI) and link them into the Ubuntu Docker container. The rest will be installed directly in the Ubuntu Docker container.
-
-In Windows:
-
-- Install [WSL2 with Ubuntu distribution](https://learn.microsoft.com/en-us/windows/wsl/install)
-- Install [Docker Desktop with WSL2 support](https://docs.docker.com/desktop/windows/wsl/) and make sure Docker is running
-- Open start menu -> `Ubuntu on Windows`
-  - This will start a bash shell in your Ubuntu Linux home directory
-
-In Ubuntu:
-
-- Install [Java runtime](https://stackoverflow.com/questions/63866813/what-is-the-proper-way-of-using-jdk-on-wsl2-on-windows-10) in Ubuntu (required by AWS CDK library)
-- Install [Git in Ubuntu and Windows](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git)
-- Install [VS Code](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) in Windows and setup with WSL2.
-  - Install recommended [extensions](https://code.visualstudio.com/docs/editor/extension-marketplace) when prompted. If not prompted, go to the `Extensions` panel on the left side and install the extensions named in [this file](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/templates/project/.vscode/extensions.json)
-- Install [Node JS](https://nodejs.org/en/download/) >= v16.0.0 in Ubuntu
-  - [nvm](https://github.com/nvm-sh/nvm) is great for this, then `nvm install v16`.
-  - Then open your Terminal app of choice and run `node -v` to check version
-- Install [NPM](https://www.npmjs.com/) package manager >= v8.5.0 after installing node. The version that comes with node may not be recent enough.
-  - `npm --version` to check
-  - `npm install -g latest`
-
 ### Final Steps
 
 Whichever option you chose, if you haven't already, establish the [username](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git?platform=mac) and email address git should associate with your commits.
@@ -206,52 +184,7 @@ cat ~/.gitconfig
 cat .git/config
 ```
 
-At this point your system is ready for you to `create a new project`, or `setup an existing project`
-
-## Setup an exising geoprocessing project
-
-This use case is where a geoprocessing project already exists, but it was developed on a different computer.
-
-First, clone your existing geoprocessing project to your work environment, whether this is in your local docker devcontainer, Windows WSL, or bare metal on your operating system.
-
-### Link your source data
-
-1. figure out [which option](#link-project-data) was used to bring data into your geoprocessing project, and follow the steps to set it up.
-
-- Option 1, you're good to go, the data should already be in `data/src` and src paths in `project/datasources.json` should have relative paths pointing into it.
-- Option 2, Look at `project/datasources.json` for the existing datasource paths and if your data file paths and operating system match you may be good to go. Try re-importing your data as below, and if it fails consider migrating to Option 1 or 3.
-- Option 3, if you're running a devcontainer you'll need to have made your data available in workspace by mounting it from the host operating system via docker-compose.yml (see installation tutorial) or have somehow synced or downloaded it directly to your container. Either way, you then just need to symlink the `data/src` directory in your project to your data. Make sure you point it to the right level of your data folder. Check the src paths in `project/datasources.json`. If for example the source paths start with `data/src/Data_Received/...` and your data directory is at `/Users/alex/Library/CloudStorage/Box-Box/ProjectX/Data_Received`, you want to create your symlink as such
-
-```bash
-ln -s /Users/alex/Library/CloudStorage/Box-Box/ProjectX data/src
-```
-
-Assuming `data/src` is now populated, you need to ensure everything is in order.
-
-2.Reimport your data
-
-This will re-import, transform, and export your data to `data/dist`, which is probably currently empty.
-
-```bash
-npm run reimport:data
-```
-
-Say yes to reimporting all datasources, and no to publishing them (we'll get to that).
-
-If you see error, look at what they say. If they say datasources are not being found at their path, then something is wrong with your drive sync (files might be missing), or with your symlink if you used option 3.
-
-If all is well, you should see no error, and `data/dist` should be populated with files. In the Version Control panel your datasources.json file will have changes, including some updated timestamps.
-
-But what if git changes show a lot of red and green?
-
-- You should look closer at what's happening. If parts of the smoke test output (examples directory JSON files) are being re-ordered, that may just be because Javascript is being a little bit different in how it generates JSON files from another computer that previously ran the tests.
-- If you are seeing changes to your precalc values in precalc.json, then your datasources may be different from the last person that ran it. You will want to make sure you aren't using an outdated older version. If you are using an updated more recent version, then convince yourself the changes are what you expect, for example total area increases or decreases.
-
-What if you just can't your data synced properly, and you just need to move forward?
-
-- If the project was deployed to AWS, then there will be a copy of the published data in the `datasets` bucket in AWS S3.
-- To copy this data from AWS back to your `data/dist` directory use the following, assuming your git repo is named `fsm-reports-test`
-  - `aws s3 sync s3://gp-fsm-reports-test-datasets data/dist`
+At this point your system is ready for you to create a new project.
 
 ## Create a New Geoprocessing Project
 
@@ -284,6 +217,8 @@ It may ask you if it can use the Github extension to sign you in using Github. I
 You should eventually see your code commit proceed in the VSCode terminal. You can then browse to your Github repository and see that your first commit is present at https://github.com/[YOUR_GITHUB_ORG_OR_USERNAME]/foo-reports
 
 After this point, you can continue using git commands right in the terminal to stage code changes and commit them, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
+
+### Get VSCode Ready
 
 #### If running devcontainer (Install Option 1)
 
@@ -362,7 +297,7 @@ Choose a software license. [SeaSketch](https://github.com/seasketch/next/blob/ma
 ? What software license would you like to use? BSD-3-Clause
 ```
 
-Choose an AWS region you would like to deploy the project. The most common is to choose `us-west-1` or `us-east-1`, the US coast closest to the project location. In some circumstances it can make sense to choose locations in Europe, Asia, Australia, etc. that are even closer but in practice this usually doesn't make a significant difference.
+Choose an AWS region you would like to deploy the project. The most common is to choose `us-west-1` or `us-east-2`, the US coast closest to the project location. In some circumstances it can make sense to choose locations in Europe, Asia, Australia, etc. that are even closer but in practice this usually doesn't make a significant difference.
 
 ```text
 ? What AWS region would you like to deploy functions in?
@@ -374,16 +309,16 @@ Now enter the type of planning area for your project. Choose Exclusive Economic 
 ? What type of planning area does your project have? Exclusive Economic Zone (EEZ)
 ```
 
-Since you selected EEZ, it will now ask what countries EEZ to use. Choose Micronesia
+Since you selected EEZ, it will now ask what countries EEZ to use. Choose Micronesian Exclusive Economic Zone
 
 ```text
-? What countries EEZ is this for? Micronesia.
+? What EEZ is this for? Micronesian Exclusive Economic Zone
 ```
 
 If you answered `Other` to type of planning area it will now ask you for the name of this planning area.
 
 ```text
-?  Is there a more common name for this planning area to use in reports than Micronesia? (Use arrow keys)
+?  Is there a different name to use for this planning area than Micronesian Exclusive Economic Zone? (Use arrow keys)
 ❯ Yes
   No
 ```
@@ -421,9 +356,9 @@ The answers to these questions default to the extent of the entire world, which 
 
 Next, to take full advantage of VSCode you will need to open your new project and establish it as a workspace.
 
-#### If Running Devcontainer or (Install Option 1)
+#### If Running Devcontainer (Install Option 1)
 
-Once you have more than one folder under `/workspaces` backed by a git repository, VSCode will be default to a `multi-root` workspace.
+Once you have more than one folder under `/workspaces` backed by a git repository, VSCode will default to a `multi-root` workspace.
 
 For the best experience, you will want open a single workspace in your VSCode for a single folder in your devcontainer.
 
@@ -461,17 +396,17 @@ There are a variety of project configuration files. Many have been pre-populated
   - `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided. Global datasources can be manually added/edited in this file, but local datasources should use the [import](#importing-your-data) process. After import, datasources can be manually added/edited in this file. You will then want to run `reimport:data`, `precalc:data`, `precalc:clean`, and `test` to process the changes and make sure they are working as expected. Learn more about [datasources](../concepts/Concepts.md#datasources)
   - `metrics.json` - contains an array of one or more metric groups. Each group defines a metric to calculate, with one or more data classes, derived from one or more datasources, measuring progress towards a planning objective. An initial boundaryAreaOverlap metric group is included in the file by default that uses the global eez datasource. Learn more about [metrics](../concepts/Concepts.md#metrics)
   - `objectives.json` - contains an array of one or more objectives for your planning process. A default objective is included for protection of `20%` of the EEZ. Objectives must be manually added/edited in this file. Learn more about [objectives](../concepts/Concepts.md#objectives)
-  - `precalc.json` - contains precalculated metrics for combinations of geographies and datasources. Specifically it calculates for example the total area/count/sum of the portion of a datasources features that overlap with each geography. This file should not be manually edited. If you have custome metrics/precalculations to do, then use a separate file. Learn more about the [precalc](#precalc-data) command.
+  - `precalc.json` - contains precalculated metrics for combinations of geographies and datasources. Specifically it calculates for example the total area/count/sum of the portion of a datasources features that overlap with each geography. This file should not be manually edited. If you have custom precalculations to do for your project, then use a separate file. Learn more about the [precalc](#precalc-data) command.
 
 The object structure in many of the JSON files, particularly the `project` folder, follow strict naming and structure (schema) that must be maintained or you will get validation errors when running commands. Adding additional undocumented properties may be possible, but is not tested. The schemas are defined here:
 
 - [Basic](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/projectBasic.ts)
-- [Geographies](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/geography.ts)
-- [Datasources](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/datasource.ts)
-- [MetricGroup](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/metricGroup.ts)
-  - [DataClass](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/dataclass.ts)
-- [Objective](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/objective.ts)
-- [Precalc Metrics](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/metrics.ts)
+- [Geographies](https://github.com/seasketch/geoprocessing/blob/v6.1.0/packages/geoprocessing/src/types/geographies.ts)
+- [Datasources](https://github.com/seasketch/geoprocessing/blob/v6.1.0/packages/geoprocessing/src/types/datasource.ts)
+- [MetricGroup](https://github.com/seasketch/geoprocessing/blob/v6.1.0/packages/geoprocessing/src/types/metricGroup.ts)
+  - [DataClass](https://github.com/seasketch/geoprocessing/blob/v6.1.0/packages/geoprocessing/src/types/dataclass.ts)
+- [Objective](https://github.com/seasketch/geoprocessing/blob/v6.1.0/packages/geoprocessing/src/types/objective.ts)
+- [Metrics](https://github.com/seasketch/geoprocessing/blob/v6.1.0/packages/geoprocessing/src/types/metrics.ts)
 
 #### Project Assets
 
@@ -511,7 +446,7 @@ npx tsx scripts/genRandomSketch.ts
 npx tsx scripts/genRandomSketch.ts 10
 ```
 
-`genRandomFeature` - generates random Feature Polygons within the extent of your planning area, which are most commonly used as input to preprocessing functions. Run it without any arguments to generate a single Sketch polygon in the `examples/features` directory of your project.
+`genRandomFeature` - generates random Feature Polygons within the extent of your planning area, which are most commonly used as input to preprocessing functions. Run it without any arguments to generate a single Feature polygon in the `examples/features` directory of your project.
 
 ```bash
 npx tsx scripts/genRandomFeature.ts
@@ -628,13 +563,17 @@ For all of these options, you can tell if your data is out of sync:
 - `data/src` is out of date if the `Date modified` timestamp for a file is older than the timestamp for the same file wherever you source and copy your data from.
 - `data/dist` is out of date with `data/src` if the `Date modified` timestamp for a file is older than the timestamp for the same file in `data/src`.
 
-##### Example data for tutorial
-
-This tutorial will use data for the Federated States of Micronesia downloaded from [Allen Coral Atlas](https://allencoralatlas.org/atlas/#8.67/-13.7942/-171.9575). (Note: you can download this data for free for any country. Turn on Maritime Boundaries, select your country’s EEZ, and download after creating an account.) Download `reefextent.gpkg` and `benthic.gpkg`, and make the data accessible to your project through one of the data linking methods described above.
-
 #### Importing Your Data
 
-The framework supports import of both vector and raster datasources and this tutorial assumes you have datasets that you want to import, accessible in the `data/src` directory, because you have [linked your project data](#link-project-data). If you are using the Allen Coral Atlas data described above, continue with [Import Vector Datasource](#import-vector-datasource).
+This tutorial will use example data for the Federated States of Micronesia that has already been prepared.
+
+```bash
+cd data/src
+wget https://github.com/user-attachments/files/17577047/FSM_MSP_Data_Example_v2.zip
+unzip FSM_MSP_Data_Example_v2.zip
+mv FSM_MSP_Data_Example_v2/* .
+rm -rf FSM_MSP_Data_Example_v2*
+```
 
 #### Import vector datasource
 
@@ -645,16 +584,6 @@ Vector datasets can be any format supported by [GDAL](https://gdal.org/drivers/v
 - Shapefile
 - File Geodatabase
 
-Importing a vector dataset into your project will:
-
-- Reproject the dataset to the WGS84 spherical coordinate system, aka EPSG:4326.
-- Transform the dataset into one or more formats including the [flatgeobuf](https://flatgeobuf.org/) cloud-optimized format and GeoJSON
-- Strip out any unnecessary feature properties (to reduce file size)
-- Optionally, expand multi-part geometries into single part
-- Calculates overall statistics including total area, and area by group property
-- Output the result to the `data/dist` directory, ready for testing
-- Add datasource to `project/datasource.json`
-
 Start the import process and it will ask you a series of questions, press Enter after each one, and look to see if a default answer is provided that is sufficient:
 
 ```bash
@@ -662,111 +591,99 @@ npm run import:data
 ? Type of data? Vector
 ```
 
-Assuming you are using the [FSM data](#example-data-for-tutorial) from Allen Coral Atlas available now in your `data/src` directory. Let's import the `reefextent` vector data from the geopackage.
+---
 
 ```bash
-? Enter path to src file (with filename) data/src/reefextent.gpkg
+? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource) Yes
 ```
 
-Select the name of the vector layer you want to import. The example reef extent data named `Micronesian Exclusive Economic Zone` in `reefextent.gpkg`
+Respond `Yes` to allow precalculation.
 
-```bash
-? Select layer to import Micronesian Exclusive Economic Zone
-```
+---
 
-Choose a datasource name that is different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
-
-```bash
-? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename reefextent
-```
-
-If your dataset contains one or more properties that classify the vector features into one or more categories, and you want to report on those categories in your reports, then you can enter those properties now as a comma-separated list. For example a coral reef dataset containing a `type` property that identifies the type of coral present in each polygon. In the case of our EEZ dataset, there are no properties like this so press Enter to continue without.
-
-```bash
-? Select feature properties that you want to group metrics by (Press <space> to select, <a> to toggle all, <i> to invert selection)
-```
-
-By default, all extraneous properties will be removed from your vector dataset on import in order to make it as small as possible. Any additional properties that you want to keep in should be specified in this next question. If there are none, just press Enter.
-
-```bash
-? Select additional feature properties to keep in final datasource (Press <space> to select, <a> to toggle all, <i> to invert selection)
-```
-
-Mulitpolygons can be split into polygons for analysis, which can help report performance.
+By default mulitpolygons are split into polygons, which can save bandwidth when fetching features that overlap with a sketch.
 
 ```bash
 ? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons
 to fetch) Yes
 ```
 
-Typically you only need to published Flatgeobuf data, which is cloud-optimized so that geoprocessing functions can fetch features for just the window of data they need (such as the bounding box of a sketch). Flatgeobuf is automatically created. GeoJSON is also available if you want to be able to import data directly in your geoprocessing function typescript files, or inspect the data using a human readable format. Just press enter if you are happy with the default.
+Respond yes to splitting polygons.
+
+---
 
 ```bash
-? Select additional formats to publish (Press <space> to select, <a> to toggle all, <i> to invert selection)
+? Enter path to src file (with filename) data/src/current-vector.gpkg
+```
+
+We'll import data from the `current-vector` geopackage.
+
+---
+
+It will now ask you for a datasource name, it should be unique, different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
+
+```bash
+? Choose unique datasource name (use letters,numbers, -, _ to ensure will work) eez
+```
+
+Enter the datasource name `eez`.
+
+---
+
+A layer name must also be specified if your datasource can store multiple layers within it (geopackage). You can use the `ogrinfo` command to quickly see what layers are present in a vector dataset. If your dataset can only store one datasource such as a shapefile or a GeoJSON file, then the layer name should just be the name of the file (minus the extension). You can use the QGIS project file in the example data to view the available layers in the geopackage.
+
+```bash
+? Enter layer name, defaults to filename (eez_mr_osm)
+```
+
+The layer in this geopackage we want is called `eez_mr_osm` so enter that now.
+
+---
+
+If your dataset contains one or more properties that classify the vector features into one or more categories, and you want to report on those categories in your reports, then you can enter those properties now as a comma-separated list. For example a coral reef dataset containing a `type` propertie that identifies the type of coral present in each polygon. In the case of our EEZ dataset, there are no properties like this so this question is left blank.
+
+```bash
+? Enter feature property names that you want to group metrics by (
+separated by a comma e.g. prop1,prop2,prop3)
+```
+
+The eez dataset has no attributes that we want to group features by so press Enter to skip this question.
+
+---
+
+By default, all extraneous properties will be removed from your vector dataset on import in order to make it as small as possible. Any additional properties that you want to keep in should be specified in this next question. If there are none, just leave it blank.
+
+```bash
+? Enter additional feature property names to keep in final datasource (separated by a comma e.g. prop1,prop2,prop3). All others will be filtered out
+```
+
+The eez dataset has no additional properties we want to keep so press Enter to skip this question.
+
+---
+
+By default, data will be imported into flatgeobuf format. Often, that's all you need. But if you want to be able to precalculate stats for this dataset, or import JSON data directly into your geoprocessing functions, or just have a human readable version of the data to verify it, then you want to include the GeoJSON format.
+
+```bash
+? The following formats will automatically be created: fgb. What additional formats would you like created? (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter>
+ to proceed) (Press <space> to select, <a> to toggle all, <i> to invert selection)
  ◯ json - GeoJSON
 ```
 
-If you want to use your data in analytics, respond `Yes` to allow precalculation.
+For the `eez` dataset, we want to precalculate state, so press spacebar to select `json` and then press the `Enter` key to proceed.
 
-```bash
-? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource) Yes
-```
+---
 
 At this point the import will proceed and various log output will be generated. Once complete you will find:
 
-- The output file `data/dist/reefextent.fgb` and possibly `data/dist/reefextent.json` if you chose to generate it.
-- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `reefextent`
-
-Vist `datasources.json` and check out your new datasource entry. Using the example data, the datasource entry should looks as follows:
-
-```json
-{
-  "src": "data/src/reefextent.gpkg",
-  "layerName": "Micronesian Exclusive Economic Zone",
-  "geo_type": "vector",
-  "datasourceId": "reefextent",
-  "formats": ["fgb"],
-  "classKeys": [],
-  "created": "2024-02-29T22:54:16.140Z",
-  "lastUpdated": "2024-02-29T22:54:16.140Z",
-  "propertiesToKeep": [],
-  "explodeMulti": true,
-  "precalc": true
-}
-```
+- The output file `data/dist/eez.fgb`.
+- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `eez`. You'll see all the answers to your questions.
 
 If the import fails, try again double checking everything. It is most likely one of the following:
 
-- You aren't running Docker Desktop (required for running GDAL commands)
-- You provided a source file path that doesn't point to a valid dataset
-- You aren't using a file format supported by GDAL
-- The layer name or property names you entered are invalid
+- You specified the wrong source file path.
+- You specified the wrong layer name
 
-##### Vector data with key parameter
-
-What if you have a vector file with multiple classes you want to group metrics by? The other [downloaded example data](#example-data-for-tutorial) `benthic.gpkg` separates different benthic habitats (Sand, Seagrass, Coral) by a `class` parameter. The import for this datasource looks as follows:
-
-```bash
-npm run import:data -> Vector -> data/src/benthic.gpkg -> Micronesian Exclusive Economic Zone -> benthic -> class -> {none} -> Yes -> {none} -> Yes
-```
-
-The resulting `datasource.json` entry will look as follows:
-
-```json
-{
-  "src": "data/src/benthic.gpkg",
-  "layerName": "Micronesian Exclusive Economic Zone",
-  "geo_type": "vector",
-  "datasourceId": "benthic",
-  "formats": ["fgb"],
-  "classKeys": ["class"],
-  "created": "2024-02-29T21:47:44.858Z",
-  "lastUpdated": "2024-02-29T21:47:44.858Z",
-  "propertiesToKeep": ["class"],
-  "explodeMulti": true,
-  "precalc": true
-}
-```
+You can now make edits to datasource.json at any time and then run `reimport:data` to regenerate the files in `data/dist`.
 
 #### Import raster datasource
 
@@ -776,8 +693,8 @@ Raster datasets can be any format supported by [GDAL](https://gdal.org/drivers/r
 
 Importing a raster dataset into your project will:
 
-- Reproject the data to the WGS84 spherical coordinate system, aka EPSG:4326.
-- Extract a single band of data
+- Reproject the data to an equal area projection called WGS 84 / NSIDC EASE-Grid 2.0 Global, aka EPSG:6933. This makes accurate area calculations possible.
+- Extract a single band of data (the underlying geoblaze library is not performant with multi-band data)
 - Transform the raster into a [cloud-optimized GeoTIFF](https://www.cogeo.org/)
 - Calculates overall statistics including total count and if categorical raster, a count per category
 - Output the result to the `data/dist` directory, ready for testing
@@ -790,26 +707,51 @@ npm run import:data
 ? Type of data? Raster
 ```
 
-Assuming you are using the [FSM example data](#link-project-data) package and it is accessible via the `data/src` directory (using [data link option 2 or 3](#link-project-data)). Let's import the `yesson_octocorals` raster which is a `binary` raster containing cells with value 1 where octocorals are predicted to be present, and value 0 otherwise.
+---
 
 ```bash
-? Enter path to src file (with filename) data/src/current-raster/offshore/inputs/features/yesson_octocorals.tif
+? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource) Yes
 ```
 
-Choose a datasource name that is different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
+---
+
+You will then be mistakenly asked about splitting multi-part geometries. This is an error. Just hit enter to continue
+
+```bash
+Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons to fetch)
+```
+
+---
+
+We'll import the `yesson_octocorals` TIFF file
+
+```bash
+? Enter path to src file (with filename) data/src/yesson_octocorals.tif
+```
+
+---
+
+Now enter the datasource name `octocorals`
 
 ```bash
 ? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename octocorals
 ```
 
-If the raster has more than one band of data, select the band you want to import.
+````
+
+If the raster has more than one band of data, select the band you want to import, the first band is 1.
 
 ```bash
 ? Enter band number to import 1
-```
+````
 
-Choose what the raster data represents
-`Quantitative` - measures one thing. This could be a binary 0 or 1 value thatidentifies the presence or absence of something, or a value that varies over the geographic surface such as temperature.
+This raster has just 1 band so accept the default of 1
+
+---
+
+Choose what the raster data represents.
+
+`Quantitative` - measures one thing. This could be a binary 0 or 1 value that identifies the presence or absence of something, or a value that varies over the geographic surface such as temperature.
 `Categorical` - measures presence/absence of multiple groups. The value of each cell in the band is a numeric group identifier, and thus each cell can represent one and only one group at a time.
 
 ```bash
@@ -817,47 +759,97 @@ Choose what the raster data represents
   Categorical - values represent groups
 ```
 
+The octocorals raster is a binary 0/1 raster representing absence or presence, so choose `Quantitative`.
+
+---
+
+It will then ask what raster formats you would like to import. There is only one answer so just hit Enter.
+
+```bash
+? What formats would you like to publish?  Suggested formats already selected tif - Cloud Optimized GeoTiff
+```
+
+---
+
+It will then ask you if there is a nodata value for this raster. QGIS or the `gdalinfo` command can tell you this.
+
+```bash
+? Enter nodata value for raster or leave blank
+```
+
+For octocorals, there is no nodata value so just hit Enter.
+
+---
+
 At this point the import will proceed and various log output will be generated.
 
-Do not be concerned about an error that an ".ovr" file could not be found. This is expected. Once complete you will find:
+Once complete you will find:
 
 - The output file `data/dist/octocorals.tif`
 - An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `octocorals`.
 
 If the import fails, try again double checking everything. It is most likely one of the following:
 
-- You aren't running Docker Desktop (required for running GDAL commands)
-- You provided a source file path that doesn't point to a valid dataset
-- You aren't using a file format supported by GDAL
+- You specified the wrong source file path.
+- You specified the wrong band number
 
-#### Global datasource
+### Update Geography
 
-You are also able to use one of the global data sources already provided in `datasources.json`. They are already imported.
+Open the file `project/geographies.json`. You will find a default geography object there with `geographyId: "eez-mr-v12`. Replace this entire geography object with the following new one:
+
+```json
+{
+  "geographyId": "eez",
+  "datasourceId": "eez",
+  "display": "Micronesian Exclusive Economic Zone",
+  "groups": ["default-boundary"],
+  "precalc": true
+}
+```
+
+This effectively updates the `eez` geography to use the local datasource you just imported, instead of the global datasources that comes with the project. This is common if you have a local datasource that is more accurate than the global datasource.
+
+### Update Metric Group
+
+Now open the file `project/metrics.json`. You will find a preinstalled MetricGroup object there with `metricId` of `boundaryAreaOverlap`.
+
+Change it's `datasourceId` value from `global-eez-mr-v12` to `eez`.
+
+This will configure the `boundaryAreaOverlap` geoprocessing function to use the `eez` datasource when calculating its boundary overlap values. The `SizeCard` report component will also uses this MetricGroup configuration when reading and reporting this metric. You'll learn more about this later.
 
 ### Precalc Data
 
-Once you have geographies and datasources configured, you can precalculate metrics for them.
+Precalc is all about calculating big expensive summary spatial metrics ahead of time. The question our report needs to answer is "how much of all octocorals in the EEZ, is within my Sketch polygon"?
+
+This is calculated as:
+`octocorals sketch % = area of octocorals within sketch / area of octocorals within EEZ`
+
+We can precalculate the denominator of this equation ahead of time. The `precalc` command will calculate how much of a datasources features/raster cells is within each project geography. This can measured as `area`, `sum` of `value`, `count` of features/raster cells, etc.
+
+The first way to enable geographies and datasources for precalc is to ensure that they have `precalc: true` in geographies.json and datasources.json. This is already true for the `eez` and `octocorals`.
+
+Now let's run the precalc:
 
 ```bash
 npm run precalc:data
 ```
 
-To avoid precalculating data you don't require, when asked if you wish to precalcate specific metrics, select `Yes, by datasource` and then select `global-eez-mr-v12` (used in the provided Size report) and your imported datasource (in this tutorial: `reefextent`).
+Now select `Yes, by datasource` and then `Let me choose`.
 
-Precalc will start a web server on localhost port 8001 that serves up data from `data/dist` access by this command.
+Press space to select only:
 
-You need to have at least one geography in geographies.json and one datasource in datasources.json with the `precalc` property set to true. The command will measure (total area, feature count, value sum) the portion of a datasources features that fall within the geography (intersection).
+- `eez`
+- `octocorals`
 
-These overall metric values are used almost exclusively for calculating % sketch overlap, they provide the denominator value. For example, if you have a geography representing the EEZ of a country, and you have a sketch polygon, and you have a datasource representing presence of seagrass. And you want to know the percentage of seagrass that is within the sketch, relative to how much seagrass is in the whole EEZ boundary.
+Then press enter and:
 
-`seagrass sketch % = seagrass area within sketch / seagrass area within EEZ`
-
-We can and often need to precalculate that denominator for all possible geographies. That is what the `precalc:data` command does, it precalculates a set of metrics for all datasources against all geographies, where the `precalc` property is set to true in both the datasource and the geography.
-
-Precalc metrics are then imported into a report client, and combined with the sketch overlap metrics returned from the geoprocessing function, to produce a percentage.
+- Precalc will start a web server on localhost port 8001 that serve up data from `data/dist`.
+- Precalc will see the two datasources you selected and that they have `precalc: true`. It will also see the one geography `eez` that is defined in geographies.json that has `precalc: true`. It will then calculate `area`, `sum`, and `count` metrics for each datasource, in combination with each geography.
+- `project/precalc.json` will be updated with the new values.
 
 Tips for precalculation:
 
+- Do not be concerned if you see an error that an ".ovr" file could not be found. This is expected.
 - You have to re-run `precalc:data` every time you change a geography or datasource.
 - Set `precalc:false` for datasources that are not currently used, or are only used to define a geography (not displayed in reports). This is why the datasource for the default geography for a project is always set by default to `precalc: false`.
 - If you are using one of the [global-datasources](https://github.com/seasketch/global-datasources) in your project, and you want to use it in reporting % sketch overlap, so you've set `precalc:true`, strongly consider defining a `bboxFilter`. This will ensure that precalc doesn't have to fetch the entire datasource when precalculating a metric, which can be over 1 Gigabyte in size. Also consider setting a `propertyFilter` to narrow down to just the features you need. This filter is applied on the client-side so it won't reduce the number of features you are sending over the wire.
@@ -868,212 +860,6 @@ If you remove a geography/datasource, then in order to remove their precalculate
 
 ```bash
 npm run precalc:data:cleanup
-```
-
-### Create Metric Group
-
-The metric group is your report configuration. There is one metric group per individual report. It links everything together and defines what data you want to show in the individual report. The metric group is used in both the function that calculates statistics and the component which displays the results. Often, projects will include ~8 reports, with each report focusing on a goal or type of data.
-
-Navigate to `metrics.json`, where metric groups are stored. There is already a report here – `boundaryAreaOverlap`. This is the metric group used to calculate how much of the EEZ is within our sketch, using the `global-eez-mr-v12` datasource we [precalculated](#precalc-data).
-
-We’re going to create a report that uses the vector layer just imported. We want to see how much our sketch overlaps with the vector layer. Pick a metricId to be the title of your report in camelCase (`coralReef`), the type of report (`areaOverlap`), and the classes you want to show in the report. Your classes can look a myriad of ways, depending on whether all the data is from a single file, or multiple files. All data within a metric group must be in the same format (raster or vector).
-
-Our example `reefextent` data is a simple vector file. We can set classId to be anything. Our metric group looked as follows:
-
-```json
-{
-  "metricId": "coralReef",
-  "type": "areaOverlap",
-  "classes": [
-    {
-      "classId": "reefextent",
-      "display": "Coral Reef",
-      "datasourceId": "reefextent"
-    }
-  ]
-}
-```
-
-#### Metric group for vector data source with multiple classes
-
-Our example data `benthic` is a single file with different habitats defined by a `class` parameter. While there were many types of habitats, we may want to only focus on Sand, Rubble, and Rock. In this case, `classKey` must be `class` and `classIds` have to match the features in the vector file. My metric group would look like this:
-
-```json
-{
-  "metricId": "benthicHabitat",
-  "type": "areaOverlap",
-  "classes": [
-    {
-      "classId": "Sand",
-      "classKey": "class",
-      "display": "Sand",
-      "datasourceId": "benthic"
-    },
-    {
-      "classId": "Rock",
-      "classKey": "class",
-      "display": "Rock",
-      "datasourceId": "benthic"
-    },
-    {
-      "classId": "Rubble",
-      "classKey": "class",
-      "display": "Rubble",
-      "datasourceId": "benthic"
-    }
-  ]
-}
-```
-
-#### Metric group with two data sources
-
-You can have classes from multiple data sources in one metric group. If we wanted both the reef extent data and benthic habitat data in one report, the metric group can look as follows:
-
-```json
-{
-  "metricId": "benthicHabitat",
-  "type": "areaOverlap",
-  "classes": [
-    {
-      "classId": "reefextent",
-      "display": "Coral Reef",
-      "datasourceId": "reefextent"
-    },
-    {
-      "classId": "Sand",
-      "classKey": "class",
-      "display": "Sand",
-      "datasourceId": "benthic"
-    },
-    {
-      "classId": "Rock",
-      "classKey": "class",
-      "display": "Rock",
-      "datasourceId": "benthic"
-    },
-    {
-      "classId": "Rubble",
-      "classKey": "class",
-      "display": "Rubble",
-      "datasourceId": "benthic"
-    }
-  ]
-}
-```
-
-#### Metric group with quantitative raster data sources
-
-An example of a metric group `fishingEffort` which displays multiple quantitative raster data files. This report has been made using [Global Fishing Watch Apparent Fishing Effort data](https://globalfishingwatch.org/dataset-and-code-fishing-effort/), which reports fishing effort in hours. To calculate for the sum of fishing effort within our plan, we would use `type = valueOverlap`.
-
-```json
-{
-  "metricId": "fishingEffort",
-  "type": "valueOverlap",
-  "classes": [
-    {
-      "datasourceId": "all-fishing",
-      "classId": "all-fishing",
-      "display": "All Fishing 2019-2022"
-    },
-    {
-      "datasourceId": "drifting-longlines",
-      "classId": "drifting-longlines",
-      "display": "Drifting Longline"
-    },
-    {
-      "datasourceId": "pole-and-line",
-      "classId": "pole-and-line",
-      "display": "Pole and Line"
-    },
-    {
-      "datasourceId": "set-longlines",
-      "classId": "set-longlines",
-      "display": "Set Longline"
-    },
-    {
-      "datasourceId": "fixed-gear",
-      "classId": "fixed-gear",
-      "display": "Fixed Gear"
-    }
-  ]
-}
-```
-
-#### Metric group with categorical raster data sources
-
-An example of a metric group `fishRichness` which displays a categorical raster `fishRichness.tif`. The raster data displays the number of key fish species present in each raster cell -- from 1 to 5 species. `classId` should be set to the corresponding numerical value within the raster.
-
-```json
-{
-  "metricId": "fishRichness",
-  "type": "countOverlap",
-  "classes": [
-    {
-      "datasourceId": "fishRichness",
-      "classId": "1",
-      "display": "1 species"
-    },
-    {
-      "datasourceId": "fishRichness",
-      "classId": "2",
-      "display": "2 species"
-    },
-    {
-      "datasourceId": "fishRichness",
-      "classId": "3",
-      "display": "3 species"
-    },
-    {
-      "datasourceId": "fishRichness",
-      "classId": "4",
-      "display": "4 species"
-    },
-    {
-      "datasourceId": "fixed-gear",
-      "classId": "5",
-      "display": "5 species"
-    }
-  ]
-}
-```
-
-### Create Report
-
-```bash
-npm run create:report
-```
-
-Select the type of report you need for your data (`vector` or `raster`), and the name of your new metric group. For this tutorial, select `Vector overlap report` and [`benthicHabitat`](#metric-group-with-two-data-sources).
-
-This command does a lot for you:
-
-- Adds a function to `src/functions`
-- Adds a test file to `src/functions`
-- Adds a component (the front-end of any report) to `src/components`
-- Adds a story to `src/components`
-- Adds your new function to a list in `geoprocessing.json` that is used by AWS lambda
-
-Open these outputs and take a look at them. Edits to the statistic you want calculated (i.e.calculating average instead of sum, etc) should happen in your function (in this tutorial: `src/functions/benthicHabitat.ts`). Edits to the way the analytics are displayed (i.e. changing labels, converting units, adding text context, etc) should happen in your component (in this tutorial: `src/components/BenthicHabitat.tsx`).
-
-Add your new component to `src/components/ViabilityPage.tsx` or `src/components/RepresentationPage.tsx`. For example, `Viability.tsx` can now look like this, so our new report appears beneath the Size report and the Sketch Attributes report:
-
-```typescript
-import React from "react";
-import { SizeCard } from "./SizeCard";
-import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
-import { BenthicHabitat } from "./BenthicHabitat";
-
-const ReportPage = () => {
-  return (
-    <>
-      <SizeCard />
-      <BenthicHabitat />
-      <SketchAttributesCard autoHide />
-    </>
-  );
-};
-
-export default ReportPage;
 ```
 
 ### Test your project
@@ -1116,7 +902,7 @@ See the [Testing](../Testing.md) page for additional options for testing your pr
 
 #### Default geography
 
-When smoke tests run, they should run for the default geography, without needing to be told so, but you can still override it. That's why this is the standard boilerplate for a geoprocessing function.
+When smoke tests run, they should run for the default geography, without needing to be told so, because of the standard boilerplate code for a geoprocessing function:
 
 ```typescript
   export async function boundaryAreaOverlap(
@@ -1129,20 +915,13 @@ When smoke tests run, they should run for the default geography, without needing
   });
 ```
 
-If you call boundaryAreaOverlap with only a sketch as input (no extraParams), then `getFirstFromParam()` will return `undefined`, so
-`project.getGeographyById` will receive `undefined` and fallback to the geography assigned to the `default-boundary` group, which every project should have at least one, or throw an error.
-
-If you want to run smoke tests against a different geography, just to see what it produces, then you will have to do it explicitly:
+If you want to run smoke tests against a different geography, just to see what it produces, then you will have to do it explicitly in your smoke test:
 
 ```typescript
 const metrics = await boundaryAreaOverlap(sketch, {
   geographyIds: ["my-other-geography"],
 });
 ```
-
-if you use a `GeographySwitcher` UI component in your story, then it will allow you to switch geographies, but the story will still only receive the metrics for the smoke test you ran, which may only have been run for the default geography. In this situation, the report will load the precalc metrics for the geography you've chosen in the denominator for percentages, but the numerator metrics will always be for the default geography, or whatever geography you passed to your smoke test.
-
-If you've used template-ocean-eez and selected an EEZ, the default geography is your selected EEZ, and you're ready to run your storybook and check out your reports!
 
 ### Storybook
 
@@ -1379,6 +1158,78 @@ If you are seeing errors or unexpected behavior, try any one of the following st
 - Clear AWS cache: `npm run clear-all-results`
 
 ## Additional Tutorials
+
+### Setup an exising geoprocessing project
+
+This use case is where a geoprocessing project already exists, but it was developed on a different computer.
+
+First, clone your existing geoprocessing project to your work environment, whether this is in your local docker devcontainer or Windows WSL.
+
+#### Link your source data
+
+1. figure out [which option](#link-project-data) was used to bring data into your geoprocessing project, and follow the steps to set it up.
+
+- Option 1, you're good to go, the data should already be in `data/src` and src paths in `project/datasources.json` should have relative paths pointing into it.
+- Option 2, Look at `project/datasources.json` for the existing datasource paths and if your data file paths and operating system match you may be good to go. Try re-importing your data as below, and if it fails consider migrating to Option 1 or 3.
+- Option 3, if you're running a devcontainer you'll need to have made your data available in workspace by mounting it from the host operating system via docker-compose.yml (see installation tutorial) or have somehow synced or downloaded it directly to your container. Either way, you then just need to symlink the `data/src` directory in your project to your data. Make sure you point it to the right level of your data folder. Check the src paths in `project/datasources.json`. If for example the source paths start with `data/src/Data_Received/...` and your data directory is at `/Users/alex/Library/CloudStorage/Box-Box/ProjectX/Data_Received`, you want to create your symlink as such
+
+```bash
+ln -s /Users/alex/Library/CloudStorage/Box-Box/ProjectX data/src
+```
+
+Assuming `data/src` is now populated, you need to ensure everything is in order.
+
+2.Reimport your data
+
+This will re-import, transform, and export your data to `data/dist`, which is probably currently empty.
+
+```bash
+npm run reimport:data
+```
+
+Say yes to reimporting all datasources, and no to publishing them (we'll get to that).
+
+If you see error, look at what they say. If they say datasources are not being found at their path, then something is wrong with your drive sync (files might be missing), or with your symlink if you used option 3.
+
+If all is well, you should see no error, and `data/dist` should be populated with files. In the Version Control panel your datasources.json file will have changes, including some updated timestamps.
+
+But what if git changes show a lot of red and green?
+
+- You should look closer at what's happening. If parts of the smoke test output (examples directory JSON files) are being re-ordered, that may just be because Javascript is being a little bit different in how it generates JSON files from another computer that previously ran the tests.
+- If you are seeing changes to your precalc values in precalc.json, then your datasources may be different from the last person that ran it. You will want to make sure you aren't using an outdated older version. If you are using an updated more recent version, then convince yourself the changes are what you expect, for example total area increases or decreases.
+
+What if you just can't your data synced properly, and you just need to move forward?
+
+- If the project was deployed to AWS, then there will be a copy of the published data in the `datasets` bucket in AWS S3.
+- To copy this data from AWS back to your `data/dist` directory use the following, assuming your git repo is named `fsm-reports-test`
+  - `aws s3 sync s3://gp-fsm-reports-test-datasets data/dist`
+
+### Managing Devcontainers
+
+- To delete a devcontainer:
+  - This is often the easiest way to "start over" with your devcontainer.
+  - First, make sure you've pushed all of your code work to Github.
+  - Make sure you stop your active VSCODE devcontainer session.
+  - Open the Remote Explorer panel in the left sidebar.
+  - You can right-click and delete any existing devcontainers and volumes to start over.
+  - You can also see and delete them from the Docker Desktop app, but it might not be obvious which containers and volumes are which. The VSCode Remote Explorer window gives you that context.
+
+![Manage Devcontainers](assets/ManageDevcontainers.jpg "Manage Devcontainers")
+
+- To upgrade your devcontainer:
+  - The devcontainer settings in this repository may change/improve over time. You can always pull the latest changes for your `geoprocessing-devcontainer` repository, and then `Cmd-Shift-P` to open command palette and type `“DevContainers: Rebuild and Reopen locally”`.
+- To upgrade the `geoprocessing-workspace` Docker image
+  - This devcontainer builds on the `geoprocessing-workspace` Docker image published at [Docker Hub](https://hub.docker.com/r/seasketch/geoprocessing-workspace/tags). It will always install the latest version of this image when you setup your devcontainer for the first time.
+  - It is up to you to upgrade it after the initial installation. The most likely situation is:
+    - You see some changes in the [Changelog](https://github.com/seasketch/docker-gp-workspace/blob/main/Changelog.md) that you want to utilize.
+    - You are upgrading the `geoprocessing` library for your project to a newer version and it requires additional software that isn't in your current devcontainer. This situation should be flagged in the geoprocessing [changelog](https://github.com/seasketch/geoprocessing/blob/dev/CHANGELOG.md).
+  - In both cases you should be able to simply update your docker image to the latest. The easiest way to do this is to:
+    - Push all of your unsaved work in your devcontainer to Github. This is in case the Docker `named volume` where your code lives (which is separate from the devcontainer) is somehow lost. There are also ways to make a backup of a named volume and recover it if needed but that is an advanced exercise not discussed at this time.
+    - Stop your devcontainer session
+    - Go to the `Images` menu in Docker Desktop, finding your `seasketch/geoprocessing-workspace`.
+    - If it shows as "IN USE" then switch to the `Containers` menu and stop all containers using `seasketch/geoprocessing-workspace`.
+    - Now switch back to `Images` and pull a new version of the `seasketch/geoprocessing-image` by hovering your cursor over the image, clicking the 3-dot menu on the right side and the clicking `Pull`. This will pull the newest version of this image.
+    - Once complete, you should be able to restart your devcontainer and it will be running the latest `geoprocessing-workspace`.
 
 ### Creating a geoprocessing function
 

@@ -13,14 +13,21 @@ export type SketchGeometryTypes = Polygon | MultiPolygon | LineString | Point;
 
 /** Properties of a Sketch, defines known keys as well as unknown for extensiblity */
 export type SketchProperties = Record<string, any> & {
+  /** Unique sketch ID */
   id: string;
   /** Name specified by the author of the sketch */
   name: string;
+  /** Last updated ISO 8601 timestamp */
   updatedAt: ISO8601DateTime;
+  /** Last updated ISO 8601 timestamp */
   createdAt: ISO8601DateTime;
+  /** Unique ID of class of sketch */
   sketchClassId: string;
+  /** True if these are properties for a SketchCollection, false if Sketch */
   isCollection: boolean;
+  /** User-defined attributes with values for Sketch.  Defines known keys as well as unknown for extensiblity */
   userAttributes: UserAttribute[];
+  /** This is used on rare occasion to provide the sketch properties of a SketchCollections child sketches */
   childProperties?: SketchProperties[];
 };
 

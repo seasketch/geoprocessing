@@ -58,7 +58,7 @@ const datasources = readDatasources();
 const geoTypeAnswer = await geoTypeQuestion();
 const srcAnswer = await srcQuestion();
 
-const config = await (async () => {
+const options = await (async () => {
   if (geoTypeAnswer.geo_type === "vector") {
     // Vector datasource
     const layerNameAnswer = await layerNameQuestion(srcAnswer.src);
@@ -73,7 +73,7 @@ const config = await (async () => {
     );
     const precalcAnswers = await precalcQuestion();
 
-    const config = vectorMapper({
+    const options = vectorMapper({
       ...geoTypeAnswer,
       ...srcAnswer,
       ...datasourceIdAnswer,
@@ -86,7 +86,7 @@ const config = await (async () => {
       ...precalcAnswers,
       ...explodeAnswers,
     });
-    return config;
+    return options;
   } else {
     // Raster datasource
     const datasourceIdAnswer = await datasourceIdQuestion(
@@ -96,18 +96,18 @@ const config = await (async () => {
     const detailedRasterAnswers = await detailedRasterQuestions(srcAnswer.src);
     const precalcAnswers = await precalcQuestion();
 
-    const config = rasterMapper({
+    const options = rasterMapper({
       ...geoTypeAnswer,
       ...srcAnswer,
       ...datasourceIdAnswer,
       ...detailedRasterAnswers,
       ...precalcAnswers,
     });
-    return config;
+    return options;
   }
 })();
 
-await importDatasource(projectClient, config, {});
+await importDatasource(projectClient, options, {});
 
 /** Maps answers object to options */
 function vectorMapper(

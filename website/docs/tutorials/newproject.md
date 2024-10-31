@@ -1,14 +1,15 @@
 # Create a New Geoprocessing Project
 
-Assuming [initial system setup](./Tutorials.md#initial-system-setup) is complete.
+This tutorial assumes your [system setup](./Tutorials.md) is complete and you have a VSCode app open in your code workspace
 
-This tutorial now walks through generating a new geoprocessing project codebase and committing it to Github.
+This tutorial walks through generating a new geoprocessing project codebase, importing datasources, creating and viewing a report, and your first project build
 
 ## Create Github Repository
 
 First, we'll establish a remote place to store your code.
 
-- [Create a new Github repository](https://github.com/new) called `fsm-reports-test` (you can pick your own name but the tutorial will assume this name). When creating, do not initialize this repository with any files like a README.
+- [Create a new Github repository](https://github.com/new) called `fsm-reports-test` (you can pick your own name but the tutorial uses this name). When creating, do not initialize this repository with any files like a README or LICENSE, just create a blank project.
+
 - In your VSCode terminal, make sure you are in your projects top-level directory. A shorthand way to do this is `cd ~/src/fsm-reports-test`.
 
 ## Connect Git Repo
@@ -40,7 +41,7 @@ To get started:
 - Open a terminal with Ctrl-J if not already open
 - `cd /workspaces`
 
-### If Running MacOS Bare Metal / Windows WSL (Install Option 2)
+### If Running Bare Metal (Install Option 2)
 
 Windows:
 
@@ -406,7 +407,7 @@ npm run import:data
 ? Type of data? Vector
 ```
 
-Assuming you are using the [FSM data](#example-data-for-tutorial) from Allen Coral Atlas available now in your `data/src` directory. Let's import the `reefextent` vector data from the geopackage.
+Now import the `reefextent` vector data from the geopackage.
 
 ```bash
 ? Enter path to src file (with filename) data/src/reefextent.gpkg
@@ -488,7 +489,7 @@ If the import fails, try again double checking everything. It is most likely one
 
 #### Vector data with key parameter
 
-What if you have a vector file with multiple classes you want to group metrics by? The other [downloaded example data](#example-data-for-tutorial) `benthic.gpkg` separates different benthic habitats (Sand, Seagrass, Coral) by a `class` parameter. The import for this datasource looks as follows:
+What if you have a vector file with multiple classes you want to group metrics by? The other example data `benthic.gpkg` separates different benthic habitats (Sand, Seagrass, Coral) by a `class` parameter. The import for this datasource looks as follows:
 
 ```bash
 npm run import:data -> Vector -> data/src/benthic.gpkg -> Micronesian Exclusive Economic Zone -> benthic -> class -> {none} -> Yes -> {none} -> Yes
@@ -945,3 +946,15 @@ If you're still not sure try some of the following:
 - Run your smoke tests, see if they pass
 - When was the last time your build did succeed? You can be sure the error is caused by a change you made since then either in your project code, by upgrading your geoprocessing library version and not migratin fully, or by changing something on your system.
 - You can stash your current changes or commit them to a branch so they are not lost. Then sequentially check out previous commits of the code until you find one that builds properly. Now you know that the next commit cause the build error.
+
+### What Next
+
+There are a number of guides covering advanced topics.
+
+There are also many report projects you can look at to gain a better understanding or to add more advanced features.
+
+- [California](https://github.com/seasketch/california-reports) - worker functions, v7
+- [Bermuda](https://github.com/seasketch/bermuda-reports-next) - worker functions, v7
+- [Blue Azores nearshore](https://github.com/seasketch/azores-nearshore-reports) - geography switching
+- [Samoa Reports](https://github.com/seasketch/samoa-reports)
+- [Azores Nearshore Reports](https://github.com/seasketch/azores-nearshore-reports).

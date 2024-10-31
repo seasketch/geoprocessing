@@ -40,7 +40,7 @@ Storybooks are published for each major and minor version of geoprocessing.
 
 ## Core library setup
 
-To contribute to the library, you'll need to set it up on your local system. First, follow the base [setup tutorial](./tutorials/Tutorials.md#initial-system-setup).
+To contribute to the library, you'll need to set it up on your local system. First, follow the [system setup](./tutorials/Tutorials.md) tutorial.
 
 Then checkout the repo and run the install script. This will install lerna, bootstrap each package, and prepare an initial build of the geoprocessing library.
 

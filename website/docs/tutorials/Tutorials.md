@@ -1,24 +1,6 @@
-# Tutorial Introduction
+# System Setup
 
-These tutorials will teach you the fundamentals of creating and deploying a seasketch `geoprocessing` project. They expect you already have a basic working knowledge of your computer, its operating system, command line interfaces, and web application development.
-
-## Assumptions
-
-Unless otherwise instructed, assume:
-
-- You are working within the VSCode editor, with your top-level directory open as the project workspace
-- All commands are entered within a VSCode terminal, usually with the top-level project directory as the current working directory
-
-## Initial System Setup
-
-This tutorial gets your system ready to [create a new geoprocessing project](./newproject.md) or [setup an existing project](./existingproject.md).
-
-Examples of existing projects for reference and inspiration. Note, some may use older versions of the geoprocessing library and may look a little different.
-
-- [FSM Reports](https://github.com/seasketch/fsm-reports)
-- [Samoa Reports](https://github.com/seasketch/samoa-reports)
-- [Maldives Nearshore Reports](https://github.com/seasketch/maldives-nearshore-reports)
-- [Azores Nearshore Reports](https://github.com/seasketch/azores-nearshore-reports)
+These tutorials will teach you the fundamentals of creating and deploying a seasketch `geoprocessing` project. They expect you already have a basic working knowledge of your computer, its operating system, command line interfaces, and web application development. Learn more about the [skills](../skills.md) required.
 
 You will need a computer running at least:
 
@@ -29,12 +11,13 @@ You will need a computer running at least:
 Web browser:
 
 - Chrome is the most common but Firefox, Safari, Edge can also work. Their developer tools will all be a little different.
+- Chrome is the most common but Firefox, Safari, Edge can also work. Their developer tools will all be a little different.
 
 ### Install Options
 
 You have 3 options for how to develop geoprocessing projects
 
-1. Local Docker environment
+1. Docker Desktop Environment
    - Docker provides a sandboxed Ubuntu Linux environment on your local computer, setup specifically for geoprocessing projects.
    - Best for: intermediate to power users doing development every day
    - Pros
@@ -53,80 +36,62 @@ You have 3 options for how to develop geoprocessing projects
 
 Choose an option and follow the instructions below to get started. You can try out different options over time.
 
-### If Install Option #1 - Local Docker Environment
+### If Install Option #1 - Docker Desktop Environment
 
-- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) for either Apple processor or Intel processor as appropriate to your system and make sure it's running.
-  - If you don't know which you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`
-- Install [VS Code](https://code.visualstudio.com) and open it
-- Clone the geoprocessing devcontainer repository to your system
+- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and make sure its running.
+- If you have a Mac, choose either Apple processor or Intel processor as appropriate to your system. If you don't know which processor you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`.
+- Install [VS Code](https://code.visualstudio.com) and open it.
+- Clone the geoprocessing-devcontainer Github repository to your local system and open that folder in VSCode.
 
 ```bash
 git clone https://github.com/seasketch/geoprocessing-devcontainer
 ```
 
-- Open the geoprocessing-devcontainer folder in VSCode
+Here are more detailed instructions to do this step:
 
-  - `File` -> `Open Folder` -> geoprocessing-devcontainer folder
+- From VSCode, click `Open Folder` button or `File -> Open Folder` and create or choose a folder where you keep source code. A folder called `src` or `code` in your users home directory is reasonable. Then click `Select Folder` to finish.
+- Press `Ctrl-J` or `Cmd-backtick` to open a terminal. The current directory of the terminal will be your workspace folder.
+- Enter the command to clone the geoprocessing-devcontainer repository to your workspace.
+  - `git clone https://github.com/seasketch/geoprocessing-devcontainer`
+- Click `Open Folder` button or `File -> Open Folder` and open the repo folder you just cloned.
+- Press `Ctrl-J` or `Cmd-backtick` to open a terminal.
 
-- If you are prompted to install suggested extensions, then do so, otherwise go to the Extension panel and install the following:
+- Install required VSCode extensions. If you are already prompted to install suggested extensions, click to do so now, otherwise go to the `Extension` panel on the left side of the VSCode window and install the following extensions:
   - Remote Development
-  - Dev Containers
-  - Docker
   - Remote Explorer
-- Once you have DevContainer support, you should be prompted to ”Reopen folder to develop in a container”. <b>_Do not do this yet._</b>
-- Under the `.devcontainer/local-dev` folder, make a copy of the `.env.template` file and rename it to `.env`.
-  - You don't need to do anything yet with your .env, it just needs to exist. But:
-  - If you want to use POEditor for translation, fill in your POEDITOR_PROJECT id, and POEDITOR_API_TOKEN for you account, which you can find here - https://poeditor.com/account/api. If you don't have an account, then follow the instructions to [create your own](../gip//GIP-1-i18n.md#setup-poeditor-as-an-independent-developer).
-  - If you have an AWS admin account already, you can enter your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY now as well. Or you can do it later when you are ready to deploy your project to AWS.
-- If you have a data folder to mount into the docker container from your host operating system, edit the `.devcontainer/local-dev/docker-compose.yml` file and uncomment the volume below this comment
-  - `# Bound host volume for Box data folder`
-  - The volume is preset to bind to your Box Sync folder in you home directory but you can change it to any path in your operating system where your data resides for all your projects.
-- To start the devcontainer at any time
-  - `Cmd-Shift-P` to open command palette
-  - type “Reopen in container” and select the Dev Container command to do so.
-  - VSCode will reload, pull the latest `geoprocessing-workspace` docker image, run it, and start a remote code experience inside the container.
-- Once container starts
-  - It will automatically clone the geoprocessing repository into your environment under `/workspaces/geoprocessing`, and then run `npm install` to install all dependencies. Wait for this process to finish which can take up to 3-4 minutes the first time.
-  - `Ctrl-J` will open a terminal inside the container.
-  - Navigate to geoprocessing and verify tests run successfully.
-    - `cd /workspaces/geoprocessing`
-    - `npm run test`
+  - Docker
+  - Dev Containers
 
-If success, then you're now ready to create a new geoprocessing project in your devcontainer environment.
+Once you have added the `Dev Containers` extension you should be prompted to ”Reopen folder to develop in a container”. <b>_Do not do this yet._</b>
 
-- To stop devcontainer at any time
-  - `Cmd-Shift-P` to open command palette and type `“DevContainers: Rebuild and Reopen locally”` to find command and hit Enter.
-  - Choose `Local Workspace`
-  - Your devcontainer will now bootstrap, downloading the geoprocessing docker image and installing everything.
+- In the file `Explorer` panel, you will find a `.devcontainer` folder. This top-level folder contains the configuration for the `stable` geoprocessing devcontainer.
+- Make a copy of `.devcontainer/.env.template` file and name it `.env`.
+  - You don't need to add anything yet to your .env file, but it is required that it exists in the `.devcontainer` folder.
+
+Now start the devcontainer:
+
+- `Ctrl-Shift-P` or `Cmd-Shift-P` to open the VSCode command palette
+- type “Reopen in container” and select the Dev Container command to do so.
+- Select the `Geoprocessing Local Stable` environment.
+- VSCode will pull the latest `geoprocessing-workspace` docker image, create a container with it, and start a remote code experience inside the container.
 - Notice the bottom left blue icon in your vscode window. It may say `Opening remote connection` and eventually will say `Dev Container: Geoprocessing`. This is telling you that this VSCode window is running in a devcontainer environment.
-- To exit your devcontainer:
-  - Click the blue icon in the bottom left, and click `Reopen locally`. This will bring VSCode back out of the devcontainer session.
-- To delete a devcontainer:
-  - This is often the easiest way to "start over" with your devcontainer.
-  - First, make sure you've pushed all of your code work to Github.
-  - Make sure you stop your active VSCODE devcontainer session.
-  - Open the Remote Explorer panel in the left sidebar.
-  - You can right-click and delete any existing devcontainers and volumes to start over.
-  - You can also see and delete them from the Docker Desktop app, but it might not be obvious which containers and volumes are which. The VSCode Remote Explorer window gives you that context.
+
+![Manage Devcontainers](assets/devcontainer-blue.jpg "Manage Devcontainers")
+
+You now have a devcontainer, ready to create a project in.
+
+To exit your devcontainer:
+
+- Click the blue icon in the bottom left, and then `Reopen locally`. This will bring VSCode back out of the devcontainer session.
+- You can also type `Ctrl-Shift-P` or `Cmd-Shift-P` and select `Dev Containers: Reopen folder locally`.
 
 ![Manage Devcontainers](assets/ManageDevcontainers.jpg "Manage Devcontainers")
 
-- To upgrade your devcontainer:
-  - The devcontainer settings in this repository may change/improve over time. You can always pull the latest changes for your `geoprocessing-devcontainer` repository, and then `Cmd-Shift-P` to open command palette and type `“DevContainers: Rebuild and Reopen locally”`.
-- To upgrade the `geoprocessing-workspace` Docker image
-  - This devcontainer builds on the `geoprocessing-workspace` Docker image published at [Docker Hub](https://hub.docker.com/r/seasketch/geoprocessing-workspace/tags). It will always install the latest version of this image when you setup your devcontainer for the first time.
-  - It is up to you to upgrade it after the initial installation. The most likely situation is:
-    - You see some changes in the [Changelog](https://github.com/seasketch/docker-gp-workspace/blob/main/Changelog.md) that you want to utilize.
-    - You are upgrading the `geoprocessing` library for your project to a newer version and it requires additional software that isn't in your current devcontainer. This situation should be flagged in the geoprocessing [changelog](https://github.com/seasketch/geoprocessing/blob/dev/CHANGELOG.md).
-  - In both cases you should be able to simply update your docker image to the latest. The easiest way to do this is to:
-    - Push all of your unsaved work in your devcontainer to Github. This is in case the Docker `named volume` where your code lives (which is separate from the devcontainer) is somehow lost. There are also ways to make a backup of a named volume and recover it if needed but that is an advanced exercise not discussed at this time.
-    - Stop your devcontainer session
-    - Go to the `Images` menu in Docker Desktop, finding your `seasketch/geoprocessing-workspace`.
-    - If it shows as "IN USE" then switch to the `Containers` menu and stop all containers using `seasketch/geoprocessing-workspace`.
-    - Now switch back to `Images` and pull a new version of the `seasketch/geoprocessing-image` by hovering your cursor over the image, clicking the 3-dot menu on the right side and the clicking `Pull`. This will pull the newest version of this image.
-    - Once complete, you should be able to restart your devcontainer and it will be running the latest `geoprocessing-workspace`.
+See devcontainer advanced usage [guide](../devcontainer/devcontainer.md) to learn more.
 
-### Option #2 - MacOS Bare Metal / Windows WSL
+### Install Option #2 - Bare Metal
+
+Running 'bare metal' means running the geoprocessing framework directly on your computers operating system. It's up to you to install and maintain all necessary dependencies.
 
 #### MacOS
 
@@ -142,10 +107,14 @@ If success, then you're now ready to create a new geoprocessing project in your 
   - `npm --version` to check
   - `npm install -g latest`
 
-- Install [Java runtime](https://www.java.com/en/download/) for MacOS (required by AWS CDK library)
+- Install [GDAL](https://gdal.org/)
+
+  - First install [homebrew](https://brew.sh/)
+  - `brew install gdal`
+
+- Install [Java runtime](https://www.java.com/en/download/) for MacOS (required for testing with Amazon DynamoDb Local)
 
 - Create a free Github account if you don't have one already
-  - Set your git username
 
 #### Windows
 
@@ -158,7 +127,7 @@ In Windows:
 - Open start menu -> `Ubuntu on Windows`
   - This will start a bash shell in your Ubuntu Linux home directory
 
-In Ubuntu:
+In WSL Ubuntu:
 
 - Install [Java runtime](https://stackoverflow.com/questions/63866813/what-is-the-proper-way-of-using-jdk-on-wsl2-on-windows-10) in Ubuntu (required by AWS CDK library)
 - Install [Git in Ubuntu and Windows](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git)
@@ -173,13 +142,13 @@ In Ubuntu:
 
 ### Final Steps
 
-Whichever option you chose, if you haven't already, establish the [username](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git?platform=mac) and email address git should associate with your commits.
+The last step, regardless of install option, is to set the [username](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git?platform=mac) and email address git will associate with your commits.
 
-You can set these per repository, or set them globall on your system for all repositories and override them as needed. Here's the commands to set globally for your environment.
+You can set these per repository, or globally for all repositories on your system (and override as needed). Here's the commands to set globally for your environment.
 
 ```bash
 git config --global user.name "Your Name"
-git config --global user.email "yourusername@yourprovider.com"
+git config --global user.email "yourusername@youremail.com"
 ```
 
 Now verify it was set:
@@ -192,4 +161,4 @@ cat ~/.gitconfig
 cat .git/config
 ```
 
-At this point your system is ready for you to `create a new project`, or `setup an existing project`
+Your devcontainer environment is now ready for a project

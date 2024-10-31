@@ -25,7 +25,7 @@ const sidebars: SidebarsConfig = {
             {
               type: "doc",
               id: "tutorials/Tutorials",
-              label: "Introduction",
+              label: "System Setup",
             },
             {
               type: "doc",
@@ -134,6 +134,11 @@ const sidebars: SidebarsConfig = {
               type: "doc",
               id: "tutorials/storybook",
               label: "Storybook",
+            },
+            {
+              type: "doc",
+              id: "devcontainer/devcontainer",
+              label: "Devcontainer",
             },
           ],
         },

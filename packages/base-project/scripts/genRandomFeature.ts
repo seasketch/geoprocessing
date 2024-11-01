@@ -1,60 +1,83 @@
-#!/usr/bin/env ts-node
 import fs from "fs-extra";
-import project from "../project/projectClient.js";
 import {
-  FeatureCollection,
+  featureToSketchCollection,
+  featureToSketch,
   genFeature,
   genFeatureCollection,
   genRandomPolygons,
+  FeatureCollection,
   Polygon,
 } from "@seasketch/geoprocessing";
+import { program } from "commander";
 
 /**
- * genRandomFeature script - generates random feature within the bounding box of the project.  Not guaranteed to be within the EEZ boundary
- * @param outdir - the output director to write features to.  Defaults to examples/features/
- * @param name - the name of the feature and the filename to use with a .json extension added.
- * @param numfeatures - number of features to generate.  Defaults to 1.  If greater than 1, will return as a feature collection
+ * genRandomFeature script - generates random feature or sketch within given bounding box.
+ * npx tsx genRandomFeature.ts --help for more info
  */
 
-const usage = "Usage: genRandomFeature [numfeatures] [name] [outdir]";
-console.log(process.argv);
-const numPolygons = Number.parseInt(process.argv[2]) || 1;
-if (!numPolygons || numPolygons <= 0) throw new Error(usage);
+program
+  .option(
+    "--outDir <outDir>",
+    "output directory",
+    `${import.meta.dirname}/../examples/sketches/`,
+  )
+  .option(
+    "--bbox <bbox>",
+    "bounding box to constrain features",
+    "[-180, -90, 180, 90]",
+  )
+  .option("--numFeatures <numFeatures>", "number of features to generate", "1")
+  .option("--name <name>", "name of the file")
+  .option("-s, --sketch", "generates Sketch instead of Feature");
+program.parse();
+const options = program.opts();
+
+console.log(options);
+
+const outdir = options.outDir;
+const bbox = JSON.parse(options.bbox);
+const numFeatures = Number.parseInt(options.numFeatures) || 1;
+const type = options.sketch ? "Sketch" : "Feature";
+
+console.log(bbox);
 
 const name = (() => {
-  const argName = process.argv[3];
+  const argName = options.name;
   if (argName) {
-    return `${process.argv[3]}`;
-  } else if (numPolygons > 1) {
-    return "randomFeatureCollection";
+    return `${process.argv[3]}.json`;
+  } else if (numFeatures > 1) {
+    return `random${type}Collection`;
   } else {
-    return "randomFeature";
+    return `random${type}`;
   }
 })();
-
-const outdir =
-  process.argv[4] || `${import.meta.dirname}/../examples/features/`;
-
 const outfile = `${outdir}${name}.json`;
 
-const bounds = project.basic.bbox;
-if (!bounds) throw new Error("Missing bounds in basic.json");
-
-const features = (() => {
+const sketches = (() => {
   const fc = genRandomPolygons({
-    numPolygons,
-    bounds,
+    numPolygons: numFeatures,
+    bounds: bbox,
   }) as FeatureCollection<Polygon>;
-  if (numPolygons === 1) {
-    return genFeature({ feature: fc.features[0], name });
+
+  if (type === "Feature") {
+    if (numFeatures === 1) {
+      return genFeature({ feature: fc.features[0], name });
+    } else {
+      const feats = genFeatureCollection(fc.features, { name });
+      return feats;
+    }
   } else {
-    const feats = genFeatureCollection(fc.features, { name });
-    return feats;
+    if (numFeatures === 1) {
+      return featureToSketch(fc.features[0], name);
+    } else {
+      const sc = featureToSketchCollection(fc, name);
+      return sc;
+    }
   }
 })();
 
 await fs.remove(outfile);
-fs.writeJSON(outfile, features, { spaces: 2 }, (err) => {
+fs.writeJSON(outfile, sketches, { spaces: 2 }, (err) => {
   if (err) throw err;
-  console.log(`features written to ${outfile}`);
+  console.log(`Sketches written to ${outfile}`);
 });

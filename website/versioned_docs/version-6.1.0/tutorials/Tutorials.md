@@ -284,7 +284,7 @@ This command uses `npx`, which comes with `npm` and allows you to execute comman
 As an example, assume you are developing reports for the country of `The Federated States of Micronesia`.
 
 ```text
-? Choose a name for your project fsm-report-test
+? Choose a name for your project fsm-reports-test
 ? Please provide a short description of this project Test drive
 ```
 
@@ -297,8 +297,8 @@ Now paste the URL of the github repository you created in the first step
 You will then be asked for the name and email that establishes you as the author of this project. It will default to your git settings. Change it as you see fit for establishing you as the author of the project.
 
 ```text
-? Your name Alex
-? Your email alex@gmail.com
+? Your name [YOUR_NAME]
+? Your email [YOUR_EMAIL]
 ```
 
 Now provide your organization name associated with authoring this project
@@ -378,7 +378,7 @@ Once you have more than one folder under `/workspaces` backed by a git repositor
 
 For the best experience, you will want open a single workspace in your VSCode for a single folder in your devcontainer.
 
-`File` -> `Open folder` -> /workspaces/fsm-report-test
+`File` -> `Open folder` -> /workspaces/fsm-reports-test
 
 VSCode should now reopen the under this new workspace, using the existing devcontainer, and you're ready to go.
 

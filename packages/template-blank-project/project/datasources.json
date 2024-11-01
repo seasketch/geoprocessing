@@ -20,24 +20,6 @@
     "precalc": false
   },
   {
-    "datasourceId": "global-eez-mr-v12",
-    "geo_type": "vector",
-    "formats": ["fgb", "json"],
-    "metadata": {
-      "name": "World EEZ v11",
-      "description": "World EEZ boundaries and disputed areas",
-      "version": "11.0",
-      "publisher": "Flanders Marine Institute (VLIZ)",
-      "publishDate": "2019118",
-      "publishLink": "https://marineregions.org/"
-    },
-    "classKeys": [],
-    "url": "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-mr-v12.fgb",
-    "idProperty": "GEONAME",
-    "nameProperty": "GEONAME",
-    "precalc": false
-  },
-  {
     "datasourceId": "world",
     "geo_type": "vector",
     "formats": ["json", "fgb"],
@@ -54,88 +36,5 @@
       "publishLink": ""
     },
     "precalc": false
-  },
-  {
-    "datasourceId": "bo-present-surface-ph",
-    "geo_type": "raster",
-    "formats": ["tif"],
-    "precalc": true,
-    "metadata": {
-      "name": "BioOracle Present Day Surface pH",
-      "description": "BioOracle Present Day Surface pH global raster",
-      "version": "2.2",
-      "publisher": "BioOracle",
-      "publishDate": "2021-09-24",
-      "publishLink": "https://www.bio-oracle.org/"
-    },
-    "measurementType": "quantitative",
-    "band": 1,
-    "noDataValue": -3.3999999521443642e38,
-    "created": "2023-12-11T11:55:31.053Z",
-    "lastUpdated": "2023-12-11T12:52:22.966Z",
-    "src": "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/bo-present-surface-ph.tif"
-  },
-  {
-    "datasourceId": "bo-present-surface-temp-max",
-    "geo_type": "raster",
-    "formats": ["tif"],
-    "precalc": true,
-    "metadata": {
-      "name": "BioOracle Present Day Surface Temperature Maximum",
-      "description": "BioOracle Present Day Surface Temperature Maximum global raster",
-      "version": "2.2",
-      "publisher": "BioOracle",
-      "publishDate": "2021-09-24",
-      "publishLink": "https://www.bio-oracle.org/"
-    },
-    "measurementType": "quantitative",
-    "band": 1,
-    "noDataValue": -1.7e308,
-    "created": "2023-12-11T11:56:47.117Z",
-    "lastUpdated": "2023-12-11T12:52:25.733Z",
-    "url": "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/bo-present-surface-temp-max.tif"
-  },
-  {
-    "datasourceId": "bo-present-surface-temp-min",
-    "geo_type": "raster",
-    "formats": ["tif"],
-    "precalc": true,
-    "metadata": {
-      "name": "BioOracle Present Day Surface Temperature Minimum",
-      "description": "BioOracle Present Day Surface Temperature Minimum global raster",
-      "version": "2.2",
-      "publisher": "BioOracle",
-      "publishDate": "2021-09-24",
-      "publishLink": "https://www.bio-oracle.org/"
-    },
-    "measurementType": "quantitative",
-    "band": 1,
-    "noDataValue": -1.7e308,
-    "created": "2023-12-11T11:58:59.485Z",
-    "lastUpdated": "2023-12-11T12:52:27.957Z",
-    "url": "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/bo-present-surface-temp-min.tif"
-  },
-  {
-    "datasourceId": "meow-ecos",
-    "url": "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/meow-ecos.fgb",
-    "layerName": "meow_ecos",
-    "geo_type": "vector",
-    "formats": ["fgb"],
-    "classKeys": [],
-    "created": "2023-12-12T00:41:57.298Z",
-    "lastUpdated": "2023-12-12T00:41:57.298Z",
-    "propertiesToKeep": ["ECOREGION", "PROVINCE", "REALM", "Lat_Zone"],
-    "explodeMulti": false,
-    "precalc": true,
-    "idProperty": "ECOREGION",
-    "nameProperty": "ECOREGION",
-    "metadata": {
-      "name": "Marine Ecoregions of the World",
-      "description": "A biogeographic classification of the world's coastal and continental shelf waters following a nested hierarchy of realms, provinces and ecoregions",
-      "version": "20190911",
-      "publisher": "The Nature Conservancy",
-      "publishDate": "20190911",
-      "publishLink": "https://tnc.maps.arcgis.com/home/item.html?id=ed2be4cf8b7a451f84fd093c2e7660e3"
-    }
   }
 ]

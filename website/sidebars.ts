@@ -140,6 +140,7 @@ const sidebars: SidebarsConfig = {
               id: "devcontainer/devcontainer",
               label: "Devcontainer",
             },
+            { type: "doc", id: "codespaces/codespaces", label: "Codespaces" },
           ],
         },
         "architecture/Architecture",

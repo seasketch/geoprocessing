@@ -18,11 +18,11 @@ export interface SimpleResults {
   /** area of sketch within geography in square meters */
   area: number;
   /** list of ecoregions within bounding box of sketch  */
-  nearbyEcoregions: string[];
+  // nearbyEcoregions: string[];
   /** minimum surface temperature within sketch */
-  minTemp: number;
+  // minTemp: number;
   /** maximum surface temperature within sketch */
-  maxTemp: number;
+  // maxTemp: number;
 }
 
 async function simpleFunction(
@@ -44,53 +44,52 @@ async function simpleFunction(
 
   // Vector example - create list of country EEZ's nearby to the sketch (overlapping with sketch bounding box)
 
-  // Fetch eez features overlapping sketch bbox
-  const ds = project.getExternalVectorDatasourceById("meow-ecos");
-  const url = project.getDatasourceUrl(ds);
-  const eezFeatures = await getFeatures(ds, url, {
-    bbox: clippedSketch.bbox || bbox(clippedSketch),
-  });
+  // // Fetch eez features overlapping sketch bbox
+  // const ds = project.getExternalVectorDatasourceById("meow-ecos");
+  // const url = project.getDatasourceUrl(ds);
+  // const eezFeatures = await getFeatures(ds, url, {
+  //   bbox: clippedSketch.bbox || bbox(clippedSketch),
+  // });
 
-  // Reduce to list of ecoregion names
-  const regionNames = eezFeatures.reduce<Record<string, string>>(
-    (regionsSoFar, curFeat) => {
-      if (curFeat.properties && ds.idProperty) {
-        const regionName = curFeat.properties[ds.idProperty];
-        return { ...regionsSoFar, [regionName]: regionName };
-      } else {
-        return { ...regionsSoFar, unknown: "unknown" };
-      }
-    },
-    {},
-  );
+  // // Reduce to list of ecoregion names
+  // const regionNames = eezFeatures.reduce<Record<string, string>>(
+  //   (regionsSoFar, curFeat) => {
+  //     if (curFeat.properties && ds.idProperty) {
+  //       const regionName = curFeat.properties[ds.idProperty];
+  //       return { ...regionsSoFar, [regionName]: regionName };
+  //     } else {
+  //       return { ...regionsSoFar, unknown: "unknown" };
+  //     }
+  //   },
+  //   {},
+  // );
 
   // Raster example - get minimum and maximum surface temperature within sketch for present day
 
-  const minDs = project.getRasterDatasourceById("bo-present-surface-temp-min");
-  const minUrl = project.getDatasourceUrl(minDs);
-  const minRaster = await loadCog(minUrl);
-  const minResult = await rasterStats(minRaster, {
-    feature: clippedSketch,
-    stats: ["min"],
-  });
-  const minTemp = minResult[0].min; // extract value from band 1
+  // const minDs = project.getRasterDatasourceById("bo-present-surface-temp-min");
+  // const minUrl = project.getDatasourceUrl(minDs);
+  // const minRaster = await loadCog(minUrl);
+  // const minResult = await rasterStats(minRaster, {
+  //   feature: clippedSketch,
+  //   stats: ["min"],
+  // });
+  // const minTemp = minResult[0].min; // extract value from band 1
 
-  const maxDs = project.getRasterDatasourceById("bo-present-surface-temp-max");
-  const maxUrl = project.getDatasourceUrl(maxDs);
-  const maxRaster = await loadCog(maxUrl);
-  const maxResult = await rasterStats(maxRaster, {
-    feature: clippedSketch,
-    stats: ["max"],
-  });
-  const maxTemp = maxResult[0].max; // extract value from band 1
+  // const maxDs = project.getRasterDatasourceById("bo-present-surface-temp-max");
+  // const maxUrl = project.getDatasourceUrl(maxDs);
+  // const maxRaster = await loadCog(maxUrl);
+  // const maxResult = await rasterStats(maxRaster, {
+  //   feature: clippedSketch,
+  //   stats: ["max"],
+  // });
+  // const maxTemp = maxResult[0].max; // extract value from band 1
 
-  if (!minTemp || !maxTemp) throw new Error("Missing minTemp or maxTemp");
+  // if (!minTemp || !maxTemp) throw new Error("Missing minTemp or maxTemp");
 
   return {
     area: turfArea(clippedSketch),
-    nearbyEcoregions: Object.keys(regionNames),
-    minTemp,
-    maxTemp,
+    // minTemp,
+    // maxTemp,
   };
 }
 

@@ -77,6 +77,16 @@ const sidebars: SidebarsConfig = {
           items: [
             {
               type: "doc",
+              id: "linkData",
+              label: "Link Project Data",
+            },
+            {
+              type: "doc",
+              id: "thirdpartydata/thirdpartydata",
+              label: "Third Party Data",
+            },
+            {
+              type: "doc",
               id: "upgrade",
               label: "Upgrade Project",
             },
@@ -91,6 +101,11 @@ const sidebars: SidebarsConfig = {
           type: "category",
           label: "Guides",
           items: [
+            {
+              type: "doc",
+              id: "structure",
+              label: "Project Structure",
+            },
             {
               type: "doc",
               id: "projectclient",

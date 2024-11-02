@@ -15,7 +15,7 @@ Web browser:
 
 ### Install Options
 
-You have 3 options for how to develop geoprocessing projects
+You have 2 options for how to develop geoprocessing projects
 
 1. Docker Desktop Environment
    - Docker provides a sandboxed Ubuntu Linux environment on your local computer, setup specifically for geoprocessing projects.
@@ -35,6 +35,8 @@ You have 3 options for how to develop geoprocessing projects
    - Cons - prone to instability and issues due to progression of dependency versions or operating system changes. Difficult to test and ensure stable support for all operating systems and processors (amd64, arm64).
 
 Choose an option and follow the instructions below to get started. You can try out different options over time.
+
+[Github codespaces](../codespaces/) is also possible to use instead of Docker Desktop but is more limited and not well tested.
 
 ### If Install Option #1 - Docker Desktop Environment
 

@@ -1,20 +1,57 @@
 # Create a New Geoprocessing Project
 
-This tutorial assumes your [system setup](./Tutorials.md) is complete and you have a VSCode app open in your code workspace
+This tutorial walks through generating a new geoprocessing project. It assumes:
 
-This tutorial walks through generating a new geoprocessing project codebase, importing datasources, creating and viewing a report, and your first project build
+- Your [system setup](./Tutorials.md) is complete
+- You have a VSCode app open in a devcontainer
+- You have a VSCode terminal open.
 
-## Create Github Repository
+## Initialize Geoprocessing Project
 
-First, we'll establish a remote place to store your code.
+Start the project `init` process, which will download the framework, and collect required project metadata.
 
-- [Create a new Github repository](https://github.com/new) called `fsm-reports-test` (you can pick your own name but the tutorial uses this name). When creating, do not initialize this repository with any files like a README or LICENSE, just create a blank project.
+```sh
+cd /workspaces
+npx @seasketch/geoprocessing@latest init
+```
 
-- In your VSCode terminal, make sure you are in your projects top-level directory. A shorthand way to do this is `cd ~/src/fsm-reports-test`.
+For this example, assume you have a marine planning project in `The Federated States of Micronesia`. The planning area will be from the coastline to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
 
-## Connect Git Repo
+```text
+? Choose a name for your project fsm-reports-test
+? Please provide a short description of this project Micronesia reports
+? Source code repository location https://github.com/[YOUR_USERNAME_OR_ORG]/fsm-reports-test
+? Your name [YOUR_NAME]
+? Your email [YOUR_EMAIL]
+? Organization name (optional)
+? What software license would you like to use? BSD-3-Clause
+? What AWS region would you like to deploy functions in? us-west-1
+? What is the projects minimum longitude (left) in degrees (-180.0 to 180.0)? -180
+? What is the projects minimum latitude (bottom) in degrees (-90.0 to 90.0)? -90
+? What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)? 180
+? What is the projects maximum latitude (top) in degrees (-90.0 to 90.0)? 90
+```
 
-Now enter the following commands to establish your project as a git repository, connect it to your Github repository you created as a remote called "origin", and finally push your code up to origin.
+Few tips:
+
+- [SeaSketch](https://github.com/seasketch/next/blob/master/LICENSE) uses a BSD-3 license (the default choice). You can choose `UNLICENSED` meaning proprietary or "All rights reserved" .
+- The most common AWS region is `us-west-1` or `us-east-2`. Choose the location closest to your project.
+
+After pressing Enter, your project will finish being created and installing all dependencies.
+
+Now, re-open VSCode in your project folder::
+
+```text
+Click File -> Open Folder
+Type /workspaces/fsm-reports-test/
+Press Ctrl-J or Ctrl-backtick to open a terminal
+```
+
+## Connect Github repo and push
+
+Now, [create a remote Github repository](https://github.com/new) called `fsm-reports-test`. Leave it empty, do not choose to initialize with a README, gitignore, or LICENSE.
+
+Then connect your local repo and make your first code commit.
 
 ```bash
 git init
@@ -25,361 +62,153 @@ git remote add origin https://github.com/PUT_YOUR_GITHUB_ORG_OR_USERNAME_HERE/fs
 git push -u origin main
 ```
 
-It may ask you if it can use the Github extension to sign you in using Github. It will open a browser tab and communicate with the Github website. If you are already logged in there, then it should be done quickly, otherwise it may have you log-in to Github.
+You should see your files pushed to Github.
 
-You should eventually see your code commit proceed in the VSCode terminal. You can then browse to your Github repository and see that your first commit is present at https://github.com/[YOUR_GITHUB_ORG_OR_USERNAME]/foo-reports
+It may ask you if it can use the Github extension to sign you in using Github. It will open a browser tab and communicate with the Github website. If you are already logged in there, then it should be done quickly, otherwise it may have you login to Github.
 
-After this point, you can continue using git commands right in the terminal to stage code changes and commit them, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
+After this point, you can continue using git commands right in the terminal to stage code changes and commit them if that's what you know, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
 
-### If running devcontainer (Install Option 1)
-
-- Ensure your VSCode workspace is connected to your devcontainer
-- You can now create as many geoprocessing projects as you want under `/workspaces` and they will persist as long as the associated docker volume is maintained. Each project you create should be backed by a Github repository which you should regularly commit your code to in order to ensure it's not lost.
-
-To get started:
-
-- Open a terminal with Ctrl-J if not already open
-- `cd /workspaces`
-
-### If Running Bare Metal (Install Option 2)
-
-Windows:
-
-- Open start menu -> `Ubuntu on Windows`
-  - This will start a bash shell in your Ubuntu Linux home directory
-- Create a directory to put your source code
-  - `mkdir -d src`
-- Start VSCode in the Ubuntu terminal
-  - `code .`
-  - This will install a vscode-server package that bridges your Windows and Ubuntu Linux environments so that VSCode will run in Windows and connect with your source code living in your Ubuntu Linux project directory.
-- Open a terminal in VSCode with `Ctrl-J` in Windows or by clicking Terminal -> New Terminal.
-  - The current directory of the terminal should be your project folder.
-
-MacOS:
-
-- Open Finder -> Applications -> VSCode
-- Open a terminal in VSCode with `Command-J` or by clicking Terminal -> New Terminal
-- Create a directory to put your source code and change to that directory
-  - `mkdir -d src && cd src`
-
-## Initialize Geoprocessing Project
-
-Now we'll create a new project using `geoprocessing init`.
-
-```sh
-npx @seasketch/geoprocessing@latest init
-```
-
-This command uses `npx`, which comes with `npm` and allows you to execute commands in a package. In this case it will fetch the `geoprocessing` library from the `npm` repository and run the `geoprocessing init` command to create a new project.
-
-`init` will download the framework, and then collect project metadata from you by asking questions.
-
-### Project metadata
-
-As an example, assume you are developing reports for the country of `The Federated States of Micronesia`.
-
-```text
-? Choose a name for your project fsm-report-test
-? Please provide a short description of this project Test drive
-```
-
-Now paste the URL of the github repository you created in the first step
-
-```text
-? Source code repository location https://github.com/[YOUR_USERNAME_OR_ORG]/fsm-reports-test
-```
-
-You will then be asked for the name and email that establishes you as the author of this project. It will default to your git settings. Change it as you see fit for establishing you as the author of the project.
-
-```text
-? Your name Alex
-? Your email alex@gmail.com
-```
-
-Now provide your organization name associated with authoring this project
-
-```text
-? Organization name (optional)
-```
-
-Choose a software license. [SeaSketch](https://github.com/seasketch/next/blob/master/LICENSE) and [Geoprocessing](https://github.com/seasketch/geoprocessing/blob/dev/LICENSE) both use BSD-3 (the default choice). If you are not a member of SeaSketch you are not required to choose this. In fact, you can choose `UNLICENSED` meaning proprietary or "All rights reserved" by you, the creator of the work.
-
-```text
-? What software license would you like to use? BSD-3-Clause
-```
-
-Choose an AWS region you would like to deploy the project. The most common is to choose `us-west-1` or `us-east-1`, the US coast closest to the project location. In some circumstances it can make sense to choose locations in Europe, Asia, Australia, etc. that are even closer but in practice this usually doesn't make a significant difference.
-
-```text
-? What AWS region would you like to deploy functions in?
-```
-
-Now enter the type of planning area for your project. Choose Exclusive Economic Zone which is the area from the coastline to 200 nautical miles that a country has jurisdiction over.
-
-```text
-? What type of planning area does your project have? Exclusive Economic Zone (EEZ)
-```
-
-Since you selected EEZ, it will now ask what countries EEZ to use. Choose Micronesia
-
-```text
-? What countries EEZ is this for? Micronesia.
-```
-
-If you answered `Other` to type of planning area it will now ask you for the name of this planning area.
-
-```text
-?  Is there a more common name for this planning area to use in reports than Micronesia? (Use arrow keys)
-❯ Yes
-  No
-```
-
-Answer `No`. If you answered yes it would ask you:
-
-```text
-What is the common name for this planning area?
-```
-
-Finally, you will be asked to choose a starter template. Choose `template-ocean-eez`. It will come with some features out of the box that are designed for EEZ planning. `template-blank-project` is a barebones template and let's you start almost from scratch.
-
-```text
-? What starter-template would you like to install?
-  template-blank-project - blank starter project
-❯ template-ocean-eez - template for ocean EEZ planning project
-```
-
-After pressing Enter, your project will finish being created and installing all dependencies in `~/src/fsm-reports`.
-
-#### Blank starter project
-
-Note, if you had selected `Blank starter project` as your template, it would then ask you for the bounding box extent of your projects planning area, in latitude and longitude.
-
-```text
-? What is the projects minimum longitude (left) in degrees (-180.0 to 180.0)?
-? What is the projects minimum latitude (bottom) in degrees (-180.0 to 180.0)?
-? What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)?
-? What is the projects maximum latitude (top) in degrees (-180.0 to 180.0)?
-```
-
-The answers to these questions default to the extent of the entire world, which is a reasonable place to start. This can be changed at a later time.
-
-## Open in VSCode Workspace and Explore Structure
-
-Next, to take full advantage of VSCode you will need to open your new project and establish it as a workspace.
-
-### If Running Devcontainer (Install Option 1)
-
-Once you have more than one folder under `/workspaces` backed by a git repository, VSCode will be default to a `multi-root` workspace.
-
-For the best experience, you will want open a single workspace in your VSCode for a single folder in your devcontainer.
-
-`File` -> `Open folder` -> /workspaces/fsm-report-test
-
-VSCode should now reopen the under this new workspace, using the existing devcontainer, and you're ready to go.
-
-### If Running MacOS Bare Metal / Windows WSL (Install Option 2)
-
-Type `Command-O` on MacOS or `Ctrl-O` on Windows or just click `File`->`Open` and select your project under `[your_username]/src/fsm-reports-test`
-
-VSCode will re-open and you should see all your project files in the left hand file navigator.
-
-- Type `Command-J` (MacOS) or `Ctrl-J` (Windows) to reopen your terminal. Make this a habit to have open.
-
-### Project Structure
-
-Next, take some time to learn more about the structure of your new project, and look through the various files. You can revisit this section as you get deeper into things.
-
-### Configuration Files and Scripts
-
-There are a variety of project configuration files. Many have been pre-populated usings your answers to the initial questions. You can hand edit most of these files later to change them, with some noted exceptions.
-
-- `package.json` - Javascript [package](https://docs.npmjs.com/cli/v9/configuring-npm/package-json) configuration that defines things like the project name, author, and third-party dependencies. The [npm](https://docs.npmjs.com/cli/v6/commands) command is typically used to add, upgrade, or remove dependencies using `npm install`, otherwise it can be hand-edited.
-- `tsconfig.json` - contains configuration for the [Typescript](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html) compiler
-- `project/` - contains project configuration files.
-  - `basic.json` - contains basic project configuration
-    - `planningAreaType`: `eez` or `other`
-    - bbox - the bounding box of the project as [bottom, top, left, right]. This generally represents the area that users will draw shapes. It can be used as a boundary for clipping, to generate examples sketches, and as a window for fetching from global datasources.
-    - `planningAreaId` - the unique identifier of the planning region used by the boundary dataset. If your planningAreaType is `eez` and you want to change it, you'll find the full list [in github](https://raw.githubusercontent.com/seasketch/geoprocessing/dev/packages/geoprocessing/scripts/global/datasources/mr-eez-precalc.json), just look at the UNION property for the id to use
-    - `planningAreaName` - the name of the planning region (e.g. Micronesia)
-    - `externalLinks` - central store of links that you want to populate in your reports.
-    - `languages` - array of languages to enable for translation. Master list of language codes are in `src/i18n/languages.json`.
-  - `geoprocessing.json` - file used to register assets to be bundled for deployment. If they aren't registered here, then they won't be included in the bundle.
-  - `geographies.json` - contains one or more planning geographies for your project. If you chose to start with a blank project template, you will have a default geography of the entire world. If you chose to start with the Ocean EEZ template, you will have a default geography that is the EEZ you chose at creation time. Geographies must be manually added/edited in this file. You will then want to re-run `precalc` and `test` to process the changes and make sure they are working as expected. Learn more about [geographies](../concepts/AdvancedConcepts.md#geographies)
-  - `datasources.json` - contains an array of one or more registered datasources, which can be global (url) or local (file path), with a format of vector or raster or subdivided. Global datasources can be manually added/edited in this file, but local datasources should use the [import](#importing-your-data) process. After import, datasources can be manually added/edited in this file. You will then want to run `reimport:data`, `precalc:data`, `precalc:clean`, and `test` to process the changes and make sure they are working as expected. Learn more about [datasources](../concepts/AdvancedConcepts.md#datasources)
-  - `metrics.json` - contains an array of one or more metric groups. Each group defines a metric to calculate, with one or more data classes, derived from one or more datasources, measuring progress towards a planning objective. An initial boundaryAreaOverlap metric group is included in the file by default that uses the global eez datasource. Learn more about [metrics](../concepts/AdvancedConcepts.md#metrics)
-  - `objectives.json` - contains an array of one or more objectives for your planning process. A default objective is included for protection of `20%` of the EEZ. Objectives must be manually added/edited in this file. Learn more about [objectives](../concepts/AdvancedConcepts.md#objectives)
-  - `precalc.json` - contains precalculated metrics for combinations of geographies and datasources. Specifically it calculates for example the total area/count/sum of the portion of a datasources features that overlap with each geography. This file should not be manually edited. If you have custome metrics/precalculations to do, then use a separate file. Learn more about the [precalc](#precalc-data) command.
-
-The object structure in many of the JSON files, particularly the `project` folder, follow strict naming and structure (schema) that must be maintained or you will get validation errors when running commands. Adding additional undocumented properties may be possible, but is not tested. The schemas are defined here:
-
-- [Basic](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/projectBasic.ts)
-- [Geographies](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/geography.ts)
-- [Datasources](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/datasource.ts)
-- [MetricGroup](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/metricGroup.ts)
-  - [DataClass](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/dataclass.ts)
-- [Objective](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/objective.ts)
-- [Precalc Metrics](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/metrics.ts)
-
-### Project Assets
-
-- `src/` - contains all source code
-  - `clients/` - report clients are React UI components that can be registered with SeaSketch and when given a sketch URL as input, are able to run the appropriate geoprocessing functions and display a complete report. This can include multiple report pages with tabbed navigation.
-  - `components/` - components are the UI building blocks of report clients. They are small and often reusable UI elements. They can be top-level ReportPage components, ResultCard components within a page that invoke geoprocessing functions and display the results, or much lower level components like custom Table or Chart components. You choose how to build them up into sweet report goodness.
-  - `functions/` - contains preprocessor and geoprocessor functions that take input (typicall sketch features) and return output (typically metrics). They get bundled into AWS Lambda functions and run on-demand.
-  - `i18n/` - contains building blocks for localization aka language translation in reports.
-    - `scripts/` - contains scripts for working with translations
-    - `lang/` - contains english terms auto-extracted from this projects report clients and their translations in one or more languages.
-    - `baseLang/` - contains english terms and their translations for all UI components and report client templates available through the geoprocessing library. Used to seed the `lang` folder and as a fallback.
-    - `config.json` - configuration for integration with POEditor localization service.
-    - `extraTerms.json` - contains extra translations. Some are auto-generated from configuration on project init, and you can add more such as plural form of terms.
-    - `i18nAsync.ts` - creates an i18next instance that lazy loads language translations on demand.
-    - `i18nSync.ts` - creates an i18nnext instance that synchronously imports all language translations ahead of time. This is not quite functional, more for research.
-    - `languages.json` - defines all of the supported languages. New languages codes can be added manually, or using `upgrade` command.
-
-A [ProjectClient](https://seasketch.github.io/geoprocessing/api/classes/geoprocessing.ProjectClientBase.html) class is available in `project/projectClients.ts` that is used in project code for quick access to all project configuration including methods that ease working with them. This is the bridge that connects configuration with code and is the backbone of every geoprocessing function and report client.
-
-### Other Files
-
-- `node_modules` - contains all of the npm installed third-party code dependencies defined in package.json
-- `README.md` - default readme file that becomes the published front page of your repo on github.com. Edit this with information to help your users understand your project. It could include information or sources on metric calculations and more.
-- `package-lock.json` - contains [cached metadata](https://docs.npmjs.com/cli/v9/configuring-npm/package-lock-json) on the 3rd party modules you have installed. Updates to this file are made automatically and you should commit the changes to your repository at the same time as changes to your package.json.
-- `.nvmrc` - a lesser used config file that works with nvm to define the node version to use for this project. If you use nvm to manage your node version as suggested then you can run `nvm use` in your project and it will install and switch to this version of node.
-
-To learn more, check out the [Architecture](../architecture/Architecture.md) page
+You can learn more about your projects [folder structure](../structure.md)
 
 ## Generate Examples
 
-In order to create and test out the functions and report clients installed with `template-ocean-eez`, we need sample data that is relevant to our planning area. Scripts are available that make this easy.
-
-`genRandomSketch` - generates a random Sketch polygon within the extent of your planning area, which are most commonly used as input to geoprocessing functions. Run it without any arguments to generate a single Sketch polygon in the `examples/sketches` directory of your project. Run it with an argument of `10` and it will generate a SketchCollection with 10 random Sketch polygons.
+Now generate an example feature, sketch and sketch collection using the `genRandomFeature` script.
 
 ```bash
-npx tsx scripts/genRandomSketch.ts
-npx tsx scripts/genRandomSketch.ts 10
+npx tsx scripts/genRandomFeature.ts --bbox [147,4,153,7] --bboxShrinkFactor 5
+npx tsx scripts/genRandomFeature.ts --bbox [147,4,153,7] --bboxShrinkFactor 5 --sketch
+npx tsx scripts/genRandomFeature.ts --bbox [147,4,153,7] --bboxShrinkFactor 5 --sketch --numFeatures 10
 ```
 
-`genRandomFeature` - generates random Feature Polygons within the extent of your planning area, which are most commonly used as input to preprocessing functions. Run it without any arguments to generate a single Feature polygon in the `examples/features` directory of your project.
+These commands takes the approximate `bbox` of the Micronesian Exclusive Economic Zone given to it and reduces it by a factor of 5 using the `bboxShrinkFactor` option. It then generates random features that are within that reduced bbox. This is to ensure the features are guaranteed to be well within the Micronesian Exclusive Economic Zone polygon, based on its shape.
 
-```bash
-npx tsx scripts/genRandomFeature.ts
-```
+![EEZ bbox](./assets/eez-bbox.jpg)
+bbox is the rectangle, EEZ is the light pink polygon within it, random SketchCollection is the cluster of small green polygons in the center.
 
-### Differences
+Look at the file outputs and notice the difference between the example Feature and the example Sketch and Sketch Collection. Sketch and Sketch Collections are just a GeoJSON Feature and FeatureCollection with some extra attributes not in the [GeoJSON specification](https://datatracker.ietf.org/doc/html/rfc7946).
 
-Look closely at the difference between the example features and the example sketches and sketch collections. Sketch and sketch collections are just GeoJSON Feature and FeatureCollection's with some extra attributes. That said, sketches and sketch collections are technically not compliant with the GeoJSON spec but they are often passable as such in most tools.
-
-### Create Custom Sketches
-
-In addition to these scripts, you can create features and sketches using your GIS tool of choice, or draw your own polygons using [geojson.io](https://geojson.io). If you already have your SeaSketch project site set-up, you can draw a sketch and export it as geojson, uploading it to the `examples/sketches` directory.
+In addition to using `genRandomSketch`, you can create features and sketches using your GIS tool of choice, by drawing polygons using [geojson.io](https://geojson.io), or once you have your SeaSketch project setup, you can draw a sketch, right-click and export it as geojson, then copy it to the `examples/sketches` directory. These all ways to build a comprehensive test suite.
 
 ## Import Data
 
-Navigate to `datasources.json`. This is where available data sources to use in reports are listed. When we import a new datasource, an entry will be automatically added to this file.
+This tutorial will use data for the Federated States of Micronesia that has already been prepared. It is a combination of data from:
 
-### Link Project Data
+- [Marine Regions](https://marineregions.org)
+- [Allen Coral Atlas](https://allencoralatlas.org/)
 
-In order to `import` and `publish` local project data to the cloud, it will need to be accessible on your local computer. There are multiple ways to do this, choose the appropriate one for you.
-
-#### Option 1. Keep your data where it is
-
-Nothing to do, you will keep your data where it is on your local computer, and provide a direct path to this location on import.
-
-Pros:
-
-- Simple. Can start with this and progress to more elaborate strategies
-- Keeps your data separate from your code
-- Can import data from different parts of your filesystem
-
-Cons:
-
-- Can make it hard to collaborate with others because they'll have to match your file structure, which may not be possible for some reason.
-
-#### Option 2. Keep your data in your project repository
-
-Copy your datasources directly into the `data/src` directory.
-
-Pros:
-
-- Data and relative import paths are consistent between collaborators
-- Data can be kept under version control along with your code. Just check out and it's ready to go.
-
-Cons:
-
-- You have an additional copy of your data to maintain. You may not have a way to tell if your data is out of data or not from the source of truth.
-- The github repository can get big fast if you have or produce large datasets.
-- If your data should not be shared publicly, then the code repo will need to be kept private, which works against the idea of transparent and open science.
-- If any file is larger than 100MB it will require use of [Git LFS](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github)
-  - Maximum of 5gb file size
-
-MacOS this could be as easy as:
+Learn more about accessing [third party data](./thirdparty.md)
 
 ```bash
-cp -r /my/project/data data/src
+cd data/src
+wget https://github.com/user-attachments/files/17577047/FSM_MSP_Data_Example_v2.zip
+unzip FSM_MSP_Data_Example_v2.zip
+mv FSM_MSP_Data_Example_v2/* .
+rm -rf FSM_MSP_Data_Example_v2*
 ```
 
-Windows, you can copy files from your Windows C drive into Ubuntu Linux using the following:
+### EEZ With Land Boundary
 
 ```bash
-cp -r /mnt/c/my_project_data data/src
+npm run import:data
 ```
 
-Change the `.gitignore` file to allow you to commit your data/src and data/dist directory to Git. Remove the following lines:
+```text
+? Type of data? Vector
+```
+
+---
 
 ```bash
-data/src/**
-data/dist/**
+? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource) Yes
 ```
 
-It's up to you to not make sensitive data public. By choosing this option, you are possibly committing to it always being private and under managed access control.
+Respond `Yes` to allow precalculation.
 
-#### Option 3. Link Data
+---
 
-A symbolic link, is a file that points to another directory on your system. What you can do is create a symbolic link at `data/src` that points to the top-level directory where you data is maintained elsewhere on your system.
-
-Pros:
-
-- Keeps your data separate from your code but accessed in a consistent way through the `data/src` path.
-- Works with cloud-based drive share products like Box and Google Drive which can be your centralized source of truth.
-
-Cons:
-
-- Symbolic links can be a little harder to understand and manage, but are well documented.
-- People managing the source of truth that is linked to may update or remove the data, or change the file structure and not tell you. Running `reimport` scripts will fail and `datasources.json` paths will need to be updated to the correct place.
-
-Steps:
-
-- First, if you use a Cloud Drive product to share and sync data files, make sure your data is synced and you know the path to access it. See [access Cloud Drive folder](../skills.md#access-cloud-drive-folder)
-- Assuming you are using MacOS and your username is `alex`, your path would be `/Users/alex/Library/CloudStorage/Box-Box`
-
-To create the symbolic link, open a terminal and make sure you are in the top-level directory of your geoprocessing project:
+By default mulitpolygons are split into polygons, which can save bandwidth when fetching features that overlap with a sketch.
 
 ```bash
-ln -s /Users/alex/Library/CloudStorage/Box-Box data/src
+? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons
+to fetch) Yes
 ```
 
-Confirm that the symbolic link is in place, points back to your data, and you can see your data files
+Respond yes to splitting polygons.
+
+---
 
 ```bash
-ls -al data
-ls -al data/src
+? Enter path to src file (with filename) data/src/current-vector.gpkg
 ```
 
-If you put your link in the wrong folder or pointed it to the wrong place, you can always just `rm data/src` to remove it, then start over. It will only remove the symbolic link and not the data it points to.
+We'll import data from the `current-vector` geopackage.
 
-#### In Summary
+---
 
-None of these options solve the need for collaborators to manage data carefully, to communicate changes, and to ensure that updates are carried all the way through the data pipeline in a coordinated fashion. The data won't keep itself in sync.
+It will now ask you for a datasource name, it should be unique, different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
 
-For all of these options, you can tell if your data is out of sync:
+```bash
+? Choose unique datasource name (use letters,numbers, -, _ to ensure will work) eez
+```
 
-- `data/src` is out of date if the `Date modified` timestamp for a file is older than the timestamp for the same file wherever you source and copy your data from.
-- `data/dist` is out of date with `data/src` if the `Date modified` timestamp for a file is older than the timestamp for the same file in `data/src`.
+Enter the datasource name `eez`.
 
-### Importing Your Data
+---
 
-This tutorial will use data for the Federated States of Micronesia that has already been prepared.
+A layer name must also be specified if your datasource can store multiple layers within it (geopackage). You can use the `ogrinfo` command to quickly see what layers are present in a vector dataset. If your dataset can only store one datasource such as a shapefile or a GeoJSON file, then the layer name should just be the name of the file (minus the extension). You can use the QGIS project file in the example data to view the available layers in the geopackage.
 
-[Download FSM Data v1](https://github.com/seasketch/geoprocessing/files/10560856/FSM_MSP_Data_Example_v1.zip)
+```bash
+? Enter layer name, defaults to filename (eez_mr_osm)
+```
+
+The layer in this geopackage we want is called `eez_mr_osm` so enter that now.
+
+---
+
+If your dataset contains one or more properties that classify the vector features into one or more categories, and you want to report on those categories in your reports, then you can enter those properties now as a comma-separated list. For example a coral reef dataset containing a `type` propertie that identifies the type of coral present in each polygon. In the case of our EEZ dataset, there are no properties like this so this question is left blank.
+
+```bash
+? Enter feature property names that you want to group metrics by (
+separated by a comma e.g. prop1,prop2,prop3)
+```
+
+The eez dataset has no attributes that we want to group features by so press Enter to skip this question.
+
+---
+
+By default, all extraneous properties will be removed from your vector dataset on import in order to make it as small as possible. Any additional properties that you want to keep in should be specified in this next question. If there are none, just leave it blank.
+
+```bash
+? Enter additional feature property names to keep in final datasource (separated by a comma e.g. prop1,prop2,prop3). All others will be filtered out
+```
+
+The eez dataset has no additional properties we want to keep so press Enter to skip this question.
+
+---
+
+By default, data will be imported into flatgeobuf format. Often, that's all you need. But if you want to be able to precalculate stats for this dataset, or import JSON data directly into your geoprocessing functions, or just have a human readable version of the data to verify it, then you want to include the GeoJSON format.
+
+```bash
+? The following formats will automatically be created: fgb. What additional formats would you like created? (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter>
+ to proceed) (Press <space> to select, <a> to toggle all, <i> to invert selection)
+ ◯ json - GeoJSON
+```
+
+For the `eez` dataset, we want to precalculate state, so press spacebar to select `json` and then press the `Enter` key to proceed.
+
+---
+
+At this point the import will proceed and various log output will be generated. Once complete you will find:
+
+- The output file `data/dist/eez.fgb`.
+- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `eez`. You'll see all the answers to your questions.
+
+If the import fails, try again double checking everything. It is most likely one of the following:
+
+- You specified the wrong source file path.
+- You specified the wrong layer name
+
+You can now make edits to datasource.json at any time and then run `reimport:data` to regenerate the files in `data/dist`.
 
 ### Import vector datasource
 
@@ -581,24 +410,6 @@ If the import fails, try again double checking everything. It is most likely one
 - You aren't running Docker Desktop (required for running GDAL commands)
 - You provided a source file path that doesn't point to a valid dataset
 - You aren't using a file format supported by GDAL
-
-### Global datasource
-
-You are also able to use one of the global data sources already provided in `datasources.json`. They are already imported.
-
-### 3rd Party Datasources
-
-You can download additional data from sources like Allen Coral Atlas. Access this data as follows:
-
-- Go to [Allen Coral Atlas](https://allencoralatlas.org) and loging or register an account
-- Once logged in, go to Micronesia on the atlas page - https://allencoralatlas.org/atlas/#4.51/6.3220/153.7907
-- Turn on Maritime Boundaries in the layer menu on the right
-- Click the Micronesia EEZ on the map
-- Click the small Download button that appears in the map popup (icon of a page with a down arrow)
-- Agree to the terms and click to Prepare Download
-- Extract your downloaded zip file and look for `Reef-Extent/reefextent.gpkg` and `Benthic-Map/benthic.gpkg`, and make the data accessible to your project through one of the data linking methods described above.
-
-![Allen Coral Atlas Download](assets/AllenDownload.jpg "Allen Coral Atlas Download")
 
 ## Precalc Data
 

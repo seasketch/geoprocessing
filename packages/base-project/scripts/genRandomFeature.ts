@@ -9,6 +9,7 @@ import {
   Polygon,
 } from "@seasketch/geoprocessing";
 import { program } from "commander";
+import project from "../project/projectClient.js";
 
 /**
  * genRandomFeature script - generates random feature or sketch within given bounding box.
@@ -17,46 +18,100 @@ import { program } from "commander";
 
 program
   .option(
-    "--outDir <outDir>",
+    "-o, --outDir <outDir>",
     "output directory",
     `${import.meta.dirname}/../examples/sketches/`,
   )
   .option(
-    "--bbox <bbox>",
-    "bounding box to constrain features",
-    "[-180, -90, 180, 90]",
+    "-b, --bbox <bbox>",
+    "bounding box to constrain features [minX, minY, maxX, maxY]",
+    JSON.stringify(project.basic.bbox) || "[-180, -90, 180, 90]",
   )
-  .option("--numFeatures <numFeatures>", "number of features to generate", "1")
-  .option("--name <name>", "name of the file")
-  .option("-s, --sketch", "generates Sketch instead of Feature");
+  .option(
+    "-n, --numFeatures <numFeatures>",
+    "number of Features to generate, if > 1 generates FeatureCollection",
+    "1",
+  )
+  .option(
+    "-f, --filename <name>",
+    "name of the file, defaults to randomSketch.json or randomSketchCollection.json",
+  )
+  .option("-s, --sketch", "generates Sketch instead of Feature")
+  .option(
+    "-h, --bboxShrinkFactor <bboxShrinkFactor>",
+    "factor to shrink bounding box by to ensure sketch is inside. 10 = 1/10th the size",
+    "1",
+  )
+  .option(
+    "-r, --maxRadialLength <maxRadialLength>",
+    " maximum number of decimal degrees latitude or longitude that a vertex can reach out of the center of the Polygon Feature",
+    "0.25",
+  );
 program.parse();
 const options = program.opts();
 
-console.log(options);
+// console.log("inOptions", options);
 
 const outdir = options.outDir;
-const bbox = JSON.parse(options.bbox);
+let bbox = JSON.parse(options.bbox);
 const numFeatures = Number.parseInt(options.numFeatures) || 1;
+const filename = options.filename;
 const type = options.sketch ? "Sketch" : "Feature";
+const bboxShrinkFactor = Number.parseInt(options.bboxShrinkFactor);
 
-console.log(bbox);
+const [minX, minY, maxX, maxY] = bbox;
+if (
+  minX >= maxX ||
+  minY >= maxY ||
+  minX < -180 ||
+  maxX > 180 ||
+  minY < -90 ||
+  maxY > 90
+) {
+  throw new Error("Invalid bounding box");
+}
+
+const width = Math.abs(maxX - minX);
+const height = Math.abs(maxY - minY);
+const center = [minX + width / 2, minY + height / 2];
+// console.log("width", width);
+// console.log("height", height);
+// console.log("center", center);
+const insideMinX = center[0] - width / (2 * bboxShrinkFactor);
+const insideMinY = center[1] - height / (2 * bboxShrinkFactor);
+const insideMaxX = center[0] + width / (2 * bboxShrinkFactor);
+const insideMaxY = center[1] + height / (2 * bboxShrinkFactor);
+
+const insideBbox = [insideMinX, insideMinY, insideMaxX, insideMaxY];
+bbox = insideBbox;
+
+const maxRadialLength = Number.parseFloat(options.maxRadialLength);
 
 const name = (() => {
-  const argName = options.name;
-  if (argName) {
-    return `${process.argv[3]}.json`;
+  if (filename) {
+    return `${filename}`;
   } else if (numFeatures > 1) {
-    return `random${type}Collection`;
+    return `random${type}Collection.json`;
   } else {
-    return `random${type}`;
+    return `random${type}.json`;
   }
 })();
-const outfile = `${outdir}${name}.json`;
+const outfile = `${outdir}${name}`;
+
+console.log("finalOptions", {
+  outfile,
+  bbox,
+  numFeatures,
+  type,
+  bboxShrinkFactor,
+  maxRadialLength,
+});
 
 const sketches = (() => {
   const fc = genRandomPolygons({
     numPolygons: numFeatures,
     bounds: bbox,
+    max_radial_length: maxRadialLength,
   }) as FeatureCollection<Polygon>;
 
   if (type === "Feature") {

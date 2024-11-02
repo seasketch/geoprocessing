@@ -35,7 +35,7 @@ export async function createOrUpdateDatasource(
   if (dExists) {
     if (process.env.NODE_ENV !== "test")
       console.log(
-        `Updating ${inputDatasource.datasourceId} record in datasource file`,
+        `Updating ${inputDatasource.datasourceId} record in project/datasources.json file`,
       );
     // Update in place
     if (
@@ -52,7 +52,7 @@ export async function createOrUpdateDatasource(
   } else {
     if (process.env.NODE_ENV !== "test")
       console.log(
-        `Adding ${inputDatasource.datasourceId} record in datasource file`,
+        `Adding ${inputDatasource.datasourceId} record in project/datasources.json file`,
       );
     // Just add onto the end
     dSources = dSources.concat(inputDatasource);

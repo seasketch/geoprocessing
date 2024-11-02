@@ -91,22 +91,27 @@ In addition to using `genRandomSketch`, you can create features and sketches usi
 
 ## Import Data
 
-This tutorial will use data for the Federated States of Micronesia that has already been prepared. It is a combination of data from:
+You will now import datasets from a package prepared for the Federated States of Micronesia (FSM). It is a combination of data from:
 
 - [Marine Regions](https://marineregions.org)
 - [Allen Coral Atlas](https://allencoralatlas.org/)
 
-Learn more about accessing [third party data](./thirdparty.md)
+This tutorial skips over a lot of details. Visit the advanced guides to learn more.
+
+- [Data import](../dataimport.md)
+- [Third party data](./thirdparty.md)
+
+Download the FSM data package:
 
 ```bash
-cd data/src
-wget https://github.com/user-attachments/files/17577047/FSM_MSP_Data_Example_v2.zip
-unzip FSM_MSP_Data_Example_v2.zip
-mv FSM_MSP_Data_Example_v2/* .
-rm -rf FSM_MSP_Data_Example_v2*
+wget -P data/src https://github.com/user-attachments/files/17607958/FSM_MSP_Data_Example_v2.zip
+unzip data/src/FSM_MSP_Data_Example_v2.zip -d data/src
+rm data/src/FSM_MSP_Data_Example_v2.zip
 ```
 
 ### EEZ With Land Boundary
+
+First, we'll use the `eez_mr_osm` layer as the planning boundary. It's in the `boundaries` geopackage in the example data. It's a combination of the Marine Regions EEZ dataset and the OSM Land dataset.
 
 ```bash
 npm run import:data
@@ -114,79 +119,31 @@ npm run import:data
 
 ```text
 ? Type of data? Vector
-```
-
----
-
-```bash
-? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource) Yes
-```
-
-Respond `Yes` to allow precalculation.
-
----
-
-By default mulitpolygons are split into polygons, which can save bandwidth when fetching features that overlap with a sketch.
-
-```bash
+? Select layer to import
+  12nm_boundary_mr
+  eez_withland_mr
+  osm_land_polygons
+❯ eez_mr_osm
+  nearshore_mr_osm
+  12_24nm_boundary_mr_v3
+  eez_mr
 ? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons
 to fetch) Yes
+? Enter path to src file (with filename) data/src/boundaries.gpkg
+? Choose unique datasource name (use letters,numbers, -, _ to ensure will work) planning-boundary
+? Enter layer name, defaults to filename eez_mr_osm
 ```
 
-Respond yes to splitting polygons.
+Skip the two following questions by pressing Enter
 
----
-
-```bash
-? Enter path to src file (with filename) data/src/current-vector.gpkg
+```text
+? Select feature properties that you want to group metrics by (Press <space> to select, <a> to toggle all, <i>
+to invert selection, and <enter> to proceed)
+? Select additional feature properties to keep in final datasource (Press <space> to select, <a> to toggle all,
+<i> to invert selection, and <enter> to proceed)
 ```
 
-We'll import data from the `current-vector` geopackage.
-
----
-
-It will now ask you for a datasource name, it should be unique, different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
-
-```bash
-? Choose unique datasource name (use letters,numbers, -, _ to ensure will work) eez
-```
-
-Enter the datasource name `eez`.
-
----
-
-A layer name must also be specified if your datasource can store multiple layers within it (geopackage). You can use the `ogrinfo` command to quickly see what layers are present in a vector dataset. If your dataset can only store one datasource such as a shapefile or a GeoJSON file, then the layer name should just be the name of the file (minus the extension). You can use the QGIS project file in the example data to view the available layers in the geopackage.
-
-```bash
-? Enter layer name, defaults to filename (eez_mr_osm)
-```
-
-The layer in this geopackage we want is called `eez_mr_osm` so enter that now.
-
----
-
-If your dataset contains one or more properties that classify the vector features into one or more categories, and you want to report on those categories in your reports, then you can enter those properties now as a comma-separated list. For example a coral reef dataset containing a `type` propertie that identifies the type of coral present in each polygon. In the case of our EEZ dataset, there are no properties like this so this question is left blank.
-
-```bash
-? Enter feature property names that you want to group metrics by (
-separated by a comma e.g. prop1,prop2,prop3)
-```
-
-The eez dataset has no attributes that we want to group features by so press Enter to skip this question.
-
----
-
-By default, all extraneous properties will be removed from your vector dataset on import in order to make it as small as possible. Any additional properties that you want to keep in should be specified in this next question. If there are none, just leave it blank.
-
-```bash
-? Enter additional feature property names to keep in final datasource (separated by a comma e.g. prop1,prop2,prop3). All others will be filtered out
-```
-
-The eez dataset has no additional properties we want to keep so press Enter to skip this question.
-
----
-
-By default, data will be imported into flatgeobuf format. Often, that's all you need. But if you want to be able to precalculate stats for this dataset, or import JSON data directly into your geoprocessing functions, or just have a human readable version of the data to verify it, then you want to include the GeoJSON format.
+Press spacebar to create in JSON format also, then press Enter
 
 ```bash
 ? The following formats will automatically be created: fgb. What additional formats would you like created? (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter>
@@ -194,244 +151,118 @@ By default, data will be imported into flatgeobuf format. Often, that's all you 
  ◯ json - GeoJSON
 ```
 
-For the `eez` dataset, we want to precalculate state, so press spacebar to select `json` and then press the `Enter` key to proceed.
+Answer yes to precalculating summary metrics
 
----
+```text
+? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting
+sketch % overlap with datasource) (Use arrow keys)
+❯ Yes
+  No
+```
 
-At this point the import will proceed and various log output will be generated. Once complete you will find:
+At this point the import will proceed. Once complete you will find:
 
-- The output file `data/dist/eez.fgb`.
-- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `eez`. You'll see all the answers to your questions.
+- The output file `data/dist/planning-boundary.fgb`.
+- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `planning-boundary`. You'll see all the answers to your questions.
 
 If the import fails, try again double checking everything. It is most likely one of the following:
 
 - You specified the wrong source file path.
 - You specified the wrong layer name
 
-You can now make edits to datasource.json at any time and then run `reimport:data` to regenerate the files in `data/dist`.
+### Other Datasources
 
-### Import vector datasource
+Reef extent - single class dataset
 
-Vector datasets can be any format supported by [GDAL](https://gdal.org/drivers/vector/index.html) "out of the box". Common formats include:
-
-- GeoJSON
-- GeoPackage
-- Shapefile
-- File Geodatabase
-
-Importing a vector dataset into your project will:
-
-- Reproject the dataset to the WGS84 spherical coordinate system, aka EPSG:4326.
-- Transform the dataset into one or more formats including the [flatgeobuf](https://flatgeobuf.org/) cloud-optimized format and GeoJSON
-- Strip out any unnecessary feature properties (to reduce file size)
-- Optionally, expand multi-part geometries into single part
-- Calculates overall statistics including total area, and area by group property
-- Output the result to the `data/dist` directory, ready for testing
-- Add datasource to `project/datasource.json`
-
-Start the import process and it will ask you a series of questions, press Enter after each one, and look to see if a default answer is provided that is sufficient:
-
-```bash
-npm run import:data
-? Type of data? Vector
+```text
+type: Vector
+path: data/src/reefextent.gpkg
+layer: Micronesian Exclusive Economic Zone
+datasource name: reefextent
+split multi-part geometries: yes
+Select feature properties that you want to group metrics by: none
+Select additional feature properties to keep in final datasource: none
+Additional formats: none
+Precalc summary statistics: yes
 ```
 
-Now import the `reefextent` vector data from the geopackage.
+Benthic habitat - contains multiple classes of benthic data we can group metrics by
 
-```bash
-? Enter path to src file (with filename) data/src/reefextent.gpkg
+```text
+type: Vector
+path: data/src/benthic.gpkg
+layer: Micronesian Exclusive Economic Zone
+datasource name: benthic
+split multi-part geometries: yes
+Select feature properties that you want to group metrics by: class
+Select additional feature properties to keep in final datasource: none
+Additional formats: none
+Precalc summary statistics: yes
 ```
 
-Select the name of the vector layer you want to import. The example reef extent data named `Micronesian Exclusive Economic Zone` in `reefextent.gpkg`
+Octocorals - raster with 0/1 values representing predicted presence/absence of species.
 
-```bash
-? Select layer to import Micronesian Exclusive Economic Zone
+```text
+type: Raster
+path: data/src/yesson_octocorals.tif
+layer: Micronesian Exclusive Economic Zone
+datasource name: octocorals
+Raster band: 1
+Type of measurement: Quantitative
+Precalc summary statistics: yes
 ```
-
-Choose a datasource name that is different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
-
-```bash
-? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename reefextent
-```
-
-If your dataset contains one or more properties that classify the vector features into one or more categories, and you want to report on those categories in your reports, then you can enter those properties now as a comma-separated list. For example a coral reef dataset containing a `type` property that identifies the type of coral present in each polygon. In the case of our EEZ dataset, there are no properties like this so press Enter to continue without.
-
-```bash
-? Select feature properties that you want to group metrics by (Press <space> to select, <a> to toggle all, <i> to invert selection)
-```
-
-By default, all extraneous properties will be removed from your vector dataset on import in order to make it as small as possible. Any additional properties that you want to keep in should be specified in this next question. If there are none, just press Enter.
-
-```bash
-? Select additional feature properties to keep in final datasource (Press <space> to select, <a> to toggle all, <i> to invert selection)
-```
-
-Mulitpolygons can be split into polygons for analysis, which can help report performance.
-
-```bash
-? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons
-to fetch) Yes
-```
-
-Typically you only need to published Flatgeobuf data, which is cloud-optimized so that geoprocessing functions can fetch features for just the window of data they need (such as the bounding box of a sketch). Flatgeobuf is automatically created. GeoJSON is also available if you want to be able to import data directly in your geoprocessing function typescript files, or inspect the data using a human readable format. Just press enter if you are happy with the default.
-
-```bash
-? Select additional formats to publish (Press <space> to select, <a> to toggle all, <i> to invert selection)
- ◯ json - GeoJSON
-```
-
-If you want to use your data in analytics, respond `Yes` to allow precalculation.
-
-```bash
-? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource) Yes
-```
-
-At this point the import will proceed and various log output will be generated. Once complete you will find:
-
-- The output file `data/dist/reefextent.fgb` and possibly `data/dist/reefextent.json` if you chose to generate it.
-- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `reefextent`
-
-Vist `datasources.json` and check out your new datasource entry. Using the example data, the datasource entry should looks as follows:
-
-```json
-{
-  "src": "data/src/reefextent.gpkg",
-  "layerName": "Micronesian Exclusive Economic Zone",
-  "geo_type": "vector",
-  "datasourceId": "reefextent",
-  "formats": ["fgb"],
-  "classKeys": [],
-  "created": "2024-02-29T22:54:16.140Z",
-  "lastUpdated": "2024-02-29T22:54:16.140Z",
-  "propertiesToKeep": [],
-  "explodeMulti": true,
-  "precalc": true
-}
-```
-
-If the import fails, try again double checking everything. It is most likely one of the following:
-
-- You aren't running Docker Desktop (required for running GDAL commands)
-- You provided a source file path that doesn't point to a valid dataset
-- You aren't using a file format supported by GDAL
-- The layer name or property names you entered are invalid
-
-#### Vector data with key parameter
-
-What if you have a vector file with multiple classes you want to group metrics by? The other example data `benthic.gpkg` separates different benthic habitats (Sand, Seagrass, Coral) by a `class` parameter. The import for this datasource looks as follows:
-
-```bash
-npm run import:data -> Vector -> data/src/benthic.gpkg -> Micronesian Exclusive Economic Zone -> benthic -> class -> {none} -> Yes -> {none} -> Yes
-```
-
-The resulting `datasource.json` entry will look as follows:
-
-```json
-{
-  "src": "data/src/benthic.gpkg",
-  "layerName": "Micronesian Exclusive Economic Zone",
-  "geo_type": "vector",
-  "datasourceId": "benthic",
-  "formats": ["fgb"],
-  "classKeys": ["class"],
-  "created": "2024-02-29T21:47:44.858Z",
-  "lastUpdated": "2024-02-29T21:47:44.858Z",
-  "propertiesToKeep": ["class"],
-  "explodeMulti": true,
-  "precalc": true
-}
-```
-
-### Import raster datasource
-
-Raster datasets can be any format supported by [GDAL](https://gdal.org/drivers/raster/index.html) "out of the box". Common formats include:
-
-- GeoTIFF
-
-Importing a raster dataset into your project will:
-
-- Reproject the data to an equal area projection called WGS 84 / NSIDC EASE-Grid 2.0 Global, aka EPSG:6933.
-- Extract a single band of data
-- Transform the raster into a [cloud-optimized GeoTIFF](https://www.cogeo.org/)
-- Calculates overall statistics including total count and if categorical raster, a count per category
-- Output the result to the `data/dist` directory, ready for testing
-- Add datasource to `project/datasource.json`
-
-Start the import process and it will ask you a series of questions, press Enter after each one, and look to see if a default answer is provided that is sufficient:
-
-```bash
-npm run import:data
-? Type of data? Raster
-```
-
-Assuming you are using the [FSM example data](#link-project-data) package and it is accessible via the `data/src` directory (using [data link option 2 or 3](#link-project-data)). Let's import the `yesson_octocorals` raster which is a `binary` raster containing cells with value 1 where octocorals are predicted to be present, and value 0 otherwise.
-
-```bash
-? Enter path to src file (with filename) data/src/yesson_octocorals.tif
-```
-
-Choose a datasource name that is different than any other datasourceId in `projects/datasources.json`. The command won't let you press enter if it's a duplicate.
-
-```bash
-? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename octocorals
-```
-
-If the raster has more than one band of data, select the band you want to import.
-
-```bash
-? Enter band number to import 1
-```
-
-Choose what the raster data represents. The octocorals raster is a binary 0/1 raster representing absence or presence, so choose Quantitative.
-
-`Quantitative` - measures one thing. This could be a binary 0 or 1 value thatidentifies the presence or absence of something, or a value that varies over the geographic surface such as temperature.
-`Categorical` - measures presence/absence of multiple groups. The value of each cell in the band is a numeric group identifier, and thus each cell can represent one and only one group at a time.
-
-```bash
-❯ Quantitative - values represent amounts, measurement of single thing
-  Categorical - values represent groups
-```
-
-It will then ask you if there is a nodata value for this raster. QGIS or the gdalinfo command can tell you this. For octocorals, there is no nodata value so just hit Enter.
-
-```bash
-? Enter nodata value for raster or leave blank
-```
-
-At this point the import will proceed and various log output will be generated.
 
 Do not be concerned about an error that an ".ovr" file could not be found. This is expected. Once complete you will find:
 
-- The output file `data/dist/octocorals.tif`
-- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `octocorals`.
+Once complete, look at your `project/datasources.json` file to look at the new entries. You can make edits to this file and then run the `reimport:data` command to regenerate the files in `data/dist`.
 
-If the import fails, try again double checking everything. It is most likely one of the following:
+### Update Geography
 
-- You aren't running Docker Desktop (required for running GDAL commands)
-- You provided a source file path that doesn't point to a valid dataset
-- You aren't using a file format supported by GDAL
+Open `project/geographies.json` to edit it.
+
+Set `precalc` to `false` for the default `world` geography. This will exclude it from precalculation,
+
+Now, add a geography for your planning boundary and save the file.
+
+```json
+{
+  "geographyId": "planning-boundary",
+  "datasourceId": "planning-boundary",
+  "display": "Planning Boundary",
+  "groups": ["default-boundary"],
+  "precalc": true
+}
+```
 
 ## Precalc Data
 
-Once you have geographies and datasources configured, you can precalculate metrics for them.
+You're now ready to precalculate metrics for your datasources. Precalc is all about calculating expensive spatial metrics ahead of time.
+
+One of the questions our report needs to answer is "how much of all octocorals in the EEZ, is within my Sketch polygon"?
+
+This is calculated as:
+`octocorals sketch % = area of octocorals within sketch / area of octocorals within EEZ`
+
+You can precalculate the denominator of this equation ahead of time. The `precalc` command will calculate how much of a datasources features/raster cells is within each of your projects geographies. This can measured as an `area`, `sum` of cell value, `count` of features/raster cells, etc.
+
+Since your datasources and geographies all have `precalc: true` set you are ready to start:
 
 ```bash
 npm run precalc:data
+
+? Do you want to precalculate only a subset?
+  Yes, by datasource
+  Yes, by geography
+  Yes, by both
+❯ No, just precalculate everything (may take a while)
 ```
 
-To avoid precalculating data you don't require, when asked if you wish to precalcate specific metrics, select `Yes, by datasource` and then select `global-eez-mr-v12` (used in the provided Size report) and your imported datasource (in this tutorial: `reefextent`).
+Choose to "precalculate everything". Then press enter:
 
-Precalc will start a web server on localhost port 8001 that serves up data from `data/dist` access by this command.
-
-You need to have at least one geography in geographies.json and one datasource in datasources.json with the `precalc` property set to true. The command will measure (total area, feature count, value sum) the portion of a datasources features that fall within the geography (intersection).
-
-These overall metric values are used almost exclusively for calculating % sketch overlap, they provide the denominator value. For example, if you have a geography representing the EEZ of a country, and you have a sketch polygon, and you have a datasource representing presence of seagrass. And you want to know the percentage of seagrass that is within the sketch, relative to how much seagrass is in the whole EEZ boundary.
-
-`seagrass sketch % = seagrass area within sketch / seagrass area within EEZ`
-
-We can and often need to precalculate that denominator for all possible geographies. That is what the `precalc:data` command does, it precalculates a set of metrics for all datasources against all geographies, where the `precalc` property is set to true in both the datasource and the geography.
-
-Precalc metrics are then imported into a report client, and combined with the sketch overlap metrics returned from the geoprocessing function, to produce a percentage.
+- The precalc process may take at least a few minutes.
+- Precalc will start a web server on localhost port 8001 that serve up data from `data/dist`.
+- Precalc will see the two datasources you selected and that they have `precalc: true`. It will also see the one geography `eez` that is defined in geographies.json that has `precalc: true`. It will then calculate `area`, `sum`, and `count` metrics for each datasource, in combination with each geography.
+- `project/precalc.json` will be updated with the new values.
 
 Tips for precalculation:
 
@@ -439,21 +270,13 @@ Tips for precalculation:
 - Set `precalc:false` for datasources that are not currently used, or are only used to define a geography (not displayed in reports). This is why the datasource for the default geography for a project is always set by default to `precalc: false`.
 - If you are using one of the [global-datasources](https://github.com/seasketch/global-datasources) in your project, and you want to use it in reporting % sketch overlap, so you've set `precalc:true`, strongly consider defining a `bboxFilter`. This will ensure that precalc doesn't have to fetch the entire datasource when precalculating a metric, which can be over 1 Gigabyte in size. Also consider setting a `propertyFilter` to narrow down to just the features you need. This filter is applied on the client-side so it won't reduce the number of features you are sending over the wire.
 
-### Precalc Data Cleanup
-
-If you remove a geography/datasource, then in order to remove their precalculated metrics from `precalc.json`, you will need to run the cleanup command.
-
-```bash
-npm run precalc:data:cleanup
-```
-
 ## Create Metric Group
 
-The metric group is your report configuration. There is one metric group per individual report. It links everything together and defines what data you want to show in the individual report. The metric group is used in both the function that calculates statistics and the component which displays the results. Often, projects will include ~8 reports, with each report focusing on a goal or type of data.
+The metric group is your central report configuration. There is one metric group per individual report. It links everything together and defines what data you want to show in the individual report. The metric group is used in both the function that calculates statistics and the component which displays the results. Often, projects will include ~8 reports, with each report focusing on a goal or type of data.
 
 Navigate to `metrics.json`, where metric groups are stored. There is already a report here – `boundaryAreaOverlap`. This is the metric group used to calculate how much of the EEZ is within our sketch, using the `global-eez-mr-v12` datasource we [precalculated](#precalc-data).
 
-We’re going to create a report that uses the vector layer just imported. We want to see how much our sketch overlaps with the vector layer. Pick a metricId to be the title of your report in camelCase (`coralReef`), the type of report (`areaOverlap`), and the classes you want to show in the report. Your classes can look a myriad of ways, depending on whether all the data is from a single file, or multiple files. All data within a metric group must be in the same format (raster or vector).
+We’re going to create a report that uses the `reefextent` layer just imported. We want to see how much our sketch overlaps with reefs. Pick a metricId to be the title of your report in camelCase (`coralReef`), the type of report (`areaOverlap`), and the classes you want to show in the report. Your classes can look a myriad of ways, depending on whether all the data is from a single file, or multiple files. All data within a metric group must be in the same format (raster or vector).
 
 Our example `reefextent` data is a simple vector file. We can set classId to be anything. Our metric group looked as follows:
 

@@ -113,6 +113,16 @@ const sidebars: SidebarsConfig = {
             },
             {
               type: "doc",
+              id: "precalc",
+              label: "Precalc Data",
+            },
+            {
+              type: "doc",
+              id: "dataimport",
+              label: "Data Import",
+            },
+            {
+              type: "doc",
               id: "preprocessing",
               label: "Preprocessing Functions",
             },

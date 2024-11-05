@@ -104,19 +104,82 @@ Install all software dependencies directly on your Apple machine running the Mac
 
 Requirement: Windows 11 or newer
 
-- Install [Docker Desktop with WSL2 support](https://docs.docker.com/desktop/windows/wsl/) and make sure Docker is running
-
-Now decide between using the `geoprocessing` WSL image, which has all pre-requisites installed, or use the default Ubuntu image and set it up yourself.
-
-### Geoprocessing WSL Installation
-
-- Install [WSL with a custom distribution](https://learn.microsoft.com/en-us/windows/wsl/install)
-
-...
-
-### Default Ubuntu installation
-
+- Install [Powershell for Windows](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4)
 - Install [WSL with Ubuntu distribution](https://learn.microsoft.com/en-us/windows/wsl/install)
+  - Install Ubuntu as directed
+- Install [Docker Desktop with WSL2 support](https://docs.docker.com/desktop/windows/wsl/).
+  - Once installed, make sure Docker Desktop is running
+
+Now decide if you want to install the pre-configured [Geoprocessing Distribution](#geoprocessing-distribution) (easiest). Or you can instead setup the [Default Ubuntu Distribution](#default-ubuntu-installation) from scratch on your own (more difficult).
+
+### Geoprocessing Distribution
+
+The Geoprocessing distribution will be installed right alongside the default Ubuntu distribution from the previous step.
+
+- Open Powershell
+- Download latest Geoprocessing distribution to tmp directory
+  - `mkdir C:\tmp\WslDistributions\Geoprocessing`
+  - Download most recent zip from https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i to this folder, then unzip it
+- Install Geoprocessing image
+
+  - `wsl --import Geoprocessing C:\WslDistributions\Geoprocessing\ C:\tmp\geoprocessing-workspace_20230627\geoprocessing-workspace_20230627_65bd30ba63a3.tar`
+  - Change the path and tar file name to match the version you downloaded.
+  - If started correctly, you will see the message `Import in progress, this may take a few minutes...`
+  - Once done it should say `The operation completed successfully.`
+  - If it didn't imiport successfully, try restarting your system, WSL may not have been running properly.
+
+- Setup Terminal Profile (for easy start)
+  - With powershell or another terminal open click down arrow button in the tab bar, to the right of the (+) icon, then click Settings
+
+![Terminal Profile](assets/terminal-profile.jpg "Terminal Profile")
+
+- Find Profiles section in left sidebar -> click Add a new profile
+- Under `Duplicate a profile`, click `Ubuntu`, then `Duplicate`
+
+![Profile Duplicate](assets/terminal-duplicate.jpg "Profile Duplicate")
+
+- Change name from Ubuntu-Copy to `Geoprocessing`
+- Right below that, change the Terminal command from `C:\WINDOWS\system32\wsl.exe -d Ubuntu` to `C:\WINDOWS\system32\wsl.exe -u vscode -d Geoprocessing`
+- Save and exit the profile
+- The Terminal dropdown menu should now have a new `Geoprocessing` choice. Click this to start an instance of the Geoprocessing Distribution. It will open a shell, logged in with the vscode user.
+  Setup`
+- Setup workspaces directory.
+
+```bash
+sudo mkdir /workspaces
+sudo chmod 777 /workspaces
+cd /workspaces
+```
+
+- Check to make sure you have access to your Windows filesystem:
+
+```bash
+ls /mnt/c
+```
+
+- Install [VS Code](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) in Windows and setup with WSL2.
+  - Install recommended [extensions](https://code.visualstudio.com/docs/editor/extension-marketplace) when prompted. If not prompted, go to the `Extensions` panel on the left side and install the extensions named in [this file](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/templates/project/.vscode/extensions.json)
+
+Follow the [final configuration steps](#final-configuration---all-install-options) below, then move on to creating a new project.
+
+#### Upgrade Geoprocessing Distribution
+
+If you previously installed a Geoprocessing distribution, and now want to replace it with a new one, first backup your existing Geoprocessing distribution (if needed):
+
+```bash
+mkdir C:\tmp\WslBackups\Geoprocessing
+wsl --export Geoprocessing C:\tmp\WslBackups\20241104_Geoprocessing.tar
+```
+
+Then unregister it:
+
+```bash
+wsl --unregister Geoprocessing
+```
+
+Then follow the instructions above to install WSL Geoprocessing image again
+
+### Default Ubuntu Distribution
 
 - Open Windows start menu -> start typing `Ubuntu on Windows` -> Select `Ubuntu on Windows`
   - This will start Ubuntu virtual machine and open a bash shell in your home directory.
@@ -142,7 +205,7 @@ Requirement: Ubuntu <UbuntuVersion /> or newer
 
 Setup is for a physical machine running the Ubuntu operating system.
 
-From a Ubuntu terminal with root access, simply follow the steps above for [default ubuntu installation](#default-ubuntu-installation)
+From a Ubuntu terminal with root access, simply follow the steps above for [default ubuntu installation](#default-ubuntu-distribution)
 
 ## Final Configuration - all install options
 

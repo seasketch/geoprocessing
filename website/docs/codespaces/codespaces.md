@@ -24,7 +24,7 @@ Now you're ready to setup codespaces for this devcontainer:
 - Configure Github secrets for all environment variables your codespace will need for accessing POEditor and Amazon Web Services.
   - Go to your [Github codespace settings](https://github.com/settings/codespaces)
   - Define each of the following Codespaces secrets found in the screenshot.
-  - your POEditor API token you can find here - https://poeditor.com/account/api. If you don't have one, then follow the instructions to [create your own](#setup-poeditor-as-an-independent-developer)
+  - your POEditor API token you can find here - https://poeditor.com/account/api. If you don't have one, then follow the instructions to [create your own](../gip/GIP-1-i18n.md)
   - You can leave your AWS credentials blank until you set them up in a later tutorial when you want to deploy your project.
 
 ![Add Secrets](./assets/AddSecrets.jpg "Add Secrets")

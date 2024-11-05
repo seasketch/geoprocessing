@@ -99,7 +99,7 @@ You will now import datasets from a package prepared for the Federated States of
 This tutorial skips over a lot of details. Visit the advanced guides to learn more.
 
 - [Data import](../dataimport.md)
-- [Third party data](./thirdparty.md)
+- [Third party data](../thirdpartydata/thirdpartydata.md)
 
 Download the FSM data package:
 

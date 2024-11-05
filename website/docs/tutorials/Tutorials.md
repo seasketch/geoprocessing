@@ -1,72 +1,54 @@
 # System Setup
 
-These tutorials will teach you the fundamentals of creating and deploying a seasketch `geoprocessing` project. They expect you already have a basic working knowledge of your computer, its operating system, command line interfaces, and web application development. Learn more about the [skills](../skills.md) required.
+import { NodeVersion, UbuntuVersion } from '../\_components/NodeVersion';
 
-You will need a computer running at least:
+These tutorials will walk you through creating and deploying a basic seasketch `geoprocessing` project. You should already have a basic working knowledge of your computer, its operating system, shell environment (command line), and web application development using NodeJS and React. Learn more about the [skills](../skills.md) required.
 
-- Windows 11
-- MacOS 11.6.8 Big Sur
-- Linux: untested but recent versions of Linux such as Ubuntu, Debian, or Fedora should be possible that are capable of running VSCode and Docker Desktop.
+Setup options:
 
-Web browser:
+- MacOS
+  - [Docker Desktop](#docker-desktop-setup)
+  - [Direct Install](#macos-setup)
+- Windows
+  - [Windows Subsystem for Linux (WSL) with Ubuntu](#windows-setup)
+  - [Docker Desktop](#docker-desktop-setup)
+  - Direct Install not supported
+- Ubuntu Linux
+  - [Docker Desktop](#docker-desktop-setup)
+  - [Direct Install](#ubuntu-setup)
+- [Github codespaces](../codespaces/)
+  - Possible but not well tested
 
-- Chrome is the most common but Firefox, Safari, Edge can also work. Their developer tools will all be a little different.
-- Chrome is the most common but Firefox, Safari, Edge can also work. Their developer tools will all be a little different.
+Docker Desktop is the **recommended** option for beginners with systems running the MacOS or Ubuntu Linux operating system.
 
-### Install Options
+For Windows systems, the Windows Subsystem for Linux (WSL) with Ubuntu is the recommended option. This lightweight virtual machine layer is faster than running Docker Desktop alone, and has a built-in filesystem bridge allowing you to access all your Windows drives in the Ubuntu container (via `/mnt` path).
 
-You have 2 options for how to develop geoprocessing projects
+## Docker Desktop Setup
 
-1. Docker Desktop Environment
-   - Docker provides a sandboxed Ubuntu Linux environment on your local computer, setup specifically for geoprocessing projects.
-   - Best for: intermediate to power users doing development every day
-   - Pros
-     - Provides a fully configured environment, with installation of many of the third-party dependencies already take care of.
-     - Docker workspace is isolated from your host operating system. You can remove or recreate these environment as needed.
-     - You can work completely offline once you are setup.
-   - Cons
-     - You will need to get comfortable with Docker Desktop software.
-     - Docker is slower than running directly on your system (maybe 30%)
-     - Syncing data from network drives like Box into the Docker container is more challenging.
-2. MacOS Bare Metal / Windows WSL
-   - All geoprocessing dependencies are installed and maintained directly by you on your local computer operating system. For MacOS this means no virtualization is done. For Windows, this means running Ubuntu via WSL2 aka the Windows Subsystem for Linux.
-   - Best for - power user.
-   - Pros - fastest speeds because you are running without virtualization (aka bare metal)
-   - Cons - prone to instability and issues due to progression of dependency versions or operating system changes. Difficult to test and ensure stable support for all operating systems and processors (amd64, arm64).
+Docker Desktop allows you to run containerized applications that are isolated from your host operating system. It's similar but different from a virtual machine. SeaSketch publishes the [docker-gp-workspace](https://github.com/seasketch/docker-gp-workspace) container image that is a fully-configured environment for developing geoprocessing projects. It allows you to get up and running quickly and has persistent storage. The downside is that code runs a bit slower in a container than directly on your system.
 
-Choose an option and follow the instructions below to get started. You can try out different options over time.
+Install steps for all operating systems:
 
-[Github codespaces](../codespaces/) is also possible to use instead of Docker Desktop but is more limited and not well tested.
-
-### If Install Option #1 - Docker Desktop Environment
-
-- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and make sure its running.
-- If you have a Mac, choose either Apple processor or Intel processor as appropriate to your system. If you don't know which processor you have, click the apple icon in the top left and select `About This Mac` and look for `Processor`.
-- Install [VS Code](https://code.visualstudio.com) and open it.
-- Clone the geoprocessing-devcontainer Github repository to your local system and open that folder in VSCode.
-
-```bash
-git clone https://github.com/seasketch/geoprocessing-devcontainer
-```
-
-Here are more detailed instructions to do this step:
-
-- From VSCode, click `Open Folder` button or `File -> Open Folder` and create or choose a folder where you keep source code. A folder called `src` or `code` in your users home directory is reasonable. Then click `Select Folder` to finish.
-- Press `Ctrl-J` or `Cmd-backtick` to open a terminal. The current directory of the terminal will be your workspace folder.
-- Enter the command to clone the geoprocessing-devcontainer repository to your workspace.
-  - `git clone https://github.com/seasketch/geoprocessing-devcontainer`
-- Click `Open Folder` button or `File -> Open Folder` and open the repo folder you just cloned.
-- Press `Ctrl-J` or `Cmd-backtick` to open a terminal.
-
-- Install required VSCode extensions. If you are already prompted to install suggested extensions, click to do so now, otherwise go to the `Extension` panel on the left side of the VSCode window and install the following extensions:
+- Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your host operating system and make sure it's running.
+  - If you have a Mac, choose either Apple processor or Intel processor as appropriate. If you don't know, click the apple icon in the top left and select `About This Mac` and look for `Processor`.
+- Install [VS Code](https://code.visualstudio.com) on your host operating system and open it.
+- Clone the geoprocessing-devcontainer Github repository to your host operating system, and open that folder in VSCode.
+  - From VSCode, click `Open Folder` button or `File -> Open Folder` and create or choose a folder where you keep source code. A folder called `src` or `code` in your users home directory is reasonable. Then click `Select Folder` to finish.
+  - Press `Ctrl-J` or `Cmd-backtick` to open a terminal. The current directory of the terminal will be your workspace folder.
+  - Enter the command to clone the geoprocessing-devcontainer repository to your workspace.
+    - `git clone https://github.com/seasketch/geoprocessing-devcontainer`
+  - Click `Open Folder` button or `File -> Open Folder` and open the repo folder you just cloned.
+  - Press `Ctrl-J` or `Cmd-backtick` to open a terminal again.
+- Install required VSCode extensions. You may be prompted to do this, otherwise go to the `Extension` panel found on the left side of the VSCode window. Then install the following extensions:
   - Remote Development
   - Remote Explorer
   - Docker
   - Dev Containers
 
-Once you have added the `Dev Containers` extension you should be prompted to ”Reopen folder to develop in a container”. <b>_Do not do this yet._</b>
+Once you have added the `Dev Containers` extension you should be prompted to "Reopen folder to develop in a container". <b>_Do not do this yet._</b>
 
-- In the file `Explorer` panel, you will find a `.devcontainer` folder. This top-level folder contains the configuration for the `stable` geoprocessing devcontainer.
+- In the file `Explorer` panel, open the `.devcontainer` folder.
+  - This top-level folder contains the configuration for the `stable` geoprocessing devcontainer you will use.
 - Make a copy of `.devcontainer/.env.template` file and name it `.env`.
   - You don't need to add anything yet to your .env file, but it is required that it exists in the `.devcontainer` folder.
 
@@ -91,23 +73,23 @@ To exit your devcontainer:
 
 See devcontainer advanced usage [guide](../devcontainer/devcontainer.md) to learn more.
 
-### Install Option #2 - Bare Metal
+## MacOS Setup
 
-Running 'bare metal' means running the geoprocessing framework directly on your computers operating system. It's up to you to install and maintain all necessary dependencies.
+Requirement: 11.6.8 Big Sur or newer
 
-#### MacOS
+Install all software dependencies directly on your Apple machine running the MacOS operating system:
 
-- Install [Node JS](https://nodejs.org/en/download/) >= v20.0.0
-  - [nvm](https://github.com/nvm-sh/nvm) is great for this, then `nvm install v20`. May ask you to first install XCode developer tools as well which is available through the App Store or follow the instructions provided when you try to install nvm.
+- Install [Node JS](https://nodejs.org/en/download/) >= <NodeVersion />
+  - [nvm](https://github.com/nvm-sh/nvm) is great for this
+    - First, install nvm. May ask you to first install XCode developer tools which is available through the App Store or follow the instructions provided.
+    - Then <code>nvm install v<NodeVersion /></code>.
   - Then open your Terminal app of choice and run `node -v` to check your node version
+- Install latest [NPM](https://www.npmjs.com/) package manager after installing node.
+  - `npm --version` to check
+  - `npm install -g latest`
 - Install [VS Code](https://code.visualstudio.com)
 
   - Install recommended [extensions](https://code.visualstudio.com/docs/editor/extension-marketplace) when prompted. If not prompted, go to the `Extensions` panel on the left side and install the extensions named in [this file](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/templates/project/.vscode/extensions.json)
-
-- Install [NPM](https://www.npmjs.com/) package manager >= v10.5.0 after installing node. The version that comes with node may not be recent enough.
-
-  - `npm --version` to check
-  - `npm install -g latest`
 
 - Install [GDAL](https://gdal.org/)
 
@@ -118,31 +100,51 @@ Running 'bare metal' means running the geoprocessing framework directly on your 
 
 - Create a free Github account if you don't have one already
 
-#### Windows
+## Windows Setup
 
-For Windows, you won't actually be running bare metal. your `geoprocessing` project and the underlying code run in a Docker container running Ubuntu Linux. This is done using the Windows Subsystem for Linux (WSL2) so performance is actually quite good. Docker Desktop and VSCode both know how to work seamlessly with WSL2. Some of the building blocks you will install in Windows (Git, AWSCLI) and link them into the Ubuntu Docker container. The rest will be installed directly in the Ubuntu Docker container.
+Requirement: Windows 11 or newer
 
-In Windows:
-
-- Install [WSL2 with Ubuntu distribution](https://learn.microsoft.com/en-us/windows/wsl/install)
 - Install [Docker Desktop with WSL2 support](https://docs.docker.com/desktop/windows/wsl/) and make sure Docker is running
-- Open start menu -> `Ubuntu on Windows`
-  - This will start a bash shell in your Ubuntu Linux home directory
 
-In WSL Ubuntu:
+Now decide between using the `geoprocessing` WSL image, which has all pre-requisites installed, or use the default Ubuntu image and set it up yourself.
+
+### Geoprocessing WSL Installation
+
+- Install [WSL with a custom distribution](https://learn.microsoft.com/en-us/windows/wsl/install)
+
+...
+
+### Default Ubuntu installation
+
+- Install [WSL with Ubuntu distribution](https://learn.microsoft.com/en-us/windows/wsl/install)
+
+- Open Windows start menu -> start typing `Ubuntu on Windows` -> Select `Ubuntu on Windows`
+  - This will start Ubuntu virtual machine and open a bash shell in your home directory.
+
+In Ubuntu shell:
 
 - Install [Java runtime](https://stackoverflow.com/questions/63866813/what-is-the-proper-way-of-using-jdk-on-wsl2-on-windows-10) in Ubuntu (required by AWS CDK library)
 - Install [Git in Ubuntu and Windows](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git)
 - Install [VS Code](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) in Windows and setup with WSL2.
   - Install recommended [extensions](https://code.visualstudio.com/docs/editor/extension-marketplace) when prompted. If not prompted, go to the `Extensions` panel on the left side and install the extensions named in [this file](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/templates/project/.vscode/extensions.json)
-- Install [Node JS](https://nodejs.org/en/download/) >= v16.0.0 in Ubuntu
-  - [nvm](https://github.com/nvm-sh/nvm) is great for this, then `nvm install v16`.
-  - Then open your Terminal app of choice and run `node -v` to check version
-- Install [NPM](https://www.npmjs.com/) package manager >= v8.5.0 after installing node. The version that comes with node may not be recent enough.
+- Install [Node JS](https://nodejs.org/en/download/) >= <NodeVersion /> in Ubuntu
+  - [nvm](https://github.com/nvm-sh/nvm) is great for this
+    - First, install nvm. May ask you to first install XCode developer tools which is available through the App Store or follow the instructions provided.
+    - Then <code>nvm install v<NodeVersion /></code>.
+  - Then open your Terminal app of choice and run `node -v` to check your node version
+- Install latest [NPM](https://www.npmjs.com/) package manager after installing node.
   - `npm --version` to check
   - `npm install -g latest`
 
-### Final Steps
+## Ubuntu Setup
+
+Requirement: Ubuntu <UbuntuVersion /> or newer
+
+Setup is for a physical machine running the Ubuntu operating system.
+
+From a Ubuntu terminal with root access, simply follow the steps above for [default ubuntu installation](#default-ubuntu-installation)
+
+## Final Configuration - all install options
 
 The last step, regardless of install option, is to set the [username](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git?platform=mac) and email address git will associate with your commits.
 
@@ -163,4 +165,4 @@ cat ~/.gitconfig
 cat .git/config
 ```
 
-Your devcontainer environment is now ready for a project
+Your environment is now ready for a project

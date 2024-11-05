@@ -2,7 +2,7 @@
 
 Instructions to migrate existing geoprocessing projects to newer versions.
 
-## Initial upgrade
+## Upgrade Geoprocessing
 
 Your project will be pinned to a specific version of the geoprocessing library in package.json, under `devDependencies`. To update to the latest version, first, make sure you don't have any unsaved work and your git repository is in a clean state. Then update the version, and run the upgrade script:
 
@@ -61,7 +61,7 @@ Numerous manual migration steps are required, including a number of breaking cha
 
 See [fsm-reports](https://github.com/seasketch/fsm-nearshore-reports/pull/3) for a migration from 6.x to 7.x and [brazil-reports](https://github.com/seasketch/brazil-reports/pull/10) for migration from 3.x to 7.x which was done by starting with a freshly created project in a git branch and slowly migrating the datasources, metric groups, functions, and report clients over.
 
-### Upgrade dev environment
+### Upgrade Devcontainer
 
 If you're using `geoprocessing-devcontainer` to develop in a Docker environment, you will need to update this repo and the underlying `geoprocessing-workspace` docker image to the latest. First, make sure Docker Desktop is running, then:
 
@@ -93,6 +93,25 @@ If you're maintaining your own development environment then you should look to h
 - Node 20.12.1
 - NPM 10.5.0
 - GDAL 3.5.0
+
+### Upgrade Windows Geoprocessing
+
+#### Upgrade Geoprocessing Distribution
+
+If you previously installed a version of the Geoprocessing distribution for running in WSL, and now want to replace it with a new one, first backup your existing Geoprocessing distribution (if needed):
+
+```bash
+mkdir C:\tmp\WslBackups\Geoprocessing
+wsl --export Geoprocessing C:\tmp\WslBackups\20241104_Geoprocessing.tar
+```
+
+Then unregister it:
+
+```bash
+wsl --unregister Geoprocessing
+```
+
+Then follow the instructions above to install WSL Geoprocessing image again
 
 ### Upgrade Script
 

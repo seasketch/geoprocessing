@@ -7,23 +7,21 @@ These tutorials will walk you through creating and deploying a basic seasketch `
 Setup options:
 
 - MacOS
-  - [Docker Desktop](#docker-desktop-setup)
-  - [Direct Install](#macos-setup)
+  - [Virtual install with Docker Desktop](#virtual-install-with-docker-desktop)
+  - [Direct Install on MacOS](#macos-direct-install)
 - Windows
-  - [Windows Subsystem for Linux (WSL) with Ubuntu](#windows-setup)
-  - [Docker Desktop](#docker-desktop-setup)
-  - Direct Install not supported
+  - [Virtual install with Windows Subsystem for Linux (WSL)](#windows-wsl-install)
+  - [Virtual install with Docker Desktop](#virtual-install-with-docker-desktop)
+  - Direct Install on Windows not supported
 - Ubuntu Linux
-  - [Docker Desktop](#docker-desktop-setup)
-  - [Direct Install](#ubuntu-setup)
+  - [Virtual install with Docker Desktop](#virtual-install-with-docker-desktop)
+  - [Direct Install on Ubuntu](#ubuntu-direct-install)
 - [Github codespaces](../codespaces/)
   - Possible but not well tested
 
-Docker Desktop is the **recommended** option for beginners with systems running the MacOS or Ubuntu Linux operating system.
+A virtual environment is the recommended way for beginners to develop geoprocessing projects. Docker Desktop is the recommended methods on MacOS and Linux. WSL is the recommended method on Windows.
 
-For Windows systems, the Windows Subsystem for Linux (WSL) with Ubuntu is the recommended option. This lightweight virtual machine layer is faster than running Docker Desktop alone, and has a built-in filesystem bridge allowing you to access all your Windows drives in the Ubuntu container (via `/mnt` path).
-
-## Docker Desktop Setup
+## Virtual Install With Docker Desktop
 
 Docker Desktop allows you to run containerized applications that are isolated from your host operating system. It's similar but different from a virtual machine. SeaSketch publishes the [docker-gp-workspace](https://github.com/seasketch/docker-gp-workspace) container image that is a fully-configured environment for developing geoprocessing projects. It allows you to get up and running quickly and has persistent storage. The downside is that code runs a bit slower in a container than directly on your system.
 
@@ -73,7 +71,7 @@ To exit your devcontainer:
 
 See devcontainer advanced usage [guide](../devcontainer/devcontainer.md) to learn more.
 
-## MacOS Setup
+## MacOS Direct Install
 
 Requirement: 11.6.8 Big Sur or newer
 
@@ -100,50 +98,63 @@ Install all software dependencies directly on your Apple machine running the Mac
 
 - Create a free Github account if you don't have one already
 
-## Windows Setup
+## Windows WSL Install
 
 Requirement: Windows 11 or newer
 
+Why use Windows Subsystem for Linux (WSL) to develop geoprocessing projects instead of using the [Docker Desktop](#docker-desktop-setup)? Because WSL is faster than Docker Desktop alone. And because WSL provides a built-in filesystem bridge allowing you to access all your Windows drives in the Ubuntu container (via `/mnt` path).
+
+To get started in Windows:
+
 - Install [Powershell for Windows](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4)
 - Install [WSL with Ubuntu distribution](https://learn.microsoft.com/en-us/windows/wsl/install)
-  - Install Ubuntu as directed
+  - Install the default Ubuntu distribution as directed.
 - Install [Docker Desktop with WSL2 support](https://docs.docker.com/desktop/windows/wsl/).
   - Once installed, make sure Docker Desktop is running
+- Install [VS Code](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) for Windows with WSL extension.
 
-Now decide if you want to install the pre-configured [Geoprocessing Distribution](#geoprocessing-distribution) (easiest). Or you can instead setup the [Default Ubuntu Distribution](#default-ubuntu-installation) from scratch on your own (more difficult).
+Of you want to install the pre-configured [Geoprocessing Distribution](#geoprocessing-distribution) (easiest), then go to the next section. If you want to manually setup your Ubuntu environment from scratch, then skip ahead to the [Default Ubuntu Distribution](#default-ubuntu-installation) (more difficult).
 
 ### Geoprocessing Distribution
 
-The Geoprocessing distribution will be installed right alongside the default Ubuntu distribution from the previous step.
+The Geoprocessing distribution has been prepared by the SeaSketch team for running in WSL. You will install and run it right alongside the default Ubuntu distribution.
 
-- Open Powershell
-- Download latest Geoprocessing distribution to tmp directory
-  - `mkdir C:\tmp\WslDistributions\Geoprocessing`
-  - Download most recent zip from https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i to this folder, then unzip it
-- Install Geoprocessing image
+- Open Powershell in Windows
+- Create a tmp directory
 
-  - `wsl --import Geoprocessing C:\WslDistributions\Geoprocessing\ C:\tmp\geoprocessing-workspace_20230627\geoprocessing-workspace_20230627_65bd30ba63a3.tar`
-  - Change the path and tar file name to match the version you downloaded.
-  - If started correctly, you will see the message `Import in progress, this may take a few minutes...`
-  - Once done it should say `The operation completed successfully.`
-  - If it didn't imiport successfully, try restarting your system, WSL may not have been running properly.
+```bash
+mkdir C:\tmp
+```
 
-- Setup Terminal Profile (for easy start)
-  - With powershell or another terminal open click down arrow button in the tab bar, to the right of the (+) icon, then click Settings
+- Download the most recent `geoprocessing-workspace` zip file from the [SeaSketch Box folder](https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i) to this tmp directory and then unzip it.
+
+- Create a second directory to import the Geoprocessing tar image too, then import it:
+
+```bash
+mkdir C:\WslDistributions\Geoprocessing
+wsl --import Geoprocessing C:\WslDistributions\Geoprocessing\ C:\tmp\geoprocessing-workspace_20230627\geoprocessing-workspace_20230627_65bd30ba63a3.tar
+```
+
+- Be sure to update the filename in the import command above to match the version you downloaded.
+- If import is started correctly, you will see the message `Import in progress, this may take a few minutes...`. Once done it should say `The operation completed successfully`. If it didn't import successfully, try restarting your system, WSL may not have been running properly.
+
+- Setup Terminal Profile
+  - This will create a shortcut to start an instance of Geoprocessing in WSL.
+  - In PowerShell, click the down arrow in the tab bar, to the right of the (+) icon, then click Settings.
 
 ![Terminal Profile](assets/terminal-profile.jpg "Terminal Profile")
 
-- Find Profiles section in left sidebar -> click Add a new profile
-- Under `Duplicate a profile`, click `Ubuntu`, then `Duplicate`
+- Find the Profiles section in left sidebar -> click `Add a new profile`
+- The, under `Duplicate a profile`, click `Ubuntu`, then `Duplicate` button.
 
 ![Profile Duplicate](assets/terminal-duplicate.jpg "Profile Duplicate")
 
-- Change name from Ubuntu-Copy to `Geoprocessing`
-- Right below that, change the Terminal command from `C:\WINDOWS\system32\wsl.exe -d Ubuntu` to `C:\WINDOWS\system32\wsl.exe -u vscode -d Geoprocessing`
-- Save and exit the profile
+- Change the name of the duplicated Ubuntu profiles to `Geoprocessing`
+- Change the profiles Terminal command from `C:\WINDOWS\system32\wsl.exe -d Ubuntu` to `C:\WINDOWS\system32\wsl.exe -u vscode -d Geoprocessing`. This will ensure that Geoprocessing starts with the correct user, instead of root.
+- Save and exit your new profile
 - The Terminal dropdown menu should now have a new `Geoprocessing` choice. Click this to start an instance of the Geoprocessing Distribution. It will open a shell, logged in with the vscode user.
-  Setup`
-- Setup workspaces directory.
+
+In the Geoprocessing shell, setup the workspaces directory where you will create projects:
 
 ```bash
 sudo mkdir /workspaces
@@ -151,35 +162,32 @@ sudo chmod 777 /workspaces
 cd /workspaces
 ```
 
-- Check to make sure you have access to your Windows filesystem:
+Now open VSCode in your workspaces directory:
+
+```bash
+code .
+```
+
+Install recommended VSCode [extensions](https://code.visualstudio.com/docs/editor/extension-marketplace) when prompted. If not prompted, go to the `Extensions` panel on the left side and install the following extensions
+
+- Remote Development
+- Remote Explorer
+- Docker
+- Dev Containers
+
+Check to make sure you have access to your Windows filesystem:
 
 ```bash
 ls /mnt/c
 ```
 
-- Install [VS Code](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) in Windows and setup with WSL2.
-  - Install recommended [extensions](https://code.visualstudio.com/docs/editor/extension-marketplace) when prompted. If not prompted, go to the `Extensions` panel on the left side and install the extensions named in [this file](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/templates/project/.vscode/extensions.json)
-
 Follow the [final configuration steps](#final-configuration---all-install-options) below, then move on to creating a new project.
 
-#### Upgrade Geoprocessing Distribution
-
-If you previously installed a Geoprocessing distribution, and now want to replace it with a new one, first backup your existing Geoprocessing distribution (if needed):
-
-```bash
-mkdir C:\tmp\WslBackups\Geoprocessing
-wsl --export Geoprocessing C:\tmp\WslBackups\20241104_Geoprocessing.tar
-```
-
-Then unregister it:
-
-```bash
-wsl --unregister Geoprocessing
-```
-
-Then follow the instructions above to install WSL Geoprocessing image again
+[Upgrade](../upgrade.md) steps for the Geoprocessing Distribution are available
 
 ### Default Ubuntu Distribution
+
+Only follow these install steps if you intend to setup and use the default Ubuntu Distribution _instead of_ the pre-configured Geoprocessing Distribution (above).
 
 - Open Windows start menu -> start typing `Ubuntu on Windows` -> Select `Ubuntu on Windows`
   - This will start Ubuntu virtual machine and open a bash shell in your home directory.
@@ -199,7 +207,7 @@ In Ubuntu shell:
   - `npm --version` to check
   - `npm install -g latest`
 
-## Ubuntu Setup
+## Ubuntu Direct Install
 
 Requirement: Ubuntu <UbuntuVersion /> or newer
 

@@ -11,13 +11,13 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: "Unified Developer Experience",
+    title: "Simplified Developer Experience",
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
     description: (
       <>
-        Create a project with a combination of VSCode, Typescript, React,
-        Storybook, Vite and a toolbox of spatial functions.
+        Create reports for your SeaSketch project with a combination of software
+        building blocks.
       </>
     ),
   },
@@ -27,8 +27,8 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
     description: (
       <>
-        Write bite-size serverless functions that analyze proposals on-demand.
-        Build reports to display the results.
+        Write bite-size serverless functions that analyze user sketches
+        on-demand. Build reports to display the results.
       </>
     ),
   },

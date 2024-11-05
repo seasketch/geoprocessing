@@ -108,16 +108,16 @@ To get started in Windows:
 
 - Install [Powershell for Windows](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4)
 - Install [WSL with Ubuntu distribution](https://learn.microsoft.com/en-us/windows/wsl/install)
+  - If you already have WSL Version 2 installed, make sure it's up to date by running `wsl --update` in PowerShell
   - Install the default Ubuntu distribution as directed.
 - Install [Docker Desktop with WSL2 support](https://docs.docker.com/desktop/windows/wsl/).
   - Once installed, make sure Docker Desktop is running
+  - If you already had Docker Desktop installed, make sure it's updated to the latest version.
 - Install [VS Code](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) for Windows with WSL extension.
-
-Of you want to install the pre-configured [Geoprocessing Distribution](#geoprocessing-distribution) (easiest), then go to the next section. If you want to manually setup your Ubuntu environment from scratch, then skip ahead to the [Default Ubuntu Distribution](#default-ubuntu-installation) (more difficult).
 
 ### Geoprocessing Distribution
 
-The Geoprocessing distribution has been prepared by the SeaSketch team for running in WSL. You will install and run it right alongside the default Ubuntu distribution.
+A version of the [geoprocessing-workspace](https://github.com/seasketch/docker-gp-workspace) Docker image has been packaged by the SeaSketch team for running in WSL. It's pre-configured with all dependencies. You can download, import, and run it right alongside the default Ubuntu distribution.
 
 - Open Powershell in Windows
 - Create a tmp directory
@@ -187,7 +187,7 @@ Follow the [final configuration steps](#final-configuration---all-install-option
 
 ### Default Ubuntu Distribution
 
-Only follow these install steps if you intend to setup and use the default Ubuntu Distribution _instead of_ the pre-configured Geoprocessing Distribution (above).
+Only follow these install steps if you intend to setup and use the default Ubuntu Distribution in WSL _instead of_ the pre-configured Geoprocessing Distribution (above).
 
 - Open Windows start menu -> start typing `Ubuntu on Windows` -> Select `Ubuntu on Windows`
   - This will start Ubuntu virtual machine and open a bash shell in your home directory.

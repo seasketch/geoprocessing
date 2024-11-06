@@ -1,10 +1,10 @@
 # Create a New Geoprocessing Project
 
-This tutorial walks through generating a new geoprocessing project. It assumes:
+This tutorial walks through generating a new geoprocessing project for the Federated States of Micronesia. It assumes:
 
 - Your [system setup](./Tutorials.md) is complete
-- You have a VSCode app open in a devcontainer
-- You have a VSCode terminal open.
+- Your Ubuntu virtual environment is running (Devcontainer or WSL)
+- You have VSCode open in your virtual environment with a terminal pane open
 
 ## Initialize Geoprocessing Project
 
@@ -26,32 +26,39 @@ For this example, assume you have a marine planning project in `The Federated St
 ? Organization name (optional)
 ? What software license would you like to use? BSD-3-Clause
 ? What AWS region would you like to deploy functions in? us-west-1
-? What is the projects minimum longitude (left) in degrees (-180.0 to 180.0)? -180
-? What is the projects minimum latitude (bottom) in degrees (-90.0 to 90.0)? -90
-? What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)? 180
-? What is the projects maximum latitude (top) in degrees (-90.0 to 90.0)? 90
+? What languages will your reports be published in, other than English? (leave blank for none) Portuguese
+? What type of planning area does your project have? Other
+? What is the name of the planning area as it should be displayed in reports? (e.g. Samoa) Micronesia
+? What is the projects minimum longitude (left) in degrees (-180.0 to 180.0) 135.3
+? What is the projects minimum latitude (bottom) in degrees (-90.0 to 90.0)? -1.2
+? What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)? 165.7
+? What is the projects maximum latitude (top) in degrees (-90.0 to 90.0)? 13.5
+? What starter-template would you like to install? template-blank-project - blank starter project
 ```
+
+After pressing Enter, your project will be created and all NodeJS software dependencies installed.
 
 Few tips:
 
-- [SeaSketch](https://github.com/seasketch/next/blob/master/LICENSE) uses a BSD-3 license (the default choice). You can choose `UNLICENSED` meaning proprietary or "All rights reserved" .
-- The most common AWS region is `us-west-1` or `us-east-2`. Choose the location closest to your project.
+- If you leave the questions about project latitude/longitude blank it will default to the extent of the entire world.
+- [SeaSketch](https://github.com/seasketch/next/blob/master/LICENSE) uses a BSD-3 license (the default choice). You can choose any including `UNLICENSED` meaning proprietary or "All rights reserved" .
+- The most common AWS region is `us-west-1` or `us-east-2`. [Choose the region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) closest to your project.
 
-After pressing Enter, your project will finish being created and installing all dependencies.
-
-Now, re-open VSCode in your project folder::
+Now, re-open VSCode one level deeper, in your project folder::
 
 ```text
 Click File -> Open Folder
 Type /workspaces/fsm-reports-test/
-Press Ctrl-J or Ctrl-backtick to open a terminal
+Press Ctrl-J or Ctrl-backtick to open a new terminal
 ```
 
 ## Connect Github repo and push
 
-Now, [create a remote Github repository](https://github.com/new) called `fsm-reports-test`. Leave it empty, do not choose to initialize with a README, gitignore, or LICENSE.
+Before you continue, let's take a snapshot of your code now, at the starting point.
 
-Then connect your local repo and make your first code commit.
+[Create a remote Github repository](https://github.com/new) called `fsm-reports-test`. Leave it empty, do not choose to initialize with a README, gitignore, or LICENSE.
+
+Then connect your local repo and make your first code commit:
 
 ```bash
 git init
@@ -62,7 +69,7 @@ git remote add origin https://github.com/PUT_YOUR_GITHUB_ORG_OR_USERNAME_HERE/fs
 git push -u origin main
 ```
 
-You should see your files pushed to Github.
+You should see your files successfuly pushed to Github.
 
 It may ask you if it can use the Github extension to sign you in using Github. It will open a browser tab and communicate with the Github website. If you are already logged in there, then it should be done quickly, otherwise it may have you login to Github.
 
@@ -75,19 +82,19 @@ You can learn more about your projects [folder structure](../structure.md)
 Now generate an example feature, sketch and sketch collection using the `genRandomFeature` script.
 
 ```bash
-npx tsx scripts/genRandomFeature.ts --bbox [147,4,153,7] --bboxShrinkFactor 5
-npx tsx scripts/genRandomFeature.ts --bbox [147,4,153,7] --bboxShrinkFactor 5 --sketch
-npx tsx scripts/genRandomFeature.ts --bbox [147,4,153,7] --bboxShrinkFactor 5 --sketch --numFeatures 10
+npx tsx scripts/genRandomFeature.ts --bboxShrinkFactor 5
+npx tsx scripts/genRandomFeature.ts --bboxShrinkFactor 5 --sketch
+npx tsx scripts/genRandomFeature.ts --bboxShrinkFactor 5 --sketch --numFeatures 10
 ```
 
-These commands takes the approximate `bbox` of the Micronesian Exclusive Economic Zone given to it and reduces it by a factor of 5 using the `bboxShrinkFactor` option. It then generates random features that are within that reduced bbox. This is to ensure the features are guaranteed to be well within the Micronesian Exclusive Economic Zone polygon, based on its shape.
+These commands take the latitude/longitude extent of the Micronesia exclusive economic zone you provded at the init step and reduces it by a factor of 5 using the `bboxShrinkFactor` option. It then generates random features that are within that reduced bbox. This is to ensure the features are guaranteed to be well within the Micronesian Exclusive Economic Zone polygon, which you will learn more about at the upcoming data import step.
 
 ![EEZ bbox](./assets/eez-bbox.jpg)
 bbox is the rectangle, EEZ is the light pink polygon within it, random SketchCollection is the cluster of small green polygons in the center.
 
 Look at the file outputs and notice the difference between the example Feature and the example Sketch and Sketch Collection. Sketch and Sketch Collections are just a GeoJSON Feature and FeatureCollection with some extra attributes not in the [GeoJSON specification](https://datatracker.ietf.org/doc/html/rfc7946).
 
-In addition to using `genRandomSketch`, you can create features and sketches using your GIS tool of choice, by drawing polygons using [geojson.io](https://geojson.io), or once you have your SeaSketch project setup, you can draw a sketch, right-click and export it as geojson, then copy it to the `examples/sketches` directory. These all ways to build a comprehensive test suite.
+In addition to using `genRandomSketch`, you can create features and sketches using your GIS tool of choice, by drawing polygons using [geojson.io](https://geojson.io), or once you have your SeaSketch project setup, you can draw a sketch, right-click and export it as geojson, then copy it to the `examples/sketches` directory. These are all ways to build a comprehensive test suite.
 
 ## Import Data
 

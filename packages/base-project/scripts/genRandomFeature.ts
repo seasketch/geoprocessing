@@ -98,7 +98,7 @@ const name = (() => {
 })();
 const outfile = `${outdir}${name}`;
 
-console.log("finalOptions", {
+console.log("Output options:", {
   outfile,
   bbox,
   numFeatures,

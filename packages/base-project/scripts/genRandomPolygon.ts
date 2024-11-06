@@ -12,8 +12,8 @@ import { program } from "commander";
 import project from "../project/projectClient.js";
 
 /**
- * genRandomFeature script - generates random feature or sketch within given bounding box.
- * npx tsx genRandomFeature.ts --help for more info
+ * genRandomPolygon script - generates random feature polygon or sketch polygon within given bounding box.
+ * npx tsx genRandomPolygon.ts --help for more info
  */
 
 program
@@ -32,7 +32,10 @@ program
     "-f, --filename <name>",
     "name of the file, defaults to randomSketch.json or randomSketchCollection.json",
   )
-  .option("-s, --sketch", "generates Sketch instead of Feature")
+  .option(
+    "-s, --sketch",
+    "generates Sketch polygon.  Defaults to Feature polygon",
+  )
   .option(
     "-h, --bboxShrinkFactor <bboxShrinkFactor>",
     "factor to shrink bounding box by to ensure sketch is inside. 10 = 1/10th the size",

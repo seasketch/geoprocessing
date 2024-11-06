@@ -31,7 +31,10 @@ spinner.succeed("Update tsconfig.json");
 
 //// scripts ////
 spinner.start("Update scripts");
-await $`mkdir -p scripts && cp -r ${GP_PATH}/dist/base-project/scripts/* scripts`;
+
+await $`mkdir -p scripts`;
+await $`rm -rf scripts/genRandomFeature.ts scripts/genRandomSketch.ts`; // remove old scripts
+await $`cp -r ${GP_PATH}/dist/base-project/scripts/* scripts`;
 spinner.succeed("Update scripts");
 
 //// i18n ////

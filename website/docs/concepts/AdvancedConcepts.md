@@ -420,6 +420,118 @@ Each data class points to its own datasource. And you can assume each of those d
 
 Each data `class` can be tied to its own planning `objective`, and its own map `layer`.
 
+### Metric group with two data sources
+
+You can have a metric group where each class references a different datasource. If we wanted both the reef extent data and benthic habitat data in one report, the metric group can look as follows:
+
+```json
+{
+  "metricId": "benthicHabitat",
+  "type": "areaOverlap",
+  "classes": [
+    {
+      "classId": "reefextent",
+      "display": "Coral Reef",
+      "datasourceId": "reefextent"
+    },
+    {
+      "classId": "Sand",
+      "classKey": "class",
+      "display": "Sand",
+      "datasourceId": "benthic"
+    },
+    {
+      "classId": "Rock",
+      "classKey": "class",
+      "display": "Rock",
+      "datasourceId": "benthic"
+    },
+    {
+      "classId": "Rubble",
+      "classKey": "class",
+      "display": "Rubble",
+      "datasourceId": "benthic"
+    }
+  ]
+}
+```
+
+### Metric group with quantitative raster data sources
+
+An example of a metric group `fishingEffort` which displays multiple quantitative raster data files. This report has been made using [Global Fishing Watch Apparent Fishing Effort data](https://globalfishingwatch.org/dataset-and-code-fishing-effort/), which reports fishing effort in hours. To calculate for the sum of fishing effort within our plan, we would use `type = valueOverlap`.
+
+```json
+{
+  "metricId": "fishingEffort",
+  "type": "valueOverlap",
+  "classes": [
+    {
+      "datasourceId": "all-fishing",
+      "classId": "all-fishing",
+      "display": "All Fishing 2019-2022"
+    },
+    {
+      "datasourceId": "drifting-longlines",
+      "classId": "drifting-longlines",
+      "display": "Drifting Longline"
+    },
+    {
+      "datasourceId": "pole-and-line",
+      "classId": "pole-and-line",
+      "display": "Pole and Line"
+    },
+    {
+      "datasourceId": "set-longlines",
+      "classId": "set-longlines",
+      "display": "Set Longline"
+    },
+    {
+      "datasourceId": "fixed-gear",
+      "classId": "fixed-gear",
+      "display": "Fixed Gear"
+    }
+  ]
+}
+```
+
+### Metric group with categorical raster data sources
+
+An example of a metric group `fishRichness` which displays a categorical raster `fishRichness.tif`. The raster data displays the number of key fish species present in each raster cell -- from 1 to 5 species. `classId` should be set to the corresponding numerical value within the raster.
+
+```json
+{
+  "metricId": "fishRichness",
+  "type": "countOverlap",
+  "classes": [
+    {
+      "datasourceId": "fishRichness",
+      "classId": "1",
+      "display": "1 species"
+    },
+    {
+      "datasourceId": "fishRichness",
+      "classId": "2",
+      "display": "2 species"
+    },
+    {
+      "datasourceId": "fishRichness",
+      "classId": "3",
+      "display": "3 species"
+    },
+    {
+      "datasourceId": "fishRichness",
+      "classId": "4",
+      "display": "4 species"
+    },
+    {
+      "datasourceId": "fixed-gear",
+      "classId": "5",
+      "display": "5 species"
+    }
+  ]
+}
+```
+
 ## Objectives
 
 Each planning [objective](https://github.com/seasketch/geoprocessing/blob/d633b202a855689655032bdb290e036f2733b33d/packages/geoprocessing/src/types/objective.ts) defines a target and 1 or more protection levels that count towards that target. The default protection level is `Fully Protected Area` which means no activities are allowed. You can learn more about MPA [classification schemes](https://docs.google.com/document/d/1i0baxgK8JEUjtU8mnzFiG5VB_gO8lmxCrAtJ5rltk30/edit?usp=sharing)

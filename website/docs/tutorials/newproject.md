@@ -1,10 +1,14 @@
 # Create a New Geoprocessing Project
 
-This tutorial walks through generating a new geoprocessing project for the Federated States of Micronesia. It assumes:
+This tutorial walks through creating a new geoprocessing project for the Federated States of Micronesia. The planning area for this example is defined as the coastline to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
+
+This tutorial assumes:
 
 - Your [system setup](./Tutorials.md) is complete
 - Your Ubuntu virtual environment is running (Devcontainer or WSL)
 - You have VSCode open in your virtual environment with a terminal pane open
+
+Disclaimer: many of the commands, functions, and example reports in this tutorial are designed for measuring the overlap of a sketch or sketch collection, with one or more vector/raster datasources, within one or more planning boundaries (geographies). Your requirements may be drastically different and you are welcome to take only inspiration from them and use the available lower level building blocks to create something that meets your needs. See the [Extending](../Extending.md) page to learn more.
 
 ## Initialize Geoprocessing Project
 
@@ -12,10 +16,8 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@latest init
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.26 init 7.0.0-experimental-7x-docs.26
 ```
-
-For this example, assume you have a marine planning project in `The Federated States of Micronesia`. The planning area will be from the coastline to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
 
 ```text
 ? Choose a name for your project fsm-reports-test
@@ -87,43 +89,26 @@ npx tsx scripts/genRandomFeature.ts --bboxShrinkFactor 5 --sketch
 npx tsx scripts/genRandomFeature.ts --bboxShrinkFactor 5 --sketch --numFeatures 10
 ```
 
-These commands take the latitude/longitude extent of the Micronesia exclusive economic zone you provded at the init step and reduces it by a factor of 5 using the `bboxShrinkFactor` option. It then generates random features that are within that reduced bbox. This is to ensure the features are guaranteed to be well within the Micronesian Exclusive Economic Zone polygon, which you will learn more about at the upcoming data import step.
+These commands take the latitude/longitude bounding box values you provided in the init step, and reduces them by a factor of 5 (1/5th the width and height). It then generates random features within that reduced bbox. This is done to ensure features are completely within the planning area polygon (see image below).
 
 ![EEZ bbox](./assets/eez-bbox.jpg)
-bbox is the rectangle, EEZ is the light pink polygon within it, random SketchCollection is the cluster of small green polygons in the center.
-
-Look at the file outputs and notice the difference between the example Feature and the example Sketch and Sketch Collection. Sketch and Sketch Collections are just a GeoJSON Feature and FeatureCollection with some extra attributes not in the [GeoJSON specification](https://datatracker.ietf.org/doc/html/rfc7946).
-
-In addition to using `genRandomSketch`, you can create features and sketches using your GIS tool of choice, by drawing polygons using [geojson.io](https://geojson.io), or once you have your SeaSketch project setup, you can draw a sketch, right-click and export it as geojson, then copy it to the `examples/sketches` directory. These are all ways to build a comprehensive test suite.
+Image: cluster of 10 random sketches (in orange) within Micronesia EEZ
 
 ## Run test suite
 
-Your project includes two preprocessing functions (clipToOcean, clipToLand), and two geoprocessing functions (blankFunction, simpleFunction). They are already registered in `project/geoprocessing.json`.
-
-Run the smoke tests for these functions.
+Now that you have example features and sketches, you can test the preprocessing and geoprocessing functions that came with your blank project. Run the test suite now:
 
 ```bash
 npm test
 ```
 
-Smoke tests will run for each function against each of the sketches in the `examples` directory.
+The two preprocessing functions (clipToOcean, clipToLand) will run against Features in `examples/features`. The two geoprocessing functions (blankFunction, simpleFunction) will run against Sketches in `examples/sketches`. The results of all smokes tests is output to the `examples/output` directory so that you can inspect the output, and changes over time.
 
-```
- ✓ src/functions/blankFunctionSmoke.test.ts (2) 3273ms
- ✓ src/functions/clipToLandSmoke.test.ts (2) 2417ms
- ✓ src/functions/clipToOceanSmoke.test.ts (2) 2051ms
- ✓ src/functions/simpleFunctionSmoke.test.ts (2) 3436ms
- ✓ src/util/clipToGeography.test.ts (3) 2807ms
-```
+In addition to using `genRandomFeatures`, you can create example features and sketches relevant to your project using GIS software, by drawing polygons using [geojson.io](https://geojson.io), or once you have your SeaSketch project setup, you can draw a sketch, right-click and export it as geojson, then copy it to the `examples/sketches` directory. These are all ways to build a comprehensive test suite.
 
 ## Import Data
 
-You will now import datasets from a package prepared for the Federated States of Micronesia (FSM). It is a combination of data from:
-
-- [Marine Regions](https://marineregions.org)
-- [Allen Coral Atlas](https://allencoralatlas.org/)
-
-This tutorial skips over a lot of details. Visit the advanced guides to learn more.
+You will now import datasets from a package prepared for the Federated States of Micronesia (FSM). This section will skip over a lot of details, so visit the advanced guides to learn more at a later time.
 
 - [Data import](../dataimport.md)
 - [Third party data](../thirdpartydata/thirdpartydata.md)
@@ -138,7 +123,7 @@ rm data/src/FSM_MSP_Data_Example_v2.zip
 
 ### EEZ With Land Boundary
 
-First, we'll use the `eez_mr_osm` layer as the planning boundary. It's in the `boundaries` geopackage in the example data. It's a combination of the Marine Regions EEZ dataset and the OSM Land dataset.
+First, you'll load the `eez_mr_osm` layer as the planning boundary. It's in the `boundaries` geopackage of the example data. It was created with a combination of the Marine Regions EEZ dataset and the OSM Land dataset.
 
 ```bash
 npm run import:data
@@ -170,7 +155,7 @@ to invert selection, and <enter> to proceed)
 <i> to invert selection, and <enter> to proceed)
 ```
 
-Press spacebar to create in JSON format also, then press Enter
+Press spacebar to add JSON as an additional format created for your dataset on import, then press Enter
 
 ```bash
 ? The following formats will automatically be created: fgb. What additional formats would you like created? (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter>
@@ -187,12 +172,12 @@ sketch % overlap with datasource) (Use arrow keys)
   No
 ```
 
-At this point the import will proceed. Once complete you will find:
+The import will now proceed. Once complete you will find:
 
 - The output file `data/dist/planning-boundary.fgb`.
-- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `planning-boundary`. You'll see all the answers to your questions.
+- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `planning-boundary`.
 
-If the import fails, try again double checking everything. It is most likely one of the following:
+If the import fails, start the import over and double check everything. It is most likely one of the following:
 
 - You specified the wrong source file path.
 - You specified the wrong layer name
@@ -239,17 +224,17 @@ Type of measurement: Quantitative
 Precalc summary statistics: yes
 ```
 
-Do not be concerned about an error that an ".ovr" file could not be found. This is expected. Once complete you will find:
+When importing raster data, do not be concerned about an error that an ".ovr" file could not be found. This is expected.
 
-Once complete, look at your `project/datasources.json` file to look at the new entries. You can make edits to this file and then run the `reimport:data` command to regenerate the files in `data/dist`.
+Once imported, you'll find the resulting datasets in `data/dist`. You'll also find new entries for each datasource in `project/datasources.json`. At any point, you can make edits to this file and then run `reimport:data` to regenerate the files in `data/dist`.
 
 ### Update Geography
 
-Open `project/geographies.json` to edit it.
+Now you change the projects default geography.
 
-Set `precalc` to `false` for the default `world` geography. This will exclude it from precalculation,
-
-Now, add a geography for your planning boundary and save the file.
+- Open `project/geographies.json`. You will see an array with one geography record called `world`.
+- Set `precalc` to `false` for the default `world` geography. This will exclude it from precalculation.
+- Add a new geography record for your planning boundary and save the file.
 
 ```json
 {
@@ -272,7 +257,7 @@ This is calculated as:
 
 You can precalculate the denominator of this equation ahead of time. The `precalc` command will calculate how much of a datasources features/raster cells is within each of your projects geographies. This can measured as an `area`, `sum` of cell value, `count` of features/raster cells, etc.
 
-Since your datasources and geographies all have `precalc: true` set you are ready to start:
+Since your datasources and geographies already have `precalc: true` set, you are ready to start:
 
 ```bash
 npm run precalc:data
@@ -297,15 +282,22 @@ Tips for precalculation:
 - Set `precalc:false` for datasources that are not currently used, or are only used to define a geography (not displayed in reports). This is why the datasource for the default geography for a project is always set by default to `precalc: false`.
 - If you are using one of the [global-datasources](https://github.com/seasketch/global-datasources) in your project, and you want to use it in reporting % sketch overlap, so you've set `precalc:true`, strongly consider defining a `bboxFilter`. This will ensure that precalc doesn't have to fetch the entire datasource when precalculating a metric, which can be over 1 Gigabyte in size. Also consider setting a `propertyFilter` to narrow down to just the features you need. This filter is applied on the client-side so it won't reduce the number of features you are sending over the wire.
 
-## Create Metric Group
+## Add Metric Groups
 
-The metric group is your central report configuration. There is one metric group per individual report. It links everything together and defines what data you want to show in the individual report. The metric group is used in both the function that calculates statistics and the component which displays the results. Often, projects will include ~8 reports, with each report focusing on a goal or type of data.
+A metric group defines a metric to be measured, for one or more classes of data.
 
-Navigate to `metrics.json`, where metric groups are stored. There is already a report here – `boundaryAreaOverlap`. This is the metric group used to calculate how much of the EEZ is within our sketch, using the `global-eez-mr-v12` datasource we [precalculated](#precalc-data).
+A metric group record provides all of the information needed for the metric to be calculated (in a geoprocessing function) and to be displayed (in a report client).
 
-We’re going to create a report that uses the `reefextent` layer just imported. We want to see how much our sketch overlaps with reefs. Pick a metricId to be the title of your report in camelCase (`coralReef`), the type of report (`areaOverlap`), and the classes you want to show in the report. Your classes can look a myriad of ways, depending on whether all the data is from a single file, or multiple files. All data within a metric group must be in the same format (raster or vector).
+You can learn more on the [advanced concepts](../concepts/AdvancedConcepts.md#metric-group) page.
 
-Our example `reefextent` data is a simple vector file. We can set classId to be anything. Our metric group looked as follows:
+Now, navigate to `metrics.json`. There is already a metric group defined – `boundaryAreaOverlap`. This is the metric group used to calculate how much of the the total area of the planning boundary is within our sketch.
+
+You will be creating a report that measures how much a sketch overlaps with reefs within the planning boundary. The first step is to define a metric group.- Pick a metricId (`coralReef`)
+
+- type of report (`areaOverlap`)
+- and classes you want to show in the report. In this case our dataset has only one class of data, and it all comes from one datasource. All data within a metric group must be in the same format (raster or vector).
+
+Add the following record to the end of the array in `project/metrics.json` and save the file.
 
 ```json
 {
@@ -323,7 +315,9 @@ Our example `reefextent` data is a simple vector file. We can set classId to be 
 
 ### Metric group for vector data source with multiple classes
 
-Our example data `benthic` is a single file with different habitats defined by a `class` parameter. While there were many types of habitats, we may want to only focus on Sand, Rubble, and Rock. In this case, `classKey` must be `class` and `classIds` have to match the features in the vector file. My metric group would look like this:
+Next add a metric group for measuring sketch overlap with predicted presence of benthic species. `benthic` is made up of a single datasource with multiple habitats defined by the `class` attribute. While there were many types of habitats, we may want to only focus on Sand, Rubble, and Rock. To do this, you'll add multiple class records, each with a `classKey` of `class` and a `classId` with a value to match on.
+
+Add the following record to the end of the array in `project/metrics.json` and save the file.
 
 ```json
 {
@@ -347,118 +341,6 @@ Our example data `benthic` is a single file with different habitats defined by a
       "classKey": "class",
       "display": "Rubble",
       "datasourceId": "benthic"
-    }
-  ]
-}
-```
-
-### Metric group with two data sources
-
-You can have classes from multiple data sources in one metric group. If we wanted both the reef extent data and benthic habitat data in one report, the metric group can look as follows:
-
-```json
-{
-  "metricId": "benthicHabitat",
-  "type": "areaOverlap",
-  "classes": [
-    {
-      "classId": "reefextent",
-      "display": "Coral Reef",
-      "datasourceId": "reefextent"
-    },
-    {
-      "classId": "Sand",
-      "classKey": "class",
-      "display": "Sand",
-      "datasourceId": "benthic"
-    },
-    {
-      "classId": "Rock",
-      "classKey": "class",
-      "display": "Rock",
-      "datasourceId": "benthic"
-    },
-    {
-      "classId": "Rubble",
-      "classKey": "class",
-      "display": "Rubble",
-      "datasourceId": "benthic"
-    }
-  ]
-}
-```
-
-### Metric group with quantitative raster data sources
-
-An example of a metric group `fishingEffort` which displays multiple quantitative raster data files. This report has been made using [Global Fishing Watch Apparent Fishing Effort data](https://globalfishingwatch.org/dataset-and-code-fishing-effort/), which reports fishing effort in hours. To calculate for the sum of fishing effort within our plan, we would use `type = valueOverlap`.
-
-```json
-{
-  "metricId": "fishingEffort",
-  "type": "valueOverlap",
-  "classes": [
-    {
-      "datasourceId": "all-fishing",
-      "classId": "all-fishing",
-      "display": "All Fishing 2019-2022"
-    },
-    {
-      "datasourceId": "drifting-longlines",
-      "classId": "drifting-longlines",
-      "display": "Drifting Longline"
-    },
-    {
-      "datasourceId": "pole-and-line",
-      "classId": "pole-and-line",
-      "display": "Pole and Line"
-    },
-    {
-      "datasourceId": "set-longlines",
-      "classId": "set-longlines",
-      "display": "Set Longline"
-    },
-    {
-      "datasourceId": "fixed-gear",
-      "classId": "fixed-gear",
-      "display": "Fixed Gear"
-    }
-  ]
-}
-```
-
-### Metric group with categorical raster data sources
-
-An example of a metric group `fishRichness` which displays a categorical raster `fishRichness.tif`. The raster data displays the number of key fish species present in each raster cell -- from 1 to 5 species. `classId` should be set to the corresponding numerical value within the raster.
-
-```json
-{
-  "metricId": "fishRichness",
-  "type": "countOverlap",
-  "classes": [
-    {
-      "datasourceId": "fishRichness",
-      "classId": "1",
-      "display": "1 species"
-    },
-    {
-      "datasourceId": "fishRichness",
-      "classId": "2",
-      "display": "2 species"
-    },
-    {
-      "datasourceId": "fishRichness",
-      "classId": "3",
-      "display": "3 species"
-    },
-    {
-      "datasourceId": "fishRichness",
-      "classId": "4",
-      "display": "4 species"
-    },
-    {
-      "datasourceId": "fixed-gear",
-      "classId": "5",
-      "display": "5 species"
     }
   ]
 }

@@ -2,9 +2,13 @@
  * @vitest-environment node
  */
 import handler, { clipToLand } from "./clipToLand.js";
-import { polygonPreprocessorSmokeTest } from "@seasketch/geoprocessing/scripts/testing";
+import {
+  polygonSmokeTest,
+  getExampleFeatures,
+} from "@seasketch/geoprocessing/scripts/testing";
 
-polygonPreprocessorSmokeTest(clipToLand, handler.options.title, {
+const examples = await getExampleFeatures(); // Loads from examples/features directory
+polygonSmokeTest(clipToLand, handler.options.title, examples, {
   timeout: 60_000,
   debug: true,
 });

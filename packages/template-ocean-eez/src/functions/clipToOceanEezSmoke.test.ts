@@ -2,9 +2,13 @@
  * @vitest-environment node
  */
 import handler, { clipToOceanEez } from "./clipToOceanEez.js";
-import { polygonPreprocessorSmokeTest } from "@seasketch/geoprocessing/scripts/testing";
+import {
+  polygonSmokeTest,
+  getExampleFeatures,
+} from "@seasketch/geoprocessing/scripts/testing";
 
-// polygonPreprocessorSmokeTest(clipToOceanEez, handler.options.title, {
-//   timeout: 20000,
-//   debug: true,
-// });
+const examples = await getExampleFeatures(); // Loads from examples/features directory
+polygonSmokeTest(clipToOceanEez, handler.options.title, examples, {
+  timeout: 20_000,
+  debug: true,
+});

@@ -56,7 +56,7 @@ Press Ctrl-J or Ctrl-backtick to open a new terminal
 
 Before you continue, let's take a snapshot of your code now, at the starting point.
 
-[Create a remote Github repository](https://github.com/new) called `fsm-reports-test`. Leave it empty, do not choose to initialize with a README, gitignore, or LICENSE.
+[Create a remote Github repository](https://github.com/new) called `fsm-reports-test`. Leave it empty, do not choose to initialize with a template, README, gitignore, or LICENSE.
 
 Then connect your local repo and make your first code commit:
 
@@ -95,6 +95,26 @@ bbox is the rectangle, EEZ is the light pink polygon within it, random SketchCol
 Look at the file outputs and notice the difference between the example Feature and the example Sketch and Sketch Collection. Sketch and Sketch Collections are just a GeoJSON Feature and FeatureCollection with some extra attributes not in the [GeoJSON specification](https://datatracker.ietf.org/doc/html/rfc7946).
 
 In addition to using `genRandomSketch`, you can create features and sketches using your GIS tool of choice, by drawing polygons using [geojson.io](https://geojson.io), or once you have your SeaSketch project setup, you can draw a sketch, right-click and export it as geojson, then copy it to the `examples/sketches` directory. These are all ways to build a comprehensive test suite.
+
+## Run test suite
+
+Your project includes two preprocessing functions (clipToOcean, clipToLand), and two geoprocessing functions (blankFunction, simpleFunction). They are already registered in `project/geoprocessing.json`.
+
+Run the smoke tests for these functions.
+
+```bash
+npm test
+```
+
+Smoke tests will run for each function against each of the sketches in the `examples` directory.
+
+```
+ ✓ src/functions/blankFunctionSmoke.test.ts (2) 3273ms
+ ✓ src/functions/clipToLandSmoke.test.ts (2) 2417ms
+ ✓ src/functions/clipToOceanSmoke.test.ts (2) 2051ms
+ ✓ src/functions/simpleFunctionSmoke.test.ts (2) 3436ms
+ ✓ src/util/clipToGeography.test.ts (3) 2807ms
+```
 
 ## Import Data
 

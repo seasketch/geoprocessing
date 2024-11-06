@@ -5,7 +5,6 @@ import languages from "../../src/i18n/languages.json" with { type: "json" };
 import fuzzy from "fuzzy-tools";
 import autocomplete from "inquirer-autocomplete-prompt";
 import awsRegions from "aws-regions";
-import { getTemplateQuestion } from "../template/addTemplate.js";
 import { createProject, CreateProjectMetadata } from "./createProject.js";
 import { pathToFileURL } from "node:url";
 import userMeta from "user-meta";
@@ -20,7 +19,6 @@ async function init(gpVersion?: string) {
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
 
-  const templateQuestion = await getTemplateQuestion("starter-template");
   const answers = await inquirer.prompt<CreateProjectMetadata>([
     /* Pass your questions in here */
     {
@@ -116,9 +114,9 @@ async function init(gpVersion?: string) {
           name: lan.name,
         })),
     },
-    templateQuestion,
   ]);
 
+  answers.templates = ["template-blank-project"];
   answers.planningAreaType = "other";
   answers.gpVersion = gpVersion;
   answers.bboxMinLng = -180;

@@ -16,7 +16,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.26 init 7.0.0-experimental-7x-docs.26
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.31 init 7.0.0-experimental-7x-simplify.31
 ```
 
 ```text
@@ -218,21 +218,21 @@ Next, you will generate some example features and sketches that fall within your
 First, get the bounding box of your planning boundary. We'll do this using a combination of ogrinfo and jq commands.
 
 ```bash
-ogrinfo -so -json data/dist/planning-boundary.fgb | jq .layers[0].geometryFields[0].extent
+ogrinfo -so -json data/dist/planning-boundary.fgb | jq -c .layers[0].geometryFields[0].extent
 ```
 
-It should output the following bounding box extent:
+It should output the following compact bounding box extent:
 
 ```json
 [135.312441837621, -1.17311096529859, 165.676528225997, 13.4454329253893]
 ```
 
-Then, run the genRandomFeature script to create bounding box
+Run the genRandomPolygon script to create an example Feature poly
 
 ```bash
-npx tsx scripts/genRandomFeature.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5
-npx tsx scripts/genRandomFeature.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5 --sketch
-npx tsx scripts/genRandomFeature.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5 --sketch --numFeatures 10
+npx tsx scripts/genRandomPolygon.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5
+npx tsx scripts/genRandomPolygon.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5 --sketch
+npx tsx scripts/genRandomPolygon.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5 --sketch --numFeatures 10
 ```
 
 These commands generate an example Feature, then a Sketch, and then a SketchCollection. You provide the bounding box, it then shrinks the boxesheight and width by a factor of 5, and then generates random features that fall within that reduced bbox. This is to ensure the generated features are completely within the planning area polygon, because it's smaller than its bounding box (see image below).
@@ -243,7 +243,7 @@ Image: cluster of 10 random sketches (in orange) within Micronesia EEZ
 You can adjust these options as you see fit. Learn more about the options by running:
 
 ```
-npx tsx scripts/genRandomFeature.ts --help
+npx tsx scripts/genRandomPolygon.ts --help
 ```
 
 ## Run test suite

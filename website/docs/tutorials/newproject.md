@@ -29,13 +29,6 @@ npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.26 init 7.0.0-experiment
 ? What software license would you like to use? BSD-3-Clause
 ? What AWS region would you like to deploy functions in? us-west-1
 ? What languages will your reports be published in, other than English? (leave blank for none) Portuguese
-? What type of planning area does your project have? Other
-? What is the name of the planning area as it should be displayed in reports? (e.g. Samoa) Micronesia
-? What is the projects minimum longitude (left) in degrees (-180.0 to 180.0) 135.3
-? What is the projects minimum latitude (bottom) in degrees (-90.0 to 90.0)? -1.2
-? What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)? 165.7
-? What is the projects maximum latitude (top) in degrees (-90.0 to 90.0)? 13.5
-? What starter-template would you like to install? template-blank-project - blank starter project
 ```
 
 After pressing Enter, your project will be created and all NodeJS software dependencies installed.
@@ -78,33 +71,6 @@ It may ask you if it can use the Github extension to sign you in using Github. I
 After this point, you can continue using git commands right in the terminal to stage code changes and commit them if that's what you know, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
 
 You can learn more about your projects [folder structure](../structure.md)
-
-## Generate Examples
-
-Now generate an example feature, sketch and sketch collection using the `genRandomFeature` script.
-
-```bash
-npx tsx scripts/genRandomFeature.ts --bboxShrinkFactor 5
-npx tsx scripts/genRandomFeature.ts --bboxShrinkFactor 5 --sketch
-npx tsx scripts/genRandomFeature.ts --bboxShrinkFactor 5 --sketch --numFeatures 10
-```
-
-These commands take the latitude/longitude bounding box values you provided in the init step, and reduces them by a factor of 5 (1/5th the width and height). It then generates random features within that reduced bbox. This is done to ensure features are completely within the planning area polygon (see image below).
-
-![EEZ bbox](./assets/eez-bbox.jpg)
-Image: cluster of 10 random sketches (in orange) within Micronesia EEZ
-
-## Run test suite
-
-Now that you have example features and sketches, you can test the preprocessing and geoprocessing functions that came with your blank project. Run the test suite now:
-
-```bash
-npm test
-```
-
-The two preprocessing functions (clipToOcean, clipToLand) will run against Features in `examples/features`. The two geoprocessing functions (blankFunction, simpleFunction) will run against Sketches in `examples/sketches`. The results of all smokes tests is output to the `examples/output` directory so that you can inspect the output, and changes over time.
-
-In addition to using `genRandomFeatures`, you can create example features and sketches relevant to your project using GIS software, by drawing polygons using [geojson.io](https://geojson.io), or once you have your SeaSketch project setup, you can draw a sketch, right-click and export it as geojson, then copy it to the `examples/sketches` directory. These are all ways to build a comprehensive test suite.
 
 ## Import Data
 
@@ -228,13 +194,12 @@ When importing raster data, do not be concerned about an error that an ".ovr" fi
 
 Once imported, you'll find the resulting datasets in `data/dist`. You'll also find new entries for each datasource in `project/datasources.json`. At any point, you can make edits to this file and then run `reimport:data` to regenerate the files in `data/dist`.
 
-### Update Geography
+### Update default Geography
 
-Now you change the projects default geography.
+Now you change the projects default geography from the world, to your new planning boundary.
 
-- Open `project/geographies.json`. You will see an array with one geography record called `world`.
-- Set `precalc` to `false` for the default `world` geography. This will exclude it from precalculation.
-- Add a new geography record for your planning boundary and save the file.
+- Open `project/geographies.json`. You will see an array with one geography record called `world`. Set `precalc` to `false` for this record. This will exclude it from precalculation.
+- Add the following new geography record to the array and save the file.
 
 ```json
 {
@@ -245,6 +210,53 @@ Now you change the projects default geography.
   "precalc": true
 }
 ```
+
+## Generate Examples
+
+Next, you will generate some example features and sketches that fall within your planning boundary, for testing purposes.
+
+First, get the bounding box of your planning boundary. We'll do this using a combination of ogrinfo and jq commands.
+
+```bash
+ogrinfo -so -json data/dist/planning-boundary.fgb | jq .layers[0].geometryFields[0].extent
+```
+
+It should output the following bounding box extent:
+
+```json
+[135.312441837621, -1.17311096529859, 165.676528225997, 13.4454329253893]
+```
+
+Then, run the genRandomFeature script to create bounding box
+
+```bash
+npx tsx scripts/genRandomFeature.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5
+npx tsx scripts/genRandomFeature.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5 --sketch
+npx tsx scripts/genRandomFeature.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5 --sketch --numFeatures 10
+```
+
+These commands generate an example Feature, then a Sketch, and then a SketchCollection. You provide the bounding box, it then shrinks the boxesheight and width by a factor of 5, and then generates random features that fall within that reduced bbox. This is to ensure the generated features are completely within the planning area polygon, because it's smaller than its bounding box (see image below).
+
+![EEZ bbox](./assets/eez-bbox.jpg)
+Image: cluster of 10 random sketches (in orange) within Micronesia EEZ
+
+You can adjust these options as you see fit. Learn more about the options by running:
+
+```
+npx tsx scripts/genRandomFeature.ts --help
+```
+
+## Run test suite
+
+Now that you have example features and sketches, you can test the preprocessing and geoprocessing functions that came with your blank project. Run the test suite now:
+
+```bash
+npm test
+```
+
+The two preprocessing functions (clipToOcean, clipToLand) will run against Features in `examples/features`. The two geoprocessing functions (blankFunction, simpleFunction) will run against Sketches in `examples/sketches`. The results of all smokes tests is output to the `examples/output` directory so that you can inspect the output, and changes over time.
+
+In addition to using `genRandomFeatures`, you can create example features and sketches relevant to your project using GIS software, by drawing polygons using [geojson.io](https://geojson.io), or once you have your SeaSketch project setup, you can draw a sketch, right-click and export it as geojson, then copy it to the `examples/sketches` directory. These are all ways to build a comprehensive test suite.
 
 ## Precalc Data
 

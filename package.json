@@ -2,7 +2,9 @@
   "name": "root",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/geoprocessing",
+    "packages/base-project",
+    "packages/template-blank-project"
   ],
   "license": "BSD-3-Clause",
   "devDependencies": {

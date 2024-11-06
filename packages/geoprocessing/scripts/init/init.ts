@@ -7,7 +7,6 @@ import autocomplete from "inquirer-autocomplete-prompt";
 import awsRegions from "aws-regions";
 import { getTemplateQuestion } from "../template/addTemplate.js";
 import { createProject, CreateProjectMetadata } from "./createProject.js";
-import { eezColl } from "../global/datasources/mr-eez.js";
 import { pathToFileURL } from "node:url";
 import userMeta from "user-meta";
 
@@ -20,11 +19,6 @@ const allLicenseOptions = [...licenses, "UNLICENSED"];
 async function init(gpVersion?: string) {
   const defaultName = userMeta.name;
   const defaultEmail = userMeta.email;
-
-  const eezChoices = eezColl.features.map((eez) => ({
-    value: eez.properties.GEONAME,
-    name: eez.properties.GEONAME,
-  }));
 
   const templateQuestion = await getTemplateQuestion("starter-template");
   const answers = await inquirer.prompt<CreateProjectMetadata>([
@@ -122,113 +116,15 @@ async function init(gpVersion?: string) {
           name: lan.name,
         })),
     },
-    {
-      type: "list",
-      name: "planningAreaType",
-      message: "What type of planning area does your project have?",
-      default: "eez",
-      choices: [
-        {
-          value: "eez",
-          name: "Exclusive Economic Zone (EEZ)",
-        },
-        { value: "other", name: "Other" },
-      ],
-    },
-    {
-      when: (answers) => answers.planningAreaType === "eez",
-      type: "list",
-      name: "planningAreaId",
-      message: "What EEZ is this for?",
-      choices: eezChoices,
-    },
-    {
-      when: (answers) => answers.planningAreaType === "eez",
-      type: "list",
-      name: "planningAreaNameQuestion",
-      message: (answers) =>
-        `Is there a different name to use for this planning area than ${answers.planningAreaId}?`,
-      choices: [
-        { value: "yes", name: "Yes" },
-        { value: "no", name: "No" },
-      ],
-      default: "yes",
-    },
-    {
-      when: (answers) => answers.planningAreaNameQuestion === "yes",
-      type: "input",
-      name: "planningAreaName",
-      message: `What is the common name for this planning area?`,
-    },
-    {
-      when: (answers) => answers.planningAreaType === "other",
-      type: "input",
-      name: "planningAreaId",
-      message:
-        "What is the name of the planning area as it should be displayed in reports? (e.g. Samoa)",
-      validate: (value) =>
-        value === "" ? "Provide a name for your planning area" : true,
-    },
-    {
-      when: (answers) => answers.planningAreaType === "other",
-      type: "input",
-      name: "bboxMinLng",
-      message:
-        "What is the projects minimum longitude (left) in degrees (-180.0 to 180.0)?",
-      default: -180,
-      validate: (value) =>
-        Number.isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
-      filter: (value) =>
-        Number.isNaN(Number.parseFloat(value))
-          ? value
-          : Number.parseFloat(value),
-    },
-    {
-      when: (answers) => answers.planningAreaType === "other",
-      type: "input",
-      name: "bboxMinLat",
-      message:
-        "What is the projects minimum latitude (bottom) in degrees (-90.0 to 90.0)?",
-      default: -90,
-      validate: (value) =>
-        Number.isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
-      filter: (value) =>
-        Number.isNaN(Number.parseFloat(value))
-          ? value
-          : Number.parseFloat(value),
-    },
-    {
-      when: (answers) => answers.planningAreaType === "other",
-      type: "input",
-      name: "bboxMaxLng",
-      message:
-        "What is the projects maximum longitude (right) in degrees (-180.0 to 180.0)?",
-      default: 180,
-      validate: (value) =>
-        Number.isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
-      filter: (value) =>
-        Number.isNaN(Number.parseFloat(value))
-          ? value
-          : Number.parseFloat(value),
-    },
-    {
-      when: (answers) => answers.planningAreaType === "other",
-      type: "input",
-      name: "bboxMaxLat",
-      message:
-        "What is the projects maximum latitude (top) in degrees (-90.0 to 90.0)?",
-      default: 90,
-      validate: (value) =>
-        Number.isNaN(Number.parseFloat(value)) ? "Not a number!" : true,
-      filter: (value) =>
-        Number.isNaN(Number.parseFloat(value))
-          ? value
-          : Number.parseFloat(value),
-    },
     templateQuestion,
   ]);
 
+  answers.planningAreaType = "other";
   answers.gpVersion = gpVersion;
+  answers.bboxMinLng = -180;
+  answers.bboxMinLat = -90;
+  answers.bboxMaxLng = 180;
+  answers.bboxMaxLat = 90;
 
   await createProject(answers);
 }

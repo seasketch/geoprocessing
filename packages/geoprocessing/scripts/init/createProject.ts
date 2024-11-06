@@ -3,20 +3,10 @@ import { TemplateMetadata } from "../types.js";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
-import {
-  BBox,
-  Geography,
-  Package,
-  projectSchema,
-  geographiesSchema,
-  datasourcesSchema,
-} from "../../src/types/index.js";
+import { BBox, Package, projectSchema } from "../../src/types/index.js";
 import { promisify } from "node:util";
 import { getGeoprocessingPath, getBaseProjectPath } from "../util/getPaths.js";
-import { getBbox } from "../global/datasources/mr-eez.js";
 import { $ } from "zx";
-import { globalDatasources } from "../../src/datasources/global.js";
-import { isVectorDatasource } from "../../src/index.js";
 import * as child from "node:child_process";
 
 $.verbose = false;
@@ -34,15 +24,24 @@ export interface CreateProjectMetadata extends TemplateMetadata {
   region: string;
   languages: string[];
   gpVersion?: string;
-  planningAreaType: string;
+  /** @deprecated */
   bbox?: BBox;
+  /** @deprecated */
   bboxMinLng?: number;
+  /** @deprecated */
   bboxMaxLng?: number;
+  /** @deprecated */
   bboxMinLat?: number;
+  /** @deprecated */
   bboxMaxLat?: number;
-  planningAreaId: string;
-  planningAreaName: string;
-  planningAreaNameQuestion: string;
+  /** @deprecated */
+  planningAreaType?: string;
+  /** @deprecated */
+  planningAreaId?: string;
+  /** @deprecated */
+  planningAreaName?: string;
+  /** @deprecated */
+  planningAreaNameQuestion?: string;
 }
 
 /** Create project at basePath.  If should be created non-interactively then set interactive = false and provide all project creation metadata, otherwise will prompt for answers  */
@@ -172,136 +171,15 @@ export async function createProject(
   spinner.start("updating basic.json");
   const basic = fs.readJSONSync(`${projectPath}/project/basic.json`);
 
-  // Either lookup bbox of planning area by name or construct from user-provided
-  const bbox: BBox = await (async () => {
-    if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
-      const bbox = await getBbox(metadata.planningAreaId);
-      if (!bbox)
-        throw new Error(`Bounding box not for EEZ named ${metadata.name}`);
-      return bbox;
-    } else {
-      if (
-        metadata.bboxMinLng === undefined ||
-        metadata.bboxMinLat === undefined ||
-        metadata.bboxMaxLng === undefined ||
-        metadata.bboxMaxLat === undefined
-      ) {
-        throw new Error("Incomplete bounding box provided by user");
-      }
-      return [
-        metadata.bboxMinLng,
-        metadata.bboxMinLat,
-        metadata.bboxMaxLng,
-        metadata.bboxMaxLat,
-      ] as BBox;
-    }
-  })();
-
   const validBasic = projectSchema.parse({
     ...basic,
-    bbox,
     languages: ["EN", ...languages], // insert EN as required language
-    planningAreaType: metadata.planningAreaType,
-    planningAreaId: metadata.planningAreaId,
-    planningAreaName: metadata.planningAreaName
-      ? metadata.planningAreaName
-      : metadata.planningAreaId,
   });
 
   await fs.writeJSONSync(`${projectPath}/project/basic.json`, validBasic, {
     spaces: 2,
   });
   spinner.succeed("updated basic.json");
-
-  if (metadata.planningAreaType && metadata.planningAreaType === "eez") {
-    const globalEezDS = "global-eez-mr-v12";
-    const eezDs = globalDatasources.find(
-      (ds) => ds.datasourceId === globalEezDS,
-    );
-    if (isVectorDatasource(eezDs)) {
-      if (validBasic.planningAreaType === "eez") {
-        spinner.start("updating geographies.json");
-        // read default geographies and disable them by setting precalc to false
-        // also clear default-boundary group
-        const geos: Geography[] = geographiesSchema
-          .parse(fs.readJSONSync(`${projectPath}/project/geographies.json`))
-          .map((g) => ({ ...g, precalc: false, groups: [] }));
-        // assign initial eez geography with proper filters and precalc true
-        geos.push({
-          geographyId: "eez",
-          datasourceId: "global-eez-mr-v12",
-          display: metadata.planningAreaName
-            ? metadata.planningAreaName
-            : metadata.planningAreaId,
-          propertyFilter: {
-            property: eezDs.idProperty!,
-            values: [metadata.planningAreaId],
-          },
-          bboxFilter: validBasic.bbox,
-          groups: ["default-boundary"],
-          precalc: true,
-        });
-        await fs.writeJSONSync(
-          `${projectPath}/project/geographies.json`,
-          geos,
-          {
-            spaces: 2,
-          },
-        );
-        spinner.succeed("updated geographies.json");
-
-        spinner.start("updating eez in datasources.json");
-        try {
-          const ds = datasourcesSchema.parse(
-            fs.readJSONSync(`${projectPath}/project/datasources.json`),
-          );
-          const eezIndex = ds.findIndex(
-            (d) => d.datasourceId === "global-eez-mr-v12",
-          );
-          // Narrow the global eez datasource to the planning area and turn on precalc
-          ds[eezIndex] = {
-            ...ds[eezIndex],
-            precalc: true,
-            propertyFilter: {
-              property: eezDs.idProperty!,
-              values: [metadata.planningAreaId],
-            },
-            bboxFilter: validBasic.bbox,
-          };
-          await fs.writeJSONSync(
-            `${projectPath}/project/datasources.json`,
-            ds,
-            {
-              spaces: 2,
-            },
-          );
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            console.log("EEZ datasource update failed");
-            throw error;
-          }
-        }
-        spinner.succeed("updated eez in datasources.json");
-      } else {
-        // copy default world geography
-        spinner.start("updating geographies.json");
-        try {
-          await fs.ensureDir(projectPath);
-          await $`cp -r ${baseProjectPath}/project/geographies.json ${projectPath}/project/geographies.json`;
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            console.log("Default geography copy failed");
-            throw error;
-          }
-        }
-        spinner.succeed("updated geographies.json");
-      }
-    } else {
-      console.error(
-        `Expected vector datasource for ${globalEezDS}, geographies.json not updated`,
-      );
-    }
-  }
 
   spinner.start("add .gitignore");
   try {

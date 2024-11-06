@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.5.2">
 <title data-rh="true">System Setup | SeaSketch Geoprocessing</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://seasketch.github.io/geoprocessing/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://seasketch.github.io/geoprocessing/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://seasketch.github.io/geoprocessing/docs/next/tutorials/"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="System Setup | SeaSketch Geoprocessing"><meta data-rh="true" name="description" content="These tutorials will walk you through creating and deploying a basic seasketch geoprocessing project. You should already have a basic working knowledge of your computer, its operating system, shell environment (command line), and web application development using NodeJS and React. Learn more about the skills required."><meta data-rh="true" property="og:description" content="These tutorials will walk you through creating and deploying a basic seasketch geoprocessing project. You should already have a basic working knowledge of your computer, its operating system, shell environment (command line), and web application development using NodeJS and React. Learn more about the skills required."><link data-rh="true" rel="icon" href="/geoprocessing/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://seasketch.github.io/geoprocessing/docs/next/tutorials/"><link data-rh="true" rel="alternate" href="https://seasketch.github.io/geoprocessing/docs/next/tutorials/" hreflang="en"><link data-rh="true" rel="alternate" href="https://seasketch.github.io/geoprocessing/docs/next/tutorials/" hreflang="x-default"><link rel="stylesheet" href="/geoprocessing/assets/css/styles.264bfde1.css">
-<script src="/geoprocessing/assets/js/runtime~main.db5ffb29.js" defer="defer"></script>
+<script src="/geoprocessing/assets/js/runtime~main.fc706b08.js" defer="defer"></script>
 <script src="/geoprocessing/assets/js/main.23b2faaa.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -38,7 +38,7 @@
 </ul>
 </li>
 </ul>
-<p>A virtual environment is the recommended way for beginners to develop geoprocessing projects.  Docker Desktop is the recommended methods on MacOS and Linux.  WSL is the recommended method on Windows.</p>
+<p>A virtual environment is the recommended way for beginners to develop geoprocessing projects. Docker Desktop is the recommended methods on MacOS and Linux. WSL is the recommended method on Windows.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="virtual-install-with-docker-desktop">Virtual Install With Docker Desktop<a href="#virtual-install-with-docker-desktop" class="hash-link" aria-label="Direct link to Virtual Install With Docker Desktop" title="Direct link to Virtual Install With Docker Desktop">​</a></h2>
 <p>Docker Desktop allows you to run containerized applications that are isolated from your host operating system. It&#x27;s similar but different from a virtual machine. SeaSketch publishes the <a href="https://github.com/seasketch/docker-gp-workspace" target="_blank" rel="noopener noreferrer">docker-gp-workspace</a> container image that is a fully-configured environment for developing geoprocessing projects. It allows you to get up and running quickly and has persistent storage. The downside is that code runs a bit slower in a container than directly on your system.</p>
 <p>Install steps for all operating systems:</p>
@@ -146,25 +146,26 @@
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="windows-wsl-install">Windows WSL Install<a href="#windows-wsl-install" class="hash-link" aria-label="Direct link to Windows WSL Install" title="Direct link to Windows WSL Install">​</a></h2>
 <p>Requirement: Windows 11 or newer</p>
-<p>Why use Windows Subsystem for Linux (WSL) to develop geoprocessing projects instead of using the <a href="#docker-desktop-setup">Docker Desktop</a>?  Because WSL is faster than Docker Desktop alone.  And because WSL provides a built-in filesystem bridge allowing you to access all your Windows drives in the Ubuntu container (via <code>/mnt</code> path).</p>
+<p>Why use Windows Subsystem for Linux (WSL) to develop geoprocessing projects instead of using the <a href="#docker-desktop-setup">Docker Desktop</a>? Because WSL is faster than Docker Desktop alone. And because WSL provides a built-in filesystem bridge allowing you to access all your Windows drives in the Ubuntu container (via <code>/mnt</code> path).</p>
 <p>To get started in Windows:</p>
 <ul>
 <li>Install <a href="https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4" target="_blank" rel="noopener noreferrer">Powershell for Windows</a></li>
 <li>Install <a href="https://learn.microsoft.com/en-us/windows/wsl/install" target="_blank" rel="noopener noreferrer">WSL with Ubuntu distribution</a>
 <ul>
+<li>If you already have WSL Version 2 installed, make sure it&#x27;s up to date by running <code>wsl --update</code> in PowerShell</li>
 <li>Install the default Ubuntu distribution as directed.</li>
 </ul>
 </li>
 <li>Install <a href="https://docs.docker.com/desktop/windows/wsl/" target="_blank" rel="noopener noreferrer">Docker Desktop with WSL2 support</a>.<!-- -->
 <ul>
 <li>Once installed, make sure Docker Desktop is running</li>
+<li>If you already had Docker Desktop installed, make sure it&#x27;s updated to the latest version.</li>
 </ul>
 </li>
 <li>Install <a href="https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode" target="_blank" rel="noopener noreferrer">VS Code</a> for Windows with WSL extension.</li>
 </ul>
-<p>Of you want to install the pre-configured <a href="#geoprocessing-distribution">Geoprocessing Distribution</a> (easiest), then go to the next section.  If you want to manually setup your Ubuntu environment from scratch, then skip ahead to the <a href="#default-ubuntu-installation">Default Ubuntu Distribution</a> (more difficult).</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="geoprocessing-distribution">Geoprocessing Distribution<a href="#geoprocessing-distribution" class="hash-link" aria-label="Direct link to Geoprocessing Distribution" title="Direct link to Geoprocessing Distribution">​</a></h3>
-<p>The Geoprocessing distribution has been prepared by the SeaSketch team for running in WSL.  You will install and run it right alongside the default Ubuntu distribution.</p>
+<p>A version of the <a href="https://github.com/seasketch/docker-gp-workspace" target="_blank" rel="noopener noreferrer">geoprocessing-workspace</a> Docker image has been packaged by the SeaSketch team for running in WSL. It&#x27;s pre-configured with all dependencies. You can download, import, and run it right alongside the default Ubuntu distribution.</p>
 <ul>
 <li>Open Powershell in Windows</li>
 <li>Create a tmp directory</li>
@@ -184,7 +185,7 @@
 <p>Be sure to update the filename in the import command above to match the version you downloaded.</p>
 </li>
 <li>
-<p>If import is started correctly, you will see the message <code>Import in progress, this may take a few minutes...</code>.  Once done it should say <code>The operation completed successfully</code>. If it didn&#x27;t import successfully, try restarting your system, WSL may not have been running properly.</p>
+<p>If import is started correctly, you will see the message <code>Import in progress, this may take a few minutes...</code>. Once done it should say <code>The operation completed successfully</code>. If it didn&#x27;t import successfully, try restarting your system, WSL may not have been running properly.</p>
 </li>
 <li>
 <p>Setup Terminal Profile</p>
@@ -202,7 +203,7 @@
 <p><img decoding="async" loading="lazy" alt="Profile Duplicate" src="/geoprocessing/assets/images/terminal-duplicate-2d64bf1f69e69c27f39cbf4a661738db.jpg" title="Profile Duplicate" width="1716" height="913" class="img_ev3q"></p>
 <ul>
 <li>Change the name of the duplicated Ubuntu profiles to <code>Geoprocessing</code></li>
-<li>Change the profiles Terminal command from <code>C:\WINDOWS\system32\wsl.exe -d Ubuntu</code> to <code>C:\WINDOWS\system32\wsl.exe -u vscode -d Geoprocessing</code>.  This will ensure that Geoprocessing starts with the correct user, instead of root.</li>
+<li>Change the profiles Terminal command from <code>C:\WINDOWS\system32\wsl.exe -d Ubuntu</code> to <code>C:\WINDOWS\system32\wsl.exe -u vscode -d Geoprocessing</code>. This will ensure that Geoprocessing starts with the correct user, instead of root.</li>
 <li>Save and exit your new profile</li>
 <li>The Terminal dropdown menu should now have a new <code>Geoprocessing</code> choice. Click this to start an instance of the Geoprocessing Distribution. It will open a shell, logged in with the vscode user.</li>
 </ul>
@@ -222,7 +223,7 @@
 <p>Follow the <a href="#final-configuration---all-install-options">final configuration steps</a> below, then move on to creating a new project.</p>
 <p><a href="/geoprocessing/docs/next/upgrade/">Upgrade</a> steps for the Geoprocessing Distribution are available</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="default-ubuntu-distribution">Default Ubuntu Distribution<a href="#default-ubuntu-distribution" class="hash-link" aria-label="Direct link to Default Ubuntu Distribution" title="Direct link to Default Ubuntu Distribution">​</a></h3>
-<p>Only follow these install steps if you intend to setup and use the default Ubuntu Distribution <em>instead of</em> the pre-configured Geoprocessing Distribution (above).</p>
+<p>Only follow these install steps if you intend to setup and use the default Ubuntu Distribution in WSL <em>instead of</em> the pre-configured Geoprocessing Distribution (above).</p>
 <ul>
 <li>Open Windows start menu -&gt; start typing <code>Ubuntu on Windows</code> -&gt; Select <code>Ubuntu on Windows</code>
 <ul>

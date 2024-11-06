@@ -17,11 +17,7 @@ import project from "../project/projectClient.js";
  */
 
 program
-  .option(
-    "-o, --outDir <outDir>",
-    "output directory",
-    `${import.meta.dirname}/../examples/sketches/`,
-  )
+  .option("-o, --outDir <outDir>", "output directory")
   .option(
     "-b, --bbox <bbox>",
     "bounding box to constrain features [minX, minY, maxX, maxY]",
@@ -52,12 +48,15 @@ const options = program.opts();
 
 // console.log("inOptions", options);
 
-const outdir = options.outDir;
 let bbox = JSON.parse(options.bbox);
 const numFeatures = Number.parseInt(options.numFeatures) || 1;
 const filename = options.filename;
-const type = options.sketch ? "Sketch" : "Feature";
+const type = options.sketch === true ? "Sketch" : "Feature";
 const bboxShrinkFactor = Number.parseInt(options.bboxShrinkFactor);
+const outdir =
+  type === "Sketch"
+    ? `${import.meta.dirname}/../examples/sketches/`
+    : `${import.meta.dirname}/../examples/features/`;
 
 const [minX, minY, maxX, maxY] = bbox;
 if (

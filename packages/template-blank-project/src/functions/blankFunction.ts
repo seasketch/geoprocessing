@@ -4,17 +4,16 @@ import {
   Polygon,
   MultiPolygon,
   GeoprocessingHandler,
-  getFirstFromParam,
-  DefaultExtraParams,
-  splitSketchAntimeridian,
   Metric,
+  DefaultExtraParams,
+  getFirstFromParam,
 } from "@seasketch/geoprocessing";
-import project from "../../project/projectClient.js";
 import {
   ReportResult,
   rekeyMetrics,
   sortMetrics,
 } from "@seasketch/geoprocessing/client-core";
+import project from "../../project/projectClient.js";
 import { clipToGeography } from "../util/clipToGeography.js";
 import { bbox } from "@turf/turf";
 
@@ -24,32 +23,21 @@ export async function blankFunction(
     | SketchCollection<Polygon | MultiPolygon>,
   extraParams: DefaultExtraParams = {},
 ): Promise<ReportResult> {
-  // Use caller-provided geographyId if provided
+  // Check for client-provided, fallback to geography assigned to default-boundary group
   const geographyId = getFirstFromParam("geographyIds", extraParams);
-
-  // Get geography features, falling back to geography assigned to default-boundary group
   const curGeography = project.getGeographyById(geographyId, {
     fallbackGroup: "default-boundary",
   });
-
-  // Support sketches crossing antimeridian
-  const splitSketch = splitSketchAntimeridian(sketch);
-
-  // Clip to portion of sketch within current geography
-  const clippedSketch = await clipToGeography(splitSketch, curGeography);
-
-  // Get bounding box of sketch remainder
+  const clippedSketch = await clipToGeography(sketch, curGeography);
   const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
-  // Fetch datasources as needed using bbox of sketch
+  // Fetch data and do analysis or run worker
 
-  // Add analysis code here that creates results in the common Metric[] format
-  // Or create new type to return to component
+  // Return ReportResult with Metric[] or create your own return type
   const metrics: Metric[] = [];
 
-  // Return a report result with metrics and a null sketch
   return {
-    metrics: sortMetrics(rekeyMetrics(metrics)),
+    metrics: sortMetrics(rekeyMetrics(metrics)), // sort and rekey for consistent ordering of output
   };
 }
 
@@ -59,6 +47,4 @@ export default new GeoprocessingHandler(blankFunction, {
   timeout: 60, // seconds
   memory: 1024, // megabytes
   executionMode: "async",
-  // Specify any Sketch Class form attributes that are required
-  requiresProperties: [],
 });

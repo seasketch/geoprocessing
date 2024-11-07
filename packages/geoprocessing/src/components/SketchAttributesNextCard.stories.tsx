@@ -67,6 +67,20 @@ const nextContextValue = sampleSketchReportContextValue({
           },
         },
       },
+      {
+        label: "Gears",
+        value: ["LONG_LINE", "TRAWL"],
+        exportId: "gears",
+        fieldType: "MultipleChoice",
+        valueLabel: ["Long Line", "Trawl"],
+        formElementId: 2300,
+        alternateLanguages: {
+          pt: {
+            label: "Engrenagens",
+            valueLabel: ["Linha Longa", "Arrasto"],
+          },
+        },
+      },
     ],
   },
 });

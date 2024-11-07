@@ -1,6 +1,6 @@
 # Create a New Geoprocessing Project
 
-This tutorial walks through creating a new geoprocessing project for the Federated States of Micronesia. The planning area for this example is defined as the coastline to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
+This tutorial walks through creating a new geoprocessing project for the Federated States of Micronesia and creating a report that does overlay analysis. The planning area for this example is defined as the coastline to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
 
 This tutorial assumes:
 
@@ -8,7 +8,7 @@ This tutorial assumes:
 - Your Ubuntu virtual environment is running (Devcontainer or WSL)
 - You have VSCode open in your virtual environment with a terminal pane open
 
-Disclaimer: many of the commands, functions, and example reports in this tutorial are designed for measuring the overlap of a sketch or sketch collection, with one or more vector/raster datasources, within one or more planning boundaries (geographies). Your requirements may be drastically different and you are welcome to take only inspiration from them and use the available lower level building blocks to create something that meets your needs. See the [Extending](../Extending.md) page to learn more.
+Note: if your project requirements are drastically different than the features utilized in this tutorial, then you don't have to use them. You can look at their building blocks, and create something that meets your needs. See the [Extending](../Extending.md) page to learn more.
 
 ## Initialize Geoprocessing Project
 
@@ -16,7 +16,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.31 init 7.0.0-experimental-7x-simplify.31
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.33 init 7.0.0-experimental-7x-simplify.33
 ```
 
 ```text
@@ -96,20 +96,19 @@ npm run import:data
 ```
 
 ```text
-? Type of data? Vector
+? Type of data?
+Vector
+? Enter path to src file (with filename)
+data/src/boundaries.gpkg
 ? Select layer to import
-  12nm_boundary_mr
-  eez_withland_mr
-  osm_land_polygons
-❯ eez_mr_osm
-  nearshore_mr_osm
-  12_24nm_boundary_mr_v3
-  eez_mr
+eez_mr_osm
 ? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons
-to fetch) Yes
-? Enter path to src file (with filename) data/src/boundaries.gpkg
-? Choose unique datasource name (use letters,numbers, -, _ to ensure will work) planning-boundary
-? Enter layer name, defaults to filename eez_mr_osm
+to fetch)
+Yes
+? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename
+planning-boundary
+? Enter layer name, defaults to filename
+eez_mr_osm
 ```
 
 Skip the two following questions by pressing Enter
@@ -134,8 +133,7 @@ Answer yes to precalculating summary metrics
 ```text
 ? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting
 sketch % overlap with datasource) (Use arrow keys)
-❯ Yes
-  No
+Yes
 ```
 
 The import will now proceed. Once complete you will find:
@@ -149,6 +147,8 @@ If the import fails, start the import over and double check everything. It is mo
 - You specified the wrong layer name
 
 ### Other Datasources
+
+Now import the following additional datasources:
 
 Reef extent - single class dataset
 
@@ -164,7 +164,7 @@ Additional formats: none
 Precalc summary statistics: yes
 ```
 
-Benthic habitat - contains multiple classes of benthic data we can group metrics by
+Benthic habitat - multiple classes of benthic data
 
 ```text
 type: Vector
@@ -183,7 +183,6 @@ Octocorals - raster with 0/1 values representing predicted presence/absence of s
 ```text
 type: Raster
 path: data/src/yesson_octocorals.tif
-layer: Micronesian Exclusive Economic Zone
 datasource name: octocorals
 Raster band: 1
 Type of measurement: Quantitative
@@ -198,17 +197,26 @@ Once imported, you'll find the resulting datasets in `data/dist`. You'll also fi
 
 Now you change the projects default geography from the world, to your new planning boundary.
 
-- Open `project/geographies.json`. You will see an array with one geography record called `world`. Set `precalc` to `false` for this record. This will exclude it from precalculation.
-- Add the following new geography record to the array and save the file.
+- Open `project/geographies.json`. You will see an array with one geography record called `world`. This is the default geography and can stay. You will disable its precalc and remove it as the `default-boundary`. Then you will add a new geography record for your `planning-boundary`.
+- Update the geographies file to the following and save it:
 
 ```json
-{
-  "geographyId": "planning-boundary",
-  "datasourceId": "planning-boundary",
-  "display": "Planning Boundary",
-  "groups": ["default-boundary"],
-  "precalc": true
-}
+[
+  {
+    "geographyId": "world",
+    "datasourceId": "world",
+    "display": "World",
+    "groups": [],
+    "precalc": false
+  },
+  {
+    "geographyId": "planning-boundary",
+    "datasourceId": "planning-boundary",
+    "display": "Planning Boundary",
+    "groups": ["default-boundary"],
+    "precalc": true
+  }
+]
 ```
 
 ## Generate Examples
@@ -217,8 +225,19 @@ Next, you will generate some example features and sketches that fall within your
 
 First, get the bounding box of your planning boundary. We'll do this using a combination of ogrinfo and jq commands.
 
+First, let's look at the properties of the planning-boundary datasource
+
 ```bash
-ogrinfo -so -json data/dist/planning-boundary.fgb | jq -c .layers[0].geometryFields[0].extent
+ogrinfo -so -json data/dist/planning-boundary.fgb eez_mr_osm
+```
+
+Looking at the output, you'll see there is one layer, with a `geometryFields` property, which contains the bounding box extent of the layer. That is what you need.
+
+You can use the `jq` utility to extract it as follows:
+
+```bash
+ogrinfo -so -json data/dist/planning-boundary.fgb eez_mr_osm | jq -c .layers[0].geometryFi
+elds[0].extent
 ```
 
 It should output the following compact bounding box extent:
@@ -227,15 +246,15 @@ It should output the following compact bounding box extent:
 [135.312441837621, -1.17311096529859, 165.676528225997, 13.4454329253893]
 ```
 
-Run the genRandomPolygon script to create an example Feature poly
+Run the genRandomPolygon script with this bounding box (make sure there are no spaces) to create a Feature polygon, a Sketch polygon, and then finally a SketchCollection containing 10 Sketch polygons.
 
 ```bash
-npx tsx scripts/genRandomPolygon.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5
-npx tsx scripts/genRandomPolygon.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5 --sketch
-npx tsx scripts/genRandomPolygon.ts --bbox [135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893] --bboxShrinkFactor 5 --sketch --numFeatures 10
+npx tsx scripts/genRandomPolygon.ts --bbox "[135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893]" --bboxShrinkFactor 5
+npx tsx scripts/genRandomPolygon.ts --bbox "[135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893]" --bboxShrinkFactor 5 --sketch
+npx tsx scripts/genRandomPolygon.ts --bbox "[135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893]" --bboxShrinkFactor 5 --sketch --numFeatures 10
 ```
 
-These commands generate an example Feature, then a Sketch, and then a SketchCollection. You provide the bounding box, it then shrinks the boxesheight and width by a factor of 5, and then generates random features that fall within that reduced bbox. This is to ensure the generated features are completely within the planning area polygon, because it's smaller than its bounding box (see image below).
+These commands contain a `bbox` and a `bboxShrinkFactor` argument. This shrinks the height and width of the given bbox by a factor of 5, and then generates random features that are within that reduced bbox. You do this to ensure the generated features are completely within the planning area polygon, because the planning area is smaller than its bounding box (see image below).
 
 ![EEZ bbox](./assets/eez-bbox.jpg)
 Image: cluster of 10 random sketches (in orange) within Micronesia EEZ

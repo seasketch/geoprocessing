@@ -19,9 +19,9 @@ import {
 } from "@seasketch/geoprocessing";
 
 /**
- * Clips sketch to geography
+ * Clips sketch to geography features
  * @param sketch Sketch or SketchCollection
- * @param geography geography to clip sketch to
+ * @param geography geography to clip sketch to, geography features are fetched
  * @param options optionally simplify sketch
  * @param simplifyOptions.tolerance tolerance in meters
  * @param simplifyOptions.highQuality highQuality simplification

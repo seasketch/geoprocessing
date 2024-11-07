@@ -26,6 +26,7 @@ export const projectMetadata = async (
         endpoint: `https://${event.headers["Host"]}/prod/${func.title}`,
         handler: undefined,
         purpose: undefined,
+        requiresProperties: func.requiresProperties || [],
       })),
     preprocessingServices: preprocessingFunctions
       .filter((f) => f.purpose === "preprocessing")
@@ -33,7 +34,7 @@ export const projectMetadata = async (
         title: func.title,
         description: func.description,
         endpoint: `https://${event.headers["Host"]}/prod/${func.title}`,
-        requiresProperties: func.requiresProperties,
+        requiresProperties: func.requiresProperties || [],
       })),
   };
   return {

@@ -17,21 +17,25 @@ import project from "../../project/projectClient.js";
 import { clipToGeography } from "../util/clipToGeography.js";
 import { bbox } from "@turf/turf";
 
+/**
+ * blankFunction for use with create:report command
+ */
 export async function blankFunction(
   sketch:
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>,
   extraParams: DefaultExtraParams = {},
 ): Promise<ReportResult> {
-  // Check for client-provided, fallback to geography assigned to default-boundary group
+  // Check for client-provided geography, fallback to first in default-boundary group
   const geographyId = getFirstFromParam("geographyIds", extraParams);
   const curGeography = project.getGeographyById(geographyId, {
     fallbackGroup: "default-boundary",
   });
+  // Clip portion of sketch outside geography features
   const clippedSketch = await clipToGeography(sketch, curGeography);
   const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
-  // Fetch data and do analysis or run worker
+  // Fetch data and do analysis or run in worker to offload processing
 
   // Return ReportResult with Metric[] or create your own return type
   const metrics: Metric[] = [];

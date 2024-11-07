@@ -19,7 +19,8 @@ import {
 } from "@seasketch/geoprocessing";
 
 /**
- * Clips sketch to geography features
+ * Returns intersection of sketch with geography features.
+ * If sketch does not overlap with geography returns sketch with zero polygon geometry (null island)
  * @param sketch Sketch or SketchCollection
  * @param geography geography to clip sketch to, geography features are fetched
  * @param options optionally simplify sketch

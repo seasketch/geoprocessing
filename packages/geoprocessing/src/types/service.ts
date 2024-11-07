@@ -78,7 +78,7 @@ export interface GeoprocessingHandlerOptions {
   /** Specify the ids of any Sketch Class form fields that must be provided in
    * order to run the function
    */
-  requiresProperties: string[];
+  requiresProperties?: string[];
   /** Whether to rate limit beyond basic DDoS protection */
   rateLimited?: boolean;
   rateLimit?: number;
@@ -100,9 +100,9 @@ export interface PreprocessingHandlerOptions {
   description: string;
   /** Seconds */
   timeout: number;
-  /** Megabytes, 128 - 3008, defaults to 1024 */
+  /** Megabytes, 128 - 10240, defaults to 1024 */
   memory?: number;
-  requiresProperties: string[];
+  requiresProperties?: string[];
 }
 
 export type GeoprocessingRequestParams = Record<string, JSONValue>;

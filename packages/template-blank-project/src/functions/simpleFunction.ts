@@ -13,10 +13,7 @@ export interface SimpleResults {
 }
 
 /**
- *  Simple function with a bespoke result payload
- * @param sketch
- * @param extraParams
- * @returns
+ * Barebones geoprocessing function with custom result payload
  */
 async function simpleFunction(
   sketch:

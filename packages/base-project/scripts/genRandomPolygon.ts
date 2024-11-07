@@ -89,7 +89,7 @@ bbox = insideBbox;
 
 const maxRadialLength = Number.parseFloat(options.maxRadialLength);
 
-const name = (() => {
+const theFilename = (() => {
   if (filename) {
     return `${filename}`;
   } else if (numFeatures > 1) {
@@ -98,7 +98,10 @@ const name = (() => {
     return `random${type}.json`;
   }
 })();
-const outfile = `${outdir}${name}`;
+const outfile = `${outdir}${theFilename}`;
+
+// remove the extension
+const name = theFilename.slice(0, -5);
 
 console.log("Output options:", {
   outfile,

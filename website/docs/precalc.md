@@ -1,14 +1,14 @@
 # Precalc Data
 
-Work in progress
-
 Precalc is all about calculating expensive spatial metrics ahead of time.
 
-- `precalc:data` will start a web server on localhost port 8001 that serve up data from `data/dist`.
-- Precalc will see the two datasources you selected and that they have `precalc: true`. It will also see the one geography `eez` that is defined in geographies.json that has `precalc: true`. It will then calculate `area`, `sum`, and `count` metrics for each datasource, in combination with each geography.
-- `project/precalc.json` will be updated with the new values.
+When you run the precalc script it starts a local web server on port 8001 that serves up the datasources in `data/dist`.
 
-Tips for precalculation:
+The precalc script then gets all your project datasources with `precalc: true`, and all your project geographies with `precalc: true`, and then calculate `area`, `sum`, and `count` metrics for each combination of datasource and geography.
+
+Once complete `project/precalc.json` is updated with the new values.
+
+Tips:
 
 - You have to re-run `precalc:data` every time you change a geography or datasource.
 - Set `precalc:false` for datasources that are not currently used, or are only used to define a geography (not displayed in reports). This is why the datasource for the default geography for a project is always set by default to `precalc: false`.

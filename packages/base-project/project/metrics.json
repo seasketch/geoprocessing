@@ -1,15 +1,1 @@
-[
-  {
-    "metricId": "boundaryAreaOverlap",
-    "type": "areaOverlap",
-    "classes": [
-      {
-        "classId": "eez",
-        "display": "EEZ",
-        "datasourceId": "global-eez-mr-v12",
-        "objectiveId": "eez",
-        "layerId": ""
-      }
-    ]
-  }
-]
+[]

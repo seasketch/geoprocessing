@@ -35,7 +35,7 @@
     "reimport:data": "geoprocessing reimport:data",
     "start:data": "http-server data/dist -c-1",
     "start:client": "geoprocessing start:client",
-    "storybook": "PROJECT_PATH=$(pwd) npx tsx .storybook/genReportStories.ts && storybook dev -p 6006",
+    "storybook": "PROJECT_PATH=$(pwd) npx tsx .storybook/genReportStories.ts && storybook dev -p 6006 --no-open",
     "sync:translation": "npm run extract:translation && npm run publish:translation && npm run import:translation",
     "synth": "geoprocessing synth",
     "test": "start-server-and-test start:data 8080 'npm run __test'",

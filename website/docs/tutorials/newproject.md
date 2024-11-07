@@ -16,7 +16,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.33 init 7.0.0-experimental-7x-simplify.33
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.35 init 7.0.0-experimental-7x-simplify.35
 ```
 
 ```text
@@ -195,7 +195,7 @@ Once imported, you'll find the resulting datasets in `data/dist`. You'll also fi
 
 ### Update default Geography
 
-Now you change the projects default geography from the world, to your new planning boundary.
+Now you will change the projects default geography from the world, to your new planning boundary.
 
 - Open `project/geographies.json`. You will see an array with one geography record called `world`. This is the default geography and can stay. You will disable its precalc and remove it as the `default-boundary`. Then you will add a new geography record for your `planning-boundary`.
 - Update the geographies file to the following and save it:
@@ -223,30 +223,25 @@ Now you change the projects default geography from the world, to your new planni
 
 Next, you will generate some example features and sketches that fall within your planning boundary, for testing purposes.
 
-First, get the bounding box of your planning boundary. We'll do this using a combination of ogrinfo and jq commands.
-
-First, let's look at the properties of the planning-boundary datasource
+First, let's look at the properties of the planning-boundary datasource.
 
 ```bash
 ogrinfo -so -json data/dist/planning-boundary.fgb eez_mr_osm
 ```
 
-Looking at the output, you'll see there is one layer, with a `geometryFields` property, which contains the bounding box extent of the layer. That is what you need.
-
-You can use the `jq` utility to extract it as follows:
+The outputs tells you there is a layer, with a `geometryFields` property, which contains the bounding box extent of all the layer features. Use the `jq` utility to extract the extent as follows:
 
 ```bash
-ogrinfo -so -json data/dist/planning-boundary.fgb eez_mr_osm | jq -c .layers[0].geometryFi
-elds[0].extent
+ogrinfo -so -json data/dist/planning-boundary.fgb eez_mr_osm | jq -c .layers[0].geometryFields[0].extent
 ```
 
-It should output the following compact bounding box extent:
+It should output a compact bounding box extent:
 
 ```json
 [135.312441837621, -1.17311096529859, 165.676528225997, 13.4454329253893]
 ```
 
-Run the genRandomPolygon script with this bounding box (make sure there are no spaces) to create a Feature polygon, a Sketch polygon, and then finally a SketchCollection containing 10 Sketch polygons.
+Run the genRandomPolygon script with this extent to create a Feature polygon, a Sketch polygon, and then a SketchCollection containing 10 Sketch polygons.
 
 ```bash
 npx tsx scripts/genRandomPolygon.ts --bbox "[135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893]" --bboxShrinkFactor 5
@@ -254,12 +249,12 @@ npx tsx scripts/genRandomPolygon.ts --bbox "[135.312441837621,-1.17311096529859,
 npx tsx scripts/genRandomPolygon.ts --bbox "[135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893]" --bboxShrinkFactor 5 --sketch --numFeatures 10
 ```
 
-These commands contain a `bbox` and a `bboxShrinkFactor` argument. This shrinks the height and width of the given bbox by a factor of 5, and then generates random features that are within that reduced bbox. You do this to ensure the generated features are completely within the planning area polygon, because the planning area is smaller than its bounding box (see image below).
+The `--bboxShrinkFactor` argument used shrinks the height and width of the given bbox by a factor of 5, and then generates random features that are within that reduced bbox. A suitable shrink factor value was discovered through trial and error. Simply visualize the resulting json file in QGIS or other software and find a value that produces polygons that are completely within the planning area polygon. (see image below).
 
 ![EEZ bbox](./assets/eez-bbox.jpg)
 Image: cluster of 10 random sketches (in orange) within Micronesia EEZ
 
-You can adjust these options as you see fit. Learn more about the options by running:
+You can adjust these options . Learn more about them by running:
 
 ```
 npx tsx scripts/genRandomPolygon.ts --help
@@ -273,20 +268,27 @@ Now that you have example features and sketches, you can test the preprocessing 
 npm test
 ```
 
-The two preprocessing functions (clipToOcean, clipToLand) will run against Features in `examples/features`. The two geoprocessing functions (blankFunction, simpleFunction) will run against Sketches in `examples/sketches`. The results of all smokes tests is output to the `examples/output` directory so that you can inspect the output, and changes over time.
+- The two preprocessing functions (clipToOcean, clipToLand) will run against all the polygon Features in `examples/features`.
+- The two geoprocessing functions (blankFunction, simpleFunction) will run against all of the polygon Sketches in `examples/sketches`.
+- The results of all smokes tests are output to the `examples/output` directory.
+- You can inspect the output files, rerun tests to regenerate them at any time, and delete any that are stale and no longer needed.
 
-In addition to using `genRandomFeatures`, you can create example features and sketches relevant to your project using GIS software, by drawing polygons using [geojson.io](https://geojson.io), or once you have your SeaSketch project setup, you can draw a sketch, right-click and export it as geojson, then copy it to the `examples/sketches` directory. These are all ways to build a comprehensive test suite.
+Commit the output files to your git repository at this time.
+
+For advanced use, check out the [testing](../Testing.md) guide.
 
 ## Precalc Data
 
-You're now ready to precalculate metrics for your datasources. Precalc is all about calculating expensive spatial metrics ahead of time.
+The `precalc` command will calculate how much of your datasources features or raster cells is within each of your projects geographies. This can measured as an `area`, `sum` of cell value, `count` of features/raster cells, etc.
 
-One of the questions our report needs to answer is "how much of all octocorals in the EEZ, is within my Sketch polygon"?
+Why do this?
+
+One of the questions our report needs to answer is "what percentage of coral reef within the planning boundary are within my Sketch polygon?
 
 This is calculated as:
-`octocorals sketch % = area of octocorals within sketch / area of octocorals within EEZ`
+`% area of coral reef in sketch = area of coral reef within sketch / area of coral reef within planning boundary`
 
-You can precalculate the denominator of this equation ahead of time. The `precalc` command will calculate how much of a datasources features/raster cells is within each of your projects geographies. This can measured as an `area`, `sum` of cell value, `count` of features/raster cells, etc.
+The numerator in this equation (area of reef within sketch) is relatively inexpensive to calculate and we do it a geoprocessing function where we have access to the sketch. But the denominator in this calculation can be expensive if the planning boundary and the coral reef datasource is very large or complex. Thankfully we can calculate it ahead of time.
 
 Since your datasources and geographies already have `precalc: true` set, you are ready to start:
 
@@ -300,35 +302,37 @@ npm run precalc:data
 ❯ No, just precalculate everything (may take a while)
 ```
 
-Choose to "precalculate everything". Then press enter:
+Choose to "precalculate everything". Then press enter. The precalc process may take a while.
 
-- The precalc process may take at least a few minutes.
-- Precalc will start a web server on localhost port 8001 that serve up data from `data/dist`.
-- Precalc will see the two datasources you selected and that they have `precalc: true`. It will also see the one geography `eez` that is defined in geographies.json that has `precalc: true`. It will then calculate `area`, `sum`, and `count` metrics for each datasource, in combination with each geography.
-- `project/precalc.json` will be updated with the new values.
+What's happening is that the precalc script starts a local web server on port 8001 that serves up the datasources in `data/dist`.
 
-Tips for precalculation:
+The precalc script then gets all your project datasources with `precalc: true`, and all your project geographies with `precalc: true`, and then calculate `area`, `sum`, and `count` metrics for each combination of datasource and geography.
 
-- You have to re-run `precalc:data` every time you change a geography or datasource.
-- Set `precalc:false` for datasources that are not currently used, or are only used to define a geography (not displayed in reports). This is why the datasource for the default geography for a project is always set by default to `precalc: false`.
-- If you are using one of the [global-datasources](https://github.com/seasketch/global-datasources) in your project, and you want to use it in reporting % sketch overlap, so you've set `precalc:true`, strongly consider defining a `bboxFilter`. This will ensure that precalc doesn't have to fetch the entire datasource when precalculating a metric, which can be over 1 Gigabyte in size. Also consider setting a `propertyFilter` to narrow down to just the features you need. This filter is applied on the client-side so it won't reduce the number of features you are sending over the wire.
+Once complete `project/precalc.json` is updated with the new metric values.
+
+If your datasource has `classKeys` defined in its record, precalc will also calculate `area`, `sum`, and `count` for each unique class value found within the classKey.
+
+You must re-run `precalc:data` every time you change a geography record or a datasource.
+
+- To learn more advanced use, see the [precalc](../precalc.md) guide.
+- To learn more about use of precalculated metrics, see the [report client](../reportclient.md) guide.
 
 ## Add Metric Groups
 
-A metric group defines a metric to be measured, for one or more classes of data.
+A metric group defines a metric to be measured, for one or more classes of data. A `MetricGroup` record provides the information needed for a metric to be calculated (in a geoprocessing function) and to be displayed (in a report client).
 
-A metric group record provides all of the information needed for the metric to be calculated (in a geoprocessing function) and to be displayed (in a report client).
+Let's create your first metric group by opening `project/metrics.json`.
 
-You can learn more on the [advanced concepts](../concepts/AdvancedConcepts.md#metric-group) page.
+You will be creating a report that measures how much a sketch overlaps with reefs within the planning boundary.
 
-Now, navigate to `metrics.json`. There is already a metric group defined – `boundaryAreaOverlap`. This is the metric group used to calculate how much of the the total area of the planning boundary is within our sketch.
+Choose:
 
-You will be creating a report that measures how much a sketch overlaps with reefs within the planning boundary. The first step is to define a metric group.- Pick a metricId (`coralReef`)
+- a metricId (`coralReef`)
+- a type of report (`areaOverlap`)
+- classes you want to show in the report (`reefExtent`) and the datasource they are sourced from (`reefextent`)
+  - In this case our dataset has only one class of data, and it all comes from one datasource.
 
-- type of report (`areaOverlap`)
-- and classes you want to show in the report. In this case our dataset has only one class of data, and it all comes from one datasource. All data within a metric group must be in the same format (raster or vector).
-
-Add the following record to the end of the array in `project/metrics.json` and save the file.
+Add the following record to the end of the empty array in `project/metrics.json` and save the file.
 
 ```json
 {
@@ -344,9 +348,11 @@ Add the following record to the end of the array in `project/metrics.json` and s
 }
 ```
 
+To learn more about metric groups, visit the [advanced concepts](../concepts/AdvancedConcepts.md#metric-group) page.
+
 ### Metric group for vector data source with multiple classes
 
-Next add a metric group for measuring sketch overlap with predicted presence of benthic species. `benthic` is made up of a single datasource with multiple habitats defined by the `class` attribute. While there were many types of habitats, we may want to only focus on Sand, Rubble, and Rock. To do this, you'll add multiple class records, each with a `classKey` of `class` and a `classId` with a value to match on.
+Next, add a metric group for measuring sketch overlap with areas where benthic species are predicted to be present. `benthic` consists of a single vector datasource with multiple habitats defined by the `class` attribute. While there are many types of habitats, we want to only focus on Sand, Rubble, and Rock. To do this, you'll add multiple class records, each with a unique `classId` value to match on, and a `classKey` that specific which feature attribute the classId values are found.
 
 Add the following record to the end of the array in `project/metrics.json` and save the file.
 
@@ -377,116 +383,88 @@ Add the following record to the end of the array in `project/metrics.json` and s
 }
 ```
 
-## Create Report
+## Create Overlay Report
+
+We now have everything we need to generate our first report (geoprocessing function + report component).
+
+This command asks you to choose one of your unused metric groups, and then it:
+
+- Creates a new geoprocessing function in `src/functions`
+- Creates an accompanying smoke test file
+- Creates a React component that displays the result metrics in `src/components`.
+- Creates an accompanying storybook story generator
+- Adds your new geoprocessing function to the list in `project/geoprocessing.json` so that it will be published on deploy.
+
+These assets are all created using the `blank` assets that are in your project, so it's important that you leave them in place:
+
+- src/functions/blankFunction.ts
+- src/functions/blankFunctionSmoke.test.ts
+- src/components/BlankCard.tsx
+- src/components/BlankCard.example-stories.tsx
+
+To get started run the command:
 
 ```bash
 npm run create:report
 ```
 
-Select the type of report you need for your data (`vector` or `raster`), and the name of your new metric group. For this tutorial, select `Vector overlap report` and [`benthicHabitat`](#metric-group-with-two-data-sources).
+Answer the questions as follows:
 
-This command does a lot for you:
+```text
+? Type of report to create
 
-- Adds a function to `src/functions`
-- Adds a test file to `src/functions`
-- Adds a component (the front-end of any report) to `src/components`
-- Adds a story to `src/components`
-- Adds your new function to a list in `geoprocessing.json` that is used by AWS lambda
+Vector overlap report
 
-Open these outputs and take a look at them. Edits to the statistic you want calculated (i.e.calculating average instead of sum, etc) should happen in your function (in this tutorial: `src/functions/benthicHabitat.ts`). Edits to the way the analytics are displayed (i.e. changing labels, converting units, adding text context, etc) should happen in your component (in this tutorial: `src/components/BenthicHabitat.tsx`).
+? Describe what this reports geoprocessing function will calculate
 
-Add your new component to `src/components/ViabilityPage.tsx` or `src/components/RepresentationPage.tsx`. For example, `Viability.tsx` can now look like this, so our new report appears beneath the Size report and the Sketch Attributes report:
+Calculate sketch overlap with benthic habitats
+
+? Choose an execution mode for the geoprocessing function for this report
+
+Async - Better for long-running processes
+
+? Select the metric group to report on
+
+benthicHabitat
+
+```
+
+Read the results, and open the output files and take a look at them.
+
+- Edits to the statistic you want calculated (i.e.calculating average instead of sum, etc) should happen in your function (`src/functions/benthicHabitat.ts`).
+- Edits to the way the analytics are displayed (i.e. changing labels, converting units, adding text context, etc) should happen in your component (`src/components/BenthicHabitat.tsx`).
+
+Now, add your new component to the Viability report page (`src/components/RepresentationPage.tsx`) as follows:
 
 ```typescript
 import React from "react";
-import { SizeCard } from "./SizeCard";
+import { SimpleCard } from "./SimpleCard.js";
 import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
-import { BenthicHabitat } from "./BenthicHabitat";
+import { BenthicHabitat } from "./BenthicHabitat.js";
 
-const ReportPage = () => {
+export const ViabilityPage = () => {
   return (
     <>
-      <SizeCard />
+      <SimpleCard />
       <BenthicHabitat />
       <SketchAttributesCard autoHide />
+
     </>
   );
 };
-
-export default ReportPage;
 ```
 
 ## Test your project
 
-Now that you have sample sketches and features, you can run the test suite.
+Now, rerun your test suite to generate new smoke test output.
 
 ```bash
 npm run test
 ```
 
-This will start a web server on port 8080 that serves up the `data/dist` folder. Smoke tests will run geoprocessing functions against all of the sketches and features in the `examples` folder. `projectClient.getDatasourceUrl` will automatically read data from localhost:8080 instead of the production S3 bucket url using functions like `fgbFetchAll()`, `geoblaze.parse()`.
-
-### Smoke Tests
-
-Smoke tests, in the context of a geoprocessing project, verify that your preprocessing and geoprocessing function are working, and produce an output, for a given input. It doesn't ensure that the output is correct, just that something is produced. The input in this case is a suite of features and sketches that you manage.
-
-Preprocessing function smoke tests (in this case `src/functions/clipToOceanEezSmoke.test.ts`) will run against every feature in `examples/features` and output the results to `examples/output`.
-
-All geoprocessing function smoke tests (in this case `src/functions/boundaryAreaOverlapSmoke.test.ts`) will run against every feature in `examples/sketches` and output the results to `examples/output`.
-
-Smoke tests are your chance to convince yourself that functions are outputting the right results. This output is committed to the code repository as a source of truth, and if the results change in the future (due to a code change or an input data change or a dependency upgrade) then you will be able to clearly see the difference and convince yourself again that they are correct. All changes to smoke test output are for a reason and should not be skipped over.
-
-### Unit Tests
-
-Units tests go further than smoke tests, and verify that output or behavior is correct for a given input.
-
-You should have unit tests at least for utility or helper methods that you write of any complexity, whether for geoprocessing functions (backend) or report clients (frontend).
-
-- [Example](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/helpers/groupBy.test.ts)
-
-You can also write unit tests for your UI components using [testing-library](https://testing-library.com/docs/react-testing-library/intro/).
-
-- [Example](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/components/SketchAttributesCard.test.tsx)
-
-Each project you create includes a debug launcher which is useful for debugging your function. With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of your tests or in one of your functions, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package. The debugger should break at the appropriate place.
-
-### Debugging Tests
-
-See the [Testing](../Testing.md) page for additional options for testing your project.
-
-### Default geography
-
-When smoke tests run, they should run for the default geography, without needing to be told so, but you can still override it. That's why this is the standard boilerplate for a geoprocessing function.
-
-```typescript
-  export async function boundaryAreaOverlap(
-  sketch: Sketch<Polygon> | SketchCollection<Polygon>,
-  extraParams: DefaultExtraParams = {}
-): Promise<ReportResult> {
-  const geographyId = getFirstFromParam("geographyIds", extraParams);
-  const curGeography = project.getGeographyById(geographyId, {
-    fallbackGroup: "default-boundary",
-  });
-```
-
-If you call boundaryAreaOverlap with only a sketch as input (no extraParams), then `getFirstFromParam()` will return `undefined`, so
-`project.getGeographyById` will receive `undefined` and fallback to the geography assigned to the `default-boundary` group, which every project should have at least one, or throw an error.
-
-If you want to run smoke tests against a different geography, just to see what it produces, then you will have to do it explicitly:
-
-```typescript
-const metrics = await boundaryAreaOverlap(sketch, {
-  geographyIds: ["my-other-geography"],
-});
-```
-
-if you use a `GeographySwitcher` UI component in your story, then it will allow you to switch geographies, but the story will still only receive the metrics for the smoke test you ran, which may only have been run for the default geography. In this situation, the report will load the precalc metrics for the geography you've chosen in the denominator for percentages, but the numerator metrics will always be for the default geography, or whatever geography you passed to your smoke test.
-
-If you've used template-ocean-eez and selected an EEZ, the default geography is your selected EEZ, and you're ready to run your storybook and check out your reports!
-
 ## Storybook
 
-You can view the results of your smoke tests using Storybook. It's already configured to load all of the smoke test output for each story.
+You can view your report clients with the results of your smoke tests using Storybook.
 
 ```bash
 npm run storybook
@@ -525,7 +503,7 @@ If you're still not sure try some of the following:
 
 There are a number of guides covering advanced topics.
 
-There are also many report projects you can look at to gain a better understanding or to add more advanced features.
+There are also many report projects out there you can look at to pick up new tricks or entire functions and reports.
 
 - [California](https://github.com/seasketch/california-reports) - worker functions, v7
 - [Bermuda](https://github.com/seasketch/bermuda-reports-next) - worker functions, v7

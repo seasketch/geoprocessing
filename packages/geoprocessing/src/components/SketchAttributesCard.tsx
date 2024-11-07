@@ -129,10 +129,7 @@ export const SketchAttributesCard = ({
                     {valueLabel
                       ? Array.isArray(valueLabel)
                         ? valueLabel.map((v, index) => (
-                            <React.Fragment key={index}>
-                              {t(v)}
-                              <br />
-                            </React.Fragment>
+                            <div key={index}>{t(v)}</div>
                           ))
                         : t(valueLabel) /* i18next-extract-disable-line */
                       : "N/A"}

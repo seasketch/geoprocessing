@@ -13,6 +13,8 @@ import { publishDatasource } from "./publishDatasource.js";
 
 import ProjectClientBase from "../../../src/project/ProjectClientBase.js";
 
+$.verbose = true;
+
 export async function importRasterDatasource<C extends ProjectClientBase>(
   projectClient: C,
   options: ImportRasterDatasourceOptions,

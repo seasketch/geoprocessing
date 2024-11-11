@@ -40,6 +40,28 @@ export async function fgbFetchAll<F extends Feature<Geometry>>(
   return features;
 }
 
-const loadFgb = fgbFetchAll;
+/** Fetch features within bounding box and deserializes them, awaiting all of them before returning.
+ * Useful when running a spatial function on the whole set.
+ */
+export async function loadFgb<F extends Feature<Geometry>>(
+  url: string,
+  box?: BBox,
+) {
+  const fgBox = (() => {
+    if (!box && !Array.isArray(box)) {
+      return fgBoundingBox([-180, -90, 180, 90]); // fallback to entire world
+    } else {
+      return fgBoundingBox(box);
+    }
+  })();
 
-export { loadFgb };
+  if (process.env.NODE_ENV !== "test")
+    console.log("fgbFetchAll", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
+
+  const features = (await takeAsync(
+    deserialize(url, fgBox) as AsyncGenerator,
+  )) as F[];
+  if (!Array.isArray(features))
+    throw new Error("Unexpected result from fgbFetchAll");
+  return features;
+}

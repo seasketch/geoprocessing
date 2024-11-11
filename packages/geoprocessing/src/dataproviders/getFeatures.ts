@@ -3,7 +3,7 @@ import {
   isInternalVectorDatasource,
   VectorDataSource,
 } from "../datasources/index.js";
-import { fgbFetchAll } from "./flatgeobuf.js";
+import { loadFgb } from "./flatgeobuf.js";
 import {
   ExternalVectorDatasource,
   InternalVectorDatasource,
@@ -30,7 +30,7 @@ export async function getFeatures<F extends Feature<Geometry>>(
 
   let features: F[] = [];
   if (isInternalVectorDatasource(datasource)) {
-    features = await fgbFetchAll<F>(url, bboxFilter);
+    features = await loadFgb<F>(url, bboxFilter);
   } else if (
     isExternalVectorDatasource(datasource) &&
     datasource.formats &&
@@ -55,7 +55,7 @@ export async function getFeatures<F extends Feature<Geometry>>(
     datasource.formats.includes("fgb")
   ) {
     // fallback to flatgeobuf
-    features = await fgbFetchAll<F>(url, bboxFilter);
+    features = await loadFgb<F>(url, bboxFilter);
   }
 
   // filter by property value

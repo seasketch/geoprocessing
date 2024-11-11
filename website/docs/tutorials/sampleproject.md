@@ -51,8 +51,6 @@ Type /workspaces/fsm-reports-test/
 Press Ctrl-J or Ctrl-backtick to open a new terminal
 ```
 
-## Base Resources
-
 ## Connect Github repo and push
 
 Before you continue, let's take a snapshot of your code now, at the starting point.
@@ -78,9 +76,131 @@ After this point, you can continue using git commands in the terminal to stage c
 
 You can learn more about your projects [folder structure](../structure.md)
 
-## Generate Examples
+## Simple Report
 
-Next, generate example features and sketches that fall within the Micronesia Exclusive Economic Zone, for testing purposes. To do this, first let's inspect the Micronesia EEZ data layer in our data package.
+Your new project comes with a simple report that calculates the area of your sketch. Let's take a closer look.
+
+### simpleFunction
+
+`src/functions/SimpleFunction.ts`
+
+First, notice this function defines its own result payload called `SimpleResults`, an object with an `area` number value.
+
+```typescript
+export interface SimpleResults {
+  /** area of sketch within geography in square meters */
+  area: number;
+}
+```
+
+`simpleFunction` starts off with the basic signature of a geoprocessing function. It accepts a `sketch` parameter that is either a single `Sketch` polygon or a `SketchCollection` with multiple Sketch polygons. Unless your planning project only requires users to design single sketches and not collections, your geoprocessing function must be able to handle both.
+
+```typescript
+async function simpleFunction(
+  sketch:
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
+): Promise<SimpleResults> {
+```
+
+The function then performs its analysis and returns the result.
+
+```typescript
+// Add analysis code
+const area = turfArea(sketch);
+
+// Custom return type
+return {
+  area,
+};
+```
+
+The file finishes with instantiating a new `GeoprocessingHandler`, which wraps simpleFunction in such a way that it can be published as an AWS Lambda, to be invoked by a report client.
+
+```typescript
+export default new GeoprocessingHandler(simpleFunction, {
+  title: "simpleFunction",
+  description: "Function description",
+  timeout: 60, // seconds
+  memory: 1024, // megabytes
+  executionMode: "async",
+});
+```
+
+`GeoprocessingHandler` requires a `title` and `description`, to uniquely identify your geoprocessing function amongst the other functions published by your project. It also accepts some parameters for the Lambda function:
+
+- timeout: how many seconds the Lambda will run before it times out in error.
+- memory: memory allocated to the Lambda, can go up to 10,240 MB. Number of processors increase with memory size automatically.
+- executionMode: determines how the report client waits for your function to finish. Sync - wait with connection open, Async - wait for web socket message. Async is the best default to not tie up your browsers network connections.
+
+You can change all of these parameters to suit your needs, but the default values are suitable for now.
+
+`simpleFunction` is already registered as a geoprocessing function in `project/geoprocessing.json`, along with `blankFunction` which you will learn about later.
+
+### SimpleReport
+
+A report client is the top-level React component for creating a report. The clients role is usually to define the report layout, organize the report sections, and establish language translation. Two starter report clients are provided in the `src/clients` directory.
+
+`SimpleReport.tsx` - one page report client containing a SketchAttributesCard and a SimpleCard.
+
+`TabReport.tsx` - more complex multi-page report layout controlled by a tab switcher component, containing a single ViabilityPage, which contains the same SimpleCard and SketchAttributesCard.
+
+Both these report clients are already registered in `project/geoprocessing.json`. Let's focus on `SimpleReport` and how it invokes your `simpleFunction`.
+
+```jsx
+export const SimpleReport = () => {
+  return (
+    <Translator>
+      <SimpleCard />
+      <SketchAttributesCard autoHide />
+    </Translator>
+  );
+};
+```
+
+SimpleReport renders two report cards, `SimpleCard` and `SketchAttributesCard`, wrapping them in a languge `Translator` (more on that in the next tutorial). SketchAttributes card is a built-in report component imported from `@seasketch/geoprocessing/client-ui`. SimpleCard is a custom report component found at `src/components/SimpleCard.tsx`, which we can look at now.
+
+```jsx
+/**
+ * SimpleCard component
+ */
+export const SimpleCard = () => {
+  const { t } = useTranslation();
+  const titleTrans = t("SimpleCard title", "Zone Report");
+  return (
+    <>
+      <ResultsCard title={titleTrans} functionName="simpleFunction">
+        {(data: SimpleResults) => {
+          return (
+            <>
+              <p>
+                📐
+                <Trans i18nKey="SimpleCard sketch size message">
+                  This sketch is{" "}
+                  <b>{{ area: Number.format(Math.round(data.area * 1e-6)) }}</b>{" "}
+                  square kilometers
+                </Trans>
+              </p>
+            </>
+          );
+        }}
+      </ResultsCard>
+    </>
+  );
+};
+```
+
+The first thing to notice is that SimpleCard contains a lot of boilerplate for translating report strings with the `useTranslation` hook, `t` function, and `Trans` component. If your reports need to be multi-lingual you will need to use these, otherwise you don't.
+
+The next thing to notice is that SimpleCard renders a `ResultsCard` component. Behind the scenes ResultsCard invokes simpleFunction and passes the results to its child render function. The child render function takes an input parameter `data` that has the same type as the result of `simpleFunction`. Now, within the render function you have access to the function result object, fully typed.
+
+This particular render function simply takes the calculated area value and makes it presentable to the user. First, the area value is converted from square meters to square kilometers, then rounded to a whole number, and formatted it in a way suitable to the users locale (for US this is a comma for thousand separator, and period for decimal separator).
+
+This establishes the pattern that the geoprocessing function is responsible for calculating the raw values, and defining the result type interface, so that the meaning of the values is clear. The presentation details are left to be done in the report client.
+
+### Generate Examples
+
+With a working geoprocessing function and report client already in place, you're ready to generate example sketches for testing them. Specificially, you want sketch polygons that fall within the Micronesia Exclusive Economic Zone. To do this, first let's inspect the Micronesia EEZ polygon data layer in our data package.
 
 ```bash
 ogrinfo -so -json data/src/eez_withland_mr.fgb
@@ -111,24 +231,23 @@ Learn more about the options for `genRandomPolygon` by running:
 npx tsx scripts/genRandomPolygon.ts --help
 ```
 
-## Run test suite
+### Run test suite
 
-Now that you have example features and sketches, you can test the preprocessing and geoprocessing functions that came with your blank project. Run the test suite now:
+Now that you have example features and sketches, you can test `simpleFunction`. Run the test suite now:
 
 ```bash
 npm test
 ```
 
-- The two preprocessing functions (clipToOcean, clipToLand) will run against all the polygon Features in `examples/features`.
-- The two geoprocessing functions (blankFunction, simpleFunction) will run against all of the polygon Sketches in `examples/sketches`.
+- Using `simpleFunctionSmoke.test.ts`, simpleFunction will be run against all of the polygon Sketches in `examples/sketches`.
 - The results of all smokes tests are output to the `examples/output` directory.
-- You can inspect the output files, rerun tests to regenerate them at any time, and delete any that are stale and no longer needed.
+- You can inspect the output files, and see the calculated area values for each sketch input.
 
 Commit the output files to your git repository at this time.
 
-For advanced use, check out the [testing](../Testing.md) guide.
+You can make changes to simpleFunction, then rerun tests to regenerate them at any time, and delete any that are stale and no longer needed. For advanced use, check out the [testing](../Testing.md) guide.
 
-## Storybook
+### Storybook
 
 Storybook is used to view your reports.
 
@@ -144,15 +263,60 @@ This will:
 
 Open the storybook URL in your browser and click through the stories.
 
-As you add more sketch examples, and rerun the smoke tests, new stories will added the next time you run the storybook.
+![Storybook initial view](./assets/storybook-one.jpg)
 
-An important feature of Storybook is that when you save edits to your report clients or components, storybook will refresh automatically with the changes. This lets you actively develop your reports. And you can debug them as well.
+An powerful feature of Storybook is that when you save edits to your report client or its components, storybook will refresh automatically with the changes. This lets you develop your reports and debug them more quickly.
+
+Let's make a change to the report client now and make it clear to the user whether their result is for a single sketch polygon, or a sketch collection.
+
+First, at the top of the file, import the useSketchProperties react hook along with ResultsCard from the client-ui module.
+
+```typescript
+import {
+  ResultsCard,
+  useSketchProperties,
+} from "@seasketch/geoprocessing/client-ui";
+```
+
+Then, below the `useTranslation()` call, invoke the useSketchProperties hook
+
+```typescript
+const [{ isCollection }] = useSketchProperties();
+```
+
+Finally, render a different message depending on whether the sketch is a collection or not. Swap in the following code:
+
+```typescript
+<p>
+  📐
+  {
+    isCollection === false && <Trans i18nKey="SimpleCard sketch size message">
+    This sketch is{" "}
+    <b>{{ area }}</b>{" "}
+    square kilometers
+    </Trans>
+  }
+  {
+    isCollection === true && <Trans i18nKey="SimpleCard sketch collection size message">
+    This sketch collection is{" "}
+    <b>{{ area }}</b>{" "}
+    square kilometers
+  </Trans>
+  }
+</p>
+```
+
+On save, your storybook should update. And clicking on a story for a collection should render differently than a story for a single sketch:
+
+![Storybook collection view](./assets/storybook-two.jpg)
+
+If you later add more sketch examples to the `examples/sketch` directory, will need to rerun the smoke tests to generate example output, and then stop and restart your storybook to re-generate all the stories.
 
 Learn more in the [storybook guide](./storybook.md).
 
-## First Project Build
+### First Project Build
 
-A `build` of your application packages it for deployment. Specifically it:
+Now that you have confirmed your function is working properly, and your report client displays properly for a variety of example sketches, you are ready to do your first build. A `build` of your application packages it for deployment. Specifically it:
 
 - Checks all the Typescript code to make sure it's valid and types are used properly.
 - Transpiles all Typescript to Javascript
@@ -171,7 +335,7 @@ Once your build is successful, you should stage and commit all your changes to g
 
 [Work in progress past this point]
 
-You will be creating a report that measures how much a sketch overlaps with reef extent polygons.
+You will be creating a simple report that measures how much reef extent is captured within a Sketch or SketchCollection.
 
 ### Import Data
 

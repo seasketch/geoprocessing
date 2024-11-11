@@ -29,6 +29,11 @@ const sidebars: SidebarsConfig = {
             },
             {
               type: "doc",
+              id: "tutorials/sampleproject",
+              label: "Create Sample Project",
+            },
+            {
+              type: "doc",
               id: "tutorials/newproject",
               label: "Create New Project",
             },

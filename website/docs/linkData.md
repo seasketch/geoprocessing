@@ -1,6 +1,6 @@
 # Link Project Data
 
-In order to `import` and `publish` local project data to the cloud, it will need to be accessible on your local computer. There are multiple ways to do this, choose the appropriate one for you.
+In order to `import` and `publish` datasets needed in your reports, they will need to be accessible on your local computer. There are multiple ways to do this, choose the appropriate one for you.
 
 ## Option 1. Keep your data where it is
 

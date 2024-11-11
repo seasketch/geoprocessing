@@ -189,6 +189,8 @@ Follow the [final configuration steps](#final-configuration---all-install-option
 
 Only follow these install steps if you intend to setup and use the default Ubuntu Distribution in WSL _instead of_ the pre-configured Geoprocessing Distribution (above).
 
+Supported Ubuntu version: <UbuntuVersion />
+
 - Open Windows start menu -> start typing `Ubuntu on Windows` -> Select `Ubuntu on Windows`
   - This will start Ubuntu virtual machine and open a bash shell in your home directory.
 

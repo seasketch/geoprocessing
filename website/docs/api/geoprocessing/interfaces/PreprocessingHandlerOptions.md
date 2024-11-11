@@ -20,14 +20,14 @@ description: string;
 optional memory: number;
 ```
 
-Megabytes, 128 - 3008, defaults to 1024
+Megabytes, 128 - 10240, defaults to 1024
 
 ***
 
-### requiresProperties
+### requiresProperties?
 
 ```ts
-requiresProperties: string[];
+optional requiresProperties: string[];
 ```
 
 ***

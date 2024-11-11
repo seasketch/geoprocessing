@@ -109,6 +109,7 @@ async function init(gpVersion?: string) {
         "What languages will your reports be published in, other than English? (leave blank for none)",
       choices: languages
         .filter((lan) => lan.code !== "EN")
+        .sort((a, b) => a.name.localeCompare(b.name))
         .map((lan) => ({
           value: lan.code,
           name: lan.name,

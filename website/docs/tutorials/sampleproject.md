@@ -16,7 +16,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.36 init 7.0.0-experimental-7x-simplify.36
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.40 init 7.0.0-experimental-7x-simplify.40
 ```
 
 ```text
@@ -72,7 +72,7 @@ You should see your files successfuly pushed to Github.
 
 It may ask you if it can use the Github extension to sign you in using Github. It will open a browser tab and communicate with the Github website. If you are already logged in there, then it should be done quickly, otherwise it may have you login to Github.
 
-After this point, you can continue using git commands right in the terminal to stage code changes and commit them if that's what you know, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
+After this point, you can continue using git commands in the terminal to stage code changes and commit them if that's what you know, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
 
 You can learn more about your projects [folder structure](../structure.md)
 
@@ -91,10 +91,9 @@ ogrinfo -so -json data/src/eez_withland_mr.fgb | jq -c .layers[0].geometryFields
 [135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]
 ```
 
-This will output an array with the extent of the EEZ. Now run the genRandomPolygon script with this extent. The following commands will create a Feature polygon, a Sketch polygon, and then a SketchCollection containing 10 Sketch polygons.
+This will output an array with the extent of the EEZ. Now run the genRandomPolygon script with this extent. The following commands will create a Sketch polygon, and then a SketchCollection containing 10 Sketch polygons.
 
 ```bash
-npx tsx scripts/genRandomPolygon.ts --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]" --bboxShrinkFactor 5
 npx tsx scripts/genRandomPolygon.ts --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]" --bboxShrinkFactor 5 --sketch
 npx tsx scripts/genRandomPolygon.ts --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]" --bboxShrinkFactor 5 --sketch --numFeatures 10
 ```
@@ -164,7 +163,11 @@ To build your application run the following:
 npm run build
 ```
 
+Once your build is successful, you should stage and commit all your changes to git.
+
 ## Reef Report
+
+[Work in progress past this point]
 
 You will be creating a report that measures how much a sketch overlaps with reef extent polygons.
 
@@ -338,7 +341,7 @@ Add the following record to the end of the array in `project/metrics.json` and s
 }
 ```
 
-## Create Report
+### Create Report
 
 ```bash
 npm run create:report
@@ -365,7 +368,9 @@ Now:
 - `npm run storybook`
 - Verify report displays properly
 
-### Octocoral Report
+## Octocoral Report
+
+### Import Data
 
 Now import the following additional datasources:
 
@@ -386,7 +391,13 @@ Quantitative - values represent amounts, measurement of single thing
 Yes
 ```
 
-## Precalc Data
+### Add Metric Group
+
+### Create Report
+
+## Advanced Features
+
+### Precalc Data
 
 The `precalc` command calculates spatial statistics for the portion of each of your datasources that falls within each of your project's Geographies.
 
@@ -424,7 +435,9 @@ Once complete `project/precalc.json` will have been updated with the new metric 
 - To learn more advanced use, see the [precalc](../precalc.md) guide.
 - To learn more about use of precalculated metrics, see the [report client](../reportclient.md) guide.
 
-### Add Example Feature to clip
+### Add Preprocessor
+
+Add example feature to clip
 
 ```typescript
 
@@ -432,14 +445,6 @@ Once complete `project/precalc.json` will have been updated with the new metric 
 
 [Image: before clip]
 [Image: after, verify clip]
-
-## Test your project
-
-Now, rerun your test suite to generate new smoke test output.
-
-```bash
-npm run test
-```
 
 ## Add Planning Boundary
 

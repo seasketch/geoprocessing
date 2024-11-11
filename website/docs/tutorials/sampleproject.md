@@ -8,7 +8,7 @@ This tutorial assumes:
 - Your geoprocessing virtual environment is running (Devcontainer or WSL)
 - You have VSCode open in your virtual environment with a terminal pane open
 
-Have questions? Start a [discussion](https://github.com/seasketch/geoprocessing/discussions) on Github
+Have questions along the way? Start a [discussion](https://github.com/seasketch/geoprocessing/discussions) on Github
 
 ## Initialize Geoprocessing Project
 
@@ -16,7 +16,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.40 init 7.0.0-experimental-7x-simplify.40
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.44 init 7.0.0-experimental-7x-simplify.44
 ```
 
 ```text
@@ -50,6 +50,8 @@ Click File -> Open Folder
 Type /workspaces/fsm-reports-test/
 Press Ctrl-J or Ctrl-backtick to open a new terminal
 ```
+
+## Base Resources
 
 ## Connect Github repo and push
 
@@ -266,7 +268,7 @@ To get started run the command:
 npm run create:report
 ```
 
-## Benthic Report
+## Benthic Habitat Report
 
 ### Import Data
 
@@ -444,7 +446,7 @@ Add example feature to clip
 [Image: before clip]
 [Image: after, verify clip]
 
-## Add Planning Boundary
+### Add Planning Boundary
 
 ### Update default Geography
 
@@ -474,9 +476,7 @@ Now change the projects default geography from the world, to your new planning b
 
 ## What's Next
 
-You've now completed the sample tutorial. If you have an [existing project to setup](./existingproject.md) or would like to [create a new project](./newproject.md), you can do that now.
+You've now completed the sample tutorial. Your next step is to choose whether you would like to:
 
-Learn more about data import in these advanced guides:
-
-- [Data import](../dataimport.md)
-- [Third party data](../thirdpartydata/thirdpartydata.md)
+- Setup an [existing project to setup](./existingproject.md), and re-deploy it.
+- Create a [create a new project](./newproject.md), deploy it and integrate with SeaSketch.

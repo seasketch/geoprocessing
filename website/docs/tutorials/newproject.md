@@ -1,298 +1,197 @@
-# Create a New Geoprocessing Project
+# Create New Geoprocessing Project
 
-This tutorial walks through creating a new geoprocessing project for the Federated States of Micronesia and creating a report that does overlay analysis. The planning area for this example is defined as the coastline to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
+This tutorial walks you through creating your own project and some of the decisions you'll face along the way.
 
 This tutorial assumes:
 
 - Your [system setup](./Tutorials.md) is complete
-- Your Ubuntu virtual environment is running (Devcontainer or WSL)
+- You completed the [example project tutorial](./exampleproject.md)
+- Your geoprocessing virtual environment is running (Devcontainer or WSL)
 - You have VSCode open in your virtual environment with a terminal pane open
 
-Note: if your project requirements are drastically different than the features utilized in this tutorial, then you don't have to use them. You can look at their building blocks, and create something that meets your needs. See the [Extending](../Extending.md) page to learn more.
+Have questions along the way? [Start a discussion](https://github.com/seasketch/geoprocessing/discussions) on Github.
 
-## Initialize Geoprocessing Project
+## How Do I Design It?
 
-Start the project `init` process, which will download the framework, and collect required project metadata.
+Creating a geoprocessing project is rarely linear, especially your first time. It's iterative. Don't worry if you don't have all the answers or understand all the features of the framework. Here's one approach:
+
+- Start with a rough design. Consider this [template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing)
+- Explore the [UI component library](/storybook)
+- Look at reports in other SeaSketch projects.
+- Start simple - one report section, one metric
+  - create a SeaSketch project
+  - initialize a geoprocessing project
+  - link your data into project workspace
+  - import a datasource
+  - write a geoprocessing function
+  - export example polygons and run smoke tests
+  - write report client using storybook
+  - build and deploy to AWS
+  - connect your seasketch project
+  - draw sketch and run report
+- Iterate. - add more features
+  - preprocessing function
+    Geographies and MetricGroups.
+- As you hit new walls, look at your options to overcome.
+
+## How Do I Build It?
+
+The geoprocessing framework is a set of building blocks. It's up to you to figure out which you need and how to put them together.
+
+If your planning process is simple:
+
+- one or no planning area
+- no concern about overlapping sketches
+- smaller datasets with no precalculation needed
+- short running analysis
+- no classification of protection levels
+- straightforward objectives with no targets
+- Limited number of dimensions to each objective
+- english only language
+
+Then your geoprocessing project can be kept simple. A good example of this is [Oregon](https://github.com/underbluewaters/oregon-next) project reports.
+
+- no precalculation needed
+- manual prep and publish of datasources to S3, or even direct import of GeoJSON files in geoprocessing functions.
+- simple metrics calculated directly using libraries Turf and Geoblaze
+- simple reports rendering a few values, a table, a chart
+
+As your planning process gets more complex:
+
+- multiple planning areas (offshore/nearshore)
+- even more boundary types used for assessing (e.g. bioregions)
+- planning area crossing the 180 degree antimeridian
+- classification system with protection levels
+- enforcing rules about overlapping sketches
+- large datasets with multiple subclasses of data requiring pre-calculation.
+- long running analysis
+- multiple levels of objectives with targets
+- large number of dimensions to metrics
+- multiple languages
+
+Then your geoprocessing project becomes more complex, and there are some higher level features to make this more manageable:
+
+- `data:import` and `data:publish` commands automating transform and publish of cloud-optimized formats to S3
+- `Geography` records representing project planning boundaries and utilities like `clipToGeography`
+- `precalc` command auto-calculating overlay stats for all combinations of Datasources and Geographies ahead of time.
+- `Metric` data type for representing multi-dimensional data.
+- `MetricGroup` records representing all project metrics and their data classes, datasources, objectives with targets, etc.
+- `rasterMetrics` and `overlapFeatures` analysis modules supporting Geographies and Metrics, with built-in support for SketchCollections and handling of sketch overlap.
+- `worker` functions to spread processing across more Lambdas to run in parallel.
+- library of UI building blocks that understand `MetricGroups` and `Metrics` and are pre-translated in all languages.
+- `translation` workflow using third-party POEditor service.
+
+Examples of more complex projects:
+
+- [California](https://github.com/seasketch/california-reports) - multiple planning geographies, worker functions
+- [Bermuda](https://github.com/seasketch/bermuda-reports-next) - IUCN classification system with metrics calculated overall, per protection level, and per sketch. worker functions
+- [Blue Azores nearshore](https://github.com/seasketch/azores-nearshore-reports) - user switching between planning geographies.
+- [Samoa Reports](https://github.com/seasketch/samoa-reports)
+- [Azores Nearshore Reports](https://github.com/seasketch/azores-nearshore-reports).
+
+## Create SeaSketch Project
+
+First, follow the [instructions](https://docs.seasketch.org/seasketch-documentation/administrators-guide/getting-started) to create a new SeaSketch project. This includes defining the planning bounds and [creating a Sketch class](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes). You will want to create a `Polygon` sketch class with a name that makes sense for you project (e.g. MPA for Marine Protected Area) and then also a `Collection` sketch class to group instances of your polygon sketch class into. Note that sketch classes are where you will integrate your geoprocessing services to view reports, but you will not do it at this time.
+
+## Initialize New Project
+
+Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.35 init 7.0.0-experimental-7x-simplify.35
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.36 init 7.0.0-experimental-7x-simplify.36
 ```
 
-```text
-? Choose a name for your project fsm-reports-test
-? Please provide a short description of this project Micronesia reports
-? Source code repository location https://github.com/[YOUR_USERNAME_OR_ORG]/fsm-reports-test
-? Your name [YOUR_NAME]
-? Your email [YOUR_EMAIL]
-? Organization name (optional)
-? What software license would you like to use? BSD-3-Clause
-? What AWS region would you like to deploy functions in? us-west-1
-? What languages will your reports be published in, other than English? (leave blank for none) Portuguese
-```
+Tips:
 
-After pressing Enter, your project will be created and all NodeJS software dependencies installed.
-
-Few tips:
-
-- If you leave the questions about project latitude/longitude blank it will default to the extent of the entire world.
+- the answers to all of the init questions can be changed later, so don't worry if you don't know the answer.
 - [SeaSketch](https://github.com/seasketch/next/blob/master/LICENSE) uses a BSD-3 license (the default choice). You can choose any including `UNLICENSED` meaning proprietary or "All rights reserved" .
 - The most common AWS region is `us-west-1` or `us-east-2`. [Choose the region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html) closest to your project.
 
-Now, re-open VSCode one level deeper, in your project folder::
+Learn more about your projects [structure](../structure.md)
 
-```text
-Click File -> Open Folder
-Type /workspaces/fsm-reports-test/
-Press Ctrl-J or Ctrl-backtick to open a new terminal
-```
+## Link Data Into Workspace
 
-## Connect Github repo and push
+Choose how to [bring data into your workspace](../linkData.md).
 
-Before you continue, let's take a snapshot of your code now, at the starting point.
+## Import Datasources
 
-[Create a remote Github repository](https://github.com/new) called `fsm-reports-test`. Leave it empty, do not choose to initialize with a template, README, gitignore, or LICENSE.
+Methods:
 
-Then connect your local repo and make your first code commit:
+- Use `import:data`
+- Manually prepare and copy your data to datasets bucket
 
-```bash
-git init
-git add .
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/PUT_YOUR_GITHUB_ORG_OR_USERNAME_HERE/fsm-reports-test.git
-git push -u origin main
-```
+## Write a Geoprocessing Function
 
-You should see your files successfuly pushed to Github.
+Let's start with `src/functions/simpleFunction` and build it up to use a datasource.
 
-It may ask you if it can use the Github extension to sign you in using Github. It will open a browser tab and communicate with the Github website. If you are already logged in there, then it should be done quickly, otherwise it may have you login to Github.
+Methods:
 
-After this point, you can continue using git commands right in the terminal to stage code changes and commit them if that's what you know, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
+- Directly import geojson file in function
+- Use `datasource` record and `getDatasource` and `getFeatures`
+- Load from local bucket using `load` function, url, and bbox
+- Load from third-party using `load` function, url, and bbox
 
-You can learn more about your projects [folder structure](../structure.md)
+If the data you'll use in analysis is already published online, publicly accessible, and in flatgeobuf or cloud-optimized geotiff format, then you can directly access them.
 
-## Import Data
+## Smoke Test With Examples
 
-You will now import datasets from a package prepared for the Federated States of Micronesia (FSM). This section will skip over a lot of details, so visit the advanced guides to learn more at a later time.
+Methods to generate examples:
 
-- [Data import](../dataimport.md)
-- [Third party data](../thirdpartydata/thirdpartydata.md)
+- genRandomPolygon
+- geojson.io
+- export sketch geojson from SeaSketch project
 
-Download the FSM data package:
+Assuming you have a SeaSketch project with a Polygon sketch class, follow the instructions for [sketching tools](https://docs.seasketch.org/seasketch-documentation/users-guide/sketching-tools) to draw one or more polygon sketches. You can also create a collection and group your sketches into the collection.
+
+Finally, [export](https://docs.seasketch.org/seasketch-documentation/users-guide/sketching-tools#downloading-sketches) your sketches and sketch collections as GeoJSON, and move them into your geoprocessing projects `examples/sketches` folder.
 
 ```bash
-wget -P data/src https://github.com/user-attachments/files/17607958/FSM_MSP_Data_Example_v2.zip
-unzip data/src/FSM_MSP_Data_Example_v2.zip -d data/src
-rm data/src/FSM_MSP_Data_Example_v2.zip
+  /examples/
+    sketches/ # <-- examples used by geoprocessing functions
+    features/ # <-- examples used by preprocessing functions
 ```
 
-### EEZ With Land Boundary
-
-First, you'll load the `eez_mr_osm` layer as the planning boundary. It's in the `boundaries` geopackage of the example data. It was created with a combination of the Marine Regions EEZ dataset and the OSM Land dataset.
+Once you add your example sketches and collections to this folder, run your smoke tests.
 
 ```bash
-npm run import:data
+npm run test
 ```
 
-```text
-? Type of data?
-Vector
-? Enter path to src file (with filename)
-data/src/boundaries.gpkg
-? Select layer to import
-eez_mr_osm
-? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons
-to fetch)
-Yes
-? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename
-planning-boundary
-? Enter layer name, defaults to filename
-eez_mr_osm
-```
+The smoke test for your geoprocessing function will run the function against every sketch example whether a single Sketch or a SketchCollection and output the results to `examples/output`. You look at this output and ensure that it is as expected.
 
-Skip the two following questions by pressing Enter
+Learn more about testing and debugging in
+[testing](../Testing.md)
 
-```text
-? Select feature properties that you want to group metrics by (Press <space> to select, <a> to toggle all, <i>
-to invert selection, and <enter> to proceed)
-? Select additional feature properties to keep in final datasource (Press <space> to select, <a> to toggle all,
-<i> to invert selection, and <enter> to proceed)
-```
+## Write Report Client
 
-Press spacebar to add JSON as an additional format created for your dataset on import, then press Enter
+## Build and Deploy to AWS
 
-```bash
-? The following formats will automatically be created: fgb. What additional formats would you like created? (Press <space> to select, <a> to toggle all, <i> to invert selection, and <enter>
- to proceed) (Press <space> to select, <a> to toggle all, <i> to invert selection)
- ◯ json - GeoJSON
-```
+[Deploy your project](deploy.md)
 
-Answer yes to precalculating summary metrics
+## Connect to SeaSketch Project and Test
 
-```text
-? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting
-sketch % overlap with datasource) (Use arrow keys)
-Yes
-```
+Test different sketch and collection scenarios. When you find one that errors or does something unexpected, then you can export that sketch to your projects `examples/sketches` directory and run your smoke tests. If that succeeds and produces output as expected, then load your storybook and see if you can reproduce in your report client.
 
-The import will now proceed. Once complete you will find:
+## Use Advanced Features
 
-- The output file `data/dist/planning-boundary.fgb`.
-- An updated `project/datasources.json` file with a new entry at the bottom with a datasourceId of `planning-boundary`.
+These features you should only use if you need them.
 
-If the import fails, start the import over and double check everything. It is most likely one of the following:
+## Project Client
 
-- You specified the wrong source file path.
-- You specified the wrong layer name
+It has a lot of shortcut methods for working with datsources, geographies, precalc metrics, objectives, etc. It's not meant to be a black box, you can look at what it does.
 
-### Other Datasources
+[Link to project client ]
 
-Now import the following additional datasources:
+## Configure Geography
 
-Reef extent - single class dataset
+### Precalc Metrics
 
-```text
-type: Vector
-path: data/src/reefextent.gpkg
-layer: Micronesian Exclusive Economic Zone
-datasource name: reefextent
-split multi-part geometries: yes
-Select feature properties that you want to group metrics by: none
-Select additional feature properties to keep in final datasource: none
-Additional formats: none
-Precalc summary statistics: yes
-```
+At the very least you should import your planning boundaries, preferably as individual files, or as individual layers within a file package.
 
-Benthic habitat - multiple classes of benthic data
+Any file-based format that OGR and GDAL supports out of the box.
 
-```text
-type: Vector
-path: data/src/benthic.gpkg
-layer: Micronesian Exclusive Economic Zone
-datasource name: benthic
-split multi-part geometries: yes
-Select feature properties that you want to group metrics by: class
-Select additional feature properties to keep in final datasource: none
-Additional formats: none
-Precalc summary statistics: yes
-```
-
-Octocorals - raster with 0/1 values representing predicted presence/absence of species.
-
-```text
-type: Raster
-path: data/src/yesson_octocorals.tif
-datasource name: octocorals
-Raster band: 1
-Type of measurement: Quantitative
-Precalc summary statistics: yes
-```
-
-When importing raster data, do not be concerned about an error that an ".ovr" file could not be found. This is expected.
-
-Once imported, you'll find the resulting datasets in `data/dist`. You'll also find new entries for each datasource in `project/datasources.json`. At any point, you can make edits to this file and then run `reimport:data` to regenerate the files in `data/dist`.
-
-### Update default Geography
-
-Now you will change the projects default geography from the world, to your new planning boundary.
-
-- Open `project/geographies.json`. You will see an array with one geography record called `world`. This is the default geography and can stay. You will disable its precalc and remove it as the `default-boundary`. Then you will add a new geography record for your `planning-boundary`.
-- Update the geographies file to the following and save it:
-
-```json
-[
-  {
-    "geographyId": "world",
-    "datasourceId": "world",
-    "display": "World",
-    "groups": [],
-    "precalc": false
-  },
-  {
-    "geographyId": "planning-boundary",
-    "datasourceId": "planning-boundary",
-    "display": "Planning Boundary",
-    "groups": ["default-boundary"],
-    "precalc": true
-  }
-]
-```
-
-## Generate Examples
-
-Next, you will generate some example features and sketches that fall within your planning boundary, for testing purposes.
-
-First, let's look at the properties of the planning-boundary datasource.
-
-```bash
-ogrinfo -so -json data/dist/planning-boundary.fgb eez_mr_osm
-```
-
-The outputs tells you there is a layer, with a `geometryFields` property, which contains the bounding box extent of all the layer features. Use the `jq` utility to extract the extent as follows:
-
-```bash
-ogrinfo -so -json data/dist/planning-boundary.fgb eez_mr_osm | jq -c .layers[0].geometryFields[0].extent
-```
-
-It should output a compact bounding box extent:
-
-```json
-[135.312441837621, -1.17311096529859, 165.676528225997, 13.4454329253893]
-```
-
-Run the genRandomPolygon script with this extent to create a Feature polygon, a Sketch polygon, and then a SketchCollection containing 10 Sketch polygons.
-
-```bash
-npx tsx scripts/genRandomPolygon.ts --bbox "[135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893]" --bboxShrinkFactor 5
-npx tsx scripts/genRandomPolygon.ts --bbox "[135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893]" --bboxShrinkFactor 5 --sketch
-npx tsx scripts/genRandomPolygon.ts --bbox "[135.312441837621,-1.17311096529859,165.676528225997,13.4454329253893]" --bboxShrinkFactor 5 --sketch --numFeatures 10
-```
-
-The `--bboxShrinkFactor` argument used shrinks the height and width of the given bbox by a factor of 5, and then generates random features that are within that reduced bbox. A suitable shrink factor value was discovered through trial and error. Simply visualize the resulting json file in QGIS or other software and find a value that produces polygons that are completely within the planning area polygon. (see image below).
-
-![EEZ bbox](./assets/eez-bbox.jpg)
-Image: cluster of 10 random sketches (in orange) within Micronesia EEZ
-
-You can adjust these options . Learn more about them by running:
-
-```
-npx tsx scripts/genRandomPolygon.ts --help
-```
-
-## Run test suite
-
-Now that you have example features and sketches, you can test the preprocessing and geoprocessing functions that came with your blank project. Run the test suite now:
-
-```bash
-npm test
-```
-
-- The two preprocessing functions (clipToOcean, clipToLand) will run against all the polygon Features in `examples/features`.
-- The two geoprocessing functions (blankFunction, simpleFunction) will run against all of the polygon Sketches in `examples/sketches`.
-- The results of all smokes tests are output to the `examples/output` directory.
-- You can inspect the output files, rerun tests to regenerate them at any time, and delete any that are stale and no longer needed.
-
-Commit the output files to your git repository at this time.
-
-For advanced use, check out the [testing](../Testing.md) guide.
-
-## Precalc Data
-
-The `precalc` command will calculate how much of your datasources features or raster cells is within each of your projects geographies. This can measured as an `area`, `sum` of cell value, `count` of features/raster cells, etc.
-
-Why do this?
-
-One of the questions our report needs to answer is "what percentage of coral reef within the planning boundary are within my Sketch polygon?
-
-This is calculated as:
-`% area of coral reef in sketch = area of coral reef within sketch / area of coral reef within planning boundary`
-
-The numerator in this equation (area of reef within sketch) is relatively inexpensive to calculate and we do it a geoprocessing function where we have access to the sketch. But the denominator in this calculation can be expensive if the planning boundary and the coral reef datasource is very large or complex. Thankfully we can calculate it ahead of time.
-
-Since your datasources and geographies already have `precalc: true` set, you are ready to start:
-
-```bash
+```sh
 npm run precalc:data
 
 ? Do you want to precalculate only a subset?
@@ -302,13 +201,11 @@ npm run precalc:data
 ❯ No, just precalculate everything (may take a while)
 ```
 
-Choose to "precalculate everything". Then press enter. The precalc process may take a while.
-
 What's happening is that the precalc script starts a local web server on port 8001 that serves up the datasources in `data/dist`.
 
 The precalc script then gets all your project datasources with `precalc: true`, and all your project geographies with `precalc: true`, and then calculate `area`, `sum`, and `count` metrics for each combination of datasource and geography.
 
-Once complete `project/precalc.json` is updated with the new metric values.
+Once complete `project/precalc.json` will have been updated with the new metric values.
 
 If your datasource has `classKeys` defined in its record, precalc will also calculate `area`, `sum`, and `count` for each unique class value found within the classKey.
 
@@ -317,196 +214,31 @@ You must re-run `precalc:data` every time you change a geography record or a dat
 - To learn more advanced use, see the [precalc](../precalc.md) guide.
 - To learn more about use of precalculated metrics, see the [report client](../reportclient.md) guide.
 
-## Add Metric Groups
+## Metric Groups
 
-A metric group defines a metric to be measured, for one or more classes of data. A `MetricGroup` record provides the information needed for a metric to be calculated (in a geoprocessing function) and to be displayed (in a report client).
+How you intend to use your data will determine what form the data needs to be in.
 
-Let's create your first metric group by opening `project/metrics.json`.
+### Examples By Use Case
 
-You will be creating a report that measures how much a sketch overlaps with reefs within the planning boundary.
+- Do you have vector data?
+  - Does it have a single data class?
+    - Is it one file with one data class?
+    - Is it one file with multi-class attribute, of which you only need one?
+      - create a new dataset with
+  - Does it have multiple data classes?
+    - Is it one data class per file?
+    - I sit one data class per layer within file?
+    - Does it have multiple data classes within one layer with an attribute to differentiate them?
+- Do you have raster data?
+  - Does it have a single data class?
+    - Is it one file with one data class?
+  - Does it have multiple data classes?
+    - Is it one file, one data class per raster band?
+    - Is it multiple files, one data class per file?
+    - Is it a categorical raster with unique cell value for each class?
 
-Choose:
+[ToDo: provide metric group example for each leaf in tree]
 
-- a metricId (`coralReef`)
-- a type of report (`areaOverlap`)
-- classes you want to show in the report (`reefExtent`) and the datasource they are sourced from (`reefextent`)
-  - In this case our dataset has only one class of data, and it all comes from one datasource.
+## Language Translation
 
-Add the following record to the end of the empty array in `project/metrics.json` and save the file.
-
-```json
-{
-  "metricId": "coralReef",
-  "type": "areaOverlap",
-  "classes": [
-    {
-      "classId": "reefextent",
-      "display": "Coral Reef",
-      "datasourceId": "reefextent"
-    }
-  ]
-}
-```
-
-To learn more about metric groups, visit the [advanced concepts](../concepts/AdvancedConcepts.md#metric-group) page.
-
-### Metric group for vector data source with multiple classes
-
-Next, add a metric group for measuring sketch overlap with areas where benthic species are predicted to be present. `benthic` consists of a single vector datasource with multiple habitats defined by the `class` attribute. While there are many types of habitats, we want to only focus on Sand, Rubble, and Rock. To do this, you'll add multiple class records, each with a unique `classId` value to match on, and a `classKey` that specific which feature attribute the classId values are found.
-
-Add the following record to the end of the array in `project/metrics.json` and save the file.
-
-```json
-{
-  "metricId": "benthicHabitat",
-  "type": "areaOverlap",
-  "classes": [
-    {
-      "classId": "Sand",
-      "classKey": "class",
-      "display": "Sand",
-      "datasourceId": "benthic"
-    },
-    {
-      "classId": "Rock",
-      "classKey": "class",
-      "display": "Rock",
-      "datasourceId": "benthic"
-    },
-    {
-      "classId": "Rubble",
-      "classKey": "class",
-      "display": "Rubble",
-      "datasourceId": "benthic"
-    }
-  ]
-}
-```
-
-## Create Overlay Report
-
-We now have everything we need to generate our first report (geoprocessing function + report component).
-
-This command asks you to choose one of your unused metric groups, and then it:
-
-- Creates a new geoprocessing function in `src/functions`
-- Creates an accompanying smoke test file
-- Creates a React component that displays the result metrics in `src/components`.
-- Creates an accompanying storybook story generator
-- Adds your new geoprocessing function to the list in `project/geoprocessing.json` so that it will be published on deploy.
-
-These assets are all created using the `blank` assets that are in your project, so it's important that you leave them in place:
-
-- src/functions/blankFunction.ts
-- src/functions/blankFunctionSmoke.test.ts
-- src/components/BlankCard.tsx
-- src/components/BlankCard.example-stories.tsx
-
-To get started run the command:
-
-```bash
-npm run create:report
-```
-
-Answer the questions as follows:
-
-```text
-? Type of report to create
-
-Vector overlap report
-
-? Describe what this reports geoprocessing function will calculate
-
-Calculate sketch overlap with benthic habitats
-
-? Choose an execution mode for the geoprocessing function for this report
-
-Async - Better for long-running processes
-
-? Select the metric group to report on
-
-benthicHabitat
-
-```
-
-Read the results, and open the output files and take a look at them.
-
-- Edits to the statistic you want calculated (i.e.calculating average instead of sum, etc) should happen in your function (`src/functions/benthicHabitat.ts`).
-- Edits to the way the analytics are displayed (i.e. changing labels, converting units, adding text context, etc) should happen in your component (`src/components/BenthicHabitat.tsx`).
-
-Now, add your new component to the Viability report page (`src/components/RepresentationPage.tsx`) as follows:
-
-```typescript
-import React from "react";
-import { SimpleCard } from "./SimpleCard.js";
-import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
-import { BenthicHabitat } from "./BenthicHabitat.js";
-
-export const ViabilityPage = () => {
-  return (
-    <>
-      <SimpleCard />
-      <BenthicHabitat />
-      <SketchAttributesCard autoHide />
-
-    </>
-  );
-};
-```
-
-## Test your project
-
-Now, rerun your test suite to generate new smoke test output.
-
-```bash
-npm run test
-```
-
-## Storybook
-
-You can view your report clients with the results of your smoke tests using Storybook.
-
-```bash
-npm run storybook
-```
-
-Check out [advanced storybook usage](./storybook.md) when necessary.
-
-From here on, you can continue to extend your reports -- adding more, [adding language translation](../gip/GIP-1-i18n.md#language-translation-tutorial), adding additional data and new analytics, etc. After this point, we need to integrate with AWS so the reports can be hosted and connected to your seasketch.com project.
-
-## First Project Build
-
-A `build` of your application packages it for deployment, so you don't have to build it until you are ready. Specifically it:
-
-- Checks all the Typescript code to make sure it's valid and types are used properly.
-- Transpiles all Typescript to Javascript
-- Bundles UI report clients into the `.build-web` directory
-- Bundles geoprocessing and preprocessing functions into the `.build` directory.
-
-To build your application run the following:
-
-```bash
-npm run build
-```
-
-### Debugging build failure
-
-If the build step fails, you will need to look at the error message and figure out what you need to do. Did it fail in building the functions or the clients? 99% of the time you should be able to catch these errors sooner. If VSCode finds invalid Typescript code, it will warn you with files marked in `red` in the Explorer panel or with red markes and squiggle text in any of the files.
-
-If you're still not sure try some of the following:
-
-- Run your smoke tests, see if they pass
-- When was the last time your build did succeed? You can be sure the error is caused by a change you made since then either in your project code, by upgrading your geoprocessing library version and not migratin fully, or by changing something on your system.
-- You can stash your current changes or commit them to a branch so they are not lost. Then sequentially check out previous commits of the code until you find one that builds properly. Now you know that the next commit cause the build error.
-
-### What Next
-
-There are a number of guides covering advanced topics.
-
-There are also many report projects out there you can look at to pick up new tricks or entire functions and reports.
-
-- [California](https://github.com/seasketch/california-reports) - worker functions, v7
-- [Bermuda](https://github.com/seasketch/bermuda-reports-next) - worker functions, v7
-- [Blue Azores nearshore](https://github.com/seasketch/azores-nearshore-reports) - geography switching
-- [Samoa Reports](https://github.com/seasketch/samoa-reports)
-- [Azores Nearshore Reports](https://github.com/seasketch/azores-nearshore-reports).
+Language translation takes effort to maintain. It is suggested that you get your reports close to final, in the English language, and then [add translations](../gip/GIP-1-i18n.md#language-translation-tutorial).

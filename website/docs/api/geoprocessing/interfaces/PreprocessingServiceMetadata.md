@@ -68,7 +68,7 @@ Seconds
 optional memory: number;
 ```
 
-Megabytes, 128 - 3008, defaults to 1024
+Megabytes, 128 - 10240, defaults to 1024
 
 #### Inherited from
 
@@ -108,10 +108,10 @@ rateLimitPeriod: RateLimitPeriod;
 
 ***
 
-### requiresProperties
+### requiresProperties?
 
 ```ts
-requiresProperties: string[];
+optional requiresProperties: string[];
 ```
 
 #### Inherited from

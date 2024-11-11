@@ -42,12 +42,12 @@ To upgrade the `geoprocessing-workspace` Docker image:
 
 ## Mount A Data Volume
 
+If you are using Windows WSL, you will already have access to your Windows filesystem in Ubuntu via the `/mnt` path.
+
+MacOS takes a little more work. You will need to uncomment a line in the geprocessing-devcontainer/docker-compose.yml file.
+
 If you have a data folder to mount into your Ubuntu devcontainer from your host operating system, edit the `.devcontainer/local-dev/docker-compose.yml` file and uncomment the volume below this comment:
 
 - `# Bound host volume for Box data folder`
 
 The volume in this example, is preset to bind to your Box Sync folder in your home directory but you can change it to any path in your operating system where your data resides for all your projects.
-
-local-dev-pre7x
-
-local-dev-unstable`

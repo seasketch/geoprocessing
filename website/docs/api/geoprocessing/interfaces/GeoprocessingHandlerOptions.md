@@ -77,10 +77,10 @@ optional rateLimitPeriod: RateLimitPeriod;
 
 ***
 
-### requiresProperties
+### requiresProperties?
 
 ```ts
-requiresProperties: string[];
+optional requiresProperties: string[];
 ```
 
 Specify the ids of any Sketch Class form fields that must be provided in

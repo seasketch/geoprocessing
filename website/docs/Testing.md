@@ -76,3 +76,9 @@ An alternative way to find your API gateway is:
 - Click the `Resources` tab
 - Search for `AWS::ApiGateway::RestApi`
 - Click the link to the gateway under `Physical ID`
+
+## Debugging Tests
+
+[ToDo]
+
+- VSCode run and debug launch configurations

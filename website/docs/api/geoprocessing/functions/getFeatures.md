@@ -13,7 +13,7 @@ Returns features for a variety of vector datasources and formats, with additiona
 
 | Type Parameter |
 | ------ |
-| `F` *extends* [`Feature`](../../geoprocessing/interfaces/Feature.md)\<[`Geometry`](../../geoprocessing/type-aliases/Geometry.md), [`GeoJsonProperties`](../../geoprocessing/type-aliases/GeoJsonProperties.md)\> |
+| `F` *extends* [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
 
 ## Parameters
 
@@ -21,7 +21,7 @@ Returns features for a variety of vector datasources and formats, with additiona
 | ------ | ------ | ------ |
 | `datasource` | `object` \| `object` \| `object` & `object` | - |
 | `url` | `string` | url of datasource |
-| `options` | [`DatasourceOptions`](../../geoprocessing/interfaces/DatasourceOptions.md) | - |
+| `options` | [`DatasourceOptions`](../interfaces/DatasourceOptions.md) | - |
 
 ## Returns
 

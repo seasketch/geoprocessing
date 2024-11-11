@@ -826,55 +826,9 @@ const typedocSidebar = { items: [
     }
   },
   {
-    "type": "category",
-    "label": "dataproviders",
-    "items": [
-      {
-        "type": "category",
-        "label": "Functions",
-        "items": [
-          {
-            "type": "doc",
-            "id": "api/dataproviders/functions/fgbFetchAll",
-            "label": "fgbFetchAll"
-          },
-          {
-            "type": "doc",
-            "id": "api/dataproviders/functions/fgBoundingBox",
-            "label": "fgBoundingBox"
-          },
-          {
-            "type": "doc",
-            "id": "api/dataproviders/functions/genClipLoader",
-            "label": "genClipLoader"
-          },
-          {
-            "type": "doc",
-            "id": "api/dataproviders/functions/getFeatures",
-            "label": "getFeatures"
-          },
-          {
-            "type": "doc",
-            "id": "api/dataproviders/functions/loadCog",
-            "label": "loadCog"
-          },
-          {
-            "type": "doc",
-            "id": "api/dataproviders/functions/loadCogWindow",
-            "label": "loadCogWindow"
-          },
-          {
-            "type": "doc",
-            "id": "api/dataproviders/functions/loadFgb",
-            "label": "loadFgb"
-          }
-        ]
-      }
-    ],
-    "link": {
-      "type": "doc",
-      "id": "api/dataproviders/index"
-    }
+    "type": "doc",
+    "id": "api/dataproviders/index",
+    "label": "dataproviders"
   },
   {
     "type": "category",
@@ -1389,6 +1343,16 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/fgbFetchAll",
+            "label": "fgbFetchAll"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/fgBoundingBox",
+            "label": "fgBoundingBox"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/findAndUpdateMetricValue",
             "label": "findAndUpdateMetricValue"
           },
@@ -1426,6 +1390,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/gearTypeScore",
             "label": "gearTypeScore"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/genClipLoader",
+            "label": "genClipLoader"
           },
           {
             "type": "doc",
@@ -1536,6 +1505,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/getExternalVectorDatasourceById",
             "label": "getExternalVectorDatasourceById"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/getFeatures",
+            "label": "getFeatures"
           },
           {
             "type": "doc",
@@ -1891,6 +1865,16 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/keyBy",
             "label": "keyBy"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/loadCog",
+            "label": "loadCog"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/loadFgb",
+            "label": "loadFgb"
           },
           {
             "type": "doc",

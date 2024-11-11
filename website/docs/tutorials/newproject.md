@@ -169,7 +169,20 @@ Learn more about testing and debugging in
 
 [Deploy your project](deploy.md)
 
+### Debugging build failure
+
+If the build step fails, you will need to look at the error message and figure out what you need to do. Did it fail in building the functions or the clients? 99% of the time you should be able to catch these errors sooner. If VSCode finds invalid Typescript code, it will warn you with files marked in `red` in the Explorer panel or with red markes and squiggle text in any of the files.
+
+If you're still not sure try some of the following:
+
+- Run your smoke tests, see if they pass
+- When was the last time your build did succeed? You can be sure the error is caused by a change you made since then either in your project code, by upgrading your geoprocessing library version and not migratin fully, or by changing something on your system.
+- You can stash your current changes or commit them to a branch so they are not lost. Then sequentially check out previous commits of the code until you find one that builds properly. Now you know that the next commit cause the build error.
+
 ## Connect to SeaSketch Project and Test
+
+Choose `clipToOcean` as preprocessor
+Choose `MpaTabReport` as report client
 
 Test different sketch and collection scenarios. When you find one that errors or does something unexpected, then you can export that sketch to your projects `examples/sketches` directory and run your smoke tests. If that succeeds and produces output as expected, then load your storybook and see if you can reproduce in your report client.
 
@@ -238,6 +251,11 @@ How you intend to use your data will determine what form the data needs to be in
     - Is it a categorical raster with unique cell value for each class?
 
 [ToDo: provide metric group example for each leaf in tree]
+
+### Create Report
+
+- Edits to the statistic you want calculated (i.e.calculating average instead of sum, etc) should happen in your function (`src/functions/benthicHabitat.ts`).
+- Edits to the way the analytics are displayed (i.e. changing labels, converting units, adding text context, etc) should happen in your component (`src/components/BenthicHabitat.tsx`).
 
 ## Language Translation
 

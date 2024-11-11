@@ -198,8 +198,7 @@ data/src/reefextent.fgb
 reefextent
 ? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename
 reefextent
-? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of
-polygons to fetch)
+? Should multi-part geometries be split into single-part geometries?
 Yes
 ? Select feature properties that you want to group metrics by
 [Press enter to skip]
@@ -283,8 +282,7 @@ data/src/benthic-rock.fgb
 ? Select layer to import
 benthic-rock
 ? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename benthic-rock
-? Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of
-polygons to fetch)
+? Should multi-part geometries be split into single-part geometries?
 Yes
 ? Select feature properties that you want to group metrics by
 class

@@ -11,9 +11,9 @@ export async function explodeQuestion(
     {
       type: "list",
       name: "explodeMulti",
-      message: questionText
-        ? questionText
-        : "Should multi-part geometries be split into multiple single-part geometries? (can increase sketch overlap calc performance by reducing number of polygons to fetch)",
+      message:
+        questionText ||
+        "Should multi-part geometries be split into single-part geometries?",
       default: "yes",
       choices: [
         {

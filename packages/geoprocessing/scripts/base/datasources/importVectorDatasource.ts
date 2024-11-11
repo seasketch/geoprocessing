@@ -12,6 +12,8 @@ import { createOrUpdateDatasource } from "./datasources.js";
 import { publishDatasource } from "./publishDatasource.js";
 import { genVectorConfig } from "./genVectorConfig.js";
 
+$.verbose = true;
+
 export async function importVectorDatasource<C extends ProjectClientBase>(
   projectClient: C,
   options: ImportVectorDatasourceOptions,

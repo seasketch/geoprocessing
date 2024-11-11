@@ -124,24 +124,6 @@ It will ask you if you want to publish all datasources, or choose from a list.
 
 - Note if you don't publish your datasources, then your smoke tests may work properly, but your geoprocessing functions will throw file not found errors in production.
 
-## Creating SeaSketch Project and Exporting Test Sketches
-
-First, follow the [instructions](https://docs.seasketch.org/seasketch-documentation/administrators-guide/getting-started) to create a new SeaSketch project. This includes defining the planning bounds and [creating a Sketch class](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes). You will want to create a `Polygon` sketch class with a name that makes sense for you project (e.g. MPA for Marine Protected Area) and then also a `Collection` sketch class to group instances of your polygon sketch class into. Note that sketch classes are where you will integrate your geoprocessing services to view reports, but you will not do it at this time.
-
-One you've created your sketch classes, follow the instructions for [sketching tools](https://docs.seasketch.org/seasketch-documentation/users-guide/sketching-tools) to draw one or more of your polygon sketches. You can also create one or more collections and group your sketches into them.
-
-Finally, [export](https://docs.seasketch.org/seasketch-documentation/users-guide/sketching-tools#downloading-sketches) your sketches and sketch collections as GeoJSON, and move them into your geoprocessing projects `examples/sketches` folder.
-
-```bash
-  /examples/
-    sketches/ # <-- examples used by geoprocessing functions
-    features/ # <-- examples used by preprocessing functions
-```
-
-Once you add your example sketches and collections to this folder, you can `npm run test` and any smoke tests will automatically include these new examples and generate output for them for each geoprocessing function. You can then look at the smoke test output and ensure that it is as expected.
-
-It's now possible for you to quickly create examples that cover common as well as specific use cases. For example are you sure your geoprocessing function works with both Sketches and Sketch Collections? Then include examples of both types. Maybe even include Sketches that overlap outside the planning area to make sure error conditions are handled appropriately. Or create a giant sketch that covers the entire planning area to make sure your reports are picking up all of the data and % overlap metrics are 100% or very close. Does your geoprocessing project handle overlapping sketches within a collection properly? Create all kinds of overlap scenarios.
-
 ## Integrating Your Project with SeaSketch
 
 Once you've deployed your project, you will find a file called `cdk.outputs` which contains the URL to the service manifest for your project.

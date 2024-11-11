@@ -12,14 +12,14 @@ Pass this function to genPreprocessor() and it will take care of the rest.
 
 | Type Parameter |
 | ------ |
-| `P` *extends* [`ProjectClientInterface`](../../geoprocessing/interfaces/ProjectClientInterface.md) |
+| `P` *extends* [`ProjectClientInterface`](../interfaces/ProjectClientInterface.md) |
 
 ## Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `project` | `P` |
-| `operations` | [`DatasourceClipOperation`](../../geoprocessing/interfaces/DatasourceClipOperation.md)[] |
+| `operations` | [`DatasourceClipOperation`](../interfaces/DatasourceClipOperation.md)[] |
 
 ## Returns
 
@@ -29,7 +29,7 @@ Pass this function to genPreprocessor() and it will take care of the rest.
 
 | Parameter | Type |
 | ------ | ------ |
-| `feature` | [`Feature`](../../geoprocessing/interfaces/Feature.md)\<[`Polygon`](../../geoprocessing/interfaces/Polygon.md) \| [`MultiPolygon`](../../geoprocessing/interfaces/MultiPolygon.md), [`GeoJsonProperties`](../../geoprocessing/type-aliases/GeoJsonProperties.md)\> |
+| `feature` | [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
 
 ### Returns
 

@@ -120,6 +120,8 @@
 | [featureToSketch](functions/featureToSketch.md) | Converts Feature to Sketch with reasonable defaults given for sketch properties if not provided |
 | [featureToSketchCollection](functions/featureToSketchCollection.md) | Converts FeatureCollection to SketchCollection with reasonable defaults given for sketch properties if not provided |
 | [fetchGeoJSON](functions/fetchGeoJSON.md) | Given geoprocessing function request, fetches the GeoJSON, which can also be sketch JSON |
+| [fgbFetchAll](functions/fgbFetchAll.md) | Fetch features within bounding box and deserializes them, awaiting all of them before returning. Useful when running a spatial function on the whole set. |
+| [fgBoundingBox](functions/fgBoundingBox.md) | - |
 | [findAndUpdateMetricValue](functions/findAndUpdateMetricValue.md) | Returns new sketchMetrics array with first sketchMetric matched set with new value. If no match, returns copy of sketchMetrics. Does not mutate array in place. |
 | [firstMatching](functions/firstMatching.md) | Returns the first item that returns true for filter |
 | [firstMatchingMetric](functions/firstMatchingMetric.md) | Returns the first metric that returns true for metricFilter |
@@ -128,6 +130,7 @@
 | [flattenBySketchAllClass](functions/flattenBySketchAllClass.md) | Flattens class sketch metrics into array of objects, one for each sketch, where each object contains sketch id, sketch name, and all metric values for each class |
 | [flattenSketchAllId](functions/flattenSketchAllId.md) | Returns one aggregate object for every sketch ID present in metrics, with additional property for each unique value for idProperty present for sketch. Example - idProperty of 'classId', and two classes are present in metrics of 'classA', and 'classB' then each flattened object will have two extra properties per sketch, .classA and .classB, each with the first metric value for that sketch/idProperty found |
 | [gearTypeScore](functions/gearTypeScore.md) | - |
+| [genClipLoader](functions/genClipLoader.md) | Given a project client and 1 or more clip operations, returns a function that when called loads clip features from their datasources that overlap with the feature polygon to clip. Pass this function to genPreprocessor() and it will take care of the rest. |
 | [genFeature](functions/genFeature.md) | Returns a Feature with given features geometry and properties. Reasonable defaults are given for properties not provided Default geometry is a square from 0,0 to 1,1 |
 | [genFeatureCollection](functions/genFeatureCollection.md) | Given array of features, return a feature collection with given properties. Generates reasonable default values for any properties not passed in The geometry type of the returned collection will match the one passed in Properties of features are retained |
 | [genPreprocessor](functions/genPreprocessor.md) | Returns a preprocessor function given clipLoader function |
@@ -150,6 +153,7 @@
 | [getDatasourceById](functions/getDatasourceById.md) | find and return datasource from passed datasources |
 | [getExternalRasterDatasourceById](functions/getExternalRasterDatasourceById.md) | find and return external raster datasource from passed datasources |
 | [getExternalVectorDatasourceById](functions/getExternalVectorDatasourceById.md) | find and return external vector datasource from passed datasources |
+| [getFeatures](functions/getFeatures.md) | Returns features for a variety of vector datasources and formats, with additional filter options |
 | [getFirstFromParam](functions/getFirstFromParam.md) | Returns first element from param object at paramName key. Parameter can be string or array of strings |
 | [getFlatGeobufFilename](functions/getFlatGeobufFilename.md) | Returns datasource filename in flatgeobuf format |
 | [getFlatGeobufPath](functions/getFlatGeobufPath.md) | - |
@@ -221,6 +225,8 @@
 | [isTruthyAttributeValue](functions/isTruthyAttributeValue.md) | - |
 | [isVectorDatasource](functions/isVectorDatasource.md) | - |
 | [keyBy](functions/keyBy.md) | Similar to lodash keyBy |
+| [loadCog](functions/loadCog.md) | Returns cog-aware georaster at given url. Will not fetch raster values until subsequent geoblaze calls are made with a geometry and it will calculate the window to load based on the geometry. The subsequent geoblaze calls (e.g. sum) must be called async to allow the raster to load. |
+| [loadFgb](functions/loadFgb.md) | Fetch features within bounding box and deserializes them, awaiting all of them before returning. Useful when running a spatial function on the whole set. |
 | [maxWidth](functions/maxWidth.md) | Returns the maximum width of the geojson or bbox |
 | [metricsForSketch](functions/metricsForSketch.md) | Returns metrics for given sketch (can be an array of sketches) |
 | [metricsSketchIds](functions/metricsSketchIds.md) | Returns metrics with matching sketchId (can be an array of sketchids) |

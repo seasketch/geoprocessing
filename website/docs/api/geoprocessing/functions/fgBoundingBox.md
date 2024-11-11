@@ -8,7 +8,7 @@ function fgBoundingBox(box): object
 
 | Parameter | Type |
 | ------ | ------ |
-| `box` | [`BBox`](../../geoprocessing/type-aliases/BBox.md) |
+| `box` | [`BBox`](../type-aliases/BBox.md) |
 
 ## Returns
 

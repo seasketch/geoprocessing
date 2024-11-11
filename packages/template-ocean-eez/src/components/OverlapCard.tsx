@@ -162,7 +162,7 @@ const genSketchTable = (
   childProperties: SketchProperties[],
 ) => {
   const childSketchIds = childProperties
-    ? childProperties.map((sk) => sk.properties.id)
+    ? childProperties.map((skp) => skp.id)
     : [];
   // Build agg metric objects for each child sketch in collection with percValue for each class
   const childSketchMetrics = toPercentMetric(

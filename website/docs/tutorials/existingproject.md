@@ -5,7 +5,7 @@ This use case is where a geoprocessing project already exists, but it was develo
 This tutorial assumes:
 
 - Your [system setup](./Tutorials.md) is complete
-- You completed the [example project tutorial](./exampleproject.md)
+- You completed the [sample project tutorial](./sampleproject.md)
 - Your geoprocessing virtual environment is running (Devcontainer or WSL)
 - You have VSCode open in your virtual environment with a terminal pane open
 

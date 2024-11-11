@@ -12,7 +12,7 @@ There are two approaches to creating a preprocessing function: using `genPreproc
 
 genPreprocessor offers a quick method for creating a preprocessing function when you just need to perform one or more clip operations on your sketch (intersection or difference) using published datasources. Offers useful checks that can be enabled such as `ensurePolygon`, `minSize`, `maxSize`, `enforceMinSize` and `enforceMaxSize`.
 
-The first thing you do is call the [genClipLoader](./api/dataproviders/functions/genClipLoader.md) function with the parameters of the clip operations you need, then pass the result to [genPreprocessor](./api/geoprocessing/functions/genPreprocessor.md) to create a preprocessing function.
+The first thing you do is call the [genClipLoader](./api/geoprocessing/functions/genClipLoader.md) function with the parameters of the clip operations you need, then pass the result to [genPreprocessor](./api/geoprocessing/functions/genPreprocessor.md) to create a preprocessing function.
 
 Here's an example that clips a sketch to a nearshore 6 nautical mile boundary
 

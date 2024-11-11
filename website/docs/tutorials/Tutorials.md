@@ -102,7 +102,7 @@ Install all software dependencies directly on your Apple machine running the Mac
 
 Requirement: Windows 11 or newer
 
-Why use Windows Subsystem for Linux (WSL) to develop geoprocessing projects instead of using the [Docker Desktop](#docker-desktop-setup)? Because WSL is faster than Docker Desktop alone. And because WSL provides a built-in filesystem bridge allowing you to access all your Windows drives in the Ubuntu container (via `/mnt` path).
+Why use Windows Subsystem for Linux (WSL) to develop geoprocessing projects instead of using the [Docker Desktop](#virtual-install-with-docker-desktop)? Because WSL is faster than Docker Desktop alone. And because WSL provides a built-in filesystem bridge allowing you to access all your Windows drives in the Ubuntu container (via `/mnt` path).
 
 To get started in Windows:
 

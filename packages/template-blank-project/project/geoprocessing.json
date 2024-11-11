@@ -18,8 +18,5 @@
     "src/functions/clipToLand.ts",
     "src/functions/clipToOcean.ts"
   ],
-  "geoprocessingFunctions": [
-    "src/functions/simpleFunction.ts",
-    "src/functions/blankFunction.ts"
-  ]
+  "geoprocessingFunctions": ["src/functions/simpleFunction.ts"]
 }

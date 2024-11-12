@@ -113,7 +113,8 @@
 | [cleanCoords](functions/cleanCoords.md) | Cleans geojson coordinates to be within the bounds of the world [-90, -180, 90, 180], so that they don't wrap off the end, and can be split |
 | [clip](functions/clip.md) | Performs clip operation on features |
 | [clipMultiMerge](functions/clipMultiMerge.md) | Performs clip by merging features2 coords into a single multipolygon. Useful when you need features2 to be seen as a single unit when clipping feature1 (e.g. intersection) |
-| [clipToPolygonFeatures](functions/clipToPolygonFeatures.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations If results in multiple polygons then returns the largest |
+| [clipToPolygonDatasources](functions/clipToPolygonDatasources.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources If results in multiple polygons then returns the largest |
+| [clipToPolygonFeatures](functions/clipToPolygonFeatures.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more Polygon features If results in multiple polygons then returns the largest |
 | [collectionHasGeometry](functions/collectionHasGeometry.md) | - |
 | [createMetric](functions/createMetric.md) | Creates a new metric. Defaults to ID values of null and then copies in passed metric properties |
 | [createMetrics](functions/createMetrics.md) | Creates fully defined metrics from partial. Metric values not provided are initialized to null |
@@ -131,9 +132,10 @@
 | [flattenSketchAllId](functions/flattenSketchAllId.md) | Returns one aggregate object for every sketch ID present in metrics, with additional property for each unique value for idProperty present for sketch. Example - idProperty of 'classId', and two classes are present in metrics of 'classA', and 'classB' then each flattened object will have two extra properties per sketch, .classA and .classB, each with the first metric value for that sketch/idProperty found |
 | [gearTypeScore](functions/gearTypeScore.md) | - |
 | [genClipLoader](functions/genClipLoader.md) | Given a project client and 1 or more clip operations, returns a function that when called loads clip features from their datasources that overlap with the feature polygon to clip. Pass this function to genPreprocessor() and it will take care of the rest. |
+| [genClipToPolygonDatasources](functions/genClipToPolygonDatasources.md) | Returns a function that applies clip operations to a feature using polygon datasource features |
+| [genClipToPolygonFeatures](functions/genClipToPolygonFeatures.md) | Returns a function that applies clip operations to a feature using other polygon features. |
 | [genFeature](functions/genFeature.md) | Returns a Feature with given features geometry and properties. Reasonable defaults are given for properties not provided Default geometry is a square from 0,0 to 1,1 |
 | [genFeatureCollection](functions/genFeatureCollection.md) | Given array of features, return a feature collection with given properties. Generates reasonable default values for any properties not passed in The geometry type of the returned collection will match the one passed in Properties of features are retained |
-| [genPreprocessor](functions/genPreprocessor.md) | Returns a preprocessor function given clipLoader function |
 | [genRandomPolygons](functions/genRandomPolygons.md) | Generates random polygons within provided bounds. numPolygons defaults to 300, max_radial_length to 0.5 Wrapper around @turf/random - https://turfjs.org/docs/#randomPolygon |
 | [genSampleNullSketch](functions/genSampleNullSketch.md) | Returns a Sketch with given geometry and Geometry type, Properties are reasonable random |
 | [genSampleNullSketchCollection](functions/genSampleNullSketchCollection.md) | Given feature collection, return a sketch collection with reasonable random props. The geometry type of the returned collection will match the one passed in |
@@ -422,6 +424,7 @@
 | [geoprocessingConfigSchema](variables/geoprocessingConfigSchema.md) | Represents a single JS package |
 | [geoTypesSchema](variables/geoTypesSchema.md) | - |
 | [globalDatasources](variables/globalDatasources.md) | Definitive list of global datasources for geoprocessing framework @todo: fetch from global-datasources repo |
+| [globalDatasourcesById](variables/globalDatasourcesById.md) | - |
 | [highColor](variables/highColor.md) | - |
 | [HIGHLY\_PROTECTED\_LEVEL](variables/HIGHLY_PROTECTED_LEVEL.md) | - |
 | [importRasterDatasourceOptionsSchema](variables/importRasterDatasourceOptionsSchema.md) | - |

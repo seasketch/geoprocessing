@@ -1,21 +1,29 @@
-# clipToPolygonFeatures()
+# clipToPolygonDatasources()
 
 ```ts
-function clipToPolygonFeatures(
+function clipToPolygonDatasources<P>(
+   project, 
    feature, 
-   clipOperations, 
+   operations, 
 options): Promise<Feature<Polygon | MultiPolygon>>
 ```
 
-Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more Polygon features
+Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources
 If results in multiple polygons then returns the largest
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `P` *extends* [`ProjectClientInterface`](../interfaces/ProjectClientInterface.md) |
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
+| `project` | `P` | - |
 | `feature` | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> | feature to clip |
-| `clipOperations` | [`FeatureClipOperation`](../interfaces/FeatureClipOperation.md)[] | - |
+| `operations` | [`DatasourceClipOperation`](../interfaces/DatasourceClipOperation.md)[] | Load clip features from datasources for clip operations |
 | `options` | [`ClipOptions`](../interfaces/ClipOptions.md) | - |
 
 ## Returns

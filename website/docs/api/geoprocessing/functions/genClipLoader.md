@@ -1,4 +1,4 @@
-# genClipLoader()
+# ~~genClipLoader()~~
 
 ```ts
 function genClipLoader<P>(project, operations): (feature) => Promise<object[]>
@@ -34,3 +34,5 @@ Pass this function to genPreprocessor() and it will take care of the rest.
 ### Returns
 
 `Promise`\<`object`[]\>
+
+## Deprecated

@@ -33,7 +33,7 @@ export interface DatasourceClipOperation {
   options?: DatasourceOptions;
 }
 
-/** Optional parameters for preprocessor function */
+/** Optional parameters for polygon clip preprocessor */
 export interface ClipOptions {
   /** Ensures result is a polygon. If clip results in multipolygon, returns the largest component */
   ensurePolygon?: boolean;

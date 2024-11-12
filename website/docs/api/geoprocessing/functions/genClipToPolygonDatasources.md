@@ -1,16 +1,26 @@
-# genPreprocessor()
+# genClipToPolygonDatasources()
 
 ```ts
-function genPreprocessor(clipLoader, options): (feature) => Promise<Feature<Geometry, GeoJsonProperties>>
+function genClipToPolygonDatasources<P>(
+   project, 
+   operations, 
+options): (feature) => Promise<Feature<Geometry, GeoJsonProperties>>
 ```
 
-Returns a preprocessor function given clipLoader function
+Returns a function that applies clip operations to a feature using polygon datasource features
+
+## Type Parameters
+
+| Type Parameter |
+| ------ |
+| `P` *extends* [`ProjectClientInterface`](../interfaces/ProjectClientInterface.md) |
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `clipLoader` | (`feature`) => `Promise`\<[`FeatureClipOperation`](../interfaces/FeatureClipOperation.md)[]\> | Clip loader function |
+| `project` | `P` | - |
+| `operations` | [`DatasourceClipOperation`](../interfaces/DatasourceClipOperation.md)[] | Load clip features from datasources for clip operations |
 | `options` | [`ClipOptions`](../interfaces/ClipOptions.md) | - |
 
 ## Returns

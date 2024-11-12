@@ -47,6 +47,17 @@ export const simpleCheckedLabel = () => (
     </Card>
   </ReportContext.Provider>
 );
+export const simpleUncheckedLabel = () => (
+  <ReportContext.Provider value={sampleContextValue}>
+    <Card title="Card Title">
+      <LayerToggle
+        layerId={"5e80c8a8cd44abca6e5268af"}
+        label="Show Map"
+        simple
+      />
+    </Card>
+  </ReportContext.Provider>
+);
 
 export const unchecked = () => (
   <ReportContext.Provider value={sampleContextValue}>

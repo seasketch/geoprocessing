@@ -41,7 +41,6 @@ export const SegmentControl = (props: SegmentControlProps) => {
       ref={containerRef}
     >
       <span
-        role="button"
         style={{
           transitionProperty: "all",
           transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
@@ -57,11 +56,12 @@ export const SegmentControl = (props: SegmentControlProps) => {
             "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
           position: "absolute",
         }}
+        aria-hidden="true"
       >
         &nbsp;
       </span>
       {props.segments.map((segment) => (
-        <span
+        <button
           onClick={() => {
             if (props.onClick) {
               props.onClick(segment.id);
@@ -79,15 +79,19 @@ export const SegmentControl = (props: SegmentControlProps) => {
             cursor: "pointer",
             borderRadius: "0.375rem",
             padding: "0.125rem",
+            background: "transparent",
+            border: "none",
             zIndex: 10,
             whiteSpace: "nowrap",
             textOverflow: "ellipsis",
             overflow: "hidden",
           }}
           className="text-gray-800 select-none text-sm flex-1 text-center cursor-pointer rounded-md p-0.5 z-10"
+          aria-pressed={props.value === segment.id}
+          aria-label={`Open ${segment.label} Tab`}
         >
           {segment.label}
-        </span>
+        </button>
       ))}
     </div>
   );

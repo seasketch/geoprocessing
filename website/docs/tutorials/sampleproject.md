@@ -343,8 +343,8 @@ You will now download a data package prepared for the Federated States of Micron
 
 ```bash
 wget -P data/src https://github.com/user-attachments/files/17697992/FSM_MSP_Data_Example_V2.zip
-unzip data/src/FSM_MSP_Data_Example_v2.zip -d data/src
-rm data/src/FSM_MSP_Data_Example_v2.zip
+unzip data/src/FSM_MSP_Data_Example_V2.zip -d data/src
+rm data/src/FSM_MSP_Data_Example_V2.zip
 ```
 
 Now import your first datasource.

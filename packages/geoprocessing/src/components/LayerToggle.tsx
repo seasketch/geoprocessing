@@ -30,11 +30,9 @@ export function LayerToggle({
         alignItems: "center",
         justifyContent: simple ? "flex-end" : "space-between",
         width: "100%",
-        fontSize: 15,
         cursor: "pointer",
         backgroundColor: "transparent",
         border: "none",
-        padding: "0.5rem",
         borderRadius: "8px",
         ...style,
       }}
@@ -51,7 +49,7 @@ export function LayerToggle({
           <span
             style={{
               color: "#555",
-              fontSize: "1em",
+              fontSize: "15px",
             }}
           >
             {label}
@@ -62,8 +60,8 @@ export function LayerToggle({
         <span
           style={{
             color: on ? "#62ACC4" : "#555",
-            fontSize: "0.8em",
-            marginRight: 10,
+            fontSize: ".9em",
+            marginRight: 5,
             textAlign: "right",
           }}
         >
@@ -91,14 +89,21 @@ export function LayerToggle({
             width: size === "regular" ? "1.25rem" : "1.00rem",
             height: size === "regular" ? "1.25rem" : "1.00rem",
             backgroundColor: "white",
-            borderRadius: "50%",
+            borderRadius: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxSizing: "border-box",
             boxShadow:
               "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
             transition: "left 200ms ease",
           }}
         >
           {simple && (
-            <Stack size="15" color={on === true ? "#6FC2DE" : "#AAA"} />
+            <Stack
+              size={size === "regular" ? 15 : 12}
+              color={on === true ? "#6FC2DE" : "#AAA"}
+            />
           )}
         </span>
       </div>

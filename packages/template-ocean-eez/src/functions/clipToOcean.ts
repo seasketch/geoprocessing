@@ -4,22 +4,17 @@ import {
   Sketch,
   isPolygonFeature,
   ValidationError,
-  clipToPolygonFeatures,
+  clipToPolygonDatasources,
   DatasourceClipOperation,
-  DefaultExtraParams,
 } from "@seasketch/geoprocessing";
 import project from "../../project/projectClient.js";
-import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
 
 /**
  * Preprocessor takes a Polygon feature/sketch and returns the portion that
  * is in the ocean (not on land) and within one or more EEZ boundaries.
  * If results in multiple polygons then returns the largest.
  */
-export async function clipToOcean(
-  feature: Feature | Sketch,
-  extraParams: DefaultExtraParams = {}, // eslint-disable-line @typescript-eslint/no-unused-vars
-): Promise<Feature> {
+export async function clipToOcean(feature: Feature | Sketch): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
@@ -38,11 +33,8 @@ export async function clipToOcean(
     },
   };
 
-  // Create a function that will perform the clip operations in order
-  const clipLoader = genClipLoader(project, [removeLand]);
-
   // Wrap clip function into preprocessing function with additional clip options
-  return clipToPolygonFeatures(feature, clipLoader, {
+  return clipToPolygonDatasources(project, feature, [removeLand], {
     maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
     enforceMaxSize: false,
     ensurePolygon: true,

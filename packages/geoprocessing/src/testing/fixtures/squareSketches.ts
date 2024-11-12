@@ -84,6 +84,15 @@ const poly2 = polygon([
     [1, 1],
   ],
 ]);
+const poly2Inner = polygon([
+  [
+    [1, 1],
+    [2, 1],
+    [2, 2],
+    [1, 2],
+    [1, 1],
+  ],
+]);
 const sketch2 = genSampleSketch(poly2.geometry, "sketch2");
 
 // fully outside outer
@@ -158,6 +167,7 @@ export default {
   sketch1,
   sketchMultiPoly1,
   poly2,
+  poly2Inner,
   sketch2,
   poly3,
   sketch3,

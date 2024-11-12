@@ -4,12 +4,11 @@ import {
   Sketch,
   isPolygonFeature,
   ValidationError,
-  clipToPolygonFeatures,
+  clipToPolygonDatasources,
   DatasourceClipOperation,
   DefaultExtraParams,
 } from "@seasketch/geoprocessing";
 import project from "../../project/projectClient.js";
-import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
 
 /**
  * Preprocessor takes a Polygon feature/sketch and returns the portion that
@@ -44,11 +43,8 @@ export async function clipToLand(
     },
   };
 
-  // Create a function that will perform the clip operations in order
-  const clipLoader = genClipLoader(project, [keepLand]);
-
   // Wrap clip function into preprocessing function with additional clip options
-  return clipToPolygonFeatures(feature, clipLoader, {
+  return clipToPolygonDatasources(project, feature, [keepLand], {
     maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
     enforceMaxSize: false,
     ensurePolygon: true,

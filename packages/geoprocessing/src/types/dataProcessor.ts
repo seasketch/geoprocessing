@@ -1,4 +1,4 @@
-import { Feature, Polygon, BBox } from "../types/index.js";
+import { Feature, Polygon, BBox, MultiPolygon } from "../types/index.js";
 
 // Where datasources meet data providers meet preprocessors/geoprocessors
 
@@ -13,7 +13,7 @@ export type ClipOperations = "intersection" | "difference";
 
 /** Parameters for clip operation using polygon features */
 export interface FeatureClipOperation {
-  clipFeatures: Feature<Polygon>[];
+  clipFeatures: Feature<Polygon | MultiPolygon>[];
   operation: ClipOperations;
 }
 

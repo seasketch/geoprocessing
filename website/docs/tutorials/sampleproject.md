@@ -76,15 +76,50 @@ After this point, you can continue using git commands in the terminal to stage c
 
 You can learn more about your projects [folder structure](../structure.md)
 
+## Preprocessing
+
+Preprocessing function are invoked by the SeaSketch platform, on a user-drawn shape, right after the user finishes drawing it. It's a specialized geoprocessing function that validates a drawn shape, and modifies it if necessary. Typical requirements include:
+
+- Check shape is a valid polygon, no self-crossing.
+- Check shape is within the planning area boundary, and remove any portion that is outside of it.
+- Check shape meets minimum size or is below maximum size
+
+Your new project comes with two preprocessing functions
+
+- `src/functions/clipToLand` - validate shape and erase portion that is over ocean. Good for land-based planning projects.
+- `src/functions/clipToOcean` - validate shape and erase portion that is over land. Good for ocean-based planning projects.
+
+These two preprocessing functions are already registered in `project/geoprocessing.json`. They will be published with your project as AWS Lambda functions, and you can then assign sketch classes in your SeaSketch project to use one of them.
+
+### Example Features
+
+Each preprocessing function has its own smoke test - `src/functions/clipToLandSmoke.test.ts` and `src/functions/clipToOceanSmoke.test.ts`. They load example shapes from your `examples/features` directory, run the preprocessing function on them, and puts the output in `examples/output`.
+
+To test our preprocessing functions, we need to create test shapes within the extent of our Micronesian planning area. To do that, run this script:
+
+```bash
+npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon1.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
+
+npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon2.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
+```
+
+Now run the smoke tests
+
+```bash
+npm test
+```
+
+To learn more about preprocessing, visit the [guide](../preprocessing.md)
+
 ## Simple Report
 
-Your new project comes with a simple report that calculates the area of your sketch. Let's take a closer look.
+Your new project comes with a simple report that calculates the area of a sketch or sketch collection. Let's look at the pieces that go into this report.
 
 ### simpleFunction
 
-`src/functions/SimpleFunction.ts`
+The area calculation is done in a geoprocessing function in `src/functions/simpleFunction.ts`. Open this file and look closer.
 
-First, notice this function defines its own result payload called `SimpleResults`, an object with an `area` number value.
+First, notice this function defines its own result payload called `SimpleResults`, in this case an object with an `area` number value.
 
 ```typescript
 export interface SimpleResults {

@@ -1308,6 +1308,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/clipToPolygonDatasources",
+            "label": "clipToPolygonDatasources"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/clipToPolygonFeatures",
             "label": "clipToPolygonFeatures"
           },
@@ -1398,6 +1403,16 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/genClipToPolygonDatasources",
+            "label": "genClipToPolygonDatasources"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/genClipToPolygonFeatures",
+            "label": "genClipToPolygonFeatures"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/genFeature",
             "label": "genFeature"
           },
@@ -1405,11 +1420,6 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/genFeatureCollection",
             "label": "genFeatureCollection"
-          },
-          {
-            "type": "doc",
-            "id": "api/geoprocessing/functions/genPreprocessor",
-            "label": "genPreprocessor"
           },
           {
             "type": "doc",
@@ -2812,6 +2822,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/variables/globalDatasources",
             "label": "globalDatasources"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/variables/globalDatasourcesById",
+            "label": "globalDatasourcesById"
           },
           {
             "type": "doc",

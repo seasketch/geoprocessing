@@ -1,7 +1,7 @@
 # globalDatasources
 
 ```ts
-const globalDatasources: Datasource[];
+const globalDatasources: (ExternalVectorDatasource | ExternalRasterDatasource)[];
 ```
 
 Definitive list of global datasources for geoprocessing framework

@@ -15,6 +15,7 @@
     }
   ],
   "preprocessingFunctions": [
+    "src/functions/validatePolygon.ts",
     "src/functions/clipToLand.ts",
     "src/functions/clipToOcean.ts"
   ],

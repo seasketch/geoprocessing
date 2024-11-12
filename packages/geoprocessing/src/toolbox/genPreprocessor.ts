@@ -30,6 +30,60 @@ import { ProjectClientInterface } from "../project/ProjectClientBase.js";
 import { getFeatures } from "../dataproviders/getFeatures.js";
 
 /**
+ * Returns feature untouched if it is valid and meets requirements set by options.
+ * @throws if invalid with reason
+ */
+export function ensureValidPolygon(
+  /** feature to clip  */
+  feature: Feature,
+  options: {
+    /** minSize in square kilometers that polygon can be. Throws if smaller. */
+    minSize?: number;
+    /** Whether or not minSize should be enforced and throw if smaller */
+    enforceMinSize?: boolean;
+    /** maxSize in square kilometers that polygon can be.  Throws if larger. */
+    maxSize?: number;
+    /** Whether or not maxSize should be enforced and throw if larger */
+    enforceMaxSize?: boolean;
+  } = {},
+): boolean {
+  const {
+    minSize = 0,
+    enforceMinSize = false,
+    maxSize = 500_000,
+    enforceMaxSize = false,
+  } = options;
+
+  //// INITIAL CHECKS ////
+
+  if (!isPolygonFeature(feature)) {
+    throw new ValidationError("Input must be a polygon");
+  }
+
+  const MIN_SIZE_KM = minSize * 1_000_000;
+  const MAX_SIZE_KM = maxSize * 1_000_000;
+
+  if (enforceMinSize && area(feature) < MIN_SIZE_KM) {
+    throw new ValidationError(
+      `Please limit sketches to under ${MIN_SIZE_KM} square km`,
+    );
+  }
+
+  if (enforceMaxSize && area(feature) > MAX_SIZE_KM) {
+    throw new ValidationError(
+      `Please limit sketches to under ${MAX_SIZE_KM} square km`,
+    );
+  }
+
+  const kinkPoints = kinks(feature);
+  if (kinkPoints.features.length > 0) {
+    throw new ValidationError("Your sketch polygon crosses itself.");
+  }
+
+  return true;
+}
+
+/**
  * Returns a function that applies clip operations to a feature using other polygon features.
  * @throws if clipped feature is larger than maxSize, defaults to 500K km
  */

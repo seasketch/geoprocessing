@@ -85,7 +85,9 @@ export function LayerToggle({
         <span
           style={{
             position: "absolute",
-            left: on ? "calc(100% - 1.25rem - 4px)" : "4px",
+            left: on
+              ? `calc(100% - ${size === "regular" ? 1.25 : 1}rem - 4px)`
+              : `4px`,
             width: size === "regular" ? "1.25rem" : "1.00rem",
             height: size === "regular" ? "1.25rem" : "1.00rem",
             backgroundColor: "white",

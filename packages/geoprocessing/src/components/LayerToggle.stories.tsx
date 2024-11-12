@@ -36,8 +36,24 @@ export const simpleChecked = () => (
   </ReportContext.Provider>
 );
 
-export const simpleCheckedLabel = () => (
+export const simpleSmallUnchecked = () => (
+  <ReportContext.Provider value={sampleContextValue}>
+    <Card title="Card Title">
+      <LayerToggle layerId={"5e80c8a8cd44abca6e5268af"} simple size="small" />
+    </Card>
+  </ReportContext.Provider>
+);
+
+export const simpleSmallChecked = () => (
   <ReportContext.Provider value={checkedContext}>
+    <Card title="Card Title">
+      <LayerToggle layerId={"5e80c8a8cd44abca6e5268af"} simple size="small" />
+    </Card>
+  </ReportContext.Provider>
+);
+
+export const simpleUncheckedLabel = () => (
+  <ReportContext.Provider value={sampleContextValue}>
     <Card title="Card Title">
       <LayerToggle
         layerId={"5e80c8a8cd44abca6e5268af"}
@@ -47,8 +63,8 @@ export const simpleCheckedLabel = () => (
     </Card>
   </ReportContext.Provider>
 );
-export const simpleUncheckedLabel = () => (
-  <ReportContext.Provider value={sampleContextValue}>
+export const simpleCheckedLabel = () => (
+  <ReportContext.Provider value={checkedContext}>
     <Card title="Card Title">
       <LayerToggle
         layerId={"5e80c8a8cd44abca6e5268af"}

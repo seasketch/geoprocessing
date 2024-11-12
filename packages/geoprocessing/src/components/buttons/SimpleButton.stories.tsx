@@ -15,6 +15,7 @@ export const simpleButton = () => {
       <SimpleButton>⇩</SimpleButton>
       <SimpleButton>⬇</SimpleButton>
       <SimpleButton>➥</SimpleButton>
+      <SimpleButton>Text</SimpleButton>
     </>
   );
 };

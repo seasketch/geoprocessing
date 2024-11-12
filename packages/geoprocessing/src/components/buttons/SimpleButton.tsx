@@ -6,7 +6,7 @@ export const SimpleButtonStyled = styled.button`
   border: none;
   cursor: pointer;
   outline: none;
-  color: #aaa;
+  color: #767676;
   font-size: 18px
   font-weight: bold
   &:hover {

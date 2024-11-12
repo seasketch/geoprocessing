@@ -188,7 +188,7 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
           width: 100px;
           text-align: left;
           font-size: 0.7em;
-          color: #999;
+          color: #767676;
         }
       
         .marker {

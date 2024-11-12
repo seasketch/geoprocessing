@@ -1,3 +1,4 @@
+import { CaretDownFill, CaretRightFill } from "@styled-icons/bootstrap";
 import React, { ReactNode } from "react";
 import { styled } from "styled-components";
 
@@ -14,34 +15,17 @@ const StyledCollapse = styled.div`
     height: 20px;
   }
 
-  .collapse-icon-container {
-    margin-left: -3px;
-  }
-
-  .collapse-icon-button {
-    display: block;
+  .collapse-button {
+    display: flex;
+    align-items: center;
     border: 0;
-    margin-bottom: 10px;
-    padding-left: 0px;
     background-color: transparent;
     font-size: 15px;
-    height: 20px;
-    width: 25px;
-    color: #777;
-    cursor: pointer;
-  }
-
-  .collapse-text-button {
-    display: block;
-    border: 0;
-    margin-bottom: 10px;
-    padding-left: 0px;
-    background-color: transparent;
-    font-size: 15px;
-    height: 20px;
     font-weight: bold;
-    color: #777;
+    color: #767676;
     cursor: pointer;
+    padding: 0;
+    margin-bottom: 10px;
   }
 
   .collapse-content {
@@ -56,7 +40,7 @@ const StyledCollapse = styled.div`
     display: none;
   }
 
-  .collapsed-content.expanded {
+  .collapse-content.expanded {
     display: block;
   }
 `;
@@ -71,24 +55,21 @@ export const Collapse: React.FunctionComponent<CollapseProps> = ({
   return (
     <StyledCollapse>
       <div className="collapse-header">
-        <div className="collapse-icon-container">
-          <button
-            className="collapse-icon-button"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-          >
-            {isCollapsed ? "▶" : "▼"}
-          </button>
-        </div>
         <button
-          className="collapse-text-button"
+          className="collapse-button"
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
+          {isCollapsed ? (
+            <CaretRightFill size={15} style={{ marginRight: "5px" }} />
+          ) : (
+            <CaretDownFill size={15} style={{ marginRight: "5px" }} />
+          )}{" "}
           {title}
         </button>
       </div>
       <div
         className={`collapse-content ${isCollapsed ? "collapsed" : "expanded"}`}
-        aria-expanded={isCollapsed}
+        aria-expanded={!isCollapsed}
       >
         {children}
       </div>

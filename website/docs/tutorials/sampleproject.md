@@ -84,18 +84,25 @@ Preprocessing function are invoked by the SeaSketch platform, on a user-drawn sh
 - Check shape is within the planning area boundary, and remove any portion that is outside of it.
 - Check shape meets minimum size or is below maximum size
 
-Your new project comes with two preprocessing functions
+Your new project comes with two preprocessing functions, the second two building on the abilities of the first:
 
+- `src/functions/validatePolygon` - ensure polygon shape is valid, no self-crossing, and optionally is within min and max size guidelines.
 - `src/functions/clipToLand` - validate shape and erase portion that is over ocean. Good for land-based planning projects.
 - `src/functions/clipToOcean` - validate shape and erase portion that is over land. Good for ocean-based planning projects.
 
-These two preprocessing functions are already registered in `project/geoprocessing.json`. They will be published with your project as AWS Lambda functions, and you can then assign sketch classes in your SeaSketch project to use one of them.
+These three preprocessing functions are already registered in `project/geoprocessing.json`. If you were to deploy your project to AWS, they would become available to be assigned to a sketch class in your SeaSketch project.
 
 ### Example Features
 
-Each preprocessing function has its own smoke test - `src/functions/clipToLandSmoke.test.ts` and `src/functions/clipToOceanSmoke.test.ts`. They load example shapes from your `examples/features` directory, run the preprocessing function on them, and puts the output in `examples/output`.
+Each preprocessing function has its own smoke test:
 
-To test our preprocessing functions, we need to create test shapes within the extent of our Micronesian planning area. To do that, run this script:
+- `src/functions/validatePolygonSmoke.test.ts`
+- `src/functions/clipToLandSmoke.test.ts`
+- `src/functions/clipToOceanSmoke.test.ts`
+
+And each of those smoke tests uses the `polygonSmokeTest` helper function, which loads example shapes from your `examples/features` directory, runs the preprocessing function on them, valids the outputs, and saves it to `examples/output`.
+
+To test your preprocessing functions, we need to create test shapes within the extent of our Micronesian planning area. To do that, run this script:
 
 ```bash
 npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon1.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
@@ -103,13 +110,13 @@ npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygo
 npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon2.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
 ```
 
-Now run the smoke tests
+Now run the smoke tests:
 
 ```bash
 npm test
 ```
 
-To learn more about preprocessing, visit the [guide](../preprocessing.md)
+To learn more about preprocessing, check out the [guide](../preprocessing.md)
 
 ## Simple Report
 
@@ -117,9 +124,9 @@ Your new project comes with a simple report that calculates the area of a sketch
 
 ### simpleFunction
 
-The area calculation is done in a geoprocessing function in `src/functions/simpleFunction.ts`. Open this file and look closer.
+The area calculation is done within a geoprocessing function in `src/functions/simpleFunction.ts`.
 
-First, notice this function defines its own result payload called `SimpleResults`, in this case an object with an `area` number value.
+Open this file and you will notice this function defines its own bespoke result payload called `SimpleResults`, in this case an object with an `area` number value.
 
 ```typescript
 export interface SimpleResults {
@@ -150,7 +157,7 @@ return {
 };
 ```
 
-The file finishes with instantiating a new `GeoprocessingHandler`, which wraps simpleFunction in such a way that it can be published as an AWS Lambda, to be invoked by a report client.
+Below that, a new `GeoprocessingHandler` is instantiated, with the function passed into it. Behind the scenes, this is wrapping simpleFunction in an AWS Lambda handler function, such that it can be deployed to AWS and invoked by a browser report client.
 
 ```typescript
 export default new GeoprocessingHandler(simpleFunction, {
@@ -162,13 +169,13 @@ export default new GeoprocessingHandler(simpleFunction, {
 });
 ```
 
-`GeoprocessingHandler` requires a `title` and `description`, to uniquely identify your geoprocessing function amongst the other functions published by your project. It also accepts some parameters for the Lambda function:
+`GeoprocessingHandler` requires a `title` and `description`, to uniquely identify the geoprocessing function that will be published by your project. It also accepts some additional parameters defining what resources the Lamda should have, and its behavior:
 
-- timeout: how many seconds the Lambda will run before it times out in error.
-- memory: memory allocated to the Lambda, can go up to 10,240 MB. Number of processors increase with memory size automatically.
-- executionMode: determines how the report client waits for your function to finish. Sync - wait with connection open, Async - wait for web socket message. Async is the best default to not tie up your browsers network connections.
+- `timeout`: how many seconds the Lambda will run before it times out in error.
+- `memory`: memory allocated to the Lambda, can go up to 10,240 MB. Number of processors increase with memory size automatically.
+- `executionMode`: determines how the report client waits for your function to finish. Sync - wait with connection open, Async - wait for web socket message. Async is the best default to not tie up your browsers network connections.
 
-You can change all of these parameters to suit your needs, but the default values are suitable for now.
+You can change all these parameter values to suit your needs, but the default values are suitable for now.
 
 `simpleFunction` is already registered as a geoprocessing function in `project/geoprocessing.json`, along with `blankFunction` which you will learn about later.
 

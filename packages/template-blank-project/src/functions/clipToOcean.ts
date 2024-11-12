@@ -32,6 +32,7 @@ export async function clipToOcean(feature: Feature | Sketch): Promise<Feature> {
     clipFeatures: landFC.features,
   };
 
+  // Execute one or more clip operations in order against feature
   return clipToPolygonFeatures(feature, [eraseLand], {
     maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
     enforceMaxSize: false,

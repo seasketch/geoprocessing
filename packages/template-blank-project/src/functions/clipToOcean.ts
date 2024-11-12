@@ -12,7 +12,7 @@ import { bbox } from "@turf/turf";
 
 /**
  * Preprocessor takes a Polygon feature/sketch and returns the portion that
- * is in the ocean (not on land).
+ * is in the ocean (not on land). If results in multiple polygons then returns the largest.
  */
 export async function clipToOcean(feature: Feature | Sketch): Promise<Feature> {
   if (!isPolygonFeature(feature)) {

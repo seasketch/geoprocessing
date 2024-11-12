@@ -11,8 +11,7 @@ import project from "../../project/projectClient.js";
 
 /**
  * Preprocessor takes a Polygon feature/sketch and returns the portion that
- * is in the ocean (not on land) and within one or more EEZ boundaries.
- * If results in multiple polygons then returns the largest.
+ * is in the ocean (not on land). If results in multiple polygons then returns the largest.
  */
 export async function clipToOcean(feature: Feature | Sketch): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
@@ -20,7 +19,7 @@ export async function clipToOcean(feature: Feature | Sketch): Promise<Feature> {
   }
 
   /**
-   * Subtract parts of feature/sketch that overlap with land. Uses global OSM land polygons
+   * Defines clip operation that subtracts or clips away any part overlapping with land
    * unionProperty is specific to subdivided datasets.  When defined, it will fetch
    * and rebuild all subdivided land features overlapping with the feature/sketch
    * with the same gid property (assigned one per country) into one feature before clipping
@@ -33,7 +32,6 @@ export async function clipToOcean(feature: Feature | Sketch): Promise<Feature> {
     },
   };
 
-  // Wrap clip function into preprocessing function with additional clip options
   return clipToPolygonDatasources(project, feature, [removeLand], {
     maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
     enforceMaxSize: false,

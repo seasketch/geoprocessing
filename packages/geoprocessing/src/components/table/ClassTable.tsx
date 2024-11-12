@@ -29,7 +29,7 @@ export const ClassTableStyled = styled(ReportTableStyled)`
   .styled {
     font-size: 13px;
     td {
-      padding: 6px 5px;
+      padding: 3px 5px;
     }
   }
 `;

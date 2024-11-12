@@ -1,9 +1,16 @@
 import { describe, test, expect } from "vitest";
 import { area } from "@turf/turf";
 import project from "../testing/project/testProjectClient.js";
-import { genClipLoader } from "../dataproviders/index.js";
-import { Sketch } from "../types/index.js";
-import { genPreprocessor } from "./genPreprocessor.js";
+import {
+  DatasourceClipOperation,
+  FeatureClipOperation,
+  Sketch,
+} from "../types/index.js";
+import {
+  genClipToPolygonDatasources,
+  genClipToPolygonFeatures,
+} from "./genPreprocessor.js";
+import fix from "../testing/fixtures/squareSketches.js";
 
 // import micronesia eez from global subdivided
 describe("genPreprocessor", () => {
@@ -13,7 +20,7 @@ describe("genPreprocessor", () => {
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const clipLoader = genClipLoader(project, [
+    const clipOperations: DatasourceClipOperation[] = [
       {
         datasourceId: "global-clipping-osm-land",
         // subtract out land from sketch
@@ -36,9 +43,9 @@ describe("genPreprocessor", () => {
           },
         },
       },
-    ]);
+    ];
 
-    const preprocessor = genPreprocessor(clipLoader);
+    const preprocessor = genClipToPolygonDatasources(project, clipOperations);
     const result = await preprocessor({
       type: "Feature",
       properties: {
@@ -71,7 +78,7 @@ describe("genPreprocessor", () => {
     );
     if (!eezDatasource)
       throw new Error("missing global eez land union datasource");
-    const clipLoader = genClipLoader(project, [
+    const clipOperations: DatasourceClipOperation[] = [
       {
         datasourceId: "global-clipping-osm-land",
         // subtract out land from sketch
@@ -81,9 +88,9 @@ describe("genPreprocessor", () => {
           unionProperty: "gid",
         },
       },
-    ]);
+    ];
 
-    const preprocessor = genPreprocessor(clipLoader);
+    const preprocessor = genClipToPolygonDatasources(project, clipOperations);
 
     const theSketch: Sketch = {
       type: "Feature",
@@ -114,5 +121,55 @@ describe("genPreprocessor", () => {
 
     expect(result).toBeTruthy();
     expect(area(result)).toEqual(origArea);
+  }, 20_000);
+});
+
+describe("genClipToPolygonsPreprocessor", () => {
+  test("genClipToPolygonsPreprocessor should successfully generate and run preprocessor", async () => {
+    const featureOperations: FeatureClipOperation[] = [
+      {
+        clipFeatures: [fix.outer],
+        operation: "intersection",
+      },
+    ];
+
+    const preprocessor = genClipToPolygonFeatures(featureOperations);
+    const result = await preprocessor({
+      type: "Feature",
+      properties: {
+        name: "fsm-east-west",
+        updatedAt: "2022-11-17T10:02:53.645Z",
+        sketchClassId: "123abc",
+        id: "abc123",
+      },
+      geometry: fix.poly2.geometry, // half inside outer feature polygon
+    });
+
+    expect(result).toBeTruthy();
+    expect(area(result)).toBe(area(fix.poly2Inner));
+  }, 60_000);
+
+  test("geoprocessorz - sketch outside of datasource should not clip at all", async () => {
+    const featureOperations: FeatureClipOperation[] = [
+      {
+        clipFeatures: [fix.outer],
+        operation: "difference",
+      },
+    ];
+
+    const preprocessor = genClipToPolygonFeatures(featureOperations, {});
+    const result = await preprocessor({
+      type: "Feature",
+      properties: {
+        name: "fsm-east-west",
+        updatedAt: "2022-11-17T10:02:53.645Z",
+        sketchClassId: "123abc",
+        id: "abc123",
+      },
+      geometry: fix.poly3.geometry, // fully outside outer feature polygon
+    });
+
+    expect(result).toBeTruthy();
+    expect(area(result)).toBe(area(fix.poly3)); // should be same as input
   }, 20_000);
 });

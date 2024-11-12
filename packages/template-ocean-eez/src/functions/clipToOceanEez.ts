@@ -4,12 +4,11 @@ import {
   Sketch,
   isPolygonFeature,
   ValidationError,
-  clipToPolygonFeatures,
+  clipToPolygonDatasources,
   DatasourceClipOperation,
   DefaultExtraParams,
 } from "@seasketch/geoprocessing";
 import project from "../../project/projectClient.js";
-import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
 
 /**
  * Preprocessor takes a Polygon feature/sketch and returns the portion that
@@ -53,15 +52,17 @@ export async function clipToOceanEez(
     },
   };
 
-  // Create a function that will perform the clip operations in order
-  const clipLoader = genClipLoader(project, [removeLand, removeOutsideEez]);
-
   // Wrap clip function into preprocessing function with additional clip options
-  return clipToPolygonFeatures(feature, clipLoader, {
-    maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
-    enforceMaxSize: false, // throws error if feature is larger than maxSize
-    ensurePolygon: true, // don't allow multipolygon result, returns largest if multiple
-  });
+  return clipToPolygonDatasources(
+    project,
+    feature,
+    [removeLand, removeOutsideEez],
+    {
+      maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
+      enforceMaxSize: false, // throws error if feature is larger than maxSize
+      ensurePolygon: true, // don't allow multipolygon result, returns largest if multiple
+    },
+  );
 }
 
 export default new PreprocessingHandler(clipToOceanEez, {

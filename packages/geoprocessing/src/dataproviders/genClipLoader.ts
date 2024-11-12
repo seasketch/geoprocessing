@@ -13,6 +13,7 @@ import { DatasourceClipOperation } from "../types/dataProcessor.js";
  * Given a project client and 1 or more clip operations, returns a function that when called
  * loads clip features from their datasources that overlap with the feature polygon to clip.
  * Pass this function to genPreprocessor() and it will take care of the rest.
+ * @deprecated
  */
 export const genClipLoader = <P extends ProjectClientInterface>(
   project: P,

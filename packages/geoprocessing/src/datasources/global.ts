@@ -1,4 +1,10 @@
-import { Datasource, Feature, Polygon } from "../types/index.js";
+import { groupBy } from "../helpers/groupBy.js";
+import {
+  ExternalRasterDatasource,
+  ExternalVectorDatasource,
+  Feature,
+  Polygon,
+} from "../types/index.js";
 
 export type OsmLandFeature = Feature<Polygon, { gid: number }>;
 export type EezLandUnion = Feature<Polygon, { gid: number; UNION: string }>;
@@ -7,7 +13,10 @@ export type EezLandUnion = Feature<Polygon, { gid: number; UNION: string }>;
  * Definitive list of global datasources for geoprocessing framework
  * @todo: fetch from global-datasources repo
  */
-export const globalDatasources: Datasource[] = [
+export const globalDatasources: (
+  | ExternalVectorDatasource
+  | ExternalRasterDatasource
+)[] = [
   {
     datasourceId: "global-clipping-osm-land",
     geo_type: "vector",
@@ -61,3 +70,8 @@ export const globalDatasources: Datasource[] = [
     precalc: false,
   },
 ];
+
+export const globalDatasourcesById = groupBy(
+  globalDatasources,
+  (ds) => ds.datasourceId,
+);

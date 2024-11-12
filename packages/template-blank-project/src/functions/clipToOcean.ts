@@ -5,48 +5,34 @@ import {
   isPolygonFeature,
   ValidationError,
   clipToPolygonFeatures,
-  DatasourceClipOperation,
+  FeatureClipOperation,
+  VectorDataSource,
 } from "@seasketch/geoprocessing";
-import project from "../../project/projectClient.js";
-import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
-
-interface ExtraParams {
-  /** Array of EEZ's to clip to  */
-  eezs?: string[];
-}
+import { bbox } from "@turf/turf";
 
 /**
  * Preprocessor takes a Polygon feature/sketch and returns the portion that
- * is in the ocean (not on land).  Optionally accepts array of eez IDs to further
- * filter feature/sketch to.
+ * is in the ocean (not on land).
  */
-export async function clipToOcean(
-  feature: Feature | Sketch,
-  extraParams: ExtraParams = {}, // eslint-disable-line @typescript-eslint/no-unused-vars
-): Promise<Feature> {
+export async function clipToOcean(feature: Feature | Sketch): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
+  const featureBox = bbox(feature);
 
-  /**
-   * Subtract parts of feature/sketch that overlap with land. Uses global OSM land polygons
-   * unionProperty is specific to subdivided datasets.  When defined, it will fetch
-   * and rebuild all subdivided land features overlapping with the feature/sketch
-   * with the same gid property (assigned one per country) into one feature before clipping
-   */
-  const removeLand: DatasourceClipOperation = {
-    datasourceId: "global-clipping-osm-land",
+  // Get land polygons - osm land vector datasource
+  const landDatasource = new VectorDataSource(
+    "https://d3p1dsef9f0gjr.cloudfront.net/",
+  );
+  // one gid assigned per country, use to union subdivided pieces back together on fetch, prevents slivers
+  const landFC = await landDatasource.fetchUnion(featureBox, "gid");
+
+  const eraseLand: FeatureClipOperation = {
     operation: "difference",
-    options: {
-      unionProperty: "gid", // gid is assigned per country
-    },
+    clipFeatures: landFC.features,
   };
 
-  // Create a function that will perform the clip operations in order
-  const clipLoader = genClipLoader(project, [removeLand]);
-
-  // Wrap clip function into preprocessing function with additional clip options
-  return clipToPolygonFeatures(feature, clipLoader, {
+  return clipToPolygonFeatures(feature, [eraseLand], {
     maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
     enforceMaxSize: false,
     ensurePolygon: true,
@@ -57,6 +43,5 @@ export default new PreprocessingHandler(clipToOcean, {
   title: "clipToOcean",
   description: "Clips feature or sketch to ocean, removing land",
   timeout: 40,
-  requiresProperties: [],
   memory: 4096,
 });

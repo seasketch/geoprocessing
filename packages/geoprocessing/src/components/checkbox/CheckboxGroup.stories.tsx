@@ -20,7 +20,7 @@ export const simple = () => {
   const checkboxState = useCheckboxes(options);
   // The whole point of using a hook here is we can easily access the state externally and indepdendently of the checkbox UI component
   return (
-    <div>
+    <Card>
       <CheckboxGroup {...checkboxState} />
       <div>
         Selected:{" "}
@@ -28,7 +28,7 @@ export const simple = () => {
           .map((c) => (c.checked ? c.name : ""))
           .join(" ")}
       </div>
-    </div>
+    </Card>
   );
 };
 

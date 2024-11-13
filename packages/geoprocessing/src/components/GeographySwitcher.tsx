@@ -15,12 +15,20 @@ export const GeographySwitcher: React.FunctionComponent<
   const { t } = useTranslation();
 
   return (
-    <select onChange={changeGeography} value={curGeographyId}>
+    <select
+      onChange={changeGeography}
+      value={curGeographyId}
+      aria-label={t("Select geography")}
+    >
       {geographies.map((geography) => {
         /* i18next-extract-disable-next-line */
         const transString = t(geography.display || "");
         return (
-          <option key={geography.geographyId} value={geography.geographyId}>
+          <option
+            key={geography.geographyId}
+            value={geography.geographyId}
+            aria-label={transString}
+          >
             {transString}
           </option>
         );

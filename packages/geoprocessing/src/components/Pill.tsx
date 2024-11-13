@@ -48,17 +48,29 @@ export const GroupPill: React.FunctionComponent<GroupPillProps> = ({
   groupColorMap,
   children,
 }) => {
-  return <Pill color={groupColorMap[group]}>{children}</Pill>;
+  return (
+    <Pill color={groupColorMap[group]} aria-label={`Group: ${group}`}>
+      {children}
+    </Pill>
+  );
 };
 
 export const WarningPill: React.FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
-  return <Pill color={"#FFE1A3"}>{children}</Pill>;
+  return (
+    <Pill color={"#FFE1A3"} aria-label={"Warning Highlight"}>
+      {children}
+    </Pill>
+  );
 };
 
 export const GreenPill: React.FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
-  return <Pill color={"#BEE4BE"}>{children}</Pill>;
+  return (
+    <Pill color={"#BEE4BE"} aria-label={"Green Highlight"}>
+      {children}
+    </Pill>
+  );
 };

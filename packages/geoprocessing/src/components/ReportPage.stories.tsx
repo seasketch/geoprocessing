@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ReportPage } from "./ReportPage.js";
 import ReportDecorator from "./storybook/ReportDecorator.js";
 import { SegmentControl } from "./SegmentControl.js";
+import Card from "./Card.js";
 
 export default {
   component: ReportPage,
@@ -9,7 +10,7 @@ export default {
   decorators: [ReportDecorator],
 };
 
-export const simple = () => {
+export const reportPage = () => {
   const [tab, setTab] = useState<string>("page1");
   const enableAllTabs = false;
   return (
@@ -25,10 +26,10 @@ export const simple = () => {
         />
       </div>
       <ReportPage hidden={!enableAllTabs && tab !== "page1"}>
-        <div>One</div>
+        <Card>Report page 1</Card>
       </ReportPage>
       <ReportPage hidden={!enableAllTabs && tab !== "page2"}>
-        <div>Two</div>
+        <Card>Report page 2</Card>
       </ReportPage>
     </>
   );

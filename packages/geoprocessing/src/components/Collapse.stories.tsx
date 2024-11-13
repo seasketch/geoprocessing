@@ -9,7 +9,7 @@ export default {
   decorators: [ReportDecorator],
 };
 
-export const text = () => (
+export const collapse = () => (
   <Card title="Card Title">
     <Collapse title="Learn more">Help text here</Collapse>
   </Card>

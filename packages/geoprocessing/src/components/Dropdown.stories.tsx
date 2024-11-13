@@ -1,19 +1,23 @@
 import React from "react";
-import Card from "./Card.js";
 import { SimpleButton } from "./buttons/SimpleButton.js";
 import Dropdown from "./Dropdown.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
+import { ThreeDotsVertical } from "@styled-icons/bootstrap";
 
 export default {
-  component: Card,
+  component: Dropdown,
   title: "Components/Dropdown",
-  decorators: [],
+  decorators: [ReportDecorator],
 };
 
-export const simpleButton = () => {
+export const dropdown = () => {
   return (
-    <Dropdown titleElement={<>⋮</>}>
+    <Dropdown titleElement={<ThreeDotsVertical size={18} color="#999" />}>
       <a href="https://seasketch.org" target="_blank" rel="noreferrer">
-        <SimpleButton>➥ Seasketch</SimpleButton>
+        <SimpleButton>➥ Item 1</SimpleButton>
+      </a>
+      <a href="https://seasketch.org" target="_blank" rel="noreferrer">
+        <SimpleButton>➥ Item 2</SimpleButton>
       </a>
     </Dropdown>
   );

@@ -15,7 +15,7 @@ const groupColorMap = {
   low: "#F7A6B4",
 };
 
-export const simple = () => (
+export const circle = () => (
   <Card>
     <div>
       <Circle>S</Circle>

@@ -139,11 +139,7 @@ export const DataDownload = ({
     ...dropdownProps,
   };
 
-  return (
-    <>
-      <Dropdown {...dropdownPropsMerged}>{links}</Dropdown>
-    </>
-  );
+  return <Dropdown {...dropdownPropsMerged}>{links}</Dropdown>;
 };
 
 export default DataDownload;

@@ -2,11 +2,12 @@ import React from "react";
 import DataDownload from "./DataDownload.js";
 import fixtures from "../testing/fixtures/index.js";
 import { SimpleButton } from "./buttons/SimpleButton.js";
+import ReportDecorator from "./storybook/ReportDecorator.js";
 
 export default {
   component: DataDownload,
   title: "Components/DataDownload",
-  decorators: [],
+  decorators: [ReportDecorator],
 };
 
 export const simple = () => {

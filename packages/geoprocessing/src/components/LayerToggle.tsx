@@ -45,6 +45,7 @@ export function LayerToggle({
               marginRight: 10,
               color: on ? "#62ACC4" : "#A4CEDE",
             }}
+            aria-hidden={true}
           />
           <span
             style={{
@@ -105,6 +106,7 @@ export function LayerToggle({
             <Stack
               size={size === "regular" ? 15 : 12}
               color={on === true ? "#6FC2DE" : "#AAA"}
+              aria-hidden={true}
             />
           )}
         </span>

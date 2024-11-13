@@ -1,46 +1,24 @@
 import React from "react";
 import Card from "./Card.js";
-import { styled } from "styled-components";
 import { useTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-
-// styled-components are needed here to use the ::before pseudo selector
-const ErrorIndicator = styled.div`
-  display: inline-block;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 1em;
-  background-color: #ea4848;
-  width: 20px;
-  height: 20px;
-  border-radius: 20px;
-  color: white;
-  text-align: center;
-  margin-right: 8px;
-  ::before {
-    position: relative;
-    bottom: -1px;
-    content: "!";
-  }
-`;
+import { ErrorStatus } from "./ErrorStatus.js";
 
 const ErrorCard = () => {
   const { t } = useTranslation();
   return (
     <Card>
       <div role="alert">
-        <ErrorIndicator />
-        {t(
-          "ReportError - message part 1",
-          "Something went wrong. Please close this report and try again.",
-        )}
+        <ErrorStatus
+          msg={
+            <>
+              {t(
+                "An error occurred while rendering this component. If the error persists, please report it.",
+              )}
+            </>
+          }
+        />
       </div>
-      <p>
-        {t(
-          "ReportError - message part 2",
-          "If the error persists, please report it.",
-        )}
-      </p>
     </Card>
   );
 };

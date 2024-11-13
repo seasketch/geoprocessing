@@ -13,8 +13,7 @@ export const yes = () => (
     status="yes"
     msg={
       <>
-        This MPA meets the objective of protecting <b>20%</b>
-        of key habitat
+        This MPA meets the objective of protecting <b>20%</b> of key habitat
       </>
     }
   />
@@ -25,8 +24,8 @@ export const no = () => (
     status="no"
     msg={
       <>
-        This MPA meets the objective of protecting <b>20%</b>
-        of key habitat
+        This MPA does not meet the objective of protecting <b>20%</b> of key
+        habitat
       </>
     }
   />
@@ -37,8 +36,7 @@ export const maybe = () => (
     status="maybe"
     msg={
       <>
-        This MPA meets the objective of protecting <b>20%</b>
-        of key habitat
+        This MPA may meet the objective of protecting <b>20%</b> of key habitat
       </>
     }
   />

@@ -58,10 +58,11 @@ export const DropdownTrigger = styled.button`
   border: none;
   background: none;
   font-family: sans-serif;
+  cursor: pointer;
 `;
 
 export const Dropdown = ({
-  titleElement: TitleElement = <></>,
+  titleElement = <></>,
   placement = "auto",
   offset = { horizontal: 0, vertical: 0 },
   children,
@@ -101,17 +102,15 @@ export const Dropdown = ({
   }
 
   return (
-    <React.StrictMode>
-      <div ref={DropownRef}>
-        <DropdownTrigger
-          type="button"
-          ref={referenceRef}
-          onClick={handleDropdownClick}
-        >
-          {TitleElement}
-        </DropdownTrigger>
-      </div>
-      <div ref={popperRef} style={styles.popper} {...attributes.popper}>
+    <div ref={DropownRef}>
+      <DropdownTrigger ref={referenceRef} onClick={handleDropdownClick}>
+        {titleElement}
+      </DropdownTrigger>
+      <div
+        ref={popperRef}
+        style={{ zIndex: 1000, ...styles.popper }}
+        {...attributes.popper}
+      >
         <DropdownContainer style={styles.offset} open={open}>
           {children &&
             React.Children.map(children, (child) => {
@@ -119,7 +118,7 @@ export const Dropdown = ({
             })}
         </DropdownContainer>
       </div>
-    </React.StrictMode>
+    </div>
   );
 };
 

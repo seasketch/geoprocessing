@@ -1,13 +1,13 @@
 import React from "react";
-import { InfoCircleFill } from "@styled-icons/bootstrap";
+import { ExclamationCircleFill } from "@styled-icons/bootstrap";
 
-export interface StatusProps {
+export interface ErrorStatusProps {
   msg: JSX.Element;
   size?: number;
   style?: React.HTMLAttributes<HTMLElement>["style"];
 }
 
-export const InfoStatus: React.FunctionComponent<StatusProps> = ({
+export const ErrorStatus: React.FunctionComponent<ErrorStatusProps> = ({
   msg,
   size = 36,
   style = {},
@@ -15,10 +15,10 @@ export const InfoStatus: React.FunctionComponent<StatusProps> = ({
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       <div style={{ paddingRight: 10 }}>
-        <InfoCircleFill
+        <ExclamationCircleFill
           size={size}
-          style={{ color: "#83C6E6", ...style }}
-          aria-label="Info icon"
+          style={{ color: "#ea4848", ...style }}
+          aria-label="Error icon"
         />
       </div>
       <div>{msg}</div>

@@ -9,7 +9,7 @@ export default {
   decorators: [ReportDecorator],
 };
 
-export const simple = () => (
+export const keySection = () => (
   <Card title="Card Title">
     <KeySection>
       <p>KeySection is inside the card and stands out.</p>

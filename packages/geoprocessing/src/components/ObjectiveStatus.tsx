@@ -18,6 +18,7 @@ const TableStyled = styled.div`
   .container {
     display: flex;
     margin: 10px 0px 10px 0px;
+    align-items: center;
   }
   .icon {
     padding-right: 10px;
@@ -34,7 +35,11 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
   switch (status) {
     case "yes": {
       icon = (
-        <CheckCircleFill size={size} style={{ color: "#78c679", ...style }} />
+        <CheckCircleFill
+          size={size}
+          style={{ color: "#78c679", ...style }}
+          aria-label="Yes"
+        />
       );
       break;
     }
@@ -43,12 +48,19 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
         <QuestionCircleFill
           size={size}
           style={{ color: "#fec44f", ...style }}
+          aria-label="Maybe"
         />
       );
       break;
     }
     case "no": {
-      icon = <XCircleFill size={size} style={{ color: "#ED2C7C", ...style }} />;
+      icon = (
+        <XCircleFill
+          size={size}
+          style={{ color: "#ED2C7C", ...style }}
+          aria-label="No"
+        />
+      );
       break;
     }
   }

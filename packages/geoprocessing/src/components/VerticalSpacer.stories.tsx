@@ -8,7 +8,7 @@ export default {
   decorators: [CardDecorator, ReportDecorator],
 };
 
-export const simple = () => (
+export const verticalSpacer = () => (
   <>
     <div>1rem spacer below</div>
     <VerticalSpacer />

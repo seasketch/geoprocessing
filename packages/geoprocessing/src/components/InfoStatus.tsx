@@ -23,7 +23,7 @@ export const InfoStatus: React.FunctionComponent<StatusProps> = ({
         style={{ color: "#83C6E6", paddingRight: 10, ...style }}
         aria-label="Info icon"
       />
-      {msg}
+      <div aria-label="Info message">{msg}</div>
     </div>
   );
 };

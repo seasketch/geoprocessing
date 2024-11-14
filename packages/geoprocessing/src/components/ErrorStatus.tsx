@@ -23,7 +23,7 @@ export const ErrorStatus: React.FunctionComponent<ErrorStatusProps> = ({
         style={{ color: "#ea4848", paddingRight: 10, ...style }}
         aria-label="Error icon"
       />
-      {msg}
+      <div aria-label="Error message">{msg}</div>
     </div>
   );
 };

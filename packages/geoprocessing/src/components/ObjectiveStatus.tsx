@@ -60,7 +60,7 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
       role="status"
     >
       {icon}
-      <div>{msg}</div>
+      <div aria-label="Objective message">{msg}</div>
     </div>
   );
 };

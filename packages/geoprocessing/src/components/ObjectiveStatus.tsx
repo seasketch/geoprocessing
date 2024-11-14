@@ -25,7 +25,12 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
       icon = (
         <CheckCircleFill
           size={size}
-          style={{ color: "#78c679", paddingRight: 10, ...style }}
+          style={{
+            color: "#78c679",
+            paddingRight: 10,
+            flexShrink: 0,
+            ...style,
+          }}
           aria-label="Yes"
         />
       );
@@ -35,7 +40,12 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
       icon = (
         <QuestionCircleFill
           size={size}
-          style={{ color: "#fec44f", paddingRight: 10, ...style }}
+          style={{
+            color: "#fec44f",
+            paddingRight: 10,
+            flexShrink: 0,
+            ...style,
+          }}
           aria-label="Maybe"
         />
       );
@@ -45,7 +55,12 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
       icon = (
         <XCircleFill
           size={size}
-          style={{ color: "#ED2C7C", paddingRight: 10, ...style }}
+          style={{
+            color: "#ED2C7C",
+            paddingRight: 10,
+            flexShrink: 0,
+            ...style,
+          }}
           aria-label="No"
         />
       );

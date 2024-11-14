@@ -20,7 +20,7 @@ export const InfoStatus: React.FunctionComponent<StatusProps> = ({
     >
       <InfoCircleFill
         size={size}
-        style={{ color: "#83C6E6", paddingRight: 10, ...style }}
+        style={{ color: "#83C6E6", paddingRight: 10, flexShrink: 0, ...style }}
         aria-label="Info icon"
       />
       <div aria-label="Info message">{msg}</div>

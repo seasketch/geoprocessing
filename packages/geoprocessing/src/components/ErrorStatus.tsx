@@ -20,7 +20,7 @@ export const ErrorStatus: React.FunctionComponent<ErrorStatusProps> = ({
     >
       <ExclamationCircleFill
         size={size}
-        style={{ color: "#ea4848", paddingRight: 10, ...style }}
+        style={{ color: "#ea4848", paddingRight: 10, flexShrink: 0, ...style }}
         aria-label="Error icon"
       />
       <div aria-label="Error message">{msg}</div>

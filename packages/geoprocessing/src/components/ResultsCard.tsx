@@ -7,6 +7,7 @@ import Skeleton from "./Skeleton.js";
 import { ProgressBar, ProgressBarWrapper } from "./ProgressBar.js";
 import { ReportError } from "./ReportError.js";
 import { GeoprocessingRequestParams } from "../types/service.js";
+import { ErrorStatus } from "./ErrorStatus.js";
 
 export interface ResultsCardProps<T> {
   functionName: string;
@@ -29,26 +30,6 @@ const DefaultSkeleton = () => (
     <Skeleton style={{ width: "25%" }} />
   </div>
 );
-
-// styled-components are needed here to use the ::before pseudo selector
-const ErrorIndicator = styled.div`
-  display: inline-block;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 1em;
-  background-color: #ea4848;
-  width: 20px;
-  height: 20px;
-  border-radius: 20px;
-  color: white;
-  text-align: center;
-  margin-right: 8px;
-  ::before {
-    position: relative;
-    bottom: -1px;
-    content: "!";
-  }
-`;
 
 export const EstimateLabel = styled.div`
   height: 20px;
@@ -108,19 +89,20 @@ export function ResultsCard<T>({
   if (theError) {
     contents = (
       <Card {...cardProps}>
-        <div role="alert">
-          <ErrorIndicator />
-          {theError}
+        <div role="alert" aria-label="Error alert">
+          <ErrorStatus msg={<>{theError}</>} />
         </div>
       </Card>
     );
   } else if (loading) {
     contents = (
       <Card {...cardProps}>
-        {skeleton || <DefaultSkeleton />}
-        <ProgressBarWrapper>
-          <ProgressBar $duration={taskEstimate} />
-        </ProgressBarWrapper>
+        <div role="progressbar" aria-label="Awaiting results">
+          {skeleton || <DefaultSkeleton />}
+          <ProgressBarWrapper>
+            <ProgressBar $duration={taskEstimate} />
+          </ProgressBarWrapper>
+        </div>
       </Card>
     );
   } else if (task && task.data) {

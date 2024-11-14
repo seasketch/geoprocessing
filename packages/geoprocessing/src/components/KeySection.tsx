@@ -15,5 +15,9 @@ const keyStyle = {
 };
 
 export const KeySection = ({ children, style }: KeySectionProps) => {
-  return <div style={{ ...keyStyle, ...style }}>{children}</div>;
+  return (
+    <div style={{ ...keyStyle, ...style }} aria-label="Key section">
+      {children}
+    </div>
+  );
 };

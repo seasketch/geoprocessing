@@ -1,7 +1,7 @@
 import React from "react";
 import Toolbar from "./Toolbar.js";
 import Card from "./Card.js";
-import { SimpleButton } from "./buttons/SimpleButton.js";
+import { SimpleButton } from "./SimpleButton.js";
 import ReportDecorator from "./storybook/ReportDecorator.js";
 import DataDownloadToolbar from "./DataDownloadToolbar.js";
 import fixtures from "../testing/fixtures/index.js";

@@ -90,12 +90,15 @@ export const Tooltip = ({
   };
 
   return (
-    <React.StrictMode>
+    <>
       <TooltipTrigger
         ref={referenceRef}
         style={children.props.style}
         onMouseOver={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onFocus={handleMouseEnter}
+        onBlur={handleMouseLeave}
+        aria-label={`Tooltip: ${text}`}
       >
         {children}
       </TooltipTrigger>
@@ -111,6 +114,6 @@ export const Tooltip = ({
           <TooltipItem>{text}</TooltipItem>
         </TooltipContainer>
       </div>
-    </React.StrictMode>
+    </>
   );
 };

@@ -34,9 +34,13 @@ export const Card = ({
   };
 
   return (
-    <div style={{ position: "relative", ...styles.box, ...style }}>
+    <div
+      role="region"
+      aria-label={typeof title === "string" ? title : "Report"}
+      style={{ position: "relative", ...styles.box, ...style }}
+    >
       {title && title !== "" && (
-        <div style={{ ...styles.title, ...titleStyle }}>{title}</div>
+        <h1 style={{ ...styles.title, ...titleStyle }}>{title}</h1>
       )}
       {children}
     </div>

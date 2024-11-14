@@ -13,15 +13,17 @@ export const InfoStatus: React.FunctionComponent<StatusProps> = ({
   style = {},
 }) => {
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <div style={{ paddingRight: 10 }}>
-        <InfoCircleFill
-          size={size}
-          style={{ color: "#83C6E6", ...style }}
-          aria-label="Info icon"
-        />
-      </div>
-      <div>{msg}</div>
+    <div
+      style={{ display: "flex", alignItems: "center" }}
+      aria-label="Info"
+      role="status"
+    >
+      <InfoCircleFill
+        size={size}
+        style={{ color: "#83C6E6", paddingRight: 10, ...style }}
+        aria-label="Info icon"
+      />
+      {msg}
     </div>
   );
 };

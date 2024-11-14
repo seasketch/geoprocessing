@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { styled } from "styled-components";
 
 export const StyledPill = styled.span`
-  background-color: ${(props) => (props.color ? props.color : "#CCC")};
+  background-color: ${(props) => props.color || "#CCC"};
   border-radius: 6px;
   padding: 3px 5px;
 `;
@@ -59,7 +59,7 @@ export const WarningPill: React.FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
   return (
-    <Pill color={"#FFE1A3"} aria-label={"Warning Highlight"}>
+    <Pill color={"#FFE1A3"} aria-label="Warning Highlight">
       {children}
     </Pill>
   );
@@ -69,7 +69,7 @@ export const GreenPill: React.FunctionComponent<{ children: ReactNode }> = ({
   children,
 }) => {
   return (
-    <Pill color={"#BEE4BE"} aria-label={"Green Highlight"}>
+    <Pill aria-label={"Green Highlight"} color={"#BEE4BE"}>
       {children}
     </Pill>
   );

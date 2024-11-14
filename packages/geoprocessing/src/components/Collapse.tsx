@@ -53,23 +53,34 @@ export const Collapse: React.FunctionComponent<CollapseProps> = ({
   const [isCollapsed, setIsCollapsed] = React.useState(collapsed);
 
   return (
-    <StyledCollapse>
+    <StyledCollapse
+      aria-label={isCollapsed ? `Expand ${title}` : `Collapse ${title}`}
+      aria-expanded={!isCollapsed}
+      role="button"
+    >
       <div className="collapse-header">
         <button
           className="collapse-button"
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
           {isCollapsed ? (
-            <CaretRightFill size={15} style={{ marginRight: "5px" }} />
+            <CaretRightFill
+              size={15}
+              style={{ marginRight: "5px" }}
+              aria-hidden="true"
+            />
           ) : (
-            <CaretDownFill size={15} style={{ marginRight: "5px" }} />
+            <CaretDownFill
+              size={15}
+              style={{ marginRight: "5px" }}
+              aria-hidden="true"
+            />
           )}{" "}
           {title}
         </button>
       </div>
       <div
         className={`collapse-content ${isCollapsed ? "collapsed" : "expanded"}`}
-        aria-expanded={!isCollapsed}
       >
         {children}
       </div>

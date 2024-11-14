@@ -44,40 +44,42 @@ export const ToolbarCard = ({
     },
     right: {
       display: "flex",
+      alignItems: "center",
     },
   };
 
   return (
-    <>
-      <div style={{ position: "relative", ...styles.box, ...toolbarStyle }}>
-        {title && title !== "" && (
-          <Toolbar
-            titleAlign="center"
-            variant="min"
-            useGutters={false}
-            style={{}}
+    <div
+      style={{ position: "relative", ...styles.box, ...toolbarStyle }}
+      role="region"
+      aria-label={typeof title === "string" ? title : "Report"}
+    >
+      {title && title !== "" && (
+        <Toolbar titleAlign="center" variant="min" useGutters={false}>
+          <h1
+            style={{
+              ...styles.left,
+              ...titleStyle,
+            }}
           >
-            <div
-              style={{
-                ...styles.left,
-                ...titleStyle,
-              }}
-            >
-              {title}
-            </div>
-            <div
-              style={{
-                ...styles.right,
-                ...itemsStyle,
-              }}
-            >
-              {items}
-            </div>
-          </Toolbar>
-        )}
-        {children}
-      </div>
-    </>
+            {title}
+          </h1>
+          <div
+            style={{
+              ...styles.right,
+              ...itemsStyle,
+            }}
+            role="toolbar"
+            aria-label={
+              (typeof title === "string" ? title : "Report") + " toolbar items"
+            }
+          >
+            {items}
+          </div>
+        </Toolbar>
+      )}
+      {children}
+    </div>
   );
 };
 

@@ -8,7 +8,7 @@ interface StyledCircleProps {
 
 /** Default style for Circle */
 export const StyledCircle = styled.span<StyledCircleProps>`
-  background-color: ${(props) => (props.color ? props.color : "#DDD")};
+  background-color: ${(props) => props.color || "#DDD"};
   padding: 3px 5px;
   border-radius: ${(props) => (props.size ? `${props.size}px` : "17px")};
   min-width: ${(props) => (props.size ? `${props.size}px` : "17px")};
@@ -23,6 +23,7 @@ export interface CircleProps {
   children: ReactNode;
   color?: string;
   size?: number;
+  ariaLabel?: string;
 }
 
 /** Circle with user-defined component inside */
@@ -30,9 +31,16 @@ export const Circle: React.FunctionComponent<CircleProps> = ({
   children,
   color,
   size,
+  ariaLabel,
 }) => {
   return (
-    <StyledCircle color={color} size={size}>
+    <StyledCircle
+      color={color}
+      size={size}
+      aria-label={
+        ariaLabel || `Circle highlighted with ${color || "#DDD"} color`
+      }
+    >
       {children}
     </StyledCircle>
   );
@@ -57,5 +65,12 @@ export const GroupCircle: React.FunctionComponent<GroupCircleProps> = ({
   group,
   groupColorMap,
 }) => {
-  return <Circle color={groupColorMap[group]}>{children}</Circle>;
+  return (
+    <Circle
+      color={groupColorMap[group]}
+      ariaLabel={`Circle highlighted with group ${group} color ${groupColorMap[group]}`}
+    >
+      {children}
+    </Circle>
+  );
 };

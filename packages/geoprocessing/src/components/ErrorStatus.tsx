@@ -13,15 +13,17 @@ export const ErrorStatus: React.FunctionComponent<ErrorStatusProps> = ({
   style = {},
 }) => {
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <div style={{ paddingRight: 10 }}>
-        <ExclamationCircleFill
-          size={size}
-          style={{ color: "#ea4848", ...style }}
-          aria-label="Error icon"
-        />
-      </div>
-      <div>{msg}</div>
+    <div
+      style={{ display: "flex", alignItems: "center" }}
+      aria-label="Error"
+      role="status"
+    >
+      <ExclamationCircleFill
+        size={size}
+        style={{ color: "#ea4848", paddingRight: 10, ...style }}
+        aria-label="Error icon"
+      />
+      {msg}
     </div>
   );
 };

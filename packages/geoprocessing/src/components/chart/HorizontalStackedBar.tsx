@@ -48,8 +48,7 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
 
   .title {
     font-size: 0.9em;
-    width: ${(props) =>
-      props.$titleWidth ? props.$titleWidth : defaults.titleWidth}%;
+    width: ${(props) => props.$titleWidth || defaults.titleWidth}%;
     padding-right: 5px;
     text-align: right;
     color: #666;
@@ -64,11 +63,7 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
     }
     to {
       width: ${(props) =>
-        props.$showTitle
-          ? props.$titleWidth
-            ? props.$titleWidth
-            : defaults.titleWidth
-          : 92}%;
+        props.$showTitle ? props.$titleWidth || defaults.titleWidth : 92}%;
     }
   }
   @media screen and (min-width: 768px) {
@@ -78,11 +73,7 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
       }
       to {
         width: ${(props) =>
-          props.$showTitle
-            ? props.$titleWidth
-              ? props.$titleWidth
-              : defaults.titleWidth
-            : 92}%;
+          props.$showTitle ? props.$titleWidth || defaults.titleWidth : 92}%;
       }
     }
   }
@@ -184,7 +175,7 @@ const StyledHorizontalStackedBar = styled.div<StyledHorizontalStackedBarProps>`
           ${props.$targetLabelPosition || "top"}: ${
             props.$targetLabelStyle === "normal" ? "-15" : "-12"
           }px;
-          left: ${props.$target ? props.$target : 0}%;
+          left: ${props.$target || 0}%;
           width: 100px;
           text-align: left;
           font-size: 0.7em;

@@ -102,8 +102,13 @@ export const Dropdown = ({
   }
 
   return (
-    <div ref={DropownRef}>
-      <DropdownTrigger ref={referenceRef} onClick={handleDropdownClick}>
+    <div ref={DropownRef} aria-label="Dropdown">
+      <DropdownTrigger
+        ref={referenceRef}
+        onClick={handleDropdownClick}
+        aria-label={`${open ? "Close" : "Open"} dropdown menu`}
+        aria-expanded={open}
+      >
         {titleElement}
       </DropdownTrigger>
       <div
@@ -111,7 +116,11 @@ export const Dropdown = ({
         style={{ zIndex: 1000, ...styles.popper }}
         {...attributes.popper}
       >
-        <DropdownContainer style={styles.offset} open={open}>
+        <DropdownContainer
+          style={styles.offset}
+          open={open}
+          aria-label="Dropdown Menu"
+        >
           {children &&
             React.Children.map(children, (child) => {
               return <DropdownItem>{child}</DropdownItem>;

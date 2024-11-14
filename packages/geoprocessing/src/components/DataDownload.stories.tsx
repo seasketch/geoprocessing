@@ -1,7 +1,7 @@
 import React from "react";
 import DataDownload from "./DataDownload.js";
 import fixtures from "../testing/fixtures/index.js";
-import { SimpleButton } from "./buttons/SimpleButton.js";
+import { SimpleButton } from "./SimpleButton.js";
 import ReportDecorator from "./storybook/ReportDecorator.js";
 
 export default {

@@ -5,7 +5,6 @@ import {
   QuestionCircleFill,
 } from "@styled-icons/bootstrap";
 import { ObjectiveAnswer } from "../types/objective.js";
-import { styled } from "styled-components";
 
 export interface ObjectiveStatusProps {
   status: ObjectiveAnswer;
@@ -13,17 +12,6 @@ export interface ObjectiveStatusProps {
   size?: number;
   style?: React.HTMLAttributes<HTMLElement>["style"];
 }
-
-const TableStyled = styled.div`
-  .container {
-    display: flex;
-    margin: 10px 0px 10px 0px;
-    align-items: center;
-  }
-  .icon {
-    padding-right: 10px;
-  }
-`;
 
 export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
   status,
@@ -37,7 +25,7 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
       icon = (
         <CheckCircleFill
           size={size}
-          style={{ color: "#78c679", ...style }}
+          style={{ color: "#78c679", paddingRight: 10, ...style }}
           aria-label="Yes"
         />
       );
@@ -47,7 +35,7 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
       icon = (
         <QuestionCircleFill
           size={size}
-          style={{ color: "#fec44f", ...style }}
+          style={{ color: "#fec44f", paddingRight: 10, ...style }}
           aria-label="Maybe"
         />
       );
@@ -57,7 +45,7 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
       icon = (
         <XCircleFill
           size={size}
-          style={{ color: "#ED2C7C", ...style }}
+          style={{ color: "#ED2C7C", paddingRight: 10, ...style }}
           aria-label="No"
         />
       );
@@ -66,11 +54,13 @@ export const ObjectiveStatus: React.FunctionComponent<ObjectiveStatusProps> = ({
   }
 
   return (
-    <TableStyled>
-      <div className="container">
-        <div className="icon">{icon}</div>
-        <div>{msg}</div>
-      </div>
-    </TableStyled>
+    <div
+      style={{ display: "flex", alignItems: "center" }}
+      aria-label="Objective"
+      role="status"
+    >
+      {icon}
+      <div>{msg}</div>
+    </div>
   );
 };

@@ -4,7 +4,6 @@ export * from "./storybook/CardDecorator.js";
 export * from "./storybook/ReportStoryLayout.js";
 
 /* Core Components */
-export * from "./buttons/index.js";
 export * from "./chart/index.js";
 export * from "./diagram/index.js";
 export * from "./iucn/index.js";
@@ -32,6 +31,7 @@ export * from "./ReportError.js";
 export * from "./ReportPage.js";
 export * from "./ResultsCard.js";
 export * from "./SegmentControl.js";
+export * from "./SimpleButton.js";
 export * from "./Skeleton.js";
 export * from "./SketchAttributesCard.js";
 export * from "./Toolbar.js";

@@ -1,5 +1,5 @@
 import React from "react";
-import { SimpleButton } from "./buttons/SimpleButton.js";
+import { SimpleButton } from "./SimpleButton.js";
 import Dropdown from "./Dropdown.js";
 import ReportDecorator from "./storybook/ReportDecorator.js";
 import { ThreeDotsVertical } from "@styled-icons/bootstrap";

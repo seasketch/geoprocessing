@@ -145,6 +145,7 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
   private tree: RBushIndex;
   private dissolvedFeatureCache?: DissolvedFeatureCache;
   private needsRewinding?: boolean;
+  private metadataFetched: boolean = false;
 
   /**
    * VectorDataSource aids client-side or lambda based geoprocessing tools fetch
@@ -169,7 +170,6 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
       url: this.url,
       options: this.options,
     });
-    this.fetchMetadata();
   }
 
   static clearRegisteredSources() {
@@ -491,6 +491,9 @@ export class VectorDataSource<T extends Feature<Polygon | MultiPolygon>> {
     bbox: BBox,
     unionProperty?: string,
   ): Promise<FeatureCollection<T["geometry"], T["properties"]>> {
+    if (!this.metadataFetched) {
+      this.fetchMetadata();
+    }
     const features = await this.fetch(bbox);
     if (features.length === 0) {
       return fc([]);

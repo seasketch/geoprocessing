@@ -1,6 +1,3 @@
-/**
- * @vitest-environment node
- */
 import handler, { clipToLand } from "./clipToLand.js";
 import {
   polygonSmokeTest,

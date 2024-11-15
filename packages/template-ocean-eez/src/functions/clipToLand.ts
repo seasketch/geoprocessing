@@ -4,49 +4,36 @@ import {
   Sketch,
   isPolygonFeature,
   ValidationError,
-  clipToPolygonDatasources,
-  DatasourceClipOperation,
-  DefaultExtraParams,
+  VectorDataSource,
+  FeatureClipOperation,
+  clipToPolygonFeatures,
 } from "@seasketch/geoprocessing";
-import project from "../../project/projectClient.js";
+import { bbox } from "@turf/turf";
 
 /**
  * Preprocessor takes a Polygon feature/sketch and returns the portion that
- * overlaps with land. If results in multiple polygons then returns the largest.
+ * is on land.
  */
-export async function clipToLand(
-  feature: Feature | Sketch,
-  extraParams: DefaultExtraParams = {},
-): Promise<Feature> {
+export async function clipToLand(feature: Feature | Sketch): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
+  const featureBox = bbox(feature);
 
-  /**
-   * Subtract parts of feature/sketch that don't overlap with land. Uses global OSM land polygons
-   * unionProperty is specific to subdivided datasets.  When defined, it will fetch
-   * and rebuild all subdivided land features overlapping with the feature/sketch
-   * with the same gid property (assigned one per country) into one feature before clipping.
-   * This is useful for preventing slivers from forming and possible for performance.
-   * unionProperty will optionally filter the land features by one or more country ID so you can
-   * constrain it to a specific country.
-   */
-  const keepLand: DatasourceClipOperation = {
-    datasourceId: "global-clipping-osm-land",
+  // Get land polygons - osm land vector datasource
+  const landDatasource = new VectorDataSource(
+    "https://d3p1dsef9f0gjr.cloudfront.net/",
+  );
+  // one gid assigned per country, use to union subdivided pieces back together on fetch, prevents slivers
+  const landFC = await landDatasource.fetchUnion(featureBox, "gid");
+
+  const keepLand: FeatureClipOperation = {
     operation: "intersection",
-    options: {
-      unionProperty: "gid", // gid is assigned per country
-      propertyFilter: {
-        property: "gid",
-        values: extraParams?.countryIds || [project.basic.planningAreaId] || [],
-      },
-    },
+    clipFeatures: landFC.features,
   };
 
-  // Wrap clip function into preprocessing function with additional clip options
-  return clipToPolygonDatasources(project, feature, [keepLand], {
-    maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
-    enforceMaxSize: false,
+  // Execute one or more clip operations in order against feature
+  return clipToPolygonFeatures(feature, [keepLand], {
     ensurePolygon: true,
   });
 }
@@ -55,6 +42,5 @@ export default new PreprocessingHandler(clipToLand, {
   title: "clipToLand",
   description: "Clips portion of feature or sketch not overlapping land",
   timeout: 40,
-  requiresProperties: [],
-  memory: 4096,
+  memory: 1024,
 });

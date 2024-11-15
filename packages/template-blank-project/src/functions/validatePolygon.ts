@@ -18,10 +18,11 @@ export async function validatePolygon(
     throw new ValidationError("Input must be a polygon");
   }
   ensureValidPolygon(feature, {
-    minSize: 1,
-    enforceMinSize: false,
-    maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
-    enforceMaxSize: false,
+    allowSelfCrossing: false,
+    minSize: 0.0001, // square kilometers, 100 square meters
+    enforceMinSize: true,
+    maxSize: 1_000_000, // square kilometers
+    enforceMaxSize: true,
   });
 
   return feature;
@@ -32,5 +33,5 @@ export default new PreprocessingHandler(validatePolygon, {
   description:
     "Verifies that input is a valid polygon and within size guidelines",
   timeout: 40,
-  memory: 4096,
+  memory: 1024,
 });

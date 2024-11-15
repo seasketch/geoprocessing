@@ -1,6 +1,3 @@
-/**
- * @vitest-environment node
- */
 import Handler from "./simpleFunction.js";
 import {
   getExamplePolygonSketchAll,

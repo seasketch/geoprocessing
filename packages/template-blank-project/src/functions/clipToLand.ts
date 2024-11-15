@@ -34,8 +34,6 @@ export async function clipToLand(feature: Feature | Sketch): Promise<Feature> {
 
   // Execute one or more clip operations in order against feature
   return clipToPolygonFeatures(feature, [keepLand], {
-    maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
-    enforceMaxSize: false,
     ensurePolygon: true,
   });
 }
@@ -44,5 +42,5 @@ export default new PreprocessingHandler(clipToLand, {
   title: "clipToLand",
   description: "Clips portion of feature or sketch not overlapping land",
   timeout: 40,
-  memory: 4096,
+  memory: 1024,
 });

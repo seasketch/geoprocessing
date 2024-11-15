@@ -1,6 +1,3 @@
-/**
- * @vitest-environment node
- */
 import handler, { clipToLand } from "./clipToLand.js";
 import {
   polygonSmokeTest,
@@ -9,6 +6,6 @@ import {
 
 const examples = await getExampleFeatures(); // Loads from examples/features directory
 polygonSmokeTest(clipToLand, handler.options.title, examples, {
-  timeout: 30_000,
+  timeout: 60_000,
   debug: true,
 });

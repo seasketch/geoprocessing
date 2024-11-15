@@ -2,11 +2,10 @@ import {
   PreprocessingHandler,
   Feature,
   Sketch,
-  isPolygonFeature,
-  ValidationError,
   clipToPolygonFeatures,
   FeatureClipOperation,
   VectorDataSource,
+  ensureValidPolygon,
 } from "@seasketch/geoprocessing";
 import { bbox } from "@turf/turf";
 
@@ -15,15 +14,19 @@ import { bbox } from "@turf/turf";
  * is in the ocean (not on land). If results in multiple polygons then returns the largest.
  */
 export async function clipToOcean(feature: Feature | Sketch): Promise<Feature> {
-  if (!isPolygonFeature(feature)) {
-    throw new ValidationError("Input must be a polygon");
-  }
-  const featureBox = bbox(feature);
+  // throws if not valid with specific message
+  ensureValidPolygon(feature, {
+    minSize: 1,
+    enforceMinSize: false,
+    maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
+    enforceMaxSize: false,
+  });
 
   // Get land polygons - osm land vector datasource
   const landDatasource = new VectorDataSource(
     "https://d3p1dsef9f0gjr.cloudfront.net/",
   );
+  const featureBox = bbox(feature);
   // one gid assigned per country, use to union subdivided pieces back together on fetch, prevents slivers
   const landFC = await landDatasource.fetchUnion(featureBox, "gid");
 
@@ -34,8 +37,6 @@ export async function clipToOcean(feature: Feature | Sketch): Promise<Feature> {
 
   // Execute one or more clip operations in order against feature
   return clipToPolygonFeatures(feature, [eraseLand], {
-    maxSize: 500_000 * 1000 ** 2, // Default 500,000 KM
-    enforceMaxSize: false,
     ensurePolygon: true,
   });
 }
@@ -44,5 +45,5 @@ export default new PreprocessingHandler(clipToOcean, {
   title: "clipToOcean",
   description: "Clips feature or sketch to ocean, removing land",
   timeout: 40,
-  memory: 4096,
+  memory: 1024,
 });

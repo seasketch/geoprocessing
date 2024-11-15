@@ -2,6 +2,7 @@ import {
   clip,
   isPolygonFeature,
   isPolygonFeatureArray,
+  numberFormat,
 } from "../helpers/index.js";
 import { clipMultiMerge } from "../helpers/index.js";
 import {
@@ -16,6 +17,7 @@ import {
   featureCollection as fc,
   flatten,
   kinks,
+  booleanValid,
 } from "@turf/turf";
 import {
   ClipOptions,
@@ -30,54 +32,66 @@ import { ProjectClientInterface } from "../project/ProjectClientBase.js";
 import { getFeatures } from "../dataproviders/getFeatures.js";
 
 /**
- * Returns feature untouched if it is valid and meets requirements set by options.
- * @throws if invalid with reason
+ * Returns true if feature is valid and meets requirements set by options.
+ * @param feature - feature to validate
+ * @param options - validation options
+ * @param options.minSize - minimum size in square kilometers that polygon can be. Throws if smaller.
+ * @param options.enforceMinSize - Whether or not minSize should be enforced and throw if smaller
+ * @param options.maxSize - maxSize in square kilometers that polygon can be.  Throws if larger.
+ * @param options.enforceMaxSize - Whether or not maxSize should be enforced and throw if larger
+ * @throws if polygon is invalid with reason
+ * @returns true if valid
  */
 export function ensureValidPolygon(
-  /** feature to clip  */
   feature: Feature,
   options: {
-    /** minSize in square kilometers that polygon can be. Throws if smaller. */
+    allowSelfCrossing?: boolean;
     minSize?: number;
-    /** Whether or not minSize should be enforced and throw if smaller */
     enforceMinSize?: boolean;
-    /** maxSize in square kilometers that polygon can be.  Throws if larger. */
     maxSize?: number;
-    /** Whether or not maxSize should be enforced and throw if larger */
     enforceMaxSize?: boolean;
   } = {},
 ): boolean {
   const {
+    /** If false will throw error if shape crosses itself */
+    allowSelfCrossing = false,
+    /** Minimum shape size in square kilometers, defaults to 0 */
     minSize = 0,
-    enforceMinSize = false,
-    maxSize = 500_000,
-    enforceMaxSize = false,
+    /** If true will throw error if shape is less than minSize */
+    enforceMinSize = true,
+    /** Maximum shape size in square kilometers */
+    maxSize = 10_000_000,
+    /** If true will throw error if shape is more than maxSize */
+    enforceMaxSize = true,
   } = options;
-
-  //// INITIAL CHECKS ////
 
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
+  if (!booleanValid(feature)) {
+    throw new ValidationError("Polygon feature is invalid");
+  }
 
-  const MIN_SIZE_KM = minSize * 1_000_000;
-  const MAX_SIZE_KM = maxSize * 1_000_000;
+  if (allowSelfCrossing === false) {
+    const kinkPoints = kinks(feature);
+    if (kinkPoints.features.length > 0) {
+      throw new ValidationError("Your sketch polygon crosses itself");
+    }
+  }
 
-  if (enforceMinSize && area(feature) < MIN_SIZE_KM) {
+  const MIN_SIZE_SQ_METERS = minSize * 1_000_000;
+  const MAX_SIZE_SQ_METERS = maxSize * 1_000_000;
+
+  if (enforceMinSize && area(feature) < MIN_SIZE_SQ_METERS) {
     throw new ValidationError(
-      `Please limit sketches to under ${MIN_SIZE_KM} square km`,
+      `Shapes should be at least ${numberFormat(minSize > 1 ? minSize : MIN_SIZE_SQ_METERS)} square ${minSize > 1 ? "km" : "meters"} in size`,
     );
   }
 
-  if (enforceMaxSize && area(feature) > MAX_SIZE_KM) {
+  if (enforceMaxSize && area(feature) > MAX_SIZE_SQ_METERS) {
     throw new ValidationError(
-      `Please limit sketches to under ${MAX_SIZE_KM} square km`,
+      `Shapes should be no more than ${numberFormat(maxSize)} square km in size`,
     );
-  }
-
-  const kinkPoints = kinks(feature);
-  if (kinkPoints.features.length > 0) {
-    throw new ValidationError("Your sketch polygon crosses itself.");
   }
 
   return true;
@@ -85,7 +99,11 @@ export function ensureValidPolygon(
 
 /**
  * Returns a function that applies clip operations to a feature using other polygon features.
- * @throws if clipped feature is larger than maxSize, defaults to 500K km
+ * @param operations - array of DatasourceClipOperations
+ * @param options - clip options
+ * @param options.ensurePolygon - if true always returns single polygon.  If operations result in multiple polygons it returns the largest (defaults to true)
+ * @throws if a datasource fetch returns no features or if nothing remains of feature after clip operations
+ * @returns clipped polygon
  */
 export const genClipToPolygonFeatures = (
   clipOperations: FeatureClipOperation[],
@@ -99,56 +117,26 @@ export const genClipToPolygonFeatures = (
 
 /**
  * Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more Polygon features
- * If results in multiple polygons then returns the largest
- * @throws if input feature to clip is not a polygon or if enforceMaxSize is true and clipped feature is larger than maxSize, defaults to 500K km
+ * @param feature - feature to clip
+ * @param clipOperations - array of DatasourceClipOperations
+ * @param options - clip options
+ * @param options.ensurePolygon - if true always returns single polygon.  If operations result in multiple polygons it returns the largest (defaults to true)
+ * @throws if a datasource fetch returns no features or if nothing remains of feature after clip operations
+ * @returns clipped polygon
  */
 export async function clipToPolygonFeatures(
-  /** feature to clip  */
   feature: Feature,
   clipOperations: FeatureClipOperation[],
   options: ClipOptions = {},
 ): Promise<Feature<Polygon | MultiPolygon>> {
-  const {
-    minSize = 0,
-    enforceMinSize = false,
-    maxSize = 500_000,
-    enforceMaxSize = false,
-    ensurePolygon = true,
-  } = options;
-
-  //// INITIAL CHECKS ////
-
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
 
-  const MIN_SIZE_KM = minSize * 1_000_000;
-  const MAX_SIZE_KM = maxSize * 1_000_000;
-
-  if (enforceMinSize && area(feature) < MIN_SIZE_KM) {
-    throw new ValidationError(
-      `Please limit sketches to under ${MIN_SIZE_KM} square km`,
-    );
-  }
-
-  if (enforceMaxSize && area(feature) > MAX_SIZE_KM) {
-    throw new ValidationError(
-      `Please limit sketches to under ${MAX_SIZE_KM} square km`,
-    );
-  }
-
-  const kinkPoints = kinks(feature);
-  if (kinkPoints.features.length > 0) {
-    throw new ValidationError("Your sketch polygon crosses itself.");
-  }
-
+  const { ensurePolygon = true } = options;
   let clipped: Feature<Polygon | MultiPolygon> | null = feature; // Start with whole feature
 
-  //// CLIP OPERATIONS ////
-
-  // const clipOperations = await clipLoader(feature);
-
-  // Sequentially run clip operations in order.  If operation returns null at some point, don't do any more ops
+  // Sequentially run clip operations.  If operation returns null at some point, don't do any more ops
   for (const clipOp of clipOperations) {
     if (clipped !== null && clipOp.clipFeatures.length > 0) {
       if (clipOp.operation === "intersection") {
@@ -184,76 +172,53 @@ export async function clipToPolygonFeatures(
 }
 
 /**
- * Returns a function that applies clip operations to a feature using polygon datasource features
- * @throws if clipped feature is larger than maxSize, defaults to 500K km
+ * Returns a function that Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources
+ * @param project - project client to use for accessing datasources
+ * @param clipOperations - array of DatasourceClipOperations
+ * @param options - clip options
+ * @param options.ensurePolygon - if true always returns single polygon.  If operations result in multiple polygons it returns the largest (defaults to true)
+ * @throws if a datasource fetch returns no features or if nothing remains of feature after clip operations
+ * @returns clipped polygon
  */
 export const genClipToPolygonDatasources = <P extends ProjectClientInterface>(
   project: P,
-  /** Load clip features from datasources for clip operations */
-  operations: DatasourceClipOperation[],
+  clipOperations: DatasourceClipOperation[],
   options: ClipOptions = {},
 ) => {
-  const func = async (feature: Feature): Promise<Feature> => {
-    return clipToPolygonDatasources(project, feature, operations, options);
+  const func = async (
+    feature: Feature<Polygon | MultiPolygon>,
+  ): Promise<Feature> => {
+    return clipToPolygonDatasources(project, feature, clipOperations, options);
   };
   return func;
 };
 
 /**
  * Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources
- * If results in multiple polygons then returns the largest
- * @throws if input feature to clip is not a polygon or if enforceMaxSize is true and clipped feature is larger than maxSize, defaults to 500K km
+ * @param project - project client to use for accessing datasources
+ * @param feature - feature to clip
+ * @param clipOperations - array of DatasourceClipOperations
+ * @param options - clip options
+ * @param options.ensurePolygon - if true always returns single polygon.  If operations result in multiple polygons it returns the largest (defaults to true)
+ * @throws if a datasource fetch returns no features or if nothing remains of feature after clip operations
+ * @returns clipped polygon
  */
 export async function clipToPolygonDatasources<
   P extends ProjectClientInterface,
 >(
   project: P,
-  /** feature to clip  */
   feature: Feature,
-  /** Load clip features from datasources for clip operations */
-  operations: DatasourceClipOperation[],
+  clipOperations: DatasourceClipOperation[],
   options: ClipOptions = {},
 ): Promise<Feature<Polygon | MultiPolygon>> {
-  const {
-    minSize = 0,
-    enforceMinSize = false,
-    maxSize = 500_000,
-    enforceMaxSize = false,
-    ensurePolygon = true,
-  } = options;
-
-  //// INITIAL CHECKS ////
-
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
-
-  const MIN_SIZE_KM = minSize * 1_000_000;
-  const MAX_SIZE_KM = maxSize * 1_000_000;
-
-  if (enforceMinSize && area(feature) < MIN_SIZE_KM) {
-    throw new ValidationError(
-      `Please limit sketches to under ${MIN_SIZE_KM} square km`,
-    );
-  }
-
-  if (enforceMaxSize && area(feature) > MAX_SIZE_KM) {
-    throw new ValidationError(
-      `Please limit sketches to under ${MAX_SIZE_KM} square km`,
-    );
-  }
-
-  const kinkPoints = kinks(feature);
-  if (kinkPoints.features.length > 0) {
-    throw new ValidationError("Your sketch polygon crosses itself.");
-  }
-
+  const { ensurePolygon = true } = options;
   let clipped: Feature<Polygon | MultiPolygon> | null = feature; // Start with whole feature
 
-  //// CLIP OPERATIONS ////
-
-  const clipOperations = await Promise.all(
-    operations.map(async (o) => {
+  const featureOperations = await Promise.all(
+    clipOperations.map(async (o) => {
       const ds = project.getDatasourceById(o.datasourceId);
       if (!isInternalVectorDatasource(ds) && !isExternalVectorDatasource(ds)) {
         throw new Error(`Expected vector datasource for ${ds.datasourceId}`);
@@ -277,7 +242,7 @@ export async function clipToPolygonDatasources<
   );
 
   // Sequentially run clip operations in order.  If operation returns null at some point, don't do any more ops
-  for (const clipOp of clipOperations) {
+  for (const clipOp of featureOperations) {
     if (clipped !== null && clipOp.clipFeatures.length > 0) {
       if (clipOp.operation === "intersection") {
         clipped = clipMultiMerge(

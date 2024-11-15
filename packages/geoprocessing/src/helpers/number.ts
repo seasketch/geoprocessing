@@ -9,15 +9,21 @@ export const roundDecimal = (
   value: number,
   /** Number of digits after the decimal point to keep */
   decimals = 1,
-  options: RoundDecimalOptions = { keepSmallValues: false },
+  options: RoundDecimalOptions = {},
 ) => {
+  const { keepSmallValues = false } = options;
   const roundedValue = Number(
     Math.round(Number.parseFloat(`${value}e${decimals}`)) + `e-${decimals}`,
   );
 
-  return options.keepSmallValues && value && !roundedValue
-    ? value
-    : roundedValue;
+  return keepSmallValues && value && !roundedValue ? value : roundedValue;
+};
+
+/** Formats number to string, if less than zero will leave as-is, otherwise will format as large number */
+export const numberFormat = (val: number) => {
+  const NumberFormatter = new Intl.NumberFormat("en", { style: "decimal" });
+
+  return val < 0 ? `${val}` : NumberFormatter.format(val);
 };
 
 export interface PercentEdgeOptions {
@@ -48,12 +54,7 @@ export interface PercentEdgeOptions {
  */
 export const percentWithEdge = (
   val: number,
-  options: PercentEdgeOptions = {
-    digits: 1,
-    digitsIfMatchLower: 0,
-    lower: 0.001,
-    lowerBound: 0,
-  },
+  options: PercentEdgeOptions = {},
 ) => {
   const {
     digits = 1,
@@ -119,7 +120,7 @@ export const percentGoalWithEdge = (
   });
 };
 
-/** Formats number to string, rounding decimal to number of digits, with special handling of minimum bound */
+/** Formats number to string, rounding decimal to number of digits, if value is less than lower will clamp to lower value */
 export const roundLower = (val: number, { lower } = { lower: 1 }) => {
   const NumberFormatter = new Intl.NumberFormat("en", { style: "decimal" });
 

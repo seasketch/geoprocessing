@@ -4,6 +4,7 @@ import project from "../testing/project/testProjectClient.js";
 import {
   DatasourceClipOperation,
   FeatureClipOperation,
+  Polygon,
   Sketch,
 } from "../types/index.js";
 import {
@@ -92,7 +93,7 @@ describe("genPreprocessor", () => {
 
     const preprocessor = genClipToPolygonDatasources(project, clipOperations);
 
-    const theSketch: Sketch = {
+    const theSketch: Sketch<Polygon> = {
       type: "Feature",
       properties: {
         name: "fsm-east-west",
@@ -134,16 +135,7 @@ describe("genClipToPolygonsPreprocessor", () => {
     ];
 
     const preprocessor = genClipToPolygonFeatures(featureOperations);
-    const result = await preprocessor({
-      type: "Feature",
-      properties: {
-        name: "fsm-east-west",
-        updatedAt: "2022-11-17T10:02:53.645Z",
-        sketchClassId: "123abc",
-        id: "abc123",
-      },
-      geometry: fix.poly2.geometry, // half inside outer feature polygon
-    });
+    const result = await preprocessor(fix.poly2);
 
     expect(result).toBeTruthy();
     expect(area(result)).toBe(area(fix.poly2Inner));
@@ -158,16 +150,7 @@ describe("genClipToPolygonsPreprocessor", () => {
     ];
 
     const preprocessor = genClipToPolygonFeatures(featureOperations, {});
-    const result = await preprocessor({
-      type: "Feature",
-      properties: {
-        name: "fsm-east-west",
-        updatedAt: "2022-11-17T10:02:53.645Z",
-        sketchClassId: "123abc",
-        id: "abc123",
-      },
-      geometry: fix.poly3.geometry, // fully outside outer feature polygon
-    });
+    const result = await preprocessor(fix.poly3);
 
     expect(result).toBeTruthy();
     expect(area(result)).toBe(area(fix.poly3)); // should be same as input

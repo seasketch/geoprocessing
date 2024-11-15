@@ -8,14 +8,16 @@ Returns a function that applies clip operations to a feature using other polygon
 
 ## Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `clipOperations` | [`FeatureClipOperation`](../interfaces/FeatureClipOperation.md)[] |
-| `options` | [`ClipOptions`](../interfaces/ClipOptions.md) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `clipOperations` | [`FeatureClipOperation`](../interfaces/FeatureClipOperation.md)[] | - |
+| `options` | [`ClipOptions`](../interfaces/ClipOptions.md) | clip options |
 
 ## Returns
 
 `Function`
+
+clipped polygon
 
 ### Parameters
 
@@ -29,4 +31,4 @@ Returns a function that applies clip operations to a feature using other polygon
 
 ## Throws
 
-if clipped feature is larger than maxSize, defaults to 500K km
+if a datasource fetch returns no features or if nothing remains of feature after clip operations

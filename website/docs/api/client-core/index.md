@@ -1435,6 +1435,12 @@ Re-exports [NullSketchCollection](../geoprocessing/interfaces/NullSketchCollecti
 
 ***
 
+### numberFormat
+
+Re-exports [numberFormat](../geoprocessing/functions/numberFormat.md)
+
+***
+
 ### Objective
 
 Re-exports [Objective](../geoprocessing/type-aliases/Objective.md)

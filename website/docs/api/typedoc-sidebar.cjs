@@ -1333,6 +1333,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/ensureValidPolygon",
+            "label": "ensureValidPolygon"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/featureToSketch",
             "label": "featureToSketch"
           },
@@ -1930,6 +1935,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/nestMetrics",
             "label": "nestMetrics"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/numberFormat",
+            "label": "numberFormat"
           },
           {
             "type": "doc",

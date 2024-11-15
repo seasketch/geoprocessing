@@ -3,11 +3,11 @@
 ```ts
 function genClipToPolygonDatasources<P>(
    project, 
-   operations, 
+   clipOperations, 
 options): (feature) => Promise<Feature<Geometry, GeoJsonProperties>>
 ```
 
-Returns a function that applies clip operations to a feature using polygon datasource features
+Returns a function that Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources
 
 ## Type Parameters
 
@@ -19,19 +19,21 @@ Returns a function that applies clip operations to a feature using polygon datas
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `project` | `P` | - |
-| `operations` | [`DatasourceClipOperation`](../interfaces/DatasourceClipOperation.md)[] | Load clip features from datasources for clip operations |
-| `options` | [`ClipOptions`](../interfaces/ClipOptions.md) | - |
+| `project` | `P` | project client to use for accessing datasources |
+| `clipOperations` | [`DatasourceClipOperation`](../interfaces/DatasourceClipOperation.md)[] | array of DatasourceClipOperations |
+| `options` | [`ClipOptions`](../interfaces/ClipOptions.md) | clip options |
 
 ## Returns
 
 `Function`
 
+clipped polygon
+
 ### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
-| `feature` | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
+| `feature` | [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> |
 
 ### Returns
 
@@ -39,4 +41,4 @@ Returns a function that applies clip operations to a feature using polygon datas
 
 ## Throws
 
-if clipped feature is larger than maxSize, defaults to 500K km
+if a datasource fetch returns no features or if nothing remains of feature after clip operations

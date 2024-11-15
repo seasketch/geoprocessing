@@ -21,7 +21,7 @@
 | ------ | ------ |
 | [BaseImportDatasourceConfig](interfaces/BaseImportDatasourceConfig.md) | - |
 | [CalcStatsOptions](interfaces/CalcStatsOptions.md) | options accepted by geoblaze.stats() to calc-stats library See https://github.com/DanielJDufour/calc-stats/tree/main?tab=readme-ov-file#advanced-usage |
-| [ClipOptions](interfaces/ClipOptions.md) | Optional parameters for preprocessor function |
+| [ClipOptions](interfaces/ClipOptions.md) | Optional parameters for polygon clip preprocessor |
 | [DatasourceClipOperation](interfaces/DatasourceClipOperation.md) | Parameters for clip operation using a datasource |
 | [DatasourceOptions](interfaces/DatasourceOptions.md) | - |
 | [DefaultExtraParams](interfaces/DefaultExtraParams.md) | Common set of extra parameters that might be passed to a geoprocessing function Replace or extend these as needed, there is nothing special about the param names other than to be descriptive of what they represent. |
@@ -113,11 +113,12 @@
 | [cleanCoords](functions/cleanCoords.md) | Cleans geojson coordinates to be within the bounds of the world [-90, -180, 90, 180], so that they don't wrap off the end, and can be split |
 | [clip](functions/clip.md) | Performs clip operation on features |
 | [clipMultiMerge](functions/clipMultiMerge.md) | Performs clip by merging features2 coords into a single multipolygon. Useful when you need features2 to be seen as a single unit when clipping feature1 (e.g. intersection) |
-| [clipToPolygonDatasources](functions/clipToPolygonDatasources.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources If results in multiple polygons then returns the largest |
-| [clipToPolygonFeatures](functions/clipToPolygonFeatures.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more Polygon features If results in multiple polygons then returns the largest |
+| [clipToPolygonDatasources](functions/clipToPolygonDatasources.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources |
+| [clipToPolygonFeatures](functions/clipToPolygonFeatures.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more Polygon features |
 | [collectionHasGeometry](functions/collectionHasGeometry.md) | - |
 | [createMetric](functions/createMetric.md) | Creates a new metric. Defaults to ID values of null and then copies in passed metric properties |
 | [createMetrics](functions/createMetrics.md) | Creates fully defined metrics from partial. Metric values not provided are initialized to null |
+| [ensureValidPolygon](functions/ensureValidPolygon.md) | Returns true if feature is valid and meets requirements set by options. |
 | [featureToSketch](functions/featureToSketch.md) | Converts Feature to Sketch with reasonable defaults given for sketch properties if not provided |
 | [featureToSketchCollection](functions/featureToSketchCollection.md) | Converts FeatureCollection to SketchCollection with reasonable defaults given for sketch properties if not provided |
 | [fetchGeoJSON](functions/fetchGeoJSON.md) | Given geoprocessing function request, fetches the GeoJSON, which can also be sketch JSON |
@@ -132,7 +133,7 @@
 | [flattenSketchAllId](functions/flattenSketchAllId.md) | Returns one aggregate object for every sketch ID present in metrics, with additional property for each unique value for idProperty present for sketch. Example - idProperty of 'classId', and two classes are present in metrics of 'classA', and 'classB' then each flattened object will have two extra properties per sketch, .classA and .classB, each with the first metric value for that sketch/idProperty found |
 | [gearTypeScore](functions/gearTypeScore.md) | - |
 | [genClipLoader](functions/genClipLoader.md) | Given a project client and 1 or more clip operations, returns a function that when called loads clip features from their datasources that overlap with the feature polygon to clip. Pass this function to genPreprocessor() and it will take care of the rest. |
-| [genClipToPolygonDatasources](functions/genClipToPolygonDatasources.md) | Returns a function that applies clip operations to a feature using polygon datasource features |
+| [genClipToPolygonDatasources](functions/genClipToPolygonDatasources.md) | Returns a function that Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources |
 | [genClipToPolygonFeatures](functions/genClipToPolygonFeatures.md) | Returns a function that applies clip operations to a feature using other polygon features. |
 | [genFeature](functions/genFeature.md) | Returns a Feature with given features geometry and properties. Reasonable defaults are given for properties not provided Default geometry is a square from 0,0 to 1,1 |
 | [genFeatureCollection](functions/genFeatureCollection.md) | Given array of features, return a feature collection with given properties. Generates reasonable default values for any properties not passed in The geometry type of the returned collection will match the one passed in Properties of features are retained |
@@ -238,6 +239,7 @@
 | [mpaClassMetric](functions/mpaClassMetric.md) | Given sketch for rbcsMpa with rbcs activity userAttributes, assumes mpa is a single zone mpa and returns metrics with mpa classification score |
 | [mpaClassMetrics](functions/mpaClassMetrics.md) | Given sketch for rbcsMpa or collection of sketches for rbcsMpas with rbcs activity userAttributes, assumes each mpa is a single zone mpa and returns metrics with mpa classification score Collection metric will have mpa classification score index as value |
 | [nestMetrics](functions/nestMetrics.md) | Recursively groups metrics by ID in order of ids specified to create arbitrary nested hierarchy for fast lookup. Caller responsible for all metrics having the ID properties defined If an id property is not defined on a metric, then 'undefined' will be used for the key |
+| [numberFormat](functions/numberFormat.md) | Formats number to string, if less than zero will leave as-is, otherwise will format as large number |
 | [overlapArea](functions/overlapArea.md) | Assuming sketches are within some outer boundary with size outerArea, calculates the area of each sketch and the proportion of outerArea they take up. |
 | [overlapAreaGroupMetrics](functions/overlapAreaGroupMetrics.md) | Generate overlap group metrics using overlapArea operation |
 | [overlapFeatures](functions/overlapFeatures.md) | Calculates overlap between sketch(es) and an array of polygon features. Supports area or sum operation (given sumProperty), defaults to area If sketch collection includes overall and per sketch |
@@ -263,7 +265,7 @@
 | [removeSketchCollPolygonHoles](functions/removeSketchCollPolygonHoles.md) | - |
 | [removeSketchPolygonHoles](functions/removeSketchPolygonHoles.md) | - |
 | [roundDecimal](functions/roundDecimal.md) | Rounds a number to a fixed precision |
-| [roundLower](functions/roundLower.md) | Formats number to string, rounding decimal to number of digits, with special handling of minimum bound |
+| [roundLower](functions/roundLower.md) | Formats number to string, rounding decimal to number of digits, if value is less than lower will clamp to lower value |
 | [runLambdaWorker](functions/runLambdaWorker.md) | Runs a function on a specified lambda worker |
 | [sampleSketchReportContextValue](functions/sampleSketchReportContextValue.md) | Creates a ReportContextValue object for a Sketch with sample values. overrides will be merged in, replacing default values |
 | [scanTasks](functions/scanTasks.md) | - |

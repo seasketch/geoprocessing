@@ -4,7 +4,7 @@
 function roundLower(val, __namedParameters): string
 ```
 
-Formats number to string, rounding decimal to number of digits, with special handling of minimum bound
+Formats number to string, rounding decimal to number of digits, if value is less than lower will clamp to lower value
 
 ## Parameters
 

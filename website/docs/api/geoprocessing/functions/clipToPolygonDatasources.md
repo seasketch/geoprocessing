@@ -4,12 +4,11 @@
 function clipToPolygonDatasources<P>(
    project, 
    feature, 
-   operations, 
+   clipOperations, 
 options): Promise<Feature<Polygon | MultiPolygon>>
 ```
 
 Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources
-If results in multiple polygons then returns the largest
 
 ## Type Parameters
 
@@ -21,15 +20,17 @@ If results in multiple polygons then returns the largest
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `project` | `P` | - |
+| `project` | `P` | project client to use for accessing datasources |
 | `feature` | [`Feature`](../interfaces/Feature.md)\<[`Geometry`](../type-aliases/Geometry.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> | feature to clip |
-| `operations` | [`DatasourceClipOperation`](../interfaces/DatasourceClipOperation.md)[] | Load clip features from datasources for clip operations |
-| `options` | [`ClipOptions`](../interfaces/ClipOptions.md) | - |
+| `clipOperations` | [`DatasourceClipOperation`](../interfaces/DatasourceClipOperation.md)[] | array of DatasourceClipOperations |
+| `options` | [`ClipOptions`](../interfaces/ClipOptions.md) | clip options |
 
 ## Returns
 
 `Promise`\<[`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md)\>\>
 
+clipped polygon
+
 ## Throws
 
-if input feature to clip is not a polygon or if enforceMaxSize is true and clipped feature is larger than maxSize, defaults to 500K km
+if a datasource fetch returns no features or if nothing remains of feature after clip operations

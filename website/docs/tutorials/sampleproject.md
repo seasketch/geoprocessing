@@ -16,7 +16,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.44 init 7.0.0-experimental-7x-simplify.44
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.54 init 7.0.0-experimental-7x-simplify.54
 ```
 
 ```text
@@ -78,31 +78,26 @@ You can learn more about your projects [folder structure](../structure.md)
 
 ## Preprocessing
 
-Preprocessing function are invoked by the SeaSketch platform, on a user-drawn shape, right after the user finishes drawing it. It's a specialized geoprocessing function that validates a drawn shape, and modifies it if necessary. Typical requirements include:
+Preprocessing function are invoked by the SeaSketch platform, on a user-drawn shape, right after the user finishes drawing it. It's a specialized function that validates a drawn shape and potentially modifies it, such as to remove portions of the shape outside the planning boundary. This "clipping" of the shape is useful in that it allows a user to overdraw beyond the planning boundary and it will be clipped right to the edge of that boundary.
 
-- Check shape is a valid polygon, no self-crossing.
-- Check shape is within the planning area boundary, and remove any portion that is outside of it.
-- Check shape meets minimum size or is below maximum size
+In the `src/functions` directory you will find four preprocessing functions that come with every project, and they are further configureable to meet your needs:
+`validatePolygon` - verifies shape is not self-crossing, is at least 500 square meters in size, and no larger than 1 million square kilometers.
+`clipToLand` - clips the shape to just the portion on land, as defined by OpenStreeMap land polygons. Includes validatePolygon.
+`clipToOcean` - clips the shape to remove the portion on land, as defined by OpenStreetMap land polygons. Includes validatePolygon.
+`clipToOceanEez` - clips the shape to keep the portion within the boundary from the coastline to the outer boundary of the EEZ. Includes validatePolygon.
 
-Your new project comes with two preprocessing functions, the second two building on the abilities of the first:
+### Testing
 
-- `src/functions/validatePolygon` - ensure polygon shape is valid, no self-crossing, and optionally is within min and max size guidelines.
-- `src/functions/clipToLand` - validate shape and erase portion that is over ocean. Good for land-based planning projects.
-- `src/functions/clipToOcean` - validate shape and erase portion that is over land. Good for ocean-based planning projects.
+Each preprocessing function has its own unit test and smoke test file. For example:
 
-These three preprocessing functions are already registered in `project/geoprocessing.json`. If you were to deploy your project to AWS, they would become available to be assigned to a sketch class in your SeaSketch project.
+- Unit: `src/functions/validatePolygon.test.ts`
+- Smoke: `src/functions/validatePolygonSmoke.test.ts`
 
-### Example Features
+**Unit tests** ensure the preprocessor produces exact output for very specific input features and configuration, and throws errors properly.
 
-Each preprocessing function has its own smoke test:
+**Smoke tests** are about ensuring the preprocessor behaves properly for your project location, and that its results "look right" for a variety of input features. It does this by loading example shapes from the project `examples/features` directory. It then runs the preprocessing function on the examples, makes sure they produce "truthy" output, and saves them to `examples/output`.
 
-- `src/functions/validatePolygonSmoke.test.ts`
-- `src/functions/clipToLandSmoke.test.ts`
-- `src/functions/clipToOceanSmoke.test.ts`
-
-And each of those smoke tests uses the `polygonSmokeTest` helper function, which loads example shapes from your `examples/features` directory, runs the preprocessing function on them, valids the outputs, and saves it to `examples/output`.
-
-To test your preprocessing functions, we need to create test shapes within the extent of our Micronesian planning area. To do that, run this script:
+To test your preprocessing functions, we need to create example features within the extent of our Micronesian planning area. To do this, run the following script:
 
 ```bash
 npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon1.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
@@ -110,11 +105,15 @@ npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygo
 npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon2.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
 ```
 
-Now run the smoke tests:
+This will output an example Feature and an example FeatureCollection to `examples/features`.
+
+Now run the tests:
 
 ```bash
 npm test
 ```
+
+You can now look at the geojson output visually by opening it in QGIS or pasting it into geojson.io. This is the best way to verify the preprocessor worked as expected. You should commit the output files to your git repository so that you can track changes over time.
 
 To learn more about preprocessing, check out the [guide](../preprocessing.md)
 

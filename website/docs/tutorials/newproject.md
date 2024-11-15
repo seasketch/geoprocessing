@@ -1,25 +1,25 @@
 # Create New Geoprocessing Project
 
-This tutorial walks you through creating your own project and some of the decisions you'll face along the way.
+This tutorial walks you through designing and creating your own geoprocessing report. It covers many of the questions and decisions you might face along the way.
 
 This tutorial assumes:
 
 - Your [system setup](./Tutorials.md) is complete
 - You completed the [sample project tutorial](./sampleproject.md)
-- Your geoprocessing virtual environment is running (Devcontainer or WSL)
+- Your geoprocessing virtual environment is currently running (Devcontainer or WSL)
 - You have VSCode open in your virtual environment with a terminal pane open
 
-Have questions along the way? [Start a discussion](https://github.com/seasketch/geoprocessing/discussions) on Github.
+## Where Do I Start?
 
-## How Do I Design It?
+Creating a geoprocessing project is not linear, it's iterative. You don't need to have all the answers for your project or understand all the features of the framework. Here's one approach:
 
-Creating a geoprocessing project is rarely linear, especially your first time. It's iterative. Don't worry if you don't have all the answers or understand all the features of the framework. Here's one approach:
-
-- Start with a rough design. Consider this [template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing)
-- Explore the [UI component library](/storybook)
-- Look at reports in other SeaSketch projects.
-- Start simple - one report section, one metric
-  - create a SeaSketch project
+- [Explore and design](#explore-and-design)
+  - Explore report building blocks
+  - Look at reports in other SeaSketch projects
+  - Create a rough design
+- [Build](#build)
+  - Start simple - one report section, one metric
+  - [create a SeaSketch project]
   - initialize a geoprocessing project
   - link your data into project workspace
   - import a datasource
@@ -29,12 +29,19 @@ Creating a geoprocessing project is rarely linear, especially your first time. I
   - build and deploy to AWS
   - connect your seasketch project
   - draw sketch and run report
-- Iterate. - add more features
+- [Expand and Iterate]
+  - add more features
   - preprocessing function
     Geographies and MetricGroups.
 - As you hit new walls, look at your options to overcome.
 
-## How Do I Build It?
+## Explore and Design
+
+[UI component library](/storybook)
+
+Here is a design [template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing) the SeaSketch team uses. A document like this is a good place to capture thinking, solicit feedback, and record decisions. This is invaluable later when you try to remember why you built it the way you did, or if a new person needs to come up to speed on the project.
+
+## Build
 
 The geoprocessing framework is a set of building blocks. It's up to you to figure out which you need and how to put them together.
 
@@ -89,17 +96,17 @@ Examples of more complex projects:
 - [Samoa Reports](https://github.com/seasketch/samoa-reports)
 - [Azores Nearshore Reports](https://github.com/seasketch/azores-nearshore-reports).
 
-## Create SeaSketch Project
+### Create SeaSketch Project
 
 First, follow the [instructions](https://docs.seasketch.org/seasketch-documentation/administrators-guide/getting-started) to create a new SeaSketch project. This includes defining the planning bounds and [creating a Sketch class](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes). You will want to create a `Polygon` sketch class with a name that makes sense for you project (e.g. MPA for Marine Protected Area) and then also a `Collection` sketch class to group instances of your polygon sketch class into. Note that sketch classes are where you will integrate your geoprocessing services to view reports, but you will not do it at this time.
 
-## Initialize New Project
+### Initialize New Project
 
 Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.44 init 7.0.0-experimental-7x-simplify.44
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.54 init 7.0.0-experimental-7x-simplify.54
 ```
 
 Tips:
@@ -110,11 +117,11 @@ Tips:
 
 Learn more about your projects [structure](../structure.md)
 
-## Link Data Into Workspace
+### Link Data Into Workspace
 
 Choose how to [bring data into your workspace](../linkData.md).
 
-## Import Datasources
+### Import Datasources
 
 Methods:
 
@@ -134,7 +141,7 @@ Methods:
 
 If the data you'll use in analysis is already published online, publicly accessible, and in flatgeobuf or cloud-optimized geotiff format, then you can directly access them.
 
-## Smoke Test With Examples
+### Smoke Test With Examples
 
 Methods to generate examples:
 
@@ -163,13 +170,13 @@ The smoke test for your geoprocessing function will run the function against eve
 Learn more about testing and debugging in
 [testing](../Testing.md)
 
-## Write Report Client
+### Write Report Client
 
-## Build and Deploy to AWS
+### Build and Deploy to AWS
 
 [Deploy your project](deploy.md)
 
-### Debugging build failure
+#### Debugging build failure
 
 If the build step fails, you will need to look at the error message and figure out what you need to do. Did it fail in building the functions or the clients? 99% of the time you should be able to catch these errors sooner. If VSCode finds invalid Typescript code, it will warn you with files marked in `red` in the Explorer panel or with red markes and squiggle text in any of the files.
 
@@ -186,6 +193,8 @@ Choose `MpaTabReport` as report client
 
 Test different sketch and collection scenarios. When you find one that errors or does something unexpected, then you can export that sketch to your projects `examples/sketches` directory and run your smoke tests. If that succeeds and produces output as expected, then load your storybook and see if you can reproduce in your report client.
 
+## Expand and Iterate
+
 ## Use Advanced Features
 
 These features you should only use if you need them.
@@ -196,9 +205,9 @@ It has a lot of shortcut methods for working with datsources, geographies, preca
 
 [Link to project client ]
 
-## Configure Geography
+### Configure Geography
 
-### Precalc Metrics
+#### Precalc Metrics
 
 At the very least you should import your planning boundaries, preferably as individual files, or as individual layers within a file package.
 
@@ -227,11 +236,11 @@ You must re-run `precalc:data` every time you change a geography record or a dat
 - To learn more advanced use, see the [precalc](../precalc.md) guide.
 - To learn more about use of precalculated metrics, see the [report client](../reportclient.md) guide.
 
-## Metric Groups
+### Metric Groups
 
 How you intend to use your data will determine what form the data needs to be in.
 
-### Examples By Use Case
+#### Examples By Use Case
 
 - Do you have vector data?
   - Does it have a single data class?
@@ -257,6 +266,10 @@ How you intend to use your data will determine what form the data needs to be in
 - Edits to the statistic you want calculated (i.e.calculating average instead of sum, etc) should happen in your function (`src/functions/benthicHabitat.ts`).
 - Edits to the way the analytics are displayed (i.e. changing labels, converting units, adding text context, etc) should happen in your component (`src/components/BenthicHabitat.tsx`).
 
-## Language Translation
+### Language Translation
 
 Language translation takes effort to maintain. It is suggested that you get your reports close to final, in the English language, and then [add translations](../gip/GIP-1-i18n.md#language-translation-tutorial).
+
+## What Next
+
+Still have more questions? [Start a discussion](https://github.com/seasketch/geoprocessing/discussions) on Github.

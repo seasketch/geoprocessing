@@ -90,7 +90,21 @@
       "cwd": "${workspaceFolder}/packages/template-ocean-eez",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/template-ocean-eez/node_modules/.bin/geoprocessing",
+        "${workspaceRoot}/node_modules/.bin/geoprocessing",
+        "test"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229
+    },
+    {
+      "name": "template-blank-project - debug tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/template-blank-project",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/.bin/geoprocessing",
         "test"
       ],
       "console": "integratedTerminal",

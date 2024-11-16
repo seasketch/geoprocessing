@@ -8,8 +8,8 @@ import {
   Feature,
   isSketchCollection,
   genSketchCollection,
-  getFeatures,
 } from "@seasketch/geoprocessing";
+import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import { bbox, featureCollection, simplify } from "@turf/turf";
 import project from "../../project/projectClient.js";
 import {

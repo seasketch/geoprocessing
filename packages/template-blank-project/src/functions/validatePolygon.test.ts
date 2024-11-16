@@ -39,7 +39,6 @@ describe("validatePolygon", () => {
 
   test("validatePolygon - invalid polygon should throw", async () => {
     try {
-      console.log("area bowtie", area(bowtie));
       await validatePolygon(bowtie);
     } catch (error: unknown) {
       if (error instanceof Error) {

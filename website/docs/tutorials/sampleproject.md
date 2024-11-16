@@ -46,7 +46,7 @@ After pressing Enter, your project will be created and all NodeJS software depen
 Now, re-open VSCode one level deeper, in your project folder::
 
 ```text
-Click File -> Open Folder
+File -> Open Folder
 Type /workspaces/fsm-reports-test/
 Press Ctrl-J or Ctrl-backtick to open a new terminal
 ```

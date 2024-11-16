@@ -14,8 +14,8 @@ import {
   DefaultExtraParams,
   splitSketchAntimeridian,
   isVectorDatasource,
+  getFeatures,
 } from "@seasketch/geoprocessing";
-import { getFeatures } from "@seasketch/geoprocessing/dataproviders";
 import { bbox } from "@turf/turf";
 import project from "../../project/projectClient.js";
 import { clipToGeography } from "../util/clipToGeography.js";

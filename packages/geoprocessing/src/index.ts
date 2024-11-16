@@ -7,6 +7,7 @@
 
 export * from "./aws/index.js";
 export * from "./datasources/index.js";
+export * from "./dataproviders/index.js";
 export * from "./helpers/index.js";
 export * from "./iucn/index.js";
 export * from "./metrics/index.js";

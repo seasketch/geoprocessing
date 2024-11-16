@@ -32,7 +32,10 @@ test("flatgeobuf - local world fgb", async () => {
   const url = "http://127.0.0.1:8080/data/in/world.fgb";
   const features = await loadFgb(url);
   expect(features.length).toEqual(1);
-  expect(canonicalize(features)).toEqual(str);
+  // Note the id: 0 that flatgeobuf client adds automatically now
+  expect(canonicalize(features)).toEqual(
+    '[{"geometry":{"coordinates":[[[-180,90],[-180,-90],[180,-90],[180,90],[-180,90]]],"type":"Polygon"},"id":0,"properties":{"description":"World","name":"World boundary"},"type":"Feature"}]',
+  );
 });
 
 test("flatgeobuf - file countries fgb from disk", async () => {

@@ -72,6 +72,7 @@
     "storybook": "^8.2.9",
     "vite": "^5.4.2",
     "vitest": "^2.0.5",
+    "vitest-fetch-mock": "^0.4.2",
     "zx": "^8.1.5"
   }
 }

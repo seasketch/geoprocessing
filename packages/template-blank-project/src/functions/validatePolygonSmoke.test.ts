@@ -1,6 +1,3 @@
-/**
- * @vitest-environment node
- */
 import handler, { validatePolygon } from "./validatePolygon.js";
 import {
   polygonSmokeTest,

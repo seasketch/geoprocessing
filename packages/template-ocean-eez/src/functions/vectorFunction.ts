@@ -10,8 +10,8 @@ import {
   Feature,
   isVectorDatasource,
   overlapFeatures,
-  loadFgb,
 } from "@seasketch/geoprocessing";
+import { loadFgb } from "@seasketch/geoprocessing/dataproviders";
 import bbox from "@turf/bbox";
 import project from "../../project/projectClient.js";
 import {

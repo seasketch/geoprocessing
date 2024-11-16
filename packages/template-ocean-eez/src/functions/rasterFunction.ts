@@ -9,8 +9,8 @@ import {
   splitSketchAntimeridian,
   rasterMetrics,
   isRasterDatasource,
-  loadCog,
 } from "@seasketch/geoprocessing";
+import { loadCog } from "@seasketch/geoprocessing/dataproviders";
 import project from "../../project/projectClient.js";
 import {
   Metric,

@@ -25,8 +25,8 @@ import {
   MultiPolygon,
   getFirstFromParam,
   rasterMetrics,
+  loadCog,
 } from "@seasketch/geoprocessing";
-import { loadCog } from "@seasketch/geoprocessing/dataproviders";
 import project from "../../project";
 import { clipToGeography } from "../util/clipToGeography";
 ```

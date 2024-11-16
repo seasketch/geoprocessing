@@ -2,7 +2,7 @@
 
 Preprocessing function are invoked by the SeaSketch platform, on a user-drawn shape, right after the user finishes drawing it. It's a specialized function that validates a drawn shape and potentially modifies it, such as to remove portions of the shape outside the planning boundary. This "clipping" of the shape allows a user to overdraw beyond the boundary and it will be clipped right to the edge of the boundary.
 
-In the `src/functions` directory you will find four preprocessing functions that come with every project, and they are further configureable to meet your needs:
+In the `src/functions` directory you will find four preprocessing functions that come with every project, and they are further configureable or customizeable to meet your needs:
 `validatePolygon` - verifies shape is not self-crossing, is at least 500 square meters in size, and no larger than 1 million square kilometers.
 `clipToLand` - clips the shape to just the portion on land, as defined by OpenStreeMap land polygons. Includes validatePolygon.
 `clipToOcean` - clips the shape to remove the portion on land, as defined by OpenStreetMap land polygons. Includes validatePolygon.
@@ -12,23 +12,65 @@ These preprocessing functions are already registered in the projects `geoprocess
 
 ## Testing
 
-## Creating
+Each preprocessing function alread has its own unit test and smoke test file. For example:
 
-There are three approaches to creating a preprocessing function, from hight level to low level:
+- Unit: `src/functions/validatePolygon.test.ts`
+- Smoke: `src/functions/validatePolygonSmoke.test.ts`
 
-- clipToPolygonDatasources
-- clipToPolygonFeatures
-- custom function
+**Unit tests** ensure the preprocessor produces exact output for very specific input features and configuration, and throws errors properly.
+
+**Smoke tests** are about ensuring the preprocessor behaves properly for your project location, and that its results "look right" for a variety of input features. It does this by loading example shapes from the project `examples/features` directory. It then runs the preprocessing function on the examples, makes sure they produce "truthy" output, and saves them to `examples/output`.
+
+To test your preprocessing functions, we need to create example features within the extent of your planning boundary. To do this you need the bounding box. QGIS and other tools can provide it.
+
+Here's another way you can acquire it. Assume your planning boundary is in a file called `boundary.shp`. Use the `ogrinfo` command to get the metadata for that shape.
+
+```bash
+ogrinfo -so -json data/src/boundary
+```
+
+You will see deep in the output a `geometryFields` property, which contains the bounding box extent of your layer. Use the `jq` utility to extract this extent, here's an example:
+
+```bash
+ogrinfo -so -json data/src/boundary.shp | jq -c .layers[0].geometryFields[0].extent
+[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]
+```
+
+With this extent you can now use the `genRandomPolygon` script to generate some features:
+
+```bash
+npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon1.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
+
+npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon2.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
+```
+
+This will output an example Feature and an example FeatureCollection to `examples/features`.
+
+Now run the tests:
+
+```bash
+npm test
+```
+
+You can now look at the geojson output visually by opening it in QGIS or pasting it into geojson.io. This is the best way to verify the preprocessor worked as expected. You should commit the output files to your git repository so that you can track changes over time.
+
+## Creating A Geoprocessing Function
+
+There are three approaches to creating a preprocessing function, from high level to low level:
+
+- `clipToPolygonDatasources` - performns one or more clip operations on a polygon feature using one or more datasources.
+- `clipToPolygonFeatures` - performs one or more clip operations on a polygon feature using one or more arrays of Polygon features.
+- custom function - create your own preprocessing function from scratch, without the clip operations helper.
+
+The example preprocessors that come with the project all use `clipToPolygonFeatures`.
 
 Let's compare them.
 
-## clipToPolygonDatasources
+### clipToPolygonDatasources
 
-This function is useful if you already manage one or more polygon `Datasources` in your project. It will perform one or more clip operations on the input `feature`. For each clip, you specify the operation type (intersection or difference) and the datasource. It will fetch the using the . The operations are applied in the order received and can be an `intersection` or `difference`.
+This method is useful if you use the `Datasources` feature of the framework. You will need to have imported a polygon datasource to clip using the `data:import` command, or added a third-party datasource to `project/datasources.json` manually.
 
-clip operations on to performs on the user sketch an array of clip operations to
-
-If you use the `datasources` feature of the framework, then this option allows you to data used in your preprocessing functions are registered as datasources in your project, then this is the simplest approach.
+This function will perform one or more clip operations on the input `feature`. For each clip operation, you specify the type (intersection or difference) and the datasource. It will fetch the features for the datasource using the appropriate client. The operations are applied in the order defined by the array.
 
 ```typescript
 export async function clipToLand(
@@ -59,9 +101,46 @@ export async function clipToLand(
 }
 ```
 
-## clipToPolygonFeatures
+### clipToPolygonFeatures
 
-If you
+This method is useful if you import your datasources manually, have a third-party URL for a cloud-optimized datasource, or if you simply want to have lower-level control over how you access your project datasource. The preprocessors that come with the project all demonstrate fetching from a third-party VectorDataSource. Here are examples of importing JSON directly, and fetching features from a project datasource already published to S3 as a cloud-optimized flatgeobuf file.
+
+#### Import GeoJSON features
+
+Assume you have a file `data/src/boundary.js` containing the following:
+
+```json
+//ToDo
+```
+
+If you have a pure GeoJSON file `data/src/boundary.json`:
+
+```json
+{
+  {
+  "type": "FeatureCollection",
+  "name": "multi_class_valuability",
+  "crs": {
+    "type": "name",
+    "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" }
+  },
+  "features": [
+    /// features
+  ]
+  }
+}
+```
+
+you can import it directly and cast it to the appropriate type (or parse and validate the type with the library of your choice):
+
+```typescript
+import { FeatureCollection, Polygon } from "@seasketch/geoprocessing";
+import boundary from "./boundary.json" assert { type: "json" };
+
+const boundaryFC = boundary as FeatureCollection<Polygon>;
+```
+
+#### Fetch Flatgeobuf
 
 ```typescript
 export async function clipToLand(feature: Feature | Sketch): Promise<Feature> {
@@ -90,55 +169,10 @@ export async function clipToLand(feature: Feature | Sketch): Promise<Feature> {
 
 ## Custom Preprocessor
 
-genPreprocessor offers a quick method for creating a preprocessing function when you just need to perform one or more clip operations on your sketch (intersection or difference) using published datasources. Offers useful checks that can be enabled such as `ensurePolygon`, `minSize`, `maxSize`, `enforceMinSize` and `enforceMaxSize`.
-
-Here's an example that clips a sketch to a nearshore 6 nautical mile boundary
+Here's a custom preprocessing function that simply verifies the Polygon feature is valid and not self-crossing
 
 ```typescript
-import {
-  PreprocessingHandler,
-  genPreprocessor,
-} from "@seasketch/geoprocessing";
-import project from "../../project";
-import { genClipLoader } from "@seasketch/geoprocessing/dataproviders";
-
-const clipLoader = genClipLoader(project, [
-  {
-    datasourceId: "6nm_boundary",
-    operation: "intersection",
-    options: {},
-  },
-]);
-
-export const clipToOceanEez = genPreprocessor(clipLoader);
-
-export default new PreprocessingHandler(clipToOceanEez, {
-  title: "clipToOceanEez",
-  description: "Example-description",
-  timeout: 40,
-  requiresProperties: [],
-  memory: 4096,
-});
-```
-
-More examples include:
-
-- [clipToOceanEez](https://github.com/seasketch/geoprocessing/blob/dev/packages/template-ocean-eez/src/functions/clipToOceanEez.ts)
-- [clipToLand](https://github.com/seasketch/geoprocessing/blob/dev/packages/template-ocean-eez/src/functions/clipToLand.ts)
-
-## Custom Preprocessor
-
-Examples of a custom preprocessing function
-
-```typescript
-/**
- * Takes a Polygon feature and returns the portion that is in the ocean and within an EEZ boundary
- * If results in multiple polygons then returns the largest
- */
-export async function clipToOceanEez(
-  feature: Feature,
-  eezFilterByNames?: string[],
-): Promise<Feature> {
+export async function validatePolygon(feature: Feature): Promise<Feature> {
   if (!isPolygonFeature(feature)) {
     throw new ValidationError("Input must be a polygon");
   }
@@ -148,33 +182,6 @@ export async function clipToOceanEez(
     throw new ValidationError("Your sketch polygon crosses itself.");
   }
 
-  let clipped = await clipLand(feature);
-  if (clipped) clipped = await clipOutsideEez(clipped, eezFilterByNames);
-
-  if (!clipped || area(clipped) === 0) {
-    throw new ValidationError("Sketch is outside of project boundaries");
-  } else {
-    if (clipped.geometry.type === "MultiPolygon") {
-      const flattened = flatten(clipped);
-      let biggest = [0, 0];
-      for (var i = 0; i < flattened.features.length; i++) {
-        const a = area(flattened.features[i]);
-        if (a > biggest[0]) {
-          biggest = [a, i];
-        }
-      }
-      return flattened.features[biggest[1]] as Feature<Polygon>;
-    } else {
-      return clipped;
-    }
-  }
+  return feature;
 }
-
-export default new PreprocessingHandler(clipToOceanEez, {
-  title: "clipToOceanEez",
-  description:
-    "Erases portion of sketch overlapping with land or extending into ocean outsize EEZ boundary",
-  timeout: 40,
-  requiresProperties: [],
-});
 ```

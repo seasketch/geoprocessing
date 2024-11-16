@@ -9,6 +9,7 @@ import {
   splitSketchAntimeridian,
   rasterMetrics,
   isRasterDatasource,
+  loadCog,
 } from "@seasketch/geoprocessing";
 import project from "../../project/projectClient.js";
 import {
@@ -18,7 +19,6 @@ import {
   sortMetrics,
 } from "@seasketch/geoprocessing/client-core";
 import { clipToGeography } from "../util/clipToGeography.js";
-import { loadCog } from "@seasketch/geoprocessing/dataproviders";
 
 /**
  * rasterFunction: A geoprocessing function that calculates overlap metrics

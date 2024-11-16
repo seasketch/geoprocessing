@@ -10,6 +10,7 @@ import {
   Feature,
   isVectorDatasource,
   overlapFeatures,
+  loadFgb,
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import project from "../../project/projectClient.js";
@@ -20,7 +21,6 @@ import {
   sortMetrics,
 } from "@seasketch/geoprocessing/client-core";
 import { clipToGeography } from "../util/clipToGeography.js";
-import { fgbFetchAll } from "@seasketch/geoprocessing/dataproviders";
 
 /**
  * vectorFunction: A geoprocessing function that calculates overlap metrics
@@ -71,7 +71,7 @@ export async function vectorFunction(
         // Fetch features overlapping with sketch, pull from cache if already fetched
         const features =
           cachedFeatures[curClass.datasourceId] ||
-          (await fgbFetchAll<Feature<Polygon | MultiPolygon>>(url, sketchBox));
+          (await loadFgb<Feature<Polygon | MultiPolygon>>(url, sketchBox));
         cachedFeatures[curClass.datasourceId] = features;
 
         // If this is a sub-class, filter by class name

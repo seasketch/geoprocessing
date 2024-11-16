@@ -75,7 +75,7 @@ export async function evAreaOverlap(
           // Fetch features overlapping with sketch, pull from cache if already fetched
           const dsFeatures =
             cachedFeatures[curClass.datasourceId] ||
-            (await fgbFetchAll<Feature<Polygon>>(url, box));
+            (await loadFgb<Feature<Polygon>>(url, box));
           cachedFeatures[curClass.datasourceId] = dsFeatures;
 
           // If this is a sub-class, filter by class name, exclude null geometry too

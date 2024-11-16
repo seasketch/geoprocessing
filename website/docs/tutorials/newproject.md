@@ -18,75 +18,67 @@ Creating a geoprocessing project is not linear, it's iterative. You don't need t
   - Look at reports in other SeaSketch projects
   - Create a rough design
 - [Build](#build)
-  - Start simple - one report section, one metric
-  - [create a SeaSketch project]
-  - initialize a geoprocessing project
-  - link your data into project workspace
-  - import a datasource
-  - write a geoprocessing function
-  - export example polygons and run smoke tests
-  - write report client using storybook
-  - build and deploy to AWS
-  - connect your seasketch project
-  - draw sketch and run report
-- [Expand and Iterate]
+- [Expand and Iterate](#expand-and-iterate)
   - add more features
   - preprocessing function
-    Geographies and MetricGroups.
-- As you hit new walls, look at your options to overcome.
+  - Geographies and MetricGroups
+- [What next?](#what-next)
 
 ## Explore and Design
 
 [UI component library](/storybook)
 
+Look at other SeaSketch Reports
+
 Here is a design [template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing) the SeaSketch team uses. A document like this is a good place to capture thinking, solicit feedback, and record decisions. This is invaluable later when you try to remember why you built it the way you did, or if a new person needs to come up to speed on the project.
 
 ## Build
 
-The geoprocessing framework is a set of building blocks. It's up to you to figure out which you need and how to put them together.
+### Start Simple
+
+The geoprocessing framework is a set of building blocks. Which ones you use are up to you.
 
 If your planning process is simple:
 
-- one or no planning area
-- no concern about overlapping sketches
-- smaller datasets with no precalculation needed
+- a single planning boundary or none at all
+- straightforward objectives
+- smaller datasets
 - short running analysis
-- no classification of protection levels
-- straightforward objectives with no targets
-- Limited number of dimensions to each objective
-- english only language
+- no classification of sketch types (e.g. protection levels)
+- no need to handle overlapping sketch polygons
 
-Then your geoprocessing project can be kept simple. A good example of this is [Oregon](https://github.com/underbluewaters/oregon-next) project reports.
+Then your geoprocessing project can be kept simple.
 
 - no precalculation needed
 - manual prep and publish of datasources to S3, or even direct import of GeoJSON files in geoprocessing functions.
 - simple metrics calculated directly using libraries Turf and Geoblaze
 - simple reports rendering a few values, a table, a chart
 
+A good example of this is [Oregon](https://github.com/underbluewaters/oregon-next) SeaSketch reports.
+
+### Then Get Complicated
+
 As your planning process gets more complex:
 
-- multiple planning areas (offshore/nearshore)
-- even more boundary types used for assessing (e.g. bioregions)
-- planning area crossing the 180 degree antimeridian
-- classification system with protection levels
+- multiple planning boundaries (offshore/nearshore) with combined objectives
+- multiple objectives with targets
+- large datasets with multiple subclasses.
+- long running analysis with required precalculation
+- sketch classification system (e.g. protection levels)
 - enforcing rules about overlapping sketches
-- large datasets with multiple subclasses of data requiring pre-calculation.
-- long running analysis
-- multiple levels of objectives with targets
-- large number of dimensions to metrics
-- multiple languages
 
-Then your geoprocessing project becomes more complex, and there are some higher level features to make this more manageable:
+Then your project may benefit from more sophisticated building blocks, sometimes at the cost of flexibility:
 
-- `data:import` and `data:publish` commands automating transform and publish of cloud-optimized formats to S3
-- `Geography` records representing project planning boundaries and utilities like `clipToGeography`
-- `precalc` command auto-calculating overlay stats for all combinations of Datasources and Geographies ahead of time.
-- `Metric` data type for representing multi-dimensional data.
-- `MetricGroup` records representing all project metrics and their data classes, datasources, objectives with targets, etc.
-- `rasterMetrics` and `overlapFeatures` analysis modules supporting Geographies and Metrics, with built-in support for SketchCollections and handling of sketch overlap.
+- Project `Datasource` records, managed via `data:import` and `data:publish` with automated import, transform, and publish to S3.
+- `Geography` records representing project planning boundaries
+- `Metric` records for representing common multi-dimensional analysis results.
+- `Objective` records representing objective targets per sketch class.
+- `MetricGroup` records connecting metric results to their data classes, datasource, objective target, etc.
+- toolbox for calculating overlay analysis metrics at the collection level in many dimensions simultaneously - by data class, by protection level, by planning boundary. Can even handle sketches overlapping themselves and not double counting overlay stats.
+- UI components that can work with all of these record types - `ClassTable`, `SketchClassTable`, `GeographySwitcher`, `RbcsMpaObjective`
+- `precalc` command pre-calculating overlay stats ahead of time for combinations of Datasources and Geographies.
 - `worker` functions to spread processing across more Lambdas to run in parallel.
-- library of UI building blocks that understand `MetricGroups` and `Metrics` and are pre-translated in all languages.
-- `translation` workflow using third-party POEditor service.
+- Language `translation` workflow and library of pre-translated UI components.
 
 Examples of more complex projects:
 
@@ -106,7 +98,7 @@ Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.54 init 7.0.0-experimental-7x-simplify.54
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.56 init 7.0.0-experimental-7x-simplify.56
 ```
 
 Tips:
@@ -195,9 +187,7 @@ Test different sketch and collection scenarios. When you find one that errors or
 
 ## Expand and Iterate
 
-## Use Advanced Features
-
-These features you should only use if you need them.
+There are more advanced features available if you need them.
 
 ## Project Client
 

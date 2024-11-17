@@ -7,5 +7,5 @@ import {
 const examples = await getExampleFeatures(); // Loads from examples/features directory
 polygonSmokeTest(clipToOcean, handler.options.title, examples, {
   timeout: 60_000,
-  debug: true,
+  debug: false,
 });

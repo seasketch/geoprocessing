@@ -3,7 +3,13 @@ export interface RoundDecimalOptions {
   keepSmallValues?: boolean;
 }
 
-/** Rounds a number to a fixed precision  */
+/**
+ * Rounds number to a fixed number of decimals
+ * @param value Value to round
+ * @param decimals Number of digits after the decimal point to keep
+ * @param options.keepSmallValues If true, will keep any small value as-is which would be rounded to 0, defaults to false
+ * @returns rounded number
+ */
 export const roundDecimal = (
   /** Value to round */
   value: number,
@@ -17,6 +23,24 @@ export const roundDecimal = (
   );
 
   return keepSmallValues && value && !roundedValue ? value : roundedValue;
+};
+
+/**
+ * Rounds number to a fixed number of decimals, then formats as a human readable string
+ * @param value Value to round
+ * @param decimals Number of digits after the decimal point to keep
+ * @param options.keepSmallValues If true, will keep any small value as-is which would be rounded to 0, defaults to false
+ * @returns rounded number as a human readable string
+ */
+export const roundDecimalFormat = (
+  /** Value to round */
+  value: number,
+  /** Number of digits after the decimal point to keep */
+  decimals = 1,
+  options: RoundDecimalOptions = {},
+) => {
+  const NumberFormatter = new Intl.NumberFormat("en", { style: "decimal" });
+  return NumberFormatter.format(roundDecimal(value, decimals, options));
 };
 
 /** Formats number to string, if less than zero will leave as-is, otherwise will format as large number */

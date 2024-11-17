@@ -495,7 +495,7 @@ flatbush: string = "^3.3.0";
 ### dependencies.flatgeobuf
 
 ```ts
-flatgeobuf: string = "3.33.0";
+flatgeobuf: string = "3.36.0";
 ```
 
 ### dependencies.fs-extra
@@ -850,12 +850,6 @@ vitest: string = "^2.0.5";
 
 ```ts
 vitest-fetch-mock: string = "^0.3.0";
-```
-
-### dependencies.web-streams-polyfill
-
-```ts
-web-streams-polyfill: string = "4.0.0";
 ```
 
 ### dependencies.ws

@@ -156,7 +156,7 @@ return {
 };
 ```
 
-Below that, a new `GeoprocessingHandler` is instantiated, with the function passed into it. Behind the scenes, this is wrapping simpleFunction in an AWS Lambda handler function, such that it can be deployed to AWS and invoked by a browser report client.
+Below that, a new `GeoprocessingHandler` is instantiated, with the function passed into it. Behind the scenes, this is wrapping simpleFunction in an AWS Lambda handler function. This allows the function to be deployed to AWS and invoked using an API call by a report client running in a web browser.
 
 ```typescript
 export default new GeoprocessingHandler(simpleFunction, {
@@ -180,7 +180,7 @@ You can change all these parameter values to suit your needs, but the default va
 
 ### SimpleReport
 
-A report client is the top-level React component for creating a report. The clients role is usually to define the report layout, organize the report sections, and establish language translation. Two starter report clients are provided in the `src/clients` directory.
+A report client is the top-level React component for creating a report. They are located in the `src/clients` directory. The report client is responsible for defining the overall report layout by rendering one or more pages of cards, and setting up language translation. The report clients role compared to its underlying page and card components (located in `src/components`) is not strict, they are all just React components. Two starter report clients are provided in the `src/clients` directory.
 
 `SimpleReport.tsx` - one page report client containing a SketchAttributesCard and a SimpleCard.
 
@@ -241,13 +241,13 @@ This establishes the pattern that the geoprocessing function is responsible for 
 
 ### Generate Examples
 
-With a working geoprocessing function and report client already in place, you're ready to generate example sketches for testing them. Specificially, you want sketch polygons that fall within the Micronesia Exclusive Economic Zone. To do this, first let's inspect the Micronesia EEZ polygon data layer in our data package.
+With a working geoprocessing function and report client already in place, you're ready to generate example sketches for testing them. We'll use the same `genRandomPolygon` script as before. But let's look closer at how we figured out the bounding box extent of the Micronesian planning area. First, use ogrinfo to inspect the Micronesia EEZ polygon data layer in your data package.
 
 ```bash
 ogrinfo -so -json data/src/eez_withland_mr.fgb
 ```
 
-You will see deep in the output a `geometryFields` property, which contains the bounding box extent of the EEZ feature. Use the `jq` utility to extract this extent:
+Deep in its output you will see a `geometryFields` property, which contains the bounding box extent of the EEZ feature. Use the `jq` utility to extract this extent:
 
 ```bash
 ogrinfo -so -json data/src/eez_withland_mr.fgb | jq -c .layers[0].geometryFields[0].extent
@@ -257,8 +257,8 @@ ogrinfo -so -json data/src/eez_withland_mr.fgb | jq -c .layers[0].geometryFields
 This will output an array with the extent of the EEZ. Now run the genRandomPolygon script with this extent. The following commands will create a Sketch polygon, and then a SketchCollection containing 10 Sketch polygons.
 
 ```bash
-npx tsx scripts/genRandomPolygon.ts --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]" --bboxShrinkFactor 5 --sketch
-npx tsx scripts/genRandomPolygon.ts --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]" --bboxShrinkFactor 5 --sketch --numFeatures 10
+npx tsx scripts/genRandomPolygon.ts --outDir examples/sketches --filename sketch1.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]" --bboxShrinkFactor 5 --sketch
+npx tsx scripts/genRandomPolygon.ts --outDir examples/sketches --filename sketchCollection1.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]" --bboxShrinkFactor 5 --sketch --numFeatures 10
 ```
 
 The `--bboxShrinkFactor` argument used shrinks the height and width of the given bbox by a factor of 5, and then generates random features that are within that reduced bbox. A suitable shrink factor value was discovered through trial and error. Simply visualize the resulting json file in QGIS or other software and find a value that produces polygons that are completely within the planning area polygon. (see image below).
@@ -306,11 +306,11 @@ Open the storybook URL in your browser and click through the stories.
 
 ![Storybook initial view](./assets/storybook-one.jpg)
 
-An powerful feature of Storybook is that when you save edits to your report client or its components, storybook will refresh automatically with the changes. This lets you develop your reports and debug them more quickly.
+A powerful feature of Storybook is that when you save edits to your report client or component code, storybook will refresh the browser automatically with the changes. This lets you develop your reports and debug them more quickly.
 
 Let's make a change to the report client now and make it clear to the user whether their result is for a single sketch polygon, or a sketch collection.
 
-First, at the top of the file, import the useSketchProperties react hook along with ResultsCard from the client-ui module.
+First, at the top of the `SimpleCard.tsx` file, import the useSketchProperties react hook along with ResultsCard from the client-ui module.
 
 ```typescript
 import {
@@ -325,25 +325,20 @@ Then, below the `useTranslation()` call, invoke the useSketchProperties hook
 const [{ isCollection }] = useSketchProperties();
 ```
 
-Finally, render a different message depending on whether the sketch is a collection or not. Swap in the following code:
+Finally, render a slightly different message depending on whether the sketch is a collection or not. Swap in the following code:
 
 ```typescript
 <p>
-  📐
-  {
-    isCollection === false && <Trans i18nKey="SimpleCard sketch size message">
-    This sketch is{" "}
-    <b>{{ area }}</b>{" "}
-    square kilometers
-    </Trans>
-  }
-  {
-    isCollection === true && <Trans i18nKey="SimpleCard sketch collection size message">
-    This sketch collection is{" "}
-    <b>{{ area }}</b>{" "}
-    square kilometers
+  <Trans
+    i18nKey="SimpleCard sketch size message"
+    values={{
+      collection: isCollection ? " collection" : "",
+      area: Number.format(Math.round(data.area * 1e-6)),
+    }}
+    components={{ 1: <b /> }}
+  >
+    {`This sketch{{collection}} is <1>{{area}}</1> square kilometers.`}
   </Trans>
-  }
 </p>
 ```
 

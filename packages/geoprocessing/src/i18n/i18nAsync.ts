@@ -64,23 +64,30 @@ export function createI18nAsyncInstance(
           // Load translations
           let baseLangResources = {};
           try {
-            const baseLangToLoadPath = `${baseLangPath}/${langToLoad}/${namespace}.json`;
-            const curModule = baseLangModules[baseLangToLoadPath];
-            baseLangResources = JSON.parse(
-              ((await curModule()) as unknown as any).default,
-            );
+            if (isDefault) {
+              // Do not load if default language, let components render strings directly
+              baseLangResources = {};
+            } else {
+              const baseLangToLoadPath = `${baseLangPath}/${langToLoad}/${namespace}.json`;
+              const curModule = baseLangModules[baseLangToLoadPath];
+              baseLangResources = JSON.parse(
+                ((await curModule()) as unknown as any).default,
+              );
+            }
           } catch {
             console.info(`Warning: failed to find base lang resource.`);
           }
-          console.log("language baseLangResources", baseLangResources);
+          // console.log("language baseLangResources", baseLangResources);
 
           let langResources = {};
           if (langPath !== undefined) {
             try {
               if (isDefault) {
+                // Do not load if default language, let components render strings directly
                 langResources = {};
               } else {
                 const langToLoadPath = `${langPath}/${langToLoad}/${namespace}.json`;
+                console.log("language langToLoadPath", langToLoadPath);
                 const curModule = langModules[langToLoadPath];
                 langResources = JSON.parse(
                   ((await curModule()) as unknown as any).default,
@@ -90,8 +97,8 @@ export function createI18nAsyncInstance(
               console.info(`Warning: failed to find lang resource.`);
             }
           }
-          console.log("language langResources", langResources);
-          console.log("language extraTerms", extraTerms);
+          // console.log("language langResources", langResources);
+          // console.log("language extraTerms", extraTerms);
 
           // Return merged translations
           if (isDefault) {

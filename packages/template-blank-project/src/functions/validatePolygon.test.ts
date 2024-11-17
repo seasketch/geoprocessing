@@ -2,6 +2,16 @@ import { describe, test, expect, vi, afterEach, assert } from "vitest";
 import { area, polygon } from "@turf/turf";
 import { validatePolygon } from "./validatePolygon.js";
 
+const valid = polygon([
+  [
+    [0, 0],
+    [0.1, 0],
+    [0.1, 0.1],
+    [0, 0.1],
+    [0, 0],
+  ],
+]);
+
 const bowtie = polygon([
   [
     [0, 0],
@@ -75,5 +85,11 @@ describe("validatePolygon", () => {
       }
     }
     assert.fail("This should not be reached");
+  });
+
+  test("validatePolygon - valid polygon", async () => {
+    console.log("valid", area(valid));
+    const validatedPolygon = await validatePolygon(valid);
+    expect(validatedPolygon).toEqual(valid);
   });
 });

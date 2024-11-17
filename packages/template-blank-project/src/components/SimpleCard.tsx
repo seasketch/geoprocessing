@@ -6,10 +6,9 @@ import {
 } from "@seasketch/geoprocessing/client-ui";
 // Import SimpleResults to type-check data access in ResultsCard render function
 import { SimpleResults } from "../functions/simpleFunction.js";
-import Translator from "../components/TranslatorAsync.js";
 import { roundDecimalFormat } from "@seasketch/geoprocessing/client-core";
 
-const SimpleCard = () => {
+export const SimpleCard = () => {
   const { t } = useTranslation();
   const [{ isCollection }] = useSketchProperties();
   const titleTrans = t("SimpleCard title", "Simple Report");
@@ -24,7 +23,10 @@ const SimpleCard = () => {
                   i18nKey="SimpleCard sketch size message"
                   values={{
                     collection: isCollection ? " collection" : "",
-                    area: roundDecimalFormat(data.area, 0),
+                    /** Area converted to square kilometers, rounded and formatted, with very small numbers maintained */
+                    area: roundDecimalFormat(data.area / 1_000_000, 1, {
+                      keepSmallValues: true,
+                    }),
                   }}
                   components={{ 1: <b /> }}
                 >
@@ -38,14 +40,3 @@ const SimpleCard = () => {
     </>
   );
 };
-
-// Default export lazy-loaded by top-level ReportApp
-export const TranslatedSimpleCard = () => {
-  return (
-    <Translator>
-      <SimpleCard />
-    </Translator>
-  );
-};
-
-export default TranslatedSimpleCard;

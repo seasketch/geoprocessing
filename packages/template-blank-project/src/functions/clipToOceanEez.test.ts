@@ -68,6 +68,7 @@ describe("clipToOceanEez", () => {
   });
 
   // Mock VectorDataSource fetchUnion method to return clipFeature
+  // @ts-ignore
   vi.mock(import("@seasketch/geoprocessing"), async (importOriginal) => {
     const actual = await importOriginal();
     const VectorDataSource = vi.fn();

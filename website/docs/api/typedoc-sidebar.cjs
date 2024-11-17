@@ -2068,6 +2068,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/roundDecimalFormat",
+            "label": "roundDecimalFormat"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/roundLower",
             "label": "roundLower"
           },

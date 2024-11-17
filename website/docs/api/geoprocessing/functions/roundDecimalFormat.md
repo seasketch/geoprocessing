@@ -1,13 +1,13 @@
-# roundDecimal()
+# roundDecimalFormat()
 
 ```ts
-function roundDecimal(
+function roundDecimalFormat(
    value, 
    decimals, 
-   options): number
+   options): string
 ```
 
-Rounds number to a fixed number of decimals
+Rounds number to a fixed number of decimals, then formats as a human readable string
 
 ## Parameters
 
@@ -19,6 +19,6 @@ Rounds number to a fixed number of decimals
 
 ## Returns
 
-`number`
+`string`
 
-rounded number
+rounded number as a human readable string

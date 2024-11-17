@@ -264,7 +264,8 @@
 | [rekeyObject](functions/rekeyObject.md) | Reorders object, mutating in place, in the order provided |
 | [removeSketchCollPolygonHoles](functions/removeSketchCollPolygonHoles.md) | - |
 | [removeSketchPolygonHoles](functions/removeSketchPolygonHoles.md) | - |
-| [roundDecimal](functions/roundDecimal.md) | Rounds a number to a fixed precision |
+| [roundDecimal](functions/roundDecimal.md) | Rounds number to a fixed number of decimals |
+| [roundDecimalFormat](functions/roundDecimalFormat.md) | Rounds number to a fixed number of decimals, then formats as a human readable string |
 | [roundLower](functions/roundLower.md) | Formats number to string, rounding decimal to number of digits, if value is less than lower will clamp to lower value |
 | [runLambdaWorker](functions/runLambdaWorker.md) | Runs a function on a specified lambda worker |
 | [sampleSketchReportContextValue](functions/sampleSketchReportContextValue.md) | Creates a ReportContextValue object for a Sketch with sample values. overrides will be merged in, replacing default values |

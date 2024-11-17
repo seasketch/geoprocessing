@@ -16,7 +16,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.56 init 7.0.0-experimental-7x-simplify.56
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-simplify.67 init 7.0.0-experimental-7x-simplify.67
 ```
 
 ```text
@@ -202,12 +202,10 @@ export const SimpleReport = () => {
 SimpleReport renders two report cards, `SimpleCard` and `SketchAttributesCard`, wrapping them in a languge `Translator` (more on that in the next tutorial). SketchAttributes card is a built-in report component imported from `@seasketch/geoprocessing/client-ui`. SimpleCard is a custom report component found at `src/components/SimpleCard.tsx`, which we can look at now.
 
 ```jsx
-/**
- * SimpleCard component
- */
 export const SimpleCard = () => {
   const { t } = useTranslation();
-  const titleTrans = t("SimpleCard title", "Zone Report");
+  const [{ isCollection }] = useSketchProperties();
+  const titleTrans = t("SimpleCard title", "Simple Report");
   return (
     <>
       <ResultsCard title={titleTrans} functionName="simpleFunction">
@@ -215,11 +213,18 @@ export const SimpleCard = () => {
           return (
             <>
               <p>
-                📐
-                <Trans i18nKey="SimpleCard sketch size message">
-                  This sketch is{" "}
-                  <b>{{ area: Number.format(Math.round(data.area * 1e-6)) }}</b>{" "}
-                  square kilometers
+                <Trans
+                  i18nKey="SimpleCard sketch size message"
+                  values={{
+                    collection: isCollection ? " collection" : "",
+                    /** Area converted to square kilometers, rounded and formatted, with very small numbers maintained */
+                    area: roundDecimalFormat(data.area / 1_000_000, 1, {
+                      keepSmallValues: true,
+                    }),
+                  }}
+                  components={{ 1: <b /> }}
+                >
+                  {`This sketch{{collection}} is <1>{{area}}</1> square kilometers.`}
                 </Trans>
               </p>
             </>
@@ -231,11 +236,11 @@ export const SimpleCard = () => {
 };
 ```
 
-The first thing to notice is that SimpleCard contains a lot of boilerplate for translating report strings with the `useTranslation` hook, `t` function, and `Trans` component. If your reports need to be multi-lingual you will need to use these, otherwise you don't.
+The first thing to notice is that SimpleCard contains a lot of boilerplate for translating report strings with the `useTranslation` hook, `t` function, and `Trans` component. If your reports need to be multi-lingual you will need to use these, otherwise you can drop it and just render English strings.
 
 The next thing to notice is that SimpleCard renders a `ResultsCard` component. Behind the scenes ResultsCard invokes simpleFunction and passes the results to its child render function. The child render function takes an input parameter `data` that has the same type as the result of `simpleFunction`. Now, within the render function you have access to the function result object, fully typed.
 
-This particular render function simply takes the calculated area value and makes it presentable to the user. First, the area value is converted from square meters to square kilometers, then rounded to a whole number, and formatted it in a way suitable to the users locale (for US this is a comma for thousand separator, and period for decimal separator).
+This particular render function takes the calculated area value and makes it presentable to the user. First, the area value is converted from square meters to square kilometers, then rounded to a whole number, and formatted in a way suitable to the users locale (for US this is a comma for thousand separator, and period for decimal separator). Also notice that it renders a slightly different message depending on whether it is a single sketch or a sketch collection being reported on.
 
 This establishes the pattern that the geoprocessing function is responsible for calculating the raw values, and defining the result type interface, so that the meaning of the values is clear. The presentation details are left to be done in the report client.
 
@@ -307,44 +312,6 @@ Open the storybook URL in your browser and click through the stories.
 ![Storybook initial view](./assets/storybook-one.jpg)
 
 A powerful feature of Storybook is that when you save edits to your report client or component code, storybook will refresh the browser automatically with the changes. This lets you develop your reports and debug them more quickly.
-
-Let's make a change to the report client now and make it clear to the user whether their result is for a single sketch polygon, or a sketch collection.
-
-First, at the top of the `SimpleCard.tsx` file, import the useSketchProperties react hook along with ResultsCard from the client-ui module.
-
-```typescript
-import {
-  ResultsCard,
-  useSketchProperties,
-} from "@seasketch/geoprocessing/client-ui";
-```
-
-Then, below the `useTranslation()` call, invoke the useSketchProperties hook
-
-```typescript
-const [{ isCollection }] = useSketchProperties();
-```
-
-Finally, render a slightly different message depending on whether the sketch is a collection or not. Swap in the following code:
-
-```typescript
-<p>
-  <Trans
-    i18nKey="SimpleCard sketch size message"
-    values={{
-      collection: isCollection ? " collection" : "",
-      area: Number.format(Math.round(data.area * 1e-6)),
-    }}
-    components={{ 1: <b /> }}
-  >
-    {`This sketch{{collection}} is <1>{{area}}</1> square kilometers.`}
-  </Trans>
-</p>
-```
-
-On save, your storybook should update. And clicking on a story for a collection should render differently than a story for a single sketch:
-
-![Storybook collection view](./assets/storybook-two.jpg)
 
 If you later add more sketch examples to the `examples/sketch` directory, will need to rerun the smoke tests to generate example output, and then stop and restart your storybook to re-generate all the stories.
 

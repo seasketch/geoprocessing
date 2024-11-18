@@ -16,7 +16,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.70 init 7.0.0-experimental-7x-docs.70
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.73 init 7.0.0-experimental-7x-docs.73
 ```
 
 ```text

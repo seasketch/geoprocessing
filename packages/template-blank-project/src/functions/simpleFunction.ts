@@ -5,7 +5,7 @@ import {
   MultiPolygon,
   GeoprocessingHandler,
 } from "@seasketch/geoprocessing";
-import { area as turfArea } from "@turf/turf";
+import { area } from "@turf/turf";
 
 export interface SimpleResults {
   /** area of sketch within geography in square meters */
@@ -13,7 +13,7 @@ export interface SimpleResults {
 }
 
 /**
- * Barebones geoprocessing function with custom result payload
+ * Simple geoprocessing function with custom result payload
  */
 async function simpleFunction(
   sketch:
@@ -21,11 +21,11 @@ async function simpleFunction(
     | SketchCollection<Polygon | MultiPolygon>,
 ): Promise<SimpleResults> {
   // Add analysis code
-  const area = turfArea(sketch);
+  const sketchArea = area(sketch);
 
   // Custom return type
   return {
-    area,
+    area: sketchArea,
   };
 }
 

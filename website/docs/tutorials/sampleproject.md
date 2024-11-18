@@ -41,7 +41,7 @@ Chuukese
 Kosraean
 ```
 
-After pressing Enter, your project will be created and all NodeJS software dependencies installed.
+After pressing Enter, your project will be created and all NodeJS software dependencies installed. If your language is not present, you will be able to add it later.
 
 Now, re-open VSCode one level deeper, in your project folder::
 
@@ -81,10 +81,11 @@ You can learn more about your projects [folder structure](../structure.md)
 Preprocessing function are invoked by the SeaSketch platform, on a user-drawn shape, right after the user finishes drawing it. It's a specialized function that validates a drawn shape and potentially modifies it, such as to remove portions of the shape outside the planning boundary. This "clipping" of the shape is useful in that it allows a user to overdraw beyond the planning boundary and it will be clipped right to the edge of that boundary.
 
 In the `src/functions` directory you will find four preprocessing functions that come with every project, and they are further configureable to meet your needs:
-`validatePolygon` - verifies shape is not self-crossing, is at least 500 square meters in size, and no larger than 1 million square kilometers.
-`clipToLand` - clips the shape to just the portion on land, as defined by OpenStreeMap land polygons. Includes validatePolygon.
-`clipToOcean` - clips the shape to remove the portion on land, as defined by OpenStreetMap land polygons. Includes validatePolygon.
-`clipToOceanEez` - clips the shape to keep the portion within the boundary from the coastline to the outer boundary of the EEZ. Includes validatePolygon.
+
+- `validatePolygon` - verifies shape is not self-crossing, is at least 500 square meters in size, and no larger than 1 million square kilometers.
+- `clipToLand` - clips the shape to just the portion on land, as defined by OpenStreeMap land polygons. Includes validatePolygon.
+- `clipToOcean` - clips the shape to remove the portion on land, as defined by OpenStreetMap land polygons. Includes validatePolygon.
+- `clipToOceanEez` - clips the shape to keep the portion within the boundary from the coastline to the outer boundary of the EEZ. Includes validatePolygon.
 
 ### Testing
 
@@ -101,7 +102,6 @@ To test your preprocessing functions, we need to create example features within 
 
 ```bash
 npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon1.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
-
 npx tsx scripts/genRandomPolygon.ts --outDir examples/features --filename polygon2.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]"
 ```
 
@@ -113,7 +113,9 @@ Now run the tests:
 npm test
 ```
 
-You can now look at the geojson output visually by opening it in QGIS or pasting it into geojson.io. This is the best way to verify the preprocessor worked as expected. You should commit the output files to your git repository so that you can track changes over time.
+You can now look at the geojson output in `examples/output`, including visually by opening a file in QGIS or pasting it into geojson.io. This is the best way to verify the preprocessor worked as expected.
+
+Commit the feature examples and their output files to your git repository so that you can track changes over time.
 
 To learn more about preprocessing, check out the [guide](../preprocessing.md)
 
@@ -148,15 +150,15 @@ The function then performs its analysis and returns the result.
 
 ```typescript
 // Add analysis code
-const area = turfArea(sketch);
+const sketchArea = area(sketch);
 
 // Custom return type
 return {
-  area,
+  area: sketchArea,
 };
 ```
 
-Below that, a new `GeoprocessingHandler` is instantiated, with the function passed into it. Behind the scenes, this is wrapping simpleFunction in an AWS Lambda handler function. This allows the function to be deployed to AWS and invoked using an API call by a report client running in a web browser.
+Below that, a new `GeoprocessingHandler` is instantiated, with simpleFunction passed into it. Behind the scenes, this wraps simpleFunction in an AWS Lambda handler function, which once deployed to AWS, allows the geoprocessing function to be invoked using an API call, by a report client running in a web browser.
 
 ```typescript
 export default new GeoprocessingHandler(simpleFunction, {
@@ -168,7 +170,7 @@ export default new GeoprocessingHandler(simpleFunction, {
 });
 ```
 
-`GeoprocessingHandler` requires a `title` and `description`, to uniquely identify the geoprocessing function that will be published by your project. It also accepts some additional parameters defining what resources the Lamda should have, and its behavior:
+`GeoprocessingHandler` requires a `title` and `description`, which uniquely identifies the function that will be published by your project. It also accepts some additional parameters defining what resources the Lamda should have, and its behavior:
 
 - `timeout`: how many seconds the Lambda will run before it times out in error.
 - `memory`: memory allocated to the Lambda, can go up to 10,240 MB. Number of processors increase with memory size automatically.
@@ -180,13 +182,12 @@ You can change all these parameter values to suit your needs, but the default va
 
 ### SimpleReport
 
-A report client is the top-level React component for creating a report. They are located in the `src/clients` directory. The report client is responsible for defining the overall report layout by rendering one or more pages of cards, and setting up language translation. The report clients role compared to its underlying page and card components (located in `src/components`) is not strict, they are all just React components. Two starter report clients are provided in the `src/clients` directory.
+A report client is the top-level React component for creating a report and they are located in the `src/clients` directory. The report client is usually responsible for the overall report layout, rendering one or more `Pages` of `Cards` in the `src/components` directory, and setting up language translation.
 
-`SimpleReport.tsx` - one page report client containing a SketchAttributesCard and a SimpleCard.
+- `SimpleReport.tsx` - one page report client containing a SketchAttributesCard and a SimpleCard.
+- `TabReport.tsx` - more complex multi-page report layout controlled by a tab switcher component, containing a single ViabilityPage, which contains the same SimpleCard and SketchAttributesCard.
 
-`TabReport.tsx` - more complex multi-page report layout controlled by a tab switcher component, containing a single ViabilityPage, which contains the same SimpleCard and SketchAttributesCard.
-
-Both these report clients are already registered in `project/geoprocessing.json`. Let's focus on `SimpleReport` and how it invokes your `simpleFunction`.
+Both these report clients are already registered in `project/geoprocessing.json`. To start, let's focus on `SimpleReport.tsx` and how it invokes your `simpleFunction`.
 
 ```jsx
 export const SimpleReport = () => {
@@ -199,9 +200,21 @@ export const SimpleReport = () => {
 };
 ```
 
-SimpleReport renders two report cards, `SimpleCard` and `SketchAttributesCard`, wrapping them in a languge `Translator` (more on that in the next tutorial). SketchAttributes card is a built-in report component imported from `@seasketch/geoprocessing/client-ui`. SimpleCard is a custom report component found at `src/components/SimpleCard.tsx`, which we can look at now.
+SimpleReport renders two report cards, `SimpleCard` and `SketchAttributesCard`, wrapping them in a react-i18n languge `Translator` component (more on that in the next tutorial).
+
+SketchAttributes card is a built-in report component imported from `@seasketch/geoprocessing/client-ui`. SimpleCard is a custom report component found at `src/components/SimpleCard.tsx`, which we can look at now.
 
 ```jsx
+import React from "react";
+import { Trans, useTranslation } from "react-i18next";
+import {
+  ResultsCard,
+  useSketchProperties,
+} from "@seasketch/geoprocessing/client-ui";
+// Import SimpleResults to type-check data access in ResultsCard render function
+import { SimpleResults } from "../functions/simpleFunction.js";
+import { roundDecimalFormat } from "@seasketch/geoprocessing/client-core";
+
 export const SimpleCard = () => {
   const { t } = useTranslation();
   const [{ isCollection }] = useSketchProperties();
@@ -210,21 +223,17 @@ export const SimpleCard = () => {
     <>
       <ResultsCard title={titleTrans} functionName="simpleFunction">
         {(data: SimpleResults) => {
+          const areaSqKm = data.area / 1_000_000;
+          const areaString = roundDecimalFormat(areaSqKm, 0, {
+            keepSmallValues: true,
+          });
+          const sketchStr = isCollection ? t("sketch collection") : t("sketch");
+
           return (
             <>
               <p>
-                <Trans
-                  i18nKey="SimpleCard sketch size message"
-                  values={{
-                    collection: isCollection ? " collection" : "",
-                    /** Area converted to square kilometers, rounded and formatted, with very small numbers maintained */
-                    area: roundDecimalFormat(data.area / 1_000_000, 1, {
-                      keepSmallValues: true,
-                    }),
-                  }}
-                  components={{ 1: <b /> }}
-                >
-                  {`This sketch{{collection}} is <1>{{area}}</1> square kilometers.`}
+                <Trans i18nKey="SimpleCard sketch size message">
+                  This {{ sketchStr }} is {{ areaString }} square kilometers.
                 </Trans>
               </p>
             </>
@@ -236,13 +245,26 @@ export const SimpleCard = () => {
 };
 ```
 
-The first thing to notice is that SimpleCard contains a lot of boilerplate for translating report strings with the `useTranslation` hook, `t` function, and `Trans` component. If your reports need to be multi-lingual you will need to use these, otherwise you can drop it and just render English strings.
+The first thing to notice is that SimpleCard renders a `ResultsCard` component. Behind the scenes ResultsCard invokes `simpleFunction` and passes the results to its child render function. The child render function takes an input parameter `data` that is configured to have the same type (`SimpleResults`) as the return type of `simpleFunction`. This gives you fully typed access to your report result in the render function.
 
-The next thing to notice is that SimpleCard renders a `ResultsCard` component. Behind the scenes ResultsCard invokes simpleFunction and passes the results to its child render function. The child render function takes an input parameter `data` that has the same type as the result of `simpleFunction`. Now, within the render function you have access to the function result object, fully typed.
+The next thing to notice is that the render function converts the calculated area value in square meters to square kilometers, rounds it to a whole number (unless it's a very small number that would round to zero), and then formats the number to make it more readable (for english adds commas for thousands). Also notice that it renders a slightly different message depending on whether it is a single sketch or a sketch collection being reported on.
 
-This particular render function takes the calculated area value and makes it presentable to the user. First, the area value is converted from square meters to square kilometers, then rounded to a whole number, and formatted in a way suitable to the users locale (for US this is a comma for thousand separator, and period for decimal separator). Also notice that it renders a slightly different message depending on whether it is a single sketch or a sketch collection being reported on.
+This establishes the pattern of having the geoprocessing function responsible for calculating the raw values, and defining the result type interface. Value conversion and formatting details are left to be done in the report client.
 
-This establishes the pattern that the geoprocessing function is responsible for calculating the raw values, and defining the result type interface, so that the meaning of the values is clear. The presentation details are left to be done in the report client.
+The last thing to notice is that SimpleCard contains a lot of boilerplate for translating report strings to different languages using [`react-i18next`](https://react.i18next.com/). If your reports need to be multi-lingual you will need to to use them, otherwise you can drop them. Language translation is a multi-part process:
+
+- First a combination of `useTranslation`, `t` function, and `Trans` components are used to establish which strings in your report client and components should be translated.
+- Translatable strings are then extracted using the `extract:translation` command to `src/i18n/lang/en/translation.json`. The strings extacted for SimpleCard are:
+
+```text
+{
+  "sketch": "sketch",
+  "sketch collection": "sketch collection",
+  "SimpleCard sketch size message": "This {{sketchStr}} is {{areaString}} square kilometers.",
+}
+```
+
+- Once the strings are translated to different languages (covered in a later tutorial), the `Translator` component in our report client is responsible for inspecting the users language at runtime in the browser and swapping in strings for the appropriate language.
 
 ### Generate Examples
 
@@ -564,6 +586,34 @@ Yes
 
 ## Advanced Features
 
+### Add Planning Boundary
+
+### Update default Geography
+
+Now change the projects default geography from the world, to your new planning boundary.
+
+- Open `project/geographies.json`. You will see an array with one geography record called `world`. This is the default geography and can be left here. You will disable its precalc and remove it from the `default-boundary` group, then add a new geography record for your `planning-boundary`.
+- Replace the contents of the geographies file with the following and save it:
+
+```json
+[
+  {
+    "geographyId": "world",
+    "datasourceId": "world",
+    "display": "World",
+    "groups": [],
+    "precalc": false
+  },
+  {
+    "geographyId": "planning-boundary",
+    "datasourceId": "planning-boundary",
+    "display": "Planning Boundary",
+    "groups": ["default-boundary"],
+    "precalc": true
+  }
+]
+```
+
 ### Precalc Data
 
 The `precalc` command calculates spatial statistics for the portion of each of your datasources that falls within each of your project's Geographies.
@@ -602,43 +652,12 @@ Once complete `project/precalc.json` will have been updated with the new metric 
 - To learn more advanced use, see the [precalc](../precalc.md) guide.
 - To learn more about use of precalculated metrics, see the [report client](../reportclient.md) guide.
 
-### Add Preprocessor
+### Language Translation
 
-Add example feature to clip
+Run the following to extract the latest translations from all of you report clients and its underlying components.
 
-```typescript
-
-```
-
-[Image: before clip]
-[Image: after, verify clip]
-
-### Add Planning Boundary
-
-### Update default Geography
-
-Now change the projects default geography from the world, to your new planning boundary.
-
-- Open `project/geographies.json`. You will see an array with one geography record called `world`. This is the default geography and can be left here. You will disable its precalc and remove it from the `default-boundary` group, then add a new geography record for your `planning-boundary`.
-- Replace the contents of the geographies file with the following and save it:
-
-```json
-[
-  {
-    "geographyId": "world",
-    "datasourceId": "world",
-    "display": "World",
-    "groups": [],
-    "precalc": false
-  },
-  {
-    "geographyId": "planning-boundary",
-    "datasourceId": "planning-boundary",
-    "display": "Planning Boundary",
-    "groups": ["default-boundary"],
-    "precalc": true
-  }
-]
+```bash
+npm run extract:translation
 ```
 
 ## What's Next

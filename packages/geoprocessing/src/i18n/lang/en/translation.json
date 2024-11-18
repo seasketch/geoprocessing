@@ -77,7 +77,7 @@
   "Shoreline": "Shoreline",
   "Show by MPA": "Show by MPA",
   "Show by Sketch": "Show by Sketch",
-  "SimpleCard sketch size message": "This {{sketchOrCollection}} is <1>{{area}}</1> square kilometers.",
+  "SimpleCard sketch size message": "This {{sketchStr}} is {{areaString}} square kilometers.",
   "SimpleCard title": "Simple Report",
   "Size": "Size",
   "SizeCard - introduction": "national waters extend from the shoreline out to 200 nautical miles, known as the Exclusive Economic Zone (EEZ). This report summarizes offshore plan overlap with the EEZ and other boundaries within it, measuring progress towards achieving % targets for each boundary.",
@@ -88,7 +88,7 @@
   "Viability": "Viability",
   "Within Plan": "Within Plan",
   "km²": "km²",
-  "sketch": "bar",
-  "sketch collection": "foo",
+  "sketch": "sketch",
+  "sketch collection": "sketch collection",
   "units": "units"
 }

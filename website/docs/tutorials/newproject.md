@@ -19,9 +19,9 @@ Creating a geoprocessing project is not linear, it's iterative. You don't need t
 - Look at other SeaSketch Reports
 - Use a design [template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing). This one asks common questions and is a good place to capture decisions.
 
-### Build Something Simple
+### Start Simple
 
-The geoprocessing framework is a set of building blocks. Which ones you use are up to you. If your planning process is simple:
+The geoprocessing framework is a set of building blocks. Which ones you use are up to you. If your planning process can start simple:
 
 - a single planning boundary or none at all
 - straightforward objectives
@@ -34,11 +34,12 @@ Then your geoprocessing project can be kept simple.
 
 - no precalculation needed
 - direct import of GeoJSON datasets in code, or simple datasource import.
-- manual prep and copy of datasources to S3
 - direct use of turf and geoblaze to calculate simple metrics
 - simple reports rendering a few values, a table, a chart
 
 A good example of this is [Oregon](https://github.com/underbluewaters/oregon-next) SeaSketch reports.
+
+### Then Get Complicated
 
 As your planning process gets more complex:
 
@@ -48,8 +49,6 @@ As your planning process gets more complex:
 - long running analysis with required precalculation
 - use of a sketch classification system (e.g. protection levels)
 - need to enforce rules about overlapping sketches
-
-### Then Get Complicated
 
 Then your project can benefit from more advanced features:
 

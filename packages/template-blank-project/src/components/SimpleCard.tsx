@@ -22,15 +22,17 @@ export const SimpleCard = () => {
                 <Trans
                   i18nKey="SimpleCard sketch size message"
                   values={{
-                    collection: isCollection ? " collection" : "",
+                    sketchOrCollection: isCollection
+                      ? t("sketch collection")
+                      : t("sketch"),
                     /** Area converted to square kilometers, rounded and formatted, with very small numbers maintained */
-                    area: roundDecimalFormat(data.area / 1_000_000, 1, {
+                    area: roundDecimalFormat(data.area / 1_000_000, 0, {
                       keepSmallValues: true,
                     }),
                   }}
                   components={{ 1: <b /> }}
                 >
-                  {`This sketch{{collection}} is <1>{{area}}</1> square kilometers.`}
+                  {`This {{sketchOrCollection}} is <1>{{area}}</1> square kilometers.`}
                 </Trans>
               </p>
             </>
@@ -40,3 +42,6 @@ export const SimpleCard = () => {
     </>
   );
 };
+
+// The use of values and components avoids a type issue with react-i18next - https://github.com/i18next/react-i18next/issues/1483#issuecomment-1206720504
+// The <1></1> component is a placeholder used to create a translatable string when there is a variable value, the bold tag gets swapped in at runtime

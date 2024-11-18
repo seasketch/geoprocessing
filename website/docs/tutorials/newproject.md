@@ -13,32 +13,15 @@ This tutorial assumes:
 
 Creating a geoprocessing project is not linear, it's iterative. You don't need to have all the answers for your project or understand all the features of the framework. Here's one approach:
 
-- [Explore and design](#explore-and-design)
-  - Explore report building blocks
-  - Look at reports in other SeaSketch projects
-  - Create a rough design
-- [Build](#build)
-- [Expand and Iterate](#expand-and-iterate)
-  - add more features
-  - preprocessing function
-  - Geographies and MetricGroups
-- [What next?](#what-next)
+### Design
 
-## Explore and Design
+- Explore the geoprocessing [UI component library](/storybook)
+- Look at other SeaSketch Reports
+- Use a design [template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing). This one asks common questions and is a good place to capture decisions.
 
-[UI component library](/storybook)
+### Build Something Simple
 
-Look at other SeaSketch Reports
-
-Here is a design [template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing) the SeaSketch team uses. A document like this is a good place to capture thinking, solicit feedback, and record decisions. This is invaluable later when you try to remember why you built it the way you did, or if a new person needs to come up to speed on the project.
-
-## Build
-
-### Start Simple
-
-The geoprocessing framework is a set of building blocks. Which ones you use are up to you.
-
-If your planning process is simple:
+The geoprocessing framework is a set of building blocks. Which ones you use are up to you. If your planning process is simple:
 
 - a single planning boundary or none at all
 - straightforward objectives
@@ -50,49 +33,52 @@ If your planning process is simple:
 Then your geoprocessing project can be kept simple.
 
 - no precalculation needed
-- manual prep and publish of datasources to S3, or even direct import of GeoJSON files in geoprocessing functions.
-- simple metrics calculated directly using libraries Turf and Geoblaze
+- direct import of GeoJSON datasets in code, or simple datasource import.
+- manual prep and copy of datasources to S3
+- direct use of turf and geoblaze to calculate simple metrics
 - simple reports rendering a few values, a table, a chart
 
 A good example of this is [Oregon](https://github.com/underbluewaters/oregon-next) SeaSketch reports.
 
-### Then Get Complicated
-
 As your planning process gets more complex:
 
-- multiple planning boundaries (offshore/nearshore) with combined objectives
+- multiple planning boundaries (offshore/nearshore)
 - multiple objectives with targets
-- large datasets with multiple subclasses.
+- large datasets with multiple data subclasses.
 - long running analysis with required precalculation
-- sketch classification system (e.g. protection levels)
-- enforcing rules about overlapping sketches
+- use of a sketch classification system (e.g. protection levels)
+- need to enforce rules about overlapping sketches
 
-Then your project may benefit from more sophisticated building blocks, sometimes at the cost of flexibility:
+### Then Get Complicated
 
-- Project `Datasource` records, managed via `data:import` and `data:publish` with automated import, transform, and publish to S3.
+Then your project can benefit from more advanced features:
+
+- Fully managed `Datasources` via `data:import` and `data:publish` commands with automated import, transform, and publish to S3.
 - `Geography` records representing project planning boundaries
-- `Metric` records for representing common multi-dimensional analysis results.
+- `Metric` records for representing multi-dimensional analysis results.
 - `Objective` records representing objective targets per sketch class.
-- `MetricGroup` records connecting metric results to their data classes, datasource, objective target, etc.
-- toolbox for calculating overlay analysis metrics at the collection level in many dimensions simultaneously - by data class, by protection level, by planning boundary. Can even handle sketches overlapping themselves and not double counting overlay stats.
-- UI components that can work with all of these record types - `ClassTable`, `SketchClassTable`, `GeographySwitcher`, `RbcsMpaObjective`
-- `precalc` command pre-calculating overlay stats ahead of time for combinations of Datasources and Geographies.
-- `worker` functions to spread processing across more Lambdas to run in parallel.
+- `MetricGroup` records reresenting relationship of metric results to their data classes, datasource, objective target, etc.
+- `toolbox` for calculating overlay analysis metrics at the collection level in many dimensions - by data class, by protection level, by planning boundary.
+  - `overlapFeatures`, `rasterMetrics`, `overlapFeaturesGroupMetrics`, `overlapRasterGroupMetrics`
+- UI components that can work with all of these record types
+  - `ClassTable`, `SketchClassTable`, `GeographySwitcher`, `RbcsMpaObjective`
+- `precalc` command automating pre-calculation of overlay stats for combinations of Datasources and Geographies.
+- `worker` functions to run geoprocessing work in parallel and get results faster.
 - Language `translation` workflow and library of pre-translated UI components.
 
 Examples of more complex projects:
 
-- [California](https://github.com/seasketch/california-reports) - multiple planning geographies, worker functions
+- [California](https://github.com/seasketch/california-reports) - multiple geographies presented in reports (planning boundaries, bioregions), worker functions
 - [Bermuda](https://github.com/seasketch/bermuda-reports-next) - IUCN classification system with metrics calculated overall, per protection level, and per sketch. worker functions
 - [Blue Azores nearshore](https://github.com/seasketch/azores-nearshore-reports) - user switching between planning geographies.
 - [Samoa Reports](https://github.com/seasketch/samoa-reports)
 - [Azores Nearshore Reports](https://github.com/seasketch/azores-nearshore-reports).
 
-### Create SeaSketch Project
+## Create SeaSketch Project
 
 First, follow the [instructions](https://docs.seasketch.org/seasketch-documentation/administrators-guide/getting-started) to create a new SeaSketch project. This includes defining the planning bounds and [creating a Sketch class](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes). You will want to create a `Polygon` sketch class with a name that makes sense for you project (e.g. MPA for Marine Protected Area) and then also a `Collection` sketch class to group instances of your polygon sketch class into. Note that sketch classes are where you will integrate your geoprocessing services to view reports, but you will not do it at this time.
 
-### Initialize New Project
+## Initialize New Project
 
 Start with initializing a new project:
 
@@ -109,16 +95,16 @@ Tips:
 
 Learn more about your projects [structure](../structure.md)
 
-### Link Data Into Workspace
+## Link Data Into Workspace
 
 Choose how to [bring data into your workspace](../linkData.md).
 
-### Import Datasources
+## Import Datasources
 
 Methods:
 
 - Use `import:data`
-- Manually prepare and copy your data to datasets bucket
+- Script your own method to prepare data and put it into `data/dist`
 
 ## Write a Geoprocessing Function
 
@@ -128,12 +114,12 @@ Methods:
 
 - Directly import geojson file in function
 - Use `datasource` record and `getDatasource` and `getFeatures`
-- Load from local bucket using `load` function, url, and bbox
-- Load from third-party using `load` function, url, and bbox
+- Load from project datasets bucket using `loadFgb` or `loadCog` function
+- Load from third-party using `loadFgb` or `loadCog` function
 
-If the data you'll use in analysis is already published online, publicly accessible, and in flatgeobuf or cloud-optimized geotiff format, then you can directly access them.
+If the data you'll use in analysis is already published online, publicly accessible, and in flatgeobuf or cloud-optimized geotiff format, then you can directly access them with `loadFgb` and `loadCog` functions.
 
-### Smoke Test With Examples
+## Testing
 
 Methods to generate examples:
 
@@ -162,13 +148,20 @@ The smoke test for your geoprocessing function will run the function against eve
 Learn more about testing and debugging in
 [testing](../Testing.md)
 
-### Write Report Client
+## Write Report Client
 
-### Build and Deploy to AWS
+## Build and Deploy to AWS
 
 [Deploy your project](deploy.md)
 
-#### Debugging build failure
+## Publish Datasources
+
+Methods:
+
+- use `publish:data`
+- script your own method to publish datasources from `data/dist` to project `datasets` S3 bucket.
+
+### Debugging build failure
 
 If the build step fails, you will need to look at the error message and figure out what you need to do. Did it fail in building the functions or the clients? 99% of the time you should be able to catch these errors sooner. If VSCode finds invalid Typescript code, it will warn you with files marked in `red` in the Explorer panel or with red markes and squiggle text in any of the files.
 
@@ -185,23 +178,23 @@ Choose `MpaTabReport` as report client
 
 Test different sketch and collection scenarios. When you find one that errors or does something unexpected, then you can export that sketch to your projects `examples/sketches` directory and run your smoke tests. If that succeeds and produces output as expected, then load your storybook and see if you can reproduce in your report client.
 
-## Expand and Iterate
+## Advanced Features
 
 There are more advanced features available if you need them.
 
-## Project Client
+### Project Client
 
-It has a lot of shortcut methods for working with datsources, geographies, precalc metrics, objectives, etc. It's not meant to be a black box, you can look at what it does.
+It has a lot of shortcut methods for working with datasources, geographies, precalc metrics, objectives, etc.
 
 [Link to project client ]
 
 ### Configure Geography
 
+Import planning boundary datasource and add as geography
+
 #### Precalc Metrics
 
 At the very least you should import your planning boundaries, preferably as individual files, or as individual layers within a file package.
-
-Any file-based format that OGR and GDAL supports out of the box.
 
 ```sh
 npm run precalc:data
@@ -230,18 +223,13 @@ You must re-run `precalc:data` every time you change a geography record or a dat
 
 How you intend to use your data will determine what form the data needs to be in.
 
-#### Examples By Use Case
-
-- Do you have vector data?
+- Do you have a vector dataset?
   - Does it have a single data class?
-    - Is it one file with one data class?
-    - Is it one file with multi-class attribute, of which you only need one?
-      - create a new dataset with
   - Does it have multiple data classes?
     - Is it one data class per file?
-    - I sit one data class per layer within file?
+    - Is it one data class per layer within file?
     - Does it have multiple data classes within one layer with an attribute to differentiate them?
-- Do you have raster data?
+- Do you have raster dataset?
   - Does it have a single data class?
     - Is it one file with one data class?
   - Does it have multiple data classes?
@@ -253,8 +241,8 @@ How you intend to use your data will determine what form the data needs to be in
 
 ### Create Report
 
-- Edits to the statistic you want calculated (i.e.calculating average instead of sum, etc) should happen in your function (`src/functions/benthicHabitat.ts`).
-- Edits to the way the analytics are displayed (i.e. changing labels, converting units, adding text context, etc) should happen in your component (`src/components/BenthicHabitat.tsx`).
+- Edits to the statistic you want calculated (i.e.calculating average instead of sum, etc) should happen in your function.
+- Edits to the way the analytics are displayed (i.e. changing labels, converting units, adding text context, etc) should happen in your report components.
 
 ### Language Translation
 

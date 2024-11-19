@@ -16,7 +16,7 @@ Geoprocessing projects built with this framework support step #2 and #4 in the f
 
 ## Terminology
 
-There are a number of terms and concepts to be familiar with:
+There are a number of terms and concepts to be familiar with. Many of them are implemented as features of the framework, which you can learn more about on the [advanced concepts](./AdvancedConcepts.md) page.
 
 - `Goal` - also known as vision or aim. These are general summaries of the desired future state of an area.
 
@@ -59,5 +59,3 @@ Here's a couple examples putting it all together:
 ### Classification System
 
 Planning processes may leverage a `classification system` for defining what levels of protection can be assigned to proposed areas. They then decide what protection levels are required at minimum to count towards meeting a planning objective. Marine Protected Areas or MPA's for example have multiple [classification schemes](https://docs.google.com/document/d/1i0baxgK8JEUjtU8mnzFiG5VB_gO8lmxCrAtJ5rltk30/edit?usp=sharing) to choose from.
-
-To learn more, visit the [advanced concepts](./AdvancedConcepts.md) page.

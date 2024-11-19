@@ -2,7 +2,7 @@
 
 ## Sketching
 
-The core SeaSketch platform allows users to create and collaborate on the design of areas or features. They are the main input to a geoprocessing project for processing and display of reports.
+The core SeaSketch platform allows users to create and collaborate on the design of areas to be managed or used in a specific way. Sketches are the main input to a geoprocessing project for processing and display of reports.
 
 ### Sketch
 
@@ -125,13 +125,9 @@ A [Sketch Collection](https://seasketch.github.io/geoprocessing/api/interfaces/g
 
 ## Geographies
 
-A `Geography` represents one or more geographic boundaries for the project, and is primarily used to define project planning boundaries and clip sketches and datasources against them during analysis, especially when calculating percentage of total area/value of a class of data, that is within a sketch/sketch collection.
+`Geographies` identify polygon or multipolygon boundaries that serve specific purposes in your project. The main use case is to define planning boundaries for your project, if you have them.
 
-Geographies are contained in `project/geographies.json`. You are not required to use the concept of Geographies, but support is built-in. A simple alternative for being able to calculate percent area/value is to pre-clip your datasources to your planning boundary, and manually pre-calculate the total area (the denominator). Then in your geoprocessing function you just need to calculate the area/value within your sketch/collection (numerator) and you can calculate your percentage.
-
-The default Geography for a new blank project is the entire world. The default Geography for a new Ocean EEZ project is the EEZ boundary you chose at creation time.
-
-World geography:
+Geographies are contained in `project/geographies.json`. The default Geography for a new project is the `world` geography. It uses the `world` datasource which is a polygon covering the entire extent of the world.
 
 ```json
 {
@@ -143,7 +139,49 @@ World geography:
 }
 ```
 
-Example of EEZ geography using a global datasource:
+Here is an example of a project with the `world` geography used as the outer boundary, and then 4 subregion geographies:
+
+```json
+[
+  {
+    "geographyId": "world",
+    "datasourceId": "world",
+    "display": "World",
+    "groups": ["default-boundary"],
+    "precalc": true
+  },
+  {
+    "geographyId": "north_sr",
+    "datasourceId": "north_sr",
+    "display": "North Planning Region",
+    "groups": [],
+    "precalc": true
+  },
+  {
+    "geographyId": "northcentral_sr",
+    "datasourceId": "northcentral_sr",
+    "display": "North Central Planning Region",
+    "groups": [],
+    "precalc": true
+  },
+  {
+    "geographyId": "central_sr",
+    "datasourceId": "central_sr",
+    "display": "Central Planning Region",
+    "groups": [],
+    "precalc": true
+  },
+  {
+    "geographyId": "south_sr",
+    "datasourceId": "south_sr",
+    "display": "South Planning Region",
+    "groups": [],
+    "precalc": true
+  }
+]
+```
+
+Here is an example of a more elaborate exclusive economic geography. Its boundary polygon(s) are uniquely identified within the larger global EEZ dataset using a `propertyFilter` and `bboxFilter`.
 
 ```json
 {
@@ -176,14 +214,14 @@ Example of EEZ geography using a global datasource:
   }
 ```
 
-Each `Geography` points to a [datasource](#datasources), which provides the polygon or multipolygon boundary for that Geography.
+Once defined, geographies are used in the following ways:
 
-The way that Geographies are used in reporting is that sketches and datasources are clipped to these geographies, in order to produce metrics that are representative of that geographic boundary. Project code is geography-aware at multiple points including:
+- `Preprocessing functions` - a preprocessing function can clip a user-drawn sketch to one or more geographies so that they are guaranteed to be within it.
+- `Precalc` - the precalc command calculates overall metrics (total area, count, sum of value) within each geography for each datasource. These precalc metrics are used to report a sketches % overlap with a datasource "per geography".
+- `Geoprocessing functions` - geoprocessing functions can perform spatial analysis and report results "per geography" by clipping a user-drawn sketch to each geography and doing the analysis once for each.
+- `Report clients` - report clients are able to display metrics "per geography" and even allow the user to switch between geographies, viewing results for them one at a time.
 
-- Preprocessing functions - clipping a sketch to one or more geographies up front, usually the project planning boundary.
-- Geoprocessing functions - when sketches should be clipped to one or more geographies at runtime (common in multi-geography use case)
-- Precalc - to calculate overall metrics (total area, count, sum of value) within each geography for each datasource. These precalc metrics are used in the denominator when calculating a sketches % overlap with a given datasource within a given geography.
-- Report clients - to retrieve precalculated metrics, allow the user to potentially switch between geographies, and to pass the current user-selected geography to the geoprocessing functions.
+You are not required to use the Geographies feature, though it has first-class in the framework.
 
 ### Geography Properties
 
@@ -241,7 +279,7 @@ Internal:
 
 - `src` - local file path to access the datasource at
 
-## External Datasources
+### External Datasources
 
 External [vector](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#ExternalVectorDatasource) and [raster](https://seasketch.github.io/geoprocessing/api/modules/geoprocessing.html#ExternalRasterDatasource) datasources are published on the Internet, external to the geoprocessing project and its stack. This is commonly used for what are called `global` datasets that any geoprocessing project can use.
 

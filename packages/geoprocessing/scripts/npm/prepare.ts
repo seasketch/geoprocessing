@@ -150,6 +150,21 @@ async function bundleTemplates(templateType: TemplateType) {
       );
     }
 
+    if (fs.existsSync(path.join(templatePath, "src", "clients"))) {
+      if (!fs.existsSync(path.join(distTemplatePath, "src", "clients"))) {
+        fs.mkdirSync(path.join(distTemplatePath, "src", "clients"));
+      }
+      await fs.copy(
+        path.join(templatePath, "src", "clients"),
+        path.join(distTemplatePath, "src", "clients"),
+      );
+      if (fs.existsSync(`${distTemplatePath}/src/clients/.story-cache`)) {
+        await fs.rmdir(`${distTemplatePath}/src/clients/.story-cache`, {
+          recursive: true,
+        });
+      }
+    }
+
     if (fs.existsSync(path.join(templatePath, "src", "components"))) {
       if (!fs.existsSync(path.join(distTemplatePath, "src", "components"))) {
         fs.mkdirSync(path.join(distTemplatePath, "src", "components"));
@@ -158,6 +173,11 @@ async function bundleTemplates(templateType: TemplateType) {
         path.join(templatePath, "src", "components"),
         path.join(distTemplatePath, "src", "components"),
       );
+      if (fs.existsSync(`${distTemplatePath}/src/components/.story-cache`)) {
+        await fs.rmdir(`${distTemplatePath}/src/components/.story-cache`, {
+          recursive: true,
+        });
+      }
     }
 
     if (fs.existsSync(path.join(templatePath, "src", "assets"))) {
@@ -167,16 +187,6 @@ async function bundleTemplates(templateType: TemplateType) {
       await fs.copy(
         path.join(templatePath, "src", "assets"),
         path.join(distTemplatePath, "src", "assets"),
-      );
-    }
-
-    if (fs.existsSync(path.join(templatePath, "src", "clients"))) {
-      if (!fs.existsSync(path.join(distTemplatePath, "src", "clients"))) {
-        fs.mkdirSync(path.join(distTemplatePath, "src", "clients"));
-      }
-      await fs.copy(
-        path.join(templatePath, "src", "clients"),
-        path.join(distTemplatePath, "src", "clients"),
       );
     }
 

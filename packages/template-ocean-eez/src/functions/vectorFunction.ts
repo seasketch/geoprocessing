@@ -9,7 +9,7 @@ import {
   Feature,
   isVectorDatasource,
   overlapFeatures,
-  loadFgb,
+  getFeatures,
 } from "@seasketch/geoprocessing";
 import bbox from "@turf/bbox";
 import project from "../../project/projectClient.js";
@@ -64,7 +64,9 @@ export async function vectorFunction(
         // Fetch features overlapping with sketch, pull from cache if already fetched
         const features =
           featuresByDatasource[curClass.datasourceId] ||
-          (await loadFgb<Feature<Polygon | MultiPolygon>>(url, sketchBox));
+          (await getFeatures<Feature<Polygon | MultiPolygon>>(ds, url, {
+            bbox: sketchBox,
+          }));
         featuresByDatasource[curClass.datasourceId] = features;
 
         // If this is a sub-class, filter by class name

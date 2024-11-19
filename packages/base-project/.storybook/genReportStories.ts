@@ -10,8 +10,6 @@ import {
 import { GpStoryConfig } from "./types.js";
 import { v4 as uuid } from "uuid";
 
-// Not currently used, project space responsible for its own storybook+vite setup
-
 if (!process.env.PROJECT_PATH) {
   throw new Error("PROJECT_PATH environment variable not set");
 }
@@ -162,6 +160,11 @@ for (const storyConfig of storyConfigs) {
       ...(childProperties ? { childProperties } : {}),
     };
 
+    // convert sketch name to a valid variable name
+    const sketchVariableName = sketch.properties.name
+      .replaceAll("-", "_")
+      .replaceAll(" ", "_");
+
     const story = `
       import React from "react";
       import { ${storyConfig.componentName} } from '${importFromCacheStr}';
@@ -180,7 +183,7 @@ for (const storyConfig of storyConfigs) {
         language: "en"
       });
 
-      export const ${sketch.properties.name.replaceAll("-", "_")} = () => (
+      export const ${sketchVariableName} = () => (
         <Translator>
           <${storyConfig.componentName} />
         </Translator>

@@ -178,16 +178,10 @@ export async function makeReport(
   const projectFunctionPath = getProjectFunctionPath(basePath);
   const projectComponentPath = getProjectComponentPath(basePath);
 
-  const templateFuncPath =
-    options.type === "blank"
-      ? getBlankFunctionPath()
-      : getOceanEEZFunctionPath();
-  const templateFuncTestPath = `${getBlankFunctionPath()}/blankFunctionSmoke.test.ts`;
-  const templateCompPath =
-    options.type === "blank"
-      ? getBlankComponentPath()
-      : getOceanEEZComponentPath();
-  const templateCompStoriesPath = `${getBlankComponentPath()}/BlankCard.example-stories.ts`;
+  const templateFuncPath = getOceanEEZFunctionPath();
+  const templateFuncTestPath = `${templateFuncPath}/blankFunctionSmoke.test.ts`;
+  const templateCompPath = getOceanEEZComponentPath();
+  const templateCompStoriesPath = `${getOceanEEZComponentPath()}/BlankCard.example-stories.ts`;
 
   if (!fs.existsSync(path.join(basePath, "src"))) {
     fs.mkdirSync(path.join(basePath, "src"));

@@ -10,8 +10,6 @@ import {
   GeoprocessingJsonConfig,
 } from "../../src/types/index.js";
 import {
-  getBlankComponentPath,
-  getBlankFunctionPath,
   getOceanEEZComponentPath,
   getOceanEEZFunctionPath,
   getProjectComponentPath,

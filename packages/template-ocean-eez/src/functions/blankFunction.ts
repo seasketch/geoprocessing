@@ -26,7 +26,7 @@ export async function blankFunction(
     | SketchCollection<Polygon | MultiPolygon>,
   extraParams: DefaultExtraParams = {},
 ): Promise<ReportResult> {
-  // Check for client-provided geography, fallback to first in default-boundary group
+  // Check for client-provided geography, fallback to first geography assigned as default-boundary in metrics.json
   const geographyId = getFirstFromParam("geographyIds", extraParams);
   const curGeography = project.getGeographyById(geographyId, {
     fallbackGroup: "default-boundary",

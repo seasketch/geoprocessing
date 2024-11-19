@@ -57,6 +57,11 @@ const sidebars: SidebarsConfig = {
               id: "tutorials/createReport",
               label: "New Report Client",
             },
+            {
+              type: "doc",
+              id: "upgrade",
+              label: "Upgrade Project",
+            },
           ],
         },
         "CLI",
@@ -89,11 +94,6 @@ const sidebars: SidebarsConfig = {
               type: "doc",
               id: "thirdpartydata/thirdpartydata",
               label: "Third Party Data",
-            },
-            {
-              type: "doc",
-              id: "upgrade",
-              label: "Upgrade Project",
             },
             {
               type: "doc",

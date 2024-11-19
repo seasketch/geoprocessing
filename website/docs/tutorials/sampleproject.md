@@ -391,6 +391,8 @@ reefextent
 reefextent
 ? Should multi-part geometries be split into single-part geometries?
 Yes
+? (Optional) additional formats to create (besides fgb)
+[Press enter to skip]
 ? Select feature properties that you want to group metrics by
 [Press enter to skip]
 ? Select additional feature properties to keep in final datasource
@@ -414,7 +416,7 @@ Choose:
 - classes you want to show in the report (`reefExtent`) and the datasource they are sourced from (`reefextent`)
   - In this case our dataset has only one class of data, and it all comes from one datasource.
 
-Add the following record to the end of the empty array in `project/metrics.json` and save the file.
+Add the following object to the end of the empty array in `project/metrics.json` and save the file.
 
 ```json
 {
@@ -434,9 +436,7 @@ To learn more about metric groups, visit the [advanced concepts](../concepts/Adv
 
 ### Create Report
 
-We now have everything we need to generate our first report (geoprocessing function + report component).
-
-This command asks you to choose one of your unused metric groups, and then it:
+We now have everything we need to generate our first report using the `create:report` command. This command asks you to choose one of your unused metric groups, and then it:
 
 - Creates a new geoprocessing function in `src/functions`
 - Creates an accompanying smoke test file

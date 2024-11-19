@@ -35,6 +35,7 @@ Install steps for all operating systems:
   - Press `Ctrl-J` or `Cmd-backtick` to open a terminal. The current directory of the terminal will be your workspace folder.
   - Enter the command to clone the geoprocessing-devcontainer repository to your workspace.
     - `git clone https://github.com/seasketch/geoprocessing-devcontainer`
+    - If you had previously cloned this repository then update it now with `cd geoprocessing-devcontainer && git pull`
   - Click `Open Folder` button or `File -> Open Folder` and open the repo folder you just cloned.
   - Press `Ctrl-J` or `Cmd-backtick` to open a terminal again.
 - Install required VSCode extensions. You may be prompted to do this, otherwise go to the `Extension` panel found on the left side of the VSCode window. Then install the following extensions:
@@ -69,7 +70,11 @@ To exit your devcontainer:
 
 ![Manage Devcontainers](assets/ManageDevcontainers.jpg "Manage Devcontainers")
 
-See devcontainer advanced usage [guide](../devcontainer/devcontainer.md) to learn more.
+- To update to the latest `geoprocessing-workspace` Docker image at any point you simply use a different VSCode command to start it:
+  - `Ctrl-Shift-P` or `Cmd-Shift-P` to open the VSCode command palette
+  - type "Dev Containers: Rebuild Without Cache and Reopen In Container"
+
+See devcontainer advanced usage [guide](../devcontainer/devcontainer.md) to learn more or the [upgrade](../upgrade.md) tutorial
 
 ## MacOS Direct Install
 

@@ -433,19 +433,26 @@ To learn more about metric groups, visit the [advanced concepts](../concepts/Adv
 
 ### Create Report
 
-Next you will create your first report using the metric group in the previous step. Run the following command:
+Next you will create your first report using the metric group created in the previous step. Run the following command and answer the questions:
 
 ```bash
 npm run create:report
 ```
 
-the `create:report` command. This command asks you to choose one of your unused metric groups, and then it:
+```text
+? Type of report to create
+Vector overlap report - calculates sketch overlap with vector datasources
+? Describe what this reports geoprocessing function will calculate (e.g.Calculate sketch overlap with boundary polygons)
+Calculate sketch overlap with reef extent
+? Choose an execution mode for the geoprocessing function for this report
+Async - Better for long-running processes
+? Select the metric group to report on coralReef
+✔ Created coralReef report
+```
 
-- Creates a new geoprocessing function in `src/functions`
-- Creates an accompanying smoke test file
-- Creates a React component that displays the result metrics in `src/components`.
-- Creates an accompanying storybook story generator
-- Adds your new geoprocessing function to the list in `project/geoprocessing.json` so that it will be published on deploy.
+Report successfully created!
+Function: src/functions/coralReef.ts
+Component: src/components/CoralReef.tsx
 
 ## Benthic Habitat Report
 

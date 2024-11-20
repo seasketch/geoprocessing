@@ -29,15 +29,15 @@ const createReport = async () => {
       choices: [
         {
           value: "blank",
-          name: "Blank report",
+          name: "Blank report - empty report ready to build from scratch",
         },
         {
           value: "raster",
-          name: "Raster overlap report - Calculates sketch overlap with raster data sources",
+          name: "Raster overlap report - calculates sketch overlap with raster datasources",
         },
         {
           value: "vector",
-          name: "Vector overlap report - Calculates sketch overlap with vector data sources",
+          name: "Vector overlap report - calculates sketch overlap with vector datasources",
         },
       ],
     },
@@ -47,23 +47,9 @@ const createReport = async () => {
       message:
         "Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)",
     },
-    {
-      type: "list",
-      name: "executionMode",
-      message:
-        "Choose an execution mode for the geoprocessing function for this report",
-      choices: [
-        {
-          value: "sync",
-          name: "Sync - Best for quick analyses (< 2s)",
-        },
-        {
-          value: "async",
-          name: "Async - Better for long-running processes",
-        },
-      ],
-    },
   ]);
+
+  answers.executionMode = "async";
 
   // Title of report
   if (answers.type === "raster" || answers.type === "vector") {
@@ -248,7 +234,7 @@ export async function makeReport(
 
   // Write component file
   await fs.writeFile(
-    `${projectComponentPath}/${compName}.tsx`,
+    `${projectComponentPath}/${compName}Card.tsx`,
     componentCode
       .toString()
       .replace(defaultCompRegex, `${compName}`)
@@ -259,7 +245,7 @@ export async function makeReport(
 
   // Write component stories file
   await fs.writeFile(
-    `${projectComponentPath}/${compName}.example-stories.ts`,
+    `${projectComponentPath}/${compName}Card.example-stories.ts`,
     storiesComponentCode
       .toString()
       .replaceAll(blankCompRegex, `${compName}`)
@@ -283,19 +269,34 @@ export async function makeReport(
   );
 
   // Finish and show next steps
+  console.log();
   spinner.succeed(`Created ${options.title} report`);
+  spinner.succeed("Registered report assets in project/geoprocessing.json");
   if (interactive) {
-    console.log(chalk.blue(`\nReport successfully created!`));
     console.log(
-      chalk.blue(`Function: ${`${projectFunctionPath}/${funcName}.ts`}`),
+      chalk.blue(
+        `Geoprocessing function: ${`${projectFunctionPath}/${funcName}.ts`}`,
+      ),
     );
     console.log(
-      chalk.blue(`Component: ${`${projectComponentPath}/${compName}.tsx`}`),
+      chalk.blue(
+        `Report component: ${`${projectComponentPath}/${compName}.tsx`}`,
+      ),
+    );
+    console.log(
+      chalk.blue(
+        `Smoke test: ${`${projectFunctionPath}/${funcName}Smoke.test.ts`}`,
+      ),
+    );
+    console.log(
+      chalk.blue(
+        `Story generator: ${`${projectComponentPath}/${compName}Card.example-stories.ts`}`,
+      ),
     );
     console.log(`\nNext Steps:
-    * Add your new <${compName} /> component to one of your reports (e.g. src/clients/SimpleReport.tsx) or report pages (e.g. src/components/ViabilityPage.tsx)
-    * Run 'npm test' to run smoke tests against your new function
-    * View your report using 'npm storybook' with smoke test output
+    * Add your new <${compName} /> component to one of your top-level report clients (e.g. src/clients/SimpleReport.tsx) or pages (e.g. src/components/ViabilityPage.tsx)
+    * 'npm test' to run smoke tests against your new geoprocessing function
+    * 'npm run storybook' to view your report with smoke test output
   `);
   }
 }

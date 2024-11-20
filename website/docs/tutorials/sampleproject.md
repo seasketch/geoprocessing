@@ -407,14 +407,11 @@ Yes
 
 A metric group defines a metric to be measured, for one or more classes of data. A `MetricGroup` record provides the information needed for a metric to be calculated (in a geoprocessing function) and to be displayed (in a report client).
 
-Let's create your first metric group by opening `project/metrics.json`.
-
-Choose:
+Let's create your first metric group by opening `project/metrics.json`. It will have:
 
 - a metricId (`coralReef`)
-- a type of report (`areaOverlap`)
-- classes you want to show in the report (`reefExtent`) and the datasource they are sourced from (`reefextent`)
-  - In this case our dataset has only one class of data, and it all comes from one datasource.
+- a metric type (`areaOverlap`)
+- the one data class you want to show in the report (`reefExtent`) and the datasource they are sourced from (`reefextent`)
 
 Add the following object to the end of the empty array in `project/metrics.json` and save the file.
 
@@ -436,26 +433,19 @@ To learn more about metric groups, visit the [advanced concepts](../concepts/Adv
 
 ### Create Report
 
-We now have everything we need to generate our first report using the `create:report` command. This command asks you to choose one of your unused metric groups, and then it:
+Next you will create your first report using the metric group in the previous step. Run the following command:
+
+```bash
+npm run create:report
+```
+
+the `create:report` command. This command asks you to choose one of your unused metric groups, and then it:
 
 - Creates a new geoprocessing function in `src/functions`
 - Creates an accompanying smoke test file
 - Creates a React component that displays the result metrics in `src/components`.
 - Creates an accompanying storybook story generator
 - Adds your new geoprocessing function to the list in `project/geoprocessing.json` so that it will be published on deploy.
-
-These assets are all created using the `blank` assets that are in your project, so it's important that you leave them in place:
-
-- src/functions/blankFunction.ts
-- src/functions/blankFunctionSmoke.test.ts
-- src/components/BlankCard.tsx
-- src/components/BlankCard.example-stories.tsx
-
-To get started run the command:
-
-```bash
-npm run create:report
-```
 
 ## Benthic Habitat Report
 

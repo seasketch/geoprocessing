@@ -160,10 +160,10 @@ for (const storyConfig of storyConfigs) {
       ...(childProperties ? { childProperties } : {}),
     };
 
-    // convert sketch name to a valid variable name
-    const sketchVariableName = sketch.properties.name
-      .replaceAll("-", "_")
-      .replaceAll(" ", "_");
+    // Convert sketch name to valid variable name, which is displayed as the story name
+    const sketchVariableName = uuid()
+      .replace(/^[^a-zA-Z$_\p{L}]/u, "_") // Replace invalid starting characters
+      .replaceAll(/[^a-zA-Z0-9$_\p{L}]/gu, "_"); // Replace invalid subsequent characters
 
     const story = `
       import React from "react";

@@ -232,9 +232,11 @@ export async function makeReport(
     testFuncCode.toString().replaceAll(blankFuncRegex, funcName),
   );
 
+  const compCardName = `${compName}Card`;
+
   // Write component file
   await fs.writeFile(
-    `${projectComponentPath}/${compName}Card.tsx`,
+    `${projectComponentPath}/${compCardName}.tsx`,
     componentCode
       .toString()
       .replace(defaultCompRegex, `${compName}`)
@@ -245,7 +247,7 @@ export async function makeReport(
 
   // Write component stories file
   await fs.writeFile(
-    `${projectComponentPath}/${compName}Card.example-stories.ts`,
+    `${projectComponentPath}/${compCardName}.example-stories.ts`,
     storiesComponentCode
       .toString()
       .replaceAll(blankCompRegex, `${compName}`)
@@ -269,10 +271,10 @@ export async function makeReport(
   );
 
   // Finish and show next steps
-  console.log();
   spinner.succeed(`Created ${options.title} report`);
   spinner.succeed("Registered report assets in project/geoprocessing.json");
   if (interactive) {
+    console.log();
     console.log(
       chalk.blue(
         `Geoprocessing function: ${`${projectFunctionPath}/${funcName}.ts`}`,
@@ -280,7 +282,7 @@ export async function makeReport(
     );
     console.log(
       chalk.blue(
-        `Report component: ${`${projectComponentPath}/${compName}.tsx`}`,
+        `Report component: ${`${projectComponentPath}/${compCardName}.tsx`}`,
       ),
     );
     console.log(
@@ -290,13 +292,13 @@ export async function makeReport(
     );
     console.log(
       chalk.blue(
-        `Story generator: ${`${projectComponentPath}/${compName}Card.example-stories.ts`}`,
+        `Story generator: ${`${projectComponentPath}/${compCardName}.example-stories.ts`}`,
       ),
     );
     console.log(`\nNext Steps:
-    * Add your new <${compName} /> component to one of your top-level report clients (e.g. src/clients/SimpleReport.tsx) or pages (e.g. src/components/ViabilityPage.tsx)
     * 'npm test' to run smoke tests against your new geoprocessing function
-    * 'npm run storybook' to view your report with smoke test output
+    * 'npm run storybook' to view your new report with smoke test output
+    * Add <${compCardName} /> to a top-level report client or page when ready
   `);
   }
 }

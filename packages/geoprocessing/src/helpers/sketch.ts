@@ -334,7 +334,20 @@ export const genSketch = <G extends Geometry = SketchGeometryTypes>(
     ]) as unknown as Feature<G>,
     name = `sketch-${uuid()}`,
     id = uuid(),
-    userAttributes = [],
+    userAttributes = [
+      {
+        label: "Type of Sketch",
+        fieldType: "ChoiceField",
+        exportId: "TYPE_OF_SKETCH",
+        value: "sample",
+      },
+      {
+        label: "Notes",
+        fieldType: "TextArea",
+        exportId: "NOTES",
+        value: "This is a sample sketch",
+      },
+    ],
     sketchClassId = uuid(),
     createdAt = new Date().toISOString(),
     updatedAt = new Date().toISOString(),

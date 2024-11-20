@@ -112,7 +112,7 @@ console.log("Output options:", {
   maxRadialLength,
 });
 
-const sketches = (() => {
+const sketch = (() => {
   const fc = genRandomPolygons({
     numPolygons: numFeatures,
     bounds: bbox,
@@ -127,17 +127,52 @@ const sketches = (() => {
       return feats;
     }
   } else {
+    const sc = featureToSketchCollection(fc, name);
+    sc.properties.userAttributes = [
+      {
+        label: "type",
+        fieldType: "ChoiceField",
+        exportId: "TYPE",
+        value: "sketch collection",
+      },
+      {
+        label: "Notes",
+        value: "This is a random sketch collection",
+        exportId: "NOTES",
+        fieldType: "TextArea",
+      },
+    ];
+
+    sc.features.forEach((f, i) => {
+      sc.features[i].properties.userAttributes = [
+        {
+          label: "type",
+          fieldType: "ChoiceField",
+          exportId: "TYPE",
+          value: "sketch",
+        },
+        {
+          label: "Notes",
+          value: "This is a random sketch",
+          exportId: "NOTES",
+          fieldType: "TextArea",
+        },
+      ];
+    });
+
+    console.log("got here");
+    console.log(JSON.stringify(sc, null, 2));
+
     if (numFeatures === 1) {
-      return featureToSketch(fc.features[0], name);
+      return sc.features[0];
     } else {
-      const sc = featureToSketchCollection(fc, name);
       return sc;
     }
   }
 })();
 
 await fs.remove(outfile);
-fs.writeJSON(outfile, sketches, { spaces: 2 }, (err) => {
+fs.writeJSON(outfile, sketch, { spaces: 2 }, (err) => {
   if (err) throw err;
   console.log(`Sketches written to ${outfile}`);
 });

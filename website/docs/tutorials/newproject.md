@@ -21,16 +21,15 @@ Creating a geoprocessing project is not linear, it's iterative. You don't need t
 
 ### Start Simple
 
-The geoprocessing framework is a set of building blocks. Which ones you use are up to you. If your planning process can start simple:
+The geoprocessing framework is a set of building blocks. Which ones you use are up to you. If your planning process requirements can start simple:
 
 - a single planning boundary or none at all
-- straightforward objectives
-- smaller datasets
-- short running analysis
+- simple measurable objectives (overlap area, % area overlap, overlap feature count)
+- on smaller datasets
 - no classification of sketch types (e.g. protection levels)
 - no need to handle overlapping sketch polygons
 
-Then your geoprocessing project can be kept simple.
+Then your geoprocessing project code can start simple:
 
 - no precalculation needed
 - direct import of GeoJSON datasets in code, or simple datasource import.
@@ -83,7 +82,7 @@ Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.73 init 7.0.0-experimental-7x-docs.73
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.87 init 7.0.0-experimental-7x-docs.87
 ```
 
 Tips:

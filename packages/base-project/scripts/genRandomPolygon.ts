@@ -130,14 +130,14 @@ const sketch = (() => {
     const sc = featureToSketchCollection(fc, name);
     sc.properties.userAttributes = [
       {
-        label: "type",
+        label: "Type",
         fieldType: "ChoiceField",
         exportId: "TYPE",
         value: "sketch collection",
       },
       {
         label: "Notes",
-        value: "This is a random sketch collection",
+        value: "This collection has been adjusted to meet all requirements",
         exportId: "NOTES",
         fieldType: "TextArea",
       },
@@ -146,14 +146,15 @@ const sketch = (() => {
     sc.features.forEach((f, i) => {
       sc.features[i].properties.userAttributes = [
         {
-          label: "type",
+          label: "Type",
           fieldType: "ChoiceField",
           exportId: "TYPE",
           value: "sketch",
         },
         {
           label: "Notes",
-          value: "This is a random sketch",
+          value:
+            "This is a modification of the northern proposed area to account for the new requirements",
           exportId: "NOTES",
           fieldType: "TextArea",
         },

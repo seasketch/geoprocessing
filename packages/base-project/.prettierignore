@@ -2,4 +2,4 @@
 **/.svn
 **/.hg
 node_modules
-examples/output
+examples

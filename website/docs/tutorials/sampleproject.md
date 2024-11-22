@@ -365,9 +365,219 @@ If you later add more sketch examples to the `examples/sketch` directory, will n
 
 Learn more in the [storybook guide](./storybook.md).
 
+### Simple Function Modifications
+
+Let's enhance our simple geoprocessing function to show more detailed information when the report is run on a sketch collection. In this case, it should also calculate the area of the entire collection, as well as the area of each child sketch in the collection.
+
+First modify SimpleResults with an additional property `childSketchAreas` that we will calculate:
+
+```typescript
+export interface SimpleResults {
+  /** area of sketch within geography in square meters */
+  area: number;
+  childSketchAreas: {
+    name: string;
+    area: number;
+  }[];
+}
+```
+
+Then calculate the additional values and return them in the result payload:
+
+```typescript
+// Add analysis code
+const sketchArea = area(sketch);
+
+let childSketchAreas: SimpleResults["childSketchAreas"] = [];
+if (sketch.properties.isCollection) {
+  childSketchAreas = toSketchArray(sketch).map((sketch) => ({
+    name: sketch.properties.name,
+    area: area(sketch),
+  }));
+}
+
+// Custom return type
+return {
+  area: sketchArea,
+  childSketchAreas,
+};
+```
+
+Here's what the final `simpleFunction.ts` should look like:
+
+<details>
+  <summary>Final simpleFunction code</summary>
+```typescript title="src/functions/simpleFunction.ts"
+import {
+  Sketch,
+  SketchCollection,
+  Polygon,
+  MultiPolygon,
+  GeoprocessingHandler,
+  toSketchArray,
+} from "@seasketch/geoprocessing";
+import { area } from "@turf/turf";
+
+export interface SimpleResults {
+/\*_ area of sketch within geography in square meters _/
+area: number;
+childSketchAreas: {
+name: string;
+area: number;
+}[];
+}
+
+/\*\*
+
+- Simple geoprocessing function with custom result payload
+  \*/
+  async function simpleFunction(
+  sketch:
+  | Sketch<Polygon | MultiPolygon>
+  | SketchCollection<Polygon | MultiPolygon>,
+  ): Promise<SimpleResults> {
+  // Add analysis code
+  const sketchArea = area(sketch);
+
+let childSketchAreas: SimpleResults["childSketchAreas"] = [];
+if (sketch.properties.isCollection) {
+childSketchAreas = toSketchArray(sketch).map((sketch) => ({
+name: sketch.properties.name,
+area: area(sketch),
+}));
+}
+
+// Custom return type
+return {
+area: sketchArea,
+childSketchAreas,
+};
+}
+
+export default new GeoprocessingHandler(simpleFunction, {
+title: "simpleFunction",
+description: "Function description",
+timeout: 60, // seconds
+memory: 1024, // megabytes
+executionMode: "async",
+});
+
+````
+</details>
+
+Run your tests again to generate the new smoke test output:
+```bash
+npm run test
+````
+
+### Simple Report Modification
+
+Now let's modify SimpleReportCard to display the new data. Simply add a new paragraph, below our first area value, that lists out each child sketch name and value.
+
+```jsx
+<p>
+  <Trans i18nKey="SimpleCard sketch size message">
+    This {{ sketchStr }} is {{ areaString }} km².
+  </Trans>
+</p>
+<Collapse title="Area By Sketch">
+  <Table
+    data={data.childSketchAreas}
+    columns={[
+      {
+        Header: "Name",
+        accessor: "name",
+      },
+      {
+        Header: "Area (km²)",
+        accessor: (row: any) =>
+          roundDecimalFormat(row.area / 1_000_000, 0, {
+            keepSmallValues: true,
+          }),
+      },
+    ]}
+  />
+</Collapse>
+```
+
+<details>
+  <summary>Final SimpleCard code</summary>
+  ```jsx title="src/components/SimpleCard.tsx"
+import React from "react";
+import { Trans, useTranslation } from "react-i18next";
+import {
+  Collapse,
+  ResultsCard,
+  Table,
+  useSketchProperties,
+} from "@seasketch/geoprocessing/client-ui";
+// Import SimpleResults to type-check data access in ResultsCard render function
+import { SimpleResults } from "../functions/simpleFunction.js";
+import { roundDecimalFormat } from "@seasketch/geoprocessing/client-core";
+
+export const SimpleCard = () => {
+const { t } = useTranslation();
+const [{ isCollection }] = useSketchProperties();
+const titleTrans = t("SimpleCard title", "Simple Report");
+return (
+<>
+<ResultsCard title={titleTrans} functionName="simpleFunction">
+{(data: SimpleResults) => {
+const areaSqKm = data.area / 1_000_000;
+const areaString = roundDecimalFormat(areaSqKm, 0, {
+keepSmallValues: true,
+});
+const sketchStr = isCollection ? t("sketch collection") : t("sketch");
+
+          return (
+            <>
+              <p>
+                <Trans i18nKey="SimpleCard sketch size message">
+                  This {{ sketchStr }} is {{ areaString }} km².
+                </Trans>
+              </p>
+              <Collapse title="Area By Sketch">
+                <Table
+                  data={data.childSketchAreas}
+                  columns={[
+                    {
+                      Header: "Name",
+                      accessor: "name",
+                    },
+                    {
+                      Header: "Area (km²)",
+                      accessor: (row: any) =>
+                        roundDecimalFormat(row.area / 1_000_000, 0, {
+                          keepSmallValues: true,
+                        }),
+                    },
+                  ]}
+                />
+              </Collapse>
+            </>
+          );
+        }}
+      </ResultsCard>
+    </>
+
+);
+};
+
+````
+</details>
+
+If your storybook is still running from last time, you will need to restart it to pick up the new smoke test output.
+```bash
+Ctrl-C
+npm run storybook
+````
+
+Your updated report should have a new collapsible table, that when expanded looks like the following:
+![Simple Card with table](./assets/simple-card-table.jpg)
+
 ### First Project Build
 
-Now that you have confirmed your function is working properly, and your report client displays properly for a variety of example sketches, you are ready to do your first build. A `build` of your application packages it for deployment. Specifically it:
+Now that you have confirmed your function is working properly, and your report client displays properly for a variety of example sketches, you are ready to do your first build. The application `build` proceess packages it for deployment. Specifically it:
 
 - Checks all the Typescript code to make sure it's valid and types are used properly.
 - Transpiles all Typescript to Javascript

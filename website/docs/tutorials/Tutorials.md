@@ -188,7 +188,7 @@ ls /mnt/c
 
 Follow the [final configuration steps](#final-configuration---all-install-options) below, then move on to creating a new project.
 
-[Upgrade](../upgrade.md) steps for the Geoprocessing Distribution are available
+[Upgrade](../upgrade.md#upgrade-windows-geoprocessing) steps for the Geoprocessing Distribution are available.
 
 ### Default Ubuntu Distribution
 

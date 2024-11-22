@@ -191,7 +191,7 @@ export class ProjectClientBase implements ProjectClientInterface {
       | ImportRasterDatasourceConfig
       | ImportVectorDatasourceConfig,
   ) {
-    return `${import.meta.dirname}/../data/dist/${ds.datasourceId}.fgb`;
+    return `data/dist/${ds.datasourceId}.fgb`;
   }
 
   public getDatasourceUrl(

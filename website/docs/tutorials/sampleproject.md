@@ -662,39 +662,27 @@ Now, create a script to calculate the total area of the reef extent polygons. Si
 
 ```typescript
 // Run the following command from the project root directory
-// It will serve the data/dist directory locally on port 8080 and then run this script
-// npx start-server-and-test 'http-server data/dist -c-1 -p 8080' http://localhost:8080 'npx tsx ./scripts/coralReefPrecalc.ts'
-
-import { area, featureCollection } from "@turf/turf";
-import project from "../project/projectClient.js";
-import { loadFgb } from "@seasketch/geoprocessing";
-
-// Get local url for reefextent datasource
-const ds = project.getDatasourceById("reefextent");
-const url = project.getDatasourceUrl(ds, { local: true, port: 8080 });
+import { area } from "@turf/turf";
+import { geojson } from "flatgeobuf";
+import { readFileSync } from "fs";
 
 // Fetch all reef features and calculate total area
-const reefFeatures = await loadFgb(url);
-const totalArea = area(featureCollection(reefFeatures));
+const buffer = readFileSync(
+  `${import.meta.dirname}/../data/dist/reefextent.fgb`,
+);
+const reefFeatures = geojson.deserialize(new Uint8Array(buffer));
+const totalArea = area(reefFeatures);
 
 console.log("totalArea", totalArea);
 ```
 
-Follow the instructions at the top of the file to run the script:
-
 ```bash
-npx start-server-and-test 'http-server data/dist -c-1 -p 8080' http://localhost:8080 'npx tsx ./scripts/coralReefPrecalc.ts'
+npx tsx scripts/coralReefPrecalc.ts
 ```
 
-This will start a local web server on port 8080 that serves up the data/dist directory, and then immediately run this script, which fetches all of the reef polygons for the datasource and calculates their area and outputs it to the console.
+The script fetches all features from the reef extent flatgeobuf file, calculates their area and outputs it to the console.
 
 ```text
-fgbFetchAll url: http://127.0.0.1:8080/reefextent.fgb box: {"minX":-180,"maxX":180,"minY":-90,"maxY":90}
-[2024-11-22T07:53:12.318Z]  "GET /reefextent.fgb" "node"
-[2024-11-22T07:53:12.339Z]  "GET /reefextent.fgb" "node"
-[2024-11-22T07:53:12.343Z]  "GET /reefextent.fgb" "node"
-[2024-11-22T07:53:12.373Z]  "GET /reefextent.fgb" "node"
-[2024-11-22T07:53:12.521Z]  "GET /reefextent.fgb" "node"
 totalArea 716100906.2570591
 ```
 

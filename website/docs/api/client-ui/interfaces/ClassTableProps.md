@@ -74,7 +74,7 @@ group level objective, applies to all classes
 type: string;
 ```
 
-Metric type
+unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user
 
 ***
 

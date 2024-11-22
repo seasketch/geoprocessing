@@ -82,7 +82,7 @@ Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.87 init 7.0.0-experimental-7x-docs.87
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.92 init 7.0.0-experimental-7x-docs.92
 ```
 
 Tips:

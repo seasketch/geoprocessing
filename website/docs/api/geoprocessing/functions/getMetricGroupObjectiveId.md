@@ -18,7 +18,7 @@ If a classID is also passed, returns the objective ID for that class within the 
 | `metricGroup.layerId`? | `string` | Optional ID of map layer associated with this metric |
 | `metricGroup.metricId`? | `string` | Unique id of metric in project |
 | `metricGroup.objectiveId`? | `string` | group level objective, applies to all classes |
-| `metricGroup.type`? | `string` | Metric type |
+| `metricGroup.type`? | `string` | unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user |
 | `classId`? | `string` | - |
 
 ## Returns

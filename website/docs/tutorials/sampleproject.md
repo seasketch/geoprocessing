@@ -20,7 +20,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.87 init 7.0.0-experimental-7x-docs.87
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.92 init 7.0.0-experimental-7x-docs.92
 ```
 
 ```text
@@ -380,7 +380,7 @@ First modify SimpleResults with an additional property `childSketchAreas` that c
 
 ```typescript
 export interface SimpleResults {
-  /** area of sketch within geography in square meters */
+  /** area of reef within sketch in square meters */
   area: number;
   childSketchAreas: {
     /** Name of the sketch */
@@ -429,7 +429,7 @@ import {
 import { area } from "@turf/turf";
 
 export interface SimpleResults {
-  /** area of sketch within geography in square meters */
+  /** area of reef within sketch in square meters */
   area: number;
   childSketchAreas: {
     /** Name of the sketch */
@@ -582,7 +582,7 @@ return (
 
 </details>
 
-If your storybook is still running from last time, you will need to restart it to pick up the new smoke test output.
+If your storybook is still running from last time, you will need to restart it to pick up the new smoke test output. In fact, anytime you rerun your smoke tests to generate new output, you will need to restart your storybook.
 
 ```bash
 Ctrl-C
@@ -625,7 +625,7 @@ unzip data/src/FSM_MSP_Data_Example_V2.zip -d data/src
 rm data/src/FSM_MSP_Data_Example_V2.zip
 ```
 
-Now import the datasource.
+Now import the datasource to your project.
 
 ```bash
 npm run import:data
@@ -654,17 +654,35 @@ Yes
 Yes
 ```
 
-The import process will reduce the source dataset to only the necessary attributes, and output a new file in the cloud-optimized flatgeobuf format to the `data/dist` directory. This registered with the project in `project/datasources.json` and is ready for local report development. Publishing a datasource for production use won't be covered until the next tutorial.
+The import process will:
+
+- reproject your data to the WGS84 reference system, if not already (for ease of use with Turf.JS)
+- reduce the source dataset down to only the necessary attributes (saving network bandwidth later)
+- output a new file in the cloud-optimized flatgeobuf format to the `data/dist` directory.
+- register the datasource in `project/datasources.json`, along with metadata. This allows you to:
+  - quickly access project datasources in your reports using the `projectClient` (more on this later)
+  - quickly reimport datasources using the `reimport:data` command, without having to answer questions again.
+
+Once finished you are ready to use your datasources for `local` report development. Datasource publishing for `production` use is covered later.
+
+You can add, edit, or delete records in datasources.json manually to meet your need as long as the records meet the expected [schema](../concepts/AdvancedConcepts.md#datasources).
+
+If at any point the process of using `data:import`, `datasources.json`, and `projectClient` doesn't meet your needs, you are welcome to create your own separate process, as long as it gets datasources to the `data/dist` directory in the format (fgb) and projection (WGS84) required, ready to be published for production use. Data publishing will be covered at a later time.
 
 ### Precalculation
 
-Now, create a script to calculate the total area of the reef extent polygons. Since our data is in the flatgeobuf format, Create a new file with the following code and save it to `scripts/coralReefPrecalc.ts`:
+Next, you will create a standalone script to calculate the total area of the polygons in the reef extent datasource for use in the report. By doing this calculation ahead of time, you won't need to do it every time the geoprocessing function runs.
+
+Create a new file with the following code and save it to `scripts/coralReefPrecalc.ts`:
 
 ```typescript
 // Run the following command from the project root directory
+// npx tsx scripts/coralReefPrecalc.ts
+
 import { area } from "@turf/turf";
 import { geojson } from "flatgeobuf";
 import { readFileSync } from "fs";
+import fs from "fs-extra";
 
 // Fetch all reef features and calculate total area
 const buffer = readFileSync(
@@ -673,24 +691,36 @@ const buffer = readFileSync(
 const reefFeatures = geojson.deserialize(new Uint8Array(buffer));
 const totalArea = area(reefFeatures);
 
-console.log("totalArea", totalArea);
+const reefPrecalc = {
+  totalAreaSqMeters: totalArea,
+};
+
+fs.ensureDirSync(`${import.meta.dirname}/../data/precalc`);
+fs.writeJsonSync(
+  `${import.meta.dirname}/../data/precalc/reefextent.json`,
+  reefPrecalc,
+);
 ```
+
+Now run it:
 
 ```bash
 npx tsx scripts/coralReefPrecalc.ts
 ```
 
-The script fetches all features from the reef extent flatgeobuf file, calculates their area and outputs it to the console.
+The script fetches all features from the reef extent flatgeobuf file, calculates their total area and writes it to `data/precalc/reefextent.json`.
 
 ```text
-totalArea 716100906.2570591
+{
+  "totalArea": 716100906.2570591
+}
 ```
 
-We are going to use this precalculated value in our geoprocessing function.
+We are going to use this precalculated value in a geoprocessing function in the next step.
 
 ### Geoprocessing Function
 
-To create a geoprocessing function, run the following:
+To create a new geoprocessing function ready to build on, run the following:
 
 ```bash
 npm run create:function
@@ -718,9 +748,11 @@ Next Steps:
     * 'npm test' to smoke test your new geoprocessing function against all example sketches
 ```
 
-Open the `src/functions/coralReef.ts` file. Notice that it looks very similar to our simpleFunction.
+Open the `src/functions/coralReef.ts` file. Notice that it looks very similar to our previous simpleFunction.
 
-Now we will update this function to answer the following question: what percentage of all coral reef area is within our sketch polygon (or sketch collection polygons)? Replace it with the following code:
+You will update the code to calculate the answer to the following question: what percentage of all coral reef is within our sketch polygon (or sketch collection polygons)?
+
+Replace the existing code with the following:
 
 ```typescript
 WORK IN PROGRESS PAST THIS POINT

@@ -444,6 +444,24 @@ Returns ExternalVectorDatasource given datasourceId, throws if not found
 
 ***
 
+### getFgbPath()
+
+```ts
+getFgbPath(ds): string
+```
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `ds` | \| `object` \| `object` \| `object` \| `object` \| `object` & `object` \| `object` & `object` \| [`ImportVectorDatasourceConfig`](../type-aliases/ImportVectorDatasourceConfig.md) \| [`ImportRasterDatasourceConfig`](../type-aliases/ImportRasterDatasourceConfig.md) |
+
+#### Returns
+
+`string`
+
+***
+
 ### getGeographyByGroup()
 
 ```ts
@@ -999,7 +1017,7 @@ group level objective, applies to all classes
 type: string;
 ```
 
-Metric type
+unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user
 
 ***
 
@@ -1022,7 +1040,7 @@ Returns all Objectives for MetricGroup, optionally translating short description
 | `metricGroup.layerId`? | `string` | Optional ID of map layer associated with this metric |
 | `metricGroup.metricId`? | `string` | Unique id of metric in project |
 | `metricGroup.objectiveId`? | `string` | group level objective, applies to all classes |
-| `metricGroup.type`? | `string` | Metric type |
+| `metricGroup.type`? | `string` | unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user |
 | `t`? | `TFunction`\<`"translation"`, `undefined`\> | - |
 
 #### Returns
@@ -1050,7 +1068,7 @@ Simple helper that given MetricGroup, returns a consistent ID string for a perce
 | `mg.layerId`? | `string` | Optional ID of map layer associated with this metric |
 | `mg.metricId` | `string` | Unique id of metric in project |
 | `mg.objectiveId`? | `string` | group level objective, applies to all classes |
-| `mg.type` | `string` | Metric type |
+| `mg.type` | `string` | unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user |
 
 #### Returns
 
@@ -1132,7 +1150,7 @@ Returns precalc metrics from precalc.json.  Optionally filters down to specific 
 | `mg.layerId`? | `string` | Optional ID of map layer associated with this metric |
 | `mg.metricId`? | `string` | Unique id of metric in project |
 | `mg.objectiveId`? | `string` | group level objective, applies to all classes |
-| `mg.type`? | `string` | Metric type |
+| `mg.type`? | `string` | unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user |
 | `metricId`? | `string` | string, "area", "count", or "sum" |
 | `geographyId`? | `string` | string, geographyId to get precalculated metrics for |
 

@@ -8,7 +8,7 @@ import { z } from "zod";
 export const metricGroupSchema = z.object({
   /** Unique id of metric in project*/
   metricId: z.string(),
-  /** Metric type */
+  /** unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user */
   type: z.string(),
   /** Datasource to generate metrics from */
   datasourceId: z.string().optional(),

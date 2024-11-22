@@ -157,6 +157,7 @@
 | [getExternalRasterDatasourceById](functions/getExternalRasterDatasourceById.md) | find and return external raster datasource from passed datasources |
 | [getExternalVectorDatasourceById](functions/getExternalVectorDatasourceById.md) | find and return external vector datasource from passed datasources |
 | [getFeatures](functions/getFeatures.md) | Returns features for a variety of vector datasources and formats, with additional filter options |
+| [getFeaturesForSketchBBoxes](functions/getFeaturesForSketchBBoxes.md) | Loads features from a FlatGeobuf referenced by URL, which intersect the bounding boxes of each individual sketch in a SketchCollection, or a single Sketch. |
 | [getFirstFromParam](functions/getFirstFromParam.md) | Returns first element from param object at paramName key. Parameter can be string or array of strings |
 | [getFlatGeobufFilename](functions/getFlatGeobufFilename.md) | Returns datasource filename in flatgeobuf format |
 | [getFlatGeobufPath](functions/getFlatGeobufPath.md) | - |

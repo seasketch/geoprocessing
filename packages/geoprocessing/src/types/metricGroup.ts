@@ -8,14 +8,14 @@ import { z } from "zod";
 export const metricGroupSchema = z.object({
   /** Unique id of metric in project*/
   metricId: z.string(),
+  /** data classes used by group */
+  classes: z.array(dataClassSchema),
   /** unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user */
-  type: z.string(),
+  type: z.string().optional(),
   /** Datasource to generate metrics from */
   datasourceId: z.string().optional(),
   /** Optional datasource class key used to source classIds  */
   classKey: z.string().optional(),
-  /** data classes used by group */
-  classes: z.array(dataClassSchema),
   /** Optional ID of map layer associated with this metric */
   layerId: z.string().optional(),
   /** group level objective, applies to all classes */

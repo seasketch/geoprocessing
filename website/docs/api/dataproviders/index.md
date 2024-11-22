@@ -26,6 +26,12 @@ Re-exports [getFeatures](../geoprocessing/functions/getFeatures.md)
 
 ***
 
+### getFeaturesForSketchBBoxes
+
+Re-exports [getFeaturesForSketchBBoxes](../geoprocessing/functions/getFeaturesForSketchBBoxes.md)
+
+***
+
 ### loadCog
 
 Re-exports [loadCog](../geoprocessing/functions/loadCog.md)

@@ -1528,6 +1528,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/getFeaturesForSketchBBoxes",
+            "label": "getFeaturesForSketchBBoxes"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/getFirstFromParam",
             "label": "getFirstFromParam"
           },

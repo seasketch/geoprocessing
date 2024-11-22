@@ -274,7 +274,7 @@ export async function makeReport(
   spinner.succeed(`Created ${options.title} report`);
   spinner.succeed("Registered report assets in project/geoprocessing.json");
   if (interactive) {
-    console.log();
+    console.log("\n");
     console.log(
       chalk.blue(
         `Geoprocessing function: ${`${projectFunctionPath}/${funcName}.ts`}`,

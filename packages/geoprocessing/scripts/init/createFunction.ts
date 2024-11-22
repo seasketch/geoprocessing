@@ -166,12 +166,24 @@ export async function makeGeoprocessingHandler(
   spinner.succeed(
     `created ${options.title} function in ${projectFunctionPath}/`,
   );
+  spinner.succeed("Registered function in project/geoprocessing.json");
+
   if (interactive) {
-    console.log(chalk.blue(`\nGeoprocessing function initialized`));
+    console.log("\n");
+    console.log(
+      chalk.blue(
+        `Geoprocessing function: ${`${projectFunctionPath}/${options.title}.ts`}`,
+      ),
+    );
+    console.log(
+      chalk.blue(
+        `Smoke test: ${`${projectFunctionPath}/${options.title}Smoke.test.ts`}`,
+      ),
+    );
     console.log(`\nNext Steps:
-    * Update your function definition in ${`${projectFunctionPath}/${options.title}.ts`}
-    * Smoke test in ${`${projectFunctionPath}/${options.title}Smoke.test.ts`} will be run the next time you use 'npm test'
+    * Update the geoprocessing function with your analysis
     * Populate examples/sketches folder with sketches for smoke test to run against
+    * 'npm test' to smoke test your new geoprocessing function against all example sketches
   `);
   }
 }

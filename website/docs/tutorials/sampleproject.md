@@ -214,7 +214,10 @@ SimpleReport renders two cards, `SimpleCard` and `SketchAttributesCard`, wrappin
 
 `SketchAttributes` card is a card component that displays the properties of the users Sketch. No geoprocessing function is needed to do its work.
 
-`SimpleCard` is a card component that invokes simpleFunction and displays its results. Let's look closer at its code found in `src/components/SimpleCard.tsx`:
+`SimpleCard` is a card component that invokes simpleFunction and displays its results. Let's look at the full initial code:
+
+<details>
+<summary>src/components/SimpleCard.tsx</summary>
 
 ```jsx
 import React from "react";
@@ -257,23 +260,27 @@ export const SimpleCard = () => {
 };
 ```
 
-The first thing to notice is that SimpleCard renders a `ResultsCard` component.
+</details>
+
+The first thing to notice is that SimpleCard renders a `ResultsCard` component. Behind the scenes ResultsCard invokes the geoprocessing function with the `functionName` provided (simpleFunction).
 
 ```typescript
 <ResultsCard title={titleTrans} functionName="simpleFunction">
 ```
 
-Behind the scenes ResultsCard invokes the geoprocessing function with the `functionName` provided (simpleFunction) and calls its child render function with the results.
+ResultsCard then render function it is provided with the results.
 
 ```typescript
 {
-  (data: SimpleResults) => {};
+  (data: SimpleResults) => {
+    // Render results here
+  };
 }
 ```
 
 This render function takes an input parameter `data` that has the same type (`SimpleResults`) as the return type of `simpleFunction`. This gives you fully typed access to your report results.
 
-What happens inside this render function is what makes each report card unique. This card converts the calculated area value in square meters to square kilometers, rounds it to a whole number, and then formats the number to make it more readable. Also notice that it renders a slightly different message depending on whether it is a single sketch or a sketch collection being reported on.
+The code in this render function is the heart of each report card. This particular card takes the `area` value it is given in square meters, and converts it to square kilometers. It then rounds it to a whole number, and formats it to make it more readable. Also notice that it renders a slightly different message depending on whether it is a single sketch or a sketch collection being reported on.
 
 ### Language Translation
 
@@ -367,16 +374,18 @@ Learn more in the [storybook guide](./storybook.md).
 
 ### Simple Function Modifications
 
-Let's enhance our simple geoprocessing function to show more detailed information when the report is run on a sketch collection. In this case, it should also calculate the area of the entire collection, as well as the area of each child sketch in the collection.
+Let's enhance your simple geoprocessing function to calculate more detailed information when the report is run on a sketch collection. It should now also calculate the area of the entire collection, and the area of each child sketch in the collection.
 
-First modify SimpleResults with an additional property `childSketchAreas` that we will calculate:
+First modify SimpleResults with an additional property `childSketchAreas` that can store this information:
 
 ```typescript
 export interface SimpleResults {
   /** area of sketch within geography in square meters */
   area: number;
   childSketchAreas: {
+    /** Name of the sketch */
     name: string;
+    /** Area of the sketch in square meters */
     area: number;
   }[];
 }
@@ -403,11 +412,12 @@ return {
 };
 ```
 
-Here's what the final `simpleFunction.ts` should look like:
+Here's what the final `simpleFunction` code should look like:
 
 <details>
-  <summary>Final simpleFunction code</summary>
-```typescript title="src/functions/simpleFunction.ts"
+<summary>src/functions/simpleFunction.ts</summary>
+
+```typescript
 import {
   Sketch,
   SketchCollection,
@@ -419,60 +429,62 @@ import {
 import { area } from "@turf/turf";
 
 export interface SimpleResults {
-/\*_ area of sketch within geography in square meters _/
-area: number;
-childSketchAreas: {
-name: string;
-area: number;
-}[];
+  /** area of sketch within geography in square meters */
+  area: number;
+  childSketchAreas: {
+    /** Name of the sketch */
+    name: string;
+    /** Area of the sketch in square meters */
+    area: number;
+  }[];
 }
 
-/\*\*
-
-- Simple geoprocessing function with custom result payload
-  \*/
-  async function simpleFunction(
+/**
+ * Simple geoprocessing function with custom result payload
+ */
+async function simpleFunction(
   sketch:
-  | Sketch<Polygon | MultiPolygon>
-  | SketchCollection<Polygon | MultiPolygon>,
-  ): Promise<SimpleResults> {
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
+): Promise<SimpleResults> {
   // Add analysis code
   const sketchArea = area(sketch);
 
-let childSketchAreas: SimpleResults["childSketchAreas"] = [];
-if (sketch.properties.isCollection) {
-childSketchAreas = toSketchArray(sketch).map((sketch) => ({
-name: sketch.properties.name,
-area: area(sketch),
-}));
-}
+  let childSketchAreas: SimpleResults["childSketchAreas"] = [];
+  if (sketch.properties.isCollection) {
+    childSketchAreas = toSketchArray(sketch).map((sketch) => ({
+      name: sketch.properties.name,
+      area: area(sketch),
+    }));
+  }
 
-// Custom return type
-return {
-area: sketchArea,
-childSketchAreas,
-};
+  // Custom return type
+  return {
+    area: sketchArea,
+    childSketchAreas,
+  };
 }
 
 export default new GeoprocessingHandler(simpleFunction, {
-title: "simpleFunction",
-description: "Function description",
-timeout: 60, // seconds
-memory: 1024, // megabytes
-executionMode: "async",
+  title: "simpleFunction",
+  description: "Function description",
+  timeout: 60, // seconds
+  memory: 1024, // megabytes
+  executionMode: "async",
 });
+```
 
-````
 </details>
 
 Run your tests again to generate the new smoke test output:
+
 ```bash
 npm run test
-````
+```
 
 ### Simple Report Modification
 
-Now let's modify SimpleReportCard to display the new data. Simply add a new paragraph, below our first area value, that lists out each child sketch name and value.
+Now let's modify SimpleReportCard to display the new data. You will add a new `Collapse` section with a `Table` component that lists out the sketch areas by name.
 
 ```jsx
 <p>
@@ -480,16 +492,16 @@ Now let's modify SimpleReportCard to display the new data. Simply add a new para
     This {{ sketchStr }} is {{ areaString }} km².
   </Trans>
 </p>
-<Collapse title="Area By Sketch">
+<Collapse title={t("Area By Sketch")}>
   <Table
     data={data.childSketchAreas}
     columns={[
       {
-        Header: "Name",
+        Header: t("Name"),
         accessor: "name",
       },
       {
-        Header: "Area (km²)",
+        Header: t("Area (km²)"),
         accessor: (row: any) =>
           roundDecimalFormat(row.area / 1_000_000, 0, {
             keepSmallValues: true,
@@ -500,16 +512,19 @@ Now let's modify SimpleReportCard to display the new data. Simply add a new para
 </Collapse>
 ```
 
+Here's what the final SimpleCard code should look like:
+
 <details>
-  <summary>Final SimpleCard code</summary>
-  ```jsx title="src/components/SimpleCard.tsx"
+  <summary>src/components/SimpleCard.tsx</summary>
+
+```jsx
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
-  Collapse,
-  ResultsCard,
-  Table,
-  useSketchProperties,
+Collapse,
+ResultsCard,
+Table,
+useSketchProperties,
 } from "@seasketch/geoprocessing/client-ui";
 // Import SimpleResults to type-check data access in ResultsCard render function
 import { SimpleResults } from "../functions/simpleFunction.js";
@@ -520,57 +535,59 @@ const { t } = useTranslation();
 const [{ isCollection }] = useSketchProperties();
 const titleTrans = t("SimpleCard title", "Simple Report");
 return (
-<>
-<ResultsCard title={titleTrans} functionName="simpleFunction">
-{(data: SimpleResults) => {
-const areaSqKm = data.area / 1_000_000;
-const areaString = roundDecimalFormat(areaSqKm, 0, {
-keepSmallValues: true,
-});
-const sketchStr = isCollection ? t("sketch collection") : t("sketch");
+  <>
+    <ResultsCard title={titleTrans} functionName="simpleFunction">
+      {(data: SimpleResults) => {
+        const areaSqKm = data.area / 1_000_000;
+        const areaString = roundDecimalFormat(areaSqKm, 0, {
+          keepSmallValues: true,
+        });
+        const sketchStr = isCollection ? t("sketch collection") : t("sketch");
 
-          return (
-            <>
-              <p>
-                <Trans i18nKey="SimpleCard sketch size message">
-                  This {{ sketchStr }} is {{ areaString }} km².
-                </Trans>
-              </p>
-              <Collapse title="Area By Sketch">
-                <Table
-                  data={data.childSketchAreas}
-                  columns={[
-                    {
-                      Header: "Name",
-                      accessor: "name",
-                    },
-                    {
-                      Header: "Area (km²)",
-                      accessor: (row: any) =>
-                        roundDecimalFormat(row.area / 1_000_000, 0, {
-                          keepSmallValues: true,
-                        }),
-                    },
-                  ]}
-                />
-              </Collapse>
-            </>
-          );
-        }}
-      </ResultsCard>
-    </>
-
+        return (
+          <>
+            <p>
+              <Trans i18nKey="SimpleCard sketch size message">
+                This {{ sketchStr }} is {{ areaString }} km².
+              </Trans>
+            </p>
+            <Collapse title={t("Area By Sketch")}>
+              <Table
+                data={data.childSketchAreas}
+                columns={[
+                  {
+                    Header: t("Name"),
+                    accessor: "name",
+                  },
+                  {
+                    Header: t("Area (km²)"),
+                    accessor: (row: any) =>
+                      roundDecimalFormat(row.area / 1_000_000, 0, {
+                        keepSmallValues: true,
+                      }),
+                  },
+                ]}
+              />
+            </Collapse>
+          </>
+        );
+      }}
+    </ResultsCard>
+  </>
 );
 };
 
-````
+
+```
+
 </details>
 
 If your storybook is still running from last time, you will need to restart it to pick up the new smoke test output.
+
 ```bash
 Ctrl-C
 npm run storybook
-````
+```
 
 Your updated report should have a new collapsible table, that when expanded looks like the following:
 ![Simple Card with table](./assets/simple-card-table.jpg)
@@ -594,15 +611,13 @@ Once your build is successful, you should stage and commit all your changes to g
 
 ## Reef Report
 
-You will be creating a simple report that measures how much of the Micronesian coral reef extent is within a Sketch or SketchCollection.
-
-Here is an image of this dataset. Notice that the coral is entirely in shallow water near the islands and atolls.
+Next you will create a coral reef report using a reef extent datasource. Here is an image of it displayed in QGIS. Notice that the coral is entirely in shallow water around the island coastline and atolls.
 
 ![Reef Extent](./assets/reef-extent.jpg)
 
 ### Import Data
 
-First download a data package prepared for FSM to your project space.
+To access this datasource, first download a data package prepared for FSM to your project space and unzip it:
 
 ```bash
 wget -P data/src https://github.com/user-attachments/files/17697992/FSM_MSP_Data_Example_V2.zip
@@ -610,7 +625,7 @@ unzip data/src/FSM_MSP_Data_Example_V2.zip -d data/src
 rm data/src/FSM_MSP_Data_Example_V2.zip
 ```
 
-Now import your first datasource, FSM reef extent.
+Now import the datasource.
 
 ```bash
 npm run import:data
@@ -639,62 +654,99 @@ Yes
 Yes
 ```
 
-### Add Metric Group
+The import process will reduce the source dataset to only the necessary attributes, and output a new file in the cloud-optimized flatgeobuf format to the `data/dist` directory. This registered with the project in `project/datasources.json` and is ready for local report development. Publishing a datasource for production use won't be covered until the next tutorial.
 
-A metric group defines a metric to be measured, for one or more classes of data. A `MetricGroup` **record** provides the information needed for a metric to be calculated (in a geoprocessing function) and to be displayed (in a report client). Let's create your first metric group by opening `project/metrics.json`.
+### Precalculation
 
-Add a new metric group object to the empty array in `project/metrics.json` and save the file. The reef extent dataset simply tells you where there is reef present. Therefore, we represent it as a single class of data. You should end up with the following:
+Now, create a script to calculate the total area of the reef extent polygons. Since our data is in the flatgeobuf format, Create a new file with the following code and save it to `scripts/coralReefPrecalc.ts`:
 
-```json
-[
-  {
-    "metricId": "coralReef",
-    "type": "areaOverlap",
-    "classes": [
-      {
-        "classId": "reefextent",
-        "display": "Coral Reef",
-        "datasourceId": "reefextent"
-      }
-    ]
-  }
-]
+```typescript
+// Run the following command from the project root directory
+// It will serve the data/dist directory locally on port 8080 and then run this script
+// npx start-server-and-test 'http-server data/dist -c-1 -p 8080' http://localhost:8080 'npx tsx ./scripts/coralReefPrecalc.ts'
+
+import { area, featureCollection } from "@turf/turf";
+import project from "../project/projectClient.js";
+import { loadFgb } from "@seasketch/geoprocessing";
+
+// Get local url for reefextent datasource
+const ds = project.getDatasourceById("reefextent");
+const url = project.getDatasourceUrl(ds, { local: true, port: 8080 });
+
+// Fetch all reef features and calculate total area
+const reefFeatures = await loadFgb(url);
+const totalArea = area(featureCollection(reefFeatures));
+
+console.log("totalArea", totalArea);
 ```
 
-To learn more about metric groups, visit the [advanced concepts](../concepts/AdvancedConcepts.md#metric-group) page.
-
-### Create Report
-
-Next you will create your first report using the metric group created in the previous step. Run the following command and answer the questions:
+Follow the instructions at the top of the file to run the script:
 
 ```bash
-npm run create:report
+npx start-server-and-test 'http-server data/dist -c-1 -p 8080' http://localhost:8080 'npx tsx ./scripts/coralReefPrecalc.ts'
+```
+
+This will start a local web server on port 8080 that serves up the data/dist directory, and then immediately run this script, which fetches all of the reef polygons for the datasource and calculates their area and outputs it to the console.
+
+```text
+fgbFetchAll url: http://127.0.0.1:8080/reefextent.fgb box: {"minX":-180,"maxX":180,"minY":-90,"maxY":90}
+[2024-11-22T07:53:12.318Z]  "GET /reefextent.fgb" "node"
+[2024-11-22T07:53:12.339Z]  "GET /reefextent.fgb" "node"
+[2024-11-22T07:53:12.343Z]  "GET /reefextent.fgb" "node"
+[2024-11-22T07:53:12.373Z]  "GET /reefextent.fgb" "node"
+[2024-11-22T07:53:12.521Z]  "GET /reefextent.fgb" "node"
+totalArea 716100906.2570591
+```
+
+We are going to use this precalculated value in our geoprocessing function.
+
+### Geoprocessing Function
+
+To create a geoprocessing function, run the following:
+
+```bash
+npm run create:function
 ```
 
 ```text
-? Type of report to create
-Vector overlap report - calculates sketch overlap with vector datasources
-? Describe what this reports geoprocessing function will calculate (e.g.Calculate sketch overlap with boundary polygons)
-Calculate sketch overlap with reef extent
-? Choose an execution mode for the geoprocessing function for this report
-Async - Better for long-running processes
-? Select the metric group to report on
+? Function type
+Geoprocessing - For sketch reports
+? Title for this function, in camelCase
 coralReef
+? Describe what this function does
+calculate sketch overlap with reef extent datasource
+? Choose an execution mode
+Async - Better for long-running processes
 
-✔ Created coralReef report
-✔ Registered report assets in project/geoprocessing.json
+✔ created coralReef function in src/functions/
+✔ Registered function in project/geoprocessing.json
+
 Geoprocessing function: src/functions/coralReef.ts
 Smoke test: src/functions/coralReefSmoke.test.ts
-Report component: src/components/CoralReefCard.tsx
-Story generator: src/components/CoralReefCard.example-stories.ts
 
 Next Steps:
-    * 'npm test' to run smoke tests against your new geoprocessing function
-    * 'npm run storybook' to view your new report with smoke test output
-    * Add <CoralReefCard /> to a top-level report client or page when ready
+    * Update the geoprocessing function with your analysis
+    * Populate examples/sketches folder with sketches for smoke test to run against
+    * 'npm test' to smoke test your new geoprocessing function against all example sketches
 ```
 
-As the output explains, 4 new files have been created for you including a geoprocessing function (coralReef.ts) and a
+Open the `src/functions/coralReef.ts` file. Notice that it looks very similar to our simpleFunction.
+
+Now we will update this function to answer the following question: what percentage of all coral reef area is within our sketch polygon (or sketch collection polygons)? Replace it with the following code:
+
+```typescript
+WORK IN PROGRESS PAST THIS POINT
+```
+
+Now run tests:
+
+```bash
+npm run test
+```
+
+You will find smoke test output for this new function for all of your example sketches in the `examples/output` directory. Confirm that the output looks as expected.
+
+### Report Client
 
 ## Benthic Habitat Report
 
@@ -736,9 +788,9 @@ If the import fails, start the import over and double check everything. It is mo
 
 ### Add Metric Group
 
-Metric group for vector data source with multiple classes
+A metric group defines a metric to be measured, for one or more classes of data. A `MetricGroup` **record** provides the information needed for a metric to be calculated (in a geoprocessing function) and to be displayed (in a report client). Let's create your first metric group by opening `project/metrics.json`.
 
-Next, add a metric group for measuring sketch overlap with areas where benthic species are predicted to be present. `benthic` consists of a single vector datasource with multiple habitats defined by the `class` attribute. While there are many types of habitats, we want to only focus on Sand, Rubble, and Rock. To do this, you'll add multiple class records, each with a unique `classId` value to match on, and a `classKey` that specific which feature attribute the classId values are found.
+The benthic dataset represents where different classes of benthic habitat are predicted to be present. Specifically is is a single vector datasource with multiple habitats defined by the `class` attribute. While there are many types of habitats, we want to only focus on Sand, Rubble, and Rock. To do this, you'll add multiple class records, each with a unique `classId` value to match on, and a `classKey` that specific which feature attribute the classId values are found.
 
 Add the following record to the end of the array in `project/metrics.json` and save the file.
 
@@ -768,6 +820,60 @@ Add the following record to the end of the array in `project/metrics.json` and s
   ]
 }
 ```
+
+The reef extent dataset simply tells you where there is reef present. Therefore, we represent it as a single class of data. You should end up with the following:
+
+```json
+[
+  {
+    "metricId": "coralReef",
+    "type": "areaOverlap",
+    "classes": [
+      {
+        "classId": "reefextent",
+        "display": "Coral Reef",
+        "datasourceId": "reefextent"
+      }
+    ]
+  }
+]
+```
+
+To learn more about metric groups, visit the [advanced concepts](../concepts/AdvancedConcepts.md#metric-group) page.
+
+### Create Report
+
+Next you will create your first report using the metric group created in the previous step. Run the following command and answer the questions:
+
+```bash
+npm run create:report
+```
+
+```text
+? Type of report to create
+Vector overlap report - calculates sketch overlap with vector datasources
+? Describe what this reports geoprocessing function will calculate (e.g.Calculate sketch overlap with boundary polygons)
+Calculate sketch overlap with reef extent
+? Choose an execution mode for the geoprocessing function for this report
+Async - Better for long-running processes
+? Select the metric group to report on
+coralReef
+
+✔ Created coralReef report
+✔ Registered report assets in project/geoprocessing.json
+
+Geoprocessing function: src/functions/coralReef.ts
+Smoke test: src/functions/coralReefSmoke.test.ts
+Report component: src/components/CoralReefCard.tsx
+Story generator: src/components/CoralReefCard.example-stories.ts
+
+Next Steps:
+    * 'npm test' to run smoke tests against your new geoprocessing function
+    * 'npm run storybook' to view your new report with smoke test output
+    * Add <CoralReefCard /> to a top-level report client or page when ready
+```
+
+As the output explains, 4 new files have been created for you including a geoprocessing function (coralReef.ts) and a
 
 ### Create Report
 

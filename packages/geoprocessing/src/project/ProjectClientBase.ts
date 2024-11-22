@@ -179,6 +179,21 @@ export class ProjectClientBase implements ProjectClientInterface {
       : `https://gp-${this._package.name}-datasets.s3.${this._geoprocessing.region}.amazonaws.com/`;
   }
 
+  public getFgbPath(
+    ds:
+      | Datasource
+      | VectorDatasource
+      | InternalVectorDatasource
+      | ExternalVectorDatasource
+      | RasterDatasource
+      | ExternalRasterDatasource
+      | InternalRasterDatasource
+      | ImportRasterDatasourceConfig
+      | ImportVectorDatasourceConfig,
+  ) {
+    return `${import.meta.dirname}/../data/dist/${ds.datasourceId}.fgb`;
+  }
+
   public getDatasourceUrl(
     ds:
       | Datasource

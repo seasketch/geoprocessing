@@ -21,9 +21,9 @@ export const genRandomPolygons = (config: {
     (previousValue, currentFeature, featureIndex) => {
       return previousValue.concat({
         ...currentFeature,
-        id: featureIndex,
+        id: featureIndex + 1,
         properties: {
-          id: featureIndex,
+          id: featureIndex + 1,
         },
       });
     },

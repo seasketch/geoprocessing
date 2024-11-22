@@ -282,12 +282,12 @@ export async function makeReport(
     );
     console.log(
       chalk.blue(
-        `Report component: ${`${projectComponentPath}/${compCardName}.tsx`}`,
+        `Smoke test: ${`${projectFunctionPath}/${funcName}Smoke.test.ts`}`,
       ),
     );
     console.log(
       chalk.blue(
-        `Smoke test: ${`${projectFunctionPath}/${funcName}Smoke.test.ts`}`,
+        `Report component: ${`${projectComponentPath}/${compCardName}.tsx`}`,
       ),
     );
     console.log(

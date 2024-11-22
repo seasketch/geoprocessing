@@ -1,6 +1,10 @@
 # Create Sample Project
 
-This tutorial walks through creating a sample geoprocessing project for the Federated States of Micronesia and creating a report that does overlay analysis. The planning area for this example is defined as the coastline to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
+This tutorial walks through creating a sample geoprocessing project for the Federated States of Micronesia. It will walk you through creating reports that do overlay analysis, which the geoprocessing framework offers a number of high-level features to support.
+
+The planning area for this example is defined as the coastline to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
+
+![EEZ with land](./assets/eez-with-land.jpg)
 
 This tutorial assumes:
 
@@ -16,7 +20,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.73 init 7.0.0-experimental-7x-docs.73
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.87 init 7.0.0-experimental-7x-docs.87
 ```
 
 ```text
@@ -121,13 +125,15 @@ To learn more about preprocessing, check out the [guide](../preprocessing.md)
 
 ## Simple Report
 
-Your new project comes with a simple report that calculates the area of a sketch or sketch collection. Let's look at the pieces that go into this report.
+Your new project comes with a simple report that calculates the area of a sketch or sketch collection and presents it in a human readable format. Let's look at the pieces that go into this report.
+
+![Simple Card View](./assets/simple-card-view.jpg)
 
 ### simpleFunction
 
 The area calculation is done within a geoprocessing function in `src/functions/simpleFunction.ts`.
 
-Open this file and you will notice this function defines its own bespoke result payload called `SimpleResults`, in this case an object with an `area` number value.
+Open this file and you will notice this function defines a custom result payload called `SimpleResults`, which in this case is an object with an `area` number value.
 
 ```typescript
 export interface SimpleResults {
@@ -174,20 +180,24 @@ export default new GeoprocessingHandler(simpleFunction, {
 
 - `timeout`: how many seconds the Lambda will run before it times out in error.
 - `memory`: memory allocated to the Lambda, can go up to 10,240 MB. Number of processors increase with memory size automatically.
-- `executionMode`: determines how the report client waits for your function to finish. Sync - wait with connection open, Async - wait for web socket message. Async is the best default to not tie up your browsers network connections.
+- `executionMode`: determines how the report client waits for geoprocessing function results, defaults to async. Sync - wait with connection open for immediate results, Async - wait for web socket message that results are ready, then fetch. Sync should only be used for very fast geoprocessing functions (1-2 seconds max). Think of it as a performance optimization.
 
 You can change all these parameter values to suit your needs, but the default values are suitable for now.
 
-`simpleFunction` is already registered as a geoprocessing function in `project/geoprocessing.json`, along with `blankFunction` which you will learn about later.
+`simpleFunction` is already registered as a geoprocessing function in `project/geoprocessing.json`.
+
+Now let's look at the browser report client that invokes this function.
 
 ### SimpleReport
 
-A report client is the top-level React component for creating a report and they are located in the `src/clients` directory. The report client is usually responsible for the overall report layout, rendering one or more `Pages` of `Cards` in the `src/components` directory, and setting up language translation.
+A report client is a top-level React component for rendering a report in the users web browser. Report clients are located in the `src/clients` directory and are responsible for the layout of one or more `Card` components. Cards are able to invoke geoprocessing functions and display their results.
 
-- `SimpleReport.tsx` - one page report client containing a SketchAttributesCard and a SimpleCard.
-- `TabReport.tsx` - more complex multi-page report layout controlled by a tab switcher component, containing a single ViabilityPage, which contains the same SimpleCard and SketchAttributesCard.
+The two report clients that come with your project are:
 
-Both these report clients are already registered in `project/geoprocessing.json`. To start, let's focus on `SimpleReport.tsx` and how it invokes your `simpleFunction`.
+- `SimpleReport.tsx` - simple one page report client containing a SketchAttributesCard and a SimpleCard.
+- `TabReport.tsx` - more complex multi-page report layout controlled by a tab switcher component, so that only one page is in view at a time.
+
+Both these report clients are already registered in `project/geoprocessing.json`. To start, let's focus on `SimpleReport` and `SimpleCard`.
 
 ```jsx
 export const SimpleReport = () => {
@@ -200,9 +210,11 @@ export const SimpleReport = () => {
 };
 ```
 
-SimpleReport renders two report cards, `SimpleCard` and `SketchAttributesCard`, wrapping them in a react-i18n languge `Translator` component (more on that in the next tutorial).
+SimpleReport renders two cards, `SimpleCard` and `SketchAttributesCard`, wrapping them in a languge `Translator` component (you will learn more about this later).
 
-SketchAttributes card is a built-in report component imported from `@seasketch/geoprocessing/client-ui`. SimpleCard is a custom report component found at `src/components/SimpleCard.tsx`, which we can look at now.
+`SketchAttributes` card is a card component that displays the properties of the users Sketch. No geoprocessing function is needed to do its work.
+
+`SimpleCard` is a card component that invokes simpleFunction and displays its results. Let's look closer at its code found in `src/components/SimpleCard.tsx`:
 
 ```jsx
 import React from "react";
@@ -245,16 +257,30 @@ export const SimpleCard = () => {
 };
 ```
 
-The first thing to notice is that SimpleCard renders a `ResultsCard` component. Behind the scenes ResultsCard invokes `simpleFunction` and passes the results to its child render function. The child render function takes an input parameter `data` that is configured to have the same type (`SimpleResults`) as the return type of `simpleFunction`. This gives you fully typed access to your report result in the render function.
+The first thing to notice is that SimpleCard renders a `ResultsCard` component.
 
-The next thing to notice is that the render function converts the calculated area value in square meters to square kilometers, rounds it to a whole number (unless it's a very small number that would round to zero), and then formats the number to make it more readable (for english adds commas for thousands). Also notice that it renders a slightly different message depending on whether it is a single sketch or a sketch collection being reported on.
+```typescript
+<ResultsCard title={titleTrans} functionName="simpleFunction">
+```
 
-This establishes the pattern of having the geoprocessing function responsible for calculating the raw values, and defining the result type interface. Value conversion and formatting details are left to be done in the report client.
+Behind the scenes ResultsCard invokes the geoprocessing function with the `functionName` provided (simpleFunction) and calls its child render function with the results.
 
-The last thing to notice is that SimpleCard contains a lot of boilerplate for translating report strings to different languages using [`react-i18next`](https://react.i18next.com/). If your reports need to be multi-lingual you will need to to use them, otherwise you can drop them. Language translation is a multi-part process:
+```typescript
+{
+  (data: SimpleResults) => {};
+}
+```
 
-- First a combination of `useTranslation`, `t` function, and `Trans` components are used to establish which strings in your report client and components should be translated.
-- Translatable strings are then extracted using the `extract:translation` command to `src/i18n/lang/en/translation.json`. The strings extacted for SimpleCard are:
+This render function takes an input parameter `data` that has the same type (`SimpleResults`) as the return type of `simpleFunction`. This gives you fully typed access to your report results.
+
+What happens inside this render function is what makes each report card unique. This card converts the calculated area value in square meters to square kilometers, rounds it to a whole number, and then formats the number to make it more readable. Also notice that it renders a slightly different message depending on whether it is a single sketch or a sketch collection being reported on.
+
+### Language Translation
+
+The last thing to notice is that SimpleCard contains a lot of boilerplate for language translation of its strings (using [`react-i18next`](https://react.i18next.com/)). If your reports need to be multi-lingual you will need to to use these, otherwise you can drop them. Language translation is a multi-part process:
+
+- First, a combination of `useTranslation`, `t` function, and `Trans` components are used to establish which strings in your report client and components should be translated.
+- Next, translateable strings are extracted using the `extract:translation` command to `src/i18n/lang/en/translation.json`. The strings extacted for SimpleCard are:
 
 ```text
 {
@@ -358,13 +384,15 @@ Once your build is successful, you should stage and commit all your changes to g
 
 ## Reef Report
 
-[Work in progress past this point]
+You will be creating a simple report that measures how much of the Micronesian coral reef extent is within a Sketch or SketchCollection.
 
-You will be creating a simple report that measures how much reef extent is captured within a Sketch or SketchCollection.
+Here is an image of this dataset. Notice that the coral is entirely in shallow water near the islands and atolls.
+
+![Reef Extent](./assets/reef-extent.jpg)
 
 ### Import Data
 
-You will now download a data package prepared for the Federated States of Micronesia (FSM).
+First download a data package prepared for FSM to your project space.
 
 ```bash
 wget -P data/src https://github.com/user-attachments/files/17697992/FSM_MSP_Data_Example_V2.zip
@@ -372,13 +400,11 @@ unzip data/src/FSM_MSP_Data_Example_V2.zip -d data/src
 rm data/src/FSM_MSP_Data_Example_V2.zip
 ```
 
-Now import your first datasource.
+Now import your first datasource, FSM reef extent.
 
 ```bash
 npm run import:data
 ```
-
-Reef extent - single class dataset
 
 ```text
 ? Type of data?
@@ -405,28 +431,24 @@ Yes
 
 ### Add Metric Group
 
-A metric group defines a metric to be measured, for one or more classes of data. A `MetricGroup` record provides the information needed for a metric to be calculated (in a geoprocessing function) and to be displayed (in a report client).
+A metric group defines a metric to be measured, for one or more classes of data. A `MetricGroup` **record** provides the information needed for a metric to be calculated (in a geoprocessing function) and to be displayed (in a report client). Let's create your first metric group by opening `project/metrics.json`.
 
-Let's create your first metric group by opening `project/metrics.json`. It will have:
-
-- a metricId (`coralReef`)
-- a metric type (`areaOverlap`)
-- the one data class you want to show in the report (`reefExtent`) and the datasource they are sourced from (`reefextent`)
-
-Add the following object to the end of the empty array in `project/metrics.json` and save the file.
+Add a new metric group object to the empty array in `project/metrics.json` and save the file. The reef extent dataset simply tells you where there is reef present. Therefore, we represent it as a single class of data. You should end up with the following:
 
 ```json
-{
-  "metricId": "coralReef",
-  "type": "areaOverlap",
-  "classes": [
-    {
-      "classId": "reefextent",
-      "display": "Coral Reef",
-      "datasourceId": "reefextent"
-    }
-  ]
-}
+[
+  {
+    "metricId": "coralReef",
+    "type": "areaOverlap",
+    "classes": [
+      {
+        "classId": "reefextent",
+        "display": "Coral Reef",
+        "datasourceId": "reefextent"
+      }
+    ]
+  }
+]
 ```
 
 To learn more about metric groups, visit the [advanced concepts](../concepts/AdvancedConcepts.md#metric-group) page.
@@ -446,13 +468,23 @@ Vector overlap report - calculates sketch overlap with vector datasources
 Calculate sketch overlap with reef extent
 ? Choose an execution mode for the geoprocessing function for this report
 Async - Better for long-running processes
-? Select the metric group to report on coralReef
+? Select the metric group to report on
+coralReef
+
 ✔ Created coralReef report
+✔ Registered report assets in project/geoprocessing.json
+Geoprocessing function: src/functions/coralReef.ts
+Smoke test: src/functions/coralReefSmoke.test.ts
+Report component: src/components/CoralReefCard.tsx
+Story generator: src/components/CoralReefCard.example-stories.ts
+
+Next Steps:
+    * 'npm test' to run smoke tests against your new geoprocessing function
+    * 'npm run storybook' to view your new report with smoke test output
+    * Add <CoralReefCard /> to a top-level report client or page when ready
 ```
 
-Report successfully created!
-Function: src/functions/coralReef.ts
-Component: src/components/CoralReef.tsx
+As the output explains, 4 new files have been created for you including a geoprocessing function (coralReef.ts) and a
 
 ## Benthic Habitat Report
 

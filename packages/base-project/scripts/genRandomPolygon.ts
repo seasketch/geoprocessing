@@ -1,7 +1,6 @@
 import fs from "fs-extra";
 import {
   featureToSketchCollection,
-  featureToSketch,
   genFeature,
   genFeatureCollection,
   genRandomPolygons,
@@ -160,9 +159,6 @@ const sketch = (() => {
         },
       ];
     });
-
-    console.log("got here");
-    console.log(JSON.stringify(sc, null, 2));
 
     if (numFeatures === 1) {
       return sc.features[0];

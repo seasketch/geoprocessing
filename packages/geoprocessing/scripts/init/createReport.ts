@@ -4,10 +4,11 @@ import fs from "fs-extra";
 import path from "node:path";
 import chalk from "chalk";
 import camelcase from "camelcase";
+import { $ } from "zx";
 import {
   ExecutionMode,
-  metricGroupsSchema,
   GeoprocessingJsonConfig,
+  MetricGroup,
 } from "../../src/types/index.js";
 import {
   getBlankComponentPath,
@@ -15,141 +16,100 @@ import {
   getOceanEEZComponentPath,
   getOceanEEZFunctionPath,
   getProjectComponentPath,
-  getProjectConfigPath,
   getProjectFunctionPath,
 } from "../util/getPaths.js";
 import { pathToFileURL } from "node:url";
+import { readDatasources } from "../base/index.js";
+import {
+  isinternalDatasource,
+  isInternalVectorDatasource,
+  isRasterDatasource,
+  isVectorDatasource,
+} from "../../client-core.js";
 
 // CLI questions
 const createReport = async () => {
-  // Report type, description, and execution mode
-  const answers = await inquirer.prompt([
-    {
-      type: "list",
-      name: "type",
-      message: "Type of report to create",
-      choices: [
-        {
-          value: "blank",
-          name: "Blank report",
-        },
-        {
-          value: "raster",
-          name: "Raster overlap report - Calculates sketch overlap with raster data sources",
-        },
-        {
-          value: "vector",
-          name: "Vector overlap report - Calculates sketch overlap with vector data sources",
-        },
-      ],
-    },
-    {
-      type: "input",
-      name: "description",
-      message: "Describe what this report calculates",
-    },
-    {
-      type: "list",
-      name: "executionMode",
-      message: "Choose an execution mode for this report",
-      choices: [
-        {
-          value: "sync",
-          name: "Sync - Best for quick analyses (< 2s)",
-        },
-        {
-          value: "async",
-          name: "Async - Better for long-running processes",
-        },
-      ],
-    },
-  ]);
+  const title = await getTitle();
+  const description = await getReportDescription();
+  const type = await getReportType();
+  const measurementType = type === "raster" ? await getMeasurementType() : null;
+  const stat = type === "raster" ? await getStat(measurementType) : "area";
+  const executionMode = await getExecutionMode();
 
-  // Title of report
-  if (answers.type === "raster" || answers.type === "vector") {
-    // For raster and vector overlap reports, we need to know which metric group to report on
-    const rawMetrics = fs.readJSONSync(
-      `${getProjectConfigPath("")}/metrics.json`,
-    );
-    const metrics = metricGroupsSchema.parse(rawMetrics);
-    const geoprocessingJson = JSON.parse(
-      fs.readFileSync("./project/geoprocessing.json").toString(),
-    ) as GeoprocessingJsonConfig;
-    const gpFunctions = geoprocessingJson.geoprocessingFunctions || [];
-    const availableMetricGroups = metrics
-      .map((metric) => metric.metricId)
+  // Build metric group for report
+  if (type === "raster" || type === "vector") {
+    const datasources = readDatasources()
       .filter(
-        (metricId) => !gpFunctions.includes(`src/functions/${metricId}.ts`),
-      );
-    if (!availableMetricGroups.length)
+        (ds) =>
+          isinternalDatasource(ds) &&
+          ds.geo_type === type &&
+          (isVectorDatasource(ds) || ds.measurementType === measurementType),
+      )
+      .map((ds) => ds.datasourceId);
+
+    if (!datasources.length)
       throw new Error(
-        "All existing metric groups have reports. Either create a new metric group in project/metrics.json or delete an existing report, then try again.",
+        `No ${type} datasources found. Please add a datasource in project/datasources.json using import:data and try again.`,
       );
 
-    // Only allow creation of reports for unused metric groups (prevents overwriting)
-    const titleChoiceQuestion = {
-      type: "list",
-      name: "title",
-      message: "Select the metric group to report on",
-      choices: availableMetricGroups,
-    };
-    const { title } = await inquirer.prompt([titleChoiceQuestion]);
-    answers.title = title;
-  } else {
-    // User inputs title
-    const titleQuestion = {
-      type: "input",
-      name: "title",
-      message: "Title for this report, in camelCase",
-      default: "newReport",
-      validate: (value: any) =>
-        /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
-      transformer: (value: any) => camelcase(value),
-    };
-    const { title } = await inquirer.prompt([titleQuestion]);
-    answers.title = title;
-  }
-
-  // Stat to calculate
-  if (answers.type === "raster") {
-    const measurementTypeQuestion = {
-      type: "list",
-      name: "measurementType",
-      message: "Type of raster data",
-      choices: [
-        {
-          value: "quantitative",
-          name: "Quantitative - Continuous variable across the raster",
-        },
-        {
-          value: "categorical",
-          name: "Categorical - Discrete values representing different classes",
-        },
-      ],
-    };
-    const { measurementType } = await inquirer.prompt([
-      measurementTypeQuestion,
+    const { selectedDs } = await inquirer.prompt([
+      {
+        type: "checkbox",
+        name: "selectedDs",
+        message: "Select datasources to include in this report",
+        choices: datasources,
+      },
     ]);
-    answers.measurementType = measurementType;
 
-    if (answers.measurementType === "quantitative") {
-      const statQuestion = {
-        type: "list",
-        name: "stat",
-        message: "Statistic to calculate",
-        choices: ["sum", "count", "area"],
-      };
-      const { stat } = await inquirer.prompt([statQuestion]);
-      answers.stat = stat;
-    } else {
-      answers.stat = "valid";
-    }
-  } else if (answers.type === "vector") {
-    // For vector overlap reports, use area stat
-    answers.stat = "area";
+    console.log("Building a metric group for:", selectedDs);
+
+    const metricGroup: MetricGroup = {
+      metricId: title,
+      type: "areaOverlap",
+      classes: [],
+    };
+
+    await Promise.all(
+      selectedDs.forEach(async (datasourceId) => {
+        const ds = readDatasources().find(
+          (ds) => ds.datasourceId === datasourceId,
+        );
+
+        if (isRasterDatasource(ds)) {
+          console.log("raster");
+        } else if (isVectorDatasource(ds)) {
+          if (ds.classKeys.length === 0) {
+            metricGroup.classes.push({
+              classId: ds.datasourceId,
+              display: ds.datasourceId,
+              datasourceId: ds.datasourceId,
+            });
+          } else {
+            const { stdout } =
+              await $`ogrinfo -geom=NO -features -json ${isInternalVectorDatasource(ds) ? ds.src : ds.url}`;
+            const layer = JSON.parse(stdout).layers.find(
+              (layer) => layer.name === ds.layerName,
+            );
+            const featureNames = layer.features
+              .map((feature) => feature.properties[ds.classKeys[0]])
+              .sort()
+              .filter((value, index, self) => self.indexOf(value) === index);
+
+            metricGroup.classes = metricGroup.classes.concat(
+              featureNames.map((c) => ({
+                classId: c,
+                classKey: ds.classKeys[0],
+                display: c,
+                datasourceId: ds.datasourceId,
+              })),
+            );
+          }
+        } else throw new Error("Invalid datasource type");
+      }),
+    );
   }
 
-  return answers;
+  return { type, stat, title, executionMode, description };
 };
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
@@ -315,3 +275,104 @@ interface ReportOptions {
   executionMode: ExecutionMode;
   description: string;
 }
+
+const getTitle = async () => {
+  return await inquirer.prompt([
+    {
+      type: "input",
+      name: "title",
+      message: "Title for this report, in camelCase",
+      default: "newReport",
+      validate: (value: any) =>
+        /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
+      transformer: (value: any) => camelcase(value),
+    },
+  ]);
+};
+
+const getReportType = async () => {
+  return await inquirer.prompt([
+    {
+      type: "list",
+      name: "type",
+      message: "Type of report to create",
+      choices: [
+        {
+          value: "blank",
+          name: "Blank report",
+        },
+        {
+          value: "raster",
+          name: "Raster overlap report - Calculates sketch overlap with raster data sources",
+        },
+        {
+          value: "vector",
+          name: "Vector overlap report - Calculates sketch overlap with vector data sources",
+        },
+      ],
+    },
+  ]);
+};
+
+const getMeasurementType = async () => {
+  return await inquirer.prompt([
+    {
+      type: "list",
+      name: "measurementType",
+      message: "Type of raster data",
+      choices: [
+        {
+          value: "quantitative",
+          name: "Quantitative - Continuous variable across the raster",
+        },
+        {
+          value: "categorical",
+          name: "Categorical - Discrete values representing different classes",
+        },
+      ],
+    },
+  ]);
+};
+
+const getStat = async (measurementType: string) => {
+  return measurementType === "quantitative"
+    ? await inquirer.prompt([
+        {
+          type: "list",
+          name: "stat",
+          message: "Statistic to calculate",
+          choices: ["sum", "count", "area"],
+        },
+      ])
+    : "valid";
+};
+
+const getReportDescription = async () => {
+  return await inquirer.prompt([
+    {
+      type: "input",
+      name: "description",
+      message: "Describe what this report calculates",
+    },
+  ]);
+};
+
+const getExecutionMode = async () => {
+  return await inquirer.prompt([
+    {
+      type: "list",
+      name: "executionMode",
+      message: "Choose an execution mode for this report",
+      choices: [
+        {
+          value: "sync",
+          name: "Sync - Best for quick analyses (< 2s)",
+        },
+        {
+          value: "async",
+          name: "Async - Better for long-running processes",
+        },
+      ],
+    },
+  ]);
+};

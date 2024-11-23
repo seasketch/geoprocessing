@@ -88,7 +88,6 @@ describe("validatePolygon", () => {
   });
 
   test("validatePolygon - valid polygon", async () => {
-    console.log("valid", area(valid));
     const validatedPolygon = await validatePolygon(valid);
     expect(validatedPolygon).toEqual(valid);
   });

@@ -1,3 +1,5 @@
+[WORK IN PROGRESS]
+
 # Create New Geoprocessing Project
 
 This tutorial walks you through designing and creating your own geoprocessing report. It covers many of the questions and decisions you might face along the way.
@@ -82,7 +84,7 @@ Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.94 init 7.0.0-experimental-7x-docs.94
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.95 init 7.0.0-experimental-7x-docs.95
 ```
 
 Tips:

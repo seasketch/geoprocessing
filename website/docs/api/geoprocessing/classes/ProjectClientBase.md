@@ -1011,10 +1011,10 @@ optional objectiveId: string;
 
 group level objective, applies to all classes
 
-##### type
+##### type?
 
 ```ts
-type: string;
+optional type: string;
 ```
 
 unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user
@@ -1068,7 +1068,7 @@ Simple helper that given MetricGroup, returns a consistent ID string for a perce
 | `mg.layerId`? | `string` | Optional ID of map layer associated with this metric |
 | `mg.metricId` | `string` | Unique id of metric in project |
 | `mg.objectiveId`? | `string` | group level objective, applies to all classes |
-| `mg.type` | `string` | unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user |
+| `mg.type`? | `string` | unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user |
 
 #### Returns
 

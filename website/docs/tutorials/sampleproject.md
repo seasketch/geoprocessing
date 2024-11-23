@@ -20,7 +20,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.94 init 7.0.0-experimental-7x-docs.94
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.95 init 7.0.0-experimental-7x-docs.95
 ```
 
 ```text
@@ -657,6 +657,7 @@ Yes
 The import process will:
 
 - reproject your data to the WGS84 reference system, if not already (for ease of use with Turf.JS)
+- split any features that cross the 180 degree [antimeridian](../antimeridian/Antimeridian.md)
 - reduce the source dataset down to only the necessary attributes (saving network bandwidth later)
 - output a new file in the cloud-optimized flatgeobuf format to the `data/dist` directory.
 - register the datasource in `project/datasources.json`, along with metadata. This allows you to:
@@ -748,27 +749,197 @@ Next Steps:
     * 'npm test' to smoke test your new geoprocessing function against all example sketches
 ```
 
-Open the `src/functions/coralReef.ts` file. Notice that it looks very similar to our previous simpleFunction.
+Open `src/functions/coralReef.ts`.
 
-You will update the code to calculate the answer to the following question: what percentage of all coral reef is within our sketch polygon (or sketch collection polygons)?
+You will now update this code answer the following question:
+
+- what percentage of all coral reef is within the current sketch polygon (or sketch collection polygons)?
 
 Replace the existing code with the following:
 
+<details>
+<summary>src/functions/coralReef.ts</summary>
+
 ```typescript
-WORK IN PROGRESS PAST THIS POINT
+import {
+  Sketch,
+  SketchCollection,
+  Polygon,
+  MultiPolygon,
+  GeoprocessingHandler,
+  getFeaturesForSketchBBoxes,
+  getFlatGeobufFilename,
+  toSketchArray,
+} from "@seasketch/geoprocessing";
+import project from "../../project/projectClient.js";
+import { area, featureCollection } from "@turf/turf";
+import reefPrecalc from "../../data/precalc/reefextent.json";
+
+export interface CoralReefResults {
+  /** area of all reef extent polygons in square meters */
+  totalArea: number;
+  /** area of reef extent within sketch or sketch collection in square meters */
+  sketchArea: number;
+  childSketchAreas: {
+    /** Name of the sketch */
+    name: string;
+    /** Area of reef extent within child sketch in square meters */
+    area: number;
+  }[];
+}
+
+/**
+ * Simple geoprocessing function with custom result payload
+ */
+async function coralReef(
+  sketch:
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
+): Promise<CoralReefResults> {
+  // Load just the reef features that intersect with the sketch bounding box
+  // or in case of a sketch collection, the child sketch bounding boxes
+  const ds = project.getInternalVectorDatasourceById("reefextent");
+  const url = `${project.dataBucketUrl()}${getFlatGeobufFilename(ds)}`;
+  const sketchFeatures = await getFeaturesForSketchBBoxes(sketch, url);
+  const sketchArea = area(featureCollection(sketchFeatures));
+
+  // Add analysis code
+  let childSketchAreas: CoralReefResults["childSketchAreas"] = [];
+  if (sketch.properties.isCollection) {
+    childSketchAreas = toSketchArray(sketch).map((sketch) => ({
+      name: sketch.properties.name,
+      area: area(sketch),
+    }));
+  }
+
+  // Custom return type
+  return {
+    totalArea: reefPrecalc.totalArea,
+    sketchArea: sketchArea,
+    childSketchAreas,
+  };
+}
+
+export default new GeoprocessingHandler(coralReef, {
+  title: "coralReef",
+  description: "calculate sketch overlap with reef extent datasource",
+  timeout: 60, // seconds
+  memory: 1024, // megabytes
+  executionMode: "async",
+});
 ```
 
-Now run tests:
+</details>
+
+Notice that the code imports the totalArea value you precalculated and inserts it into the result payload, avoiding the need to recalculate it each time.
+
+```typescript
+import reefPrecalc from "../../data/precalc/reefextent.json";
+
+reefPrecalc.totalArea;
+```
+
+Then it fetches only the reef features whose bounding box intersects with the sketch bounding box, or in case of a sketch collection, that intersects with each of its child sketch bounding boxes. This is more efficient than fetching the entire dataset, saving time and network bandwidth, and is done using the index built into the flatgeobuf format and use of http request range headers to fetch just the right portion of the file.
+
+```typescript
+const ds = project.getInternalVectorDatasourceById("reefextent");
+const url = `${project.dataBucketUrl()}${getFlatGeobufFilename(ds)}`;
+const sketchFeatures = await getFeaturesForSketchBBoxes(sketch, url);
+const sketchArea = area(featureCollection(sketchFeatures));
+```
+
+Finally it calculates the overall sketch area and the area for each of the child sketches if present.
+
+```typescript
+let childSketchAreas: CoralReefResults["childSketchAreas"] = [];
+if (sketch.properties.isCollection) {
+  childSketchAreas = toSketchArray(sketch).map((sketch) => ({
+    name: sketch.properties.name,
+    area: area(sketch),
+  }));
+}
+
+// Custom return type
+return {
+  totalArea: reefPrecalc.totalArea,
+  sketchArea: sketchArea,
+  childSketchAreas,
+};
+```
+
+Now run tests to generate updated output for each of the sample sketches:
 
 ```bash
 npm run test
 ```
 
-You will find smoke test output for this new function for all of your example sketches in the `examples/output` directory. Confirm that the output looks as expected.
+Confirm that the output looks as expected.
+
+<details>
+<summary>Example output</summary>
+
+```text
+{
+  "totalArea": 716100906.2570591,
+  "sketchArea": 367734.86730626615,
+  "childSketchAreas": [
+    {
+      "name": "sketchCollection1-1",
+      "area": 428611581.5348215
+    },
+    {
+      "name": "sketchCollection1-2",
+      "area": 258701691.8012635
+    },
+    {
+      "name": "sketchCollection1-3",
+      "area": 599831752.2377243
+    },
+    {
+      "name": "sketchCollection1-4",
+      "area": 372585470.74404347
+    },
+    {
+      "name": "sketchCollection1-5",
+      "area": 562781719.588172
+    },
+    {
+      "name": "sketchCollection1-6",
+      "area": 528237794.83984125
+    },
+    {
+      "name": "sketchCollection1-7",
+      "area": 253970548.59694752
+    },
+    {
+      "name": "sketchCollection1-8",
+      "area": 376674659.1741572
+    },
+    {
+      "name": "sketchCollection1-9",
+      "area": 657788539.6501052
+    },
+    {
+      "name": "sketchCollection1-10",
+      "area": 712233449.0549812
+    }
+  ]
+}
+```
+
+</details>
 
 ### Report Client
 
+```typescript
+npm run create:client
+
+WORK IN PROGRESS PAST THIS POINT
+```
+
 ## Benthic Habitat Report
+
+This next section will demonstrate more advanced framework features for calculating polygon overlap and measuring progress towards planning objective targets. These features become more useful when you have multiple data classes that you want to report on at the same time.
 
 ### Import Data
 

@@ -136,7 +136,8 @@ const sketch = (() => {
       },
       {
         label: "Notes",
-        value: "This collection has been adjusted to meet all requirements",
+        value:
+          "This is an adjustment of the previous proposal to better meet objectives",
         exportId: "NOTES",
         fieldType: "TextArea",
       },

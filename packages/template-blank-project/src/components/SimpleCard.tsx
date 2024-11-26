@@ -4,9 +4,9 @@ import {
   ResultsCard,
   useSketchProperties,
 } from "@seasketch/geoprocessing/client-ui";
+import { roundDecimalFormat } from "@seasketch/geoprocessing/client-core";
 // Import SimpleResults to type-check data access in ResultsCard render function
 import { SimpleResults } from "../functions/simpleFunction.js";
-import { roundDecimalFormat } from "@seasketch/geoprocessing/client-core";
 
 export const SimpleCard = () => {
   const { t } = useTranslation();

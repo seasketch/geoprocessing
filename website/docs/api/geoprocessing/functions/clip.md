@@ -1,4 +1,4 @@
-# ~~clip()~~
+# clip()
 
 ```ts
 function clip<P>(
@@ -30,6 +30,6 @@ Performs clip operation on features
 
 clipped Feature of Polygon or MultiPolygon
 
-## Deprecated
+## Todo
 
-- use turf modules instead, now with support for operating against an array of features
+- migrate to use turf modules instead, now that added support for operating against an array of features

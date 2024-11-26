@@ -6,7 +6,7 @@ import chalk from "chalk";
 import camelcase from "camelcase";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import pascalcase from "pascalcase";
-import { getOceanEEZProjectPath } from "../util/getPaths.js";
+import { getBlankProjectPath } from "../util/getPaths.js";
 import { pathToFileURL } from "node:url";
 
 async function createClient() {
@@ -14,7 +14,7 @@ async function createClient() {
     {
       type: "input",
       name: "title",
-      message: "Name for this client, in PascalCase",
+      message: "Name for this , in PascalCase (e.g. CoralReefCard",
       validate: (value) =>
         /^\w+$/.test(value) ? true : "Please use only alphabetical characters",
       transformer: (value) => pascalcase(value),
@@ -57,7 +57,7 @@ export async function makeClient(
   const projectClientPath = basePath + "src/clients";
   const projectComponentPath = basePath + "src/components";
 
-  const templatePath = getOceanEEZProjectPath();
+  const templatePath = getBlankProjectPath();
   const templateClientPath = `${templatePath}/src/clients`;
   const templateComponentPath = `${templatePath}/src/components`;
 
@@ -79,7 +79,7 @@ export async function makeClient(
     `${templateClientPath}/SimpleReport.tsx`,
   );
   const testClientCode = await fs.readFile(
-    `${templateClientPath}/SimpleReport.stories.tsx`,
+    `${templateClientPath}/SimpleReport.example-stories.ts`,
   );
 
   // Add client to geoprocessing.json
@@ -118,7 +118,7 @@ export async function makeClient(
   );
 
   await fs.writeFile(
-    `${projectClientPath}/${options.title}.stories.tsx`,
+    `${projectClientPath}/${options.title}.example-stories.ts`,
     testClientCode.toString().replaceAll("SimpleReport", options.title),
   );
 

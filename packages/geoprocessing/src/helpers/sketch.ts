@@ -97,7 +97,12 @@ export function toChildProperties(
   return sketchCollection.features.map((sketch) => sketch.properties);
 }
 
-/** Helper to convert a Sketch or SketchCollection to a Sketch array, maintaining geometry type */
+/**
+ * Converts a Sketch or SketchCollection to a Sketch array, maintaining geometry type
+ * Useful for putting in a consistent form that can be iterated over
+ * @param input sketch or sketch collection
+ * @returns array of sketches, if input is a sketch collection then it is the child sketches
+ */
 export function toSketchArray<G>(
   input: Sketch<G> | SketchCollection<G>,
 ): Sketch<G>[] {

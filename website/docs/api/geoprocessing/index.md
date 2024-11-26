@@ -114,7 +114,7 @@
 | [cleanBBox](functions/cleanBBox.md) | Normalizes bounding box longitude values to the [-180, 180] range if they cross the antimeridian |
 | [cleanCoords](functions/cleanCoords.md) | Cleans geojson coordinates to be within the bounds of the world [-90, -180, 90, 180], so that they don't wrap off the end, and can be split |
 | [clip](functions/clip.md) | Performs clip operation on features |
-| [clipMultiMerge](functions/clipMultiMerge.md) | Performs clip by merging features2 coords into a single multipolygon. Useful when you need features2 to be seen as a single unit when clipping feature1 (e.g. intersection) |
+| [clipMultiMerge](functions/clipMultiMerge.md) | Performs clip after first merging features2 coords into a single multipolygon. Can perform better than regular clip and help avoid errors in underlying library when running against many features. |
 | [clipToPolygonDatasources](functions/clipToPolygonDatasources.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources |
 | [clipToPolygonFeatures](functions/clipToPolygonFeatures.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more Polygon features |
 | [collectionHasGeometry](functions/collectionHasGeometry.md) | - |
@@ -291,7 +291,7 @@
 | [toPercentMetric](functions/toPercentMetric.md) | Matches numerator metrics with denominator metrics and divides their value, returning a new array of percent metrics. If denominator metric has value of 0, returns NaN Matches on the optional idProperty given, otherwise defaulting to classId Deep copies and maintains all other properties from the numerator metric |
 | [toRasterProjection](functions/toRasterProjection.md) | Reprojects a feature to the same projection as the raster. |
 | [toShortSketches](functions/toShortSketches.md) | Returns an array of shorthand sketches (id + name) given a Sketch or SketchCollection. Includes a shorthand of parent collection also |
-| [toSketchArray](functions/toSketchArray.md) | Helper to convert a Sketch or SketchCollection to a Sketch array, maintaining geometry type |
+| [toSketchArray](functions/toSketchArray.md) | Converts a Sketch or SketchCollection to a Sketch array, maintaining geometry type Useful for putting in a consistent form that can be iterated over |
 | [toSketchPropertiesArray](functions/toSketchPropertiesArray.md) | Converts array of sketches to an array of their SketchProperties |
 | [unpackMetrics](functions/unpackMetrics.md) | Converts MetricPack to a new Metric array. |
 | [updateCommandsSync](functions/updateCommandsSync.md) | Run dynamodb update commands synchronously to avoid throttling, retrying on ThroughputError |

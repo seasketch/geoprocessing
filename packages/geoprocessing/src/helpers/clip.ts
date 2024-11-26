@@ -20,7 +20,7 @@ import { ValidationError } from "../types/index.js";
  * @param operation - one of "union", "intersection", "xor", "difference"
  * @param options - optional properties to set on the resulting feature
  * @returns clipped Feature of Polygon or MultiPolygon
- * @deprecated - use turf modules instead, now with support for operating against an array of features
+ * @todo - migrate to use turf modules instead, now that added support for operating against an array of features
  */
 export function clip<
   P extends GeoJsonProperties | undefined = GeoJsonProperties,
@@ -51,8 +51,13 @@ export function clip<
 }
 
 /**
- * Performs clip by merging features2 coords into a single multipolygon.
- * Useful when you need features2 to be seen as a single unit when clipping feature1 (e.g. intersection)
+ * Performs clip after first merging features2 coords into a single multipolygon.
+ * Can perform better than regular clip and help avoid errors in underlying library when running against many features.
+ * @param feature1 polygon or multipolygon to clip
+ * @param features2 collection of polygons or multipolygons to clip feature1 against
+ * @param operation one of "union", "intersection", "xor", "difference"
+ * @param options.properties properties to set on the resulting feature
+ * @returns polygon or multipolygon feature result from clip operation, if no overlap then returns null
  * @todo - migrate back to using turf now that it supports multiple features as second argument
  */
 export function clipMultiMerge<

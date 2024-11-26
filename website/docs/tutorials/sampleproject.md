@@ -226,9 +226,9 @@ import {
   ResultsCard,
   useSketchProperties,
 } from "@seasketch/geoprocessing/client-ui";
+import { roundDecimalFormat } from "@seasketch/geoprocessing/client-core";
 // Import SimpleResults to type-check data access in ResultsCard render function
 import { SimpleResults } from "../functions/simpleFunction.js";
-import { roundDecimalFormat } from "@seasketch/geoprocessing/client-core";
 
 export const SimpleCard = () => {
   const { t } = useTranslation();
@@ -494,24 +494,26 @@ Now let's modify SimpleReportCard to display the new data. You will add a new `C
     This {{ sketchStr }} is {{ areaString }} km².
   </Trans>
 </p>
-<Collapse title={t("Area By Sketch")}>
-  <Table
-    data={data.childSketchAreas}
-    columns={[
-      {
-        Header: t("Name"),
-        accessor: "name",
-      },
-      {
-        Header: t("Area (km²)"),
-        accessor: (row: any) =>
-          roundDecimalFormat(row.area / 1_000_000, 0, {
-            keepSmallValues: true,
-          }),
-      },
-    ]}
-  />
-</Collapse>
+{isCollection && (
+  <Collapse title={t("Area By Sketch")}>
+    <Table
+      data={data.childSketchAreas}
+      columns={[
+        {
+          Header: t("Name"),
+          accessor: "name",
+        },
+        {
+          Header: t("Area (km²)"),
+          accessor: (row: any) =>
+            roundDecimalFormat(row.area / 1_000_000, 0, {
+              keepSmallValues: true,
+            }),
+        },
+      ]}
+    />
+  </Collapse>
+)}
 ```
 
 Here's what the final SimpleCard code should look like:
@@ -523,63 +525,63 @@ Here's what the final SimpleCard code should look like:
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
-Collapse,
-ResultsCard,
-Table,
-useSketchProperties,
+  Collapse,
+  ResultsCard,
+  Table,
+  useSketchProperties,
 } from "@seasketch/geoprocessing/client-ui";
 // Import SimpleResults to type-check data access in ResultsCard render function
 import { SimpleResults } from "../functions/simpleFunction.js";
 import { roundDecimalFormat } from "@seasketch/geoprocessing/client-core";
 
 export const SimpleCard = () => {
-const { t } = useTranslation();
-const [{ isCollection }] = useSketchProperties();
-const titleTrans = t("SimpleCard title", "Simple Report");
-return (
-  <>
-    <ResultsCard title={titleTrans} functionName="simpleFunction">
-      {(data: SimpleResults) => {
-        const areaSqKm = data.area / 1_000_000;
-        const areaString = roundDecimalFormat(areaSqKm, 0, {
-          keepSmallValues: true,
-        });
-        const sketchStr = isCollection ? t("sketch collection") : t("sketch");
+  const { t } = useTranslation();
+  const [{ isCollection }] = useSketchProperties();
+  const titleTrans = t("SimpleCard title", "Simple Report");
+  return (
+    <>
+      <ResultsCard title={titleTrans} functionName="simpleFunction">
+        {(data: SimpleResults) => {
+          const areaSqKm = data.area / 1_000_000;
+          const areaString = roundDecimalFormat(areaSqKm, 0, {
+            keepSmallValues: true,
+          });
+          const sketchStr = isCollection ? t("sketch collection") : t("sketch");
 
-        return (
-          <>
-            <p>
-              <Trans i18nKey="SimpleCard sketch size message">
-                This {{ sketchStr }} is {{ areaString }} km².
-              </Trans>
-            </p>
-            <Collapse title={t("Area By Sketch")}>
-              <Table
-                data={data.childSketchAreas}
-                columns={[
-                  {
-                    Header: t("Name"),
-                    accessor: "name",
-                  },
-                  {
-                    Header: t("Area (km²)"),
-                    accessor: (row: any) =>
-                      roundDecimalFormat(row.area / 1_000_000, 0, {
-                        keepSmallValues: true,
-                      }),
-                  },
-                ]}
-              />
-            </Collapse>
-          </>
-        );
-      }}
-    </ResultsCard>
-  </>
-);
+          return (
+            <>
+              <p>
+                <Trans i18nKey="SimpleCard sketch size message">
+                  This {{ sketchStr }} is {{ areaString }} km².
+                </Trans>
+              </p>
+              {isCollection && (
+                <Collapse title={t("Area By Sketch")}>
+                  <Table
+                    data={data.childSketchAreas}
+                    columns={[
+                      {
+                        Header: t("Name"),
+                        accessor: "name",
+                      },
+                      {
+                        Header: t("Area (km²)"),
+                        accessor: (row: any) =>
+                          roundDecimalFormat(row.area / 1_000_000, 0, {
+                            keepSmallValues: true,
+                          }),
+                      },
+                    ]}
+                  />
+                </Collapse>
+              )}
+            </>
+          );
+        }}
+      </ResultsCard>
+    </>
+  );
 };
-
-
 ```
 
 </details>
@@ -613,7 +615,7 @@ Once your build is successful, you should stage and commit all your changes to g
 
 ## Reef Report
 
-Next you will create a coral reef report using a reef extent datasource. Here is an image of it displayed in QGIS. Notice that the coral is entirely in shallow water around the island coastline and atolls.
+Next you will create a coral reef report that uses a reef extent datasource. Here is an image of it displayed in QGIS. Notice that the coral is entirely in shallow water around the island coastline and atolls.
 
 ![Reef Extent](./assets/reef-extent.jpg)
 
@@ -753,9 +755,10 @@ Next Steps:
 
 Open `src/functions/coralReef.ts`.
 
-You will now update this code answer the following question:
+You will now update this code answer the following questions:
 
-- what percentage of all coral reef is within the current sketch polygon (or sketch collection polygons)?
+- What percentage of all coral reef is within the current sketch polygon (or sketch collection polygons)?
+- If it is a sketch collection, does it meet the planning objective of protecting 20% of all coral reef?
 
 Replace the existing code with the following:
 
@@ -770,8 +773,11 @@ import {
   MultiPolygon,
   GeoprocessingHandler,
   getFeaturesForSketchBBoxes,
-  getFlatGeobufFilename,
   toSketchArray,
+  clipMultiMerge,
+  isSketchCollection,
+  clip,
+  Feature,
 } from "@seasketch/geoprocessing";
 import project from "../../project/projectClient.js";
 import { area, featureCollection } from "@turf/turf";
@@ -786,7 +792,7 @@ export interface CoralReefResults {
     /** Name of the sketch */
     name: string;
     /** Area of reef extent within child sketch in square meters */
-    area: number;
+    area: number | null;
   }[];
 }
 
@@ -802,16 +808,44 @@ async function coralReef(
   // or in case of a sketch collection, the child sketch bounding boxes
   const ds = project.getInternalVectorDatasourceById("reefextent");
   const url = project.getDatasourceUrl(ds);
-  const sketchFeatures = await getFeaturesForSketchBBoxes(sketch, url);
-  const sketchArea = area(featureCollection(sketchFeatures));
+  const reefFeatures = await getFeaturesForSketchBBoxes(sketch, url);
 
-  // Add analysis code
+  // Calculate overall sketch area
+  const sketchArea = (() => {
+    let clipFeature: Feature<Polygon | MultiPolygon> | null;
+    if (reefFeatures.length === 0) {
+      return 0;
+    } else if (isSketchCollection(sketch)) {
+      // account for sketch overlap by merging all sketches
+      clipFeature = clip(sketch, "union");
+      if (!clipFeature) {
+        return 0; // No overlap
+      }
+    } else {
+      clipFeature = sketch;
+    }
+    const sketchReefOverlap = clipMultiMerge(
+      clipFeature,
+      featureCollection(reefFeatures),
+      "intersection",
+    );
+    return sketchReefOverlap ? area(sketchReefOverlap) : 0;
+  })();
+
+  // If sketch is collection, clip each child sketch with reef features and calculate its area
   let childSketchAreas: CoralReefResults["childSketchAreas"] = [];
   if (sketch.properties.isCollection) {
-    childSketchAreas = toSketchArray(sketch).map((sketch) => ({
-      name: sketch.properties.name,
-      area: area(sketch),
-    }));
+    childSketchAreas = toSketchArray(sketch).map((sketch) => {
+      const sketchReefOverlap = clipMultiMerge(
+        sketch,
+        featureCollection(reefFeatures),
+        "intersection",
+      );
+      return {
+        name: sketch.properties.name,
+        area: sketchReefOverlap ? area(sketchReefOverlap) : 0,
+      };
+    });
   }
 
   // Custom return type
@@ -935,9 +969,194 @@ Confirm that the output looks as expected.
 
 ```typescript
 npm run create:client
-
-WORK IN PROGRESS PAST THIS POINT
 ```
+
+Open src/components/CoralReefCard.tsx.
+
+You will now update this code to:
+
+- Display the % of total coral reef captured within this sketch
+- If it is a sketch collection
+  - Indicate whether the objective of protecting 20% of all coral reef has been met.
+  - Display a collapsible area with a breakdown of the area and % area of coral reef within each individual sketch in the collection.
+
+Replace the existing code with the following:
+
+<details>
+<summary>src/components/CoralReefCard.tsx</summary>
+
+```javascript
+import React from "react";
+import { Trans, useTranslation } from "react-i18next";
+import {
+  ResultsCard,
+  useSketchProperties,
+  HorizontalStackedBar,
+  Collapse,
+  Table,
+  ObjectiveStatus,
+  VerticalSpacer,
+} from "@seasketch/geoprocessing/client-ui";
+import {
+  percentWithEdge,
+  roundDecimalFormat,
+  squareMeterToKilometer,
+} from "@seasketch/geoprocessing/client-core";
+
+// Import CoralReefResults to type-check data access in ResultsCard render function
+import { CoralReefResults } from "../functions/coralReef.js";
+
+export const CoralReefCard = () => {
+  const { t } = useTranslation();
+  const [{ isCollection }] = useSketchProperties();
+  const titleTrans = t("CoralReefCard title", "Coral Reef");
+  return (
+    <>
+      <ResultsCard title={titleTrans} functionName="coralReef">
+        {(data: CoralReefResults) => {
+          const target = 0.2; // 20%
+          const reefPerc = data.sketchArea / data.totalArea;
+          const reefPercString = percentWithEdge(reefPerc);
+          const targetPercString = percentWithEdge(target);
+
+          const meetsObjective = reefPerc >= target;
+          const chartRows = [[[reefPerc]]];
+
+          const sketchTypeStr = isCollection
+            ? t("sketch collection")
+            : t("sketch");
+
+          const meetsOrNotElement = meetsObjective ? (
+            <Trans i18nKey="CoralReefCard meets objective message">
+              This {{ sketchTypeStr }} meets the objective of protecting{" "}
+              {{ targetPercString }} of coral reef
+            </Trans>
+          ) : (
+            <Trans i18nKey="CoralReefCard does not meet objective message">
+              This {{ sketchTypeStr }} does not meet the objective of protecting{" "}
+              {{ targetPercString }} of coral reef
+            </Trans>
+          );
+
+          return (
+            <>
+              <p>
+                <Trans i18nKey="CoralReefCard reef size message">
+                  {{ reefPercString }} of all Micronesia coral reef is within
+                  this {{ sketchTypeStr }}.
+                </Trans>
+              </p>
+              {isCollection && (
+                <ObjectiveStatus
+                  status={meetsObjective ? "yes" : "no"}
+                  msg={meetsOrNotElement}
+                />
+              )}
+
+              <VerticalSpacer />
+              <HorizontalStackedBar
+                rows={chartRows}
+                valueFormatter={(value) => percentWithEdge(value / 100)}
+                max={4}
+                target={20}
+                targetValueFormatter={(targetValue) => (
+                  <Trans i18nKey="CoralReefCard target label">
+                    Target {{ targetValue: percentWithEdge(targetValue / 100) }}
+                  </Trans>
+                )}
+                rowConfigs={[
+                  {
+                    title: t("Total coral reef"),
+                  },
+                ]}
+                blockGroupNames={[]}
+                blockGroupStyles={[{ backgroundColor: "#64c2a6" }]}
+              />
+              {isCollection && (
+                <Collapse title={t("Show By Sketch")}>
+                  <Table
+                    data={data.childSketchAreas}
+                    columns={[
+                      {
+                        Header: t("Name"),
+                        accessor: "name",
+                      },
+                      {
+                        Header: t("Reef within Sketch (km²)"),
+                        accessor: (row: any) =>
+                          roundDecimalFormat(squareMeterToKilometer(row.area)),
+                      },
+                      {
+                        Header: t("% Reef within Sketch"),
+                        accessor: (row: any) =>
+                          percentWithEdge(row.area / data.totalArea),
+                      },
+                    ]}
+                  />
+                </Collapse>
+              )}
+            </>
+          );
+        }}
+      </ResultsCard>
+    </>
+  );
+};
+```
+
+</details>
+
+There are multiple things worth noticing:
+
+- `squareMeterToKilometer` conversion helper function is used
+- `percentWithEdge` and `roundDecimalFormat` helper functions are used to format values to be more human readable. Will use locale settings of the users browser when formatting decimal and percent.
+- `HorizontalStackedBar` and `ObjectiveStatus` core UI components present information in a more visually interesting way that can be reused across reports. See core [storybook](/storybook) for more examples of their use.
+
+Now, start storybook and view the result:
+
+```bash
+npm run storybook
+```
+
+When viewing a sketch example, it should display the following:
+
+![CoralReefCard sketch view](./assets/coral-reef-card-sketch.jpg)
+
+And when viewing a sketch collection example, it should display the additional components:
+
+![CoralReefCard collection view](./assets/coral-reef-card-collection.jpg)
+
+### Add to Tab Report
+
+Now add the CoralReefCard as a new section to your top-level TabReport, on its ViabilityPage.
+
+Open `src/components/ViabilityPage.tsx` and replace the code with the following:
+
+<details>
+<summary>src/components/ViabilityPage.tsx</summary>
+
+```typescript
+import React from "react";
+import { SimpleCard } from "./SimpleCard.js";
+import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
+import { CoralReefCard } from "./CoralReefCard.js";
+
+export const ViabilityPage = () => {
+  return (
+    <>
+      <SimpleCard />
+      <CoralReefCard />
+      <SketchAttributesCard autoHide />
+    </>
+  );
+};
+```
+
+</details>
+
+Storybook should update on save and display the following:
+
+![CoralReefCard add to page](./assets/coral-reef-card-add-to-page.jpg)
 
 ## Benthic Habitat Report
 

@@ -133,3 +133,7 @@ If you will have Sketches/Features that cross the antimeridian, you should: spli
 The bounding box of the split Sketch/Feature will span the world (see last section for image), but if your raster dataset is limited to your project area, then Geoblaze is smart enough to not try and fetch data outside the extent of the raster, or represent it in memory. So it is recommended to clip raster data to the project area if possible.
 
 If your raster dataset extends across more of the globe longitudinally or the entire glove, then Geoglaze will overfetch data beyond the bounding box of your Sketch/Feature. This shouldn't affect your calculated results but it increases network and memory usage to fetch the extra data. If this is not acceptable, a user-space workaround might be for you to call your geoblaze calc methods for each half of your split Sketch/Feature, and then somehow merge the result.
+
+## Putting It All Together
+
+Here's an [example](https://github.com/underbluewaters/kiribati-reports/blob/5eb712f499a0fc799eb8372091808c49294154b9/src/functions/allenCoralAtlas.ts#L25) geoprocessing function that makes use of `splitSketchAntimeridian` and `getFeaturesForSketchBBoxes`.

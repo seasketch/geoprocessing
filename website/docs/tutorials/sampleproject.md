@@ -1,8 +1,8 @@
 # Create Sample Project
 
-This tutorial walks through creating a sample geoprocessing project for the Federated States of Micronesia. It will walk you through creating reports that do overlay analysis, which the geoprocessing framework offers a number of high-level features to support.
+This tutorial walks through creating a sample geoprocessing project for the Federated States of Micronesia. It demonstrates multiple methods for doing spatial analysis and creating reports, from low-level to high-level, so that you can engage with it at any/all of the levels needed for your project.
 
-The planning area for this example is defined as the coastline to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
+The planning area for this example is defined as the area extending from the baseline (coastline/shoreline) to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
 
 ![EEZ with land](./assets/eez-with-land.jpg)
 
@@ -799,7 +799,7 @@ async function coralReef(
   // Load just the reef features that intersect with the sketch bounding box
   // or in case of a sketch collection, the child sketch bounding boxes
   const ds = project.getInternalVectorDatasourceById("reefextent");
-  const url = `${project.dataBucketUrl()}${getFlatGeobufFilename(ds)}`;
+  const url = project.getDatasourceUrl(ds);
   const sketchFeatures = await getFeaturesForSketchBBoxes(sketch, url);
   const sketchArea = area(featureCollection(sketchFeatures));
 

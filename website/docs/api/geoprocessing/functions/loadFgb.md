@@ -4,8 +4,8 @@
 function loadFgb<F>(url, box?): Promise<F[]>
 ```
 
-Fetch features within bounding box and deserializes them, awaiting all of them before returning.
-Useful when running a spatial function on the whole set.
+Fetch features from flatgeobuf at url that intersect with bounding box
+Awaits all features before returning, rather than streaming them.
 
 ## Type Parameters
 

@@ -30,3 +30,7 @@ Useful when you need features2 to be seen as a single unit when clipping feature
 ## Returns
 
 [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md)\> \| `null`
+
+## Todo
+
+- migrate back to using turf now that it supports multiple features as second argument

@@ -931,6 +931,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/interfaces/FgBoundingBox",
+            "label": "FgBoundingBox"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/interfaces/GeogProp",
             "label": "GeogProp"
           },
@@ -1290,6 +1295,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/classifyZone",
             "label": "classifyZone"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/cleanBBox",
+            "label": "cleanBBox"
           },
           {
             "type": "doc",
@@ -2115,6 +2125,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/sortMetricsDisplayOrder",
             "label": "sortMetricsDisplayOrder"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/splitBBoxAntimeridian",
+            "label": "splitBBoxAntimeridian"
           },
           {
             "type": "doc",

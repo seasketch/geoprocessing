@@ -30,6 +30,7 @@
 | [FeatureCollection](interfaces/FeatureCollection.md) | A collection of feature objects. https://tools.ietf.org/html/rfc7946#section-3.3 |
 | [FeatureMap](interfaces/FeatureMap.md) | A simple map of features keyed by their name |
 | [FeatureTree](interfaces/FeatureTree.md) | - |
+| [FgBoundingBox](interfaces/FgBoundingBox.md) | - |
 | [GeogProp](interfaces/GeogProp.md) | - |
 | [GeometryCollection](interfaces/GeometryCollection.md) | Geometry Collection https://tools.ietf.org/html/rfc7946#section-3.1.8 |
 | [GeoprocessingHandlerOptions](interfaces/GeoprocessingHandlerOptions.md) | - |
@@ -110,6 +111,7 @@
 | [classIdMapping](functions/classIdMapping.md) | Returns mapping of class ID to class DataClass objects |
 | [classifyMPA](functions/classifyMPA.md) | Given zone scores, returns object containing final scores, and mpa classification |
 | [classifyZone](functions/classifyZone.md) | Given activity scores, returns zone number |
+| [cleanBBox](functions/cleanBBox.md) | Normalizes bounding box longitude values to the [-180, 180] range if they cross the antimeridian |
 | [cleanCoords](functions/cleanCoords.md) | Cleans geojson coordinates to be within the bounds of the world [-90, -180, 90, 180], so that they don't wrap off the end, and can be split |
 | [clip](functions/clip.md) | Performs clip operation on features |
 | [clipMultiMerge](functions/clipMultiMerge.md) | Performs clip by merging features2 coords into a single multipolygon. Useful when you need features2 to be seen as a single unit when clipping feature1 (e.g. intersection) |
@@ -122,7 +124,7 @@
 | [featureToSketch](functions/featureToSketch.md) | Converts Feature to Sketch with reasonable defaults given for sketch properties if not provided |
 | [featureToSketchCollection](functions/featureToSketchCollection.md) | Converts FeatureCollection to SketchCollection with reasonable defaults given for sketch properties if not provided |
 | [fetchGeoJSON](functions/fetchGeoJSON.md) | Given geoprocessing function request, fetches the GeoJSON, which can also be sketch JSON |
-| [fgbFetchAll](functions/fgbFetchAll.md) | Fetch features within bounding box and deserializes them, awaiting all of them before returning. Useful when running a spatial function on the whole set. |
+| [fgbFetchAll](functions/fgbFetchAll.md) | Fetch features from flatgeobuf at url within bounding box Awaits all features before returning, rather than streaming them. |
 | [fgBoundingBox](functions/fgBoundingBox.md) | - |
 | [findAndUpdateMetricValue](functions/findAndUpdateMetricValue.md) | Returns new sketchMetrics array with first sketchMetric matched set with new value. If no match, returns copy of sketchMetrics. Does not mutate array in place. |
 | [firstMatching](functions/firstMatching.md) | Returns the first item that returns true for filter |
@@ -230,7 +232,7 @@
 | [isVectorDatasource](functions/isVectorDatasource.md) | - |
 | [keyBy](functions/keyBy.md) | Similar to lodash keyBy |
 | [loadCog](functions/loadCog.md) | Returns cog-aware georaster at given url. Will not fetch raster values until subsequent geoblaze calls are made with a geometry and it will calculate the window to load based on the geometry. The subsequent geoblaze calls (e.g. sum) must be called async to allow the raster to load. |
-| [loadFgb](functions/loadFgb.md) | Fetch features within bounding box and deserializes them, awaiting all of them before returning. Useful when running a spatial function on the whole set. |
+| [loadFgb](functions/loadFgb.md) | Fetch features from flatgeobuf at url that intersect with bounding box Awaits all features before returning, rather than streaming them. |
 | [maxWidth](functions/maxWidth.md) | Returns the maximum width of the geojson or bbox |
 | [metricsForSketch](functions/metricsForSketch.md) | Returns metrics for given sketch (can be an array of sketches) |
 | [metricsSketchIds](functions/metricsSketchIds.md) | Returns metrics with matching sketchId (can be an array of sketchids) |
@@ -275,8 +277,9 @@
 | [sketchToZone](functions/sketchToZone.md) | - |
 | [sortMetrics](functions/sortMetrics.md) | Sorts metrics to a consistent order for readability Defaults to [metricId, classId, sketchId] |
 | [sortMetricsDisplayOrder](functions/sortMetricsDisplayOrder.md) | Sorts metrics by ID given a user-defined metric dimension (sortId) and array of ID values in the order they should be sorted Useful for applying a "display order" to metrics Example - sortId = classId, displayOrder = ['sand','gravel','coral'] |
-| [splitFeatureAntimeridian](functions/splitFeatureAntimeridian.md) | Splits a Feature or FeatureCollection on the 180 degree antimeridian |
-| [splitSketchAntimeridian](functions/splitSketchAntimeridian.md) | Splits a Sketch or SketchCollection on the 180 degree antimeridian |
+| [splitBBoxAntimeridian](functions/splitBBoxAntimeridian.md) | If bounding box crosses antimeridian (and extends outside the range of -180 to 180), split it into two bounding boxes at the antimeridian. |
+| [splitFeatureAntimeridian](functions/splitFeatureAntimeridian.md) | Splits a Feature or FeatureCollection on the 180 degree antimeridian. The bbox property of the result will have longitude coordinates that are shifted/normalized to be within the range of -180 to 180. |
+| [splitSketchAntimeridian](functions/splitSketchAntimeridian.md) | Splits a Sketch or SketchCollection on the 180 degree antimeridian The bbox property of the result will have longitude coordinates that are shifted/normalized to be within the range of -180 to 180. |
 | [squareMeterToKilometer](functions/squareMeterToKilometer.md) | - |
 | [squareMeterToMile](functions/squareMeterToMile.md) | - |
 | [testWithinPerc](functions/testWithinPerc.md) | Expects that testValue is equal to expectedValue or optionally within percentage (defaults to .01 or 1%) |

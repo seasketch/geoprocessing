@@ -314,7 +314,9 @@ ogrinfo -so -json data/src/eez_withland_mr.fgb | jq -c .layers[0].geometryFields
 [135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]
 ```
 
-This will output an array with the extent of the EEZ. Now run the genRandomPolygon script with this extent. The following commands will create a Sketch polygon, and then a SketchCollection containing 10 Sketch polygons.
+This will output an array with the extent of the EEZ. This is just one of multiple possible methods to get this extent. You are welcome to use the method that works best for you.
+
+Now run the genRandomPolygon script with this extent. The following examples will create a Sketch polygon, and then a SketchCollection containing 10 Sketch polygons.
 
 ```bash
 npx tsx scripts/genRandomPolygon.ts --outDir examples/sketches --filename sketch1.json --bbox "[135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]" --bboxShrinkFactor 5 --sketch

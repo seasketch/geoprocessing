@@ -14,6 +14,12 @@ Re-exports [fgBoundingBox](../geoprocessing/functions/fgBoundingBox.md)
 
 ***
 
+### FgBoundingBox
+
+Re-exports [FgBoundingBox](../geoprocessing/interfaces/FgBoundingBox.md)
+
+***
+
 ### genClipLoader
 
 Re-exports [genClipLoader](../geoprocessing/functions/genClipLoader.md)

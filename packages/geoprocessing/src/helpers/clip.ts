@@ -53,6 +53,7 @@ export function clip<
 /**
  * Performs clip by merging features2 coords into a single multipolygon.
  * Useful when you need features2 to be seen as a single unit when clipping feature1 (e.g. intersection)
+ * @todo - migrate back to using turf now that it supports multiple features as second argument
  */
 export function clipMultiMerge<
   P extends GeoJsonProperties | undefined = GeoJsonProperties,

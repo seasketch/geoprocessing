@@ -3,7 +3,7 @@ import { Polygon, Sketch, Feature } from "../../types/index.js";
 import parseGeoraster from "georaster";
 import testData from "./test/testData.js";
 import geoblaze from "geoblaze";
-import { splitSketchAntimeridian } from "../split.js";
+import { splitSketchAntimeridian } from "../antimeridian.js";
 
 describe("geoblaze basics", () => {
   test("simple in-memory raster sum test", async () => {

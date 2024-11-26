@@ -1,10 +1,16 @@
 import { takeAsync } from "flatgeobuf/lib/mjs/streams/utils.js";
 import { BBox, Feature, Geometry } from "../types/index.js";
-// import "./fetchPolyfill.js";
 
 import { deserialize } from "flatgeobuf/lib/mjs/geojson.js";
 
-export function fgBoundingBox(box: BBox) {
+export interface FgBoundingBox {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+}
+
+export function fgBoundingBox(box: BBox): FgBoundingBox {
   return {
     minX: box[0],
     maxX: box[2],
@@ -13,35 +19,21 @@ export function fgBoundingBox(box: BBox) {
   };
 }
 
-/** Fetch features within bounding box and deserializes them, awaiting all of them before returning.
- * Useful when running a spatial function on the whole set.
- * @deprecated Use `loadFgb` instead.
+/**
+ * Fetch features from flatgeobuf at url within bounding box
+ * Awaits all features before returning, rather than streaming them.
+ * @deprecated Use `loadCog` instead.
  */
 export async function fgbFetchAll<F extends Feature<Geometry>>(
   url: string,
   box?: BBox,
 ) {
-  const fgBox = (() => {
-    if (!box && !Array.isArray(box)) {
-      return fgBoundingBox([-180, -90, 180, 90]); // fallback to entire world
-    } else {
-      return fgBoundingBox(box);
-    }
-  })();
-
-  if (process.env.NODE_ENV !== "test")
-    console.log("fgbFetchAll", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
-
-  const features = (await takeAsync(
-    deserialize(url, fgBox) as AsyncGenerator,
-  )) as F[];
-  if (!Array.isArray(features))
-    throw new Error("Unexpected result from fgbFetchAll");
-  return features;
+  return loadFgb<F>(url, box);
 }
 
-/** Fetch features within bounding box and deserializes them, awaiting all of them before returning.
- * Useful when running a spatial function on the whole set.
+/**
+ * Fetch features from flatgeobuf at url that intersect with bounding box
+ * Awaits all features before returning, rather than streaming them.
  */
 export async function loadFgb<F extends Feature<Geometry>>(
   url: string,
@@ -56,7 +48,7 @@ export async function loadFgb<F extends Feature<Geometry>>(
   })();
 
   if (process.env.NODE_ENV !== "test")
-    console.log("fgbFetchAll", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
+    console.log("fgbF", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
 
   const features = (await takeAsync(
     deserialize(url, fgBox) as AsyncGenerator,

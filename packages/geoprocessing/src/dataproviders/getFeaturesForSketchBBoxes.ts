@@ -1,4 +1,5 @@
 import {
+  BBox,
   Feature,
   MultiPolygon,
   Polygon,
@@ -9,6 +10,7 @@ import { loadFgb } from "./flatgeobuf.js";
 import { toSketchArray } from "../helpers/index.js";
 import md5 from "spark-md5";
 import { bbox } from "@turf/turf";
+import { splitBBoxAntimeridian } from "../toolbox/antimeridian.js";
 
 /**
  * Loads features from a FlatGeobuf referenced by URL, which intersect the
@@ -30,7 +32,7 @@ import { bbox } from "@turf/turf";
  * @param fgbUrl FlatGeobuf location
  * @param uniqueIdProperty Used to de-dupe features when feature.id is not
  * available
- * @returns array of features
+ * @returns array of Features
  */
 export async function getFeaturesForSketchBBoxes(
   sketch: Sketch | SketchCollection,
@@ -41,10 +43,16 @@ export async function getFeaturesForSketchBBoxes(
   const addedIdentifiers = new Set<string>();
   await Promise.all(
     toSketchArray(sketch).map(async (sketch) => {
-      const results = await loadFgb<Feature<Polygon | MultiPolygon>>(
-        fgbUrl,
-        bbox(sketch),
-      );
+      const box = bbox(sketch);
+      const splitBoxes = splitBBoxAntimeridian(box) as BBox[];
+      console.log("splitBoxes", splitBoxes);
+      const results = (
+        await Promise.all(
+          splitBoxes.map(async (box) => {
+            return await loadFgb<Feature<Polygon | MultiPolygon>>(fgbUrl, box);
+          }),
+        )
+      ).flat();
       for (const feature of results) {
         let id = feature.id?.toString();
         if (!id) {

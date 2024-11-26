@@ -1,7 +1,11 @@
 import { describe, test, expect } from "vitest";
 
-import { splitFeatureAntimeridian, splitSketchAntimeridian } from "./split.js";
-import { feature } from "@turf/turf";
+import {
+  splitFeatureAntimeridian,
+  splitSketchAntimeridian,
+  splitBBoxAntimeridian,
+} from "./antimeridian.js";
+import { bbox, feature, polygon } from "@turf/turf";
 import { Feature, Polygon, Sketch } from "../types/index.js";
 import { toFeaturePolygonArray } from "../helpers/index.js";
 import {
@@ -179,5 +183,45 @@ describe("splitSketch", () => {
     } else {
       throw new Error("Should not reach here");
     }
+  });
+});
+
+describe("splitBBoxAntimeridian", () => {
+  test("splitBBoxAntimeridian bbox crosses antimeridian at -180", async () => {
+    // This poly extends 10 degrees on each side of the antimeridian at -180
+    const poly = polygon([
+      [
+        [-170, 10],
+        [-190, 10],
+        [-190, 0],
+        [-170, 0],
+        [-170, 10],
+      ],
+    ]);
+    const polyBox = bbox(poly);
+    const boxes = splitBBoxAntimeridian(polyBox);
+
+    expect(boxes.length).toBe(2);
+    expect(boxes[0]).toEqual([170, 0, 180, 10]); // portion extending below -180 shifted to be less than 180
+    expect(boxes[1]).toEqual([-180, 0, -170, 10]); // portion within -180 left as-is
+  });
+
+  test("splitBBoxAntimeridian bbox crosses antimeridian at +180", async () => {
+    // This poly extends 10 degrees on each side of the antimeridian at -180
+    const poly = polygon([
+      [
+        [170, 10],
+        [190, 10],
+        [190, 0],
+        [170, 0],
+        [170, 10],
+      ],
+    ]);
+    const polyBox = bbox(poly);
+    const boxes = splitBBoxAntimeridian(polyBox);
+
+    expect(boxes.length).toBe(2);
+    expect(boxes[0]).toEqual([170, 0, 180, 10]); // portion within 180 left as-is
+    expect(boxes[1]).toEqual([-180, 0, -170, 10]); // portion extending beyond 180 shifted to be greater than -180
   });
 });

@@ -8,5 +8,5 @@ export * from "./booleanOverlap.js";
 export * from "./genPreprocessor.js";
 export * from "./geoblaze/index.js";
 export * from "./cleanCoords.js";
-export * from "./split.js";
+export * from "./antimeridian.js";
 export * from "./rasterMetrics.js";

@@ -8,8 +8,9 @@ import path from "node:path";
 import { isFeatureCollection } from "../index.js";
 
 test("flatgeobuf - local world fgb", async () => {
-  const str = canonicalize([
+  const canonicalStr = canonicalize([
     {
+      id: 0, // this is not in the data, but fgb client automatically adds it on deserialize as of v3.36.0
       type: "Feature",
       properties: {
         name: "World boundary",
@@ -32,10 +33,7 @@ test("flatgeobuf - local world fgb", async () => {
   const url = "http://127.0.0.1:8080/data/in/world.fgb";
   const features = await loadFgb(url);
   expect(features.length).toEqual(1);
-  // Note the id: 0 that flatgeobuf client adds automatically now
-  expect(canonicalize(features)).toEqual(
-    '[{"geometry":{"coordinates":[[[-180,90],[-180,-90],[180,-90],[180,90],[-180,90]]],"type":"Polygon"},"id":0,"properties":{"description":"World","name":"World boundary"},"type":"Feature"}]',
-  );
+  expect(canonicalize(features)).toEqual(canonicalStr);
 });
 
 test("flatgeobuf - file countries fgb from disk", async () => {

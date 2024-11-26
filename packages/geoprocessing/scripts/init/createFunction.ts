@@ -67,23 +67,6 @@ async function createFunction() {
         },
       ],
     },
-    {
-      type: "list",
-      name: "executionMode",
-      message: "Choose an execution mode",
-      default: 0,
-      when: (answers) => answers.type === "geoprocessing",
-      choices: [
-        {
-          value: "sync",
-          name: "Sync - Best for quick analyses (< 2s)",
-        },
-        {
-          value: "async",
-          name: "Async - Better for long-running processes",
-        },
-      ],
-    },
   ]);
   answers.title = camelcase(answers.title);
   if (answers.type === "preprocessing" && answers.clipToEez === "yes") {
@@ -91,6 +74,7 @@ async function createFunction() {
   }
 
   if (answers.type === "geoprocessing") {
+    answers.executionMode = "async";
     await makeGeoprocessingHandler(answers, true, "");
   } else {
     await makePreprocessingHandler(answers, true, "");

@@ -6,7 +6,7 @@ import chalk from "chalk";
 import camelcase from "camelcase";
 import { GeoprocessingJsonConfig } from "../../src/types/index.js";
 import pascalcase from "pascalcase";
-import { getBlankProjectPath } from "../util/getPaths.js";
+import { getOceanEEZProjectPath } from "../util/getPaths.js";
 import { pathToFileURL } from "node:url";
 
 async function createClient() {
@@ -57,7 +57,7 @@ export async function makeClient(
   const projectClientPath = basePath + "src/clients";
   const projectComponentPath = basePath + "src/components";
 
-  const templatePath = getBlankProjectPath();
+  const templatePath = getOceanEEZProjectPath();
   const templateClientPath = `${templatePath}/src/clients`;
   const templateComponentPath = `${templatePath}/src/components`;
 

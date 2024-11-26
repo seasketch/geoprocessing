@@ -670,7 +670,7 @@ Once finished you are ready to use your datasources for `local` report developme
 
 You can add, edit, or delete records in datasources.json manually to meet your need as long as the records meet the expected [schema](../concepts/AdvancedConcepts.md#datasources).
 
-If at any point the process of using `data:import`, `datasources.json`, and `projectClient` doesn't meet your needs, you are welcome to create your own separate process, as long as it gets datasources to the `data/dist` directory in the format (fgb) and projection (WGS84) required, ready to be published for production use. Data publishing will be covered at a later time.
+If at any point the process of using `data:import`, `datasources.json`, and `projectClient` doesn't meet your needs, you are welcome to create your own separate process, as long as it gets datasources to the `data/dist` directory in the format (fgb) and projection (WGS84) required, ready to be published for production use.
 
 ### Precalculation
 
@@ -816,7 +816,7 @@ async function coralReef(
 
   // Custom return type
   return {
-    totalArea: reefPrecalc.totalArea,
+    totalArea: reefPrecalc.totalAreaSqMeters,
     sketchArea: sketchArea,
     childSketchAreas,
   };
@@ -845,7 +845,7 @@ Then it fetches only the reef features whose bounding box intersects with the sk
 
 ```typescript
 const ds = project.getInternalVectorDatasourceById("reefextent");
-const url = `${project.dataBucketUrl()}${getFlatGeobufFilename(ds)}`;
+const url = project.getDatasourceUrl(ds);
 const sketchFeatures = await getFeaturesForSketchBBoxes(sketch, url);
 const sketchArea = area(featureCollection(sketchFeatures));
 ```

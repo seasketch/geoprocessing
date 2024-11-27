@@ -4,7 +4,7 @@
 function overlapGroupMetrics(options): Promise<Metric[]>
 ```
 
-Given area overlap metrics stratified by class and sketch, returns new metrics also stratified by group
+Given overlap metrics stratified by class and sketch, returns new metrics also stratified by group
 Assumes a sketch is member of only one group, determined by caller-provided metricToGroup
 For each group+class, calculates area of overlap between sketches in group and featuresByClass (with overlap between group sketches removed first)
 Types of metrics returned:

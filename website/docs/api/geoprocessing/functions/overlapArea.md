@@ -1,4 +1,4 @@
-# ~~overlapArea()~~
+# overlapArea()
 
 ```ts
 function overlapArea(
@@ -26,7 +26,3 @@ calculates the area of each sketch and the proportion of outerArea they take up.
 ## Returns
 
 `Promise`\<[`Metric`](../type-aliases/Metric.md)[]\>
-
-## Deprecated
-
-- using geographies will clip your datasources and you can just use overlapFeatures

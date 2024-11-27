@@ -1,10 +1,9 @@
 import {
-  clip,
   isPolygonFeature,
   isPolygonFeatureArray,
   numberFormat,
 } from "../helpers/index.js";
-import { clipMultiMerge } from "../helpers/index.js";
+import { clipMultiMerge } from "./clip.js";
 import {
   ValidationError,
   Feature,
@@ -30,6 +29,7 @@ import {
 } from "../datasources/helpers.js";
 import { ProjectClientInterface } from "../project/ProjectClientBase.js";
 import { getFeatures } from "../dataproviders/getFeatures.js";
+import { clip } from "./clip.js";
 
 /**
  * Returns true if feature is valid and meets requirements set by options.

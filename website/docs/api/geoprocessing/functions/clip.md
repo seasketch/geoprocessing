@@ -7,7 +7,7 @@ function clip<P>(
    options): Feature<Polygon | MultiPolygon> | null
 ```
 
-Performs clip operation on features
+Performs one of 4 different clip operations on features
 
 ## Type Parameters
 
@@ -20,7 +20,7 @@ Performs clip operation on features
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `features` | [`FeatureCollection`](../interfaces/FeatureCollection.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> | FeatureCollection of Polygons or MultiPolygons. First feature is the subject, the rest are the clippers |
-| `operation` | `"union"` \| `"intersection"` \| `"xor"` \| `"difference"` | one of "union", "intersection", "xor", "difference" |
+| `operation` | `"intersection"` \| `"difference"` \| `"xor"` \| `"union"` | one of "union", "intersection", "xor", "difference" |
 | `options` | `object` | optional properties to set on the resulting feature |
 | `options.properties`? | `P` | - |
 
@@ -29,7 +29,3 @@ Performs clip operation on features
 [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md)\> \| `null`
 
 clipped Feature of Polygon or MultiPolygon
-
-## Todo
-
-- migrate to use turf modules instead, now that added support for operating against an array of features

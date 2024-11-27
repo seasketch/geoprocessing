@@ -19,162 +19,150 @@ const sidebars: SidebarsConfig = {
         "introduction",
         "concepts/Concepts",
         {
-          type: "category",
-          label: "Tutorials",
-          items: [
-            {
-              type: "doc",
-              id: "tutorials/Tutorials",
-              label: "System Setup",
-            },
-            {
-              type: "doc",
-              id: "tutorials/sampleproject",
-              label: "Create Sample Project",
-            },
-            {
-              type: "doc",
-              id: "tutorials/newproject",
-              label: "Create New Project",
-            },
-            {
-              type: "doc",
-              id: "tutorials/existingproject",
-              label: "Setup Existing Project",
-            },
-            {
-              type: "doc",
-              id: "tutorials/deploy",
-              label: "Deploy Project",
-            },
-            {
-              type: "doc",
-              id: "tutorials/createGeoprocessing",
-              label: "New Geoprocessing Function",
-            },
-            {
-              type: "doc",
-              id: "tutorials/createReport",
-              label: "New Report Client",
-            },
-            {
-              type: "doc",
-              id: "upgrade",
-              label: "Upgrade Project",
-            },
-          ],
+          type: "doc",
+          id: "concepts/AdvancedConcepts",
+          label: "Advanced Concepts",
         },
+        "architecture/Architecture",
         "CLI",
         {
           type: "doc",
           id: "skills",
           label: "Skill Building",
         },
+        "EdgesAndLimits",
       ],
     },
     {
       type: "category",
-      label: "Advanced",
+      label: "Tutorials",
       items: [
         {
           type: "doc",
-          id: "concepts/AdvancedConcepts",
-          label: "Concepts",
+          id: "tutorials/Tutorials",
+          label: "System Setup",
         },
         {
-          type: "category",
-          label: "Tutorials",
-          items: [
-            {
-              type: "doc",
-              id: "linkData",
-              label: "Link Project Data",
-            },
-            {
-              type: "doc",
-              id: "thirdpartydata/thirdpartydata",
-              label: "Third Party Data",
-            },
-            {
-              type: "doc",
-              id: "tutorials/updateDatasource",
-              label: "Update Datasource",
-            },
-          ],
+          type: "doc",
+          id: "tutorials/sampleproject",
+          label: "Create Sample Project",
         },
         {
-          type: "category",
-          label: "Guides",
-          items: [
-            {
-              type: "doc",
-              id: "structure",
-              label: "Project Structure",
-            },
-            {
-              type: "doc",
-              id: "projectclient",
-              label: "Project Client",
-            },
-            {
-              type: "doc",
-              id: "precalc",
-              label: "Precalc Data",
-            },
-            {
-              type: "doc",
-              id: "dataimport",
-              label: "Data Import",
-            },
-            {
-              type: "doc",
-              id: "preprocessing",
-              label: "Preprocessing Functions",
-            },
-            {
-              type: "doc",
-              id: "geoprocessing",
-              label: "Geoprocessing Functions",
-            },
-            {
-              type: "doc",
-              id: "reportclient",
-              label: "Report Clients",
-            },
-            "workers",
-            "tutorials/sketchAttributes",
-            {
-              type: "doc",
-              id: "tutorials/extraParams",
-              label: "Extra Function Parameters",
-            },
-            {
-              type: "doc",
-              id: "multiBoundary/multiBoundary",
-              label: "Multi-Boundary",
-            },
-            {
-              type: "doc",
-              id: "tutorials/subdividing",
-              label: "Subdividing Data",
-            },
-            "antimeridian/Antimeridian",
-            "Testing",
-            {
-              type: "doc",
-              id: "tutorials/storybook",
-              label: "Storybook",
-            },
-            {
-              type: "doc",
-              id: "devcontainer/devcontainer",
-              label: "Devcontainer",
-            },
-            { type: "doc", id: "codespaces/codespaces", label: "Codespaces" },
-          ],
+          type: "doc",
+          id: "tutorials/newproject",
+          label: "Create New Project",
         },
-        "architecture/Architecture",
-        "EdgesAndLimits",
+        {
+          type: "doc",
+          id: "tutorials/existingproject",
+          label: "Setup Existing Project",
+        },
+        {
+          type: "doc",
+          id: "tutorials/deploy",
+          label: "Deploy Project",
+        },
+        {
+          type: "doc",
+          id: "tutorials/updateDatasource",
+          label: "Update Datasource",
+        },
+        {
+          type: "doc",
+          id: "upgrade",
+          label: "Upgrade Project",
+        },
+        {
+          type: "doc",
+          id: "thirdpartydata/thirdpartydata",
+          label: "Third Party Data",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Guides",
+      items: [
+        {
+          type: "doc",
+          id: "structure",
+          label: "Project Structure",
+        },
+        {
+          type: "doc",
+          id: "toolbox",
+          label: "Spatial Toolbox",
+        },
+        {
+          type: "doc",
+          id: "dataproviders",
+          label: "Data Fetching",
+        },
+        {
+          type: "doc",
+          id: "projectclient",
+          label: "Project Client",
+        },
+        {
+          type: "doc",
+          id: "linkData",
+          label: "Link Project Data",
+        },
+        {
+          type: "doc",
+          id: "precalc",
+          label: "Precalc Data",
+        },
+        {
+          type: "doc",
+          id: "dataimport",
+          label: "Data Import",
+        },
+        {
+          type: "doc",
+          id: "preprocessing",
+          label: "Preprocessing Functions",
+        },
+        {
+          type: "doc",
+          id: "geoprocessing",
+          label: "Geoprocessing Functions",
+        },
+        {
+          type: "doc",
+          id: "reportclient",
+          label: "Report Clients",
+        },
+        "workers",
+        "tutorials/sketchAttributes",
+        {
+          type: "doc",
+          id: "tutorials/extraParams",
+          label: "Extra Function Parameters",
+        },
+        {
+          type: "doc",
+          id: "multiBoundary/multiBoundary",
+          label: "Multi-Boundary",
+        },
+        {
+          type: "doc",
+          id: "tutorials/subdividing",
+          label: "Subdividing Data",
+        },
+        "antimeridian/Antimeridian",
+        "Testing",
+        {
+          type: "doc",
+          id: "tutorials/storybook",
+          label: "Storybook",
+        },
+        {
+          type: "doc",
+          id: "devcontainer/devcontainer",
+          label: "Devcontainer",
+        },
+        { type: "doc", id: "codespaces/codespaces", label: "Codespaces" },
       ],
     },
     {

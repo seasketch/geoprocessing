@@ -2,8 +2,9 @@ import fs from "fs-extra";
 import { area, bbox, featureCollection as fc } from "@turf/turf";
 import { $ } from "zx";
 import { getFeatures } from "../../../src/dataproviders/index.js";
-import { chunk, clip, roundDecimal } from "../../../src/helpers/index.js";
+import { chunk, roundDecimal } from "../../../src/helpers/index.js";
 import project from "./ProjectClientGlobal.js";
+import { clip } from "../../../src/toolbox/clip.js";
 
 const outfile = "./mr-eez-land-union-precalc.json";
 const infile = "/mnt/c/data/EEZ_land_union_v3_202003/EEZ_Land_v3_202030.shp";

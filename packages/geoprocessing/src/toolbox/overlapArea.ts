@@ -6,7 +6,7 @@ import {
   Polygon,
   Metric,
 } from "../types/index.js";
-import { isSketchCollection, toSketchArray, clip } from "../helpers/index.js";
+import { isSketchCollection, toSketchArray } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
 import {
   featureCollection,
@@ -15,11 +15,11 @@ import {
   simplify,
 } from "@turf/turf";
 import { ValidationError } from "../types/index.js";
+import { clip } from "./clip.js";
 
 /**
  * Assuming sketches are within some outer boundary with size outerArea,
  * calculates the area of each sketch and the proportion of outerArea they take up.
- * @deprecated - using geographies will clip your datasources and you can just use overlapFeatures
  */
 export async function overlapArea(
   /** Metric identifier */
@@ -178,7 +178,7 @@ export async function overlapArea(
  * Returns area stats for sketch input after performing overlay operation against a subarea feature.
  * Includes both area overlap and percent area overlap metrics, because calculating percent later would be too complicated
  * For sketch collections, dissolve is used when calculating total sketch area to prevent double counting
- * @deprecated - using geographies will clip your datasources and you can just use overlapFeatures
+ * @deprecated - using geographies will clip your datasources and you can just use overlapFeatures.  This will be removed in a future version
  */
 export async function overlapSubarea(
   /** Metric identifier */

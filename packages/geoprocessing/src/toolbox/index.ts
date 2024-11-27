@@ -1,4 +1,5 @@
 export * from "./area.js";
+export * from "./clip.js";
 export * from "./width.js";
 export * from "./overlapArea.js";
 export * from "./overlapFeatures.js";

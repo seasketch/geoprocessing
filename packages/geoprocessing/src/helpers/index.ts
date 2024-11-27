@@ -1,6 +1,5 @@
 export * from "./bboxOverlap.js";
 export * from "./chunk.js";
-export * from "./clip.js";
 export * from "./feature.js";
 export * from "./geo.js";
 export * from "./groupBy.js";

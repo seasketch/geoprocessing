@@ -1713,6 +1713,21 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/intersectInChunks",
+            "label": "intersectInChunks"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/intersectInChunksArea",
+            "label": "intersectInChunksArea"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/intersectSum",
+            "label": "intersectSum"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/isExternalDatasource",
             "label": "isExternalDatasource"
           },

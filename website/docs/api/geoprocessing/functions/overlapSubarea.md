@@ -30,4 +30,4 @@ For sketch collections, dissolve is used when calculating total sketch area to p
 
 ## Deprecated
 
-- using geographies will clip your datasources and you can just use overlapFeatures
+- using geographies will clip your datasources and you can just use overlapFeatures.  This will be removed in a future version

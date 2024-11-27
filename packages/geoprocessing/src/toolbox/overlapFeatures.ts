@@ -8,11 +8,9 @@ import {
 import {
   toSketchArray,
   isSketchCollection,
-  chunk,
-  clip,
-  clipMultiMerge,
   roundDecimal,
 } from "../helpers/index.js";
+import { clip, intersectInChunksArea, intersectSum } from "./clip.js";
 import { createMetric } from "../metrics/index.js";
 import { MultiPolygon } from "../types/geojson.js";
 import {
@@ -36,20 +34,19 @@ interface OverlapFeatureOptions {
   truncate?: boolean;
 }
 
-// ToDo: support
-// point - sum of points
-// linestring - sum of length
-
 /**
  * Calculates overlap between sketch(es) and an array of polygon features.
  * Supports area or sum operation (given sumProperty), defaults to area
  * If sketch collection includes overall and per sketch
+ * @param metricId unique metric identifier to assign to each metric
+ * @param features to intersect and get overlap stats
+ * @param sketch the sketches.  If empty will return 0 result.
+ * @param options
+ * @returns array of Metric objects
  */
 export async function overlapFeatures(
   metricId: string,
-  /** features to intersect and get overlap stats */
   features: Feature<Polygon | MultiPolygon>[],
-  /** the sketches.  If empty will return 0 result. */
   sketch:
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>
@@ -74,7 +71,7 @@ export async function overlapFeatures(
 
   // Create individual sketch metrics
   const sketchMetrics: Metric[] = sketches.map((curSketch) => {
-    const intersections = doIntersect(
+    const intersections = doIntersectOp(
       curSketch as Feature<Polygon | MultiPolygon>,
       finalFeatures as Feature<Polygon | MultiPolygon>[],
       newOptions,
@@ -123,7 +120,7 @@ export async function overlapFeatures(
       }
     } else {
       featureEach(finalSketches, (feat) => {
-        const intersections = doIntersect(
+        const intersections = doIntersectOp(
           feat,
           finalFeatures as Feature<Polygon | MultiPolygon>[],
           newOptions,
@@ -159,13 +156,14 @@ export async function overlapFeatures(
 }
 
 /**
- * Gets intersect sum/area between a sketch and feature array
+ * Performs intersect between a feature A and features B and calculates area or sum
+ * @private internal function of overlapFeatures
  * @param featureA Single sketch (as a feature)
  * @param featuresB Features to overlap with sketch
  * @param options Includes whether to calculate area or sum, chunk size for area calculation, and property name for sum calculation
  * @returns Value of area/sum and (sum only) array of overlapping features
  */
-const doIntersect = (
+const doIntersectOp = (
   featureA: Feature<Polygon | MultiPolygon>,
   featuresB: Feature<Polygon | MultiPolygon>[],
   options: OverlapFeatureOptions,
@@ -173,78 +171,10 @@ const doIntersect = (
   const { chunkSize, operation = "area" } = options;
   switch (operation) {
     case "sum": {
-      return getSketchPolygonIntersectSumValue(
-        featureA,
-        featuresB,
-        options.sumProperty,
-      );
+      return intersectSum(featureA, featuresB, options.sumProperty);
     }
     default: {
-      return getSketchPolygonIntersectArea(featureA, featuresB, chunkSize);
+      return intersectInChunksArea(featureA, featuresB, chunkSize);
     }
   }
-};
-
-/**
- * Calculates area overlap between sketch and a feature array
- * @param featureA Single sketch (as a feature)
- * @param featuresB Features to overlap with sketch
- * @param chunkSize Size of array to split featuresB into, avoids intersect failure due to large array)
- * @returns Area overlap between the sketch and features
- */
-const getSketchPolygonIntersectArea = (
-  featureA: Feature<Polygon | MultiPolygon>,
-  featuresB: Feature<Polygon | MultiPolygon>[],
-  chunkSize: number,
-) => {
-  // chunk to avoid blowing up intersect
-  const chunks = chunk(featuresB, chunkSize || 5000);
-  // intersect and get area of remainder
-  const sketchValue = chunks
-    .map((curChunk) => {
-      const rem = clipMultiMerge(
-        featureA,
-        featureCollection(curChunk),
-        "intersection",
-      );
-      return rem;
-    })
-    .reduce((sumSoFar, rem) => (rem ? area(rem) + sumSoFar : sumSoFar), 0);
-  return { value: sketchValue, indices: [] };
-};
-
-/**
- * Sums the value of intersecting features.  No support for partial, counts the whole feature
- * @param featureA Single sketch (as a feature)
- * @param featuresB Features to overlap with sketch
- * @param sumProperty Property with value to sum, if not defined each feature will count as 1
- * @returns Sum of features/feature property which overlap with the sketch, and a list of
- * indices for features that overlap with the sketch to be used in calculating total sum of
- * the sketch collection
- */
-const getSketchPolygonIntersectSumValue = (
-  featureA: Feature<Polygon | MultiPolygon>,
-  featuresB: Feature<Polygon | MultiPolygon>[],
-  sumProperty?: string,
-) => {
-  const indices: number[] = [];
-  // intersect and get sum of remainder
-  const sketchValue = featuresB
-    .map((curFeature, index) => {
-      const rem = clip(
-        featureCollection([featureA, curFeature]),
-        "intersection",
-      );
-
-      if (!rem) return { count: 0 };
-
-      indices.push(index);
-
-      if (!sumProperty) return { count: 1 };
-      else if (curFeature.properties![sumProperty] >= 0)
-        return { count: curFeature.properties![sumProperty] };
-      else return { count: 1 };
-    })
-    .reduce((sumSoFar, { count }) => sumSoFar + count, 0);
-  return { value: sketchValue, indices: indices };
 };

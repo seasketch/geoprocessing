@@ -615,7 +615,7 @@ Once your build is successful, you should stage and commit all your changes to g
 
 ## Reef Report
 
-Next you will create a coral reef report that uses a reef extent datasource. Here is an image of it displayed in QGIS. Notice that the coral is entirely in shallow water around the island coastline and atolls.
+Next you will create a coral reef report that uses the reef extent dataset. Here is an image of it displayed in QGIS. Notice that the coral is entirely in shallow water around the island coastline and atolls.
 
 ![Reef Extent](./assets/reef-extent.jpg)
 
@@ -810,27 +810,7 @@ async function coralReef(
   const url = project.getDatasourceUrl(ds);
   const reefFeatures = await getFeaturesForSketchBBoxes(sketch, url);
 
-  // Calculate overall sketch area
-  const sketchArea = (() => {
-    let clipFeature: Feature<Polygon | MultiPolygon> | null;
-    if (reefFeatures.length === 0) {
-      return 0;
-    } else if (isSketchCollection(sketch)) {
-      // account for sketch overlap by merging all sketches
-      clipFeature = clip(sketch, "union");
-      if (!clipFeature) {
-        return 0; // No overlap
-      }
-    } else {
-      clipFeature = sketch;
-    }
-    const sketchReefOverlap = clipMultiMerge(
-      clipFeature,
-      featureCollection(reefFeatures),
-      "intersection",
-    );
-    return sketchReefOverlap ? area(sketchReefOverlap) : 0;
-  })();
+  // Add analysis code
 
   // If sketch is collection, clip each child sketch with reef features and calculate its area
   let childSketchAreas: CoralReefResults["childSketchAreas"] = [];
@@ -847,6 +827,29 @@ async function coralReef(
       };
     });
   }
+
+  // Calculate overall sketch area
+  const sketchArea = (() => {
+    let clipFeature: Feature<Polygon | MultiPolygon> | null;
+    if (reefFeatures.length === 0) {
+      return 0;
+    } else if (isSketchCollection(sketch)) {
+      // account for sketch overlap with union of all sketches
+      // rather than simple sum of child areas
+      clipFeature = clip(sketch, "union");
+      if (!clipFeature) {
+        return 0; // No overlap
+      }
+    } else {
+      clipFeature = sketch;
+    }
+    const sketchReefOverlap = clipMultiMerge(
+      clipFeature,
+      featureCollection(reefFeatures),
+      "intersection",
+    );
+    return sketchReefOverlap ? area(sketchReefOverlap) : 0;
+  })();
 
   // Custom return type
   return {
@@ -875,29 +878,69 @@ import reefPrecalc from "../../data/precalc/reefextent.json";
 reefPrecalc.totalArea;
 ```
 
-Then it fetches only the reef features whose bounding box intersects with the sketch bounding box, or in case of a sketch collection, that intersects with each of its child sketch bounding boxes. This is more efficient than fetching the entire dataset, saving time and network bandwidth, and is done using the index built into the flatgeobuf format and use of http request range headers to fetch just the right portion of the file.
+Then it fetches only the reef features whose bounding box intersects with the sketch bounding box, or in case of a sketch collection, that intersects with each of its child sketch bounding boxes. This is more efficient than fetching the entire reef dataset, saving time and network bandwidth.
 
 ```typescript
+// Load just the reef features that intersect with the sketch bounding box
+// or in case of a sketch collection, the child sketch bounding boxes
 const ds = project.getInternalVectorDatasourceById("reefextent");
 const url = project.getDatasourceUrl(ds);
-const sketchFeatures = await getFeaturesForSketchBBoxes(sketch, url);
-const sketchArea = area(featureCollection(sketchFeatures));
+const reefFeatures = await getFeaturesForSketchBBoxes(sketch, url);
 ```
 
-Finally it calculates the overall sketch area and the area for each of the child sketches if present.
+Next, if the sketch is a collection, it calculates how much coral reef overlaps with each individual sketch. To do this, it needs to figure out the areas where the sketches and coral reef `intersect`. This is calculated using the `clipMultiMerge` function.
 
 ```typescript
+// If sketch is collection, clip each child sketch with reef features and calculate its area
 let childSketchAreas: CoralReefResults["childSketchAreas"] = [];
 if (sketch.properties.isCollection) {
-  childSketchAreas = toSketchArray(sketch).map((sketch) => ({
-    name: sketch.properties.name,
-    area: area(sketch),
-  }));
+  childSketchAreas = toSketchArray(sketch).map((sketch) => {
+    const sketchReefOverlap = clipMultiMerge(
+      sketch,
+      featureCollection(reefFeatures),
+      "intersection",
+    );
+    return {
+      name: sketch.properties.name,
+      area: sketchReefOverlap ? area(sketchReefOverlap) : 0,
+    };
+  });
 }
+```
+
+Finally, it calculates how much coral reef overlaps with the entire sketch/collection.
+
+- If there is no overlap between the reef and sketch, then it simply returns zero.
+- If it's a sketch collection it first performs a `union` operation that merges all of the sketches into a single Multipolygon, dissolving any overlap between the sketches so that area is not double counted.
+- If it's a single sketch polygon then it just calculates its area and returns it.
+
+```typescript
+// Calculate overall sketch area
+const sketchArea = (() => {
+  let clipFeature: Feature<Polygon | MultiPolygon> | null;
+  if (reefFeatures.length === 0) {
+    return 0;
+  } else if (isSketchCollection(sketch)) {
+    // account for sketch overlap with union of all sketches
+    // rather than simple sum of child areas
+    clipFeature = clip(sketch, "union");
+    if (!clipFeature) {
+      return 0; // No overlap
+    }
+  } else {
+    clipFeature = sketch;
+  }
+  const sketchReefOverlap = clipMultiMerge(
+    clipFeature,
+    featureCollection(reefFeatures),
+    "intersection",
+  );
+  return sketchReefOverlap ? area(sketchReefOverlap) : 0;
+})();
 
 // Custom return type
 return {
-  totalArea: reefPrecalc.totalArea,
+  totalArea: reefPrecalc.totalAreaSqMeters,
   sketchArea: sketchArea,
   childSketchAreas,
 };

@@ -113,8 +113,8 @@
 | [classifyZone](functions/classifyZone.md) | Given activity scores, returns zone number |
 | [cleanBBox](functions/cleanBBox.md) | Normalizes bounding box longitude values to the [-180, 180] range if they cross the antimeridian |
 | [cleanCoords](functions/cleanCoords.md) | Cleans geojson coordinates to be within the bounds of the world [-90, -180, 90, 180], so that they don't wrap off the end, and can be split |
-| [clip](functions/clip.md) | Performs clip operation on features |
-| [clipMultiMerge](functions/clipMultiMerge.md) | Performs clip after first merging features2 coords into a single multipolygon. Can perform better than regular clip and help avoid errors in underlying library when running against many features. |
+| [clip](functions/clip.md) | Performs one of 4 different clip operations on features |
+| [clipMultiMerge](functions/clipMultiMerge.md) | Performs clip after first merging features2 coords into a single multipolygon. Avoids errors in underlying clipping library when too many features in features2 |
 | [clipToPolygonDatasources](functions/clipToPolygonDatasources.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources |
 | [clipToPolygonFeatures](functions/clipToPolygonFeatures.md) | Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more Polygon features |
 | [collectionHasGeometry](functions/collectionHasGeometry.md) | - |
@@ -194,6 +194,9 @@
 | [groupBy](functions/groupBy.md) | Similar to lodash groupBy |
 | [hasOwnProperty](functions/hasOwnProperty.md) | Type narrowing to allow property checking when object can be multiple types https://fettblog.eu/typescript-hasownproperty/ Any code inside a block guarded by a conditional call to this function will have type narrowed to X |
 | [includeVirtualSketch](functions/includeVirtualSketch.md) | If sketch collection passes sketchTest, then returns new collection with mergeSketchColl sketches appended and updated bbox |
+| [intersectInChunks](functions/intersectInChunks.md) | Calculates area overlap between a feature A and a feature array B. Intersection is done in chunks on featuresB to avoid errors due to too many features |
+| [intersectInChunksArea](functions/intersectInChunksArea.md) | Calculates area overlap between a feature A and a feature array B. Intersection is done in chunks on featuresB to avoid errors due to too many features |
+| [intersectSum](functions/intersectSum.md) | Sums the value of intersecting features. No support for partial, counts the whole feature |
 | [isExternalDatasource](functions/isExternalDatasource.md) | - |
 | [isExternalRasterDatasource](functions/isExternalRasterDatasource.md) | - |
 | [isExternalVectorDatasource](functions/isExternalVectorDatasource.md) | - |
@@ -247,7 +250,7 @@
 | [overlapAreaGroupMetrics](functions/overlapAreaGroupMetrics.md) | Generate overlap group metrics using overlapArea operation |
 | [overlapFeatures](functions/overlapFeatures.md) | Calculates overlap between sketch(es) and an array of polygon features. Supports area or sum operation (given sumProperty), defaults to area If sketch collection includes overall and per sketch |
 | [overlapFeaturesGroupMetrics](functions/overlapFeaturesGroupMetrics.md) | Generate overlap group metrics using overlapFeatures operation |
-| [overlapGroupMetrics](functions/overlapGroupMetrics.md) | Given area overlap metrics stratified by class and sketch, returns new metrics also stratified by group Assumes a sketch is member of only one group, determined by caller-provided metricToGroup For each group+class, calculates area of overlap between sketches in group and featuresByClass (with overlap between group sketches removed first) Types of metrics returned: sketch metrics: copy of caller-provided sketch metrics with addition of group ID overall metric for each group+class: takes sketches in group, subtracts overlap between them and overlap with higher group sketches, and runs operation If a group has no sketches in it, then no group metrics will be included for that group, and group+class metric will be 0 |
+| [overlapGroupMetrics](functions/overlapGroupMetrics.md) | Given overlap metrics stratified by class and sketch, returns new metrics also stratified by group Assumes a sketch is member of only one group, determined by caller-provided metricToGroup For each group+class, calculates area of overlap between sketches in group and featuresByClass (with overlap between group sketches removed first) Types of metrics returned: sketch metrics: copy of caller-provided sketch metrics with addition of group ID overall metric for each group+class: takes sketches in group, subtracts overlap between them and overlap with higher group sketches, and runs operation If a group has no sketches in it, then no group metrics will be included for that group, and group+class metric will be 0 |
 | [overlapRasterClass](functions/overlapRasterClass.md) | Calculates sum of overlap between sketches and a categorical raster with numeric values representing feature classes If sketch collection, then calculate overlap for all child sketches also |
 | [overlapRasterGroupMetrics](functions/overlapRasterGroupMetrics.md) | Generate overlap group metrics using rasterMetrics operation |
 | [overlapSubarea](functions/overlapSubarea.md) | Returns area stats for sketch input after performing overlay operation against a subarea feature. Includes both area overlap and percent area overlap metrics, because calculating percent later would be too complicated For sketch collections, dissolve is used when calculating total sketch area to prevent double counting |
@@ -280,8 +283,8 @@
 | [splitBBoxAntimeridian](functions/splitBBoxAntimeridian.md) | If bounding box crosses antimeridian (and extends outside the range of -180 to 180), split it into two bounding boxes at the antimeridian. |
 | [splitFeatureAntimeridian](functions/splitFeatureAntimeridian.md) | Splits a Feature or FeatureCollection on the 180 degree antimeridian. The bbox property of the result will have longitude coordinates that are shifted/normalized to be within the range of -180 to 180. |
 | [splitSketchAntimeridian](functions/splitSketchAntimeridian.md) | Splits a Sketch or SketchCollection on the 180 degree antimeridian The bbox property of the result will have longitude coordinates that are shifted/normalized to be within the range of -180 to 180. |
-| [squareMeterToKilometer](functions/squareMeterToKilometer.md) | - |
-| [squareMeterToMile](functions/squareMeterToMile.md) | - |
+| [squareMeterToKilometer](functions/squareMeterToKilometer.md) | Converts value from square meters to square kilometers |
+| [squareMeterToMile](functions/squareMeterToMile.md) | Converts value from square meters to square miles |
 | [testWithinPerc](functions/testWithinPerc.md) | Expects that testValue is equal to expectedValue or optionally within percentage (defaults to .01 or 1%) |
 | [toChildProperties](functions/toChildProperties.md) | Returns SketchProperties for each child sketch in a SketchCollection |
 | [toFeatureArray](functions/toFeatureArray.md) | Helper to convert a Feature or a FeatureCollection to a Feature array |

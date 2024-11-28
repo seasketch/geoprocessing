@@ -213,7 +213,8 @@ export async function makeReport(
 
   // User inputs to replace defaults
   const funcName = options.title;
-  const compName = funcName.charAt(0).toUpperCase() + funcName.slice(1);
+  const compName =
+    funcName.charAt(0).toUpperCase() + funcName.slice(1) + "Card";
 
   // Write function file
   await fs.writeFile(
@@ -232,14 +233,12 @@ export async function makeReport(
     testFuncCode.toString().replaceAll(blankFuncRegex, funcName),
   );
 
-  const compCardName = `${compName}Card`;
-
   // Write component file
   await fs.writeFile(
-    `${projectComponentPath}/${compCardName}.tsx`,
+    `${projectComponentPath}/${compName}.tsx`,
     componentCode
       .toString()
-      .replace(defaultCompRegex, `${compName}`)
+      .replace(defaultCompRegex, compName)
       .replace(defaultFuncRegex, `${funcName}`)
       .replaceAll("overlapFunction", `${funcName}`)
       .replace(`"sum"`, `"${options.stat}"`), // for raster/vector overlap reports
@@ -247,10 +246,10 @@ export async function makeReport(
 
   // Write component stories file
   await fs.writeFile(
-    `${projectComponentPath}/${compCardName}.example-stories.ts`,
+    `${projectComponentPath}/${compName}.example-stories.ts`,
     storiesComponentCode
       .toString()
-      .replaceAll(blankCompRegex, `${compName}`)
+      .replaceAll(blankCompRegex, compName)
       .replaceAll(blankFuncRegex, `${funcName}`),
   );
 
@@ -287,18 +286,18 @@ export async function makeReport(
     );
     console.log(
       chalk.blue(
-        `Report component: ${`${projectComponentPath}/${compCardName}.tsx`}`,
+        `Report component: ${`${projectComponentPath}/${compName}.tsx`}`,
       ),
     );
     console.log(
       chalk.blue(
-        `Story generator: ${`${projectComponentPath}/${compCardName}.example-stories.ts`}`,
+        `Story generator: ${`${projectComponentPath}/${compName}.example-stories.ts`}`,
       ),
     );
     console.log(`\nNext Steps:
     * 'npm test' to run smoke tests against your new geoprocessing function
     * 'npm run storybook' to view your new report with smoke test output
-    * Add <${compCardName} /> to a top-level report client or page when ready
+    * Add <${compName} /> to a top-level report client or page when ready
   `);
   }
 }

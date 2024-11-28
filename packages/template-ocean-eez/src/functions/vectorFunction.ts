@@ -9,9 +9,8 @@ import {
   Feature,
   isVectorDatasource,
   overlapFeatures,
-  getFeatures,
+  getFeaturesForSketchBBoxes,
 } from "@seasketch/geoprocessing";
-import bbox from "@turf/bbox";
 import project from "../../project/projectClient.js";
 import {
   Metric,
@@ -40,7 +39,6 @@ export async function vectorFunction(
   });
   // Clip portion of sketch outside geography features
   const clippedSketch = await clipToGeography(sketch, curGeography);
-  const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
   const featuresByDatasource: Record<
     string,
@@ -52,22 +50,17 @@ export async function vectorFunction(
   const metrics = (
     await Promise.all(
       metricGroup.classes.map(async (curClass) => {
-        if (!curClass.datasourceId)
-          throw new Error(`Expected datasourceId for ${curClass.classId}`);
-
-        const ds = project.getDatasourceById(curClass.datasourceId);
+        const ds = project.getClassDatasource(metricGroup, curClass.classId);
         if (!isVectorDatasource(ds))
           throw new Error(`Expected vector datasource for ${ds.datasourceId}`);
 
         const url = project.getDatasourceUrl(ds);
 
-        // Fetch features overlapping with sketch, pull from cache if already fetched
+        // Fetch features overlapping with sketch, if not already fetched
         const features =
-          featuresByDatasource[curClass.datasourceId] ||
-          (await getFeatures<Feature<Polygon | MultiPolygon>>(ds, url, {
-            bbox: sketchBox,
-          }));
-        featuresByDatasource[curClass.datasourceId] = features;
+          featuresByDatasource[ds.datasourceId] ||
+          (await getFeaturesForSketchBBoxes(sketch, url));
+        featuresByDatasource[ds.datasourceId] = features;
 
         // If this is a sub-class, filter by class name
         const finalFeatures =

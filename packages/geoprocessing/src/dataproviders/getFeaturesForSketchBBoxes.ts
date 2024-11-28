@@ -37,8 +37,9 @@ import { splitBBoxAntimeridian } from "../toolbox/antimeridian.js";
 export async function getFeaturesForSketchBBoxes(
   sketch: Sketch | SketchCollection,
   fgbUrl: string,
-  uniqueIdProperty?: string,
+  options: { uniqueIdProperty?: string } = {},
 ) {
+  const { uniqueIdProperty } = options;
   const features: Feature<Polygon | MultiPolygon>[] = [];
   const addedIdentifiers = new Set<string>();
   await Promise.all(

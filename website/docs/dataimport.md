@@ -1,7 +1,5 @@
 # Data Import
 
-Work in progress
-
 ## Vector
 
 Vector datasets can be any format supported by [GDAL](https://gdal.org/drivers/vector/index.html) "out of the box". Common formats include:
@@ -48,3 +46,18 @@ Raster datasets can be any format supported by [GDAL](https://gdal.org/drivers/r
 
 `Quantitative` - measures one thing. This could be a binary 0 or 1 value thatidentifies the presence or absence of something, or a value that varies over the geographic surface such as temperature.
 `Categorical` - measures presence/absence of multiple groups. The value of each cell in the band is a numeric group identifier, and thus each cell can represent one and only one group at a time.
+
+## Subdividing Large Datasets
+
+If you have very large polygons in your dataset (think country or global data), it will limit the efficiencies of the flatgeobuf format for fetching subsets of data using a bounding box.
+
+[Subdividing](https://blog.cleverelephant.ca/2019/11/subdivide.html) is a solution for breaking up your data into smaller pieces along clearcut lines without overlap.
+
+![subdivision process](https://user-images.githubusercontent.com/511063/79161015-a0375e80-7d8f-11ea-87a9-0658777f2f90.jpg)
+
+Once you've imported and published your subdivided dataset, the flatgeobuf client will automatically the subset of polygon pieces that overlap with your requested bounding box. Clip operations such as intersection and difference should work properly because the pieces are aligned to each other without overlap.
+
+How to subdivide data:
+
+- QGIS Subdivide
+- [Spatialite Subdivide](https://www.gaia-gis.it/fossil/libspatialite/wiki?name=About+ST_Subdivide%28%29) can be used with the [ogr2ogr](https://gdal.org/en/stable/drivers/vector/sqlite.html) command.

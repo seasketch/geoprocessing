@@ -90,16 +90,6 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
-          id: "toolbox",
-          label: "Spatial Toolbox",
-        },
-        {
-          type: "doc",
-          id: "dataproviders",
-          label: "Data Fetching",
-        },
-        {
-          type: "doc",
           id: "projectclient",
           label: "Project Client",
         },
@@ -110,13 +100,23 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
-          id: "precalc",
-          label: "Precalc Data",
+          id: "dataimport",
+          label: "Data Import",
         },
         {
           type: "doc",
-          id: "dataimport",
-          label: "Data Import",
+          id: "dataproviders",
+          label: "Data Fetching",
+        },
+        {
+          type: "doc",
+          id: "toolbox/toolbox",
+          label: "Spatial Toolbox",
+        },
+        {
+          type: "doc",
+          id: "precalc",
+          label: "Precalc Data",
         },
         {
           type: "doc",
@@ -144,11 +144,6 @@ const sidebars: SidebarsConfig = {
           type: "doc",
           id: "multiBoundary/multiBoundary",
           label: "Multi-Boundary",
-        },
-        {
-          type: "doc",
-          id: "tutorials/subdividing",
-          label: "Subdividing Data",
         },
         "antimeridian/Antimeridian",
         "Testing",

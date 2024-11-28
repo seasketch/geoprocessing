@@ -61,7 +61,6 @@ export function clip<
  * @param operation one of "union", "intersection", "xor", "difference"
  * @param options.properties properties to set on the resulting feature
  * @returns polygon or multipolygon feature result from clip operation, if no overlap then returns null
- * @todo - migrate back to using turf now that it supports multiple features as second argument
  */
 export function clipMultiMerge<
   P extends GeoJsonProperties | undefined = GeoJsonProperties,
@@ -82,7 +81,8 @@ export function clipMultiMerge<
     throw new ValidationError("Missing or empty features for clip");
 
   const geom1 = getGeom(feature1);
-  // Combine into one multipoly coordinate array
+
+  // Combine features2 into one multipoly coordinate array so that it is operated on in one go
   const coords2 = (() => {
     return features2.features.reduce<MultiPolygon["coordinates"]>(
       (acc, poly) => {

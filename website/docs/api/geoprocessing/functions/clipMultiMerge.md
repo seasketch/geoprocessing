@@ -32,7 +32,3 @@ Avoids errors in underlying clipping library when too many features in features2
 [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md)\> \| `null`
 
 polygon or multipolygon feature result from clip operation, if no overlap then returns null
-
-## Todo
-
-- migrate back to using turf now that it supports multiple features as second argument

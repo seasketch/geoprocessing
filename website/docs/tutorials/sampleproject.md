@@ -812,7 +812,7 @@ async function coralReef(
 
   // Add analysis code
 
-  // If sketch is collection, clip each child sketch with reef features and calculate its area
+  // If collection, calculate area of each sketches intersection with reef
   let childSketchAreas: CoralReefResults["childSketchAreas"] = [];
   if (sketch.properties.isCollection) {
     childSketchAreas = toSketchArray(sketch).map((sketch) => {
@@ -828,21 +828,20 @@ async function coralReef(
     });
   }
 
-  // Calculate overall sketch area
+  // Calculate area of overall sketch intersection with reef
   const sketchArea = (() => {
+    // Figure out feature to clip
     let clipFeature: Feature<Polygon | MultiPolygon> | null;
     if (reefFeatures.length === 0) {
       return 0;
     } else if (isSketchCollection(sketch)) {
-      // account for sketch overlap with union of all sketches
-      // rather than simple sum of child areas
+      // union sketches to remove overlap and avoid double count
       clipFeature = clip(sketch, "union");
-      if (!clipFeature) {
-        return 0; // No overlap
-      }
+      if (!clipFeature) return 0;
     } else {
       clipFeature = sketch;
     }
+    //Merge reefFeatures into a single multipolygon, then intersect
     const sketchReefOverlap = clipMultiMerge(
       clipFeature,
       featureCollection(reefFeatures),
@@ -888,10 +887,10 @@ const url = project.getDatasourceUrl(ds);
 const reefFeatures = await getFeaturesForSketchBBoxes(sketch, url);
 ```
 
-Next, if the sketch is a collection, it calculates how much coral reef overlaps with each individual sketch. To do this, it needs to figure out the areas where the sketches and coral reef `intersect`. This is calculated using the `clipMultiMerge` function.
+Next, if the sketch is a collection, it calculates how much coral reef overlaps with each individual sketch. To do this, it needs to figure out the areas where the sketches and coral reef `intersect`. This is calculated using the `clipMultiMerge` function. It is essential that this function is used because it merges the reefFeatures collection into a single multipolygon before intersecting it with the sketch. If you were to use the `clip` function you would need to loop through each reef feature and clip the sketch to it.
 
 ```typescript
-// If sketch is collection, clip each child sketch with reef features and calculate its area
+// If collection, calculate area of each sketches intersection with reef
 let childSketchAreas: CoralReefResults["childSketchAreas"] = [];
 if (sketch.properties.isCollection) {
   childSketchAreas = toSketchArray(sketch).map((sketch) => {
@@ -915,21 +914,20 @@ Finally, it calculates how much coral reef overlaps with the entire sketch/colle
 - If it's a single sketch polygon then it just calculates its area and returns it.
 
 ```typescript
-// Calculate overall sketch area
+// Calculate area of overall sketch intersection with reef
 const sketchArea = (() => {
+  // Figure out feature to clip
   let clipFeature: Feature<Polygon | MultiPolygon> | null;
   if (reefFeatures.length === 0) {
     return 0;
   } else if (isSketchCollection(sketch)) {
-    // account for sketch overlap with union of all sketches
-    // rather than simple sum of child areas
+    // union sketches to remove overlap and avoid double count
     clipFeature = clip(sketch, "union");
-    if (!clipFeature) {
-      return 0; // No overlap
-    }
+    if (!clipFeature) return 0;
   } else {
     clipFeature = sketch;
   }
+  //Merge reefFeatures into a single multipolygon, then intersect
   const sketchReefOverlap = clipMultiMerge(
     clipFeature,
     featureCollection(reefFeatures),

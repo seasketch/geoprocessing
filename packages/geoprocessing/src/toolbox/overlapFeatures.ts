@@ -10,7 +10,7 @@ import {
   isSketchCollection,
   roundDecimal,
 } from "../helpers/index.js";
-import { clip, intersectInChunksArea, intersectSum } from "./clip.js";
+import { clip, intersectInChunks } from "./clip.js";
 import { createMetric } from "../metrics/index.js";
 import { MultiPolygon } from "../types/geojson.js";
 import {
@@ -177,4 +177,61 @@ const doIntersectOp = (
       return intersectInChunksArea(featureA, featuresB, chunkSize);
     }
   }
+};
+
+/**
+ * Calculates area overlap between a feature A and a feature array B.
+ * Intersection is done in chunks on featuresB to avoid errors due to too many features
+ * @param featureA single feature to intersect with featuresB
+ * @param featuresB array of features
+ * @param chunkSize Size of array to split featuresB into, avoids intersect failure due to large array)
+ * @returns area of intersection of featureA with featuresB
+ */
+export const intersectInChunksArea = (
+  featureA: Feature<Polygon | MultiPolygon>,
+  featuresB: Feature<Polygon | MultiPolygon>[],
+  chunkSize: number,
+) => {
+  // intersect and get area of remainder
+  const featureArea = intersectInChunks(featureA, featuresB, chunkSize).reduce(
+    (sumSoFar, rem) => (rem ? area(rem) + sumSoFar : sumSoFar),
+    0,
+  );
+  return { value: featureArea, indices: [] };
+};
+
+/**
+ * Sums the value of intersecting features.  No support for partial, counts the whole feature
+ * @param featureA single feature to intersect with featuresB
+ * @param featuresB array of features
+ * @param sumProperty Property in featuresB with value to sum, if not defined each feature will count as 1
+ * @returns Sum of features/feature property which overlap with the sketch, and a list of
+ * indices for features that overlap with the sketch to be used in calculating total sum of
+ * the sketch collection
+ */
+export const intersectSum = (
+  featureA: Feature<Polygon | MultiPolygon>,
+  featuresB: Feature<Polygon | MultiPolygon>[],
+  sumProperty?: string,
+) => {
+  const indices: number[] = [];
+  // intersect and get sum of remainder
+  const sketchValue = featuresB
+    .map((curFeature, index) => {
+      const rem = clip(
+        featureCollection([featureA, curFeature]),
+        "intersection",
+      );
+
+      if (!rem) return { count: 0 };
+
+      indices.push(index);
+
+      if (!sumProperty) return { count: 1 };
+      else if (curFeature.properties![sumProperty] >= 0)
+        return { count: curFeature.properties![sumProperty] };
+      else return { count: 1 };
+    })
+    .reduce((sumSoFar, { count }) => sumSoFar + count, 0);
+  return { value: sketchValue, indices: indices };
 };

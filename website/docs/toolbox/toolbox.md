@@ -17,32 +17,55 @@ You can answer these questions with a combination of geometric clip operations.
 
 The geoprocessing library offers multiple functions that are variations of these operations:
 
-- `clip` - clip a FeatureCollection using one of 4 different clip operations.
+### Clip
 
-  - `intersection` - returns polygon(s) representing the shared area that all of the features in the collection have in common.
-    - the clip function sees each of the features in the input collection as independent, which means if you have 10 polygons it will return the area all 10 polygons have in common. If what you want is to clip a feature A against a collection of other features B as a single unit, check out clipMultiMerge, it does the work of merging the features B into one big multipolygon for you. Otherwise you can loop through and intersect A with each feature in B one at a time, or you can call union on your group of features B first, then intersect with feature A.
-  - `difference` - takes the first item in the feature collection and erases any part of it that overlaps with the remaining items in the feature collection. Think of it as a series of substractions and order your input collection appropriately.
-    - Similar to ArcGIS Erase or [QGIS Difference](https://docs.qgis.org/3.34/en/docs/user_manual/processing_algs/qgis/vectoroverlay.html#difference)
-  - `union` - returns a polygon/multipolygon that is the combination of all features with their overlap merged/dissolved.
-    - Similar to ArcGIS Dissolve or [QGIS Dissolve](https://docs.qgis.org/3.34/en/docs/user_manual/processing_algs/qgis/vectorgeometry.html#dissolve)
-    - A common use case for this is is to remove overlap in your data so that you don't double count their area, before doing further operations like intersecting with another set of features.
-    - For example if you need to calculate the area of your entire sketch collection, and the sketches overlap, then simply calculating the area of each individual sketch polygon and summing them will double count any overlap and produce an invalid result. The solution is to union the sketch collection first then takes its area.
-    - Another example is if you have a coral reef dataset with overlapping polygons, and you just want to calculate the total geographic area of all reef, then the union is what you want to do first before calculating area.
+`clip` - clip a FeatureCollection using one of 4 different clip operations.
+
+- `intersection` - returns polygon(s) representing the shared area that all of the features in the collection have in common.
+  - the clip function sees each of the features in the input collection as independent, which means if you have 10 polygons it will return the area all 10 polygons have in common. If what you want is to clip a feature A against a collection of other features B as a single unit, check out clipMultiMerge, it does the work of merging the features B into one big multipolygon for you. Otherwise you can loop through and intersect A with each feature in B one at a time, or you can call union on your group of features B first, then intersect with feature A.
+- `difference` - takes the first item in the feature collection and erases any part of it that overlaps with the remaining items in the feature collection. Think of it as a series of substractions and order your input collection appropriately.
+  - Similar to ArcGIS Erase or [QGIS Difference](https://docs.qgis.org/3.34/en/docs/user_manual/processing_algs/qgis/vectoroverlay.html#difference)
+- `union` - returns a polygon/multipolygon that is the combination of all features with their overlap merged/dissolved.
+  - Similar to ArcGIS Dissolve or [QGIS Dissolve](https://docs.qgis.org/3.34/en/docs/user_manual/processing_algs/qgis/vectorgeometry.html#dissolve)
+  - A common use case for this is is to remove overlap in your data so that you don't double count their area, before doing further operations like intersecting with another set of features.
+  - For example if you need to calculate the area of your entire sketch collection, and the sketches overlap, then simply calculating the area of each individual sketch polygon and summing them will double count any overlap and produce an invalid result. The solution is to union the sketch collection first then takes its area.
+  - Another example is if you have a coral reef dataset with overlapping polygons, and you just want to calculate the total geographic area of all reef, then the union is what you want to do first before calculating area.
+
+Examples:
+
+See [polygon-clipping](https://github.com/mfogel/polygon-clipping#readme) library used under the hood.
+
+```typescript
+import { clip } from "@seasketch/geoprocessing";
+```
+
+### clipMultiMerge
 
 - `clipMultiMerge` - this is convenience function that takes as input a single polygon featureA, and collection featuresB. featuresB is merged into a single multipolygon before being used to clip feature A.
   - This is necessary when you want to find the intersection of featureA and any part of featuresB. You need featuresB to be seen as a single unit when calling the clip function, not independenct polygons.
   - Used by intersectInChunks and intersectInChunksArea
 
-To quickly do multiple clip operations in a row against different sets of data (useful for preprocessors):
+### Sequenced Clip Operations
+
+To quickly perform a sequence of clip operations against different sets of data the following functions are available:
 
 - [clipToPolygonFeatures](../api/geoprocessing/functions/clipToPolygonFeatures.md) - takes a Polygon feature and returns the portion remaining after performing one or more clipOperations (intersection or difference) against multiple sets of features. Multiple additional configuration options.
   `clipToPolygonDatasources` - takes a Polygon feature and returns the portion remaining after performing one or more clipOperations (intersection or difference) against one or more Datasources.
 
-Higher-level intersection functions:
+These are meant to simplify creating preprocessors. They use `ensureValidPolygon` to optionally enforce a minimum and maximum size for the results, as well as how to handle if the result have more than one polygon.
+
+See `src/functions/clipToOcean.ts`, `src/functions/clipToLand.ts`, and `src/functions/clipToOceanEez.ts` in your project for examples of usage.
+
+### Higher Level Intersection
 
 - `intersectInChunks` - calculates area overlap between a feature A and a feature array B. Intersection is done in chunks on featuresB to avoid errors due to too many features.
+
+The following two functions intersect two sets of features and calculate a metric with the remainder.
+
 - `intersectInChunksArea` - calculates area overlap between a feature A and a feature array B. Intersection is done in chunks on featuresB to avoid errors due to too many features.
+  - used by overlapFeatures()
 - `intersectSum` - sums a property value of intersecting features. No support for partial.
+  - used by overlapFeatures()
 
 ## Vector Zonal Stats
 

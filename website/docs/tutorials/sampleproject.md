@@ -1201,9 +1201,11 @@ Storybook should update on save and display the following:
 
 ## Benthic Habitat Report
 
-This next section will demonstrate more advanced framework features for calculating polygon overlap and measuring progress towards planning objective targets. These features become more useful when you have multiple data classes that you want to report on at the same time.
+Next you will create a report summarizing sketch overlap with multiple classes of benthic rock. More advanced framework features will be used that streamline the process further.
 
 ### Import Data
+
+First, import the data.
 
 ```bash
 npm run import:data
@@ -1216,87 +1218,57 @@ Vector
 data/src/benthic-rock.fgb
 ? Select layer to import
 benthic-rock
-? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename benthic-rock
+? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename
+benthic-rock
 ? Should multi-part geometries be split into single-part geometries?
 Yes
+? (Optional) additional formats to create (besides fgb)
+[Press Enter to skip]
 ? Select feature properties that you want to group metrics by
 class
 ? Select additional feature properties to keep in final datasource
 [Press Enter to skip]
-? These formats are automatically created: fgb. Select any additional formats you want created
-[Press Enter to skip]
-? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource)
-Yes
+
+Adding benthic-rock record in project/datasources.json file
 ```
-
-The import will proceed. Once complete you will find:
-
-- The output file `data/dist/benthic-rock.fgb`.
-- An updated `project/datasources.json` new datasource record `benthic-rock`.
-
-If the import fails, start the import over and double check everything. It is most likely one of the following:
-
-- You specified the wrong source file path.
-- You specified the wrong layer name
 
 ### Add Metric Group
 
-A metric group defines a metric to be measured, for one or more classes of data. A `MetricGroup` **record** provides the information needed for a metric to be calculated (in a geoprocessing function) and to be displayed (in a report client). Let's create your first metric group by opening `project/metrics.json`.
+A metric group is a higher-level entity that defines a metric to be measured, for one or more classes of data. `MetricGroup` **records** can defined in `project/metrics.json` and accessed using the project client in your geoprocessing functions and reports.
 
-The benthic dataset represents where different classes of benthic habitat are predicted to be present. Specifically is is a single vector datasource with multiple habitats defined by the `class` attribute. While there are many types of habitats, we want to only focus on Sand, Rubble, and Rock. To do this, you'll add multiple class records, each with a unique `classId` value to match on, and a `classKey` that specific which feature attribute the classId values are found.
+Let's create a metric group by first looking at the benthic dataset. It represents where multiple classes of benthic habitat are present - sand, rock, rubble. Each polygon is assigned with a single habitat type using the `class` attribute and given a value of `Sand`, `Rock`, or `Rubble`.
 
-Add the following record to the end of the array in `project/metrics.json` and save the file.
+Add the following metric group object to `project/metrics.json` and save the file.
 
 ```json
 {
   "metricId": "benthicHabitat",
-  "type": "areaOverlap",
+  "classKey": "class",
+  "datasourceId": "benthic",
   "classes": [
     {
       "classId": "Sand",
-      "classKey": "class",
-      "display": "Sand",
-      "datasourceId": "benthic"
+      "display": "Sand"
     },
     {
       "classId": "Rock",
-      "classKey": "class",
-      "display": "Rock",
-      "datasourceId": "benthic"
+      "display": "Rock"
     },
     {
       "classId": "Rubble",
-      "classKey": "class",
-      "display": "Rubble",
-      "datasourceId": "benthic"
+      "display": "Rubble"
     }
   ]
 }
 ```
 
-The reef extent dataset simply tells you where there is reef present. Therefore, we represent it as a single class of data. You should end up with the following:
-
-```json
-[
-  {
-    "metricId": "coralReef",
-    "type": "areaOverlap",
-    "classes": [
-      {
-        "classId": "reefextent",
-        "display": "Coral Reef",
-        "datasourceId": "reefextent"
-      }
-    ]
-  }
-]
-```
+This defines a `benthicHabitat` metric that sources data from the `benthic` datasource. The `classKey` indicates this datasource has an attribute named `class` used to identify which data class each polygon is a member of. 3 data classes are defined with a `classId` serving as the unique identifier for the data class, and it also matches the value used in the data at the `classKey` attribute.
 
 To learn more about metric groups, visit the [advanced concepts](../concepts/AdvancedConcepts.md#metric-group) page.
 
 ### Create Report
 
-Next you will create your first report using the metric group created in the previous step. Run the following command and answer the questions:
+Next you will create a report that uses your metric group. Run the following command and answer the questions:
 
 ```bash
 npm run create:report
@@ -1305,55 +1277,52 @@ npm run create:report
 ```text
 ? Type of report to create
 Vector overlap report - calculates sketch overlap with vector datasources
-? Describe what this reports geoprocessing function will calculate (e.g.Calculate sketch overlap with boundary polygons)
-Calculate sketch overlap with reef extent
-? Choose an execution mode for the geoprocessing function for this report
-Async - Better for long-running processes
+? Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)
+Calculate sketch overlap with benthic habitat
 ? Select the metric group to report on
-coralReef
+benthicHabitat
 
-✔ Created coralReef report
+✔ Created benthicHabitat report
 ✔ Registered report assets in project/geoprocessing.json
 
-Geoprocessing function: src/functions/coralReef.ts
-Smoke test: src/functions/coralReefSmoke.test.ts
-Report component: src/components/CoralReefCard.tsx
-Story generator: src/components/CoralReefCard.example-stories.ts
+Geoprocessing function: src/functions/benthicHabitat.ts
+Smoke test: src/functions/benthicHabitatSmoke.test.ts
+Report component: src/components/BenthicHabitatCard.tsx
+Story generator: src/components/BenthicHabitatCard.example-stories.ts
 
 Next Steps:
     * 'npm test' to run smoke tests against your new geoprocessing function
     * 'npm run storybook' to view your new report with smoke test output
-    * Add <CoralReefCard /> to a top-level report client or page when ready
+    * Add <BenthicHabitatCard /> to a top-level report client or page when ready
 ```
 
-As the output explains, 4 new files have been created for you including a geoprocessing function (coralReef.ts) and a
+- Now `npm test` your geoprocessing function and look at the new smoke test output in `examples/output`
+- Then `npm run storybook` and verify BenthicHabitatCard displays as expected.
+- Finally, add BenthicHabitatCard to the ViabilityPage so that it is displayed in the TabReport.
 
-### Create Report
+<details>
+<summary>src/components/ViabilityPage.tsx</summary>
 
-```bash
-npm run create:report
+```typescript
+import React from "react";
+import { SimpleCard } from "./SimpleCard.js";
+import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
+import { CoralReefCard } from "./CoralReefCard.js";
+import { BenthicHabitatCard } from "./BenthicHabitatCard.js";
+
+export const ViabilityPage = () => {
+  return (
+    <>
+      <SimpleCard />
+      <CoralReefCard />
+      <BenthicHabitatCard />
+      <SketchAttributesCard autoHide />
+    </>
+  );
+};
 ```
 
-```text
-? Type of report to create
-Vector overlap report
-
-? Describe what this reports geoprocessing function will calculate
-Calculate sketch overlap with benthic habitats
-
-? Choose an execution mode for the geoprocessing function for this report
-Async - Better for long-running processes
-
-? Select the metric group to report on
-benthicHabitat
-```
-
-Now:
-
-- Add your new component to the Viability Page
-- `npm run test`
-- `npm run storybook`
-- Verify report displays properly
+</details>
 
 ## Octocoral Report
 

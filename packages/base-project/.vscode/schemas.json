@@ -82,7 +82,7 @@
           "layerId": { "type": "string" },
           "objectiveId": { "type": "string" }
         },
-        "required": ["metricId", "type", "classes"],
+        "required": ["metricId", "classes"],
         "additionalProperties": false
       }
     },

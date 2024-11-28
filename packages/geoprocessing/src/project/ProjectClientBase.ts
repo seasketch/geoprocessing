@@ -265,7 +265,7 @@ export class ProjectClientBase implements ProjectClientInterface {
     );
   }
 
-  // DATSOURCES //
+  // DATASOURCES //
 
   /** Returns Datasource given datasourceId */
   public getDatasourceById(datasourceId: string): Datasource {
@@ -410,6 +410,29 @@ export class ProjectClientBase implements ProjectClientInterface {
       ...objective,
       shortDesc: t(objective.shortDesc) /* i18next-extract-disable-line */,
     }));
+  }
+
+  /**
+   * Returns datasource for classId in metricGroup.  Uses class datasourceId if available, otherwise falls back to metricGroup datasourceId
+   * @param mg - metricGroup to get datasource for
+   * @param classId - classId to get datasource for
+   * @returns the datasource object
+   */
+  public getClassDatasource(mg: MetricGroup, classId: string): Datasource {
+    const dataClass = mg.classes.find((c) => c.classId === classId);
+    if (!dataClass)
+      throw new Error(
+        `Class not found in metricGroup ${mg.metricId} with classId ${classId}`,
+      );
+    if (!mg.datasourceId && !dataClass.datasourceId)
+      throw new Error(
+        `Could not find datasourceId for metric group ${mg.metricId} or its class ${classId}, please add one`,
+      );
+
+    const ds = this.getDatasourceById(
+      dataClass.datasourceId! || mg.datasourceId!,
+    );
+    return ds;
   }
 
   /**

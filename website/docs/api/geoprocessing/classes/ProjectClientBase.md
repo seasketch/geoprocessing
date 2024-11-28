@@ -353,6 +353,36 @@ return local URL expected to serve up dist data folder
 
 ***
 
+### getClassDatasource()
+
+```ts
+getClassDatasource(mg, classId): object | object | object & object | object & object
+```
+
+Returns datasource for classId in metricGroup.  Uses class datasourceId if available, otherwise falls back to metricGroup datasourceId
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `mg` | `object` | metricGroup to get datasource for |
+| `mg.classes` | `object`[] | data classes used by group |
+| `mg.classKey`? | `string` | Optional datasource class key used to source classIds |
+| `mg.datasourceId`? | `string` | Datasource to generate metrics from |
+| `mg.layerId`? | `string` | Optional ID of map layer associated with this metric |
+| `mg.metricId` | `string` | Unique id of metric in project |
+| `mg.objectiveId`? | `string` | group level objective, applies to all classes |
+| `mg.type`? | `string` | unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user |
+| `classId` | `string` | classId to get datasource for |
+
+#### Returns
+
+`object` \| `object` \| `object` & `object` \| `object` & `object`
+
+the datasource object
+
+***
+
 ### getDatasourceById()
 
 ```ts

@@ -4,7 +4,7 @@
 function getFeaturesForSketchBBoxes(
    sketch, 
    fgbUrl, 
-uniqueIdProperty?): Promise<Feature<Polygon | MultiPolygon, GeoJsonProperties>[]>
+options): Promise<Feature<Polygon | MultiPolygon, GeoJsonProperties>[]>
 ```
 
 Loads features from a FlatGeobuf referenced by URL, which intersect the
@@ -28,7 +28,8 @@ but have different properties.
 | ------ | ------ | ------ |
 | `sketch` | [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> \| [`SketchCollection`](../interfaces/SketchCollection.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> | Sketch or SketchCollection |
 | `fgbUrl` | `string` | FlatGeobuf location |
-| `uniqueIdProperty`? | `string` | Used to de-dupe features when feature.id is not available |
+| `options` | `object` | - |
+| `options.uniqueIdProperty`? | `string` | - |
 
 ## Returns
 

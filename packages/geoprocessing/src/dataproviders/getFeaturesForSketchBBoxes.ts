@@ -46,7 +46,6 @@ export async function getFeaturesForSketchBBoxes(
     toSketchArray(sketch).map(async (sketch) => {
       const box = bbox(sketch);
       const splitBoxes = splitBBoxAntimeridian(box) as BBox[];
-      console.log("splitBoxes", splitBoxes);
       const results = (
         await Promise.all(
           splitBoxes.map(async (box) => {

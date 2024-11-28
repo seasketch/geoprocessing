@@ -1244,7 +1244,7 @@ Add the following metric group object to `project/metrics.json` and save the fil
 {
   "metricId": "benthicHabitat",
   "classKey": "class",
-  "datasourceId": "benthic",
+  "datasourceId": "benthic-rock",
   "classes": [
     {
       "classId": "Sand",
@@ -1296,9 +1296,320 @@ Next Steps:
     * Add <BenthicHabitatCard /> to a top-level report client or page when ready
 ```
 
-- Now `npm test` your geoprocessing function and look at the new smoke test output in `examples/output`
-- Then `npm run storybook` and verify BenthicHabitatCard displays as expected.
-- Finally, add BenthicHabitatCard to the ViabilityPage so that it is displayed in the TabReport.
+You should now have a geoprocessing function and card component ready to go that will iterate through your data classes and calculate/report area overlap with your sketch.
+
+### Test New Example Sketch
+
+Now `npm test` your geoprocessing function and look at the new smoke test output in `examples/output`.
+
+It's very likely that none of your random sketchs overlapped with any benthic polygons and all display zero. Let's add an example sketch that we know will overlap.
+
+<details>
+<summary>examples.output/sketch2.json</summary>
+
+```json
+{
+  "type": "Feature",
+  "properties": {
+    "id": "78f6e916-20f0-471e-a15e-6d632650cf68",
+    "isCollection": false,
+    "userAttributes": [
+      {
+        "label": "Type",
+        "fieldType": "ChoiceField",
+        "exportId": "TYPE",
+        "value": "sketch"
+      },
+      {
+        "label": "Notes",
+        "value": "": "NOTES",
+        "fieldType": "TextArea"
+      }
+    ],
+    "sketchClassId": "3ac026ad-c3eb-471a-b6ad-58782aa5e949",
+    "createdAt": "2024-11-26T02:48:33.985Z",
+    "updatedAt": "2024-11-26T02:48:33.985Z",
+    "name": "sketch2"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          151.31665625673213,
+          7.749571426060996
+        ],
+        [
+          151.31665625673213,
+          5.925462431466443
+        ],
+        [
+          153.9861009666032,
+          5.925462431466443
+        ],
+        [
+          153.9861009666032,
+          7.749571426060996
+        ],
+        [
+          151.31665625673213,
+          7.749571426060996
+        ]
+      ]
+    ]
+  },
+  "id": "78f6e916-20f0-471e-a15e-6d632650cf68"
+}
+```
+
+</details>
+
+You should now see non-zero output for each benthic class for the sketch2 example:
+
+<details>
+<summary>examples/output/sketch2/benthicHabitat.json</summary>
+
+```json
+{
+  "metrics": [
+    {
+      "geographyId": "world",
+      "metricId": "benthicHabitat",
+      "classId": "Rock",
+      "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
+      "groupId": null,
+      "value": 11210186.968081,
+      "extra": {
+        "sketchName": "sketch2"
+      }
+    },
+    {
+      "geographyId": "world",
+      "metricId": "benthicHabitat",
+      "classId": "Rubble",
+      "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
+      "groupId": null,
+      "value": 11210186.968081,
+      "extra": {
+        "sketchName": "sketch2"
+      }
+    },
+    {
+      "geographyId": "world",
+      "metricId": "benthicHabitat",
+      "classId": "Sand",
+      "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
+      "groupId": null,
+      "value": 11210186.968081,
+      "extra": {
+        "sketchName": "sketch2"
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+### Precalc Data
+
+Before you can use your benthic report, you need to precalculate the area of your benthic polygons. Rather than writing a script for this, the `precalc:data` command is available that will inspect your datasources and precalculate basic metrics (area, count). Let's look at the datasource record generated for our benthic-rock datasource to understand what precalc will do.
+
+<details>
+<summary>project/datasources.json</summary>
+
+```typescript
+{
+  "src": "data/src/benthic-rock.fgb",
+  "layerName": "benthic-rock",
+  "geo_type": "vector",
+  "datasourceId": "benthic-rock",
+  "formats": [
+    "fgb"
+  ],
+  "classKeys": [
+    "class"
+  ],
+  "created": "2024-11-28T05:58:26.284Z",
+  "lastUpdated": "2024-11-28T05:58:26.284Z",
+  "propertiesToKeep": [
+    "class"
+  ],
+  "explodeMulti": true,
+  "precalc": true
+}
+```
+
+</details>
+
+You'll notice that the `precalc` property is set to true. That means that it is made available for precalculation. You can disable precalculation for any datasource you want at any time.
+
+You'll also notice that the `class` attribute is configured under `classKeys`.
+
+```json
+"classKeys": [
+  "class"
+],
+```
+
+This is because when importing your datasource, when asked to select feature properties that you want to group metrics by, you should have selected `class`. If present, the precalc command will use this to precalculate metrics by each unique value present in the dataset for the `class` attribute.
+
+You're now ready to precalculate your metrics.
+
+```bash
+npm run precalc:data
+
+? Do you want to precalculate only a subset?
+No, just precalculate everything (may take a while)
+
+...
+
+2 datasource/geography combinations precalculated successfully
+2 datasource/geography combinations skipped due to precalc disabled
+```
+
+You should now have precalculated `area` and `count` metrics for both reefextent and benthic-rock datasources. Let's look closer at the output.
+
+<details>
+<summary>project/precalc.json</summary>
+
+```json
+[
+  {
+    "geographyId": "world",
+    "metricId": "area",
+    "classId": "benthic-rock-Rock",
+    "sketchId": null,
+    "groupId": null,
+    "value": 16604057.106034255
+  },
+  {
+    "geographyId": "world",
+    "metricId": "area",
+    "classId": "benthic-rock-Rubble",
+    "sketchId": null,
+    "groupId": null,
+    "value": 14568314.003883593
+  },
+  {
+    "geographyId": "world",
+    "metricId": "area",
+    "classId": "benthic-rock-Sand",
+    "sketchId": null,
+    "groupId": null,
+    "value": 41378302.21403051
+  },
+  {
+    "geographyId": "world",
+    "metricId": "area",
+    "classId": "benthic-rock-total",
+    "sketchId": null,
+    "groupId": null,
+    "value": 72550673.32394843
+  },
+  {
+    "geographyId": "world",
+    "metricId": "area",
+    "classId": "reefextent-total",
+    "sketchId": null,
+    "groupId": null,
+    "value": 716231422.607066
+  },
+  {
+    "geographyId": "world",
+    "metricId": "count",
+    "classId": "benthic-rock-Rock",
+    "sketchId": null,
+    "groupId": null,
+    "value": 2712
+  },
+  {
+    "geographyId": "world",
+    "metricId": "count",
+    "classId": "benthic-rock-Rubble",
+    "sketchId": null,
+    "groupId": null,
+    "value": 2002
+  },
+  {
+    "geographyId": "world",
+    "metricId": "count",
+    "classId": "benthic-rock-Sand",
+    "sketchId": null,
+    "groupId": null,
+    "value": 2658
+  },
+  {
+    "geographyId": "world",
+    "metricId": "count",
+    "classId": "benthic-rock-total",
+    "sketchId": null,
+    "groupId": null,
+    "value": 7372
+  },
+  {
+    "geographyId": "world",
+    "metricId": "count",
+    "classId": "reefextent-total",
+    "sketchId": null,
+    "groupId": null,
+    "value": 14406
+  }
+]
+```
+
+</details>
+
+Within all of these records you will see four that represent the total area of all benthic-rock polygons and the total area for each of the 3 benthic rock classes:
+
+```json
+{
+  "geographyId": "world",
+  "metricId": "area",
+  "classId": "benthic-rock-total",
+  "sketchId": null,
+  "groupId": null,
+  "value": 72550673.32394843
+},
+{
+  "geographyId": "world",
+  "metricId": "area",
+  "classId": "benthic-rock-Rock",
+  "sketchId": null,
+  "groupId": null,
+  "value": 16604057.106034255
+},
+{
+  "geographyId": "world",
+  "metricId": "area",
+  "classId": "benthic-rock-Rubble",
+  "sketchId": null,
+  "groupId": null,
+  "value": 14568314.003883593
+},
+{
+  "geographyId": "world",
+  "metricId": "area",
+  "classId": "benthic-rock-Sand",
+  "sketchId": null,
+  "groupId": null,
+  "value": 41378302.21403051
+}
+```
+
+These will get loaded and used in our BenthicReefCard as the denominator value when calculating percent sketch overlap.
+
+### World Geography
+
+You might have noticed in the precalculated metrics that they are assigned a geographyId of `world`. `Geographies` are a higher level feature of the framework that define polygon boundaries that serve a specfic purpose in your project. The main use case is to define planning boundaries for your project, if you have them.
+
+The default Geography for a new project is the `world` geography, which establishes the entire world as your planning boundary. This is sufficient for your needs until you have a more specific planning boundary that you want to work with. For example you can clip your sketches and your data to a geography in order to report metrics for a specific geography. Since your data is already pre-clipped to the planning area, and there is only one planning area, you don't need to do anything more with this feature. You can just leave it to use the `world` geography.
+
+Geographies are defined in `project/geographies.json`. To learn more visit the [advanced concepts](../concepts/AdvancedConcepts.md#geographies) page.
+
+### View Reports
+
+Next, add BenthicHabitatCard to the ViabilityPage so that it now displays in your TabReport.
 
 <details>
 <summary>src/components/ViabilityPage.tsx</summary>
@@ -1323,6 +1634,8 @@ export const ViabilityPage = () => {
 ```
 
 </details>
+
+Then `npm run storybook` and verify both TabReport and BenthicHabitatCard display as expected for your various example sketches.
 
 ## Octocoral Report
 

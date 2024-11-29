@@ -53,7 +53,6 @@ export async function vectorFunction(
         const ds = project.getClassDatasource(metricGroup, curClass.classId);
         if (!isVectorDatasource(ds))
           throw new Error(`Expected vector datasource for ${ds.datasourceId}`);
-
         const url = project.getDatasourceUrl(ds);
 
         // Fetch features overlapping with sketch, if not already fetched
@@ -62,17 +61,22 @@ export async function vectorFunction(
           (await getFeaturesForSketchBBoxes(sketch, url));
         featuresByDatasource[ds.datasourceId] = features;
 
-        // If this is a sub-class, filter by class name
+        // Get classKey for current data class
         const classKey = project.getClassKey(metricGroup, curClass.classId);
-        const finalFeatures =
-          classKey && curClass.classId !== `${ds.datasourceId}_all`
-            ? features.filter((feat) => {
-                return (
-                  feat.geometry &&
-                  feat.properties![ds.classKeys[0]] === curClass.classId
-                );
-              })
-            : features;
+
+        // If the current data class has no classKey property defined, then return all features
+        if (!classKey || curClass.classId === `${ds.datasourceId}_all`)
+          return features;
+
+        // Filter to features that are a member of this class
+        // feature is a member if it has a geometry and the value of its
+        // classKey property matches the current class ID value
+        const finalFeatures = features.filter(
+          (feat) =>
+            feat.geometry &&
+            feat.properties &&
+            feat.properties[classKey] === curClass.classId,
+        );
 
         // Calculate overlap metrics
         const overlapResult = await overlapFeatures(

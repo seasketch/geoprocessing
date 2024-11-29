@@ -82,7 +82,7 @@ export const vectorDatasourceSchema = baseDatasourceSchema.merge(
     bboxFilter: bboxSchema.optional(),
     /** Import - Name of layer within vector datasource to extract */
     layerName: z.string().optional(),
-    /** keys to generate classes for.  Vector - property names */
+    /** properties whose values define classes of data. */
     classKeys: z.array(z.string()),
   }),
 );

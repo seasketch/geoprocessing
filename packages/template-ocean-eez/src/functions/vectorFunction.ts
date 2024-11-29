@@ -64,19 +64,19 @@ export async function vectorFunction(
         // Get classKey for current data class
         const classKey = project.getClassKey(metricGroup, curClass.classId);
 
-        // If the current data class has no classKey property defined, then return all features
+        let finalFeatures: Feature<Polygon | MultiPolygon>[] = [];
         if (!classKey || curClass.classId === `${ds.datasourceId}_all`)
-          return features;
-
-        // Filter to features that are a member of this class
-        // feature is a member if it has a geometry and the value of its
-        // classKey property matches the current class ID value
-        const finalFeatures = features.filter(
-          (feat) =>
-            feat.geometry &&
-            feat.properties &&
-            feat.properties[classKey] === curClass.classId,
-        );
+          // If no classKey defined, then this is probably a metric group of one class, use all features
+          finalFeatures = features;
+        else {
+          // else filter to features that are a member of this class
+          finalFeatures = features.filter(
+            (feat) =>
+              feat.geometry &&
+              feat.properties &&
+              feat.properties[classKey] === curClass.classId,
+          );
+        }
 
         // Calculate overlap metrics
         const overlapResult = await overlapFeatures(

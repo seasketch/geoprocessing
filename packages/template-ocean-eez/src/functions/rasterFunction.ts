@@ -44,19 +44,16 @@ export async function rasterFunction(
   const metrics: Metric[] = (
     await Promise.all(
       metricGroup.classes.map(async (curClass) => {
-        if (!curClass.datasourceId)
-          throw new Error(`Expected datasourceId for ${curClass.classId}`);
-
-        const ds = project.getDatasourceById(curClass.datasourceId);
+        const ds = project.getClassDatasource(metricGroup, curClass.classId);
         if (!isRasterDatasource(ds))
           throw new Error(`Expected raster datasource for ${ds.datasourceId}`);
 
         const url = project.getDatasourceUrl(ds);
 
-        // Start raster load and move on in loop while awaiting finish
+        // Load raster metadata
         const raster = await loadCog(url);
 
-        // Start analysis when raster load finishes
+        // Run raster analysis
         const overlapResult = await rasterMetrics(raster, {
           metricId: metricGroup.metricId,
           feature: clippedSketch,

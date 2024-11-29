@@ -1692,8 +1692,8 @@ octocorals - raster
 
 Now look at project/precalc.json. You should see 4 new precalculated metrics for octocorals:
 
-- `valid` - count of all raster cells with value (not nodata)
-- `count` - count of all cells in the raster, whether valid and invalid (nodata)
+- `valid` - count of all raster cells with value (not nodata cells)
+- `count` - count of all cells in the raster, both valid and invalid (nodata)
 - `sum` - sum of value of all valid cell values in raster
 - `area` - area of valid cells in raster in square meters
 

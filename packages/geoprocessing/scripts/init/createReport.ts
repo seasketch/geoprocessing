@@ -126,11 +126,11 @@ const createReport = async () => {
         choices: [
           {
             value: "valid",
-            name: "valid - count of valid raster cells overlapping with sketch (not nodata)",
+            name: "valid - count of valid raster cells overlapping with sketch (not nodata cells)",
           },
           {
             value: "count",
-            name: "count - count of raster cells overlapping with sketch (valid and invalid)",
+            name: "count - count of all raster cells overlapping with sketch (valid and invalid)",
           },
           {
             value: "sum",
@@ -138,7 +138,7 @@ const createReport = async () => {
           },
           {
             value: "area",
-            name: "area in square meters of valid raster cells overlapping with sketch",
+            name: "area - area in square meters of valid raster cells overlapping with sketch",
           },
         ],
       };

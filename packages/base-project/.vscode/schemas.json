@@ -53,38 +53,67 @@
       ],
       "additionalProperties": false
     },
-    "metricsSchema": {
+    "metricGroupSchema": {
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "metricId": { "type": "string" },
-          "type": { "type": "string" },
-          "datasourceId": { "type": "string" },
-          "classKey": { "type": "string" },
-          "classes": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "object",
-              "properties": {
-                "classId": { "type": "string" },
-                "classKey": { "type": "string" },
-                "datasourceId": { "type": "string" },
-                "display": { "type": "string" },
-                "numericClassId": { "type": "number" },
-                "layerId": { "type": "string" },
-                "objectiveId": { "type": "string" }
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "metricId": { "type": "string" },
+              "type": { "type": "string" },
+              "datasourceId": { "type": "string" },
+              "classKey": { "type": "string" },
+              "classes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "classId": { "type": "string" },
+                    "display": { "type": "string" },
+                    "numericClassId": { "type": "number" },
+                    "layerId": { "type": "string" },
+                    "objectiveId": { "type": "string" }
+                  },
+                  "required": ["classId", "display"],
+                  "additionalProperties": false
+                }
               },
-              "required": ["classId", "display"],
-              "additionalProperties": false
-            }
+              "layerId": { "type": "string" },
+              "objectiveId": { "type": "string" }
+            },
+            "required": ["metricId", "classes", "datasourceId"],
+            "additionalProperties": false
           },
-          "layerId": { "type": "string" },
-          "objectiveId": { "type": "string" }
-        },
-        "required": ["metricId", "classes"],
-        "additionalProperties": false
+          {
+            "type": "object",
+            "properties": {
+              "metricId": { "type": "string" },
+              "type": { "type": "string" },
+              "classes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "classId": { "type": "string" },
+                    "classKey": { "type": "string" },
+                    "datasourceId": { "type": "string" },
+                    "display": { "type": "string" },
+                    "numericClassId": { "type": "number" },
+                    "layerId": { "type": "string" },
+                    "objectiveId": { "type": "string" }
+                  },
+                  "required": ["classId", "display", "datasourceId"],
+                  "additionalProperties": false
+                }
+              },
+              "layerId": { "type": "string" },
+              "objectiveId": { "type": "string" }
+            },
+            "required": ["metricId", "classes"],
+            "additionalProperties": false
+          }
+        ]
       }
     },
     "objectivesSchema": {
@@ -432,7 +461,7 @@
   "oneOf": [
     { "$ref": "#/definitions/basicSchema" },
     { "$ref": "#/definitions/objectivesSchema" },
-    { "$ref": "#/definitions/metricsSchema" },
+    { "$ref": "#/definitions/metricGroupSchema" },
     { "$ref": "#/definitions/geographiesSchema" },
     { "$ref": "#/definitions/datasourcesSchema" }
   ]

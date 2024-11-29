@@ -64,6 +64,7 @@
           "classKey": { "type": "string" },
           "classes": {
             "type": "array",
+            "minItems": 1,
             "items": {
               "type": "object",
               "properties": {

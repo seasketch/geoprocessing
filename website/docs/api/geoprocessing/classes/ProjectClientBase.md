@@ -359,7 +359,7 @@ return local URL expected to serve up dist data folder
 getClassDatasource(mg, classId): object | object | object & object | object & object
 ```
 
-Returns datasource for classId in metricGroup.  Uses class datasourceId if available, otherwise falls back to metricGroup datasourceId
+Returns datasource for given metric group with class with given classId.  Uses class datasourceId if available, otherwise falls back to metricGroup datasourceId
 
 #### Parameters
 
@@ -380,6 +380,36 @@ Returns datasource for classId in metricGroup.  Uses class datasourceId if avail
 `object` \| `object` \| `object` & `object` \| `object` & `object`
 
 the datasource object
+
+***
+
+### getClassKey()
+
+```ts
+getClassKey(mg, classId): undefined | string
+```
+
+Returns classKey name for given metric group with class with given classId.  Uses class level classKey if available, otherwise falls back to metricGroup classKey
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `mg` | `object` | metricGroup to search for class and classKey |
+| `mg.classes` | `object`[] | data classes used by group |
+| `mg.classKey`? | `string` | Optional datasource class key used to source classIds |
+| `mg.datasourceId`? | `string` | Datasource to generate metrics from |
+| `mg.layerId`? | `string` | Optional ID of map layer associated with this metric |
+| `mg.metricId` | `string` | Unique id of metric in project |
+| `mg.objectiveId`? | `string` | group level objective, applies to all classes |
+| `mg.type`? | `string` | unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user |
+| `classId` | `string` | classId to get classKey for |
+
+#### Returns
+
+`undefined` \| `string`
+
+the classKey name or undefined
 
 ***
 

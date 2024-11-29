@@ -1639,28 +1639,100 @@ Then `npm run storybook` and verify both TabReport and BenthicHabitatCard displa
 
 ## Octocoral Report
 
+The last sample report will use a raster datasource.
+
 ### Import Data
 
-Now import the following additional datasources:
-
-Octocorals - raster with 0/1 values representing predicted presence/absence of species.
+Now import the octocorals raster. Its raster cells contain a value of 0 or 1 representing predicted presence/absence of octocorals.
 
 ```text
 ? Type of data?
 Raster
 ? Enter path to src file (with filename)
-data/src/yesson_octocorals.tif
+data/src/octocorals.tif
 ? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename
 octocorals
 ? Select raster band to import
 1
 ? What type of measurement is used for this raster data?
 Quantitative - values represent amounts, measurement of single thing
-? Will you be precalculating summary metrics for this datasource after import? (Typically yes if reporting sketch % overlap with datasource)
-Yes
 ```
 
 ### Add Metric Group
+
+Now define a metric group in `project/metrics.json` for our single raster data class. Since this is a raster dataset,
+
+```json
+{
+  "metricId": "octocorals",
+  "classes": [
+    {
+      "classId": "Octocorals",
+      "display": "Octocorals"
+    }
+  ]
+}
+```
+
+### Precalc
+
+Now precalculate metrics for the raster.
+
+```typescript
+npm run precalc:data
+
+? Do you want to precalculate only a subset?
+Yes, by datasource
+
+? What datasources would you like to precalculate?
+Let me choose
+
+octocorals - raster
+```
+
+Now look at project/precalc.json. You should see 4 new precalculated metrics for octocorals:
+
+- `valid` - count of all raster cells with value (not nodata)
+- `count` - count of all cells in the raster, whether valid and invalid (nodata)
+- `sum` - sum of value of all valid cell values in raster
+- `area` - area of valid cells in raster in square meters
+
+```json
+{
+  "geographyId": "world",
+  "metricId": "area",
+  "classId": "octocorals-total",
+  "sketchId": null,
+  "groupId": "band-0",
+  "value": 146280392512.69598
+},
+{
+  "geographyId": "world",
+  "metricId": "count",
+  "classId": "octocorals-total",
+  "sketchId": null,
+  "groupId": "band-0",
+  "value": 18748
+},
+  {
+  "geographyId": "world",
+  "metricId": "sum",
+  "classId": "octocorals-total",
+  "sketchId": null,
+  "groupId": "band-0",
+  "value": 498
+},
+{
+  "geographyId": "world",
+  "metricId": "valid",
+  "classId": "octocorals-total",
+  "sketchId": null,
+  "groupId": "band-0",
+  "value": 498
+}
+```
+
+The area calculation is possible because the raster is imported into an equal area projection, which ensures that raster cells are a consistent size.
 
 ### Create Report
 

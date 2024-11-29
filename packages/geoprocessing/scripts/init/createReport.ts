@@ -123,7 +123,24 @@ const createReport = async () => {
         type: "list",
         name: "stat",
         message: "Statistic to calculate",
-        choices: ["sum", "count", "area"],
+        choices: [
+          {
+            value: "valid",
+            name: "valid - count of valid raster cells overlapping with sketch (not nodata)",
+          },
+          {
+            value: "count",
+            name: "count - count of raster cells overlapping with sketch (valid and invalid)",
+          },
+          {
+            value: "sum",
+            name: "sum - sum of value of valid cells overlapping with sketch",
+          },
+          {
+            value: "area",
+            name: "area in square meters of valid raster cells overlapping with sketch",
+          },
+        ],
       };
       const { stat } = await inquirer.prompt([statQuestion]);
       answers.stat = stat;

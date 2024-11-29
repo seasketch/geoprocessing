@@ -401,7 +401,7 @@ median?: Nullable<number>;
 mode?: Nullable<number>;
 /** Different between min and max value */
 range?: Nullable<number>;
-/** Sum of all valid cennls in raster */
+/** Sum of all valid cells in raster */
 sum?: number;
 /** Standard deviation of valid cells in raster */
 std?: Nullable<number>;

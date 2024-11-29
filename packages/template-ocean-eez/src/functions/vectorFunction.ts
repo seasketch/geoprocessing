@@ -63,8 +63,9 @@ export async function vectorFunction(
         featuresByDatasource[ds.datasourceId] = features;
 
         // If this is a sub-class, filter by class name
+        const classKey = project.getClassKey(metricGroup, curClass.classId);
         const finalFeatures =
-          curClass.classKey && curClass.classId !== `${ds.datasourceId}_all`
+          classKey && curClass.classId !== `${ds.datasourceId}_all`
             ? features.filter((feat) => {
                 return (
                   feat.geometry &&

@@ -413,7 +413,7 @@ export class ProjectClientBase implements ProjectClientInterface {
   }
 
   /**
-   * Returns datasource for classId in metricGroup.  Uses class datasourceId if available, otherwise falls back to metricGroup datasourceId
+   * Returns datasource for given metric group with class with given classId.  Uses class datasourceId if available, otherwise falls back to metricGroup datasourceId
    * @param mg - metricGroup to get datasource for
    * @param classId - classId to get datasource for
    * @returns the datasource object
@@ -433,6 +433,21 @@ export class ProjectClientBase implements ProjectClientInterface {
       dataClass.datasourceId! || mg.datasourceId!,
     );
     return ds;
+  }
+
+  /**
+   * Returns classKey name for given metric group with class with given classId.  Uses class level classKey if available, otherwise falls back to metricGroup classKey
+   * @param mg - metricGroup to search for class and classKey
+   * @param classId - classId to get classKey for
+   * @returns the classKey name or undefined
+   */
+  public getClassKey(mg: MetricGroup, classId: string) {
+    const dataClass = mg.classes.find((c) => c.classId === classId);
+    if (!dataClass)
+      throw new Error(
+        `Class not found in metricGroup ${mg.metricId} with classId ${classId}`,
+      );
+    return dataClass.classKey || mg.classKey;
   }
 
   /**

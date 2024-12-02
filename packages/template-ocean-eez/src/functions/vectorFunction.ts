@@ -50,7 +50,9 @@ export async function vectorFunction(
   const metrics = (
     await Promise.all(
       metricGroup.classes.map(async (curClass) => {
-        const ds = project.getClassDatasource(metricGroup, curClass.classId);
+        const ds = project.getMetricGroupDatasource(metricGroup, {
+          classId: curClass.classId,
+        });
         if (!isVectorDatasource(ds))
           throw new Error(`Expected vector datasource for ${ds.datasourceId}`);
         const url = project.getDatasourceUrl(ds);
@@ -62,7 +64,9 @@ export async function vectorFunction(
         featuresByDatasource[ds.datasourceId] = features;
 
         // Get classKey for current data class
-        const classKey = project.getClassKey(metricGroup, curClass.classId);
+        const classKey = project.getMetricGroupClassKey(metricGroup, {
+          classId: curClass.classId,
+        });
 
         let finalFeatures: Feature<Polygon | MultiPolygon>[] = [];
         if (!classKey || curClass.classId === `${ds.datasourceId}_all`)

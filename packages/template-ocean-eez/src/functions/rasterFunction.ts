@@ -44,7 +44,9 @@ export async function rasterFunction(
   const metrics: Metric[] = (
     await Promise.all(
       metricGroup.classes.map(async (curClass) => {
-        const ds = project.getClassDatasource(metricGroup, curClass.classId);
+        const ds = project.getMetricGroupDatasource(metricGroup, {
+          classId: curClass.classId,
+        });
         if (!isRasterDatasource(ds))
           throw new Error(`Expected raster datasource for ${ds.datasourceId}`);
 

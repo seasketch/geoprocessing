@@ -50,7 +50,7 @@ export const objectiveSchema = z.object({
   shortDesc: z.string(),
   /** Value required for objective to be met */
   target: z.number().nonnegative(),
-  /** Generic map of MPA protection levels to whether they count towards objective */
+  /** Generic map of group names (e.g. MPA protection levels) to whether they count towards objective */
   countsToward: objectiveAnswerMapSchema,
 });
 

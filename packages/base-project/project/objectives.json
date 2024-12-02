@@ -1,10 +1,1 @@
-[
-  {
-    "objectiveId": "eez",
-    "shortDesc": "EEZ Objective",
-    "target": 0.2,
-    "countsToward": {
-      "Fully Protected Area": "yes"
-    }
-  }
-]
+[]

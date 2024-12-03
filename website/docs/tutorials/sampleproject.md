@@ -1783,98 +1783,121 @@ Now create a seamount metric group that uses the objective in `project/metrics.j
 
 Now create a seamount raster report.
 
-```bash
+```text
 npm run create:report
+
+? Type of report to create
+Raster overlap report - calculates sketch overlap with raster datasources
+
+? Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)
+Calculate sketch overlap with seamount raster
+
+? Select the metric group to report on
+seamounts
+
+? Type of raster data
+Quantitative - Continuous variable across the raster
+
+? Statistic to calculate
+sum - sum of value of valid cells overlapping with sketch
+
+✔ Created seamounts report
+✔ Registered report assets in project/geoprocessing.json
+
+Geoprocessing function: src/functions/seamounts.ts
+Smoke test: src/functions/seamountsSmoke.test.ts
+Report component: src/components/SeamountsCard.tsx
+Story generator: src/components/SeamountsCard.example-stories.ts
+
+Next Steps:
+    * 'npm test' to run smoke tests against your new geoprocessing function
+    * 'npm run storybook' to view your new report with smoke test output
+    * Add <SeamountsCard /> to a top-level report client or page when ready
+```
+
+Now run tests
+
+```bash
+npm test
 ```
 
 Finally, view your reports in storybook.
 
-## Octocoral Report
+Add and commit your latest code when satisfied.
+
+## Coral Species Report
+
+This last report will calculate sketch overlap with 3 difference species of coral.
 
 ### Import Data
 
-First, we'll import the three coral raster dataset. Each cell in these rasters has a value of value of 0 or 1, where a 1 represents predicted presence of the species and 0 indicates predicted absence of the species.
+First, we'll import the datasets. There are three binary rasters, each has cells with a value of zero or one. Where there is a one value, the species is predicted to be present.
 
-Rather than go through importing each datasource, which you can do, copy the following 3 datasource objects into the array in `project/datasources.json` and save it.
+[IMAGE HERE]
 
-````json
- {
-    "datasourceId": "blackcoral",
-    "geo_type": "raster",
-    "formats": [
-      "tif"
-    ],
-    "precalc": true,
-    "measurementType": "quantitative",
-    "band": 1,
-    "noDataValue": -3.4e+38,
-    "created": "2024-12-02T01:55:09.787Z",
-    "lastUpdated": "2024-12-02T01:55:09.787Z",
-    "src": "data/src/blackcoral.tif"
-  },
-  {
-    "datasourceId": "coldwatercoral",
-    "geo_type": "raster",
-    "formats": [
-      "tif"
-    ],
-    "precalc": true,
-    "measurementType": "quantitative",
-    "band": 1,
-    "noDataValue": -3.4e+38,
-    "created": "2024-12-02T01:55:29.956Z",
-    "lastUpdated": "2024-12-02T01:55:29.956Z",
-    "src": "data/src/coldwatercoral.tif"
-  },
-  {
-    "src": "data/src/octocoral.tif",
-    "band": 1,
-    "geo_type": "raster",
-    "datasourceId": "octocoral",
-    "formats": [
-      "tif"
-    ],
-    "created": "2024-12-02T01:55:47.189Z",
-    "lastUpdated": "2024-12-02T01:55:47.189Z",
-    "noDataValue": -3.4e+38,
-    "measurementType": "quantitative",
-    "precalc": true
-  }
-`
+Import the datasets as follow:
 
-Now reimport the data.  Use the spacebar to select each of the 3 datasources, then press the Enter key.
+Black Coral:
 
 ```bash
-npm run reimport:data
+npm run import:data
 
-? Do you want to reimport all 5 datasources at once?
-No, let me choose
+? Type of data?
+Raster
 
-? What datasources would you like to reimport?
- ◯ reefextent - vector
- ◯ benthic-rock - vector
- ◉ blackcoral - raster
- ◉ coldwatercoral - raster
-❯◉ octocoral - raster
-````
+? Enter path to src file (with filename)
+data/src/blackcoral.tif
 
-The rasters, on import, are reprojected to an [equal area projection](https://epsg.io/6933) projection. An equal area projection ensures that the raster cells are a consistent size. This allows area to be easily calculated and a simple count of cells to be used for calculating % sketch overlap.
+? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename
+blackcoral
 
-### Add Metric Group
+? Select raster band to import
+1
 
-Now define a metric group in `project/metrics.json` for our raster consisting of a single class of data:
+? What type of measurement is used for this raster data?
+Quantitative - values represent amounts, measurement of single thing
+```
 
-```json
-{
-  "metricId": "octocorals",
-  "datasourceId": "octocorals",
-  "classes": [
-    {
-      "classId": "Octocorals",
-      "display": "Octocorals"
-    }
-  ]
-}
+Cold Water Coral:
+
+```bash
+npm run import:data
+
+? Type of data?
+Raster
+
+? Enter path to src file (with filename)
+data/src/coldwatercoral.tif
+
+? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename
+coldwatercoral
+
+? Select raster band to import
+1
+
+? What type of measurement is used for this raster data?
+Quantitative - values represent amounts, measurement of single thing
+```
+
+Black Coral:
+
+```bash
+npm run import:data
+
+? Type of data?
+Raster
+
+? Enter path to src file (with filename)
+data/src/octocoral.tif
+
+? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename
+octocoral
+
+? Select raster band to import
+1
+
+? What type of measurement is used for this raster data?
+Quantitative - values represent amounts, measurement of single thing
 ```
 
 ### Precalc
@@ -1887,137 +1910,95 @@ npm run precalc:data
 ? Do you want to precalculate only a subset?
 Yes, by datasource
 
-? What datasources would you like to precalculate?
+? Which datasources do you want to precalculate? (will precalculate for all geographies)
 Let me choose
 
-octocorals - raster
+? What datasources would you like to precalculate? (select as many as you want)
+blackcoral - raster
+coldwatercoral - raster
+octocoral - raster
+
+3 datasource/geography combinations precalculated successfully
 ```
 
-Now look at project/precalc.json. You should see 4 new precalculated metrics for octocorals:
+### Add Metric Group
 
-- `valid` - count of all raster cells with value (not nodata cells)
-- `count` - count of all cells in the raster, both valid and invalid (nodata)
-- `sum` - sum of value of all valid cell values in raster
-- `area` - area of valid cells in raster in square meters
+Now define a metric group in `project/metrics.json` consisting of three classes, one for each type of coral, each pointing to the appropriate datasource at the class level:
 
 ```json
 {
-  "geographyId": "world",
-  "metricId": "area",
-  "classId": "octocorals-total",
-  "sketchId": null,
-  "groupId": "band-0",
-  "value": 146280392512.69598
-},
-{
-  "geographyId": "world",
-  "metricId": "count",
-  "classId": "octocorals-total",
-  "sketchId": null,
-  "groupId": "band-0",
-  "value": 18748
-},
-  {
-  "geographyId": "world",
-  "metricId": "sum",
-  "classId": "octocorals-total",
-  "sketchId": null,
-  "groupId": "band-0",
-  "value": 498
-},
-{
-  "geographyId": "world",
-  "metricId": "valid",
-  "classId": "octocorals-total",
-  "sketchId": null,
-  "groupId": "band-0",
-  "value": 498
+  "metricId": "coralspecies",
+  "classes": [
+    {
+      "datasourceId": "blackcoral",
+      "classId": "blackcoral",
+      "display": "Black Coral",
+      "objectiveId": "blackcoral"
+    },
+    {
+      "datasourceId": "coldwatercoral",
+      "classId": "coldwatercoral",
+      "display": "Cold Water Corals",
+      "objectiveId": "coldwatercoral"
+    },
+    {
+      "datasourceId": "octocorals",
+      "classId": "Octocorals",
+      "display": "Octocorals",
+      "objectiveId": "octocoral"
+    }
+  ]
 }
 ```
 
-The area calculation is possible because the raster is imported into an equal area projection, which ensures that raster cells are a consistent size.
-
 ### Create Report
 
-## Advanced Features
+Now create the report
 
-### Add Planning Boundary
+```text
+npm run create:report
 
-### Update default Geography
+? Type of report to create
+Raster overlap report - calculates sketch overlap with raster datasources
 
-Now change the projects default geography from the world, to your new planning boundary.
+? Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)
+Calculate sketch overlap with coral species
 
-- Open `project/geographies.json`. You will see an array with one geography record called `world`. This is the default geography and can be left here. You will disable its precalc and remove it from the `default-boundary` group, then add a new geography record for your `planning-boundary`.
-- Replace the contents of the geographies file with the following and save it:
+? Select the metric group to report on
+coralspecies
 
-```json
-[
-  {
-    "geographyId": "world",
-    "datasourceId": "world",
-    "display": "World",
-    "groups": [],
-    "precalc": false
-  },
-  {
-    "geographyId": "planning-boundary",
-    "datasourceId": "planning-boundary",
-    "display": "Planning Boundary",
-    "groups": ["default-boundary"],
-    "precalc": true
-  }
-]
+? Type of raster data
+Quantitative - Continuous variable across the raster
+
+? Statistic to calculate
+sum - sum of value of valid cells overlapping with sketch
+
+✔ Created coralspecies report
+✔ Registered report assets in project/geoprocessing.json
 ```
 
-### Precalc Data
-
-The `precalc` command calculates spatial statistics for the portion of each of your datasources that falls within each of your project's Geographies.
-
-Geographies are simply geographic boundaries for your project, and the default Geography for this project is the entire World.
-
-Why do this?
-
-One of the questions our report needs to answer is "what percentage of coral reef within the planning boundary are within my Sketch polygon?
-
-This is calculated as:
-`% area of coral reef in sketch = area of coral reef within sketch / area of coral reef within planning boundary`
-
-The numerator in this equation (area of reef within sketch) is relatively inexpensive to calculate and we will do it within a geoprocessing function where we have access to the sketch. But the denominator calculation can be expensive if the data is very large or complex. Thankfully we can calculate it ahead of time.
-
-Since your datasources and geographies already have `precalc: true` set, you are ready to start:
+And run the storybook to view the report.
 
 ```bash
-npm run precalc:data
-
-? Do you want to precalculate only a subset?
-  Yes, by datasource
-  Yes, by geography
-  Yes, by both
-❯ No, just precalculate everything (may take a while)
+npm run storybook
 ```
-
-Choose to "precalculate everything". Then press enter. The precalc process may take a while.
-
-What's happening is that the precalc script starts a local web server on port 8001 that serves up the datasources in `data/dist`.
-
-The precalc script then gets all your project datasources with `precalc: true`, and all your project geographies with `precalc: true`, and then calculate `area`, `sum`, and `count` metrics for each combination of datasource and geography.
-
-Once complete `project/precalc.json` will have been updated with the new metric values.
-
-- To learn more advanced use, see the [precalc](../precalc.md) guide.
-- To learn more about use of precalculated metrics, see the [report client](../reportclient.md) guide.
 
 ### Language Translation
 
-Run the following to extract the latest translations from all of you report clients and its underlying components.
+To support more languages than just English, start with extracting all of the latest strings from your reports:
 
 ```bash
 npm run extract:translation
 ```
 
+You will want to then look at the git changes produced in `src/i18n/lang/en/translation.json` and make adjustments to your reports until the extract strings look right.
+
+To learn more visit the
+[LINK TO TRANSLATION DOC]
+
 ## What's Next
 
 You've now completed the sample tutorial. Your next step is to choose whether you would like to:
 
-- Setup an [existing project to setup](./existingproject.md), and re-deploy it.
-- Create a [create a new project](./newproject.md), deploy it and integrate with SeaSketch.
+- [Setup an existing project](./existingproject.md), and re-deploy it.
+- [Create a new project](./newproject.md), deploy it and integrate with SeaSketch.

@@ -4,15 +4,16 @@
 function getMetricGroupObjectiveIds(metricGroup): string[]
 ```
 
-Returns array of all objective IDs configured for the given MetricGroup.
-If a class does not have an objectiveId assigned, then it gets the top-level
-objectiveId
+Returns array of objective IDs for the given MetricGroup.
+If at least one class has an objectiveId assigned, then it returns those, missing classes with no objectiveId get the top-level objectiveId
+If no class-level objectives are found, then it returns the top-level objectiveId
+If no objectives are found, returns an empty array
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `metricGroup` | `object` | - |
+| `metricGroup` | `object` | the metricGroup to get the objectives for |
 | `metricGroup.classes` | `object`[] | data classes used by group |
 | `metricGroup.classKey`? | `string` | Optional datasource class key used to source classIds |
 | `metricGroup.datasourceId`? | `string` | Datasource to generate metrics from |
@@ -24,3 +25,5 @@ objectiveId
 ## Returns
 
 `string`[]
+
+array of objectiveIds

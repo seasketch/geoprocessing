@@ -23,7 +23,7 @@ find and return objectives from passed objectives
 countsToward: Record<string, "yes" | "no" | "maybe"> = objectiveAnswerMapSchema;
 ```
 
-Generic map of MPA protection levels to whether they count towards objective
+Generic map of group names (e.g. MPA protection levels) to whether they count towards objective
 
 ### objectiveId
 

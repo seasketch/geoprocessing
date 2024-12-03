@@ -176,8 +176,8 @@
 | [getJsonPath](functions/getJsonPath.md) | - |
 | [getJsonUserAttribute](functions/getJsonUserAttribute.md) | - |
 | [getKeys](functions/getKeys.md) | Object.keys helper that returns strongly typed key values. Uses assertion so make sure your type covers all the keys! |
-| [getMetricGroupObjectiveId](functions/getMetricGroupObjectiveId.md) | Returns the top-level objective assigned for the given MetricGroup. If a classID is also passed, returns the objective ID for that class within the metric group |
-| [getMetricGroupObjectiveIds](functions/getMetricGroupObjectiveIds.md) | Returns array of all objective IDs configured for the given MetricGroup. If a class does not have an objectiveId assigned, then it gets the top-level objectiveId |
+| [getMetricGroupObjectiveId](functions/getMetricGroupObjectiveId.md) | Returns the objectiveId assigned to the given MetricGroup. If classId provided, returns the objective ID assigned to data class with that classId, else fallback to metricGroup objectiveId. |
+| [getMetricGroupObjectiveIds](functions/getMetricGroupObjectiveIds.md) | Returns array of objective IDs for the given MetricGroup. If at least one class has an objectiveId assigned, then it returns those, missing classes with no objectiveId get the top-level objectiveId If no class-level objectives are found, then it returns the top-level objectiveId If no objectives are found, returns an empty array |
 | [getMinYesCountMap](functions/getMinYesCountMap.md) | Returns an object mapping objective ID to ID of first classification that counts toward objective |
 | [getMpaClassificationName](functions/getMpaClassificationName.md) | Returns protection level given MPA classification index value |
 | [getObjectiveById](functions/getObjectiveById.md) | find and return objectives from passed objectives |

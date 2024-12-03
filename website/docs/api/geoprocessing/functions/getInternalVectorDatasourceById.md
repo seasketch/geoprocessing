@@ -31,7 +31,7 @@ Optional, constrain datasource to smaller bbox
 classKeys: string[];
 ```
 
-keys to generate classes for.  Vector - property names
+properties whose values define classes of data.
 
 ### created
 

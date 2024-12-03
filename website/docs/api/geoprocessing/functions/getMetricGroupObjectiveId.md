@@ -4,14 +4,14 @@
 function getMetricGroupObjectiveId(metricGroup, classId?): string
 ```
 
-Returns the top-level objective assigned for the given MetricGroup.
-If a classID is also passed, returns the objective ID for that class within the metric group
+Returns the objectiveId assigned to the given MetricGroup.
+If classId provided, returns the objective ID assigned to data class with that classId, else fallback to metricGroup objectiveId.
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `metricGroup` | `object` | - |
+| `metricGroup` | `object` | the metricGroup to get the objective for |
 | `metricGroup.classes` | `object`[] | data classes used by group |
 | `metricGroup.classKey`? | `string` | Optional datasource class key used to source classIds |
 | `metricGroup.datasourceId`? | `string` | Datasource to generate metrics from |
@@ -19,8 +19,18 @@ If a classID is also passed, returns the objective ID for that class within the 
 | `metricGroup.metricId`? | `string` | Unique id of metric in project |
 | `metricGroup.objectiveId`? | `string` | group level objective, applies to all classes |
 | `metricGroup.type`? | `string` | unique identifier of what the metric represents, such as its type and method for calculation - e.g. areaOverlap, valueOverlap. To be defined by the user |
-| `classId`? | `string` | - |
+| `classId`? | `string` | the classId to get the objective for |
 
 ## Returns
 
 `string`
+
+objectiveId
+
+## Throws
+
+if data class does not exist with classId
+
+## Throws
+
+if no objectiveId found for metricGroup or its class

@@ -13,6 +13,7 @@ import {
   datasourceConfig,
   getRasterBoxSpherical,
   rasterMetrics,
+  loadCog,
 } from "../../../src/index.js";
 import { bbox } from "@turf/turf";
 
@@ -45,8 +46,7 @@ export async function precalcRasterDatasource<C extends ProjectClientBase>(
     subPath: extraOptions.newDstPath,
     port: extraOptions.port || 8001, // use default project port, override such as for tests
   });
-  console.log("precalcing raster datasource", url);
-  const raster: Georaster = await geoblaze.parse(url);
+  const raster: Georaster = await loadCog(url);
 
   const rasterMetrics = await precalcRasterMetrics(
     raster,

@@ -48,12 +48,12 @@ export async function loadFgb<F extends Feature<Geometry>>(
   })();
 
   if (process.env.NODE_ENV !== "test")
-    console.log("fgbF", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
+    console.log("loadFgb", `url: ${url}`, `box: ${JSON.stringify(fgBox)}`);
 
   const features = (await takeAsync(
     deserialize(url, fgBox) as AsyncGenerator,
   )) as F[];
   if (!Array.isArray(features))
-    throw new Error("Unexpected result from fgbFetchAll");
+    throw new Error("Unexpected result from loadFgb");
   return features;
 }

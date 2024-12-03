@@ -3,7 +3,7 @@ import { roundDecimal } from "../../helpers/index.js";
 import { createMetric } from "../../metrics/index.js";
 
 /**
- * Converts an array of geoblaze raster StatsObjects to an array of Metrics
+ * Converts an array of geoblaze raster StatsObject to an array of Metrics
  * @param statsObjects
  * @param sketchId
  * @param extra

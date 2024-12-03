@@ -2,15 +2,27 @@
 slug: "/architecture"
 ---
 
+# Architecture
+
 ## Library
 
-The geoprocessing library is modeled after [create-react-app](https://github.com/facebook/create-react-app) in that it allows a new project to be generated with a single command.
+This document quickly walks through how the geoprocessing framework is put together. How it generates a new report project, publishes it to Amazon Web Services as a CloudFormation stack, and then integrate with a SeaSketch project.
 
-It publishes a CLI (command line interface) via the `geoprocessing` command [registered](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/package.json#L45), which runs the accompanying [script](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/geoprocessing.ts), which publishes all of the CLI commands.
+## Project Init
 
-The [init](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/init/init.ts) command is runnable using `npx` without installing the geoprocessing library (see Tutorials). The init command [creates a new project](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/init/createProject.ts) using the [base-project](https://github.com/seasketch/geoprocessing/tree/dev/packages) as a template followed by merging in one of the available [templates](https://github.com/seasketch/geoprocessing/tree/dev/packages).
+Everything starts with creating a new geoprocessing project. The [init](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/init/init.ts) command asks the user a few configuration questions and then [generates a new project](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/init/createProject.ts) on the users system.
 
-The new generated project takes the geoprocessing library as a dependency, allowing the projects report clients access to the `gp-ui` module and preprocessing/geoprocessing functions access to the `gp-core` module. This also gives the project access to the remaining CLI commands via its [package.json](https://github.com/seasketch/geoprocessing/blob/dev/packages/base-project/package.json), including the ability to [build](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/build/build.sh) client and function bundles using [webpack](https://webpack.js.org/) and [deploy](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/deploy/deploy.sh) the project using [aws-cdk](https://docs.aws.amazon.com/cdk/v2/guide/work-with-cdk-javascript.html).
+The geoprocessing library is modeled loosely after [create-react-app](https://github.com/facebook/create-react-app) in that it allows a new project to be generated with a single command, and a lot of the complexities are pre-configured and hidden to let the report developer focus on writing code.
+
+## Build and Deploy
+
+The geoprocessing library offers a much broader set of commands to a project through its [CLI](../CLI.md) (command line interface). Internally these are exposed via the projects [package.json](https://github.com/seasketch/geoprocessing/blob/dev/packages/base-project/package.json) file and the built-in [geoprocessing script](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/geoprocessing.ts).
+
+A geoprocessing project utilizes the many base UI components published through the `gp-ui` module, as well as , allowing the projects report clients access to the `gp-ui` module and preprocessing/geoprocessing functions access to the `gp-core` module.
+
+A [build](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/build/build.sh) process is used to bundle individual report components into report clients ready to be loaded by SeaSketch. And to bundle preprocessing and geoprocessing functions so they are ready to be run within an AWS Lambda function.
+
+A project is then [deployed](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/scripts/deploy/deploy.sh) to the Amazon public cloud using [aws-cdk](https://docs.aws.amazon.com/cdk/v2/guide/work-with-cdk-javascript.html).
 
 ## Published Project
 
@@ -20,9 +32,12 @@ A published geoprocessing project at its heart is a single monolithic [Geoproces
 
 ### 1. Registering with SeaSketch
 
-The root URL of the REST API returns a manifest of all project assets. This includes names, URL's, and configuration for all of the projects report clients, preprocessing functions, and geoprocessing functions.
+The root URL of the REST API returns a service manifest of all project assets. This includes names, URL's, and configuration for all of the projects report clients, preprocessing functions, and geoprocessing functions.
 
 Example for FSM: [https://yo04tf0re1.execute-api.us-west-2.amazonaws.com/prod/](https://yo04tf0re1.execute-api.us-west-2.amazonaws.com/prod/)
+
+<details>
+<summary>Example Service Manifest</summary>
 
 ```json
 {
@@ -215,7 +230,9 @@ Example for FSM: [https://yo04tf0re1.execute-api.us-west-2.amazonaws.com/prod/](
 }
 ```
 
-SeaSketch allows you to add a preprocessor for your Sketch Class, populating the list from the manifest.
+</details>
+
+Given the URL to this service manifest, SeaSketch allows you to add a preprocessor for your Sketch Class, populating the list from the manifest.
 ![System Model](assets/AddPreprocessor.jpg "Add Preprocessor")
 
 SeaSketch also allows you to add a reporting client for your Sketch Class, populating the list from the manifest.

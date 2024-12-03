@@ -35,7 +35,7 @@ export async function blankFunction(
   const clippedSketch = await clipToGeography(sketch, curGeography);
   const sketchBox = clippedSketch.bbox || bbox(clippedSketch);
 
-  // Fetch data and do analysis or run in worker to offload processing
+  // Fetch data and run analysis. Or if it's time consuming, start a worker to do it in a separate process
 
   // Return ReportResult with Metric[] or create your own return type
   const metrics: Metric[] = [];

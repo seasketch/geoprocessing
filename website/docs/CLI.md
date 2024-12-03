@@ -11,7 +11,6 @@ Each geoprocessing project provides a number of commands to get work done. They 
 - `create:report` - stubs out new report component and geoprocessing function
 - `create:client` - stubs out a new report client
 - `create:function` - stubs out a new geoprocessing function
-- `add:template` - add-on templates for your project
 
 ## Datasource management
 
@@ -29,7 +28,7 @@ Testing uses [Storybook](https://storybook.js.org/), [Jest](https://jestjs.io/) 
 - `start:data` - runs a local file server, serving up the cloud-optimized datasources in `data/dist`.
 - `test` - executes all unit and smoke tests for the project
 
-- `test:unit:matching` - executes unit tests matching the given substring.
+- `test:matching` - executes unit tests matching the given substring.
   - You will need to run `start:data` command manually before running this command if your functions accesses datasources published by this project (not global datasources).
   - See Vitest [-t](https://vitest.dev/guide/cli#options)
   - e.g. `npm run test:matching boundaryAreaOverlapSmoke` where smoke test is coded as follows
@@ -64,7 +63,7 @@ test("boundaryAreaOverlapSmoke - tests run against all examples", async () => {
 
 ## Upgrade scripts
 
-- `install:scripts` - installs scripts from the geoprocessing library to `scripts` and `data/scripts` folders, overwriting existing files. Use to manually upgrade your scripts to the latest after upgrading the geoprocessing library. If you've modified these scripts locally you will need to merge the changes manually.
+- `upgrade` - installs the latest base configurations files and scripts from the geoprocessing library into your project. Migrates your code with breaking changes. If you've modified any base scripts locally you will need to view the changes in git and potentialy re-incorporate them.
 
 ## Language Translation
 

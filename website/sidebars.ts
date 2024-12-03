@@ -18,11 +18,6 @@ const sidebars: SidebarsConfig = {
       items: [
         "introduction",
         "concepts/Concepts",
-        {
-          type: "doc",
-          id: "concepts/AdvancedConcepts",
-          label: "Advanced Concepts",
-        },
         "architecture/Architecture",
         "CLI",
         {

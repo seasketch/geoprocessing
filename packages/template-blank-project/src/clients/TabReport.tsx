@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { SegmentControl, ReportPage } from "@seasketch/geoprocessing/client-ui";
-import { ViabilityPage } from "../components/ViabilityPage.js";
+import {
+  SegmentControl,
+  ReportPage,
+  SketchAttributesCard,
+} from "@seasketch/geoprocessing/client-ui";
 import Translator from "../components/TranslatorAsync.js";
+import { SimpleCard } from "../components/SimpleCard.js";
 
 const enableAllTabs = false;
 const BaseReport = () => {
   const { t } = useTranslation();
-  const viabilityId = "viability";
-  const segments = [{ id: viabilityId, label: t("Viability") }];
-  const [tab, setTab] = useState<string>(viabilityId);
+  const segments = [{ id: "OVERVIEW", label: t("Overview") }];
+  const [tab, setTab] = useState<string>("OVERVIEW");
 
   return (
     <>
@@ -20,8 +23,9 @@ const BaseReport = () => {
           segments={segments}
         />
       </div>
-      <ReportPage hidden={!enableAllTabs && tab !== viabilityId}>
-        <ViabilityPage />
+      <ReportPage hidden={!enableAllTabs && tab !== "OVERVIEW"}>
+        <SimpleCard />
+        <SketchAttributesCard autoHide />
       </ReportPage>
     </>
   );
@@ -36,5 +40,5 @@ export const TabReport = () => {
   );
 };
 
-// Default export lazy-loaded by top-level ReportApp
+// Default export lazy-loaded by production ReportApp
 export default TabReport;

@@ -1637,34 +1637,237 @@ export const ViabilityPage = () => {
 
 Then `npm run storybook` and verify both TabReport and BenthicHabitatCard display as expected for your various example sketches.
 
-## Octocoral Report
+## Seamount Report
 
-The last sample report will use a raster datasource.
+The next report to create will use a raster datasource. This will be very similar to the vector report in that you will calculate % sketch overlap with the data. The difference is in how the data is represented, as raster cells at each row and column, like pixels in an image instead of individual vector polygons with distinct vertices.
+
+[image of raster data]
 
 ### Import Data
 
-Now import the octocorals raster. Its raster cells contain a value of 0 or 1 representing predicted presence/absence of octocorals.
+The seamount raster represents areas that are within 40 kilometers of a seamount. It was created by taking the centerpoint of all seamounts and buffering out 40 kilometers, and then converting to a raster. It is a binary raster such that each raster cell has a value of zero or one. A one value indicates that the cell is within a 40 kilometer seamount buffer.
 
-```text
+```bash
+npm run import:data
+
 ? Type of data?
 Raster
+
 ? Enter path to src file (with filename)
-data/src/octocorals.tif
+data/src/seamounts_40km.tif
+
 ? Choose unique datasource name (a-z, A-Z, 0-9, -, _), defaults to filename
-octocorals
+seamounts_40km
+
 ? Select raster band to import
 1
+
 ? What type of measurement is used for this raster data?
 Quantitative - values represent amounts, measurement of single thing
+
+Adding seamounts_40km record in project/datasources.json file
+```
+
+### Precalc Data
+
+Once data is imported, you can precalc values for it right away since we know you will want them.
+
+```bash
+npm run precalc:data
+
+? Do you want to precalculate only a subset?
+Yes, by datasource
+
+? Which datasources do you want to precalculate? (will precalculate for all geographies)
+Let me choose
+
+? What datasources would you like to precalculate? (select as many as you want)
+seamounts_40km - raster
+
+Precalculating datasource seamounts_40km for geography world
+1 datasource/geography combinations precalculated successfully
+```
+
+Now look at project/precalc.json. You should see 4 new precalculated metrics for octocorals:
+
+- `valid` - count of all raster cells with value (not nodata cells)
+- `count` - count of all cells in the raster, both valid and invalid (nodata)
+- `sum` - sum of value of all valid cell values in raster
+- `area` - area of valid cells in raster in square meters
+
+```json
+  {
+    "geographyId": "world",
+    "metricId": "area",
+    "classId": "seamounts_40km-total",
+    "sketchId": null,
+    "groupId": "band-0",
+    "value": 400949272332.4638
+  },
+  {
+    "geographyId": "world",
+    "metricId": "count",
+    "classId": "seamounts_40km-total",
+    "sketchId": null,
+    "groupId": "band-0",
+    "value": 18748
+  },
+  {
+    "geographyId": "world",
+    "metricId": "sum",
+    "classId": "seamounts_40km-total",
+    "sketchId": null,
+    "groupId": "band-0",
+    "value": 1365
+  },
+  {
+    "geographyId": "world",
+    "metricId": "valid",
+    "classId": "seamounts_40km-total",
+    "sketchId": null,
+    "groupId": "band-0",
+    "value": 1365
+  }
+```
+
+The area calculation is made possible by the fact that the raster is in an equal area projection, making all raster cells a consistent size. Area is then calculated as:
+
+- `area = raster cell width in meters x cell height in meters x number of valid cells
+
+Notice that the precalculated `sum` and `valid` values are the same at `1365`. That is because the valid cells all have a value of 1 and the sum of valid value is the same as the count of valid cells.
+
+### Add Objective
+
+You will now use the built-in framework support for objectives. It allows you to configure a target value and measure progress toward it in a report. Open `project/objectives.json` and add the following objective:
+
+```json
+[
+  {
+    "objectiveId": "seamounts",
+    "shortDesc": "Seamounts 30%",
+    "target": 0.3,
+    "countsToward": {}
+  }
+]
+```
+
+The `countsToward` property isn't used at this time but allows you to indicate which of one or more categories count towards meeting the target. For example if you allow a user to assign a protection level to their sketch, you can allow only the two highest levels of protection to count toward meeting the target.
+
+```
+  "countsToward": {
+      "Full Protection": "yes"
+      "High Protection": "yes",
+      "Low Protection": "no"
+  }
 ```
 
 ### Add Metric Group
 
-Now define a metric group in `project/metrics.json` for our single raster data class. Since this is a raster dataset,
+Now create a seamount metric group that uses the objective in `project/metrics.json`.
+
+```json
+{
+  "metricId": "seamounts",
+  "datasourceId": "seamounts",
+  "classes": [
+    {
+      "classId": "seamounts",
+      "display": "Seamounts",
+      "objectiveId": "seamounts"
+    }
+  ]
+}
+```
+
+### Create Report
+
+Now create a seamount raster report.
+
+```bash
+npm run create:report
+```
+
+Finally, view your reports in storybook.
+
+## Octocoral Report
+
+### Import Data
+
+First, we'll import the three coral raster dataset. Each cell in these rasters has a value of value of 0 or 1, where a 1 represents predicted presence of the species and 0 indicates predicted absence of the species.
+
+Rather than go through importing each datasource, which you can do, copy the following 3 datasource objects into the array in `project/datasources.json` and save it.
+
+````json
+ {
+    "datasourceId": "blackcoral",
+    "geo_type": "raster",
+    "formats": [
+      "tif"
+    ],
+    "precalc": true,
+    "measurementType": "quantitative",
+    "band": 1,
+    "noDataValue": -3.4e+38,
+    "created": "2024-12-02T01:55:09.787Z",
+    "lastUpdated": "2024-12-02T01:55:09.787Z",
+    "src": "data/src/blackcoral.tif"
+  },
+  {
+    "datasourceId": "coldwatercoral",
+    "geo_type": "raster",
+    "formats": [
+      "tif"
+    ],
+    "precalc": true,
+    "measurementType": "quantitative",
+    "band": 1,
+    "noDataValue": -3.4e+38,
+    "created": "2024-12-02T01:55:29.956Z",
+    "lastUpdated": "2024-12-02T01:55:29.956Z",
+    "src": "data/src/coldwatercoral.tif"
+  },
+  {
+    "src": "data/src/octocoral.tif",
+    "band": 1,
+    "geo_type": "raster",
+    "datasourceId": "octocoral",
+    "formats": [
+      "tif"
+    ],
+    "created": "2024-12-02T01:55:47.189Z",
+    "lastUpdated": "2024-12-02T01:55:47.189Z",
+    "noDataValue": -3.4e+38,
+    "measurementType": "quantitative",
+    "precalc": true
+  }
+`
+
+Now reimport the data.  Use the spacebar to select each of the 3 datasources, then press the Enter key.
+
+```bash
+npm run reimport:data
+
+? Do you want to reimport all 5 datasources at once?
+No, let me choose
+
+? What datasources would you like to reimport?
+ ◯ reefextent - vector
+ ◯ benthic-rock - vector
+ ◉ blackcoral - raster
+ ◉ coldwatercoral - raster
+❯◉ octocoral - raster
+````
+
+The rasters, on import, are reprojected to an [equal area projection](https://epsg.io/6933) projection. An equal area projection ensures that the raster cells are a consistent size. This allows area to be easily calculated and a simple count of cells to be used for calculating % sketch overlap.
+
+### Add Metric Group
+
+Now define a metric group in `project/metrics.json` for our raster consisting of a single class of data:
 
 ```json
 {
   "metricId": "octocorals",
+  "datasourceId": "octocorals",
   "classes": [
     {
       "classId": "Octocorals",

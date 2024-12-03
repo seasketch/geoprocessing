@@ -435,20 +435,17 @@ export class ProjectClientBase implements ProjectClientInterface {
     options: { classId?: string } = {},
   ): Datasource {
     const { classId } = options;
-    const dataClass = metricGroup.classes.find((c) => c.classId === classId);
-    if (!dataClass)
-      throw new Error(
-        `Class not found in metricGroup ${metricGroup.metricId} with classId ${classId}`,
-      );
-    if (!metricGroup.datasourceId && !dataClass.datasourceId)
+    if (classId) {
+      const dataClass = metricGroup.classes.find((c) => c.classId === classId);
+      if (dataClass && dataClass.datasourceId)
+        return this.getDatasourceById(dataClass.datasourceId);
+    }
+
+    if (!metricGroup.datasourceId)
       throw new Error(
         `Could not find datasourceId for metric group ${metricGroup.metricId} or its class ${classId}, please add one`,
       );
-
-    const ds = this.getDatasourceById(
-      dataClass.datasourceId! || metricGroup.datasourceId!,
-    );
-    return ds;
+    return this.getDatasourceById(metricGroup.datasourceId);
   }
 
   /**
@@ -463,12 +460,15 @@ export class ProjectClientBase implements ProjectClientInterface {
     options: { classId?: string } = {},
   ) {
     const { classId } = options;
-    const dataClass = metricGroup.classes.find((c) => c.classId === classId);
-    if (!dataClass)
-      throw new Error(
-        `Class not found in metricGroup ${metricGroup.metricId} with classId ${classId}`,
-      );
-    return dataClass.classKey || metricGroup.classKey;
+    if (classId) {
+      const dataClass = metricGroup.classes.find((c) => c.classId === classId);
+      if (!dataClass)
+        throw new Error(
+          `Class not found in metricGroup ${metricGroup.metricId} with classId ${classId}`,
+        );
+      if (dataClass.classKey) return dataClass.classKey;
+    }
+    return metricGroup.classKey;
   }
 
   /**

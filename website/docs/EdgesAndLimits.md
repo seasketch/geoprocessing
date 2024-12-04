@@ -18,7 +18,7 @@
 TurfJS vector function (particularly those that use [Turf.JS](http://turfjs.org/docs/#distance)) measure distance and area by approximating them on a sphere. Turf.js functions strike a balance between speed and accuracy.
 
 - If the geographic area of your project is small, on the order of a few hundred to a thousand miles, and not at high latitudes (> 60), then the accuracy will be quite good, and the error quite small (within 5%) compared to more exact algorithms.
-- And if your planning objectives target creating areas that capture a given % of something, for example 20% of the rocky reef habitat in the entire planning area, then the effect of error in area calculations should be limited to none as long as the area calculations are done using the same algorithms.
+- And if your planning objectives target creating areas that capture a given % of something, for example 20% of the rocky reef habitat in the entire planning area, then the effect of error in area calculations should be **minimal to none**.
 
 Sources:
 

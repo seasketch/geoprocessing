@@ -20,11 +20,6 @@ const sidebars: SidebarsConfig = {
         "concepts/Concepts",
         "architecture/Architecture",
         "CLI",
-        {
-          type: "doc",
-          id: "skills",
-          label: "Skill Building",
-        },
         "EdgesAndLimits",
       ],
     },
@@ -71,6 +66,11 @@ const sidebars: SidebarsConfig = {
           type: "doc",
           id: "thirdpartydata/thirdpartydata",
           label: "Third Party Data",
+        },
+        {
+          type: "doc",
+          id: "tutorials/clouddrive",
+          label: "Cloud Drive Syncing",
         },
       ],
     },

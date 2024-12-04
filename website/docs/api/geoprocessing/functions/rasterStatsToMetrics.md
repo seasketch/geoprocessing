@@ -4,7 +4,7 @@
 function rasterStatsToMetrics(statsObjects, options): object[]
 ```
 
-Converts an array of geoblaze raster StatsObjects to an array of Metrics
+Converts an array of geoblaze raster StatsObject to an array of Metrics
 
 ## Parameters
 

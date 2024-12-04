@@ -263,7 +263,7 @@
 | [randomInt](functions/randomInt.md) | - |
 | [rasterMetrics](functions/rasterMetrics.md) | Calculates summary metrics (stats/area) on given raster, optionally intersecting raster with provided feature (zonal statistics). If feature is a collection, then calculate metrics for each individual feature as well as the collection as a whole. This can be disabled with includeChildMetrics: false. Defaults to assuming a continuous raster but also supports categorical option |
 | [rasterStats](functions/rasterStats.md) | Calculates over 10 different raster statistics, optionally constrains to raster cells overlapping with feature (zonal statistics). Defaults to calculating only sum stat If no cells found, returns 0 or null value for each stat as appropriate. |
-| [rasterStatsToMetrics](functions/rasterStatsToMetrics.md) | Converts an array of geoblaze raster StatsObjects to an array of Metrics |
+| [rasterStatsToMetrics](functions/rasterStatsToMetrics.md) | Converts an array of geoblaze raster StatsObject to an array of Metrics |
 | [rbcsMpaToMetric](functions/rbcsMpaToMetric.md) | - |
 | [rbcsZoneToMetric](functions/rbcsZoneToMetric.md) | Transforms an rbcs zone object to a metric |
 | [rekeyMetrics](functions/rekeyMetrics.md) | Reorders metrics (by mutation) to a consistent key order for readability |

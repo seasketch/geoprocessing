@@ -44,6 +44,22 @@ Wiki docs, including any code snippets in tutorials, are licensed under a <a rel
 - Cloud-native serverless architecture using [AWS Cloud Formation](https://aws.amazon.com/cloudformation/), with automated provisioning and migration as a project evolves.
 - APIs for accessing project resources and integration including REST, Web Socket, and IFrame postMessage.
 
+## Skill Building
+
+There are a number of required skills for using this framework successfully. If you don't have this knowledge, then skill building and potentially mentorship may be needed for you to succeed. Here is a list of resources that can help you get started:
+
+- [Git and Github](https://www.youtube.com/watch?v=RGOj5yH7evk)
+- [Node JS](https://www.freecodecamp.org/news/what-is-node-js/) development
+- [VSCode](https://www.youtube.com/watch?v=WPqXP_kLzpo) integrated development environment (IDE)
+- [Code debugging](https://www.freecodecamp.org/news/what-is-debugging-how-to-debug-code/)
+- [Bash](https://www.freecodecamp.org/news/linux-command-line-bash-tutorial/) command line
+- [React](https://www.freecodecamp.org/learn/front-end-development-libraries/#react) user interface development
+- [Typescript](https://www.freecodecamp.org/news/programming-in-typescript/) code development
+- [QGIS](https://www.qgis.org/en/site/) and [tutorials](https://www.qgistutorials.com/en/)
+- [GDAL](https://gdal.org/index.html) and [tutorials](https://gdal.org/tutorials/index.html)
+
+Essential tips For configuring this framework using a specific operating system (usually Ubuntu).
+
 ## 3rd Party Building Blocks
 
 You will interact with a number of building blocks when creating a `geoprocessing` project, many of which are 3rd party software and services. The main building blocks include:

@@ -953,7 +953,7 @@ npm run test
 Confirm that the output looks as expected.
 
 <details>
-<summary>Example output</summary>
+<summary>Example sketch collection output</summary>
 
 ```text
 {
@@ -1061,7 +1061,9 @@ export const CoralReefCard = () => {
           const targetPercString = percentWithEdge(target);
 
           const meetsObjective = reefPerc >= target;
-          const chartRows = [[[reefPerc]]];
+
+          // Adjust values for chart to be in range 0-100
+          const chartRows = [[[reefPerc * 100]]];
 
           const sketchTypeStr = isCollection
             ? t("sketch collection")
@@ -1670,7 +1672,7 @@ Adding seamounts_40km record in project/datasources.json file
 
 ### Precalc Data
 
-Once data is imported, you can precalc values for it right away since we know you will want them.
+Now, precalculating metrics for a cloud-optimized geotiff raster is a little more complicated than for a flatgeobuf. For this reason, we want to make use of the built-in `precalc` feature. Run the precalc command as follow:
 
 ```bash
 npm run precalc:data
@@ -1730,15 +1732,15 @@ Now look at project/precalc.json. You should see 4 new precalculated metrics for
   }
 ```
 
-The area calculation is made possible by the fact that the raster is in an equal area projection, making all raster cells a consistent size. Area is then calculated as:
+The area calculation is made possible by the fact that the raster is in an equal area projection, making all raster cells a consistent size. Area is calculated as:
 
 - `area = raster cell width in meters x cell height in meters x number of valid cells
 
-Notice that the precalculated `sum` and `valid` values are the same at `1365`. That is because the valid cells all have a value of 1 and the sum of valid value is the same as the count of valid cells.
+Notice that the precalculated `sum` and `valid` values are the same at `1365`. That is because the valid cells all have a value of 1 and the sum of the values in valid cells is the same as the count of valid cells.
 
 ### Add Objective
 
-You will now use the built-in framework support for objectives. It allows you to configure a target value and measure progress toward it in a report. Open `project/objectives.json` and add the following objective:
+You will also use the built-in framework support for objectives. It allows you to configure a target value and measure progress toward it in a report. Open `project/objectives.json` and add the following objective:
 
 ```json
 [
@@ -1751,43 +1753,49 @@ You will now use the built-in framework support for objectives. It allows you to
 ]
 ```
 
-The `countsToward` property isn't used at this time but allows you to indicate which of one or more categories count towards meeting the target. For example if you allow a user to assign a protection level to their sketch, you can allow only the two highest levels of protection to count toward meeting the target.
+The `countsToward` property isn't necessary for this sample project but it allows you to indicate which of one or more categories count towards meeting the target. For example if you allow a user to assign a protection level to their sketch, you can allow only the two highest levels of protection to count toward meeting the target.
 
-```
+Example (do not add):
+
+```json
+{
   "countsToward": {
-      "Full Protection": "yes"
-      "High Protection": "yes",
-      "Low Protection": "no"
+    "Full Protection": "yes",
+    "High Protection": "yes",
+    "Low Protection": "no"
   }
+}
 ```
 
 ### Add Metric Group
 
-Now create a seamount metric group that uses the objective in `project/metrics.json`.
+The last bit of preparation is you will create a metric group. This will allow you to easily access your precalc metrics and your objective in your report card.
+
+Create a seamount metric group that uses the objective in `project/metrics.json`.
 
 ```json
-{
-  "metricId": "seamounts",
-  "datasourceId": "seamounts",
-  "classes": [
-    {
-      "classId": "seamounts",
-      "display": "Seamounts",
-      "objectiveId": "seamounts"
-    }
-  ]
-}
+  {
+    "metricId": "seamounts",
+    "datasourceId": "seamounts_40km",
+    "classes": [
+      {
+        "classId": "seamounts",
+        "display": "Seamounts",
+        "objectiveId": "seamounts"
+      }
+    ]
+  },
 ```
 
 ### Create Report
 
-Now create a seamount raster report.
+Now create a blank seamount report
 
 ```text
 npm run create:report
 
 ? Type of report to create
-Raster overlap report - calculates sketch overlap with raster datasources
+Blank report - empty report ready to build from scratch
 
 ? Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)
 Calculate sketch overlap with seamount raster
@@ -1797,9 +1805,6 @@ seamounts
 
 ? Type of raster data
 Quantitative - Continuous variable across the raster
-
-? Statistic to calculate
-sum - sum of value of valid cells overlapping with sketch
 
 ✔ Created seamounts report
 ✔ Registered report assets in project/geoprocessing.json
@@ -1815,15 +1820,434 @@ Next Steps:
     * Add <SeamountsCard /> to a top-level report client or page when ready
 ```
 
+This creates both a geoprocessing function and report card, and registers them in `project/geoprocessing.json`.
+
+Open `src/functions/seamounts.ts`.
+
+You will now update this code answer the following questions:
+
+- What percentage of area within 40 kilometers of a seamount is within the current sketch polygon (or sketch collection polygons)?
+- If it is a sketch collection, does it meet the planning objective of protecting 30% of all area within 40 kilometers of a seamount?
+
+Replace the existing code with the following:
+
+<details>
+<summary>src/functions/seamounts.ts</summary>
+
+```typescript
+import {
+  Sketch,
+  SketchCollection,
+  Polygon,
+  MultiPolygon,
+  GeoprocessingHandler,
+  DefaultExtraParams,
+  loadCog,
+  rasterStats,
+  toSketchArray,
+  StatsObject,
+} from "@seasketch/geoprocessing";
+import project from "../../project/projectClient.js";
+
+export interface SeamountResult {
+  /** Sum of valid seamount raster cells overlapping with sketch */
+  stats: StatsObject[];
+  childSketchStats: {
+    /** Name of the sketch */
+    name: string;
+    /** Sum of valid seamount raster cells overlapping with sketch */
+    stats: StatsObject[];
+  }[];
+}
+
+/**
+ * seamounts for use with create:report command
+ */
+export async function seamounts(
+  sketch:
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
+  extraParams: DefaultExtraParams = {},
+): Promise<SeamountResult> {
+  const metricGroup = project.getMetricGroup("seamounts");
+  const ds = project.getMetricGroupDatasource(metricGroup);
+  const url = project.getDatasourceUrl(ds);
+  const raster = await loadCog(url);
+
+  // Add analysis code
+  const stats = await rasterStats(raster, {
+    feature: sketch,
+    stats: ["sum"],
+  });
+
+  let childSketchStats: SeamountResult["childSketchStats"] = [];
+  if (sketch.properties.isCollection) {
+    childSketchStats = await Promise.all(
+      toSketchArray(sketch).map(async (childSketch) => {
+        const childStats = await rasterStats(raster, {
+          feature: childSketch,
+          stats: ["sum"],
+        });
+        return {
+          name: childSketch.properties.name,
+          stats: childStats,
+        };
+      }),
+    );
+  }
+
+  // Custom return type
+  return {
+    stats,
+    childSketchStats,
+  };
+}
+
+export default new GeoprocessingHandler(seamounts, {
+  title: "seamounts",
+  description: "Calculate sketch overlap with seamount data",
+  timeout: 60, // seconds
+  memory: 1024, // megabytes
+  executionMode: "async",
+});
+```
+
+</details>
+
+Notice the more sophisticated result payload. It's designed to return one or more raster stats for the top-level sketch, and one or more child sketch stats if it's a sketch collection. This gives the structure some room to grow if you want to produce multiple raster stats for each sketch and use them in this report.
+
+```typescript
+export interface SeamountResult {
+  /** Sum of valid seamount raster cells overlapping with sketch */
+  stats: StatsObject[];
+  childSketchStats: {
+    /** Name of the sketch */
+    name: string;
+    /** Sum of valid seamount raster cells overlapping with sketch */
+    stats: StatsObject[];
+  }[];
+}
+```
+
+Then it fetches the metadata for the seamounts raster, ready to read data from it.
+
+```typescript
+const metricGroup = project.getMetricGroup("seamounts");
+const ds = project.getMetricGroupDatasource(metricGroup);
+const url = project.getDatasourceUrl(ds);
+const raster = await loadCog(url);
+```
+
+Now let's look at the analysis code. If it's a sketch collection, sum the value of all rasters cells that overlap with each child sketch.
+
+```typescript
+// If sketch is collection, sum the value of raster cells that overlap with each child sketch
+let childSketchStats: SeamountResult["childSketchStats"] = [];
+if (sketch.properties.isCollection) {
+  childSketchStats = await Promise.all(
+    toSketchArray(sketch).map(async (childSketch) => {
+      const childStats = await rasterStats(raster, {
+        feature: childSketch,
+        stats: ["sum"],
+      });
+      return {
+        name: childSketch.properties.name,
+        stats: childStats,
+      };
+    }),
+  );
+}
+```
+
+Next, sum the value of raster cells that overlap the entire top-level sketch or sketch collection and return the final result payload.
+
+```typescript
+// Calculate overall sketch area
+const stats = await rasterStats(raster, {
+  feature: sketch,
+  stats: ["sum"],
+});
+
+// Custom return type
+return {
+  stats,
+  childSketchStats,
+};
+```
+
+If this is a sketch collection, you might notice that an optimization would be to sum the value of all the child sketches to get the overall sum for the whole collection. That is true, if your sketches are guaranteed not to overlap. In practice, sketches often can and do overlap in a planning process. The planning process may even allow it such as areas of higher protection within areas of lower protection. This is an optimization left to you.
+
 Now run tests
 
 ```bash
 npm test
 ```
 
-Finally, view your reports in storybook.
+Confirm that the output looks as expected.
 
-Add and commit your latest code when satisfied.
+<details>
+<summary>Example sketch collection output</summary>
+
+```text
+{
+  "stats": [
+    {
+      "sum": 5
+    }
+  ],
+  "childSketchStats": [
+    {
+      "name": "sketchCollection1-1",
+      "stats": [
+        {
+          "sum": 1
+        }
+      ]
+    },
+    {
+      "name": "sketchCollection1-2",
+      "stats": [
+        {
+          "sum": 1
+        }
+      ]
+    },
+    {
+      "name": "sketchCollection1-3",
+      "stats": [
+        {
+          "sum": 0
+        }
+      ]
+    },
+    {
+      "name": "sketchCollection1-4",
+      "stats": [
+        {
+          "sum": 0
+        }
+      ]
+    },
+    {
+      "name": "sketchCollection1-5",
+      "stats": [
+        {
+          "sum": 1
+        }
+      ]
+    },
+    {
+      "name": "sketchCollection1-6",
+      "stats": [
+        {
+          "sum": 0
+        }
+      ]
+    },
+    {
+      "name": "sketchCollection1-7",
+      "stats": [
+        {
+          "sum": 2
+        }
+      ]
+    },
+    {
+      "name": "sketchCollection1-8",
+      "stats": [
+        {
+          "sum": 0
+        }
+      ]
+    },
+    {
+      "name": "sketchCollection1-9",
+      "stats": [
+        {
+          "sum": 0
+        }
+      ]
+    },
+    {
+      "name": "sketchCollection1-10",
+      "stats": [
+        {
+          "sum": 0
+        }
+      ]
+    }
+  ]
+}
+```
+
+</details>
+
+Now, open src/components/SeamountsCard.tsx.
+
+You will now update this code to:
+
+- Display the % of total area within 40 kilometers of a seamount captured within this sketch
+- If it is a sketch collection
+  - Indicate whether the objective of protecting 30% of all area within 40 kilometers of a seamount has been met.
+  - Display a collapsible area with a breakdown of the area and % area of seamount within each individual sketch in the collection.
+
+Replace the existing code with the following:
+
+<details>
+<summary>src/components/SeamountCard.tsx</summary>
+
+```javascript
+import React from "react";
+import { Trans, useTranslation } from "react-i18next";
+import {
+  Collapse,
+  HorizontalStackedBar,
+  ObjectiveStatus,
+  ResultsCard,
+  Table,
+  useSketchProperties,
+  VerticalSpacer,
+} from "@seasketch/geoprocessing/client-ui";
+import {
+  percentWithEdge,
+  roundDecimalFormat,
+  squareMeterToKilometer,
+} from "@seasketch/geoprocessing/client-core";
+import project from "../../project/projectClient.js";
+import { SeamountResult } from "../functions/seamounts.js";
+
+export const SeamountsCard = () => {
+  const { t } = useTranslation();
+  const [{ isCollection }] = useSketchProperties();
+  const titleTrans = t("SimpleCard title", "Simple Report");
+
+  // Get precalc total sum
+  const curGeography = project.getGeographyById("world", {
+    fallbackGroup: "default-boundary",
+  });
+  const metricGroup = project.getMetricGroup("seamounts", t);
+  const precalcMetrics = project.getPrecalcMetrics(
+    metricGroup,
+    "sum",
+    curGeography.geographyId,
+  );
+  const sumTotal = precalcMetrics[0].value;
+
+  // Get objective target
+  const target = project.getObjectiveById("seamounts").target;
+
+  return (
+    <>
+      <ResultsCard title={titleTrans} functionName="seamounts">
+        {(data: SeamountResult) => {
+          console.log("precalc", precalcMetrics);
+          console.log("data", data);
+
+          const sumPerc = data.stats[0].sum! / sumTotal;
+          const sumPercString = percentWithEdge(sumPerc);
+          const targetPercString = percentWithEdge(target);
+
+          const meetsObjective = sumPerc >= target;
+
+          // Adjust values for chart to be in range 0-100
+          const chartRows = [[[sumPerc * 100]]];
+
+          const sketchStr = isCollection ? t("sketch collection") : t("sketch");
+
+          const meetsOrNotElement = meetsObjective ? (
+            <Trans i18nKey="SeamountsCard meets objective message">
+              This {{ sketchStr }} meets the objective of protecting{" "}
+              {{ targetPercString }} of area within 40 km of a seamount.
+            </Trans>
+          ) : (
+            <Trans i18nKey="SeamountsCard does not meet objective message">
+              This {{ sketchStr }} does not meet the objective of protecting{" "}
+              {{ targetPercString }} of area within 40 km of a seamount.
+            </Trans>
+          );
+
+          return (
+            <>
+              <p>
+                <Trans i18nKey="SeamountsCard reef size message">
+                  {{ sumPercString }} of all areas within 40 kilometers of a
+                  seamount is within this {{ sketchStr }}.
+                </Trans>
+              </p>
+              {isCollection && (
+                <ObjectiveStatus
+                  status={meetsObjective ? "yes" : "no"}
+                  msg={meetsOrNotElement}
+                />
+              )}
+
+              <VerticalSpacer />
+              <HorizontalStackedBar
+                rows={chartRows}
+                valueFormatter={(value) => percentWithEdge(value / 100)}
+                max={4}
+                target={20}
+                targetValueFormatter={(targetValue) => (
+                  <Trans i18nKey="SeamountsCard target label">
+                    Target {{ targetValue: percentWithEdge(targetValue / 100) }}
+                  </Trans>
+                )}
+                rowConfigs={[
+                  {
+                    title: t("Total coral reef"),
+                  },
+                ]}
+                blockGroupNames={[]}
+                blockGroupStyles={[{ backgroundColor: "#64c2a6" }]}
+              />
+              {isCollection && (
+                <Collapse title={t("Show By Sketch")}>
+                  <Table
+                    data={data.childSketchStats}
+                    columns={[
+                      {
+                        Header: t("Name"),
+                        accessor: "name",
+                      },
+                      {
+                        Header: t("Seamount within Sketch (km²)"),
+                        accessor: (row: any) =>
+                          roundDecimalFormat(
+                            squareMeterToKilometer(row.stats[0].sum),
+                          ),
+                      },
+                      {
+                        Header: t("% Seamount within Sketch"),
+                        accessor: (row: any) =>
+                          percentWithEdge(row.stats[0].sum / sumTotal),
+                      },
+                    ]}
+                  />
+                </Collapse>
+              )}
+            </>
+          );
+        }}
+      </ResultsCard>
+    </>
+  );
+};
+```
+
+</details>
+
+There are multiple things worth noticing:
+
+- the project client is getting a lot of use to access precalc metrics and the objective target.
+- it is more challenging to access results with a more complex data structure. Imagine if you had multiple raster stats being calculated, for multiple data classes, for multiple protection levels or multiple subregions within your planning area. You'll see in the next report that these dimensions can be flattened using the standardized `Metrics` data structure.
+
+Your report is now ready, view it in storybook
+
+```bash
+npm run storybook
+```
+
+And commit your latest code when satisfied.
 
 ## Coral Species Report
 

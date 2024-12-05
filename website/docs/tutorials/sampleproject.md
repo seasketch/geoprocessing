@@ -642,7 +642,7 @@ The import process will:
   - quickly access project datasources in your reports using the `projectClient` (more on this later)
   - quickly reimport datasources using the `reimport:data` command, without having to answer questions again.
 
-Once finished you are ready to use your datasources for `local` report development. You can add, edit, or delete records in datasources.json manually to meet your need as long as the records meet the expected [schema](../concepts/AdvancedConcepts.md#datasources).
+Once finished you are ready to use your datasources for `local` report development. You can add, edit, or delete records in datasources.json manually to meet your need as long as the records meet the expected [schema](../concepts/Concepts.md#datasources).
 
 If at any point the process of using `data:import`, `datasources.json`, and `projectClient` doesn't meet your needs, you are welcome to create your own separate process, as long as it gets datasources to the `data/dist` directory in the format (fgb) and projection required (EPSG 4326 for vector, EPSG 6933 for raster), ready to be published for production use.
 
@@ -1238,7 +1238,7 @@ Add the following metric group object to `project/metrics.json` and save the fil
 
 This defines a `benthicHabitat` metric that sources data from the `benthic` datasource. The `classKey` indicates this datasource has an attribute named `class` used to identify which data class each polygon is a member of. 3 data classes are defined with a `classId` serving as the unique identifier for the data class, and it also matches the value used in the data at the `classKey` attribute.
 
-To learn more about metric groups, visit the [advanced concepts](../concepts/AdvancedConcepts.md#metric-group) page.
+To learn more about metric groups, visit the [advanced concepts](../concepts/Concepts.md#metric-group) page.
 
 ### Create Report
 
@@ -1579,7 +1579,7 @@ You might have noticed in the precalculated metrics that they are assigned a geo
 
 The default Geography for a new project is the `world` geography, which establishes the entire world as your planning boundary. This is sufficient for your needs until you have a more specific planning boundary that you want to work with. For example you can clip your sketches and your data to a geography in order to report metrics for a specific geography. Since your data is already pre-clipped to the planning area, and there is only one planning area, you don't need to do anything more with this feature. You can just leave it to use the `world` geography.
 
-Geographies are defined in `project/geographies.json`. To learn more visit the [advanced concepts](../concepts/AdvancedConcepts.md#geographies) page.
+Geographies are defined in `project/geographies.json`. To learn more visit the [advanced concepts](../concepts/Concepts.md#geographies) page.
 
 ### View Reports
 

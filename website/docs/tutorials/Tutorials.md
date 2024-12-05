@@ -2,7 +2,7 @@
 
 import { NodeVersion, UbuntuVersion } from '../\_components/NodeVersion';
 
-These tutorials will walk you through creating and deploying a basic seasketch `geoprocessing` project. You should already have a basic working knowledge of your computer, its operating system, shell environment (command line), and web application development using NodeJS and React. Learn more about the [skills](../skills.md) required.
+These tutorials will walk you through creating and deploying a basic seasketch `geoprocessing` project. You should already have a basic working knowledge of your computer, its operating system, shell environment (command line), and web application development using NodeJS and React. Learn more about the [skills](../introduction.md) required.
 
 Setup options:
 

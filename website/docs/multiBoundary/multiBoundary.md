@@ -8,7 +8,7 @@ Some projects might need to support multiple sets of planning units within a lar
 
 So seports might be required to calculate how well each Sketch/Sketch Collection meets planning objectives for **each of the planning units** as well as the overall planning boundary. If a % value metric is to be calculated (value in sketch / value overall), this requires calculating what portion of each Sketch is in each unit as well as how much value for each datasource is in each unit.
 
-The geoprocessing framework solves all of these use cases using [geographies](../concepts/AdvancedConcepts.md#geographies), and the helper functions for working with them.
+The geoprocessing framework solves all of these use cases using [geographies](../concepts/Concepts.md#geographies), and the helper functions for working with them.
 
 If the user will be presented with metrics for all geographies at once, then you can [iterate over the geographies](https://github.com/seasketch/california-reports/blob/main/src/functions/eelgrass.ts#L44) in your geoprocessing function to calculate metrics and display them in your report client.
 

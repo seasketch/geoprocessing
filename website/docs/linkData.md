@@ -70,7 +70,7 @@ Cons:
 
 Steps:
 
-- First, if you use a Cloud Drive product to share and sync data files, make sure your data is synced and you know the path to access it. See [access Cloud Drive folder](./skills.md#access-cloud-drive-folder)
+- First, if you use a Cloud Drive product to share and sync data files, make sure your data is synced and you know the path to access it. See [access Cloud Drive folder](./tutorials/clouddrive.md)
 - Assuming you are using MacOS and your username is `alex`, your path would be `/Users/alex/Library/CloudStorage/Box-Box`
 
 To create the symbolic link, open a terminal and make sure you are in the top-level directory of your geoprocessing project:

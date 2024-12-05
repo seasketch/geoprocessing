@@ -85,7 +85,7 @@ const protectionLevels = sketchFeatures.reduce<Record<string, number>>(
 );
 ```
 
-The key part of most geoprocessing functions is to take the parameters you've collected, use a pre-defined MetricGroup to retrieve and load datasources, then finally run the an analysis function to produce [Metrics](./concepts/AdvancedConcepts.md#metrics), append additional IDs to those metrics (class, geography, etc.) so that it's explicitly clear what the value represents, and merge those metrics into a single result.
+The key part of most geoprocessing functions is to take the parameters you've collected, use a pre-defined MetricGroup to retrieve and load datasources, then finally run the an analysis function to produce [Metrics](./concepts/Concepts.md#metrics), append additional IDs to those metrics (class, geography, etc.) so that it's explicitly clear what the value represents, and merge those metrics into a single result.
 
 ```typescript
 const metrics: Metric[] = (

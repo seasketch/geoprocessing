@@ -188,13 +188,16 @@ When you `init` a new project it will automatically install the `src/i18n` direc
   - Add credentials to your `.bashrc` file
 
 ```bash
+nano ~/.bashrc
+
 export POEDITOR_PROJECT=[YOUR_PROJECT_ID_NUMBER]
 export POEDITOR_API_TOKEN=[YOUR_API_TOKEN]
+
+Ctrl-O to save
+Ctrl-X to exit
 ```
 
-[How do I do that?](../skills.md#editing-your-startup-bash-script-in-ubuntu)
-
-Now, verify the environment variables are set
+Now source the changes into to your current shell and verify the environment variables are set
 
 ```bash
 source ~/.bashrc

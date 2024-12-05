@@ -42,13 +42,15 @@ Now, open a Ubuntu shell and edit your bash environment variables to [point to t
 Add the following to your startup `.bashrc` file.
 
 ```bash
+nano ~/.bashrc
 export AWS_SHARED_CREDENTIALS_FILE=/mnt/c/Users/alex/.aws/credentials
 export AWS_CONFIG_FILE=/mnt/c/Users/alex/.aws/config
+
+Ctrl-o to save
+Ctrl-x to exit
 ```
 
-[How do I do that?](../skills.md#editing-your-startup-bash-script-in-ubuntu)
-
-Now, verify the environment variables are set
+Now, source the file into your current shell environment and verify the environment variables are set
 
 ```bash
 source ~/.bashrc

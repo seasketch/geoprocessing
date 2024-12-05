@@ -2,7 +2,7 @@
 
 This tutorial walks through creating a sample geoprocessing project for the Federated States of Micronesia. It demonstrates multiple methods for doing spatial analysis and creating reports, from low-level to high-level, so that you can engage with it at any/all of the levels needed for your project.
 
-The planning area for this example is defined as the area extending from the baseline (coastline/shoreline) to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
+The planning area for this example is defined as extending from the Micronesia baseline (coastline/shoreline) to the outer boundary of the Exclusive Economic Zone (200 nautical miles).
 
 ![EEZ with land](./assets/eez-with-land.jpg)
 
@@ -20,7 +20,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.124 init 7.0.0-experimental-7x-docs.124
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.128 init 7.0.0-experimental-7x-docs.128
 ```
 
 ```text
@@ -57,32 +57,28 @@ Press Ctrl-J or Ctrl-backtick to open a new terminal
 
 ## Connect Github repo and push
 
-Before you continue, let's take a snapshot of your code now, at the starting point.
-
-[Create a remote Github repository](https://github.com/new) called `fsm-reports-test`. Leave it empty, do not choose to initialize with a template, README, gitignore, or LICENSE.
-
-Then connect your local repo and make your first code commit:
+Before you continue, let's create a local git repository and commit everything so far as a starting point.
 
 ```bash
 git init
 git add .
 git commit -m "first commit"
 git branch -M main
-git remote add origin https://github.com/PUT_YOUR_GITHUB_ORG_OR_USERNAME_HERE/fsm-reports-test.git
-git push -u origin main
 ```
-
-You should see your files successfuly pushed to Github.
-
-It may ask you if it can use the Github extension to sign you in using Github. It will open a browser tab and communicate with the Github website. If you are already logged in there, then it should be done quickly, otherwise it may have you login to Github.
 
 After this point, you can continue using git commands in the terminal to stage code changes and commit them if that's what you know, or you can use VSCode's [built-in git support](https://code.visualstudio.com/docs/sourcecontrol/overview).
 
-You can learn more about your projects [folder structure](../structure.md)
+To learn more about your projects folder structure, visit the [structure](../structure.md) page.
 
 ## Preprocessing
 
-Preprocessing function are invoked by the SeaSketch platform, on a user-drawn shape, right after the user finishes drawing it. It's a specialized function that validates a drawn shape and potentially modifies it, such as to remove portions of the shape outside the planning boundary. This "clipping" of the shape is useful in that it allows a user to overdraw beyond the planning boundary and it will be clipped right to the edge of that boundary.
+Preprocessing functions are invoked by the SeaSketch platform, on a user-drawn shape, right after the user finishes drawing it. It's a specialized function that validates a drawn shape and potentially modifies it, such as to remove portions of the shape outside the planning boundary. This "clipping" of the shape is useful in that it allows a user to overdraw beyond the planning boundary and it will be clipped right to the edge of that boundary.
+
+Here is an example of a preprocessor clipping a user drawn polygon to erase any part overlapping with land
+
+| Before Clip                                           | After Clip                                         |
+| ----------------------------------------------------- | -------------------------------------------------- |
+| ![Before](./assets/preprocessing-before.jpg "Before") | ![After](./assets/preprocessing-after.jpg "After") |
 
 In the `src/functions` directory you will find four preprocessing functions that come with every project, and they are further configureable to meet your needs:
 
@@ -100,7 +96,7 @@ Each preprocessing function has its own unit test and smoke test file. For examp
 
 **Unit tests** ensure the preprocessor produces exact output for very specific input features and configuration, and throws errors properly.
 
-**Smoke tests** are about ensuring the preprocessor behaves properly for your project location, and that its results "look right" for a variety of input features. It does this by loading example shapes from the project `examples/features` directory. It then runs the preprocessing function on the examples, makes sure they produce "truthy" output, and saves them to `examples/output`.
+**Smoke tests** are about ensuring the preprocessor behaves properly for your project location, and that its results "look right" for a variety of input features. It does this by loading example shapes from the project `examples/features` directory. It then runs the preprocessing function on the examples, makes sure they produce output, and saves them to `examples/output`.
 
 To test your preprocessing functions, we need to create example features within the extent of our Micronesian planning area. To do this, run the following script:
 
@@ -117,9 +113,9 @@ Now run the tests:
 npm test
 ```
 
-You can now look at the geojson output in `examples/output`, including visually by opening a file in QGIS or pasting it into geojson.io. This is the best way to verify the preprocessor worked as expected.
+You can now look at the geojson output files in the `examples/output` directory, including visually by opening them in QGIS or pasting the JSON into geojson.io. This is the best way to visually verify the preprocessor worked as expected.
 
-Commit the feature examples and their output files to your git repository so that you can track changes over time.
+This is a good checkpoint to commit your latest changes to Github.
 
 To learn more about preprocessing, check out the [guide](../preprocessing.md)
 
@@ -133,7 +129,9 @@ Your new project comes with a simple report that calculates the area of a sketch
 
 The area calculation is done within a geoprocessing function in `src/functions/simpleFunction.ts`.
 
-Open this file and you will notice this function defines a custom result payload called `SimpleResults`, which in this case is an object with an `area` number value.
+Geoprocessing functions are invoked by a report client, as soon as its loaded in the browser by SeaSketch. It's a specialized function that takes a Sketch polygon or collection of Sketch polygons, performs some analysis, and returns the result to be displayed in the report client.
+
+Open `src/functions/simpleFunction.ts` and you will notice this function defines a custom result payload called `SimpleResults`, which in this case is a Javascript object with an `area` property containing a number value.
 
 ```typescript
 export interface SimpleResults {
@@ -214,66 +212,34 @@ SimpleReport renders two cards, `SimpleCard` and `SketchAttributesCard`, wrappin
 
 `SketchAttributes` card is a card component that displays the properties of the users Sketch. No geoprocessing function is needed to do its work.
 
-`SimpleCard` is a card component that invokes simpleFunction and displays its results. Let's look at the full initial code:
+`SimpleCard` is a card component that invokes simpleFunction and displays its results. Let's look at it closer.
 
-<details>
-<summary>src/components/SimpleCard.tsx</summary>
-
-```jsx
-import React from "react";
-import { Trans, useTranslation } from "react-i18next";
-import {
-  ResultsCard,
-  useSketchProperties,
-} from "@seasketch/geoprocessing/client-ui";
-import { roundDecimalFormat } from "@seasketch/geoprocessing/client-core";
-// Import SimpleResults to type-check data access in ResultsCard render function
-import { SimpleResults } from "../functions/simpleFunction.js";
-
-export const SimpleCard = () => {
-  const { t } = useTranslation();
-  const [{ isCollection }] = useSketchProperties();
-  const titleTrans = t("SimpleCard title", "Simple Report");
-  return (
-    <>
-      <ResultsCard title={titleTrans} functionName="simpleFunction">
-        {(data: SimpleResults) => {
-          const areaSqKm = data.area / 1_000_000;
-          const areaString = roundDecimalFormat(areaSqKm, 0, {
-            keepSmallValues: true,
-          });
-          const sketchStr = isCollection ? t("sketch collection") : t("sketch");
-
-          return (
-            <>
-              <p>
-                <Trans i18nKey="SimpleCard sketch size message">
-                  This {{ sketchStr }} is {{ areaString }} square kilometers.
-                </Trans>
-              </p>
-            </>
-          );
-        }}
-      </ResultsCard>
-    </>
-  );
-};
-```
-
-</details>
-
-The first thing to notice is that SimpleCard renders a `ResultsCard` component. Behind the scenes ResultsCard invokes the geoprocessing function with the `functionName` provided (simpleFunction).
+The first thing to notice is that SimpleCard renders a `ResultsCard` component. Behind the scenes ResultsCard invokes the geoprocessing function with the `functionName` provided (simpleFunction). Keep in mind that in a production environment the ResultsCard is rendered in your web browser and the geoprocessing function is a Lambda function in Amazon's cloud invoked via an API call.
 
 ```typescript
 <ResultsCard title={titleTrans} functionName="simpleFunction">
 ```
 
-ResultsCard then render function it is provided with the results.
+ResultsCard then contains a render function that is provided with the results.
 
 ```typescript
 {
   (data: SimpleResults) => {
-    // Render results here
+    const areaSqKm = data.area / 1_000_000;
+    const areaString = roundDecimalFormat(areaSqKm, 0, {
+      keepSmallValues: true,
+    });
+    const sketchStr = isCollection ? t("sketch collection") : t("sketch");
+
+    return (
+      <>
+        <p>
+          <Trans i18nKey="SimpleCard sketch size message">
+            This {{ sketchStr }} is {{ areaString }} square kilometers.
+          </Trans>
+        </p>
+      </>
+    );
   };
 }
 ```
@@ -284,10 +250,12 @@ The code in this render function is the heart of each report card. This particul
 
 ### Language Translation
 
-The last thing to notice is that SimpleCard contains a lot of boilerplate for language translation of its strings (using [`react-i18next`](https://react.i18next.com/)). If your reports need to be multi-lingual you will need to to use these, otherwise you can drop them. Language translation is a multi-part process:
+The last thing to notice is that SimpleCard contains a lot of boilerplate for language translation of its strings (using [`react-i18next`](https://react.i18next.com/)). If your reports need to be multi-lingual you will need to to use these, otherwise you can drop them.
+
+Language translation is a multi-part process:
 
 - First, a combination of `useTranslation`, `t` function, and `Trans` components are used to establish which strings in your report client and components should be translated.
-- Next, translateable strings are extracted using the `extract:translation` command to `src/i18n/lang/en/translation.json`. The strings extacted for SimpleCard are:
+- Next, those translateable strings are extracted using the `extract:translation` command, and output to `src/i18n/lang/en/translation.json`. The strings extracted for SimpleCard are:
 
 ```text
 {
@@ -297,7 +265,10 @@ The last thing to notice is that SimpleCard contains a lot of boilerplate for la
 }
 ```
 
-- Once the strings are translated to different languages (covered in a later tutorial), the `Translator` component in our report client is responsible for inspecting the users language at runtime in the browser and swapping in strings for the appropriate language.
+- The English translation file is then translated to the other needed languages and put into their own translation files
+- The `Translator` component in your report client is then responsible for inspecting the users language at runtime in the browser and swapping the English strings for strings in the appropriate language.
+
+This process is covered in more detail in a separate doc.
 
 ### Generate Examples
 
@@ -366,17 +337,20 @@ This will:
 
 Open the storybook URL in your browser and click through the stories.
 
-![Storybook initial view](./assets/storybook-one.jpg)
+![Simple Card View](./assets/simple-card-view.jpg)
 
 A powerful feature of Storybook is that when you save edits to your report client or component code, storybook will refresh the browser automatically with the changes. This lets you develop your reports and debug them more quickly.
 
-If you later add more sketch examples to the `examples/sketch` directory, will need to rerun the smoke tests to generate example output, and then stop and restart your storybook to re-generate all the stories.
+There are a couple of situations that will cause you to need to stop your storybook server (Ctrl-C) and then restart it to pick up the changes.
+
+- you add more sketch examples to your `examples/sketch` directory
+- you rerun smoke tests and generate new test output
 
 Learn more in the [storybook guide](./storybook.md).
 
 ### Simple Function Modifications
 
-Let's enhance your simple geoprocessing function to calculate more detailed information when the report is run on a sketch collection. It should now also calculate the area of the entire collection, and the area of each child sketch in the collection.
+Let's enhance your simple geoprocessing function to calculate more detailed information when the report is run on a sketch collection. It should calculate the area of the entire collection, and the area of each child sketch in the collection.
 
 First modify SimpleResults with an additional property `childSketchAreas` that can store this information:
 
@@ -586,7 +560,7 @@ export const SimpleCard = () => {
 
 </details>
 
-If your storybook is still running from last time, you will need to restart it to pick up the new smoke test output. In fact, anytime you rerun your smoke tests to generate new output, you will need to restart your storybook.
+If your storybook is still running from last time, you will need to restart it to pick up the new smoke test output.
 
 ```bash
 Ctrl-C
@@ -668,11 +642,9 @@ The import process will:
   - quickly access project datasources in your reports using the `projectClient` (more on this later)
   - quickly reimport datasources using the `reimport:data` command, without having to answer questions again.
 
-Once finished you are ready to use your datasources for `local` report development. Datasource publishing for `production` use is covered later.
+Once finished you are ready to use your datasources for `local` report development. You can add, edit, or delete records in datasources.json manually to meet your need as long as the records meet the expected [schema](../concepts/AdvancedConcepts.md#datasources).
 
-You can add, edit, or delete records in datasources.json manually to meet your need as long as the records meet the expected [schema](../concepts/AdvancedConcepts.md#datasources).
-
-If at any point the process of using `data:import`, `datasources.json`, and `projectClient` doesn't meet your needs, you are welcome to create your own separate process, as long as it gets datasources to the `data/dist` directory in the format (fgb) and projection (WGS84) required, ready to be published for production use.
+If at any point the process of using `data:import`, `datasources.json`, and `projectClient` doesn't meet your needs, you are welcome to create your own separate process, as long as it gets datasources to the `data/dist` directory in the format (fgb) and projection required (EPSG 4326 for vector, EPSG 6933 for raster), ready to be published for production use.
 
 ### Precalculation
 
@@ -2419,6 +2391,19 @@ You will want to then look at the git changes produced in `src/i18n/lang/en/tran
 
 To learn more visit the
 [LINK TO TRANSLATION DOC]
+
+## Create Github Project
+
+At this point, you can push your code from your local git repository to a remote repository on Github. First, [create a remote Github repository](https://github.com/new) called `fsm-reports-test`. Leave it empty, do not choose to initialize with a template, README, gitignore, or LICENSE.
+
+```bash
+git remote add origin https://github.com/PUT_YOUR_GITHUB_ORG_OR_USERNAME_HERE/fsm-reports-test.git
+git push -u origin main
+```
+
+You should see your files successfuly pushed to Github.
+
+It may ask you if it can use the Github extension to sign you in using Github. It will open a browser tab and communicate with the Github website. If you are already logged in there, then it should be done quickly, otherwise it may have you login to Github.
 
 ## What's Next
 

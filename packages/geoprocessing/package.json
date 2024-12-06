@@ -33,7 +33,6 @@
     "storybook": "storybook dev -p 6006",
     "build:storybook": "rm -rf ../../../gp-storybook/Next && storybook build -o ../../../gp-storybook/Next",
     "start:typedoc": "npx typedoc --watch --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none",
-    "build-docs": "npm run build-typedoc && npm run build-storybook",
     "prepare": "npm run build && npm run _prepare",
     "_prepare": "npx tsx scripts/npm/prepare.ts",
     "start:data": "http-server . -c-1",

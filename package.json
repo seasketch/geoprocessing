@@ -47,7 +47,6 @@
   "scripts": {
     "clean": "git clean -fdx",
     "test": "lerna run test",
-    "build-docs": "lerna run build-docs",
     "lint:eslint": "eslint --fix",
     "lint:prettier": "prettier --write --ignore-unknown .",
     "publish:experimental:canary": "BRANCH_NAME=`git rev-parse --symbolic-full-name --abbrev-ref HEAD`; if [ $BRANCH_NAME != \"dev\" -a $BRANCH_NAME != \"main\" ] ; then CI=1 lerna publish --force-publish --canary --preid experimental-${BRANCH_NAME} --dist-tag=experimental-${BRANCH_NAME} ; fi",

@@ -598,9 +598,9 @@ Next you will create a coral reef report that uses the reef extent dataset. Here
 To access this datasource, first download a data package prepared for FSM to your project space and unzip it:
 
 ```bash
-wget -P data/src https://github.com/user-attachments/files/17697992/FSM_MSP_Data_Example_V2.zip
-unzip data/src/FSM_MSP_Data_Example_V2.zip -d data/src
-rm data/src/FSM_MSP_Data_Example_V2.zip
+wget -P data/src https://github.com/user-attachments/files/18030075/FSM_MSP_Data_Example_v2.zip
+unzip data/src/FSM_MSP_Data_Example_v2.zip -d data/src
+rm data/src/FSM_MSP_Data_Example_v2.zip
 ```
 
 Now import the datasource to your project.
@@ -634,21 +634,19 @@ Yes
 
 The import process will:
 
-- reproject your data to the WGS84 reference system, if not already (for ease of use with Turf.JS)
+- reproject your data to the WGS84 reference system, if not already (required by Turf.JS)
 - split any features that cross the 180 degree [antimeridian](../antimeridian/Antimeridian.md)
 - reduce the source dataset down to only the necessary attributes (saving network bandwidth later)
 - output a new file in the cloud-optimized flatgeobuf format to the `data/dist` directory.
-- register the datasource in `project/datasources.json`, along with metadata. This allows you to:
+- register the datasource in `project/datasources.json`, along with additional metadata. This allows you to:
   - quickly access project datasources in your reports using the `projectClient` (more on this later)
   - quickly reimport datasources using the `reimport:data` command, without having to answer questions again.
 
-Once finished you are ready to use your datasources for `local` report development. You can add, edit, or delete records in datasources.json manually to meet your need as long as the records meet the expected [schema](../concepts/Concepts.md#datasources).
+Once the import is finished, you are ready to use your datasources for `local` report development. You can add, edit, or delete records in datasources.json manually to meet your need as long as the records meet the expected [schema](../concepts/Concepts.md#datasources).
 
-If at any point the process of using `data:import`, `datasources.json`, and `projectClient` doesn't meet your needs, you are welcome to create your own separate process, as long as it gets datasources to the `data/dist` directory in the format (fgb) and projection required (EPSG 4326 for vector, EPSG 6933 for raster), ready to be published for production use.
+### Precalc Data
 
-### Precalculation
-
-Next, you will create a standalone script to calculate the total area of the polygons in the reef extent datasource for use in the report. By doing this calculation ahead of time, you won't need to do it every time the geoprocessing function runs.
+Next, you will create a standalone script to calculate the total area of the polygons in the reef extent datasource for use in the report. By doing this calculation ahead of time, you won't need to do it every time your geoprocessing function runs. There is an automated way of precalculating the area of a datasource, but the purpose of this is to teach you a workflow for doing it on your own.
 
 Create a new file with the following code and save it to `scripts/coralReefPrecalc.ts`:
 
@@ -679,7 +677,7 @@ fs.writeJsonSync(
 );
 ```
 
-Now run it:
+Now run it. Your shell needs to be in the root directory of your project to run this Typescript file directly using `npx`:
 
 ```bash
 npx tsx scripts/coralReefPrecalc.ts
@@ -695,39 +693,41 @@ The script fetches all features from the reef extent flatgeobuf file, calculates
 
 We are going to use this precalculated value in a geoprocessing function in the next step.
 
-### Geoprocessing Function
+### Create Report
 
-To create a new geoprocessing function ready to build on, run the following:
+To create a blank report ready to build on, run the following:
 
 ```bash
-npm run create:function
+npm run create:report
 ```
 
 ```text
-? Function type
-Geoprocessing - For sketch reports
-? Title for this function, in camelCase
-coralReef
-? Describe what this function does
-calculate sketch overlap with reef extent datasource
-? Choose an execution mode
-Async - Better for long-running processes
+? Type of report to create
+Blank report - empty report ready to build from scratch
 
-✔ created coralReef function in src/functions/
-✔ Registered function in project/geoprocessing.json
+? Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)
+Calculate sketch overlap with reef extent datasource
+
+? Title for this report, in camelCase
+coralReef
+
+✔ Created coralReef report
+✔ Registered report assets in project/geoprocessing.json
 
 Geoprocessing function: src/functions/coralReef.ts
 Smoke test: src/functions/coralReefSmoke.test.ts
+Report component: src/components/CoralReefCard.tsx
+Story generator: src/components/CoralReefCard.example-stories.ts
 
 Next Steps:
-    * Update the geoprocessing function with your analysis
-    * Populate examples/sketches folder with sketches for smoke test to run against
-    * 'npm test' to smoke test your new geoprocessing function against all example sketches
+    * 'npm test' to run smoke tests against your new geoprocessing function
+    * 'npm run storybook' to view your new report with smoke test output
+    * Add <CoralReefCard /> to a top-level report client or page when ready
 ```
 
 Open `src/functions/coralReef.ts`.
 
-You will now update this code answer the following questions:
+You will now update this code to answer the following questions:
 
 - What percentage of all coral reef is within the current sketch polygon (or sketch collection polygons)?
 - If it is a sketch collection, does it meet the planning objective of protecting 20% of all coral reef?
@@ -771,7 +771,7 @@ export interface CoralReefResults {
 /**
  * Simple geoprocessing function with custom result payload
  */
-async function coralReef(
+export async function coralReef(
   sketch:
     | Sketch<Polygon | MultiPolygon>
     | SketchCollection<Polygon | MultiPolygon>,
@@ -978,13 +978,7 @@ Confirm that the output looks as expected.
 
 </details>
 
-### Report Client
-
-```typescript
-npm run create:client
-```
-
-Open src/components/CoralReefCard.tsx.
+Now open src/components/CoralReefCard.tsx.
 
 You will now update this code to:
 
@@ -1137,34 +1131,72 @@ When viewing a sketch example, it should display the following:
 
 ![CoralReefCard sketch view](./assets/coral-reef-card-sketch.jpg)
 
-And when viewing a sketch collection example, it should display the additional components:
+Keep in mind your sketch polygon examples are randomly generated so your numbers will vary thw ones shown.
+
+And when viewing a sketch collection example, it should display the additional "Show By Sketch" list:
 
 ![CoralReefCard collection view](./assets/coral-reef-card-collection.jpg)
 
 ### Add to Tab Report
 
-Now add the CoralReefCard as a new section to your top-level TabReport, on its ViabilityPage.
+Now add the CoralReefCard to a new page in your top-level TabReport.
 
-Open `src/components/ViabilityPage.tsx` and replace the code with the following:
+Open `src/clients/TabReport.tsx` and replace the code with the following:
 
 <details>
-<summary>src/components/ViabilityPage.tsx</summary>
+<summary>src/clients/TabReport.tsx</summary>
 
-```typescript
-import React from "react";
-import { SimpleCard } from "./SimpleCard.js";
-import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
-import { CoralReefCard } from "./CoralReefCard.js";
+```javascript
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  SegmentControl,
+  ReportPage,
+  SketchAttributesCard,
+} from "@seasketch/geoprocessing/client-ui";
+import Translator from "../components/TranslatorAsync.js";
+import { SimpleCard } from "../components/SimpleCard.js";
+import { CoralReefCard } from "../components/CoralReefCard.js";
 
-export const ViabilityPage = () => {
+const BaseReport = () => {
+  const { t } = useTranslation();
+  const segments = [
+    { id: "OVERVIEW", label: t("Overview") },
+    { id: "BIOLOGICAL", label: t("Biological") },
+  ];
+  const [tab, setTab] = useState < string > "OVERVIEW";
+
   return (
     <>
-      <SimpleCard />
-      <CoralReefCard />
-      <SketchAttributesCard autoHide />
+      <div style={{ marginTop: 5 }}>
+        <SegmentControl
+          value={tab}
+          onClick={(segment) => setTab(segment)}
+          segments={segments}
+        />
+      </div>
+      <ReportPage hidden={tab !== "OVERVIEW"}>
+        <SimpleCard />
+        <SketchAttributesCard autoHide />
+      </ReportPage>
+      <ReportPage hidden={tab !== "BIOLOGICAL"}>
+        <CoralReefCard />
+      </ReportPage>
     </>
   );
 };
+
+// Named export loaded by storybook
+export const TabReport = () => {
+  return (
+    <Translator>
+      <BaseReport />
+    </Translator>
+  );
+};
+
+// Default export lazy-loaded by production ReportApp
+export default TabReport;
 ```
 
 </details>
@@ -1173,9 +1205,13 @@ Storybook should update on save and display the following:
 
 ![CoralReefCard add to page](./assets/coral-reef-card-add-to-page.jpg)
 
+You should be able to click the tabs and switch between report pages.
+
 ## Benthic Habitat Report
 
-Next you will create a report summarizing sketch overlap with multiple classes of benthic rock. More advanced framework features will be used that streamline the process further.
+Next you will create a report summarizing sketch overlap with 3 classes of rocky substrate (rock, rubble, sand) in the benthic zone (seabottom). Here is an image of it displayed in QGIS within the Micronesian EEZ boundary. Similar to the coral reefs, notice that these 3 types of rocky seabottom are mostly in shallower water near the islands and atolls.
+
+![Benthic habitat map](./assets/benthic-habitat-map.jpg)
 
 ### Import Data
 
@@ -1206,188 +1242,9 @@ class
 Adding benthic-rock record in project/datasources.json file
 ```
 
-### Add Metric Group
-
-A metric group is a higher-level entity that defines a metric to be measured, for one or more classes of data. `MetricGroup` **records** can defined in `project/metrics.json` and accessed using the project client in your geoprocessing functions and reports.
-
-Let's create a metric group by first looking at the benthic dataset. It represents where multiple classes of benthic habitat are present - sand, rock, rubble. Each polygon is assigned with a single habitat type using the `class` attribute and given a value of `Sand`, `Rock`, or `Rubble`.
-
-Add the following metric group object to `project/metrics.json` and save the file.
-
-```json
-{
-  "metricId": "benthicHabitat",
-  "classKey": "class",
-  "datasourceId": "benthic-rock",
-  "classes": [
-    {
-      "classId": "Sand",
-      "display": "Sand"
-    },
-    {
-      "classId": "Rock",
-      "display": "Rock"
-    },
-    {
-      "classId": "Rubble",
-      "display": "Rubble"
-    }
-  ]
-}
-```
-
-This defines a `benthicHabitat` metric that sources data from the `benthic` datasource. The `classKey` indicates this datasource has an attribute named `class` used to identify which data class each polygon is a member of. 3 data classes are defined with a `classId` serving as the unique identifier for the data class, and it also matches the value used in the data at the `classKey` attribute.
-
-To learn more about metric groups, visit the [advanced concepts](../concepts/Concepts.md#metric-group) page.
-
-### Create Report
-
-Next you will create a report that uses your metric group. Run the following command and answer the questions:
-
-```bash
-npm run create:report
-```
-
-```text
-? Type of report to create
-Vector overlap report - calculates sketch overlap with vector datasources
-? Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)
-Calculate sketch overlap with benthic habitat
-? Select the metric group to report on
-benthicHabitat
-
-✔ Created benthicHabitat report
-✔ Registered report assets in project/geoprocessing.json
-
-Geoprocessing function: src/functions/benthicHabitat.ts
-Smoke test: src/functions/benthicHabitatSmoke.test.ts
-Report component: src/components/BenthicHabitatCard.tsx
-Story generator: src/components/BenthicHabitatCard.example-stories.ts
-
-Next Steps:
-    * 'npm test' to run smoke tests against your new geoprocessing function
-    * 'npm run storybook' to view your new report with smoke test output
-    * Add <BenthicHabitatCard /> to a top-level report client or page when ready
-```
-
-You should now have a geoprocessing function and card component ready to go that will iterate through your data classes and calculate/report area overlap with your sketch.
-
-### Test New Example Sketch
-
-Now `npm test` your geoprocessing function and look at the new smoke test output in `examples/output`.
-
-It's very likely that none of your random sketchs overlapped with any benthic polygons and all display zero. Let's add an example sketch that we know will overlap.
-
-<details>
-<summary>examples.output/sketch2.json</summary>
-
-```json
-{
-  "type": "Feature",
-  "properties": {
-    "id": "78f6e916-20f0-471e-a15e-6d632650cf68",
-    "isCollection": false,
-    "userAttributes": [
-      {
-        "label": "Type",
-        "fieldType": "ChoiceField",
-        "exportId": "TYPE",
-        "value": "sketch"
-      },
-      {
-        "label": "Notes",
-        "value": "": "NOTES",
-        "fieldType": "TextArea"
-      }
-    ],
-    "sketchClassId": "3ac026ad-c3eb-471a-b6ad-58782aa5e949",
-    "createdAt": "2024-11-26T02:48:33.985Z",
-    "updatedAt": "2024-11-26T02:48:33.985Z",
-    "name": "sketch2"
-  },
-  "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-      [
-        [
-          151.31665625673213,
-          7.749571426060996
-        ],
-        [
-          151.31665625673213,
-          5.925462431466443
-        ],
-        [
-          153.9861009666032,
-          5.925462431466443
-        ],
-        [
-          153.9861009666032,
-          7.749571426060996
-        ],
-        [
-          151.31665625673213,
-          7.749571426060996
-        ]
-      ]
-    ]
-  },
-  "id": "78f6e916-20f0-471e-a15e-6d632650cf68"
-}
-```
-
-</details>
-
-You should now see non-zero output for each benthic class for the sketch2 example:
-
-<details>
-<summary>examples/output/sketch2/benthicHabitat.json</summary>
-
-```json
-{
-  "metrics": [
-    {
-      "geographyId": "world",
-      "metricId": "benthicHabitat",
-      "classId": "Rock",
-      "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
-      "groupId": null,
-      "value": 11210186.968081,
-      "extra": {
-        "sketchName": "sketch2"
-      }
-    },
-    {
-      "geographyId": "world",
-      "metricId": "benthicHabitat",
-      "classId": "Rubble",
-      "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
-      "groupId": null,
-      "value": 11210186.968081,
-      "extra": {
-        "sketchName": "sketch2"
-      }
-    },
-    {
-      "geographyId": "world",
-      "metricId": "benthicHabitat",
-      "classId": "Sand",
-      "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
-      "groupId": null,
-      "value": 11210186.968081,
-      "extra": {
-        "sketchName": "sketch2"
-      }
-    }
-  ]
-}
-```
-
-</details>
-
 ### Precalc Data
 
-Before you can use your benthic report, you need to precalculate the area of your benthic polygons. Rather than writing a script for this, the `precalc:data` command is available that will inspect your datasources and precalculate basic metrics (area, count). Let's look at the datasource record generated for our benthic-rock datasource to understand what precalc will do.
+Before you can use your benthic report, you need to precalculate the area of your benthic polygons. Rather than writing your own script for this, the `precalc:data` command is available that will inspect your vector datasources and precalculate basic summary metrics (total feature area, total feature count, etc). Let's look at the datasource record generated for our benthic-rock datasource to understand what precalc will do.
 
 <details>
 <summary>project/datasources.json</summary>
@@ -1416,7 +1273,7 @@ Before you can use your benthic report, you need to precalculate the area of you
 
 </details>
 
-You'll notice that the `precalc` property is set to true. That means that it is made available for precalculation. You can disable precalculation for any datasource you want at any time.
+You'll notice that the `precalc` property is set to true. That means that it is made available for precalculation. You can disable precalculation for any datasource you want at any time by setting it to `false`.
 
 You'll also notice that the `class` attribute is configured under `classKeys`.
 
@@ -1426,7 +1283,7 @@ You'll also notice that the `class` attribute is configured under `classKeys`.
 ],
 ```
 
-This is because when importing your datasource, when asked to select feature properties that you want to group metrics by, you should have selected `class`. If present, the precalc command will use this to precalculate metrics by each unique value present in the dataset for the `class` attribute.
+This is because when importing your datasource, when asked to select feature properties that you want to group metrics by, you selected `class`. If present, the precalc command will use this to precalculate metrics by each unique value present in the dataset for the `class` attribute. If not present, you can simply add it now and save your file.
 
 You're now ready to precalculate your metrics.
 
@@ -1534,7 +1391,7 @@ You should now have precalculated `area` and `count` metrics for both reefextent
 
 </details>
 
-Within all of these records you will see four that represent the total area of all benthic-rock polygons and the total area for each of the 3 benthic rock classes:
+Within this array of precalc metric records you will see four that represent the total area of all benthic-rock polygons and the total area for each of the 3 benthic rock classes:
 
 ```json
 {
@@ -1571,7 +1428,13 @@ Within all of these records you will see four that represent the total area of a
 }
 ```
 
-These will get loaded and used in our BenthicReefCard as the denominator value when calculating percent sketch overlap.
+These will get loaded and used by the BenthicReefCard as the denominator value when calculating percent sketch overlap.
+
+:::note
+
+If at any point the process of using `import:data`, `precalc:data` or the `projectClient` don't meet your needs, you are welcome to create your own separate workflow. As long as datasources get to the `data/dist` directory for publishing, in the format (fgb, cog) and projection required (EPSG 4326 for vector, EPSG 6933 for raster) you can create your own solution.
+
+:::
 
 ### World Geography
 
@@ -1581,45 +1444,252 @@ The default Geography for a new project is the `world` geography, which establis
 
 Geographies are defined in `project/geographies.json`. To learn more visit the [advanced concepts](../concepts/Concepts.md#geographies) page.
 
-### View Reports
+### Add Metric Group
 
-Next, add BenthicHabitatCard to the ViabilityPage so that it now displays in your TabReport.
+A metric group is a higher-level entity that defines a metric to be measured, for one or more classes of data. `MetricGroup` **records** can defined in `project/metrics.json` and accessed using the project client in your geoprocessing functions and reports.
+
+Let's create a metric group by first looking at the benthic dataset. It represents where multiple classes of benthic habitat are present - sand, rock, rubble. Each polygon is assigned with a single habitat type using the `class` attribute and given a value of `Sand`, `Rock`, or `Rubble`.
+
+Add the following metric group object to `project/metrics.json` and save the file.
+
+```json
+{
+  "metricId": "benthicHabitat",
+  "classKey": "class",
+  "datasourceId": "benthic-rock",
+  "classes": [
+    {
+      "classId": "Sand",
+      "display": "Sand"
+    },
+    {
+      "classId": "Rock",
+      "display": "Rock"
+    },
+    {
+      "classId": "Rubble",
+      "display": "Rubble"
+    }
+  ]
+}
+```
+
+This defines a `benthicHabitat` metric that sources data from the `benthic` datasource. The `classKey` indicates this datasource has an attribute named `class` used to identify which data class each polygon is a member of. 3 data classes are defined with a `classId` serving as the unique identifier for the data class, and it also matches the value used in the data at the `classKey` attribute.
+
+To learn more about metric groups, visit the [advanced concepts](../concepts/Concepts.md#metric-group) page.
+
+### Create Report
+
+Next you will create a report that uses your metric group. Run the following command and answer the questions:
+
+```bash
+npm run create:report
+```
+
+```text
+? Type of report to create
+Vector overlap report - calculates sketch overlap with vector datasources
+? Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)
+Calculate sketch overlap with benthic habitat
+? Select the metric group to report on
+benthicHabitat
+
+✔ Created benthicHabitat report
+✔ Registered report assets in project/geoprocessing.json
+
+Geoprocessing function: src/functions/benthicHabitat.ts
+Smoke test: src/functions/benthicHabitatSmoke.test.ts
+Report component: src/components/BenthicHabitatCard.tsx
+Story generator: src/components/BenthicHabitatCard.example-stories.ts
+
+Next Steps:
+    * 'npm test' to run smoke tests against your new geoprocessing function
+    * 'npm run storybook' to view your new report with smoke test output
+    * Add <BenthicHabitatCard /> to a top-level report client or page when ready
+```
+
+You should now have a geoprocessing function and card component ready to go that will iterate through your data classes and calculate/report area overlap with your sketch.
+
+### Test New Example Sketch
+
+Now run `npm run test` again look at the new smoke test output for your geoprocessing function in `examples/output`.
+
+It's very likely that none of your random sketchs overlapped with any benthic polygons and all display zero. Add the following example sketch that we know will overlap.
 
 <details>
-<summary>src/components/ViabilityPage.tsx</summary>
+<summary>examples/sketches/sketch2.json</summary>
 
-```typescript
-import React from "react";
-import { SimpleCard } from "./SimpleCard.js";
-import { SketchAttributesCard } from "@seasketch/geoprocessing/client-ui";
-import { CoralReefCard } from "./CoralReefCard.js";
-import { BenthicHabitatCard } from "./BenthicHabitatCard.js";
-
-export const ViabilityPage = () => {
-  return (
-    <>
-      <SimpleCard />
-      <CoralReefCard />
-      <BenthicHabitatCard />
-      <SketchAttributesCard autoHide />
-    </>
-  );
-};
+```json
+{
+  "type": "Feature",
+  "properties": {
+    "id": "78f6e916-20f0-471e-a15e-6d632650cf68",
+    "isCollection": false,
+    "userAttributes": [
+      {
+        "label": "Type",
+        "fieldType": "ChoiceField",
+        "exportId": "TYPE",
+        "value": "sketch"
+      },
+      {
+        "label": "Notes",
+        "value": "NOTES",
+        "fieldType": "TextArea"
+      }
+    ],
+    "sketchClassId": "3ac026ad-c3eb-471a-b6ad-58782aa5e949",
+    "createdAt": "2024-11-26T02:48:33.985Z",
+    "updatedAt": "2024-11-26T02:48:33.985Z",
+    "name": "sketch2"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [151.31665625673213, 7.749571426060996],
+        [151.31665625673213, 5.925462431466443],
+        [153.9861009666032, 5.925462431466443],
+        [153.9861009666032, 7.749571426060996],
+        [151.31665625673213, 7.749571426060996]
+      ]
+    ]
+  },
+  "id": "78f6e916-20f0-471e-a15e-6d632650cf68"
+}
 ```
 
 </details>
 
-Then `npm run storybook` and verify both TabReport and BenthicHabitatCard display as expected for your various example sketches.
+Now `npm run test` and you should now see non-zero output for each benthic class for the sketch2 example:
+
+<details>
+<summary>examples/output/sketch2/benthicHabitat.json</summary>
+
+```json
+{
+  "metrics": [
+    {
+      "geographyId": "world",
+      "metricId": "benthicHabitat",
+      "classId": "Rock",
+      "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
+      "groupId": null,
+      "value": 11210186.968081,
+      "extra": {
+        "sketchName": "sketch2"
+      }
+    },
+    {
+      "geographyId": "world",
+      "metricId": "benthicHabitat",
+      "classId": "Rubble",
+      "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
+      "groupId": null,
+      "value": 11210186.968081,
+      "extra": {
+        "sketchName": "sketch2"
+      }
+    },
+    {
+      "geographyId": "world",
+      "metricId": "benthicHabitat",
+      "classId": "Sand",
+      "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
+      "groupId": null,
+      "value": 11210186.968081,
+      "extra": {
+        "sketchName": "sketch2"
+      }
+    }
+  ]
+}
+```
+
+</details>
+
+### Add To Tab Report
+
+Next, add BenthicHabitatCard to a new **Habitat** page in TabReport. Open `src/clients/TabReport.tsx` and replace the code with the following:
+
+<details>
+<summary>src/clients/TabReport.tsx</summary>
+
+```javascript
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  SegmentControl,
+  ReportPage,
+  SketchAttributesCard,
+} from "@seasketch/geoprocessing/client-ui";
+import Translator from "../components/TranslatorAsync.js";
+import { SimpleCard } from "../components/SimpleCard.js";
+import { CoralReefCard } from "../components/CoralReefCard.js";
+import { BenthicHabitatCard } from "../components/BenthicHabitatCard.js";
+
+const BaseReport = () => {
+  const { t } = useTranslation();
+  const segments = [
+    { id: "OVERVIEW", label: t("Overview") },
+    { id: "BIOLOGICAL", label: t("Biological") },
+    { id: "HABITAT", label: t("Habitat") },
+  ];
+  const [tab, setTab] = useState < string > "OVERVIEW";
+
+  return (
+    <>
+      <div style={{ marginTop: 5 }}>
+        <SegmentControl
+          value={tab}
+          onClick={(segment) => setTab(segment)}
+          segments={segments}
+        />
+      </div>
+      <ReportPage hidden={tab !== "OVERVIEW"}>
+        <SimpleCard />
+        <SketchAttributesCard autoHide />
+      </ReportPage>
+      <ReportPage hidden={tab !== "BIOLOGICAL"}>
+        <CoralReefCard />
+      </ReportPage>
+      <ReportPage hidden={tab !== "HABITAT"}>
+        <BenthicHabitatCard />
+      </ReportPage>
+    </>
+  );
+};
+
+// Named export loaded by storybook
+export const TabReport = () => {
+  return (
+    <Translator>
+      <BaseReport />
+    </Translator>
+  );
+};
+
+// Default export lazy-loaded by production ReportApp
+export default TabReport;
+```
+
+</details>
+
+Storybook should update on save and display the following:
+
+![CoralReefCard add to page](./assets/benthic-habitats-add-page.jpg)
 
 ## Seamount Report
 
-The next report to create will use a raster datasource. This will be very similar to the vector report in that you will calculate % sketch overlap with the data. The difference is in how the data is represented, as raster cells at each row and column, like pixels in an image instead of individual vector polygons with distinct vertices.
+Next you will create a report summarizing sketch overlap with areas that are within 40k kilometers of a seamount, which is an underwater mountain that rises at least 1,000 meters above the surrounding ocean. Here is an image of these areas displayed in QGIS within the Micronesian EEZ boundary.
 
-[image of raster data]
+![Seamount](./assets/seamount-map.jpg)
+
+The seamount dataset is in a raster format. It is a binary raster such that each raster cell has a value of zero or one. Rasters are like digital images, in that each pixel or cell represents a specific rectangular area of the world and gives it a value. This particular dataset is a binary raster. Each cell has a value of zero or one. A one value indicates that the cell is within 40 kilemeters of a seamount, a zero value indicates it is not.
 
 ### Import Data
 
-The seamount raster represents areas that are within 40 kilometers of a seamount. It was created by taking the centerpoint of all seamounts and buffering out 40 kilometers, and then converting to a raster. It is a binary raster such that each raster cell has a value of zero or one. A one value indicates that the cell is within a 40 kilometer seamount buffer.
+Next you will import this seamount raster:
 
 ```bash
 npm run import:data
@@ -1637,7 +1707,7 @@ seamounts_40km
 1
 
 ? What type of measurement is used for this raster data?
-Quantitative - values represent amounts, measurement of single thing
+Quantitative - cell value (number) represents a measurement of a single thing
 
 Adding seamounts_40km record in project/datasources.json file
 ```
@@ -1746,17 +1816,17 @@ The last bit of preparation is you will create a metric group. This will allow y
 Create a seamount metric group that uses the objective in `project/metrics.json`.
 
 ```json
-  {
-    "metricId": "seamounts",
-    "datasourceId": "seamounts_40km",
-    "classes": [
-      {
-        "classId": "seamounts",
-        "display": "Seamounts",
-        "objectiveId": "seamounts"
-      }
-    ]
-  },
+{
+  "metricId": "seamounts",
+  "datasourceId": "seamounts_40km",
+  "classes": [
+    {
+      "classId": "seamounts",
+      "display": "Seamounts",
+      "objectiveId": "seamounts"
+    }
+  ]
+}
 ```
 
 ### Create Report
@@ -1772,11 +1842,8 @@ Blank report - empty report ready to build from scratch
 ? Describe what this reports geoprocessing function will calculate (e.g. Calculate sketch overlap with boundary polygons)
 Calculate sketch overlap with seamount raster
 
-? Select the metric group to report on
+? Title for this report, in camelCase
 seamounts
-
-? Type of raster data
-Quantitative - Continuous variable across the raster
 
 ✔ Created seamounts report
 ✔ Registered report assets in project/geoprocessing.json
@@ -2210,8 +2277,8 @@ export const SeamountsCard = () => {
 
 There are multiple things worth noticing:
 
-- the project client is getting a lot of use to access precalc metrics and the objective target.
-- it is more challenging to access results with a more complex data structure. Imagine if you had multiple raster stats being calculated, for multiple data classes, for multiple protection levels or multiple subregions within your planning area. You'll see in the next report that these dimensions can be flattened using the standardized `Metrics` data structure.
+- the project client is getting more use, to access precalc metrics and the objective target.
+- the code to access the result values is more complex than for the reef report, because the structure of the result data is more complex.
 
 Your report is now ready, view it in storybook
 
@@ -2221,15 +2288,32 @@ npm run storybook
 
 And commit your latest code when satisfied.
 
+## Data Complexity
+
+The rise in complexity of the results you saw in the last report is something to be aware of. Imagine if a report needed to calculate a metric with 10 different classes of data. Now imagine each sketch is assigned to 1 of 4 different protection levels and metrics need to be summarized by each protection level. Finally imagine the planning process is also split out into 3 different subregions, and metrics need to be summarized by overlap with each subregion. How would you design your Result data structure to accommodate all of these dimensions to the data?
+
+You could cobble something together for each need. Or you can use the `Metric` data type that this framework offers. You see a glimpse of it in the precalc output, and in the Coral Reef report. Each `Metric` object represents a single measurement/value for one or more dimensions of data. An array of these Metric objects can represent your entire result payload.
+
+```json
+HERE
+```
+
+You can think of a `Metric` object as being a flat data interchange format that can work relatively well for simple multi-dimensional data. Multiple pieces of this framework know how to produce and consume it including:
+
+- `precalc:data`
+- spatial analysis functions like `rasterMetrics` and `overlapFeatures`
+- UI components like `ClassTable` and `SketchClassTable`
+- helper functions like `firstMatchingMetric`, `sortMetrics` and `rekeyMetrics`
+
 ## Coral Species Report
 
 This last report will calculate sketch overlap with 3 difference species of coral.
 
+![3 corals](./assets/3-corals-map.jpg)
+
 ### Import Data
 
 First, we'll import the datasets. There are three binary rasters, each has cells with a value of zero or one. Where there is a one value, the species is predicted to be present.
-
-[IMAGE HERE]
 
 Import the datasets as follow:
 
@@ -2251,7 +2335,7 @@ blackcoral
 1
 
 ? What type of measurement is used for this raster data?
-Quantitative - values represent amounts, measurement of single thing
+Quantitative - cell value (number) represents a measurement of a single thing
 ```
 
 Cold Water Coral:
@@ -2272,10 +2356,10 @@ coldwatercoral
 1
 
 ? What type of measurement is used for this raster data?
-Quantitative - values represent amounts, measurement of single thing
+Quantitative - cell value (number) represents a measurement of a single thing
 ```
 
-Black Coral:
+Octocoral:
 
 ```bash
 npm run import:data
@@ -2293,7 +2377,7 @@ octocoral
 1
 
 ? What type of measurement is used for this raster data?
-Quantitative - values represent amounts, measurement of single thing
+Quantitative - cell value (number) represents a measurement of a single thing
 ```
 
 ### Precalc
@@ -2338,13 +2422,38 @@ Now define a metric group in `project/metrics.json` consisting of three classes,
       "objectiveId": "coldwatercoral"
     },
     {
-      "datasourceId": "octocorals",
-      "classId": "Octocorals",
-      "display": "Octocorals",
+      "datasourceId": "octocoral",
+      "classId": "Octocoral",
+      "display": "Octocoral",
       "objectiveId": "octocoral"
     }
   ]
 }
+```
+
+### Add Objective
+
+Open `project/objectives.json` and add an objective for each data class:
+
+```json
+  {
+    "objectiveId": "blackcoral",
+    "shortDesc": "Black Coral 15%",
+    "target": 0.15,
+    "countsToward": {}
+  },
+  {
+    "objectiveId": "coldwatercoral",
+    "shortDesc": "Cold Water Coral 25%",
+    "target": 0.25,
+    "countsToward": {}
+  },
+  {
+    "objectiveId": "octocoral",
+    "shortDesc": "Octocoral 35%",
+    "target": 0.35,
+    "countsToward": {}
+  }
 ```
 
 ### Create Report
@@ -2372,6 +2481,28 @@ sum - sum of value of valid cells overlapping with sketch
 ✔ Created coralspecies report
 ✔ Registered report assets in project/geoprocessing.json
 ```
+
+### Add To Tab Report
+
+Next, add CoralspeciesCard to the **Biological** page in TabReport. Open `src/clients/TabReport.tsx` and insert the following at the apprpriate places:
+
+<details>
+<summary>src/clients/TabReport.tsx</summary>
+
+```jsx
+import { CoralspeciesCard } from "../components/CoralspeciesCard.js";
+
+<ReportPage hidden={tab !== "BIOLOGICAL"}>
+  <CoralReefCard />
+  <CoralspeciesCard />
+</ReportPage>;
+```
+
+</details>
+
+Storybook should update on save and display the following:
+
+![CoralReefCard add to page](./assets/3-coral-species-add-page.jpg)
 
 And run the storybook to view the report.
 
@@ -2407,7 +2538,8 @@ It may ask you if it can use the Github extension to sign you in using Github. I
 
 ## What's Next
 
-You've now completed the sample tutorial. Your next step is to choose whether you would like to:
+You've now completed the sample tutorial. Next steps include:
 
+- Further customize these reports to suit your needs. Look at the storybook [component libary](/storybook) to see what is available.
+- [Create a new project](./newproject.md), deploy it to a production environment, publish your data, and integrate your reports with SeaSketch.
 - [Setup an existing project](./existingproject.md), and re-deploy it.
-- [Create a new project](./newproject.md), deploy it and integrate with SeaSketch.

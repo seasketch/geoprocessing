@@ -771,8 +771,8 @@ Choose what the raster data represents.
 `Categorical` - measures presence/absence of multiple groups. The value of each cell in the band is a numeric group identifier, and thus each cell can represent one and only one group at a time.
 
 ```bash
-❯ Quantitative - values represent amounts, measurement of single thing
-  Categorical - values represent groups
+❯ Quantitative - cell value (number) represents a measurement of a single thing
+  Categorical - cell value (number) represents a category the cell is assigned to
 ```
 
 The octocorals raster is a binary 0/1 raster representing absence or presence, so choose `Quantitative`.

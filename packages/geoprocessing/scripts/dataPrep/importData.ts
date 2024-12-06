@@ -326,11 +326,11 @@ async function detailedRasterQuestions(
       choices: [
         {
           value: "quantitative",
-          name: "Quantitative - values represent amounts, measurement of single thing",
+          name: "Quantitative - cell value (number) represents a measurement of a single thing",
         },
         {
           value: "categorical",
-          name: "Categorical - values represent groups",
+          name: "Categorical - cell value (number) represents a category the cell is assigned to",
         },
       ],
     },

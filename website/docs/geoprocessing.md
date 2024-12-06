@@ -4,7 +4,7 @@ Geoprocessing functions are the analytical workhorse of SeaSketch reports. These
 
 Geoprocessing functions are typically invoked in one of two ways:
 
-- By a [report client](./reportclient.md) using a ResultsCard UI component.
+- By a ReportClient using a ResultsCard UI component.
 - By another geoprocessing function such as a parent geoprocessing function calling a [worker](./workers.md) geoprocessing function.
 
 The first step of a geoprocessing function is to import everything you need. The top-level `@seasketch/geoprocessing` module and the dataproviders submodule has most things. See the [Typescript API](./api/index.md) docs to discover more of what they offer.
@@ -31,7 +31,7 @@ import project from "../../project";
 import { clipToGeography } from "../util/clipToGeography";
 ```
 
-The geoprocessing function signature itself should accept a `Sketch` parameter and one or more [extraParams](./tutorials/extraParams.md) as input. [extraParams](./tutorials/extraParams.md) are extra runtime parameters that can be passed by a [report client](./reportclient.md), or passed by a parent geoprocessing function to a [worker](./workers.md).
+The geoprocessing function signature itself should accept a `Sketch` parameter and one or more [extraParams](./tutorials/extraParams.md) as input. [extraParams](./tutorials/extraParams.md) are extra runtime parameters that can be passed by a report client, or passed by a parent geoprocessing function to a [worker](./workers.md).
 
 ```typescript
 export async function sdmValueOverlap(

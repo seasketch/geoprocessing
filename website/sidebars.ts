@@ -123,11 +123,6 @@ const sidebars: SidebarsConfig = {
           id: "geoprocessing",
           label: "Geoprocessing Functions",
         },
-        {
-          type: "doc",
-          id: "reportclient",
-          label: "Report Clients",
-        },
         "workers",
         "tutorials/sketchAttributes",
         {

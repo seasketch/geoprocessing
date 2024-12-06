@@ -20,7 +20,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.128 init 7.0.0-experimental-7x-docs.128
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.132 init 7.0.0-experimental-7x-docs.132
 ```
 
 ```text
@@ -55,7 +55,7 @@ Type /workspaces/fsm-reports-test/
 Press Ctrl-J or Ctrl-backtick to open a new terminal
 ```
 
-## Connect Github repo and push
+## Create Git repo
 
 Before you continue, let's create a local git repository and commit everything so far as a starting point.
 

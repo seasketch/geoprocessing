@@ -21,6 +21,9 @@ Expected cost: [free](https://aws.amazon.com/free) to a few dollars per month. Y
 
 - Create an Amazon [AWS account] such that you can login and access the main AWS Console page (https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
 - Create an AWS IAM [admin account](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html). This is what you will use to manage projects.
+- Setup IAM role allowing API Gateway to log info to Cloudwatch
+  - By default, API Gateway does not have the required permission to write logs to CloudWatch. It is necessary to specify an IAM Role. This can be accomplished by logging into the AWS console, switching to the region where you would like to deploy your geoprocessing function, and configuring this role.
+  - https://coady.tech/aws-cloudwatch-logs-arn/
 
 ## AWSCLI
 
@@ -109,37 +112,3 @@ Then `deploy` again.
 ```bash
 npm run destroy
 ```
-
-Once complete, you will need to `build` and `deploy` again.
-
-## Publish your datasources
-
-Once you have deployed your project to AWS, it will have an S3 bucket for publishing `datasources` to.
-
-Your datasources will need to have already been imported using `import:data` and exist in data/dist for this to work.
-
-```bash
-npm run publish:data
-```
-
-It will ask you if you want to publish all datasources, or choose from a list.
-
-- Note if you don't publish your datasources, then your smoke tests may work properly, but your geoprocessing functions will throw file not found errors in production.
-
-## Integrating Your Project with SeaSketch
-
-Once you've deployed your project, you will find a file called `cdk.outputs` which contains the URL to the service manifest for your project.
-
-```json
-"restApiUrl": "https://xxxyyyyzzz.execute-api.us-west-2.amazonaws.com/prod/",
-```
-
-Now follow the [SeaSketch instructions](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes) to assign services to each of your sketch classes.
-
-If your sketch class is a Polygon or other feature type, you should assign it both a preprocessing function (for clipping) and a report client. If you installed the `template-ocean-eez` starter template then your preprocessor is called `clipToOceanEez` and report client is named `MpaTabReport`.
-
-If your sketch class is a collection then you only need to assign it a report client. Since we build report clients that work on both individual sketches and sketch collections, you can assign the same report client to your collection as you assigned to your individual sketch class(es).
-
-This should give you the sense that you can create different report clients for different sketch classes within the same project. Or even make reports for sketch collections completely different from reports for individual sketches.
-
-Create a sketch and run your reports to make sure it all works!

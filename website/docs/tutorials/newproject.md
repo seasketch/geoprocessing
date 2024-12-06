@@ -1,5 +1,3 @@
-[WORK IN PROGRESS]
-
 # Create New Geoprocessing Project
 
 This tutorial walks you through designing and creating your own geoprocessing report. It covers many of the questions and decisions you might face along the way.
@@ -17,32 +15,25 @@ Creating a geoprocessing project is not linear, it's iterative. You don't need t
 
 ### Design
 
-- Explore the geoprocessing [UI component library](/storybook)
-- Look at other SeaSketch Reports
-- Use a design [template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing). This one asks common questions and is a good place to capture decisions.
+- Put together a rough design [template](https://docs.google.com/document/d/1Qe7pZYmwg7ggRY9ocu3tpdTQkvuIHMr38wLxrjSitpU/edit?usp=sharing). This one asks common questions and is a good place to capture decisions.
+- Explore the geoprocessing [UI components library](/storybook).
+- Look at other SeaSketch Reports and find ideas that match your needs.
 
 ### Start Simple
 
-The geoprocessing framework is a set of building blocks. Which ones you use are up to you. If your planning process requirements can start simple:
+If it's not clear at this point, the geoprocessing framework is not a one-side-fits-all solution, it's a set of building blocks. Which ones you use are up to you.
 
-- a single planning boundary or none at all
+It takes time to figure out how it all works so keep it simple to start:
+
+- single planning boundary or none at all
 - simple measurable objectives (overlap area, % area overlap, overlap feature count)
-- on smaller datasets
-- no classification of sketch types (e.g. protection levels)
+- smaller datasets
+- no groupno classification of sketch types (e.g. protection levels)
 - no need to handle overlapping sketch polygons
-
-Then your geoprocessing project code can start simple:
-
-- no precalculation needed
-- direct import of GeoJSON datasets in code, or simple datasource import.
-- direct use of turf and geoblaze to calculate simple metrics
-- simple reports rendering a few values, a table, a chart
 
 A good example of this is [Oregon](https://github.com/underbluewaters/oregon-next) SeaSketch reports.
 
-### Then Get Complicated
-
-As your planning process gets more complex:
+Then as your planning process gets more complex:
 
 - multiple planning boundaries (offshore/nearshore)
 - multiple objectives with targets
@@ -51,19 +42,18 @@ As your planning process gets more complex:
 - use of a sketch classification system (e.g. protection levels)
 - need to enforce rules about overlapping sketches
 
-Then your project can benefit from more advanced features:
+Your project can benefit from more advanced features:
 
-- Fully managed `Datasources` via `data:import` and `data:publish` commands with automated import, transform, and publish to S3.
 - `Geography` records representing project planning boundaries
 - `Metric` records for representing multi-dimensional analysis results.
 - `Objective` records representing objective targets per sketch class.
 - `MetricGroup` records reresenting relationship of metric results to their data classes, datasource, objective target, etc.
 - `toolbox` for calculating overlay analysis metrics at the collection level in many dimensions - by data class, by protection level, by planning boundary.
   - `overlapFeatures`, `rasterMetrics`, `overlapFeaturesGroupMetrics`, `overlapRasterGroupMetrics`
-- UI components that can work with all of these record types
-  - `ClassTable`, `SketchClassTable`, `GeographySwitcher`, `RbcsMpaObjective`
+- UI components that can work multi-dimensional metrics
+  - `ClassTable`, `SketchClassTable`, `GeographySwitcher`
 - `precalc` command automating pre-calculation of overlay stats for combinations of Datasources and Geographies.
-- `worker` functions to run geoprocessing work in parallel and get results faster.
+- `worker` functions to run spread out geoprocessing work to run in parallel.
 - Language `translation` workflow and library of pre-translated UI components.
 
 Examples of more complex projects:
@@ -74,17 +64,17 @@ Examples of more complex projects:
 - [Samoa Reports](https://github.com/seasketch/samoa-reports)
 - [Azores Nearshore Reports](https://github.com/seasketch/azores-nearshore-reports).
 
-## Create SeaSketch Project
+## Create A SeaSketch Project
 
-First, follow the [instructions](https://docs.seasketch.org/seasketch-documentation/administrators-guide/getting-started) to create a new SeaSketch project. This includes defining the planning bounds and [creating a Sketch class](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes). You will want to create a `Polygon` sketch class with a name that makes sense for you project (e.g. MPA for Marine Protected Area) and then also a `Collection` sketch class to group instances of your polygon sketch class into. Note that sketch classes are where you will integrate your geoprocessing services to view reports, but you will not do it at this time.
+First things first, follow the [instructions](https://docs.seasketch.org/seasketch-documentation/administrators-guide/getting-started) to create a new SeaSketch project. This includes defining the planning bounds and [creating a Sketch class](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes). You will want to create a `Polygon` sketch class with a name that makes sense for you project (e.g. MPA for Marine Protected Area) and then also a `Collection` sketch class to group instances of your polygon sketch class into. Note that sketch classes are where you will integrate your geoprocessing services to view reports, but you will not do it at this time.
 
-## Initialize New Project
+## Initialize New Geoprocessing Project
 
 Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.128 init 7.0.0-experimental-7x-docs.128
+npx @seasketch/geoprocessing@7.0.0-experimental-7x-docs.132 init 7.0.0-experimental-7x-docs.132
 ```
 
 Tips:
@@ -95,73 +85,30 @@ Tips:
 
 Learn more about your projects [structure](../structure.md)
 
-## Link Data Into Workspace
+- [Create Github repo and push](./sampleproject.md#create-git-repo)
+- [Link data into workspace](../linkData.md)
 
-Choose how to [bring data into your workspace](../linkData.md).
+## Create Your First Report
 
-## Import Datasources
+- [Low-level vector report](./sampleproject.md#reef-report)
+- [High-level vector report](./sampleproject.md#benthic-habitat-report)
+- [Low-level raster report](./sampleproject.md#seamount-report)
+- [High-level raster report](./sampleproject.md#coral-species-report)
 
-Methods:
+## Build Your Project
 
-- Use `import:data`
-- Script your own method to prepare data and put it into `data/dist`
+The application `build` proceess packages it for deployment. Specifically it:
 
-## Write a Geoprocessing Function
+- Checks all the Typescript code to make sure it's valid and types are used properly.
+- Transpiles all Typescript to Javascript
+- Bundles UI report clients into the `.build-web` directory
+- Bundles geoprocessing and preprocessing functions into the `.build` directory.
 
-Let's start with `src/functions/simpleFunction` and build it up to use a datasource.
-
-Methods:
-
-- Directly import geojson file in function
-- Use `datasource` record and `getDatasource` and `getFeatures`
-- Load from project datasets bucket using `loadFgb` or `loadCog` function
-- Load from third-party using `loadFgb` or `loadCog` function
-
-If the data you'll use in analysis is already published online, publicly accessible, and in flatgeobuf or cloud-optimized geotiff format, then you can directly access them with `loadFgb` and `loadCog` functions.
-
-## Testing
-
-Methods to generate examples:
-
-- genRandomPolygon
-- geojson.io
-- export sketch geojson from SeaSketch project
-
-Assuming you have a SeaSketch project with a Polygon sketch class, follow the instructions for [sketching tools](https://docs.seasketch.org/seasketch-documentation/users-guide/sketching-tools) to draw one or more polygon sketches. You can also create a collection and group your sketches into the collection.
-
-Finally, [export](https://docs.seasketch.org/seasketch-documentation/users-guide/sketching-tools#downloading-sketches) your sketches and sketch collections as GeoJSON, and move them into your geoprocessing projects `examples/sketches` folder.
+To build your application run the following:
 
 ```bash
-  /examples/
-    sketches/ # <-- examples used by geoprocessing functions
-    features/ # <-- examples used by preprocessing functions
+npm run build
 ```
-
-Once you add your example sketches and collections to this folder, run your smoke tests.
-
-```bash
-npm run test
-```
-
-The smoke test for your geoprocessing function will run the function against every sketch example whether a single Sketch or a SketchCollection and output the results to `examples/output`. You look at this output and ensure that it is as expected.
-
-Learn more about testing and debugging in
-[testing](../Testing.md)
-
-## Write Report Client
-
-## Build and Deploy to AWS
-
-[Deploy your project](deploy.md)
-
-## Publish Datasources
-
-Methods:
-
-- use `publish:data`
-- script your own method to publish datasources from `data/dist` to project `datasets` S3 bucket.
-
-### Debugging build failure
 
 If the build step fails, you will need to look at the error message and figure out what you need to do. Did it fail in building the functions or the clients? 99% of the time you should be able to catch these errors sooner. If VSCode finds invalid Typescript code, it will warn you with files marked in `red` in the Explorer panel or with red markes and squiggle text in any of the files.
 
@@ -171,82 +118,72 @@ If you're still not sure try some of the following:
 - When was the last time your build did succeed? You can be sure the error is caused by a change you made since then either in your project code, by upgrading your geoprocessing library version and not migratin fully, or by changing something on your system.
 - You can stash your current changes or commit them to a branch so they are not lost. Then sequentially check out previous commits of the code until you find one that builds properly. Now you know that the next commit cause the build error.
 
-## Connect to SeaSketch Project and Test
+## Deploy Project To AWS
 
-Choose `clipToOcean` as preprocessor
-Choose `MpaTabReport` as report client
+[Deploy your project](deploy.md)
 
-Test different sketch and collection scenarios. When you find one that errors or does something unexpected, then you can export that sketch to your projects `examples/sketches` directory and run your smoke tests. If that succeeds and produces output as expected, then load your storybook and see if you can reproduce in your report client.
+- Setup AWSCLI
+- Deploy to AWS
 
-## Advanced Features
+## Publish Datasources
 
-There are more advanced features available if you need them.
+Once you have deployed your project to AWS, it will have an S3 bucket just for publishing `datasources`. The name of this bucket is based on the name of your project. If your project is named `my-project` (the name assigned in your package.json file), then the bucket name will be:
 
-### Project Client
-
-It has a lot of shortcut methods for working with datasources, geographies, precalc metrics, objectives, etc.
-
-[Link to project client ]
-
-### Configure Geography
-
-Import planning boundary datasource and add as geography
-
-#### Precalc Metrics
-
-At the very least you should import your planning boundaries, preferably as individual files, or as individual layers within a file package.
-
-```sh
-npm run precalc:data
-
-? Do you want to precalculate only a subset?
-  Yes, by datasource
-  Yes, by geography
-  Yes, by both
-❯ No, just precalculate everything (may take a while)
+```
+s3://gp-my-project-datasets
 ```
 
-What's happening is that the precalc script starts a local web server on port 8001 that serves up the datasources in `data/dist`.
+To pubish your data run the following command:
 
-The precalc script then gets all your project datasources with `precalc: true`, and all your project geographies with `precalc: true`, and then calculate `area`, `sum`, and `count` metrics for each combination of datasource and geography.
+```bash
+npm run publish:data
+```
 
-Once complete `project/precalc.json` will have been updated with the new metric values.
+It will ask you if you want to publish all datasources, or choose from a list.
 
-If your datasource has `classKeys` defined in its record, precalc will also calculate `area`, `sum`, and `count` for each unique class value found within the classKey.
+Your datasources will need to have already been imported using `import:data` and exist in the `data/dist` for this to work.
 
-You must re-run `precalc:data` every time you change a geography record or a datasource.
+Note if you don't publish your datasources, then your local smoke tests may work properly, but your geoprocessing functions will throw file not found errors in production.
 
-- To learn more advanced use, see the [precalc](../precalc.md) guide.
-- To learn more about use of precalculated metrics, see the [report client](../reportclient.md) guide.
+## Integrate With SeaSketch
 
-### Metric Groups
+Once you've deployed your project, you will find a file called `cdk.outputs` which contains the URL to the service manifest for your project.
 
-How you intend to use your data will determine what form the data needs to be in.
+```json
+"restApiUrl": "https://xxxyyyyzzz.execute-api.us-west-2.amazonaws.com/prod/",
+```
 
-- Do you have a vector dataset?
-  - Does it have a single data class?
-  - Does it have multiple data classes?
-    - Is it one data class per file?
-    - Is it one data class per layer within file?
-    - Does it have multiple data classes within one layer with an attribute to differentiate them?
-- Do you have raster dataset?
-  - Does it have a single data class?
-    - Is it one file with one data class?
-  - Does it have multiple data classes?
-    - Is it one file, one data class per raster band?
-    - Is it multiple files, one data class per file?
-    - Is it a categorical raster with unique cell value for each class?
+Now follow the [SeaSketch instructions](https://docs.seasketch.org/seasketch-documentation/administrators-guide/sketch-classes) to assign services to each of your sketch classes.
 
-[ToDo: provide metric group example for each leaf in tree]
+If your sketch class is a Polygon or other feature type, you should assign it both a preprocessing function (for clipping) and a report client. If you installed the `template-ocean-eez` starter template then your preprocessor is called `clipToOceanEez` and report client is named `MpaTabReport`.
 
-### Create Report
+If your sketch class is a collection then you only need to assign it a report client. Since we build report clients that work on both individual sketches and sketch collections, you can assign the same report client to your collection as you assigned to your individual sketch class(es).
 
-- Edits to the statistic you want calculated (i.e.calculating average instead of sum, etc) should happen in your function.
-- Edits to the way the analytics are displayed (i.e. changing labels, converting units, adding text context, etc) should happen in your report components.
+This should give you the sense that you can create different report clients for different sketch classes within the same project. Or even make reports for sketch collections completely different from reports for individual sketches.
 
-### Language Translation
+Create a sketch and run your reports to make sure it all works!
 
-Language translation takes effort to maintain. It is suggested that you get your reports close to final, in the English language, and then [add translations](../gip/GIP-1-i18n.md#language-translation-tutorial).
+## Build Up Your Tests
+
+Test different sketch and collection scenarios. Here's some possibilities:
+
+- draw a sketch that covers the entire planning area
+- draw a tiny sketch
+- draw two sketches that overlap and put them in a collection. Make sure overlap is handled properly in reports.
+
+When you find a sketch that produces an error in your reports in SeaSketch, in most cases you should be able to reproduce it in your local environment. To do this, export the sketch as a GeoJSON file, and put it in your `examples/sketches` directory and run your smoke tests. If the geoprocessing functions all succeed, then load storybook and see if you can produce an error in the browser.
+
+## Additional Guides
+
+- [Create a custom preprocessing function](../preprocessing.md)
+- [Learn more about geoprocessing functions](../geoprocessing.md)
+- [Setup language translation (i18n)](../gip/GIP-1-i18n.md#language-translation-tutorial)
+  - Language translation takes effort to maintain. It is suggested that you get your reports close to final, in the English language, and then dig in.
+- [Worker Functions](../workers.md)
+- [Custom Sketch Attributes](./sketchAttributes.md)
+- [Extra Function Parameters](./extraParams.md)
+- [Multi-Boundary](../multiBoundary/multiBoundary.md)
+- [Antimeridian](../antimeridian/Antimeridian.md)
 
 ## What Next
 

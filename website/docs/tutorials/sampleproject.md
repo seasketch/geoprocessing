@@ -2158,7 +2158,7 @@ import { SeamountResult } from "../functions/seamounts.js";
 export const SeamountsCard = () => {
   const { t } = useTranslation();
   const [{ isCollection }] = useSketchProperties();
-  const titleTrans = t("SimpleCard title", "Simple Report");
+  const titleTrans = t("SeamountCard title", "SeamountCard");
 
   // Get precalc total sum
   const curGeography = project.getGeographyById("world", {
@@ -2208,7 +2208,7 @@ export const SeamountsCard = () => {
           return (
             <>
               <p>
-                <Trans i18nKey="SeamountsCard reef size message">
+                <Trans i18nKey="SeamountsCard size message">
                   {{ sumPercString }} of all areas within 40 kilometers of a
                   seamount is within this {{ sketchStr }}.
                 </Trans>
@@ -2233,7 +2233,7 @@ export const SeamountsCard = () => {
                 )}
                 rowConfigs={[
                   {
-                    title: t("Total coral reef"),
+                    title: t("Total seamounts"),
                   },
                 ]}
                 blockGroupNames={[]}
@@ -2280,30 +2280,56 @@ There are multiple things worth noticing:
 - the project client is getting more use, to access precalc metrics and the objective target.
 - the code to access the result values is more complex than for the reef report, because the structure of the result data is more complex.
 
-Your report is now ready, view it in storybook
+### Add To Tab Report
 
-```bash
-npm run storybook
+Next, add SeamountsCard to the **Habitat** page in TabReport. Open `src/clients/TabReport.tsx` and insert the following at the appropriate places:
+
+<details>
+<summary>src/clients/TabReport.tsx</summary>
+
+```jsx
+import { SeamountsCard } from "../components/SeamountsCard.js";
+
+<ReportPage hidden={tab !== "HABITAT"}>
+  <BenthicHabitatCard />
+  <SeamountsCard />
+</ReportPage>;
 ```
 
-And commit your latest code when satisfied.
+</details>
 
-## Data Complexity
+Storybook should update on save and display the following:
 
-The rise in complexity of the results you saw in the last report is something to be aware of. Imagine if a report needed to calculate a metric with 10 different classes of data. Now imagine each sketch is assigned to 1 of 4 different protection levels and metrics need to be summarized by each protection level. Finally imagine the planning process is also split out into 3 different subregions, and metrics need to be summarized by overlap with each subregion. How would you design your Result data structure to accommodate all of these dimensions to the data?
+![Seamount add to page](./assets/seamount-add-page.jpg)
 
-You could cobble something together for each need. Or you can use the `Metric` data type that this framework offers. You see a glimpse of it in the precalc output, and in the Coral Reef report. Each `Metric` object represents a single measurement/value for one or more dimensions of data. An array of these Metric objects can represent your entire result payload.
+### Data Complexity
+
+The rise in complexity of the results you started to see in the last report is something to be aware of. Imagine if a report needed to calculate a metric with 10 different classes of data. Now imagine each sketch is assigned to 1 of 4 different protection levels. Finally imagine the planning process is also split out into 3 different subregions. Now imagine you need to calculate metrics for every combination of sketch, data class, protection level, and subregion. How would you design the structure of your JSON result data structure to accommodate the data? How would you do it in a way that is flexible and reusable so that components of the framework can build on it?
+
+The `Metric` data type is designed to accommodate this type of multi-dimensional data. You see a glimpse of it in the precalc output, and in the Coral Reef report. Each `Metric` object represents a single measurement/value for one or more dimensions of data. A simple array of these Metric objects can represent your entire result payload.
+
+Example of a single Metric `coralspecies`, that measures a sketches overlap with data class `blackcoral`, in `subregion 1`, where the sketch is assigned `full protection`.
 
 ```json
-HERE
+{
+  "geographyId": "subregion1",
+  "metricId": "coralspecies",
+  "classId": "blackcoral",
+  "sketchId": "78f6e916-20f0-471e-a15e-6d632650cf68",
+  "groupId": "full_protection",
+  "value": 3,
+  "extra": {
+    "sketchName": "sketch2"
+  }
+}
 ```
 
-You can think of a `Metric` object as being a flat data interchange format that can work relatively well for simple multi-dimensional data. Multiple pieces of this framework know how to produce and consume it including:
+Multiple pieces of this framework know how to work with `Metrics` including:
 
 - `precalc:data`
-- spatial analysis functions like `rasterMetrics` and `overlapFeatures`
+- high-level spatial analysis functions like `rasterMetrics` and `overlapFeatures`
 - UI components like `ClassTable` and `SketchClassTable`
-- helper functions like `firstMatchingMetric`, `sortMetrics` and `rekeyMetrics`
+- helper functions like `firstMatchingMetric`, `toPercentMetric` and `sortMetrics`
 
 ## Coral Species Report
 
@@ -2484,7 +2510,7 @@ sum - sum of value of valid cells overlapping with sketch
 
 ### Add To Tab Report
 
-Next, add CoralspeciesCard to the **Biological** page in TabReport. Open `src/clients/TabReport.tsx` and insert the following at the apprpriate places:
+Next, add CoralspeciesCard to the **Biological** page in TabReport. Open `src/clients/TabReport.tsx` and insert the following at the appropriate places:
 
 <details>
 <summary>src/clients/TabReport.tsx</summary>
@@ -2503,12 +2529,6 @@ import { CoralspeciesCard } from "../components/CoralspeciesCard.js";
 Storybook should update on save and display the following:
 
 ![CoralReefCard add to page](./assets/3-coral-species-add-page.jpg)
-
-And run the storybook to view the report.
-
-```bash
-npm run storybook
-```
 
 ### Language Translation
 

@@ -27,7 +27,7 @@ describe("precalcRasterDatasource", () => {
     // Ensure test data folder
     fs.mkdirsSync(dstPath);
   });
-  test.skip("precalcRasterDatasource - single file, single class should write geography and precalc raster metrics", async () => {
+  test("precalcRasterDatasource - single file, single class should write geography and precalc raster metrics", async () => {
     const dsFilename = "datasources_precalc_raster_test_1.json";
     const dsFilePath = path.join(dstPath, dsFilename);
     const datasourceId = "samoa_benthic_reef_sand";
@@ -131,7 +131,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(precalcFilePath);
   }, 60_000);
 
-  test.skip("precalcRasterDatasource - multiple geog scenarios with external subdivided datasource", async () => {
+  test("precalcRasterDatasource - multiple geog scenarios with external subdivided datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_9.json";
     const dsFilePath = path.join(dstPath, dsFilename);
     const rasterDatasourceId = "samoa_benthic_reef_sand9";
@@ -284,7 +284,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(precalcFilePath);
   }, 10_000);
 
-  test.skip("precalcRasterDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
+  test("precalcRasterDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_8.json";
     const dsFilePath = path.join(dstPath, dsFilename);
     const rasterDatasourceId = "samoa_benthic_reef_sand8";
@@ -428,7 +428,7 @@ describe("precalcRasterDatasource", () => {
     fs.removeSync(precalcFilePath);
   }, 30_000);
 
-  test.skip("precalcRasterDatasource - multiple geog scenarios with internal geojson datasource", async () => {
+  test("precalcRasterDatasource - multiple geog scenarios with internal geojson datasource", async () => {
     const dsFilename = "datasources_precalc_raster_test_7.json";
     const dsFilePath = path.join(dstPath, dsFilename);
     const rasterDatasourceId = "samoa_benthic_reef_sand7";

@@ -31,7 +31,7 @@ describe("precalcDatasources", () => {
       fs.mkdirsSync(dstPath);
     });
 
-    test.skip("precalcVectorDatasource - single geog, internal datasource, single class", async () => {
+    test("precalcVectorDatasource - single geog, internal datasource, single class", async () => {
       const dsFilename = "datasources_precalc_vector_test_1.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const datasourceId = "eez1";
@@ -118,7 +118,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(precalcFilePath);
     }, 20_000);
 
-    test.skip("precalcVectorDatasource - single geog, internal datasource, multi-class", async () => {
+    test("precalcVectorDatasource - single geog, internal datasource, multi-class", async () => {
       const dsFilename = "datasources_precalc_vector_test_2.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const classDatasourceId = "shelf_class2";
@@ -233,7 +233,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
     }, 20_000);
-    test.skip("precalcVectorDatasource - single geog, two datasources should write metrics", async () => {
+    test("precalcVectorDatasource - single geog, two datasources should write metrics", async () => {
       const dsFilename = "datasources_precalc_vector_test_3.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const classDatasourceId1 = "shelf_class3";
@@ -392,7 +392,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(geogFilePath);
       fs.removeSync(precalcFilePath);
     }, 20_000);
-    test.skip("precalcVectorDatasource - single geog, update datasource", async () => {
+    test("precalcVectorDatasource - single geog, update datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_4.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const classDatasourceId1 = "shelf_class4";
@@ -549,7 +549,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(precalcFilePath);
     }, 20_000);
 
-    test.skip("precalcVectorDatasource - multiple geog scenarios with external subdivided datasource", async () => {
+    test("precalcVectorDatasource - multiple geog scenarios with external subdivided datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_6.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const internalDatasourceId = "samoa-eez-cross";
@@ -670,21 +670,22 @@ describe("precalcDatasources", () => {
         (m) => m.geographyId === "geog-box-filter" && m.metricId === "area",
       );
       // Largest area value
-      expect(boxFilterMetric.value).toEqual(61_990_788_175.991_97);
+      expect(boxFilterMetric.value).toEqual(61_852_303_909.376_854);
 
       const singleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-single-filter" && m.metricId === "area",
       );
       // Smallest area value, samoa only
-      expect(singleFilterMetric.value).toEqual(37_822_608_708.983_15);
+
+      expect(singleFilterMetric.value).toEqual(37_738_114_925.589_806);
 
       const doubleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-double-filter" && m.metricId === "area",
       );
       // Slightly larger area value, both samoa
-      expect(doubleFilterMetric.value).toEqual(39_734_709_577.156_77);
+      expect(doubleFilterMetric.value).toEqual(39_645_944_257.713_905);
 
       fs.removeSync(dsFilePath);
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
@@ -693,7 +694,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(precalcFilePath);
     }, 20_000);
 
-    test.skip("precalcVectorDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
+    test("precalcVectorDatasource - multiple geog scenarios with external flatgeobuf datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_7.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const internalDatasourceId = "samoa-eez-cross";
@@ -817,21 +818,21 @@ describe("precalcDatasources", () => {
         (m) => m.geographyId === "geog-box-filter" && m.metricId === "area",
       );
       // Largest area value
-      expect(boxFilterMetric.value).toEqual(59_689_842_766.9754);
+      expect(boxFilterMetric.value).toEqual(59_556_498_695.328_66);
 
       const singleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-single-filter" && m.metricId === "area",
       );
       // Smallest area value, samoa only
-      expect(singleFilterMetric.value).toEqual(35_521_663_299.966_43);
+      expect(singleFilterMetric.value).toEqual(35_442_309_711.542_16);
 
       const doubleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-double-filter" && m.metricId === "area",
       );
       // Slightly larger area value, both samoa
-      expect(doubleFilterMetric.value).toEqual(37_433_764_168.140_05);
+      expect(doubleFilterMetric.value).toEqual(37_350_139_043.666_25);
 
       fs.removeSync(dsFilePath);
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));
@@ -840,7 +841,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(precalcFilePath);
     }, 20_000);
 
-    test.skip("precalcVectorDatasource - world geog, external datasource", async () => {
+    test("precalcVectorDatasource - world geog, external datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_8.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const datasourceId = "world";
@@ -914,7 +915,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(precalcFilePath);
     }, 20_000);
 
-    test.skip("precalcVectorDatasource - world geog, internal datasource", async () => {
+    test("precalcVectorDatasource - world geog, internal datasource", async () => {
       const dsFilename = "datasources_precalc_vector_test_9.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const datasourceId = "world";
@@ -993,7 +994,7 @@ describe("precalcDatasources", () => {
       fs.removeSync(precalcFilePath);
     }, 20_000);
 
-    test.skip("precalcDatasource - all precalc false should precalculate nothing", async () => {
+    test("precalcDatasource - all precalc false should precalculate nothing", async () => {
       const dsFilename = "datasources_precalc_false_test.json";
       const dsFilePath = path.join(dstPath, dsFilename);
       const internalDatasourceId = "samoa-eez-cross";

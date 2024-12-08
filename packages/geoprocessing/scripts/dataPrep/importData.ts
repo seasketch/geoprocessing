@@ -5,13 +5,11 @@ import {
   readDatasources,
 } from "../base/datasources/index.js";
 import {
-  datasourceFormatDescriptions,
   importVectorDatasourceOptionsSchema,
   ImportVectorDatasourceOptions,
   Datasource,
   ImportRasterDatasourceOptions,
   importRasterDatasourceOptionsSchema,
-  datasourceConfig,
 } from "../../src/index.js";
 import path from "node:path";
 import fs from "node:fs";
@@ -94,10 +92,8 @@ const options = await (async () => {
       ...layerNameAnswer,
       ...detailedVectorAnswers,
       ...vectorAnswerProperties,
-      formats: datasourceConfig.importDefaultVectorFormats.concat(
-        detailedVectorAnswers.formats,
-      ),
       ...explodeAnswers,
+      formats: ["fgb"],
       precalc: true,
     });
     return options;
@@ -240,21 +236,9 @@ async function layerNameQuestion(
 async function detailedVectorQuestions(
   fields: string[],
 ): Promise<Pick<ImportVectorDatasourceAnswers, "classKeys" | "formats">> {
-  return inquirer.prompt<
+  const answers = inquirer.prompt<
     Pick<ImportVectorDatasourceAnswers, "classKeys" | "formats">
   >([
-    {
-      type: "checkbox",
-      name: "formats",
-      message: `(Optional) additional formats to create (besides ${datasourceConfig.importDefaultVectorFormats.join(
-        ", ",
-      )})`,
-      choices: datasourceConfig.importExtraVectorFormats.map((name) => ({
-        value: name,
-        name: `${name} - ${datasourceFormatDescriptions[name]}`,
-        checked: false,
-      })),
-    },
     {
       type: "checkbox",
       name: "classKeys",
@@ -268,6 +252,11 @@ async function detailedVectorQuestions(
       })),
     },
   ]);
+
+  return {
+    ...answers,
+    formats: [],
+  };
 }
 
 /** Get classKeys, propertiesToKeep, and formats */

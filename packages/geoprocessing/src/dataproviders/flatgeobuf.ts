@@ -1,7 +1,8 @@
+import { readFileSync } from "node:fs";
+import { geojson } from "flatgeobuf";
 import { takeAsync } from "flatgeobuf/lib/mjs/streams/utils.js";
-import { BBox, Feature, Geometry } from "../types/index.js";
-
 import { deserialize } from "flatgeobuf/lib/mjs/geojson.js";
+import { BBox, Feature, FeatureCollection, Geometry } from "../types/index.js";
 
 export interface FgBoundingBox {
   minX: number;
@@ -56,4 +57,15 @@ export async function loadFgb<F extends Feature<Geometry>>(
   if (!Array.isArray(features))
     throw new Error("Unexpected result from loadFgb");
   return features;
+}
+
+/**
+ * Synchronously load a flatgeobuf file from disk.  Assumed to be in WGS84 EPSG:4326 projection
+ * @param path path to flatgeobuf file
+ * @returns feature collection of features from disk
+ */
+export function loadFgbFromDisk<G extends Geometry>(path: string) {
+  // Fetch all reef features and calculate total area
+  const buffer = readFileSync(path);
+  return geojson.deserialize(new Uint8Array(buffer)) as FeatureCollection<G>;
 }

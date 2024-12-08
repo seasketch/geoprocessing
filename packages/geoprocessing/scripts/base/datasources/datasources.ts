@@ -12,8 +12,8 @@ import {
   isInternalRasterDatasource,
   datasourceConfig,
 } from "../../../src/datasources/index.js";
-import { getJsonPath } from "./pathUtils.js";
-import { isFeatureCollection } from "../../../src/index.js";
+import { getJsonPath, getFlatGeobufPath } from "./pathUtils.js";
+import { isFeatureCollection, loadFgbFromDisk } from "../../../src/index.js";
 import { globalDatasources } from "../../../src/datasources/global.js";
 
 /**
@@ -132,5 +132,20 @@ export function readDatasourceGeojsonById(
   } else
     throw new Error(
       `GeoJSON at ${jsonPath} is not a FeatureCollection. Check datasource.`,
+    );
+}
+
+export function readDatasourceFgbById(datasourceId: string, dstPath: string) {
+  const fgbPath = getFlatGeobufPath(dstPath, datasourceId);
+  if (!fs.existsSync(fgbPath))
+    throw new Error(
+      `Flatgeobuf form of datasource does not exist at ${fgbPath}`,
+    );
+  const polys = loadFgbFromDisk(fgbPath);
+  if (isFeatureCollection(polys)) {
+    return polys as FeatureCollection<Polygon | MultiPolygon>;
+  } else
+    throw new Error(
+      `GeoJSON at ${fgbPath} is not a FeatureCollection. Check datasource.`,
     );
 }

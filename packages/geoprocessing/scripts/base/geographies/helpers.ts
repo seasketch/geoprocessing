@@ -11,7 +11,7 @@ import {
   isInternalVectorDatasource,
 } from "../../../src/index.js";
 import { featureCollection, truncate } from "@turf/turf";
-import { readDatasourceGeojsonById } from "../datasources/index.js";
+import { readDatasourceFgbById } from "../datasources/index.js";
 import { getFeatures } from "../../../src/dataproviders/index.js";
 
 /**
@@ -26,7 +26,7 @@ export async function getGeographyFeatures(
   if (isInternalVectorDatasource(datasource)) {
     // Read local datasource
     let featureColl = truncate(
-      readDatasourceGeojsonById(geography.datasourceId, dstPath),
+      readDatasourceFgbById(geography.datasourceId, dstPath),
       { mutate: true },
     );
     if (geography.propertyFilter) {

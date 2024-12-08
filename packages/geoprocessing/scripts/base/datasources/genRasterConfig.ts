@@ -24,6 +24,6 @@ export function genRasterConfig<C extends ProjectClientBase>(
     band: options.band || 0,
     package: projectClient.package,
     gp: projectClient.geoprocessing,
-    formats: options.formats || datasourceConfig.importDefaultRasterFormats,
+    formats: ["tif"],
   };
 }

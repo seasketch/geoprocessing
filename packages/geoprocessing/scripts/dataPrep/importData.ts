@@ -236,7 +236,7 @@ async function layerNameQuestion(
 async function detailedVectorQuestions(
   fields: string[],
 ): Promise<Pick<ImportVectorDatasourceAnswers, "classKeys" | "formats">> {
-  const answers = inquirer.prompt<
+  const answers = await inquirer.prompt<
     Pick<ImportVectorDatasourceAnswers, "classKeys" | "formats">
   >([
     {

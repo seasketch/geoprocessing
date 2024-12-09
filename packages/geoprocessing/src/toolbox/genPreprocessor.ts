@@ -9,6 +9,7 @@ import {
   Feature,
   Polygon,
   MultiPolygon,
+  BBox,
 } from "../types/index.js";
 import {
   area,
@@ -19,17 +20,46 @@ import {
   booleanValid,
 } from "@turf/turf";
 import {
-  ClipOptions,
-  DatasourceClipOperation,
-  FeatureClipOperation,
-} from "../types/dataProcessor.js";
-import {
   isExternalVectorDatasource,
   isInternalVectorDatasource,
 } from "../datasources/helpers.js";
 import { ProjectClientInterface } from "../project/ProjectClientBase.js";
 import { getFeatures } from "../dataproviders/getFeatures.js";
 import { clip } from "./clip.js";
+
+/** Supported clip operations */
+export type ClipOperations = "intersection" | "difference";
+
+/** Parameters for clip operation using polygon features */
+export interface FeatureClipOperation {
+  clipFeatures: Feature<Polygon | MultiPolygon>[];
+  operation: ClipOperations;
+}
+
+export interface DatasourceOptions {
+  /** Fetches features overlapping with bounding box */
+  bbox?: BBox;
+  /** Filter features by property having one or more specific values */
+  propertyFilter?: {
+    property: string;
+    values: (string | number)[];
+  };
+  /** Provide if you have subdivided dataset and want to rebuild (union) subdivided polygons based on having same value for this property name */
+  unionProperty?: string;
+}
+
+/** Parameters for clip operation using a datasource */
+export interface DatasourceClipOperation {
+  datasourceId: string;
+  operation: ClipOperations;
+  options?: DatasourceOptions;
+}
+
+/** Optional parameters for polygon clip preprocessor */
+export interface ClipOptions {
+  /** Ensures result is a polygon. If clip results in multipolygon, returns the largest component */
+  ensurePolygon?: boolean;
+}
 
 /**
  * Returns true if feature is valid and meets requirements set by options.

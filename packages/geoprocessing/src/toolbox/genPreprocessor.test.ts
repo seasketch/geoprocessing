@@ -1,13 +1,10 @@
 import { describe, test, expect } from "vitest";
 import { area } from "@turf/turf";
 import project from "../testing/project/testProjectClient.js";
+import { Polygon, Sketch } from "../types/index.js";
 import {
   DatasourceClipOperation,
   FeatureClipOperation,
-  Polygon,
-  Sketch,
-} from "../types/index.js";
-import {
   genClipToPolygonDatasources,
   genClipToPolygonFeatures,
 } from "./genPreprocessor.js";

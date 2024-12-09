@@ -12,7 +12,6 @@ export * from "./projectBasic.js";
 export * from "./reports.js";
 export * from "./sketch.js";
 export * from "./service.js";
-export * from "./dataProcessor.js";
 export * from "./functions.js";
 export * from "./geographies.js";
 export * from "./extraParams.js";

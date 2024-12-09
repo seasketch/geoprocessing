@@ -23,7 +23,7 @@ Avoids errors in underlying clipping library when too many features in features2
 | ------ | ------ | ------ |
 | `feature1` | [`Feature`](../interfaces/Feature.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> | polygon or multipolygon to clip |
 | `features2` | [`FeatureCollection`](../interfaces/FeatureCollection.md)\<[`Polygon`](../interfaces/Polygon.md) \| [`MultiPolygon`](../interfaces/MultiPolygon.md), [`GeoJsonProperties`](../type-aliases/GeoJsonProperties.md)\> | collection of polygons or multipolygons to clip feature1 against |
-| `operation` | `"intersection"` \| `"difference"` \| `"xor"` \| `"union"` | one of "union", "intersection", "xor", "difference" |
+| `operation` | `"difference"` \| `"xor"` \| `"union"` \| `"intersection"` | one of "union", "intersection", "xor", "difference" |
 | `options` | `object` | - |
 | `options.properties`? | `P` | properties to set on the resulting feature |
 

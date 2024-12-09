@@ -1,4 +1,4 @@
-# DatasourceOptions
+# GetDatasourceFeaturesOptions
 
 ## Properties
 
@@ -15,22 +15,20 @@ Fetches features overlapping with bounding box
 ### propertyFilter?
 
 ```ts
-optional propertyFilter: object;
+optional propertyFilter: VectorPropertyFilter;
 ```
 
 Filter features by property having one or more specific values
 
-#### property
+***
+
+### sketch?
 
 ```ts
-property: string;
+optional sketch: Sketch<SketchGeometryTypes> | SketchCollection<SketchGeometryTypes>;
 ```
 
-#### values
-
-```ts
-values: (string | number)[];
-```
+Fetches features overlapping with sketch bounding box, can be more precise than passing single bounding box
 
 ***
 

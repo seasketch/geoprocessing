@@ -133,18 +133,6 @@ Re-exports [clientJsonConfigSchema](../geoprocessing/variables/clientJsonConfigS
 
 ***
 
-### ClipOperations
-
-Re-exports [ClipOperations](../geoprocessing/type-aliases/ClipOperations.md)
-
-***
-
-### ClipOptions
-
-Re-exports [ClipOptions](../geoprocessing/interfaces/ClipOptions.md)
-
-***
-
 ### collectionHasGeometry
 
 Re-exports [collectionHasGeometry](../geoprocessing/functions/collectionHasGeometry.md)
@@ -184,18 +172,6 @@ Re-exports [dataClassSchema](../geoprocessing/variables/dataClassSchema.md)
 ### Datasource
 
 Re-exports [Datasource](../geoprocessing/type-aliases/Datasource.md)
-
-***
-
-### DatasourceClipOperation
-
-Re-exports [DatasourceClipOperation](../geoprocessing/interfaces/DatasourceClipOperation.md)
-
-***
-
-### DatasourceOptions
-
-Re-exports [DatasourceOptions](../geoprocessing/interfaces/DatasourceOptions.md)
 
 ***
 
@@ -280,12 +256,6 @@ Re-exports [fcSchema](../geoprocessing/variables/fcSchema.md)
 ### Feature
 
 Re-exports [Feature](../geoprocessing/interfaces/Feature.md)
-
-***
-
-### FeatureClipOperation
-
-Re-exports [FeatureClipOperation](../geoprocessing/interfaces/FeatureClipOperation.md)
 
 ***
 
@@ -2086,12 +2056,6 @@ Re-exports [VectorDatasource](../geoprocessing/type-aliases/VectorDatasource.md)
 ### vectorDatasourceSchema
 
 Re-exports [vectorDatasourceSchema](../geoprocessing/variables/vectorDatasourceSchema.md)
-
-***
-
-### VectorPropertyFilter
-
-Re-exports [VectorPropertyFilter](../geoprocessing/interfaces/VectorPropertyFilter.md)
 
 ***
 

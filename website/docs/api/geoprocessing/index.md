@@ -39,6 +39,7 @@
 | [GeoprocessingServiceMetadata](interfaces/GeoprocessingServiceMetadata.md) | Expected public service metadata for each function |
 | [GeoprocessingTask](interfaces/GeoprocessingTask.md) | - |
 | [Georaster](interfaces/Georaster.md) | - |
+| [GetDatasourceFeaturesOptions](interfaces/GetDatasourceFeaturesOptions.md) | - |
 | [Histogram](interfaces/Histogram.md) | - |
 | [HistogramOptions](interfaces/HistogramOptions.md) | - |
 | [IucnActivity](interfaces/IucnActivity.md) | - |
@@ -134,7 +135,6 @@
 | [flattenBySketchAllClass](functions/flattenBySketchAllClass.md) | Flattens class sketch metrics into array of objects, one for each sketch, where each object contains sketch id, sketch name, and all metric values for each class |
 | [flattenSketchAllId](functions/flattenSketchAllId.md) | Returns one aggregate object for every sketch ID present in metrics, with additional property for each unique value for idProperty present for sketch. Example - idProperty of 'classId', and two classes are present in metrics of 'classA', and 'classB' then each flattened object will have two extra properties per sketch, .classA and .classB, each with the first metric value for that sketch/idProperty found |
 | [gearTypeScore](functions/gearTypeScore.md) | - |
-| [genClipLoader](functions/genClipLoader.md) | Given a project client and 1 or more clip operations, returns a function that when called loads clip features from their datasources that overlap with the feature polygon to clip. Pass this function to genPreprocessor() and it will take care of the rest. |
 | [genClipToPolygonDatasources](functions/genClipToPolygonDatasources.md) | Returns a function that Takes a Polygon feature and returns the portion remaining after performing clipOperations against one or more datasources |
 | [genClipToPolygonFeatures](functions/genClipToPolygonFeatures.md) | Returns a function that applies clip operations to a feature using other polygon features. |
 | [genFeature](functions/genFeature.md) | Returns a Feature with given features geometry and properties. Reasonable defaults are given for properties not provided Default geometry is a square from 0,0 to 1,1 |
@@ -156,9 +156,11 @@
 | [getCogFilename](functions/getCogFilename.md) | - |
 | [getDatasetBucketName](functions/getDatasetBucketName.md) | - |
 | [getDatasourceById](functions/getDatasourceById.md) | find and return datasource from passed datasources |
+| [getDatasourceFeatures](functions/getDatasourceFeatures.md) | Fetches and returns features for a given datasource supporting a variety of formats/clients |
 | [getExternalRasterDatasourceById](functions/getExternalRasterDatasourceById.md) | find and return external raster datasource from passed datasources |
 | [getExternalVectorDatasourceById](functions/getExternalVectorDatasourceById.md) | find and return external vector datasource from passed datasources |
-| [getFeatures](functions/getFeatures.md) | Returns features for a variety of vector datasources and formats, with additional filter options |
+| [getFeatures](functions/getFeatures.md) | Fetches and returns features for a given datasource supporting a variety of formats/clients |
+| [getFeaturesForBBoxes](functions/getFeaturesForBBoxes.md) | Loads features from a FlatGeobuf referenced by URL, which intersect the bounding boxes. Deduplicates features given uniqueIdProperty (faster) or using md5 hash of feature coordinates (slower). |
 | [getFeaturesForSketchBBoxes](functions/getFeaturesForSketchBBoxes.md) | Loads features from a FlatGeobuf referenced by URL, which intersect the bounding boxes of each individual sketch in a SketchCollection, or a single Sketch. |
 | [getFirstFromParam](functions/getFirstFromParam.md) | Returns first element from param object at paramName key. Parameter can be string or array of strings |
 | [getFlatGeobufFilename](functions/getFlatGeobufFilename.md) | Returns datasource filename in flatgeobuf format |
@@ -236,6 +238,7 @@
 | [keyBy](functions/keyBy.md) | Similar to lodash keyBy |
 | [loadCog](functions/loadCog.md) | Returns cog-aware georaster at given url. Will not fetch raster values until subsequent geoblaze calls are made with a geometry and it will calculate the window to load based on the geometry. The subsequent geoblaze calls (e.g. sum) must be called async to allow the raster to load. |
 | [loadFgb](functions/loadFgb.md) | Fetch features from flatgeobuf at url that intersect with bounding box Awaits all features before returning, rather than streaming them. |
+| [loadFgbFromDisk](functions/loadFgbFromDisk.md) | Synchronously load a flatgeobuf file from disk. Assumed to be in WGS84 EPSG:4326 projection |
 | [maxWidth](functions/maxWidth.md) | Returns the maximum width of the geojson or bbox |
 | [metricsForSketch](functions/metricsForSketch.md) | Returns metrics for given sketch (can be an array of sketches) |
 | [metricsSketchIds](functions/metricsSketchIds.md) | Returns metrics with matching sketchId (can be an array of sketchids) |

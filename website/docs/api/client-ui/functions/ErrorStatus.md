@@ -1,14 +1,14 @@
-# InfoStatus()
+# ErrorStatus()
 
 ```ts
-function InfoStatus(props, deprecatedLegacyContext?): ReactNode
+function ErrorStatus(props, deprecatedLegacyContext?): ReactNode
 ```
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `props` | [`StatusProps`](../interfaces/StatusProps.md) | - |
+| `props` | [`ErrorStatusProps`](../interfaces/ErrorStatusProps.md) | - |
 | `deprecatedLegacyContext`? | `any` | **Deprecated** **See** [React Docs](https://legacy.reactjs.org/docs/legacy-context.html#referencing-context-in-lifecycle-methods) |
 
 ## Returns

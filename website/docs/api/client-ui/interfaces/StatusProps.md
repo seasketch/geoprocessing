@@ -1,4 +1,4 @@
-# InfoStatusProps
+# StatusProps
 
 ## Properties
 

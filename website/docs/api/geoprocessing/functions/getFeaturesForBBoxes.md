@@ -1,20 +1,18 @@
-# getFeaturesForSketchBBoxes()
+# getFeaturesForBBoxes()
 
 ```ts
-function getFeaturesForSketchBBoxes<G>(
-   sketch, 
+function getFeaturesForBBoxes<G>(
+   bboxes, 
    fgbUrl, 
 options): Promise<Feature<G>[]>
 ```
 
 Loads features from a FlatGeobuf referenced by URL, which intersect the
-bounding boxes of each individual sketch in a SketchCollection, or a single
-Sketch.
+bounding boxes. Deduplicates features given uniqueIdProperty (faster) or
+using md5 hash of feature coordinates (slower).
 
-In the case of a SketchCollection, it is possible that duplicate features may
-be fetched in the case of overlapping bounding boxes or very large features
-that span multiple bounding boxes. This function will de-dupe those features.
-The caller can
+It is possible that duplicate features may be fetched in the case of
+overlapping bounding boxes. This function will de-dupe those features. The caller can
 provide a uniqueIdProperty to de-dupe features (faster), otherwise a hash of
 the feature coordinates will be used (slower).
 
@@ -31,8 +29,8 @@ of features that are geometrically identical but have different properties.
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `sketch` | [`Sketch`](../interfaces/Sketch.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> \| [`SketchCollection`](../interfaces/SketchCollection.md)\<[`SketchGeometryTypes`](../type-aliases/SketchGeometryTypes.md)\> | Sketch or SketchCollection |
-| `fgbUrl` | `string` | FlatGeobuf location |
+| `bboxes` | [`BBox`](../type-aliases/BBox.md)[] | the bounding boxes to fetch features for |
+| `fgbUrl` | `string` | the URL of the FlatGeobuf file |
 | `options` | `object` | - |
 | `options.uniqueIdProperty`? | `string` | name of unique ID property to de-dupe features |
 

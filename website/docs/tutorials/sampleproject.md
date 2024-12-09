@@ -82,7 +82,7 @@ Here is an example of a preprocessor clipping a user drawn polygon to erase any 
 
 In the `src/functions` directory you will find four preprocessing functions that come with every project, and they are further configureable to meet your needs:
 
-- `validatePolygon` - verifies shape is not self-crossing, is at least 500 square meters in size, and no larger than 1 million square kilometers.
+- `validatePolygon` - verifies shape is not self-crossing, is at least a certain size (default to 500 square meters) and no larger than a certain size (defaults to 1 million square kilometers).
 - `clipToLand` - clips the shape to just the portion on land, as defined by OpenStreeMap land polygons. Includes validatePolygon.
 - `clipToOcean` - clips the shape to remove the portion on land, as defined by OpenStreetMap land polygons. Includes validatePolygon.
 - `clipToOceanEez` - clips the shape to keep the portion within the boundary from the coastline to the outer boundary of the EEZ. Includes validatePolygon.

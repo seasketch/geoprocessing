@@ -1068,12 +1068,6 @@ _prepare: string = "npx tsx scripts/npm/prepare.ts";
 build: string = "tsc";
 ```
 
-### scripts.build-docs
-
-```ts
-build-docs: string = "npm run build-typedoc && npm run build-storybook";
-```
-
 ### scripts.build:storybook
 
 ```ts
@@ -1173,5 +1167,5 @@ types: string = "dist/src/index.d.ts";
 ### version
 
 ```ts
-version: string = "7.0.0-beta.9";
+version: string = "7.0.0-beta.10";
 ```

@@ -20,15 +20,27 @@ Re-exports [FgBoundingBox](../geoprocessing/interfaces/FgBoundingBox.md)
 
 ***
 
-### genClipLoader
+### getDatasourceFeatures
 
-Re-exports [genClipLoader](../geoprocessing/functions/genClipLoader.md)
+Re-exports [getDatasourceFeatures](../geoprocessing/functions/getDatasourceFeatures.md)
+
+***
+
+### GetDatasourceFeaturesOptions
+
+Re-exports [GetDatasourceFeaturesOptions](../geoprocessing/interfaces/GetDatasourceFeaturesOptions.md)
 
 ***
 
 ### getFeatures
 
 Re-exports [getFeatures](../geoprocessing/functions/getFeatures.md)
+
+***
+
+### getFeaturesForBBoxes
+
+Re-exports [getFeaturesForBBoxes](../geoprocessing/functions/getFeaturesForBBoxes.md)
 
 ***
 
@@ -47,3 +59,15 @@ Re-exports [loadCog](../geoprocessing/functions/loadCog.md)
 ### loadFgb
 
 Re-exports [loadFgb](../geoprocessing/functions/loadFgb.md)
+
+***
+
+### loadFgbFromDisk
+
+Re-exports [loadFgbFromDisk](../geoprocessing/functions/loadFgbFromDisk.md)
+
+***
+
+### VectorPropertyFilter
+
+Re-exports [VectorPropertyFilter](../geoprocessing/interfaces/VectorPropertyFilter.md)

@@ -92,6 +92,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/client-ui/interfaces/ErrorStatusProps",
+            "label": "ErrorStatusProps"
+          },
+          {
+            "type": "doc",
             "id": "api/client-ui/interfaces/FilterSelect",
             "label": "FilterSelect"
           },
@@ -129,11 +134,6 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/client-ui/interfaces/HorizontalStackedBarProps",
             "label": "HorizontalStackedBarProps"
-          },
-          {
-            "type": "doc",
-            "id": "api/client-ui/interfaces/InfoStatusProps",
-            "label": "InfoStatusProps"
           },
           {
             "type": "doc",
@@ -264,6 +264,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/client-ui/interfaces/SketchClassTableProps",
             "label": "SketchClassTableProps"
+          },
+          {
+            "type": "doc",
+            "id": "api/client-ui/interfaces/StatusProps",
+            "label": "StatusProps"
           },
           {
             "type": "doc",
@@ -405,6 +410,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/client-ui/functions/DropdownTrigger",
             "label": "DropdownTrigger"
+          },
+          {
+            "type": "doc",
+            "id": "api/client-ui/functions/ErrorStatus",
+            "label": "ErrorStatus"
           },
           {
             "type": "doc",
@@ -976,6 +986,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/interfaces/GetDatasourceFeaturesOptions",
+            "label": "GetDatasourceFeaturesOptions"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/interfaces/Histogram",
             "label": "Histogram"
           },
@@ -1413,11 +1428,6 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
-            "id": "api/geoprocessing/functions/genClipLoader",
-            "label": "genClipLoader"
-          },
-          {
-            "type": "doc",
             "id": "api/geoprocessing/functions/genClipToPolygonDatasources",
             "label": "genClipToPolygonDatasources"
           },
@@ -1523,6 +1533,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/getDatasourceFeatures",
+            "label": "getDatasourceFeatures"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/getExternalRasterDatasourceById",
             "label": "getExternalRasterDatasourceById"
           },
@@ -1535,6 +1550,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/getFeatures",
             "label": "getFeatures"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/getFeaturesForBBoxes",
+            "label": "getFeaturesForBBoxes"
           },
           {
             "type": "doc",
@@ -1920,6 +1940,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/loadFgb",
             "label": "loadFgb"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/loadFgbFromDisk",
+            "label": "loadFgbFromDisk"
           },
           {
             "type": "doc",

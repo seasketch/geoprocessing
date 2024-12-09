@@ -30,6 +30,7 @@ interactively.
 | [DownloadOption](interfaces/DownloadOption.md) | - |
 | [DropdownContainerProps](interfaces/DropdownContainerProps.md) | - |
 | [DropdownProps](interfaces/DropdownProps.md) | Renders an element with a dropdown list |
+| [ErrorStatusProps](interfaces/ErrorStatusProps.md) | - |
 | [FilterSelect](interfaces/FilterSelect.md) | Custom table data filters that are only active when selected by the user |
 | [FilterSelectOption](interfaces/FilterSelectOption.md) | Custom table data filter |
 | [FilterSelectTableOptions](interfaces/FilterSelectTableOptions.md) | The empty definitions of below provides a base definition for the parts used by useTable, that can then be extended in the users code. |
@@ -38,7 +39,6 @@ interactively.
 | [GroupCircleRowProps](interfaces/GroupCircleRowProps.md) | - |
 | [GroupPillProps](interfaces/GroupPillProps.md) | - |
 | [HorizontalStackedBarProps](interfaces/HorizontalStackedBarProps.md) | - |
-| [InfoStatusProps](interfaces/InfoStatusProps.md) | - |
 | [IucnActivityRank](interfaces/IucnActivityRank.md) | - |
 | [IucnLevelCircleProps](interfaces/IucnLevelCircleProps.md) | - |
 | [IucnLevelCircleRowProps](interfaces/IucnLevelCircleRowProps.md) | - |
@@ -65,6 +65,7 @@ interactively.
 | [SimpleButtonProbs](interfaces/SimpleButtonProbs.md) | - |
 | [SketchAttributesCardProps](interfaces/SketchAttributesCardProps.md) | - |
 | [SketchClassTableProps](interfaces/SketchClassTableProps.md) | - |
+| [StatusProps](interfaces/StatusProps.md) | - |
 | [StyledHorizontalStackedBarProps](interfaces/StyledHorizontalStackedBarProps.md) | - |
 | [StyledLegendProps](interfaces/StyledLegendProps.md) | - |
 | [StyledTwoColorPointyCircleProps](interfaces/StyledTwoColorPointyCircleProps.md) | - |
@@ -97,6 +98,7 @@ interactively.
 | [DropdownContainer](functions/DropdownContainer.md) | - |
 | [DropdownItem](functions/DropdownItem.md) | - |
 | [DropdownTrigger](functions/DropdownTrigger.md) | - |
+| [ErrorStatus](functions/ErrorStatus.md) | - |
 | [EstimateLabel](functions/EstimateLabel.md) | - |
 | [FilterSelectTable](functions/FilterSelectTable.md) | Table with customizable filter functions as CheckboxGroup that when selected filter the rows if the function return true. By default only 'some' filter function has to match for it to filter the row |
 | [FilterSelectTableStyled](functions/FilterSelectTableStyled.md) | - |

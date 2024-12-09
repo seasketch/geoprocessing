@@ -1,7 +1,7 @@
-# ~~getFeatures()~~
+# getDatasourceFeatures()
 
 ```ts
-function getFeatures<G>(
+function getDatasourceFeatures<G>(
    datasource, 
    url, 
 options): Promise<Feature<G>[]>
@@ -28,7 +28,3 @@ Fetches and returns features for a given datasource supporting a variety of form
 `Promise`\<[`Feature`](../interfaces/Feature.md)\<`G`\>[]\>
 
 feature array
-
-## Deprecated
-
-use getDatasourceFeatures instead

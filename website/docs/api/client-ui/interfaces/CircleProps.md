@@ -2,6 +2,14 @@
 
 ## Properties
 
+### ariaLabel?
+
+```ts
+optional ariaLabel: string;
+```
+
+***
+
 ### children
 
 ```ts

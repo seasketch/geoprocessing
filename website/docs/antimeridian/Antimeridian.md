@@ -120,7 +120,7 @@ Bounding boxes need to be split before you can use them to fetch data from cloud
 
 ### Fetching From Flatgeobuf
 
-The `getFeaturesForSketchBBoxes` function automatically splits bounding boxes that cross the antimeridian.
+The `getFeaturesForSketchBBoxes` and `getFeaturesForBBoxes` functions automatically split bounding boxes that cross the antimeridian.
 
 The lower level `loadFgb` function, and underlying `flatgeobuf` library do not properly handle the antimeridian. If you call them with a bounding box that extends beyond the range of -180 to 180, they will return only the features that are within the range. If you shift the longitude values to be within the range, such as using the `cleanBBox` function, that will produce a bounding box that spans the globe (see screenshot below) and effectively `overfetch` more features than you wanted. This can work if your datasource is clipped to your study area, but will be very inefficient otherwise and should be avoided.
 

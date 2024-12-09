@@ -11,8 +11,8 @@ The geoprocessing framework offers some convenience functions that provide addti
 #### Flatgeobuf
 
 - `getDatasourceFeatures` - fetches features for a given datasource, which can be published in a few different formats. cloud-optimized vector formats with additional filter options, including Flatgeobuf and the SeaSketch VectorDataSource.
-- `getFeaturesForSketchBBoxes` - loads features from a FlatGeobuf referenced by URL, which intersect the bounding boxes of each individual sketch in a SketchCollection, or a single Sketch.
-  - This is the best way to fetch features overlapping with a Sketch or Sketch Collection. Built-in antimeridian support.
+- `getFeaturesForSketchBBoxes` - loads features from a FlatGeobuf referenced by URL, which intersect the bounding boxes of each individual sketch in a SketchCollection, or a single Sketch. Built-in antimeridian support by splitting bounding boxes if needed.
+- `getFeaturesForBBoxes` - loads features from a FlatGeobuf referenced by URL, which intersect the provided bounding boxes. Built-in antimeridian support by splitting bounding boxes if needed.
 - `loadFgb` - fetch vector features from flatgeobuf at url that intersect with a bounding box. Awaits all features before returning, rather than streaming them.
 
 #### VectorDataSource

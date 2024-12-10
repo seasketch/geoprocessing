@@ -14,7 +14,7 @@ import {
   datasourceConfig,
   genZodErrorMessage,
 } from "../../../src/index.js";
-import { getFeatures } from "../../../src/dataproviders/index.js";
+import { getDatasourceFeatures } from "../../../src/dataproviders/index.js";
 import { area, truncate, featureCollection } from "@turf/turf";
 import { getGeographyFeatures } from "../geographies/helpers.js";
 import { clipMultiMerge } from "../../../src/toolbox/clip.js";
@@ -75,7 +75,7 @@ export async function genVectorMetrics(
 
   const dsFeatureColl: FeatureCollection<Polygon | MultiPolygon> =
     await (async () => {
-      const feats = await getFeatures(datasource, url);
+      const feats = await getDatasourceFeatures(datasource, url);
       // Make sure only contains polygon or multipolygon in array
       const result = featuresSchema.safeParse(feats);
       if (!result.success) {

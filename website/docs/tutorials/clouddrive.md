@@ -26,7 +26,7 @@ Source - https://github.com/microsoft/WSL/issues/4310
 C:\Users\alex\box
 ```
 
-Now add the following [to your bashrc](#editing-a-file-in-ubuntu-using-nano-text-editor):
+Now add the following to your .bashrc file in your home directory
 
 ```bash
 if ! findmnt -M /mnt/box &>/dev/null; then

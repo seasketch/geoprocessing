@@ -12,7 +12,7 @@ import {
 } from "../../../src/index.js";
 import { featureCollection, truncate } from "@turf/turf";
 import { readDatasourceFgbById } from "../datasources/index.js";
-import { getFeatures } from "../../../src/dataproviders/index.js";
+import { getDatasourceFeatures } from "../../../src/dataproviders/index.js";
 
 /**
  * Given geography and its datasource, returns geography features with additional filter options
@@ -42,7 +42,7 @@ export async function getGeographyFeatures(
     return featureColl;
   } else if (isExternalVectorDatasource(datasource)) {
     // Fetch external datasource
-    const feats = await getFeatures(datasource, datasource.url, {
+    const feats = await getDatasourceFeatures(datasource, datasource.url, {
       bbox: geography.bboxFilter,
       propertyFilter: geography.propertyFilter,
     });

@@ -24,7 +24,7 @@ import {
   isInternalVectorDatasource,
 } from "../datasources/helpers.js";
 import { ProjectClientInterface } from "../project/ProjectClientBase.js";
-import { getFeatures } from "../dataproviders/getFeatures.js";
+import { getDatasourceFeatures } from "../dataproviders/getDatasourceFeatures.js";
 import { clip } from "./clip.js";
 
 /** Supported clip operations */
@@ -257,7 +257,7 @@ export async function clipToPolygonDatasources<
       const url = project.getDatasourceUrl(ds);
 
       const featureBox = bbox(feature);
-      const clipFeatures = await getFeatures(ds, url, {
+      const clipFeatures = await getDatasourceFeatures(ds, url, {
         ...o.options,
         bbox: featureBox,
       });

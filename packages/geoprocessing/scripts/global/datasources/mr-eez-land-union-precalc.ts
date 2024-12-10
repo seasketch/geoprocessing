@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import { area, bbox, featureCollection as fc } from "@turf/turf";
 import { $ } from "zx";
-import { getFeatures } from "../../../src/dataproviders/index.js";
+import { getDatasourceFeatures } from "../../../src/dataproviders/index.js";
 import { chunk, roundDecimal } from "../../../src/helpers/index.js";
 import project from "./ProjectClientGlobal.js";
 import { clip } from "../../../src/toolbox/clip.js";
@@ -35,7 +35,7 @@ const landUrl = project.getDatasourceUrl(landDs);
 for (const eezFeat of eezFeatures.features) {
   // Get land features that overlap with eez
   const eezBbox = bbox(eezFeat);
-  const landFeatures = await getFeatures(landDs, landUrl, {
+  const landFeatures = await getDatasourceFeatures(landDs, landUrl, {
     unionProperty: "gid", // gid is assigned per country
     bbox: eezBbox,
   });

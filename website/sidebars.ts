@@ -59,7 +59,7 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
-          id: "upgrade",
+          id: "tutorials/upgrade",
           label: "Upgrade Project",
         },
         {

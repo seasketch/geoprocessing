@@ -76,23 +76,38 @@ You should now be able to start a Docker container shell using the latest image 
 ```bash
 sudo docker run -it --entrypoint /bin/bash seasketch/geoprocessing-workspace
 
-(base) vscode ➜ / $ node -v
-v20.12.1
-(base) vscode ➜ / $ npm -v
-10.5.0
-(base) vscode ➜ / $ gdalinfo --version
-GDAL 3.8.5, released 2024/04/02
+node -v
+npm -v
+gdalinfo --version
 ```
 
-Exit back out of this shell when done
+Exit back out of this shell when done.
+
+When restarting your VSCode devcontainer for the first time, you may want to use this VSCode command to ensure your new container image is used:
+
+```text
+Cmd-Shift-P (MacOS) or Ctrl-Shift-P (Windows) to open command palette
+
+Dev Containers: Rebuild Without Cache and Reopen In Container
+```
+
+![Simple Card View](./assets/rebuild-without-cache.jpg)
+
+### Unstable Testing
+
+If you are testing out a new `unstable` image you will need to pull using that tag instead:
+
+```bash
+docker pull seasketch/geoprocessing-workspace:unstable
+```
+
+Then, when restarting your VSCode devcontainer, choose the `unstable` version.
+
+If you get an error when starting unstable, make sure that you have a .env file in your `local-dev-unstable` directory. You need to have one there, just as in the top-level stable devcontainer directory.
+
+### When Using Geoprocessing Less Than 7.0
 
 The latest version of the `geoprocessing-workspace` will only work with geoprocessing 7.x projects. This is due to a change in how GDAL produces flatgeobuf files. If you suddenly see errors of `"Not a FlatGeobuf file"` when trying to read your file, this is likely the reason. In order to continue to develop older 6.x and lower geoprocessing projects you will need to start your devcontainer using the `local-dev-pre-7x` environment. This is pinned to an older version of the docker image - `seasketch/geoprocessing-workspace:sha-69bb889`
-
-If you're maintaining your own development environment then you should look to have at least the following versions at minimum:
-
-- Node 20.12.1
-- NPM 10.5.0
-- GDAL 3.5.0
 
 ### Upgrade Windows Geoprocessing
 

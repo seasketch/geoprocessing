@@ -60,20 +60,22 @@ Now start the devcontainer:
 
 ![Manage Devcontainers](assets/devcontainer-blue.jpg "Manage Devcontainers")
 
-You now have a devcontainer, ready to create a project in.
-
-To exit your devcontainer:
+You now have a running devcontainer, ready to create a project in. To exit your devcontainer:
 
 - Click the blue icon in the bottom left, and then `Reopen locally`. This will bring VSCode back out of the devcontainer session.
 - You can also type `Ctrl-Shift-P` or `Cmd-Shift-P` and select `Dev Containers: Reopen folder locally`.
 
 ![Manage Devcontainers](assets/ManageDevcontainers.jpg "Manage Devcontainers")
 
-- To update to the latest `geoprocessing-workspace` Docker image at any point you simply use a different VSCode command to start it:
-  - `Ctrl-Shift-P` or `Cmd-Shift-P` to open the VSCode command palette
-  - type "Dev Containers: Rebuild Without Cache and Reopen In Container"
+If you get an error in red, as your devcontainer tries to start, choose the option to "reopen locally" and you will be presented with a log file that should contain the relevant error buried within it.
 
-See devcontainer advanced usage [guide](../devcontainer/devcontainer.md) to learn more or the [upgrade](../upgrade.md) tutorial
+![Devcontainer error](assets/devcontainer-error.png "Decontainer error")
+
+In most cases, the issue is that you did not create your .env properly. Revisit the instructions above as necessary.
+
+To update to the latest `geoprocessing-workspace` Docker image in the future use the [upgrade](./upgrade.md#upgrade-devcontainer) tutorial.
+
+- To learn more about devcontainers visit the [devcontainer](../devcontainer/devcontainer.md) guide.
 
 ## Windows WSL Install
 
@@ -160,7 +162,7 @@ ls /mnt/c
 
 Follow the [final configuration steps](#final-configuration---all-install-options) below, then move on to creating a new project.
 
-[Upgrade](../upgrade.md#upgrade-windows-geoprocessing) steps for the Geoprocessing Distribution are available.
+[Upgrade](./upgrade.md#upgrade-windows-geoprocessing) steps for the Geoprocessing Distribution are available.
 
 ### Default Ubuntu Distribution
 

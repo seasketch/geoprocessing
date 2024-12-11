@@ -780,7 +780,8 @@ export async function coralReef(
   // or in case of a sketch collection, the child sketch bounding boxes
   const ds = project.getInternalVectorDatasourceById("reefextent");
   const url = project.getDatasourceUrl(ds);
-  const reefFeatures = await getFeaturesForSketchBBoxes(sketch, url);
+  const reefFeatures: Feature<Polygon | MultiPolygon>[] =
+    await getFeaturesForSketchBBoxes(sketch, url);
 
   // Add analysis code
 
@@ -856,7 +857,8 @@ Then it fetches only the reef features whose bounding box intersects with the sk
 // or in case of a sketch collection, the child sketch bounding boxes
 const ds = project.getInternalVectorDatasourceById("reefextent");
 const url = project.getDatasourceUrl(ds);
-const reefFeatures = await getFeaturesForSketchBBoxes(sketch, url);
+const reefFeatures: Feature<Polygon | MultiPolygon>[] =
+  await getFeaturesForSketchBBoxes(sketch, url);
 ```
 
 Next, if the sketch is a collection, it calculates how much coral reef overlaps with each individual sketch. To do this, it needs to figure out the areas where the sketches and coral reef `intersect`. This is calculated using the `clipMultiMerge` function. It is essential that this function is used because it merges the reefFeatures collection into a single multipolygon before intersecting it with the sketch. If you were to use the `clip` function you would need to loop through each reef feature and clip the sketch to it.

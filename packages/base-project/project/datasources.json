@@ -1,43 +1,5 @@
 [
   {
-    "datasourceId": "global-clipping-osm-land",
-    "geo_type": "vector",
-    "formats": ["subdivided"],
-    "classKeys": [],
-    "idProperty": "gid",
-    "nameProperty": "gid",
-    "url": "https://d3p1dsef9f0gjr.cloudfront.net",
-    "precalc": false
-  },
-  {
-    "datasourceId": "global-clipping-eez-land-union",
-    "geo_type": "vector",
-    "formats": ["subdivided"],
-    "classKeys": [],
-    "idProperty": "UNION",
-    "nameProperty": "UNION",
-    "url": "https://d3muy0hbwp5qkl.cloudfront.net",
-    "precalc": false
-  },
-  {
-    "datasourceId": "global-eez-mr-v12",
-    "geo_type": "vector",
-    "formats": ["fgb", "json"],
-    "metadata": {
-      "name": "World EEZ v11",
-      "description": "World EEZ boundaries and disputed areas",
-      "version": "11.0",
-      "publisher": "Flanders Marine Institute (VLIZ)",
-      "publishDate": "2019118",
-      "publishLink": "https://marineregions.org/"
-    },
-    "classKeys": [],
-    "url": "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-mr-v12.fgb",
-    "idProperty": "GEONAME",
-    "nameProperty": "GEONAME",
-    "precalc": false
-  },
-  {
     "datasourceId": "world",
     "geo_type": "vector",
     "formats": ["json", "fgb"],

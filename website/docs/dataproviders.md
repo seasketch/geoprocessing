@@ -31,7 +31,7 @@ import project from "../../project/projectClient.js";
 
 const url = "https://my.fgb";
 const boxes: BBox[] = ...;
-const reefFeatures = await getFeaturesForBBoxes<Polygon | MultiPolygon>(
+const reefFeatures: Feature<Polygon | MultiPolygon>[] = await getFeaturesForBBoxes(
   boxes,
   url,
   { uniqueIdProperty: 'gid' }
@@ -50,11 +50,8 @@ import {
 import project from "../../project/projectClient.js";
 
 const url = "https://my.fgb";
-const reefFeatures = await getFeaturesForSketchBBoxes<Polygon | MultiPolygon>(
-  sketch,
-  url,
-  { uniqueIdProperty: "gid" },
-);
+const reefFeatures: Feature<Polygon | MultiPolygon>[] =
+  await getFeaturesForSketchBBoxes(sketch, url, { uniqueIdProperty: "gid" });
 ```
 
 ### VectorDataSource Format

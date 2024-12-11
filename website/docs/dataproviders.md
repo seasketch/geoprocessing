@@ -1,23 +1,67 @@
 # Data Providers
 
-## Fetching Data
+The geoprocessing framework offers multiple methods for reading vector and raster datasources.
 
-### Vector Data Fetching
+## Vector Data Fetching
 
-The flatgeobuf library offers a low-level `deserialize` function for fetching features from a flatgeobuf file hosted at a url.
+### Flatgeobuf Format
 
-The geoprocessing framework offers some convenience functions that provide addtional functionality and access to more formats.
+- `loadFgb` - simplest method for fetching features from a flatgeobuf file published at url, that intersect with given bounding box.
+  - Awaits all features before returning, rather than streaming them.
+  - Allows you to specify a narrower type for the features that will be returned.
+  - No support for bounding boxes crossing the antimeridian.
 
-#### Flatgeobuf
+```typescript
+import { loadFgb } from "@seasketch/geoprocessing";
+const url = "https://my.fgb";
+const sketchBox = bbox(sketch);
+const features = await loadFgb<Polygon | MultiPolygon>(url, sketchBox);
+```
 
-- `getDatasourceFeatures` - fetches features for a given datasource, which can be published in a few different formats. cloud-optimized vector formats with additional filter options, including Flatgeobuf and the SeaSketch VectorDataSource.
-- `getFeaturesForSketchBBoxes` - loads features from a FlatGeobuf referenced by URL, which intersect the bounding boxes of each individual sketch in a SketchCollection, or a single Sketch. Built-in antimeridian support by splitting bounding boxes if needed.
-- `getFeaturesForBBoxes` - loads features from a FlatGeobuf referenced by URL, which intersect the provided bounding boxes. Built-in antimeridian support by splitting bounding boxes if needed.
-- `loadFgb` - fetch vector features from flatgeobuf at url that intersect with a bounding box. Awaits all features before returning, rather than streaming them.
+- `getFeaturesForBBoxes` - builds on loadFgb and accepts an array of bounding boxes to fetch features for. Built-in antimeridian support by splitting bounding boxes if they cross the antimeridian.
 
-#### VectorDataSource
+```typescript
+import {
+  getFeaturesForBBoxes,
+  BBox,
+  Polygon,
+  MultiPolygon
+} from "@seasketch/geoprocessing";
+import project from "../../project/projectClient.js";
 
-VectorDataSources are read by creating an instance of the `VectorDataSource` class. The polygons in one of these datasources have been subdivided to break them into smaller pieces and carefully indexed for fast retrieval of a subset given a bounding box using the `fetch` method. You can also rejion (union) the original features back together by using the `fetchUnion` method instead and passing the name of a feature property that uniquely identifies the original polygons.
+const url = "https://my.fgb";
+const boxes: BBox[] = ...;
+const reefFeatures = await getFeaturesForBBoxes<Polygon | MultiPolygon>(
+  boxes,
+  url,
+  { uniqueIdProperty: 'gid' }
+);
+```
+
+- `getFeaturesForSketchBBoxes` - builds on getFeaturesForBBoxes and accepts a Sketch or SketchCollection to fetch features for. If a collection, it will optimize and fetch the features that intersect with the bounding boxe of each individual sketch instead of overfetching for the bounding boxes of the whole collection. Built-in antimeridian support by splitting bounding boxes if they cross the antimeridian.
+
+```typescript
+import {
+  getFeaturesForSketchBBoxes,
+  BBox,
+  Polygon,
+  MultiPolygon,
+} from "@seasketch/geoprocessing";
+import project from "../../project/projectClient.js";
+
+const url = "https://my.fgb";
+const reefFeatures = await getFeaturesForSketchBBoxes<Polygon | MultiPolygon>(
+  sketch,
+  url,
+  { uniqueIdProperty: "gid" },
+);
+```
+
+### VectorDataSource Format
+
+VectorDataSource is a cloud-optimized format created by the SeaSketch team, before flatgeobuf was developed. There are multiple global datasets published that are still used by projects.
+
+To read one of these datasources, create an instance of the `VectorDataSource` class. The polygons in one of these datasources have been subdivided to break them into smaller pieces and carefully indexed for fast retrieval of a subset given a bounding box using the `fetch` method. You can also rejion (union) the original features back together by using the `fetchUnion` method instead and passing the name of a feature property that uniquely identifies the original polygons.
 
 ```typescript
 import { VectorDataSource } from "@seasketch/geoprocessing";
@@ -36,10 +80,46 @@ if (unionProperty) {
 
 - `VectorDataSource.fetchUnion` - fetches features from a SeaSketch VectorDatasource hosted at a url.
 
+### Datasource-aware Multi-format Fetching
+
+Higher-level functions that take as input a project [Datasources](./concepts/Concepts.md#datasources) and can figure out where and how to fetch the features.
+
+- `getDatasourceFeatures` - fetches features for a given vector datasource. Datasource can be published in one of two different cloud-optimized vector formats (Flatgeobuf or SeaSketch VectorDataSource). Offers extra `propertyFilter` allowing you to filter result set by property name having one or more caller-defined values.
+
+```typescript
+import { VectorDataSource } from "@seasketch/geoprocessing";
+
+const osmLandSource = new VectorDataSource(
+  "https://d3p1dsef9f0gjr.cloudfront.net",
+);
+const sketchBox = bbox(sketch);
+const unionProperty = "gid";
+const fc = await osmLandSource.fetchUnion(sketchBox, unionProperty);
+const fcUnioned = await osmLandSource.fetch(sketchBox);
+```
+
 ## Raster Data Fetching
 
-The geoprocessing framework uses the geoblaze library, which offers a low-level `parse` function for reading metadata for a cloud-optimized GeoTIFF at a given URL. It will not fetch raster values directly, only subsequent calls to geoblaze calc methods with a geometry will fetch raster values within its bounding box.
+The geoprocessing framework uses the geoblaze library for fetching raster metadata from a cloud-optimized GeoTIFF at a given URL. It does not export Typescripts types.
 
-The geoprocessing framework offers a convenience function that can be used instead, should the underlying methods change.
+```typescript
+import geoblaze from "geoblaze";
 
-`loadCog` - re-export of geoblaze.parse
+const raster = await geoblaze.parse(url);
+const minResult = await geoblaze.min(minRaster, sketch);
+const minTemp = minResult[0]; // extract value from band 1
+```
+
+The geoprocessing framework offers its own methods that use geoblaze under the hood.
+
+`loadCog` - covenience function that can be used instead of geoblaze.parse
+
+```typescript
+import { loadCog } from "@seasketch/geoprocessing";
+
+const minRaster = await loadCog(rasterUrl);
+const statsByBand = await rasterStats(raster, {
+  feature: sketch,
+  stats: ["sum", "count", "min", "max", "mode", "invalid", "valid"],
+});
+```

@@ -12,10 +12,10 @@ describe("overlapArea", () => {
   });
 
   test("outerArea", () => {
-    expect(fix.outerArea).toBeCloseTo(49_447_340_364.086_09);
+    expect(fix.twoByPolyArea).toBeCloseTo(49_447_340_364.086_09);
   });
   test("outerOuterArea", () => {
-    expect(fix.outerOuterArea).toBeCloseTo(197_668_873_521.434_88);
+    expect(fix.fourByPolyArea).toBeCloseTo(197_668_873_521.434_88);
   });
 
   test("overlapArea - undefined sketch throws", async () => {
@@ -26,51 +26,77 @@ describe("overlapArea", () => {
 
   // sketch always assumed to be within outer boundary.  outerArea is passed as pre-calculated area avoiding need to compute it on the fly
   test("overlapArea overall - single polygon fully inside", async () => {
-    const metrics = await overlapArea("test", fix.sketch1, fix.outerArea);
+    const metrics = await overlapArea(
+      "test",
+      fix.insideTwoByPolySketch,
+      fix.twoByPolyArea,
+    );
     expect(metrics[0].value).toBeCloseTo(12_363_718_145.180_046);
     expect(metrics[1].value).toBeCloseTo(0.25); // takes up bottom left quadrant of outer
   });
 
   test("overlapSubarea - undefined sketch throws", async () => {
     expect(
-      async () => await overlapSubarea("test", undefined!, fix.outer),
+      async () => await overlapSubarea("test", undefined!, fix.twoByPoly),
     ).rejects.toThrow(ValidationError);
   });
 });
 
 describe("overlapSubarea", () => {
   test("overlapSubarea - undefined subareaFeature returns zero value metrics", async () => {
-    const metrics = await overlapSubarea("test", fix.sketch1, undefined!);
+    const metrics = await overlapSubarea(
+      "test",
+      fix.insideTwoByPolySketch,
+      undefined!,
+    );
     expect(metrics.length).toBe(2);
     for (const m of metrics) expect(m.value).toEqual(0);
   });
 
   test("overlapSubarea intersect - single polygon fully inside", async () => {
-    const metrics = await overlapSubarea("test", fix.sketch1, fix.outer);
+    const metrics = await overlapSubarea(
+      "test",
+      fix.insideTwoByPolySketch,
+      fix.twoByPoly,
+    );
     expect(metrics[0].value).toBeCloseTo(12_363_718_145.180_046);
     expect(metrics[1].value).toBeCloseTo(0.25);
   });
 
   test("overlapSubarea difference - single polygon fully inside", async () => {
-    const metrics = await overlapSubarea("test", fix.sketch1, fix.outer, {
-      operation: "difference",
-      outerArea: fix.outerArea,
-    });
+    const metrics = await overlapSubarea(
+      "test",
+      fix.insideTwoByPolySketch,
+      fix.twoByPoly,
+      {
+        operation: "difference",
+        outerArea: fix.twoByPolyArea,
+      },
+    );
     expect(metrics[0].value).toBeCloseTo(0);
     expect(metrics[1].value).toBeCloseTo(0);
   });
 
   test("overlapSubarea intersect - single polygon fully outside", async () => {
-    const metrics = await overlapSubarea("test", fix.sketch3, fix.outer);
+    const metrics = await overlapSubarea(
+      "test",
+      fix.outsideTwoByPolyTopRightSketch,
+      fix.twoByPoly,
+    );
     expect(metrics[0].value).toBeCloseTo(0);
     expect(metrics[1].value).toBeCloseTo(0);
   });
 
   test("overlapSubarea difference - single polygon fully outside outer, inside of outerOuter", async () => {
-    const metrics = await overlapSubarea("test", fix.sketch3, fix.outer, {
-      operation: "difference",
-      outerArea: fix.outerOuterArea,
-    });
+    const metrics = await overlapSubarea(
+      "test",
+      fix.outsideTwoByPolyTopRightSketch,
+      fix.twoByPoly,
+      {
+        operation: "difference",
+        outerArea: fix.fourByPolyArea,
+      },
+    );
     expect(metrics[0].value).toBeCloseTo(12_341_127_230.893_69);
     expect(metrics[1].value).toBeCloseTo(0.083_26); // should be 1 square of 16 in outerOuter
   });
@@ -80,7 +106,7 @@ describe("overlapSubarea", () => {
     const metrics = await overlapArea(
       "test",
       fix.sketchCollection,
-      fix.outerOuterArea,
+      fix.fourByPolyArea,
     );
     const collPercMetric = firstMatchingMetric(
       metrics,
@@ -97,7 +123,7 @@ describe("overlapSubarea", () => {
     const metrics = await overlapSubarea(
       "test",
       fix.sketchCollection,
-      fix.outer,
+      fix.twoByPoly,
     );
     expect(area(fix.sketchCollection)).toBe(fix.scArea);
 
@@ -126,10 +152,10 @@ describe("overlapSubarea", () => {
     const metrics = await overlapSubarea(
       "test",
       fix.sketchCollection,
-      fix.outer,
+      fix.twoByPoly,
       {
         operation: "difference",
-        outerArea: fix.outerOuterArea,
+        outerArea: fix.fourByPolyArea,
       },
     );
 

@@ -27,7 +27,7 @@ const tiny: Feature<Polygon> = feature({
   ],
 });
 
-const outer: Feature<Polygon> = feature({
+const twoByPoly: Feature<Polygon> = feature({
   type: "Polygon",
   coordinates: [
     [
@@ -39,9 +39,9 @@ const outer: Feature<Polygon> = feature({
     ],
   ],
 });
-const outerArea = area(outer);
+const twoByPolyArea = area(twoByPoly);
 
-const outerOuter: Feature<Polygon> = feature({
+const fourByPoly: Feature<Polygon> = feature({
   type: "Polygon",
   coordinates: [
     [
@@ -53,10 +53,10 @@ const outerOuter: Feature<Polygon> = feature({
     ],
   ],
 });
-const outerOuterArea = area(outerOuter);
+const fourByPolyArea = area(fourByPoly);
 
 // fully inside outer
-const poly1 = polygon([
+const insideTwoByPoly = polygon([
   [
     [0, 0],
     [1, 0],
@@ -66,16 +66,21 @@ const poly1 = polygon([
   ],
 ]);
 
-const multiPoly1 = multiPolygon([poly1.geometry.coordinates]);
-const sketchMultiPoly1 = genSampleSketch(
-  multiPoly1.geometry,
+const insideTwoByMultiPoly = multiPolygon([
+  insideTwoByPoly.geometry.coordinates,
+]);
+const insideTwoByMultipolySketch = genSampleSketch(
+  insideTwoByMultiPoly.geometry,
   "sketchMultiPoly1",
 );
 
-const sketch1 = genSampleSketch(poly1.geometry, "sketch1");
+const insideTwoByPolySketch = genSampleSketch(
+  insideTwoByPoly.geometry,
+  "sketch1",
+);
 
 // half inside outer
-const poly2 = polygon([
+const halfInsideTwoByPoly = polygon([
   [
     [1, 1],
     [3, 1],
@@ -84,7 +89,7 @@ const poly2 = polygon([
     [1, 1],
   ],
 ]);
-const poly2Inner = polygon([
+const fullyInsideTwoPoly = polygon([
   [
     [1, 1],
     [2, 1],
@@ -93,10 +98,13 @@ const poly2Inner = polygon([
     [1, 1],
   ],
 ]);
-const sketch2 = genSampleSketch(poly2.geometry, "sketch2");
+const halfInsideTwoBySketchPoly = genSampleSketch(
+  halfInsideTwoByPoly.geometry,
+  "sketch2",
+);
 
-// fully outside outer
-const poly3 = polygon([
+// fully outside outer top right
+const outsideTwoByPolyTopRight = polygon([
   [
     [3, 3],
     [4, 3],
@@ -105,7 +113,40 @@ const poly3 = polygon([
     [3, 3],
   ],
 ]);
-const sketch3 = genSampleSketch(poly3.geometry, "sketch3");
+const outsideTwoByPolyTopRightSketch = genSampleSketch(
+  outsideTwoByPolyTopRight.geometry,
+  "sketch3",
+);
+
+// fully outside outer bottom right
+const outsideTwoByPolyBottomRight = polygon([
+  [
+    [3, 0],
+    [4, 0],
+    [4, 1],
+    [3, 1],
+    [3, 0],
+  ],
+]);
+const outsideTwoByPolyBottomRightSketch = genSampleSketch(
+  outsideTwoByPolyBottomRight.geometry,
+  "outsideTwoByPolyBottomRight",
+);
+
+// fully outside outer bottom right
+const outsideTwoByPolyTopLeft = polygon([
+  [
+    [0, 3],
+    [1, 3],
+    [1, 4],
+    [0, 4],
+    [0, 3],
+  ],
+]);
+const outsideTwoByPolyTopLeftSketch = genSampleSketch(
+  outsideTwoByPolyTopLeft.geometry,
+  "outsideTwoByPolyTopLeft",
+);
 
 const collectionId = "CCCC";
 const sketchCollection: SketchCollection<Polygon> = {
@@ -119,8 +160,18 @@ const sketchCollection: SketchCollection<Polygon> = {
     isCollection: true,
     userAttributes: [],
   },
-  bbox: bbox(featureCollection([sketch1, sketch2, sketch3])),
-  features: [sketch1, sketch2, sketch3],
+  bbox: bbox(
+    featureCollection([
+      insideTwoByPolySketch,
+      halfInsideTwoBySketchPoly,
+      outsideTwoByPolyTopRightSketch,
+    ]),
+  ),
+  features: [
+    insideTwoByPolySketch,
+    halfInsideTwoBySketchPoly,
+    outsideTwoByPolyTopRightSketch,
+  ],
 };
 
 const mixedCollectionId = "MMMM";
@@ -135,8 +186,13 @@ const mixedPolySketchCollection: SketchCollection<Polygon | MultiPolygon> = {
     isCollection: true,
     userAttributes: [],
   },
-  bbox: bbox(featureCollection<Polygon | MultiPolygon>([sketch1, multiPoly1])),
-  features: [sketch1, sketchMultiPoly1],
+  bbox: bbox(
+    featureCollection<Polygon | MultiPolygon>([
+      insideTwoByPolySketch,
+      insideTwoByMultiPoly,
+    ]),
+  ),
+  features: [insideTwoByPolySketch, insideTwoByMultipolySketch],
 };
 
 const scArea = area(sketchCollection);
@@ -153,24 +209,35 @@ const overlapCollection: SketchCollection<Polygon> = {
     isCollection: true,
     userAttributes: [],
   },
-  bbox: bbox(featureCollection([sketch1, sketch2])),
-  features: [sketch1, sketch2, sketch2],
+  bbox: bbox(
+    featureCollection([insideTwoByPolySketch, halfInsideTwoBySketchPoly]),
+  ),
+  features: [
+    insideTwoByPolySketch,
+    halfInsideTwoBySketchPoly,
+    halfInsideTwoBySketchPoly,
+  ],
 };
 
 export default {
   tiny,
-  outer,
-  outerArea,
-  outerOuterArea,
-  poly1,
-  multiPoly1,
-  sketch1,
-  sketchMultiPoly1,
-  poly2,
-  poly2Inner,
-  sketch2,
-  poly3,
-  sketch3,
+  twoByPoly,
+  twoByPolyArea,
+  fourByPoly,
+  fourByPolyArea,
+  insideTwoByPoly,
+  insideTwoByMultiPoly,
+  insideTwoByPolySketch,
+  insideTwoByMultipolySketch,
+  halfInsideTwoByPoly,
+  fullyInsideTwoPoly,
+  halfInsideTwoBySketchPoly,
+  outsideTwoByPolyTopRight,
+  outsideTwoByPolyTopRightSketch,
+  outsideTwoByPolyBottomRight,
+  outsideTwoByPolyBottomRightSketch,
+  outsideTwoByPolyTopLeft,
+  outsideTwoByPolyTopLeftSketch,
   collectionId,
   mixedCollectionId,
   sketchCollection,

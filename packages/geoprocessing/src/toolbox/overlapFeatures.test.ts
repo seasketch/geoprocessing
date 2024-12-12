@@ -12,22 +12,26 @@ describe("overlapFeatures", () => {
   });
 
   test("outerArea", () => {
-    expect(fix.outerArea).toBeCloseTo(49_447_340_364.086_09);
+    expect(fix.twoByPolyArea).toBeCloseTo(49_447_340_364.086_09);
   });
   test("outerOuterArea", () => {
-    expect(fix.outerOuterArea).toBeCloseTo(197_668_873_521.434_88);
+    expect(fix.fourByPolyArea).toBeCloseTo(197_668_873_521.434_88);
   });
 
   test("overlapFeatures - sketch polygon fully inside", async () => {
-    const metrics = await overlapFeatures("test", [fix.outer], fix.sketch1);
-    expect(metrics[0].value).toBeCloseTo(area(fix.sketch1));
+    const metrics = await overlapFeatures(
+      "test",
+      [fix.twoByPoly],
+      fix.insideTwoByPolySketch,
+    );
+    expect(metrics[0].value).toBeCloseTo(area(fix.insideTwoByPolySketch));
   });
 
   test("overlapFeatures - sketch polygon fully inside - truncation", async () => {
     const metricsNoTruncation = await overlapFeatures(
       "test",
       [fix.tiny],
-      fix.sketch1,
+      fix.insideTwoByPolySketch,
       {
         truncate: false,
       },
@@ -37,7 +41,7 @@ describe("overlapFeatures", () => {
     const metricsTruncation = await overlapFeatures(
       "test",
       [fix.tiny],
-      fix.sketch1,
+      fix.insideTwoByPolySketch,
       {
         truncate: true,
       },
@@ -47,7 +51,7 @@ describe("overlapFeatures", () => {
     const metricsTruncationDefault = await overlapFeatures(
       "test",
       [fix.tiny],
-      fix.sketch1,
+      fix.insideTwoByPolySketch,
     );
     expect(metricsTruncationDefault[0].value).toBe(0.012_364);
   });
@@ -55,26 +59,30 @@ describe("overlapFeatures", () => {
   test("overlapFeatures - sketch multipolygon fully inside", async () => {
     const metrics = await overlapFeatures(
       "test",
-      [fix.outer],
-      fix.sketchMultiPoly1,
+      [fix.twoByPoly],
+      fix.insideTwoByMultipolySketch,
     );
-    expect(metrics[0].value).toBeCloseTo(area(fix.sketchMultiPoly1));
+    expect(metrics[0].value).toBeCloseTo(area(fix.insideTwoByMultipolySketch));
   });
 
   test("overlapFeatures - multipolygon both arguments", async () => {
     const metrics = await overlapFeatures(
       "test",
-      [fix.sketchMultiPoly1],
-      fix.sketchMultiPoly1,
+      [fix.insideTwoByMultipolySketch],
+      fix.insideTwoByMultipolySketch,
     );
-    expect(metrics[0].value).toBeCloseTo(area(fix.sketchMultiPoly1));
+    expect(metrics[0].value).toBeCloseTo(area(fix.insideTwoByMultipolySketch));
   });
 
   test.skip("overlapFeatures - sketch polygon half inside", async () => {
-    const metrics = await overlapFeatures("test", [fix.outer], fix.sketch2);
+    const metrics = await overlapFeatures(
+      "test",
+      [fix.twoByPoly],
+      fix.halfInsideTwoBySketchPoly,
+    );
     expect(metrics.length).toEqual(1);
     // overlap should be ~50% of original sketch area
-    const areaOf2 = area(fix.sketch2);
+    const areaOf2 = area(fix.halfInsideTwoBySketchPoly);
     const percDiff = (metrics[0].value / (areaOf2 * 0.5)) % 1;
     expect(percDiff).toBeCloseTo(0);
   });
@@ -104,7 +112,11 @@ describe("overlapFeatures", () => {
   });
 
   test("overlapFeatures - sketch polygon fully outside", async () => {
-    const metrics = await overlapFeatures("test", [fix.outer], fix.sketch3);
+    const metrics = await overlapFeatures(
+      "test",
+      [fix.twoByPoly],
+      fix.outsideTwoByPolyTopRightSketch,
+    );
     expect(metrics.length).toEqual(1);
     expect(metrics[0].value).toBe(0);
   });
@@ -112,7 +124,7 @@ describe("overlapFeatures", () => {
   test("overlapFeatures - mixed poly sketch collection fully inside", async () => {
     const metrics = await overlapFeatures(
       "test",
-      [fix.outer],
+      [fix.twoByPoly],
       fix.mixedPolySketchCollection,
     );
     expect(metrics.length).toBe(3);
@@ -154,7 +166,7 @@ describe("overlapFeatures", () => {
   test("overlapFeatures - sketch collection half inside", async () => {
     const metrics = await overlapFeatures(
       "test",
-      [fix.outer],
+      [fix.twoByPoly],
       fix.sketchCollection,
     );
     expect(metrics.length).toBe(4);

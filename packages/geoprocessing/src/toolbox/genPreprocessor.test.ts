@@ -126,30 +126,30 @@ describe("genClipToPolygonsPreprocessor", () => {
   test("genClipToPolygonsPreprocessor should successfully generate and run preprocessor", async () => {
     const featureOperations: FeatureClipOperation[] = [
       {
-        clipFeatures: [fix.outer],
+        clipFeatures: [fix.twoByPoly],
         operation: "intersection",
       },
     ];
 
     const preprocessor = genClipToPolygonFeatures(featureOperations);
-    const result = await preprocessor(fix.poly2);
+    const result = await preprocessor(fix.halfInsideTwoByPoly);
 
     expect(result).toBeTruthy();
-    expect(area(result)).toBe(area(fix.poly2Inner));
+    expect(area(result)).toBe(area(fix.fullyInsideTwoPoly));
   }, 60_000);
 
   test("geoprocessorz - sketch outside of datasource should not clip at all", async () => {
     const featureOperations: FeatureClipOperation[] = [
       {
-        clipFeatures: [fix.outer],
+        clipFeatures: [fix.twoByPoly],
         operation: "difference",
       },
     ];
 
     const preprocessor = genClipToPolygonFeatures(featureOperations, {});
-    const result = await preprocessor(fix.poly3);
+    const result = await preprocessor(fix.outsideTwoByPolyTopRight);
 
     expect(result).toBeTruthy();
-    expect(area(result)).toBe(area(fix.poly3)); // should be same as input
+    expect(area(result)).toBe(area(fix.outsideTwoByPolyTopRight)); // should be same as input
   }, 20_000);
 });

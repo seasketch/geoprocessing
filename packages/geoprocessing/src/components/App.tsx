@@ -55,6 +55,8 @@ export const App = ({ reports }: AppProps) => {
         event.data.type === seaSketchReportingMessageEventType
       ) {
         const message: SeaSketchReportingMessageEvent = event.data;
+        // Convert id to string to ensure it is a string as gp expects
+        message.sketchProperties.id = message.sketchProperties.id.toString();
         setReportContext({
           sketchProperties: message.sketchProperties,
           geometryUri: message.geometryUri,

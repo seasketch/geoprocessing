@@ -3,7 +3,7 @@ import { geojson } from "flatgeobuf";
 import { takeAsync } from "flatgeobuf/lib/mjs/streams/utils.js";
 import { deserialize } from "flatgeobuf/lib/mjs/geojson.js";
 import { BBox, Feature, FeatureCollection, Geometry } from "../types/index.js";
-import { retry } from "../util/retry.js";
+import { callWithRetry } from "../helpers/callWithRetry.js";
 
 export interface FgBoundingBox {
   minX: number;
@@ -63,7 +63,10 @@ export async function loadFgb<F extends Feature<Geometry>>(
     takeAsync(deserialize(url, fgBox) as AsyncGenerator);
 
   // retry up to 3 times if fetch fails
-  const features: F[] = (await retry(takeFeatures, [url, fgBox], 3)) as F[];
+  const features: F[] = (await callWithRetry(takeFeatures, [
+    url,
+    fgBox,
+  ])) as F[];
 
   if (!Array.isArray(features))
     throw new Error("Unexpected result from loadFgb");

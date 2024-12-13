@@ -10,7 +10,7 @@ import geoblaze, { Georaster } from "geoblaze";
 import reprojectGeoJSONPlugable from "reproject-geojson/pluggable.js";
 import proj4 from "../proj4.js";
 import bboxFns from "bbox-fns";
-import { retry } from "../../util/retry.js";
+import { callWithRetry } from "../../helpers/callWithRetry.js";
 
 // default values for stats calculated by geoblaze.stats
 export const geoblazeDefaultStatValues = {
@@ -41,7 +41,7 @@ export const getSum = async (
   let sum = 0;
   const finalFeat = toRasterProjection(raster, feat);
   try {
-    const result = await retry(geoblaze.sum, [raster, finalFeat], 3);
+    const result = await callWithRetry(geoblaze.sum, [raster, finalFeat]);
     sum = result[0];
   } catch {
     console.log(
@@ -64,17 +64,13 @@ export const getArea = async (
   const finalFeat = toRasterProjection(raster, feat);
   try {
     // undocumented shortcut lets you pass a test/filter function to stats
-    const result = await retry(
-      geoblaze.stats,
-      [
-        raster,
-        finalFeat,
-        {
-          stats: ["valid"],
-        },
-      ],
-      3,
-    );
+    const result = await callWithRetry(geoblaze.stats, [
+      raster,
+      finalFeat,
+      {
+        stats: ["valid"],
+      },
+    ]);
     area =
       Number.parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
   } catch {
@@ -105,7 +101,7 @@ export const getHistogram = async (
   let histogram = {};
   try {
     histogram = (
-      await retry(geoblaze.histogram, [raster, feat, options], 3)
+      await callWithRetry(geoblaze.histogram, [raster, feat, options])
     )[0];
   } catch {
     console.log(

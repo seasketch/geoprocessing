@@ -23,7 +23,7 @@ export * from "./src/helpers/ts.js";
 export * from "./src/helpers/valueFormatter.js";
 export * from "./src/helpers/service.js";
 export * from "./src/helpers/genTaskCacheKey.js";
-export * from "./src/helpers/retry.js";
+export * from "./src/helpers/callWithRetry.js";
 export * from "./src/datasources/helpers.js";
 export * from "./src/metrics/helpers.js";
 export * from "./src/iucn/helpers.js";

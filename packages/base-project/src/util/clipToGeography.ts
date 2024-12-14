@@ -8,7 +8,7 @@ import {
   Feature,
   isSketchCollection,
   genSketchCollection,
-  getFeatures,
+  getDatasourceFeatures,
 } from "@seasketch/geoprocessing";
 import { bbox, featureCollection, simplify } from "@turf/turf";
 import project from "../../project/projectClient.js";
@@ -20,7 +20,9 @@ import {
 
 /**
  * Returns intersection of sketch with geography features.
- * If sketch does not overlap with geography returns sketch with zero polygon geometry (null island)
+ * If sketch does not overlap with geography returns sketch with zero polygon
+ * geometry (null island).  This to ensure that the sketch is still valid and
+ * effectively a no-op in follow-on spatial operations.
  * @param sketch Sketch or SketchCollection
  * @param geography geography to clip sketch to, geography features are fetched
  * @param options optionally simplify sketch
@@ -40,10 +42,8 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
   }
 
   const box = sketch.bbox || bbox(sketch);
-  // ToDo: need to support external geography too, can we borrow logic from precalc
   const ds = project.getVectorDatasourceById(geography.datasourceId);
-  // ToDo - accept array of geographies and union all their features, then intersect with sketch
-  const geogFeatures = await getFeatures<Feature<Polygon | MultiPolygon>>(
+  const geogFeatures = await getDatasourceFeatures<Polygon | MultiPolygon>(
     ds,
     project.getDatasourceUrl(ds),
     {
@@ -61,10 +61,11 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
         featureCollection(geogFeatures),
         "intersection",
       ) as Feature<G>;
-      if (!intersection)
+      if (!intersection && process.env.NODE_ENV !== "test") {
         console.log(
           `Sketch ${sketch.id} does not intersect with geography ${geography.geographyId}`,
         );
+      }
       if (intersection) {
         if (options) {
           sketch.geometry = simplify(intersection.geometry, options);
@@ -80,11 +81,13 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
       finalSketches.push(sketch);
     }
   } else {
-    console.log(
-      sketch.properties.name,
-      "has no overlap with geography",
-      geography.geographyId,
-    );
+    if (process.env.NODE_ENV !== "test") {
+      console.log(
+        sketch.properties.name,
+        "has no overlap with geography",
+        geography.geographyId,
+      );
+    }
 
     finalSketches = zeroSketchArray(toSketchArray(sketch));
 

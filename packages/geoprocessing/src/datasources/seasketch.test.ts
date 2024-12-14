@@ -27,7 +27,7 @@ const exampleSketch: Sketch = {
   },
 };
 
-test.skip("Basic extraction from request", async () => {
+test("Basic extraction from request", async () => {
   const sketch = await fetchGeoJSON({
     geometry: exampleSketch,
   });

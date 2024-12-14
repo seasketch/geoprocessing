@@ -82,8 +82,14 @@ describe("geoblaze cog test", () => {
     };
     try {
       await geoblaze.sum(url, feature);
-    } catch {
-      return;
+    } catch (error: unknown) {
+      if (typeof error === "string") {
+        expect(
+          error.includes("No Values were found in the given geometry"),
+        ).toEqual(true);
+        return;
+      }
+      throw error;
     }
     throw new Error("should not reach here, feature smaller than pixel");
   });

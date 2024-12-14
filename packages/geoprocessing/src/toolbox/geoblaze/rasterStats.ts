@@ -100,13 +100,19 @@ export const rasterStats = async (
 
   try {
     if (categorical) {
-      const histogram = (await callWithRetry(geoblaze.histogram, [
-        raster,
-        projectedFeat,
+      const histogram = (await callWithRetry(
+        geoblaze.histogram,
+        [
+          raster,
+          projectedFeat,
+          {
+            scaleType: "nominal",
+          },
+        ],
         {
-          scaleType: "nominal",
+          ifErrorMsgContains: "SocketError",
         },
-      ])) as Histogram[];
+      )) as Histogram[];
 
       // If no overlap, return default values
       if (
@@ -126,17 +132,21 @@ export const rasterStats = async (
         });
       }
     } else {
-      statsByBand = await callWithRetry(geoblaze.stats, [
-        raster,
-        projectedFeat,
-        {
-          stats: statsToCalculate.filter((stat) =>
-            GEOBLAZE_RASTER_STATS.includes(stat),
-          ), // filter to only native geoblaze stats
-          ...restCalcOptions,
-        },
-        filterFn,
-      ]);
+      statsByBand = await callWithRetry(
+        geoblaze.stats,
+        [
+          raster,
+          projectedFeat,
+          {
+            stats: statsToCalculate.filter((stat) =>
+              GEOBLAZE_RASTER_STATS.includes(stat),
+            ), // filter to only native geoblaze stats
+            ...restCalcOptions,
+          },
+          filterFn,
+        ],
+        { ifErrorMsgContains: "SocketError" },
+      );
     }
 
     for (const statBand of statsByBand) {

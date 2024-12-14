@@ -62,11 +62,10 @@ export async function loadFgb<F extends Feature<Geometry>>(
   const takeFeatures = (url: string, fgBox: FgBoundingBox) =>
     takeAsync(deserialize(url, fgBox) as AsyncGenerator);
 
-  // retry up to 3 times if fetch fails
-  const features: F[] = (await callWithRetry(takeFeatures, [
-    url,
-    fgBox,
-  ])) as F[];
+  // retry up to 3 times if SocketError
+  const features: F[] = (await callWithRetry(takeFeatures, [url, fgBox], {
+    ifErrorMsgContains: "SocketError",
+  })) as F[];
 
   if (!Array.isArray(features))
     throw new Error("Unexpected result from loadFgb");

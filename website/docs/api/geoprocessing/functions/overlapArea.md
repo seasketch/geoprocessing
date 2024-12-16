@@ -1,4 +1,4 @@
-# overlapArea()
+# ~~overlapArea()~~
 
 ```ts
 function overlapArea(
@@ -25,8 +25,12 @@ will fallback to simplify the sketch with simplifyTolerance (default to .0000001
 | `options` | `object` | - |
 | `options.includeChildMetrics`? | `boolean` | If sketch collection, will include its child sketch metrics in addition to collection metrics, defaults to true |
 | `options.includePercMetric`? | `boolean` | Includes metrics with percent of total area, in addition to raw area value metrics, defaults to true |
-| `options.simplifyTolerance`? | `number` | simplify sketches with tolerance in degrees. .000001 is a good first value to try. only used for calculating area of collection (avoiding clip union to remove overlap blowing up) |
+| `options.simplifyTolerance`? | `number` | tolerance to simplify sketch coordinates in degrees. If provided, all sketches will be simplified with it, in order to avoid error when clipping. |
 
 ## Returns
 
 `Promise`\<[`Metric`](../type-aliases/Metric.md)[]\>
+
+## Deprecated
+
+use overlapFeatures (numerators) + precalculated metrics (denominators) + toPercentMetric

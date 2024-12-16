@@ -7,7 +7,7 @@ function intersectSum(
    sumProperty?): object
 ```
 
-Sums the value of intersecting features.  No support for partial, counts the whole feature
+Returns the value of features in B that intersect with featureA.  No support for partial, counts the whole feature
 
 ## Parameters
 
@@ -31,8 +31,8 @@ the sketch collection
 indices: number[];
 ```
 
-### value
+### sum
 
 ```ts
-value: number = sketchValue;
+sum: number = sketchValue;
 ```

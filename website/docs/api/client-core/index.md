@@ -79,6 +79,12 @@ Re-exports [CalcStatsOptions](../geoprocessing/interfaces/CalcStatsOptions.md)
 
 ***
 
+### callWithRetry
+
+Re-exports [callWithRetry](../geoprocessing/functions/callWithRetry.md)
+
+***
+
 ### capitalize
 
 Re-exports [capitalize](../geoprocessing/functions/capitalize.md)

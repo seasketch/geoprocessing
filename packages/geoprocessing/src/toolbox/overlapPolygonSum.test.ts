@@ -2,9 +2,6 @@ import { describe, test, expect } from "vitest";
 import { overlapPolygonSum } from "./overlapPolygonSum.js";
 import squareFix from "../testing/fixtures/squareSketches.js";
 import skFix from "../testing/fixtures/sketches.js";
-import { Polygon } from "geojson";
-import { SketchCollection } from "../types/sketch.js";
-import { bbox, featureCollection } from "@turf/turf";
 import { firstMatchingMetric } from "../metrics/helpers.js";
 
 describe("overlapPolygonSum", () => {
@@ -40,7 +37,6 @@ describe("overlapPolygonSum", () => {
       [squareFix.twoByPoly],
       squareFix.insideOutsideCollection, // two sketches, one fully inside, one half inside twoByPoly
     );
-    console.log("metrics", JSON.stringify(metrics, null, 2));
     expect(metrics.length).toEqual(3);
     expect(
       firstMatchingMetric(
@@ -74,15 +70,32 @@ describe("overlapPolygonSum", () => {
     }
   });
 
-  // test("overlapPolygonSum - sketch collection, sum property inside should count, outside should not", async () => {
-  //   const metrics = await overlapPolygonSum(
-  //     "test",
-  //     [squareFix.twoByPoly],
-  //     squareFix.insideOutsideCollection, // two sketches, one fully inside, one half inside twoByPoly
-  //   );
-  //   expect(metrics.length).toEqual(4);
-  //   for (const metric of metrics) {
-  //     expect(metric.value).toBe(1);
-  //   }
-  // });
+  test("overlapPolygonSum - sketch collection, sum property inside should count, outside should not", async () => {
+    const metrics = await overlapPolygonSum(
+      "test",
+      [squareFix.twoByPoly],
+      squareFix.insideOutsideCollection, // two sketches, one fully inside, one half inside twoByPoly
+      { sumProperty: "width" },
+    );
+    console.log("metrics", JSON.stringify(metrics, null, 2));
+    expect(metrics.length).toEqual(3);
+    expect(
+      firstMatchingMetric(
+        metrics,
+        (m) => m.sketchId === squareFix.insideTwoByPolySketch.properties.id,
+      ).value,
+    ).toBe(2);
+    expect(
+      firstMatchingMetric(
+        metrics,
+        (m) =>
+          m.sketchId ===
+          squareFix.outsideTwoByPolyBottomRightSketch.properties.id,
+      ).value,
+    ).toBe(0);
+    expect(
+      firstMatchingMetric(metrics, (m) => m.sketchId === "inside-out-coll")
+        .value,
+    ).toBe(2);
+  });
 });

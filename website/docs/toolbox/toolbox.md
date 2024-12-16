@@ -69,7 +69,13 @@ The following two functions intersect two sets of features and calculate a metri
 
 ## Vector Zonal Stats
 
-- `overlapFeatures` - calculates zonal statistic for sketch overlap with an array of polygon features, in chunks if needed.
+- [overlapPolygonArea](../api/geoprocessing/functions/overlapPolygonArea.md)
+
+- [overlapPolygonSum](../api/geoprocessing/functions/overlapPolygonSum.md)
+
+Deprecated:
+
+- - [overlapFeatures](../api/geoprocessing/functions/overlapFeatures.md) - calculates zonal statistic for sketch overlap with an array of polygon features, in chunks if needed.
   - high-level function that returns an array of Metric objects.
   - Supports area or sum operation (given sumProperty), defaults to only area.
   - If sketch collection is input, calculates overall overlap stats as well as per child sketch.

@@ -3,6 +3,8 @@ export * from "./clip.js";
 export * from "./width.js";
 export * from "./overlapArea.js";
 export * from "./overlapFeatures.js";
+export * from "./overlapPolygonArea.js";
+export * from "./overlapPolygonSum.js";
 export * from "./overlapRasterClass.js";
 export * from "./overlapGroupMetrics.js";
 export * from "./booleanOverlap.js";

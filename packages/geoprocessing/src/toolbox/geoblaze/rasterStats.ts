@@ -190,7 +190,7 @@ export const rasterStats = async (
       return defaultStats;
     } else {
       console.log("rasterStats error", JSON.stringify(error, null, 2));
-      throw error;
+      // throw error;
     }
   }
 

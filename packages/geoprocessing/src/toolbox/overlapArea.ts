@@ -19,21 +19,26 @@ import { clip } from "./clip.js";
 
 /**
  * Assuming sketches are within some outer boundary with size outerArea,
- * calculates the area of each sketch and the proportion of outerArea they take up.
+ * calculates metric for both the area of each sketch and the percentage of outerArea they take up.
+ * If sketch is a collection, will return metrics for each child sketch as well as the collection
+ * collection level metric will calculated by unioning child sketches to remove overlap.
+ * If collection level calculation produces an "Unable to complete output ring" error, it
+ * will fallback to simplify the sketch with simplifyTolerance (default to .0000001 if not passed) and try again.
+ * @deprecated use overlapFeatures (numerators) + precalculated metrics (denominators) + toPercentMetric
  */
 export async function overlapArea(
   /** Metric identifier */
   metricId: string,
   /** single sketch or collection. */
   sketch: Sketch<Polygon> | SketchCollection<Polygon>,
-  /** area of outer boundary (typically EEZ or planning area) */
+  /** area of outer boundary (e.g. planning area) */
   outerArea: number,
   options: {
     /** If sketch collection, will include its child sketch metrics in addition to collection metrics, defaults to true */
     includeChildMetrics?: boolean;
     /** Includes metrics with percent of total area, in addition to raw area value metrics, defaults to true */
     includePercMetric?: boolean;
-    /** simplify sketches with tolerance in degrees. .000001 is a good first value to try. only used for calculating area of collection (avoiding clip union to remove overlap blowing up) */
+    /** tolerance to simplify sketch coordinates in degrees.  If provided, all sketches will be simplified with it, in order to avoid error when clipping.  */
     simplifyTolerance?: number;
   } = {},
 ): Promise<Metric[]> {

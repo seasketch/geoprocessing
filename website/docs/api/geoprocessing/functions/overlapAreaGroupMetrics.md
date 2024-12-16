@@ -1,4 +1,4 @@
-# overlapAreaGroupMetrics()
+# ~~overlapAreaGroupMetrics()~~
 
 ```ts
 function overlapAreaGroupMetrics(options): Promise<Metric[]>
@@ -23,3 +23,7 @@ Generate overlap group metrics using overlapArea operation
 ## Returns
 
 `Promise`\<[`Metric`](../type-aliases/Metric.md)[]\>
+
+## Deprecated
+
+- use overlapFeaturesGroupMetrics instead

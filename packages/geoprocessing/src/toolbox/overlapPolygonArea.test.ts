@@ -1,25 +1,18 @@
 import { describe, test, expect } from "vitest";
-import { overlapFeatures } from "./overlapFeatures.js";
+import { overlapPolygonArea } from "./overlapPolygonArea.js";
 import { area } from "@turf/turf";
 import squareFix from "../testing/fixtures/squareSketches.js";
 import skFix from "../testing/fixtures/sketches.js";
 import { firstMatchingMetric } from "../metrics/index.js";
 import { testWithinPerc } from "../testing/index.js";
 
-describe("overlapFeatures", () => {
+describe("overlapPolygonArea", () => {
   test("function is present", () => {
-    expect(typeof overlapFeatures).toBe("function");
+    expect(typeof overlapPolygonArea).toBe("function");
   });
 
-  test("outerArea", () => {
-    expect(squareFix.twoByPolyArea).toBeCloseTo(49_447_340_364.086_09);
-  });
-  test("outerOuterArea", () => {
-    expect(squareFix.fourByPolyArea).toBeCloseTo(197_668_873_521.434_88);
-  });
-
-  test("overlapFeatures - sketch polygon fully inside", async () => {
-    const metrics = await overlapFeatures(
+  test("overlapPolygonArea - sketch polygon fully inside", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [squareFix.twoByPoly],
       squareFix.insideTwoByPolySketch,
@@ -27,8 +20,8 @@ describe("overlapFeatures", () => {
     expect(metrics[0].value).toBeCloseTo(area(squareFix.insideTwoByPolySketch));
   });
 
-  test("overlapFeatures - two overlapping features should not affect result", async () => {
-    const metrics = await overlapFeatures(
+  test("overlapPolygonArea - two overlapping features should not affect result", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [squareFix.twoByPoly, squareFix.twoByPoly],
       squareFix.insideTwoByPolySketch,
@@ -36,8 +29,8 @@ describe("overlapFeatures", () => {
     expect(metrics[0].value).toBeCloseTo(area(squareFix.insideTwoByPolySketch));
   });
 
-  test("overlapFeatures - sketch collection with overlapping sketches should not count overlapping area", async () => {
-    const metrics = await overlapFeatures(
+  test("overlapPolygonArea - sketch collection with overlapping sketches should not count overlapping area", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [squareFix.twoByPoly],
       squareFix.overlapCollection,
@@ -49,8 +42,21 @@ describe("overlapFeatures", () => {
     expect(metrics[0].value).toBeCloseTo(expectedArea);
   });
 
-  test("overlapFeatures - sketch polygon fully inside - truncation", async () => {
-    const metricsNoTruncation = await overlapFeatures(
+  test("overlapPolygonArea - sketch collection with overlapping sketches will double count if allowed", async () => {
+    const metrics = await overlapPolygonArea(
+      "test",
+      [squareFix.twoByPoly],
+      squareFix.overlapCollection,
+      { includeChildMetrics: false, solveOverlap: false },
+    );
+    const expectedArea =
+      area(squareFix.insideTwoByPolySketch) +
+      area(squareFix.halfInsideTwoBySketchPoly);
+    expect(metrics[0].value).toBeCloseTo(expectedArea);
+  });
+
+  test("overlapPolygonArea - sketch polygon fully inside - truncation", async () => {
+    const metricsNoTruncation = await overlapPolygonArea(
       "test",
       [squareFix.tiny],
       squareFix.insideTwoByPolySketch,
@@ -60,7 +66,7 @@ describe("overlapFeatures", () => {
     );
     expect(metricsNoTruncation[0].value).toBe(0.012_364_345_868_141_814);
 
-    const metricsTruncation = await overlapFeatures(
+    const metricsTruncation = await overlapPolygonArea(
       "test",
       [squareFix.tiny],
       squareFix.insideTwoByPolySketch,
@@ -70,7 +76,7 @@ describe("overlapFeatures", () => {
     );
     expect(metricsTruncation[0].value).toBe(0.012_364);
 
-    const metricsTruncationDefault = await overlapFeatures(
+    const metricsTruncationDefault = await overlapPolygonArea(
       "test",
       [squareFix.tiny],
       squareFix.insideTwoByPolySketch,
@@ -78,8 +84,8 @@ describe("overlapFeatures", () => {
     expect(metricsTruncationDefault[0].value).toBe(0.012_364);
   });
 
-  test("overlapFeatures - sketch multipolygon fully inside", async () => {
-    const metrics = await overlapFeatures(
+  test("overlapPolygonArea - sketch multipolygon fully inside", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [squareFix.twoByPoly],
       squareFix.insideTwoByMultipolySketch,
@@ -89,8 +95,8 @@ describe("overlapFeatures", () => {
     );
   });
 
-  test("overlapFeatures - multipolygon both arguments", async () => {
-    const metrics = await overlapFeatures(
+  test("overlapPolygonArea - multipolygon both arguments", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [squareFix.insideTwoByMultipolySketch],
       squareFix.insideTwoByMultipolySketch,
@@ -100,8 +106,8 @@ describe("overlapFeatures", () => {
     );
   });
 
-  test.skip("overlapFeatures - sketch polygon half inside", async () => {
-    const metrics = await overlapFeatures(
+  test.skip("overlapPolygonArea - sketch polygon half inside", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [squareFix.twoByPoly],
       squareFix.halfInsideTwoBySketchPoly,
@@ -113,9 +119,9 @@ describe("overlapFeatures", () => {
     expect(percDiff).toBeCloseTo(0);
   });
 
-  test("overlapFeatures - should not count holes", async () => {
+  test("overlapPolygonArea - should not count holes", async () => {
     // console.log(JSON.stringify(sk.holeBlPoly));
-    const metrics = await overlapFeatures(
+    const metrics = await overlapPolygonArea(
       "test",
       [skFix.wholePoly],
       skFix.holeBlPoly,
@@ -137,8 +143,8 @@ describe("overlapFeatures", () => {
     expect(percDiff).toBeLessThan(1);
   });
 
-  test("overlapFeatures - sketch polygon fully outside should have zero area", async () => {
-    const metrics = await overlapFeatures(
+  test("overlapPolygonArea - sketch polygon fully outside should have zero area", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [squareFix.twoByPoly],
       squareFix.outsideTwoByPolyTopRightSketch,
@@ -147,19 +153,8 @@ describe("overlapFeatures", () => {
     expect(metrics[0].value).toBe(0);
   });
 
-  test("overlapFeatures - sketch polygon fully outside should have zero sum", async () => {
-    const metrics = await overlapFeatures(
-      "test",
-      [squareFix.twoByPoly],
-      squareFix.outsideTwoByPolyTopRightSketch,
-      { operation: "sum" },
-    );
-    expect(metrics.length).toEqual(1);
-    expect(metrics[0].value).toBe(0);
-  });
-
-  test("overlapFeatures - mixed poly sketch collection fully inside", async () => {
-    const metrics = await overlapFeatures(
+  test("overlapPolygonArea - mixed poly sketch collection fully inside", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [squareFix.twoByPoly],
       squareFix.mixedPolySketchCollection,
@@ -175,7 +170,7 @@ describe("overlapFeatures", () => {
       area(squareFix.mixedPolySketchCollection),
       ...squareFix.mixedPolySketchCollection.features.map((sk) => area(sk)),
     ];
-    const percs = [0.5, 1, 1]; // the poly and multipoly overlap 100% so overlapFeatures area should be half
+    const percs = [0.5, 1, 1]; // the poly and multipoly overlap 100% so overlapPolygonArea area should be half
     for (const [index, curSketchId] of ids.entries()) {
       // console.log("index", index);
       testWithinPerc(
@@ -185,61 +180,8 @@ describe("overlapFeatures", () => {
     }
   });
 
-  test("overlapFeatures - sketch collection two inside polys SUM", async () => {
-    // Two sketches in sketch collection, both within feature.
-    // Individual sketches and sketch collection metrics should all list 1 as sum
-    // Tests that features aren't being double counted.
-
-    const metrics = await overlapFeatures(
-      "test",
-      [skFix.outer],
-      skFix.twoPolyInsideSC,
-      { operation: "sum" },
-    );
-    expect(metrics.length).toBe(3);
-    for (const metric of metrics) {
-      expect(metric.value).toBe(1);
-    }
-  });
-
-  // test("overlapFeatures - sum without accounting for overlap", async () => {
-  //   // Two sketches in sketch collection, both within feature.
-  //   // Individual sketches and sketch collection metrics should all list 1 as sum
-  //   // Tests that features aren't being double counted.
-
-  //   const metrics = await overlapFeatures(
-  //     "test",
-  //     [fix.twoByPoly],
-  //     fix.overlapCollection,
-  //     { operation: "sum", removeCollOverlap: false },
-  //   );
-  //   console.log("metrics", JSON.stringify(metrics, null, 2));
-  //   expect(metrics.length).toBe(3);
-  //   for (const metric of metrics) {
-  //     expect(metric.value).toBe(1);
-  //   }
-  // });
-
-  // test("overlapFeatures - sum with accounting for overlap", async () => {
-  //   // Two sketches in sketch collection, both within feature.
-  //   // Individual sketches and sketch collection metrics should all list 1 as sum
-  //   // Tests that features aren't being double counted.
-
-  //   const metrics = await overlapFeatures(
-  //     "test",
-  //     [squareFix.twoByPoly],
-  //     squareFix.overlapCollection,
-  //     { operation: "sum", removeCollOverlap: true },
-  //   );
-  //   console.log("metrics", JSON.stringify(metrics, null, 2));
-  //   expect(metrics.length).toBe(3);
-  //   for (const metric of metrics) {
-  //     expect(metric.value).toBe(1);
-  //   }
-  // });
-
-  test("overlapFeatures - sketch collection half inside", async () => {
-    const metrics = await overlapFeatures(
+  test("overlapPolygonArea - sketch collection half inside", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [squareFix.twoByPoly],
       squareFix.sketchCollection,
@@ -267,14 +209,11 @@ describe("overlapFeatures", () => {
    * sketch, because turf and other libraries types don't handle null geometry well. With
    * a null geometry, toolbox functions will see that it has no overlap with any sketches (unless planning is occuring on null island)
    */
-  test("overlapFeatures - test that zero geometry sketch returns zero value metric", async () => {
-    const metrics = await overlapFeatures(
+  test("overlapPolygonArea - test that zero geometry sketch returns zero value metric", async () => {
+    const metrics = await overlapPolygonArea(
       "test",
       [skFix.topRightPoly],
       skFix.zero,
-      {
-        operation: "area",
-      },
     );
     expect(metrics.length).toBe(1);
     for (const metric of metrics) {

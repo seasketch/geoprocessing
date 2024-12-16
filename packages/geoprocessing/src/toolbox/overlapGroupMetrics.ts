@@ -112,6 +112,7 @@ export async function overlapFeaturesGroupMetrics(options: {
 
 /**
  * Generate overlap group metrics using overlapArea operation
+ * @deprecated - use overlapFeaturesGroupMetrics instead
  */
 export async function overlapAreaGroupMetrics(options: {
   /** Caller-provided metric ID */

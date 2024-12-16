@@ -69,11 +69,15 @@ The following two functions intersect two sets of features and calculate a metri
 
 ## Vector Zonal Stats
 
-- `overlapFeatures` - calculates zonal statistics for a sketch(es) with an array of polygon features.
+- `overlapFeatures` - calculates zonal statistic for sketch overlap with an array of polygon features, in chunks if needed.
   - high-level function that returns an array of Metric objects.
   - Supports area or sum operation (given sumProperty), defaults to only area.
   - If sketch collection is input, calculates overall overlap stats as well as per child sketch.
   - handles overlap of sketch features so that overlap is not double counted in area/sum stats.
+
+Older and lesser used functions:
+
+- `overlapArea` - Assuming sketches are within some outer boundary with size outerArea, calculates metric for both the area of each sketch and the percentage of outerArea they take up. If sketch is a collection, will return metrics for each child sketch as well as the collection. collection level metric will calculated by unioning child sketches to remove overlap. If collection level calculation produces an "Unable to complete output ring" error, it will fallback to simplify the sketch with simplifyTolerance (default to .0000001 if not passed) and try again.
 
 ## Raster Zonal Stats
 
@@ -115,8 +119,6 @@ High-level:
 
 Low-level:
 
-- `overlapArea` - calculates the area of each sketch and the proportion of outerArea they take up.
-  - used by overlapAreaGroupMetrics.
 - `overlapGroupMetrics` - given overlap metrics (vector or raster) stratified by class and sketch, returns new metrics also stratified by group. Assumes a sketch is member of only one group, determined by caller-provided metricToGroup.
   - used by all high-level group metrics functions
 

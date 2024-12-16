@@ -111,7 +111,7 @@ export const rasterStats = async (
           },
         ],
         {
-          ifErrorMsgContains: "SocketError",
+          ifErrorMsgContains: "fetch failed",
         },
       )) as Histogram[];
 
@@ -146,7 +146,7 @@ export const rasterStats = async (
           },
           filterFn,
         ],
-        { ifErrorMsgContains: "SocketError" },
+        { ifErrorMsgContains: "fetch failed" },
       );
     }
 
@@ -189,6 +189,7 @@ export const rasterStats = async (
         );
       return defaultStats;
     } else {
+      console.log("rasterStats error", JSON.stringify(error, null, 2));
       throw error;
     }
   }

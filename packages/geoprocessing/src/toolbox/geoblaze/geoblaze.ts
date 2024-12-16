@@ -42,7 +42,7 @@ export const getSum = async (
   const finalFeat = toRasterProjection(raster, feat);
   try {
     const result = await callWithRetry(geoblaze.sum, [raster, finalFeat], {
-      ifErrorMsgContains: "SocketError",
+      ifErrorMsgContains: "fetch failed",
     });
     sum = result[0];
   } catch {
@@ -75,7 +75,7 @@ export const getArea = async (
           stats: ["valid"],
         },
       ],
-      { ifErrorMsgContains: "SocketError" },
+      { ifErrorMsgContains: "fetch failed" },
     );
     area =
       Number.parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
@@ -108,7 +108,7 @@ export const getHistogram = async (
   try {
     histogram = (
       await callWithRetry(geoblaze.histogram, [raster, feat, options], {
-        ifErrorMsgContains: "SocketError",
+        ifErrorMsgContains: "fetch failed",
       })
     )[0];
   } catch {

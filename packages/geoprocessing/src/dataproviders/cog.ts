@@ -11,6 +11,6 @@ import { callWithRetry } from "../helpers/callWithRetry.js";
 export const loadCog = async (url: string) => {
   if (process.env.NODE_ENV !== "test") console.log("loadCog", url);
   return await callWithRetry(geoblaze.parse, [url], {
-    ifErrorMsgContains: "SocketError",
+    ifErrorMsgContains: "fetch failed",
   });
 };

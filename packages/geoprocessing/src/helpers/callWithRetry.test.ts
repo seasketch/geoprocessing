@@ -11,7 +11,7 @@ describe("callWithRetry", () => {
   test("should retry on first fail and succeed the second try", async () => {
     const fn = vi
       .fn()
-      .mockRejectedValueOnce(new Error("SocketError"))
+      .mockRejectedValueOnce(new Error("fetch failed"))
       .mockResolvedValueOnce("success");
     const result = await callWithRetry(fn, []);
     expect(result).toBe("success");
@@ -21,24 +21,24 @@ describe("callWithRetry", () => {
   test("errorSubstring should rethrow OtherError and retry SocketError", async () => {
     const fn = vi.fn().mockRejectedValueOnce(new Error("OtherError"));
     await expect(
-      callWithRetry(fn, [], { ifErrorMsgContains: "SocketError" }),
+      callWithRetry(fn, [], { ifErrorMsgContains: "fetch failed" }),
     ).rejects.toThrowError();
     expect(fn).toHaveBeenCalledTimes(1);
 
     const socketErrorFn = vi
       .fn()
-      .mockRejectedValueOnce(new Error("SocketError"))
+      .mockRejectedValueOnce(new Error("fetch failed"))
       .mockResolvedValueOnce("success");
     const result = await callWithRetry(socketErrorFn, [], {
-      ifErrorMsgContains: "SocketError",
+      ifErrorMsgContains: "fetch failed",
     });
     expect(result).toBe("success");
     expect(socketErrorFn).toHaveBeenCalledTimes(2);
   });
 
   test("should fail all retry attempts", async () => {
-    const fn = vi.fn().mockRejectedValue(new Error("SocketError"));
-    await expect(callWithRetry(fn, [])).rejects.toThrow("SocketError");
+    const fn = vi.fn().mockRejectedValue(new Error("fetch failed"));
+    await expect(callWithRetry(fn, [])).rejects.toThrow("fetch failed");
     expect(fn).toHaveBeenCalledTimes(4);
   });
 });

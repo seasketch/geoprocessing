@@ -64,7 +64,7 @@ export async function loadFgb<F extends Feature<Geometry>>(
 
   // retry up to 3 times if SocketError
   const features: F[] = (await callWithRetry(takeFeatures, [url, fgBox], {
-    ifErrorMsgContains: "SocketError",
+    ifErrorMsgContains: "fetch failed",
   })) as F[];
 
   if (!Array.isArray(features))

@@ -1156,11 +1156,6 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
-            "id": "api/geoprocessing/interfaces/RoundDecimalOptions",
-            "label": "RoundDecimalOptions"
-          },
-          {
-            "type": "doc",
             "id": "api/geoprocessing/interfaces/SeaSketchReportingMessageEvent",
             "label": "SeaSketchReportingMessageEvent"
           },

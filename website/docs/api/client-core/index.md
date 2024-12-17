@@ -1789,12 +1789,6 @@ Re-exports [roundDecimalFormat](../geoprocessing/functions/roundDecimalFormat.md
 
 ***
 
-### RoundDecimalOptions
-
-Re-exports [RoundDecimalOptions](../geoprocessing/interfaces/RoundDecimalOptions.md)
-
-***
-
 ### roundLower
 
 Re-exports [roundLower](../geoprocessing/functions/roundLower.md)

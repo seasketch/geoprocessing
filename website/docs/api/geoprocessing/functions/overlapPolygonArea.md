@@ -8,9 +8,9 @@ function overlapPolygonArea(
 options): Promise<Metric[]>
 ```
 
-Calculates area overlap between sketch(es) and an array of polygon features.
+Calculates area of overlap between sketch(es) and an array of polygon features.
 Truncates input geometry coordinates down to 6 decimal places (~1m accuracy) before intersection to avoid floating point precision issues.
-If sketch collection, then calculates area per sketch and for sketch collection, and does not overcount sketch overlap
+If sketch collection, then calculates area for each child sketch and the whole collection, without overcounting sketch overlap
 
 ## Parameters
 

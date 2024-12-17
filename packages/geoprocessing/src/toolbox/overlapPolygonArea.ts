@@ -17,9 +17,9 @@ import { featureCollection, area, truncate as truncateGeom } from "@turf/turf";
 import { removeOverlap } from "../helpers/removeOverlap.js";
 
 /**
- * Calculates area overlap between sketch(es) and an array of polygon features.
+ * Calculates area of overlap between sketch(es) and an array of polygon features.
  * Truncates input geometry coordinates down to 6 decimal places (~1m accuracy) before intersection to avoid floating point precision issues.
- * If sketch collection, then calculates area per sketch and for sketch collection, and does not overcount sketch overlap
+ * If sketch collection, then calculates area for each child sketch and the whole collection, without overcounting sketch overlap
  * @param metricId unique metric identifier to assign to each metric
  * @param features to intersect and get overlap metrics
  * @param sketch the sketches.  If empty will return 0 result.

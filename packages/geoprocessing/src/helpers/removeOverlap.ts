@@ -5,6 +5,7 @@ import { toMultiPolygon } from "./toMultiPolygon.js";
 
 /**
  * Removes overlap between polygons and returns result as a single polygon or multipolygon
+ * The result has no connection to the original features and their properties in this process
  * @param input
  * @returns
  */
@@ -22,7 +23,7 @@ export const removeOverlap = (
   const isOverlap = collUnionArea < collArea;
   const noOverlapPolygons =
     fc.features.length > 1 && isOverlap && collUnion
-      ? collUnion // multipolygon
-      : toMultiPolygon(flatColl); // collection of polygons
+      ? collUnion
+      : toMultiPolygon(flatColl);
   return noOverlapPolygons;
 };

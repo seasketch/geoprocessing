@@ -4,6 +4,7 @@ import { takeAsync } from "flatgeobuf/lib/mjs/streams/utils.js";
 import { deserialize } from "flatgeobuf/lib/mjs/geojson.js";
 import { BBox, Feature, FeatureCollection, Geometry } from "../types/index.js";
 import { callWithRetry } from "../helpers/callWithRetry.js";
+import "./fetchPolyfill.js";
 
 export interface FgBoundingBox {
   minX: number;

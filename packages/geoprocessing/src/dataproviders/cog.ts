@@ -1,5 +1,6 @@
 import geoblaze from "geoblaze";
 import { callWithRetry } from "../helpers/callWithRetry.js";
+import "./fetchPolyfill.js";
 
 /**
  * Returns cog-aware georaster at given url.  If fetch fails, will retry up to 3 times

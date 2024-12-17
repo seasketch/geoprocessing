@@ -39,6 +39,6 @@ describe("callWithRetry", () => {
   test("should fail all retry attempts", async () => {
     const fn = vi.fn().mockRejectedValue(new Error("fetch failed"));
     await expect(callWithRetry(fn, [])).rejects.toThrow("fetch failed");
-    expect(fn).toHaveBeenCalledTimes(4);
-  });
+    expect(fn).toHaveBeenCalledTimes(5);
+  }, 10_000);
 });

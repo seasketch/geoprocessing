@@ -19,7 +19,7 @@ export async function callWithRetry<T extends (...arg0: any[]) => any>(
   } = {},
 ): Promise<Awaited<ReturnType<T>>> {
   const {
-    maxTry = 3,
+    maxTry = 4,
     retryCount = 1,
     logEachFailure = true,
     ifErrorMsgContains: errorFilter,
@@ -42,6 +42,10 @@ export async function callWithRetry<T extends (...arg0: any[]) => any>(
         console.log(`All ${maxTry} retry attempts exhausted`);
         throw error;
       }
+      // Wait with exponential backoff
+      const waitTime = Math.pow(2, currRetry) * 200; // Exponential backoff
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
+      // Try again
       return callWithRetry(fn, args, { maxTry, retryCount: currRetry + 1 });
     } else {
       throw error;

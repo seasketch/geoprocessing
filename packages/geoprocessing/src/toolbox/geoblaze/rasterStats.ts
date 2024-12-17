@@ -191,7 +191,9 @@ export const rasterStats = async (
     }
 
     // Log more information about errors so we can better catch them.
-    console.log("rasterStats error", JSON.stringify(error, null, 2));
+    if (error instanceof Error) {
+      console.log("rasterStats error", error.message);
+    }
 
     // temporarily swallow error and return default values instead of rethrowing
     return defaultStats;

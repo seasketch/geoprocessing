@@ -188,10 +188,14 @@ export const rasterStats = async (
           "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry",
         );
       return defaultStats;
-    } else {
-      console.log("rasterStats error", JSON.stringify(error, null, 2));
-      // throw error;
     }
+
+    // Log more information about errors so we can better catch them.
+    console.log("rasterStats error", JSON.stringify(error, null, 2));
+
+    // temporarily swallow error and return default values instead of rethrowing
+    return defaultStats;
+    // throw error;
   }
 
   return finalStats;

@@ -183,7 +183,10 @@ export const rasterStats = async (
       typeof error === "string" &&
       error.includes("No Values were found in the given geometry")
     ) {
-      console.log("rasterStats returning default values for error:", error);
+      console.log(
+        "rasterStats returning default values for error:",
+        "No Values were found in the given geometry",
+      );
       return defaultStats;
     }
 
@@ -195,7 +198,7 @@ export const rasterStats = async (
     ) {
       console.log(
         "rasterStats returning default values for error:",
-        error.message,
+        "Cannot read properties of undefined (reading 'vrm')",
       );
       return defaultStats;
     }

@@ -1,4 +1,4 @@
-# overlapFeatures()
+# ~~overlapFeatures()~~
 
 ```ts
 function overlapFeatures(
@@ -26,3 +26,7 @@ If sketch collection includes overall and per sketch
 `Promise`\<[`Metric`](../type-aliases/Metric.md)[]\>
 
 array of Metric objects
+
+## Deprecated
+
+use overlapPolygonArea or overlapPolygonSum directly, this function now just calls them

@@ -1156,11 +1156,6 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
-            "id": "api/geoprocessing/interfaces/RoundDecimalOptions",
-            "label": "RoundDecimalOptions"
-          },
-          {
-            "type": "doc",
             "id": "api/geoprocessing/interfaces/SeaSketchReportingMessageEvent",
             "label": "SeaSketchReportingMessageEvent"
           },
@@ -1743,11 +1738,6 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
-            "id": "api/geoprocessing/functions/intersectInChunksArea",
-            "label": "intersectInChunksArea"
-          },
-          {
-            "type": "doc",
             "id": "api/geoprocessing/functions/intersectSum",
             "label": "intersectSum"
           },
@@ -2028,6 +2018,16 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/overlapPolygonArea",
+            "label": "overlapPolygonArea"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/overlapPolygonSum",
+            "label": "overlapPolygonSum"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/overlapRasterClass",
             "label": "overlapRasterClass"
           },
@@ -2110,6 +2110,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/rekeyObject",
             "label": "rekeyObject"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/removeOverlap",
+            "label": "removeOverlap"
           },
           {
             "type": "doc",
@@ -2215,6 +2220,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/toFeaturePolygonArray",
             "label": "toFeaturePolygonArray"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/toMultiPolygon",
+            "label": "toMultiPolygon"
           },
           {
             "type": "doc",

@@ -1,8 +1,3 @@
-export interface RoundDecimalOptions {
-  /** If true, will keep any small value as-is which would be rounded to 0, defaults to false */
-  keepSmallValues?: boolean;
-}
-
 /**
  * Rounds number to a fixed number of decimals
  * @param value Value to round
@@ -15,7 +10,10 @@ export const roundDecimal = (
   value: number,
   /** Number of digits after the decimal point to keep */
   decimals = 1,
-  options: RoundDecimalOptions = {},
+  options: {
+    /** If true, will keep any small value as-is which would be rounded to 0, defaults to false */
+    keepSmallValues?: boolean;
+  } = {},
 ) => {
   const { keepSmallValues = false } = options;
   const roundedValue = Number(
@@ -37,7 +35,10 @@ export const roundDecimalFormat = (
   value: number,
   /** Number of digits after the decimal point to keep */
   decimals = 1,
-  options: RoundDecimalOptions = {},
+  options: {
+    /** If true, will keep any small value as-is which would be rounded to 0, defaults to false */
+    keepSmallValues?: boolean;
+  } = {},
 ) => {
   const NumberFormatter = new Intl.NumberFormat("en", { style: "decimal" });
   return NumberFormatter.format(roundDecimal(value, decimals, options));

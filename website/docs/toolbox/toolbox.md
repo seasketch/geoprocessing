@@ -37,13 +37,20 @@ See [polygon-clipping](https://github.com/mfogel/polygon-clipping#readme) librar
 
 ```typescript
 import { clip } from "@seasketch/geoprocessing";
+
+// Erase portion of sketch overlapping with land features
+clipped = clip(fc([sketch, ...landFeatures]), "difference");
 ```
 
 ### clipMultiMerge
 
-- `clipMultiMerge` - this is convenience function that takes as input a single polygon featureA, and collection featuresB. featuresB is merged into a single multipolygon before being used to clip feature A.
-  - This is necessary when you want to find the intersection of featureA and any part of featuresB. You need featuresB to be seen as a single unit when calling the clip function, not independenct polygons.
+- [clipMultiMerge](../api/geoprocessing/functions/clipMultiMerge.md) - clips featureA with a set of featuresB by first merge featuresB into a single MultiPolygon. This is useful when you need featuresB to be seen as one feature, such as an `intersection`, so that it can be done in one operation.
   - Used by intersectInChunks and intersectInChunksArea
+
+```typescript
+// Erase portion of sketch not overlapping with land features
+const clippedSketch = clipMultiMerge(sketch, landFeatures, "intersection");
+```
 
 ### Sequenced Clip Operations
 
@@ -63,17 +70,24 @@ See `src/functions/clipToOcean.ts`, `src/functions/clipToLand.ts`, and `src/func
 The following two functions intersect two sets of features and calculate a metric with the remainder.
 
 - `intersectInChunksArea` - calculates area overlap between a feature A and a feature array B. Intersection is done in chunks on featuresB to avoid errors due to too many features.
+
   - used by overlapFeatures()
-- `intersectSum` - sums a property value of intersecting features. No support for partial.
-  - used by overlapFeatures()
+
+- `intersectSum` - Returns an object containing the sum value of features in B that intersect with featureA, and the indices of the features in B that intersect with featureA. No support for partial overlap, counts the whole feature if it intersects. Used by overlapPolygonSum()
 
 ## Vector Zonal Stats
 
-- `overlapFeatures` - calculates zonal statistics for a sketch(es) with an array of polygon features.
-  - high-level function that returns an array of Metric objects.
-  - Supports area or sum operation (given sumProperty), defaults to only area.
-  - If sketch collection is input, calculates overall overlap stats as well as per child sketch.
-  - handles overlap of sketch features so that overlap is not double counted in area/sum stats.
+Calculate sketch overlap with a set of features. Used in combination with `precalc` and `toPercentMetric`.
+
+- [overlapPolygonArea](../api/geoprocessing/functions/overlapPolygonArea.md)
+
+- [overlapPolygonSum](../api/geoprocessing/functions/overlapPolygonSum.md)
+
+- [overlapFeatures](../api/geoprocessing/functions/overlapFeatures.md) (deprecated, replaced with overlapPolygonArea and overlapPolygonSum)
+
+Older and lesser used functions:
+
+- [overlapArea](../api/geoprocessing/functions/overlapArea.md) - pseudo calculation of sketch percent overlap using a passed area value (number) representing the outer boundary for sketch (e.g. planning boundary)
 
 ## Raster Zonal Stats
 
@@ -109,15 +123,23 @@ Calculate group-level metrics by assigning sketches to groups (e.g. group by pro
 
 High-level:
 
-- `overlapFeaturesGroupMetrics` - generate overlap metrics for groups of sketches using overlapFeatures operation.
-- `overlapRasterGroupMetrics` - generate overlap metrics for groups of sketches using rasterMetrics operation
-- `overlapAreaGroupMetrics` - generate overlap metrics for groups of sketches using overlapArea operation.
+- [overlapFeaturesGroupMetrics](../api/geoprocessing/functions/overlapFeaturesGroupMetrics.md) - generate overlap metrics for groups of sketches using overlapFeatures operation.
+- [overlapRasterGroupMetrics](../api/geoprocessing/functions/overlapRasterGroupMetrics.md) - generate overlap metrics for groups of sketches using rasterMetrics operation
+- [overlapAreaGroupMetrics](../api/geoprocessing/functions/overlapAreaGroupMetrics.md) - generate overlap metrics for groups of sketches using overlapArea operation.
 
-Low-level:
+Low-level building block:
 
-- `overlapArea` - calculates the area of each sketch and the proportion of outerArea they take up.
-  - used by overlapAreaGroupMetrics.
-- `overlapGroupMetrics` - given overlap metrics (vector or raster) stratified by class and sketch, returns new metrics also stratified by group. Assumes a sketch is member of only one group, determined by caller-provided metricToGroup.
-  - used by all high-level group metrics functions
+- [overlapGroupMetrics](../api/geoprocessing/functions/overlapGroupMetrics.md) given overlap metrics (vector or raster) stratified by class and sketch, returns new metrics also stratified by group. Assumes a sketch is member of only one group, determined by caller-provided metricToGroup.
 
-## Precision
+## Helpers
+
+Additional helpers used to build these toolbox functions:
+
+- [removeOverlap](../api/geoprocessing/functions/removeOverlap.md) - removes overlap between feature polygons and returns as a single polygon or multipolygon.
+- [createMetric](../api/geoprocessing/functions/createMetric.md) - create a metric object, with null values for unused properties
+- [createMetrics](../api/geoprocessing/functions/createMetrics.md) - create an array of metrics values
+- [roundDecimal](../api/geoprocessing/functions/roundDecimal.md) - round number to a fixed number of decimals without ability to keep small numbers smaller than the amount of precision.
+
+Third party:
+
+- [turf.truncate](https://turfjs.org/docs/api/truncate) - lowers precision of coordinates to 6 decimal places by default, to avoid floating point issues

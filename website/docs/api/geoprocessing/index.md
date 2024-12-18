@@ -73,7 +73,6 @@
 | [ReportResult](interfaces/ReportResult.md) | Report results consist of collections of metrics for sketches |
 | [ReportResultBase](interfaces/ReportResultBase.md) | Metrics for reports not associated with sketches. Used for precalculation |
 | [RootTaskItem](interfaces/RootTaskItem.md) | - |
-| [RoundDecimalOptions](interfaces/RoundDecimalOptions.md) | - |
 | [SeaSketchReportingMessageEvent](interfaces/SeaSketchReportingMessageEvent.md) | - |
 | [SeaSketchReportingToggleLanguageEvent](interfaces/SeaSketchReportingToggleLanguageEvent.md) | - |
 | [SeaSketchReportingToggleLayerVisibilityEvent](interfaces/SeaSketchReportingToggleLayerVisibilityEvent.md) | - |
@@ -198,8 +197,7 @@
 | [hasOwnProperty](functions/hasOwnProperty.md) | Type narrowing to allow property checking when object can be multiple types https://fettblog.eu/typescript-hasownproperty/ Any code inside a block guarded by a conditional call to this function will have type narrowed to X |
 | [includeVirtualSketch](functions/includeVirtualSketch.md) | If sketch collection passes sketchTest, then returns new collection with mergeSketchColl sketches appended and updated bbox |
 | [intersectInChunks](functions/intersectInChunks.md) | Calculates area overlap between a feature A and a feature array B. Intersection is done in chunks on featuresB to avoid errors due to too many features |
-| [intersectInChunksArea](functions/intersectInChunksArea.md) | Calculates area overlap between a feature A and a feature array B. Intersection is done in chunks on featuresB to avoid errors due to too many features |
-| [intersectSum](functions/intersectSum.md) | Sums the value of intersecting features. No support for partial, counts the whole feature |
+| [intersectSum](functions/intersectSum.md) | Returns an object containing the sum value of features in B that intersect with featureA, and the indices of the features in B that intersect with featureA No support for partial overlap, counts the whole feature if it intersects. |
 | [isExternalDatasource](functions/isExternalDatasource.md) | - |
 | [isExternalRasterDatasource](functions/isExternalRasterDatasource.md) | - |
 | [isExternalVectorDatasource](functions/isExternalVectorDatasource.md) | - |
@@ -250,11 +248,13 @@
 | [mpaClassMetrics](functions/mpaClassMetrics.md) | Given sketch for rbcsMpa or collection of sketches for rbcsMpas with rbcs activity userAttributes, assumes each mpa is a single zone mpa and returns metrics with mpa classification score Collection metric will have mpa classification score index as value |
 | [nestMetrics](functions/nestMetrics.md) | Recursively groups metrics by ID in order of ids specified to create arbitrary nested hierarchy for fast lookup. Caller responsible for all metrics having the ID properties defined If an id property is not defined on a metric, then 'undefined' will be used for the key |
 | [numberFormat](functions/numberFormat.md) | Formats number to string, if less than zero will leave as-is, otherwise will format as large number |
-| [overlapArea](functions/overlapArea.md) | Assuming sketches are within some outer boundary with size outerArea, calculates the area of each sketch and the proportion of outerArea they take up. |
+| [overlapArea](functions/overlapArea.md) | Assuming sketches are within some outer boundary with size outerArea, calculates metric for both the area of each sketch and the percentage of outerArea they take up. If sketch is a collection, will return metrics for each child sketch as well as the collection collection level metric will calculated by unioning child sketches to remove overlap. If collection level calculation produces an "Unable to complete output ring" error, it will fallback to simplify the sketch with simplifyTolerance (default to .0000001 if not passed) and try again. |
 | [overlapAreaGroupMetrics](functions/overlapAreaGroupMetrics.md) | Generate overlap group metrics using overlapArea operation |
 | [overlapFeatures](functions/overlapFeatures.md) | Calculates overlap between sketch(es) and an array of polygon features. Supports area or sum operation (given sumProperty), defaults to area If sketch collection includes overall and per sketch |
 | [overlapFeaturesGroupMetrics](functions/overlapFeaturesGroupMetrics.md) | Generate overlap group metrics using overlapFeatures operation |
 | [overlapGroupMetrics](functions/overlapGroupMetrics.md) | Given overlap metrics stratified by class and sketch, returns new metrics also stratified by group Assumes a sketch is member of only one group, determined by caller-provided metricToGroup For each group+class, calculates area of overlap between sketches in group and featuresByClass (with overlap between group sketches removed first) Types of metrics returned: sketch metrics: copy of caller-provided sketch metrics with addition of group ID overall metric for each group+class: takes sketches in group, subtracts overlap between them and overlap with higher group sketches, and runs operation If a group has no sketches in it, then no group metrics will be included for that group, and group+class metric will be 0 |
+| [overlapPolygonArea](functions/overlapPolygonArea.md) | Calculates area of overlap between sketch(es) and an array of polygon features. Truncates input geometry coordinates down to 6 decimal places (~1m accuracy) before intersection to avoid floating point precision issues. If sketch collection, then calculates area for each child sketch and the whole collection, without overcounting sketch overlap |
+| [overlapPolygonSum](functions/overlapPolygonSum.md) | Calculates area overlap between sketch(es) and an array of polygon features. Truncates input geometry coordinates down to 6 decimal places (~1m accuracy) before intersection to avoid floating point precision issues. If sketch collection, then calculates area per sketch and for sketch collection |
 | [overlapRasterClass](functions/overlapRasterClass.md) | Calculates sum of overlap between sketches and a categorical raster with numeric values representing feature classes If sketch collection, then calculate overlap for all child sketches also |
 | [overlapRasterGroupMetrics](functions/overlapRasterGroupMetrics.md) | Generate overlap group metrics using rasterMetrics operation |
 | [overlapSubarea](functions/overlapSubarea.md) | Returns area stats for sketch input after performing overlay operation against a subarea feature. Includes both area overlap and percent area overlap metrics, because calculating percent later would be too complicated For sketch collections, dissolve is used when calculating total sketch area to prevent double counting |
@@ -272,6 +272,7 @@
 | [rbcsZoneToMetric](functions/rbcsZoneToMetric.md) | Transforms an rbcs zone object to a metric |
 | [rekeyMetrics](functions/rekeyMetrics.md) | Reorders metrics (by mutation) to a consistent key order for readability |
 | [rekeyObject](functions/rekeyObject.md) | Reorders object, mutating in place, in the order provided |
+| [removeOverlap](functions/removeOverlap.md) | Removes overlap between polygons and returns result as a single polygon or multipolygon The result has no connection to the original features and their properties in this process |
 | [removeSketchCollPolygonHoles](functions/removeSketchCollPolygonHoles.md) | - |
 | [removeSketchPolygonHoles](functions/removeSketchPolygonHoles.md) | - |
 | [roundDecimal](functions/roundDecimal.md) | Rounds number to a fixed number of decimals |
@@ -293,6 +294,7 @@
 | [toChildProperties](functions/toChildProperties.md) | Returns SketchProperties for each child sketch in a SketchCollection |
 | [toFeatureArray](functions/toFeatureArray.md) | Helper to convert a Feature or a FeatureCollection to a Feature array |
 | [toFeaturePolygonArray](functions/toFeaturePolygonArray.md) | - |
+| [toMultiPolygon](functions/toMultiPolygon.md) | Converts collection of polygons or multipolygons to a single multipolygon |
 | [toNullSketch](functions/toNullSketch.md) | Returns sketch or sketch collection with null geometry |
 | [toNullSketchArray](functions/toNullSketchArray.md) | Helper to convert a NullSketch or NullSketchCollection to a NullSketch array |
 | [toPercentMetric](functions/toPercentMetric.md) | Matches numerator metrics with denominator metrics and divides their value, returning a new array of percent metrics. Matches on the optional idProperty given, otherwise defaulting to classId Deep copies and maintains all other properties from the numerator metric If denominator metric has value of 0, returns NaN NaN allows downstream consumers to understand this isn't just any 0. It's an opportunity to tell the user that no matter where they put their sketch, there is no way for the value to be more than zero. For example, the ClassTable component looks for `NaN` metric values and will automatically display 0%, along with an informative popover explaining that no data class features are within the current geography. |

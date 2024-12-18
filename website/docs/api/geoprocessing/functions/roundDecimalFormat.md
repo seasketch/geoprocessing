@@ -15,7 +15,8 @@ Rounds number to a fixed number of decimals, then formats as a human readable st
 | ------ | ------ | ------ | ------ |
 | `value` | `number` | `undefined` | Value to round |
 | `decimals` | `number` | `1` | Number of digits after the decimal point to keep |
-| `options` | [`RoundDecimalOptions`](../interfaces/RoundDecimalOptions.md) | `{}` | - |
+| `options` | `object` | `{}` | - |
+| `options.keepSmallValues`? | `boolean` | `undefined` | If true, will keep any small value as-is which would be rounded to 0, defaults to false |
 
 ## Returns
 

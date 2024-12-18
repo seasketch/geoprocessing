@@ -108,7 +108,7 @@ export async function clipToGeography<G extends Polygon | MultiPolygon>(
       properties: sketch.properties,
       bbox: bbox(
         genSketchCollection(
-          finalSketches.filter((sk) => !sk.bbox!.every((coord) => coord === 0)),
+          finalSketches.filter((sk) => !sk.bbox!.every((coord) => coord === 0)), // filter out zero sketches
         ),
       ),
       type: "FeatureCollection",

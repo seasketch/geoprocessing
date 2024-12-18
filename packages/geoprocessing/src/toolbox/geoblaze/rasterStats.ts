@@ -51,7 +51,8 @@ export interface RasterStatsOptions extends CalcStatsOptions {
 /**
  * Calculates over 10 different raster statistics, optionally constrains to raster cells overlapping with feature (zonal statistics).
  * Defaults to calculating only sum stat
- * If no cells found, returns 0 or null value for each stat as appropriate.
+ * If no raster cells with value found, returns 0 or null value for each stat as appropriate.
+ * @throws any errors
  */
 export const rasterStats = async (
   raster: Georaster,
@@ -100,13 +101,19 @@ export const rasterStats = async (
 
   try {
     if (categorical) {
-      const histogram = (await callWithRetry(geoblaze.histogram, [
-        raster,
-        projectedFeat,
+      const histogram = (await callWithRetry(
+        geoblaze.histogram,
+        [
+          raster,
+          projectedFeat,
+          {
+            scaleType: "nominal",
+          },
+        ],
         {
-          scaleType: "nominal",
+          ifErrorMsgContains: "fetch failed",
         },
-      ])) as Histogram[];
+      )) as Histogram[];
 
       // If no overlap, return default values
       if (
@@ -126,17 +133,21 @@ export const rasterStats = async (
         });
       }
     } else {
-      statsByBand = await callWithRetry(geoblaze.stats, [
-        raster,
-        projectedFeat,
-        {
-          stats: statsToCalculate.filter((stat) =>
-            GEOBLAZE_RASTER_STATS.includes(stat),
-          ), // filter to only native geoblaze stats
-          ...restCalcOptions,
-        },
-        filterFn,
-      ]);
+      statsByBand = await callWithRetry(
+        geoblaze.stats,
+        [
+          raster,
+          projectedFeat,
+          {
+            stats: statsToCalculate.filter((stat) =>
+              GEOBLAZE_RASTER_STATS.includes(stat),
+            ), // filter to only native geoblaze stats
+            ...restCalcOptions,
+          },
+          filterFn,
+        ],
+        { ifErrorMsgContains: "fetch failed" },
+      );
     }
 
     for (const statBand of statsByBand) {
@@ -166,12 +177,34 @@ export const rasterStats = async (
       // Transfer calculated stats if valid number
       finalStats.push(finalStatsBand);
     }
-  } catch {
-    if (process.env.NODE_ENV !== "test")
+  } catch (error: unknown) {
+    // swallow certain errors and return default stats instead of rethrowing
+    if (
+      typeof error === "string" &&
+      error.includes("No Values were found in the given geometry")
+    ) {
       console.log(
-        "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry",
+        "rasterStats returning default values for error:",
+        "No Values were found in the given geometry",
       );
-    return defaultStats;
+      return defaultStats;
+    }
+
+    if (
+      error instanceof Error &&
+      error.message.includes(
+        "Cannot read properties of undefined (reading 'vrm')",
+      )
+    ) {
+      console.log(
+        "rasterStats returning default values for error:",
+        "Cannot read properties of undefined (reading 'vrm')",
+      );
+      return defaultStats;
+    }
+
+    // rethrow all other errors
+    throw error;
   }
 
   return finalStats;

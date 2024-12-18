@@ -106,7 +106,7 @@
 | [bboxOverlap](functions/bboxOverlap.md) | Returns whether bounding box A overlaps with or touches bounding box B |
 | [booleanOverlap](functions/booleanOverlap.md) | Returns all B items that overlap with a A items Not all Feature types are supported, see typedoc A and B must have the same geometry dimension (single or multi). Builds on @turf/boolean-overlap. |
 | [byteSize](functions/byteSize.md) | Get length of string in bytes |
-| [callWithRetry](functions/callWithRetry.md) | Calls given function and if throws error it recursively retries up to maxTry times |
+| [callWithRetry](functions/callWithRetry.md) | Calls given function and if error thrown, it recursively retries function up to maxTry times, then just rethrows the error |
 | [capitalize](functions/capitalize.md) | Capitalizes the first letter of string |
 | [chunk](functions/chunk.md) | Splits an array into chunks of size |
 | [classIdMapping](functions/classIdMapping.md) | Returns mapping of class ID to class DataClass objects |
@@ -266,13 +266,13 @@
 | [randomFloat](functions/randomFloat.md) | - |
 | [randomInt](functions/randomInt.md) | - |
 | [rasterMetrics](functions/rasterMetrics.md) | Calculates summary metrics (stats/area) on given raster, optionally intersecting raster with provided feature (zonal statistics). If feature is a collection, then calculate metrics for each individual feature as well as the collection as a whole. This can be disabled with includeChildMetrics: false. Defaults to assuming a continuous raster but also supports categorical option |
-| [rasterStats](functions/rasterStats.md) | Calculates over 10 different raster statistics, optionally constrains to raster cells overlapping with feature (zonal statistics). Defaults to calculating only sum stat If no cells found, returns 0 or null value for each stat as appropriate. |
+| [rasterStats](functions/rasterStats.md) | Calculates over 10 different raster statistics, optionally constrains to raster cells overlapping with feature (zonal statistics). Defaults to calculating only sum stat If no raster cells with value found, returns 0 or null value for each stat as appropriate. |
 | [rasterStatsToMetrics](functions/rasterStatsToMetrics.md) | Converts an array of geoblaze raster StatsObject to an array of Metrics |
 | [rbcsMpaToMetric](functions/rbcsMpaToMetric.md) | - |
 | [rbcsZoneToMetric](functions/rbcsZoneToMetric.md) | Transforms an rbcs zone object to a metric |
 | [rekeyMetrics](functions/rekeyMetrics.md) | Reorders metrics (by mutation) to a consistent key order for readability |
 | [rekeyObject](functions/rekeyObject.md) | Reorders object, mutating in place, in the order provided |
-| [removeOverlap](functions/removeOverlap.md) | Removes overlap between polygons and returns result as a single polygon or multipolygon |
+| [removeOverlap](functions/removeOverlap.md) | Removes overlap between polygons and returns result as a single polygon or multipolygon The result has no connection to the original features and their properties in this process |
 | [removeSketchCollPolygonHoles](functions/removeSketchCollPolygonHoles.md) | - |
 | [removeSketchPolygonHoles](functions/removeSketchPolygonHoles.md) | - |
 | [roundDecimal](functions/roundDecimal.md) | Rounds number to a fixed number of decimals |

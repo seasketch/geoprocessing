@@ -41,7 +41,9 @@ export const getSum = async (
   let sum = 0;
   const finalFeat = toRasterProjection(raster, feat);
   try {
-    const result = await callWithRetry(geoblaze.sum, [raster, finalFeat]);
+    const result = await callWithRetry(geoblaze.sum, [raster, finalFeat], {
+      ifErrorMsgContains: "fetch failed",
+    });
     sum = result[0];
   } catch {
     console.log(
@@ -64,13 +66,17 @@ export const getArea = async (
   const finalFeat = toRasterProjection(raster, feat);
   try {
     // undocumented shortcut lets you pass a test/filter function to stats
-    const result = await callWithRetry(geoblaze.stats, [
-      raster,
-      finalFeat,
-      {
-        stats: ["valid"],
-      },
-    ]);
+    const result = await callWithRetry(
+      geoblaze.stats,
+      [
+        raster,
+        finalFeat,
+        {
+          stats: ["valid"],
+        },
+      ],
+      { ifErrorMsgContains: "fetch failed" },
+    );
     area =
       Number.parseInt(result[0].valid) * raster.pixelHeight * raster.pixelWidth;
   } catch {
@@ -101,7 +107,9 @@ export const getHistogram = async (
   let histogram = {};
   try {
     histogram = (
-      await callWithRetry(geoblaze.histogram, [raster, feat, options])
+      await callWithRetry(geoblaze.histogram, [raster, feat, options], {
+        ifErrorMsgContains: "fetch failed",
+      })
     )[0];
   } catch {
     console.log(

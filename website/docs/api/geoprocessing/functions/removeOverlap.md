@@ -5,6 +5,7 @@ function removeOverlap(input): Feature<Polygon | MultiPolygon, GeoJsonProperties
 ```
 
 Removes overlap between polygons and returns result as a single polygon or multipolygon
+The result has no connection to the original features and their properties in this process
 
 ## Parameters
 

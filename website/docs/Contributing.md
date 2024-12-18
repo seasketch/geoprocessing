@@ -313,30 +313,40 @@ The final step is to publish [release](https://github.com/seasketch/geoprocessin
 - Add one or more paragraphs at the top of the release notes summarizing the release and any steps the user needs to take on upgrade.
 - Publish the release notes.
 
-## Alpha and Beta canary Prerelease
+## Alpha and Beta release
 
 You can publish `alpha` and `beta` prereleases prior to a stable release. This will advance the version numbers in package.json and generate a release tag.
+
+First, make sure you do a release from the `dev` branch, and that you have the right dependencies in place by running `npm install`.
+
+This is usually done as a progression, alpha releases are done first and then you progress to betas. Alphas are expected to be more unstabe because they aren't well tested. As new features land in dev you decide when to cut a new release.
 
 ```sh
 npm run publish:alpha
 ```
 
-or
-
 ```sh
 npm run publish:beta
 ```
 
-Then press the Enter key to choose `❯ Custom Prerelease`
-Then press the Enter key when it asks you Enter a prerelease identifier. It will use a default name, something like `7.0.0-beta.1`.
+Choose `❯ Custom Prerelease`
+Then press the Enter key when it asks you to `Enter a prerelease identifier`. If this is your first release in the series enter as appropriate
 
-As you create more beta releases, it will automatically increment the beta number and maintain the naming scheme.
+```text
+7.0.0-alpha.1
+or
+7.0.0-beta.1
+```
+
+After the first release in the series it should automatically figure out what you want and increment the number (e.g. `7.0.0-alpha.2`, `7.0.0-alpha.3`) and you can just hit enter.
 
 ## Backport Release
 
-A backport release should be published when you backport features or bug fixes to a previous major version of the code. For example critical bug fixes developed for 7.x, backported to 6.x.
+A `backport` release should be published when you backport features or bug fixes to a previous major version of the code. For example critical bug fixes developed for 7.x, backported to 6.x.
 
-A backport release is a normal release, in that you choose whether it is a patch or a minor release, and it will advance the version to the next number e.g. 6.1.2 would become either 6.1.3 (patch) or 6.2.0 (minor). The only different is that the `backport` distribution tag is applied to the release, rather than `latest`.
+A backport release is done just like a `stable` release. The difference is that the `backport` distribution tag is applied to the backport release, rather than `latest`.
+
+For example, assume a version 7.1.0 is currently the latest release, and you want to backport a fix to version 6.x. If the last 6.x release was 6.1.2 then you need to choose whether your backport release will be 6.1.3 (patch) or 6.2.0 (minor). Assume it will add new features, so it will be 6.2.0.
 
 The suggested method to do a backport release is to checkout a prior release tag, then create a new branch
 
@@ -351,13 +361,15 @@ Choose minor release 6.2.0
 
 ## Experimental Releases
 
-If you want to work on a feature outside of dev in a feature branch, and publish it and test it, you can publish it as an `experiment`. Make sure that you publish it from a feature branch, typically with the same name you will give your experiment.
+It's very common that you will want to work on a feature inside a feature branch, and test it out on a geoprocessing project before you merge it as a new feature. To do this you can publish it as an `experimental` canary release. A canary release is a type of early out-of-band release such that the version number is not incremented in the package. It does still get published to NPM however.
+
+First, make sure that you publish it from the feature branch.
 
 ```sh
 npm run publish:experimental:canary
 ```
 
-Assuming your branch name is `node16-webpack5`, the current GP version is 0.15.0, and your feature branch is 28 commits ahead of the last release tag, this should publish a minor release called `0.15.1-experimental-node16-webpack5.28`. As you push more commits to your experimental branch, you can publish again at any time and the commit number will increment so that there isn't a name collision.
+Assuming your branch name is `node16-webpack5`, the current GP version is 0.15.0, and your feature branch is 28 commits ahead of the last release tag, this should publish a minor release called `0.15.1-experimental-node16-webpack5.28`. As you push more commits to your experimental branch, you can publish again at any time and the commit number will increment so that there isn't a name collision. You will need to have made at least one commit before you can publish another experimental release on the branch.
 
 ## Project init with non-latest version
 

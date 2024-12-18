@@ -369,7 +369,7 @@ abortcontroller-polyfill: string = "^1.7.5";
 ### dependencies.aws-cdk-lib
 
 ```ts
-aws-cdk-lib: string = "2.155.0";
+aws-cdk-lib: string = "^2.173.2";
 ```
 
 ### dependencies.aws-regions
@@ -1167,5 +1167,5 @@ types: string = "dist/src/index.d.ts";
 ### version
 
 ```ts
-version: string = "7.0.0-beta.11";
+version: string = "7.0.0-beta.12";
 ```

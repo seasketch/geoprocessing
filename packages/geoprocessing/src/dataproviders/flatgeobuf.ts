@@ -4,6 +4,7 @@ import { takeAsync } from "flatgeobuf/lib/mjs/streams/utils.js";
 import { deserialize } from "flatgeobuf/lib/mjs/geojson.js";
 import { BBox, Feature, FeatureCollection, Geometry } from "../types/index.js";
 import { callWithRetry } from "../helpers/callWithRetry.js";
+import "./fetchPolyfill.js";
 
 export interface FgBoundingBox {
   minX: number;
@@ -62,11 +63,10 @@ export async function loadFgb<F extends Feature<Geometry>>(
   const takeFeatures = (url: string, fgBox: FgBoundingBox) =>
     takeAsync(deserialize(url, fgBox) as AsyncGenerator);
 
-  // retry up to 3 times if fetch fails
-  const features: F[] = (await callWithRetry(takeFeatures, [
-    url,
-    fgBox,
-  ])) as F[];
+  // retry up to 3 times if SocketError
+  const features: F[] = (await callWithRetry(takeFeatures, [url, fgBox], {
+    ifErrorMsgContains: "fetch failed",
+  })) as F[];
 
   if (!Array.isArray(features))
     throw new Error("Unexpected result from loadFgb");

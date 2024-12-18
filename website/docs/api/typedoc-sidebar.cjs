@@ -1288,6 +1288,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/callWithRetry",
+            "label": "callWithRetry"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/capitalize",
             "label": "capitalize"
           },

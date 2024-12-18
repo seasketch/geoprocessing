@@ -19,7 +19,7 @@ export async function callWithRetry<T extends (...arg0: any[]) => any>(
   } = {},
 ): Promise<Awaited<ReturnType<T>>> {
   const {
-    maxTry = 4,
+    maxTry = 3,
     retryCount = 1,
     logEachFailure = true,
     ifErrorMsgContains: errorFilter,

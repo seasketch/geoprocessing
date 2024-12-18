@@ -178,26 +178,30 @@ export const rasterStats = async (
       finalStats.push(finalStatsBand);
     }
   } catch (error: unknown) {
-    // only catch error if no raster cells with value found in geometry
+    // swallow certain errors and return default stats instead of rethrowing
     if (
       typeof error === "string" &&
       error.includes("No Values were found in the given geometry")
     ) {
-      if (process.env.NODE_ENV !== "test")
-        console.log(
-          "overlapRaster geoblaze.stats threw, meaning no cells with value were found within the geometry",
-        );
+      console.log("rasterStats returning default values for error:", error);
       return defaultStats;
     }
 
-    // Log more information about errors so we can better catch them.
-    if (error instanceof Error) {
-      console.log("rasterStats error", error.message);
+    if (
+      error instanceof Error &&
+      error.message.includes(
+        "Cannot read properties of undefined (reading 'vrm')",
+      )
+    ) {
+      console.log(
+        "rasterStats returning default values for error:",
+        error.message,
+      );
+      return defaultStats;
     }
 
-    // temporarily swallow error and return default values instead of rethrowing
-    return defaultStats;
-    // throw error;
+    // rethrow all other errors
+    throw error;
   }
 
   return finalStats;

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.5.2">
 <title data-rh="true">Contributing | SeaSketch Geoprocessing</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://seasketch.github.io/geoprocessing/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://seasketch.github.io/geoprocessing/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://seasketch.github.io/geoprocessing/docs/next/contributing/"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Contributing | SeaSketch Geoprocessing"><meta data-rh="true" name="description" content="Common commands"><meta data-rh="true" property="og:description" content="Common commands"><link data-rh="true" rel="icon" href="/geoprocessing/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://seasketch.github.io/geoprocessing/docs/next/contributing/"><link data-rh="true" rel="alternate" href="https://seasketch.github.io/geoprocessing/docs/next/contributing/" hreflang="en"><link data-rh="true" rel="alternate" href="https://seasketch.github.io/geoprocessing/docs/next/contributing/" hreflang="x-default"><link rel="stylesheet" href="/geoprocessing/assets/css/styles.264bfde1.css">
-<script src="/geoprocessing/assets/js/runtime~main.e102ae7f.js" defer="defer"></script>
+<script src="/geoprocessing/assets/js/runtime~main.16609f1a.js" defer="defer"></script>
 <script src="/geoprocessing/assets/js/main.6c7de78a.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -22,8 +22,9 @@
 <p>A versioned documentation website is maintained using <a href="https://docusaurus.io/l" target="_blank" rel="noopener noreferrer">Docusaurus</a> in the <code>website</code> directory. Docs should be updated in lockstep with code changes.</p>
 <ul>
 <li>cd <code>website</code></li>
+<li><code>npm install</code> to install dependencies for building the docs</li>
 <li>Dev - <code>npm start</code> to start dev server, generate new API documents. Edits will appear instantly in browser</li>
-<li>Build - <code>npm build</code> and <code>npm serve</code> to test</li>
+<li>Build - <code>npm run build</code> and <code>npm run serve</code> to test</li>
 <li>Version - <code>npm run docusaurus docs:version &lt;VERSION_NUMBER&gt;</code> - snapshot a new version. Only do this when a new minor or major release is made. If point release should be unnecessary.</li>
 <li>Deploy - <code>GIT_USER=&lt;YOUR_GITHUB_USERNAME&gt; npm run deploy</code> to build and deploy to Github Pages. You can deploy as often as needed. If a new release snapshot is not made then doc changes are limited to the &quot;Next&quot; version on the website.</li>
 </ul>

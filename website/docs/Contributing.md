@@ -19,8 +19,9 @@ The geoprocessing code repository is setup as a "monorepo" managed by [Lerna](ht
 A versioned documentation website is maintained using [Docusaurus](https://docusaurus.io/l) in the `website` directory. Docs should be updated in lockstep with code changes.
 
 - cd `website`
+- `npm install` to install dependencies for building the docs
 - Dev - `npm start` to start dev server, generate new API documents. Edits will appear instantly in browser
-- Build - `npm build` and `npm serve` to test
+- Build - `npm run build` and `npm run serve` to test
 - Version - `npm run docusaurus docs:version <VERSION_NUMBER>` - snapshot a new version. Only do this when a new minor or major release is made. If point release should be unnecessary.
 - Deploy - `GIT_USER=<YOUR_GITHUB_USERNAME> npm run deploy` to build and deploy to Github Pages. You can deploy as often as needed. If a new release snapshot is not made then doc changes are limited to the "Next" version on the website.
 

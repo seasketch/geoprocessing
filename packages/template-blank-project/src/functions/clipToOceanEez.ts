@@ -3,11 +3,16 @@ import {
   Feature,
   Sketch,
   ensureValidPolygon,
-  FeatureClipOperation,
-  VectorDataSource,
-  clipToPolygonFeatures,
+  Polygon,
+  MultiPolygon,
+  loadFgb,
+  clip,
+  clipMultiMerge,
+  ValidationError,
+  isPolygonFeature,
+  biggestPolygon,
 } from "@seasketch/geoprocessing";
-import { bbox } from "@turf/turf";
+import { area, bbox, featureCollection } from "@turf/turf";
 
 /**
  * Preprocessor takes a Polygon feature/sketch and returns the portion that
@@ -16,6 +21,10 @@ import { bbox } from "@turf/turf";
 export async function clipToOceanEez(
   feature: Feature | Sketch,
 ): Promise<Feature> {
+  if (!isPolygonFeature(feature)) {
+    throw new ValidationError("Input must be a polygon");
+  }
+
   // throws if not valid with specific message
   ensureValidPolygon(feature, {
     minSize: 1,
@@ -26,32 +35,44 @@ export async function clipToOceanEez(
 
   const featureBox = bbox(feature);
 
+  // Get features from land and eez datasources
+  const landFeatures: Feature<Polygon | MultiPolygon>[] = await loadFgb(
+    "https://gp-global-datasources-new-datasets.s3.us-west-1.amazonaws.com/global-coastline-daylight-v158.fgb",
+    featureBox,
+  );
+
+  const eezFeatures: Feature<Polygon | MultiPolygon>[] = await loadFgb(
+    "https://gp-global-datasources-new-datasets.s3.us-west-1.amazonaws.com/global-eez-land-union-mr-v4.fgb",
+    featureBox,
+  );
+
   // Erase portion of sketch over land
 
-  const landDatasource = new VectorDataSource(
-    "https://d3p1dsef9f0gjr.cloudfront.net/",
-  );
-  const landFC = await landDatasource.fetchUnion(featureBox, "gid");
-  const eraseLand: FeatureClipOperation = {
-    operation: "difference",
-    clipFeatures: landFC.features,
-  };
+  let clipped: Feature<Polygon | MultiPolygon> | null = feature;
+  if (clipped !== null && landFeatures.length > 0) {
+    clipped = clip(featureCollection([clipped, ...landFeatures]), "difference");
+  }
 
   // Keep portion of sketch within EEZ
 
-  const eezDatasource = new VectorDataSource(
-    "https://d3muy0hbwp5qkl.cloudfront.net",
-  );
-  const eezFC = await eezDatasource.fetchUnion(featureBox, "UNION");
-  // Optionally filter to single EEZ polygon by UNION name
-  const keepInsideEez: FeatureClipOperation = {
-    operation: "intersection",
-    clipFeatures: eezFC.features,
-  };
+  if (eezFeatures.length === 0) {
+    clipped = null; // No land to clip to, intersection is empty
+  }
 
-  return clipToPolygonFeatures(feature, [eraseLand, keepInsideEez], {
-    ensurePolygon: true,
-  });
+  if (clipped !== null) {
+    clipped = clipMultiMerge(
+      clipped,
+      featureCollection(eezFeatures),
+      "intersection",
+    );
+  }
+
+  if (!clipped || area(clipped) === 0) {
+    throw new ValidationError("Feature is outside of EEZ boundary");
+  }
+
+  // Assume user wants the largest polygon if multiple remain
+  return biggestPolygon(clipped);
 }
 
 export default new PreprocessingHandler(clipToOceanEez, {

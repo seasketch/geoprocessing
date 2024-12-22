@@ -25,3 +25,4 @@ export * from "./callWithRetry.js";
 export * from "./toMultiPolygon.js";
 export * from "./removeOverlap.js";
 export * from "./removeHoles.js";
+export * from "./getBiggestPolygon.js";

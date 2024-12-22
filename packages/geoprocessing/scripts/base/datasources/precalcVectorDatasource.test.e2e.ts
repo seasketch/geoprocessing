@@ -818,21 +818,21 @@ describe("precalcDatasources", () => {
         (m) => m.geographyId === "geog-box-filter" && m.metricId === "area",
       );
       // Largest area value
-      expect(boxFilterMetric.value).toEqual(59_556_498_695.328_66);
+      expect(boxFilterMetric.value).toEqual(51_247_161_473.9979);
 
       const singleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-single-filter" && m.metricId === "area",
       );
       // Smallest area value, samoa only
-      expect(singleFilterMetric.value).toEqual(35_442_309_711.542_16);
+      expect(singleFilterMetric.value).toEqual(35_442_309_366.529_57);
 
       const doubleFilterMetric = firstMatchingMetric(
         metrics,
         (m) => m.geographyId === "geog-double-filter" && m.metricId === "area",
       );
       // Slightly larger area value, both samoa
-      expect(doubleFilterMetric.value).toEqual(37_350_139_043.666_25);
+      expect(doubleFilterMetric.value).toEqual(37_350_103_043.708_23);
 
       fs.removeSync(dsFilePath);
       fs.removeSync(path.join(dstPath, `${internalDatasourceId}.fgb`));

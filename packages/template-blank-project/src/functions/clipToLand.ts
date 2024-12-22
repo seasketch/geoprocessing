@@ -35,7 +35,7 @@ export async function clipToLand(feature: Feature | Sketch): Promise<Feature> {
   // Get features from land datasource
 
   const landFeatures: Feature<Polygon | MultiPolygon>[] = await loadFgb(
-    "https://gp-global-datasources-new-datasets.s3.us-west-1.amazonaws.com/global-coastline-daylight-v158.fgb",
+    "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-coastline-daylight-v158.fgb",
     featureBox,
   );
 

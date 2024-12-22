@@ -37,12 +37,12 @@ export async function clipToOceanEez(
 
   // Get features from land and eez datasources
   const landFeatures: Feature<Polygon | MultiPolygon>[] = await loadFgb(
-    "https://gp-global-datasources-new-datasets.s3.us-west-1.amazonaws.com/global-coastline-daylight-v158.fgb",
+    "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-coastline-daylight-v158.fgb",
     featureBox,
   );
 
   const eezFeatures: Feature<Polygon | MultiPolygon>[] = await loadFgb(
-    "https://gp-global-datasources-new-datasets.s3.us-west-1.amazonaws.com/global-eez-land-union-mr-v4.fgb",
+    "https://gp-global-datasources-datasets.s3.us-west-1.amazonaws.com/global-eez-land-union-mr-v4.fgb",
     featureBox,
   );
 

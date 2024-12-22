@@ -55,9 +55,11 @@ export const polygonSmokeTest = (
               example?.properties?.name,
             );
           } catch (error) {
-            console.log("error", example?.properties?.name, error);
+            if (error instanceof Error) {
+              console.log("error", example?.properties?.name, error.message);
+            }
             if (error instanceof ValidationError) {
-              // ValidationErrors don't indicate failures, just comprehensive tests
+              // ValidationErrors don't indicate failures, just comprehensive tests, so swallow and don't generate output
             } else {
               throw error;
             }

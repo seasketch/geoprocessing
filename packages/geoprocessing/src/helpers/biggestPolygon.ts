@@ -4,7 +4,7 @@ import { Feature, MultiPolygon, Polygon } from "geojson";
 /**
  * If feature is a MultiPolygon, scans and returns the polygon with the largest area.
  */
-export function getBiggestPolygon(feature: Feature<Polygon | MultiPolygon>) {
+export function biggestPolygon(feature: Feature<Polygon | MultiPolygon>) {
   if (feature.geometry.type === "MultiPolygon") {
     // If multipolygon clip result, keep only the biggest piece
     const flattened = flatten(feature);

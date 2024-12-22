@@ -55,8 +55,13 @@ export const polygonSmokeTest = (
               example?.properties?.name,
             );
           } catch (error) {
+            console.log(
+              "preprocessor",
+              preprocessorName,
+              example?.properties?.name,
+            );
             if (error instanceof ValidationError) {
-              console.log(example?.properties?.name, error.message);
+              console.log(error.message);
               // ValidationErrors don't indicate failures, just comprehensive tests, so swallow and don't generate output
             } else {
               throw error;

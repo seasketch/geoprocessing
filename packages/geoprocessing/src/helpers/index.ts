@@ -13,6 +13,7 @@ export * from "./randomData.js";
 export * from "./sketch.js";
 export * from "./string.js";
 export * from "./ts.js";
+export * from "./fs.js";
 export * from "./units.js";
 export * from "./valueFormatter.js";
 export * from "./extraParams.js";

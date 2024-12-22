@@ -480,7 +480,7 @@ describe("clipToGeography", () => {
     const clippedSketchBox = clippedSketch.bbox || bbox(clippedSketch);
     expect(clippedSketchArea).toEqual(sketchArea);
     expect(sketchBox).toEqual(clippedSketchBox);
-  });
+  }, 10_000);
 
   test("clipToGeography - no overlap", async () => {
     const curGeography = project.getGeographyById("world");

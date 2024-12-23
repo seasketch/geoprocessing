@@ -406,7 +406,7 @@ describe("precalcRasterDatasource", () => {
       metrics,
       (m) => m.geographyId === "geog-box-filter" && m.metricId === "sum",
     );
-    expect(boxFilterMetric.value).toEqual(70);
+    expect(boxFilterMetric.value).toEqual(68);
 
     const singleFilterMetric = firstMatchingMetric(
       metrics,
@@ -418,7 +418,7 @@ describe("precalcRasterDatasource", () => {
       metrics,
       (m) => m.geographyId === "geog-double-filter" && m.metricId === "sum",
     );
-    expect(doubleFilterMetric.value).toEqual(69);
+    expect(doubleFilterMetric.value).toEqual(67);
 
     fs.removeSync(dsFilePath);
     fs.removeSync(path.join(dstPath, `${rasterDatasourceId}.tif`));

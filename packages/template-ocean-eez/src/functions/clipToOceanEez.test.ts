@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, afterEach, assert } from "vitest";
 import { clipToOceanEez } from "./clipToOceanEez.js";
-import { area, featureCollection, polygon } from "@turf/turf";
+import { area, polygon } from "@turf/turf";
 import { BBox } from "@seasketch/geoprocessing";
 
 const landFeature = polygon([
@@ -67,23 +67,19 @@ describe("clipToOceanEez", () => {
     vi.restoreAllMocks();
   });
 
-  // Mock VectorDataSource fetchUnion method to return clipFeature
+  // Mock loadFgb method to return landFeature
+  // @ts-ignore
   vi.mock(import("@seasketch/geoprocessing"), async (importOriginal) => {
     const actual = await importOriginal();
-    const VectorDataSource = vi.fn();
-    VectorDataSource.prototype.fetchUnion = vi.fn(
-      (bbox: BBox, unionProperty?: string) => {
-        if (unionProperty === "gid") {
-          return featureCollection([landFeature]);
-        } else if (unionProperty === "UNION") {
-          return featureCollection([eezFeature]);
-        }
-      },
-    );
+    const loadFgb = vi.fn((url: string, bbox: BBox) => {
+      if (url.includes("coastline")) {
+        return [landFeature];
+      } else if (url.includes("eez")) {
+        return [eezFeature];
+      }
+    });
 
-    VectorDataSource.prototype.fetchBundle = vi.fn();
-    VectorDataSource.prototype.fetchBundleIndex = vi.fn();
-    return { ...actual, VectorDataSource };
+    return { ...actual, loadFgb };
   });
 
   test("clipToOceanEez - feature inside of land feature should throw", async () => {
@@ -91,7 +87,7 @@ describe("clipToOceanEez", () => {
       await clipToOceanEez(insideLand);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        expect(error.message).toBe("Feature is outside of boundary");
+        expect(error.message).toBe("Feature is outside of EEZ boundary");
         return;
       }
     }
@@ -103,7 +99,7 @@ describe("clipToOceanEez", () => {
       await clipToOceanEez(outsideEez);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        expect(error.message).toBe("Feature is outside of boundary");
+        expect(error.message).toBe("Feature is outside of EEZ boundary");
         return;
       }
     }

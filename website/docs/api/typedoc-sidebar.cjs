@@ -1273,6 +1273,11 @@ const typedocSidebar = { items: [
           },
           {
             "type": "doc",
+            "id": "api/geoprocessing/functions/biggestPolygon",
+            "label": "biggestPolygon"
+          },
+          {
+            "type": "doc",
             "id": "api/geoprocessing/functions/booleanOverlap",
             "label": "booleanOverlap"
           },
@@ -2220,6 +2225,11 @@ const typedocSidebar = { items: [
             "type": "doc",
             "id": "api/geoprocessing/functions/toFeaturePolygonArray",
             "label": "toFeaturePolygonArray"
+          },
+          {
+            "type": "doc",
+            "id": "api/geoprocessing/functions/toJsonFile",
+            "label": "toJsonFile"
           },
           {
             "type": "doc",

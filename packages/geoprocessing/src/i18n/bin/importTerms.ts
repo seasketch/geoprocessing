@@ -2,6 +2,8 @@
 import fs from "fs-extra";
 import path from "node:path";
 import { Translations } from "./publishTerms.js";
+import languages from "../languages.json" with { type: "json" };
+import { LangDetails } from "../languages.js";
 
 if (!process.env.POEDITOR_API_TOKEN) {
   throw new Error("POEDITOR_API_TOKEN is not defined");
@@ -26,8 +28,10 @@ const projectPath = (() => {
   );
 })();
 
-// read project languages
-let projectLanguages: string[] | undefined;
+// read languages.  Start with all and if project has a basic.json file, use those languages
+let projectLanguages: string[] = languages.map(
+  (lang: LangDetails) => lang.code,
+);
 if (fs.existsSync(`${projectPath}/basic.json`)) {
   const basic = fs.readJsonSync(`${projectPath}/basic.json`);
   if (
@@ -124,13 +128,13 @@ const langResult = await langResponse.json();
 if (langResult.response.status !== "success") {
   throw new Error(`API response was ${langResult.response.status}`);
 }
-const languages = langResult.result.languages as {
+const remoteLanguages = langResult.result.languages as {
   name: string;
   code: string;
   percentage: number;
 }[];
 
-for (const curLang of languages.filter(
+for (const curLang of remoteLanguages.filter(
   (curLang) =>
     curLang.code !== "en" &&
     projectLanguages &&

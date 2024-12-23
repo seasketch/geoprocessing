@@ -6,7 +6,7 @@ With all datasets, it is important to check if there is an authoritative dataset
 
 A number of global datasources are published in the [global-datasources](https://github.com/seasketch/global-datasources) project.
 
-These are already published as cloud-optimied GeoTIFF's and flatgeobuf files and you can add them to your `datasources.json` file.
+These are already published as cloud-optimied GeoTIFF's and you can use their URL's directly with `loadFgb`.
 
 ## Marine Regions
 

@@ -74,7 +74,7 @@ Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-beta.12 init 7.0.0-beta.12
+npx @seasketch/geoprocessing@7.0.0-beta.13 init 7.0.0-beta.13
 ```
 
 Tips:

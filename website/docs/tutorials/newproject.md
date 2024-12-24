@@ -151,7 +151,14 @@ It will ask you if you want to publish all datasources, or choose from a list.
 
 Your datasources will need to have already been imported using `import:data` and exist in the `data/dist` for this to work.
 
-Note if you don't publish your datasources, then your local smoke tests may work properly, but your geoprocessing functions will throw file not found errors in production.
+Note, if you don't publish your datasources, then your local smoke tests may work properly, but your geoprocessing functions will throw file not found errors in production.
+
+Note, you can use any and all `aws` commands to look at your datasets bucket or to copy files to/from it.
+
+```bash
+aws s3 ls s3://gp-my-project-datasets
+aws s3 cp data/dist/myFile.fgb s3://gp-my-project-datasets
+```
 
 ## Integrate With SeaSketch
 

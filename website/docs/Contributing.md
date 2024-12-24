@@ -314,6 +314,18 @@ or
 7.0.0-beta.1
 ```
 
+### Experimental Releases
+
+It's very common that you will want to work on a feature inside a feature branch, and test it out on a geoprocessing project before you merge it as a new feature. To do this you can publish it as an `experimental` canary release. A canary release is a one-time out-of-band release where the version number is not incremented in the packages, but it still gets published to NPM, with its own experimental tag
+
+First, make sure that you publish it from the feature branch.
+
+```sh
+npm run publish:experimental:canary
+```
+
+Assuming your branch name is `node16-webpack5`, the current GP version is 0.15.0, and your feature branch is 28 commits ahead of the last release tag, this should publish a minor release called `0.15.1-experimental-node16-webpack5.28`. As you push more commits to your experimental branch, you can publish again at any time and the commit number will increment so that there isn't a name collision. You will need to have made at least one commit before you can publish another experimental release on the branch.
+
 After the first release in the series it should automatically figure out what you want and increment the number (e.g. `7.0.0-alpha.2`, `7.0.0-alpha.3`) and you can just hit enter.
 
 ### Backport Release
@@ -386,7 +398,7 @@ docker export 462dd50c708f > /mnt/c/tmp/gp-stable-20241223.tar
 
 - Once satisifed, copy file to the Box public folder at https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i
 
-## Published Websites
+## Publish Websites
 
 ### Docusaurus Website
 
@@ -412,18 +424,6 @@ Versioned storybooks are published for each major and minor version of geoproces
   - `cd gp-storybook`
   - `cp -r Next version-x.y.z`
 - Push all results to gp-storybook gh-pages branch (default) and will automatically build and update [https://seasketch.github.io/gp-storybook](https://seasketch.github.io/gp-storybook)
-
-### Experimental Releases
-
-It's very common that you will want to work on a feature inside a feature branch, and test it out on a geoprocessing project before you merge it as a new feature. To do this you can publish it as an `experimental` canary release. A canary release is a type of early out-of-band release such that the version number is not incremented in the package. It does still get published to NPM however.
-
-First, make sure that you publish it from the feature branch.
-
-```sh
-npm run publish:experimental:canary
-```
-
-Assuming your branch name is `node16-webpack5`, the current GP version is 0.15.0, and your feature branch is 28 commits ahead of the last release tag, this should publish a minor release called `0.15.1-experimental-node16-webpack5.28`. As you push more commits to your experimental branch, you can publish again at any time and the commit number will increment so that there isn't a name collision. You will need to have made at least one commit before you can publish another experimental release on the branch.
 
 ## Diagrams
 

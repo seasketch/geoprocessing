@@ -92,20 +92,29 @@ Dev Containers: Rebuild Without Cache and Reopen In Container
 
 ### Windows WSL Geoprocessing Distribution
 
-If you previously installed a version of the Geoprocessing distribution for running in WSL, and now want to replace it with a new one, first backup your existing Geoprocessing distribution (if needed):
+If you previously installed a version of the Geoprocessing distribution for running in WSL, you can nstall a new one right alongside it.
+
+Upgrading your WSL Geoprocessing Distribution means installing a new image using the [system setup instructions](./Tutorials.md#geoprocessing-distribution), re-adding all your projects to it, then leaving your old one behind. You can run both images at the same time in different shells.
+
+You can backup and remove a WSL distribution as follows:
+
+- First open Windows Explorer and go to C:\WslDistributions. Find the name of the distribution you want to remove. For example, say it is `gp-stable-20241223`
+- Now export this image to a backup directory.
 
 ```bash
 mkdir C:\tmp\WslBackups\Geoprocessing
-wsl --export Geoprocessing C:\tmp\WslBackups\20241104_Geoprocessing.tar
+wsl --export Geoprocessing C:\tmp\WslBackups\gp-stable-20241223.tar
 ```
 
-Then unregister it:
+To unregister and delete this old image do the following:
+
+- First, close all shells and VSCode sessions using this image, then unregister it in PowerShell:
 
 ```bash
 wsl --unregister Geoprocessing
 ```
 
-Then follow the [system setup instructions](./Tutorials.md#geoprocessing-distribution) to install an updated WSL Geoprocessing image.
+Now delete the folder `C:\WslDistributions\gp-stable-20241223`
 
 ## Deploy Test Stack Alongside Production
 

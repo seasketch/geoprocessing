@@ -357,25 +357,34 @@ docker pull seasketch/geoprocessing-workspace:latest
 docker run --rm -it seasketch/geoprocessing-workspace:latest /bin/bash
 ```
 
+If what you want is the unstable image then run the following
+
+```bash
+docker pull seasketch/geoprocessing-workspace:unstable
+docker run --rm -it seasketch/geoprocessing-workspace:unstable /bin/bash
+```
+
 - Open a second Ubuntu terminal and get the ID of the running container
 
 ```bash
 docker container ls
 ```
 
-- Create a place to put the WSL distribution on your Windows C drive using the bridge (/mnt/c):
+- Then, in the second terminal, create a place to put the WSL distribution on your Windows C drive using the filesystem bridge (/mnt/c):
 
 ```bash
 mkdir /mnt/c/tmp
 ```
 
-- Export the WSL distribution to your tmp folder
+- Finally, in the second terminal, export the stable WSL distribution to your tmp folder. If you are working with the unstable version, then change `stable` to `unstable` in all the following commands.
 
 ```bash
-docker export 65bd30ba63a3 > /mnt/c/tmp/geoprocessing-workspace_20230614_65bd30ba63a3.tar
+docker export 462dd50c708f > /mnt/c/tmp/gp-stable-20241223.tar
 ```
 
-- Create a readme for the distribution and package that with the tar'd image into a zip file, and copy it to the Box public folder at https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i
+- To test the distribution image, follow the [system setup](./tutorials/Tutorials.md#geoprocessing-distribution) for importing a new Window Geoprocessing Distribution image.
+
+- Once satisifed, copy file to the Box public folder at https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i
 
 ## Published Websites
 

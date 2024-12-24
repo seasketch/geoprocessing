@@ -4,7 +4,9 @@ slug: "/contributing"
 
 # Contributing
 
-## Common commands
+## Getting Started
+
+### Common commands
 
 - `npm install` - installs dependencies and runs postinstall scripts for all packages using `lerna bootstrap`
 - `npm test` - runs test suite for all packages
@@ -14,32 +16,7 @@ slug: "/contributing"
 
 The geoprocessing code repository is setup as a "monorepo" managed by [Lerna](https://github.com/lerna/lerna). It contains multiple `packages` including the core `geoprocessing` library, and then multiple user-installable `templates`. These templates are bundled into the core library at build time.
 
-## Documentation Website
-
-A versioned documentation website is maintained using [Docusaurus](https://docusaurus.io/l) in the `website` directory. Docs should be updated in lockstep with code changes.
-
-- cd `website`
-- `npm install` to install dependencies for building the docs
-- Dev - `npm start` to start dev server, generate new API documents. Edits will appear instantly in browser
-- Build - `npm run build` and `npm run serve` to test
-- Version - `npm run docusaurus docs:version <VERSION_NUMBER>` - snapshot a new version. Only do this when a new minor or major release is made. If point release should be unnecessary.
-- Deploy - `GIT_USER=<YOUR_GITHUB_USERNAME> npm run deploy` to build and deploy to Github Pages. You can deploy as often as needed. If a new release snapshot is not made then doc changes are limited to the "Next" version on the website.
-
-VSCode provides excellent features for [editing markdown](https://code.visualstudio.com/docs/languages/markdown#_editing-markdown) as well as [previewing](https://code.visualstudio.com/docs/languages/markdown#_markdown-preview) and is highly recommended for all but small changes.
-
-## Storybook Website
-
-Storybooks are published for each major and minor version of geoprocessing.
-
-- Checkout a local copy of `geoprocessing/gp-storybook` repository alongside the `geoprocessing` library.
-  - `cd packages/geoprocessing`
-  - `npm run build:storybook` - will build static storybook site in packages/geoprocess/docs/storybook and copy it over to gp-storybook/Next overwriting the existing.
-- (optional) If you also want to take a release snapshot of the storybook
-  - `cd gp-storybook`
-  - `cp -r Next version-x.y.z`
-- Push all results to gp-storybook gh-pages branch (default) and will automatically build and update [https://seasketch.github.io/gp-storybook](https://seasketch.github.io/gp-storybook)
-
-## Core library setup
+### Core library setup
 
 To contribute to the library, you'll need to set it up on your local system. First, follow the [system setup](./tutorials/Tutorials.md) tutorial.
 
@@ -57,7 +34,7 @@ You should now be able to run tests for all packages
 npm run test
 ```
 
-## Make code changes
+### Make code changes
 
 Any changes you make to the Typescript code in `src` won't be reflected in the Javascript code in `dist` until you compile it. You can do this a few different ways. Watch modes are useful for active development, new changes will be compiled automatically as you go.
 
@@ -74,7 +51,11 @@ CLI - from packages/geoprocessing folder
 - `npm run watch` - build core library and watch for changes
 - `npm run watch:scripts` - build scripts only and watch for changes
 
-## Upgrading Dependencies
+### Running Storybook
+
+The framework has it's own storybook project that can be launched using `npm run storybook`. These components and their stories can be found under `packages/geoprocessing/src/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.
+
+### Upgrading Dependencies
 
 Upgrading package dependencies should be done carefully. The `ncu` command is a good way to do this in chunks. Run the following command in each of the root geoprocessing directory, `geoprocessing/packages/geoprocessing`, and each of the `geoprocessing/packages/template-*` directories:
 
@@ -82,7 +63,7 @@ Upgrading package dependencies should be done carefully. The `ncu` command is a 
 
 Use the spacebar to select all the packages to update. `patch` and `minor` release updates should be safe to do without fear of breaking changes. `major` updates should be left for last and done carefully, possibly even one at a time. Any dependency that has co-dependencies, for example babel with its plugins, should be upgraded at the same time, and match version number appropriately. Brand new releases, particularly majore releases can have bugs and upgrading to the latest and greatest is not always the best idea. Test in stages and as you go so that the cause is easier to figure out. Even doing full deployments, checking storybook, etc. to make sure working properly. Dependency upgrades should be done at least quarterly, monthly is better.
 
-## Internationalization (i18n)
+### Internationalization (i18n)
 
 The geoprocessing framework implements the [GIP-1](./gip/GIP-1-i18n.md) proposal for language translation, and uses POEditor as its third-party service for translators to provide translations.
 
@@ -142,15 +123,15 @@ npm run test:scripts:local:matching "/import*Datasource/"
 
 See Jest docs for more info. The command will match on the name you give within a test() call so choose your name to be unique enough to select the tests you want. Note that matching tests are run one at a time in order (aka `runInBand` for Jest) so that you get consistent output that you can debug
 
-## E2E test data on port 8001
+### E2E test data on port 8001
 
 Jest starts a web server on localhost port 8001 (see geoprocessing/scripts/jest.config.ts) that serves up the `geoprocessing/scripts/data/out` folder. A number of e2e tests in the scripts folder use this such as `precalcVectorDatasource.test.ts` and `precalcRasterDatasource.test.ts`.
 
-## E2E test data on port 8080
+### E2E test data on port 8080
 
 Test commands that include the e2e test group all start a web server on localhost port 8080 (see packages/geoprocessing/package.json).
 
-## Geoprocessing project test data on port 8080
+### Geoprocessing project test data on port 8080
 
 Be aware that geoprocessing projects also have a `start:data` command and they all use 8080 by default, but fallback to another port if 8080 isn't available without telling you. so your tests may unexpectedly fail with network connection errors, or seemingly more vague errors about "block size" for a Cloud-optimized Geotiff. Just make sure you have a web server started and that you aren't running more than one. Check other vscode windows for shells running `start:data` and kill them.
 
@@ -164,11 +145,9 @@ If you use the VSCode launcher to debug tests you will also need to manually sta
 
 You can alway open a browser and navigate to `http://127.0.0.1:8080` and see if you get back a file directory with the files you expect!
 
-## Debugging
+### Debugging Functions
 
 The geoprocessing library provides VSCode debug launchers for its test suites, templates and translation machinery. With the geoprocessing repo checked out and open in VSCode, just add a breakpoint or a `debugger` call in one of the core tests, click the `Debug` menu in the left toolbar (picture of a bug) and select the appropriate package. The debugger should break at the appropriate place.
-
-### Debugging Functions
 
 As you build report functions, using console logging or inspecting with a VSCode debugger may not be enough. You may want to make sure the output is properly formatted JSON/GeoJSON, or looks appropriate on a map, or try using the file in another software library. Here's a simple workflow that can make this easier:
 
@@ -178,11 +157,7 @@ As you build report functions, using console logging or inspecting with a VSCode
 - Make any necessary changes to your code and run the test again to regenerate the files.
 - Clean up your temporary files when done
 
-## Storybook components
-
-The framework has it's own storybook project that can be launched using `npm run storybook`. These components and their stories can be found under `packages/geoprocessing/src/components/`. As common ui patterns are developed the intention is to create a library of useful components with good documentation that report authors can use.
-
-## Make and Test Modifications
+## Testing UI and CLI Changes
 
 Making changes to geoprocessing UI components, toolbox functions, and utilities can be pretty straightforward. Everything is handled within the library before committing.
 
@@ -293,7 +268,7 @@ Further link troubleshooting steps:
 
 ## Publishing
 
-## Stable release
+### Stable release
 
 New stable releases of the framework are published from the `main` branch. To do this:
 
@@ -314,7 +289,7 @@ The final step is to publish [release](https://github.com/seasketch/geoprocessin
 - Add one or more paragraphs at the top of the release notes summarizing the release and any steps the user needs to take on upgrade.
 - Publish the release notes.
 
-## Alpha and Beta release
+### Alpha and Beta release
 
 You can publish `alpha` and `beta` prereleases prior to a stable release. This will advance the version numbers in package.json and generate a release tag.
 
@@ -341,7 +316,7 @@ or
 
 After the first release in the series it should automatically figure out what you want and increment the number (e.g. `7.0.0-alpha.2`, `7.0.0-alpha.3`) and you can just hit enter.
 
-## Backport Release
+### Backport Release
 
 A `backport` release should be published when you backport features or bug fixes to a previous major version of the code. For example critical bug fixes developed for 7.x, backported to 6.x.
 
@@ -360,7 +335,76 @@ npm run publish:backport
 
 Choose minor release 6.2.0
 
-## Experimental Releases
+## Publish Docker Image
+
+### Geoprocessing Workspace
+
+Instructions to upgrade and publish a new geoprocessing-workspace Docker image are in the [docker-gp-workspace](https://github.com/seasketch/docker-gp-workspace?tab=readme-ov-file#upgrade) Github repository.
+
+### WSL Distribution
+
+Once a new Docker image is published, you can package it into an image that can be run with Windows Subsystem for Linux.
+
+The benefit to this over using the geoprocessing-devcontainer in Windows is that this image will run much faster, and have a filesystem bridge between Windows and Ubuntu.
+
+- Install [WSL Ubuntu](https://documentation.ubuntu.com/wsl/en/latest/guides/install-ubuntu-wsl2/) if you haven't already.
+  - This environment is where you will turn the geoprocessing Docker image into a WSL distribution image.
+- Start Docker Desktop
+- Open WSL Ubuntu terminal and pull down and start a geoprocessing-workspace container:
+
+```bash
+docker pull seasketch/geoprocessing-workspace:latest
+docker run --rm -it seasketch/geoprocessing-workspace:latest /bin/bash
+```
+
+- Open a second Ubuntu terminal and get the ID of the running container
+
+```bash
+docker container ls
+```
+
+- Create a place to put the WSL distribution on your Windows C drive using the bridge (/mnt/c):
+
+```bash
+mkdir /mnt/c/tmp
+```
+
+- Export the WSL distribution to your tmp folder
+
+```bash
+docker export 65bd30ba63a3 > /mnt/c/tmp/geoprocessing-workspace_20230614_65bd30ba63a3.tar
+```
+
+- Create a readme for the distribution and package that with the tar'd image into a zip file, and copy it to the Box public folder at https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i
+
+## Published Websites
+
+### Docusaurus Website
+
+A versioned documentation website is maintained using [Docusaurus](https://docusaurus.io/l) in the `website` directory. Docs should be updated in lockstep with code changes.
+
+- cd `website`
+- `npm install` to install dependencies for building the docs
+- Dev - `npm start` to start dev server, generate new API documents. Edits will appear instantly in browser
+- Build - `npm run build` and `npm run serve` to test
+- Version - `npm run docusaurus docs:version <VERSION_NUMBER>` - snapshot a new version. Only do this when a new minor or major release is made. If point release should be unnecessary.
+- Deploy - `GIT_USER=<YOUR_GITHUB_USERNAME> npm run deploy` to build and deploy to Github Pages. You can deploy as often as needed. If a new release snapshot is not made then doc changes are limited to the "Next" version on the website.
+
+VSCode provides excellent features for [editing markdown](https://code.visualstudio.com/docs/languages/markdown#_editing-markdown) as well as [previewing](https://code.visualstudio.com/docs/languages/markdown#_markdown-preview) and is highly recommended for all but small changes.
+
+### Storybook Website
+
+Versioned storybooks are published for each major and minor version of geoprocessing.
+
+- Checkout a local copy of `geoprocessing/gp-storybook` repository alongside the `geoprocessing` library.
+  - `cd packages/geoprocessing`
+  - `npm run build:storybook` - will build static storybook site in packages/geoprocess/docs/storybook and copy it over to gp-storybook/Next overwriting the existing.
+- (optional) If you also want to take a release snapshot of the storybook
+  - `cd gp-storybook`
+  - `cp -r Next version-x.y.z`
+- Push all results to gp-storybook gh-pages branch (default) and will automatically build and update [https://seasketch.github.io/gp-storybook](https://seasketch.github.io/gp-storybook)
+
+### Experimental Releases
 
 It's very common that you will want to work on a feature inside a feature branch, and test it out on a geoprocessing project before you merge it as a new feature. To do this you can publish it as an `experimental` canary release. A canary release is a type of early out-of-band release such that the version number is not incremented in the package. It does still get published to NPM however.
 
@@ -372,15 +416,7 @@ npm run publish:experimental:canary
 
 Assuming your branch name is `node16-webpack5`, the current GP version is 0.15.0, and your feature branch is 28 commits ahead of the last release tag, this should publish a minor release called `0.15.1-experimental-node16-webpack5.28`. As you push more commits to your experimental branch, you can publish again at any time and the commit number will increment so that there isn't a name collision. You will need to have made at least one commit before you can publish another experimental release on the branch.
 
-## Project init with non-latest version
-
-If you want to test running a project `init`, using something other than the `latest` version published to NPM, you just need to provide the explicit version. For example:
-
-```sh
-npx @seasketch/geoprocessing@0.15.1-beta.1 init 0.15.1-beta.1
-```
-
-## Wiki
+## Diagrams
 
 Diagrams are maintained in internal SeaSketch [drive share](https://drive.google.com/drive/folders/1JL7BkOf2mP2VaXQKlM2kkENqHW9LtCbm?usp=sharing)
 

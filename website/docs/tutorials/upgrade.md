@@ -105,7 +105,7 @@ Then unregister it:
 wsl --unregister Geoprocessing
 ```
 
-Then follow the instructions above to install WSL Geoprocessing image again
+Then follow the [system setup instructions](./Tutorials.md#geoprocessing-distribution) to install an updated WSL Geoprocessing image.
 
 ## Deploy Test Stack Alongside Production
 

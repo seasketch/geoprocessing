@@ -101,6 +101,8 @@ Learn more about your projects [structure](../structure.md)
 - [Low-level raster report](./sampleproject.md#seamount-report)
 - [High-level raster report](./sampleproject.md#coral-species-report)
 
+If you use the Metric Group feature, there are [examples](../concepts/Concepts.md) of variations for creating them based on the structure of your data.
+
 ## Build Your Project
 
 The application `build` proceess packages it for deployment. Specifically it:

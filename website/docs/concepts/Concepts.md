@@ -480,7 +480,7 @@ variance?: Nullable<number>;
 **/
 ```
 
-### Metric Group
+## Metric Group
 
 A [MetricGroup](https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/src/types/metricGroup.ts#L11) defines a specific type of metric for your project, with a base metric type, and one or more data classes. Think of it as a unifying configuration object, that pulls everything together.
 

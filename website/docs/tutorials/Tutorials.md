@@ -107,18 +107,18 @@ mkdir C:\tmp
 
 - Download the most recent `geoprocessing-workspace` zip file from the [SeaSketch Box folder](https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i) to this tmp directory and then unzip it.
 
-- Create a second directory to import the Geoprocessing tar image too, then import it:
+- Create a second directory and import the distribution:
 
 ```bash
-mkdir C:\WslDistributions\Geoprocessing
-wsl --import Geoprocessing C:\WslDistributions\Geoprocessing\ C:\tmp\geoprocessing-workspace_20230627\geoprocessing-workspace_20230627_65bd30ba63a3.tar
+mkdir C:\WslDistributions\gp-stable-20241223
+wsl --import "gp-stable-20241223" C:\WslDistributions\gp-stable-20241223 C:\tmp\gp-stable_20241223.tar
 ```
 
-- Be sure to update the filename in the import command above to match the version you downloaded.
+- Be sure to update the filename in the import command above to match your tar file.
 - If import is started correctly, you will see the message `Import in progress, this may take a few minutes...`. Once done it should say `The operation completed successfully`. If it didn't import successfully, try restarting your system, WSL may not have been running properly.
 
 - Setup Terminal Profile
-  - This will create a shortcut to start an instance of Geoprocessing in WSL.
+  - This will create a shortcut to start an instance of your geoprocessing workspace image.
   - In PowerShell, click the down arrow in the tab bar, to the right of the (+) icon, then click Settings.
 
 ![Terminal Profile](assets/terminal-profile.jpg "Terminal Profile")
@@ -128,10 +128,9 @@ wsl --import Geoprocessing C:\WslDistributions\Geoprocessing\ C:\tmp\geoprocessi
 
 ![Profile Duplicate](assets/terminal-duplicate.jpg "Profile Duplicate")
 
-- Change the name of the duplicated Ubuntu profiles to `Geoprocessing`
-- Change the profiles Terminal command from `C:\WINDOWS\system32\wsl.exe -d Ubuntu` to `C:\WINDOWS\system32\wsl.exe -u vscode -d Geoprocessing`. This will ensure that Geoprocessing starts with the correct user, instead of root.
+- Change the profiles Terminal command from `C:\WINDOWS\system32\wsl.exe -d Ubuntu` to `C:\WINDOWS\system32\wsl.exe -u vscode -d gp-stable-20241223`. This will ensure that Geoprocessing starts with the correct image (`gp-stable-20241223`), and the right user (`vscode`).
 - Save and exit your new profile
-- The Terminal dropdown menu should now have a new `Geoprocessing` choice. Click this to start an instance of the Geoprocessing Distribution. It will open a shell, logged in with the vscode user.
+- The Terminal dropdown menu should now have a new `gp-stable-20241223` choice. Click this to start an instance of the Geoprocessing Distribution. It will open a shell, logged in with the vscode user.
 
 In the Geoprocessing shell, setup the workspaces directory where you will create projects:
 
@@ -162,7 +161,7 @@ ls /mnt/c
 
 Follow the [final configuration steps](#final-configuration---all-install-options) below, then move on to creating a new project.
 
-[Upgrade](./upgrade.md#upgrade-windows-geoprocessing) steps for the Geoprocessing Distribution are available.
+[Upgrade](./upgrade.md#windows-wsl-geoprocessing-distribution) steps for the Geoprocessing Distribution are available.
 
 ### Default Ubuntu Distribution
 

@@ -1,10 +1,10 @@
 # Cloud Drive Syncing
 
-## Box Sync
+## Box Drive Sync
 
-This is useful if you manage your spatial data in Box and collaborators sync it to their local computers. This lets you bring your Box Drive folder into your Ubuntu docker container so that you can symlink it to your `data/src` folder and import data in a consistent way across all users.
+The Box Drive software application lets you manage your spatial data in a centralized Box folder, and then collaborators can sync it to their local computers. You are then able to access this Box Drive in your Docker container or WSL Geoprocessing distribution using the filesystem bridge. Specifically, you can symlink a Box subfolder to your projects `data/src` folder and access your data in a consistent way.
 
-Note, this could be used with other drive share systems such as Google Drive.
+Note, this could potentially be used with other drive share systems such as Google Drive.
 
 First, ensure you have Box Drive installed, and you have enabled sync of your data to your local computer.
 
@@ -18,15 +18,21 @@ ls /Users/alex/Library/CloudStorage/Box-Box
 
 If you see the top-level of your synced files, then you are good to go.
 
-### Ubuntu on Windows WSL2
+### Windows WSL Ubuntu
+
+[WSL Ubuntu](./Tutorials.md#ubuntu-direct-install) seems to have the ability to access your Box drive folder over the WSL filesystem bridge. This does not seem to be true for the [WSL Geoprocessing Distribution](./Tutorials.md#geoprocessing-distribution).
 
 Source - https://github.com/microsoft/WSL/issues/4310
+
+Assume your box folder is installed on your Windows system at this path
 
 ```bash
 C:\Users\alex\box
 ```
 
-Now add the following to your .bashrc file in your home directory
+Use Windows Explorer or Powershell to confirm the name of your folder.
+
+Now add the following to your .bashrc file in the home directory of WSL Ubuntu
 
 ```bash
 if ! findmnt -M /mnt/box &>/dev/null; then
@@ -34,7 +40,7 @@ if ! findmnt -M /mnt/box &>/dev/null; then
 fi
 ```
 
-On every Ubuntu shell startup you will nowbe prompted for your root password. Once entered the drive mount will be performed.
+On every Ubuntu shell startup you will now be prompted for your root password. Close and reopen your Ubuntu shell. Once your password is entered the drive mount will be performed.
 
 Now verify your box files are accessible from Linux
 

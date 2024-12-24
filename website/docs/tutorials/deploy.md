@@ -13,11 +13,15 @@ For every deploy after the first, it is smart enough to compute the changeset be
 
 ## Setup AWS
 
-You are not required to complete this step until you want to deploy your project and integrate it with SeaSketch. Until then, you can do everything except `publish` data or `deploy` your project.
+You are not required to complete this step until you want to deploy your project and integrate it with SeaSketch. Until then, you can do everything **except** `publish` data or `deploy` your project.
 
 You will need to create an AWS account with an admin user, allowing the framework to deploy your project using CloudFormation. A payment method such as a credit card will be required.
 
 Expected cost: [free](https://aws.amazon.com/free) to a few dollars per month. You will be able to track this.
+
+### AWS Account and User
+
+If you are on the SeaSketch team, an AWS account and user will be provided to you.
 
 - Create an Amazon [AWS account] such that you can login and access the main AWS Console page (https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
 - Create an AWS IAM [admin account](https://docs.aws.amazon.com/IAM/latest/UserGuide/getting-started_create-admin-group.html). This is what you will use to manage projects.
@@ -25,13 +29,52 @@ Expected cost: [free](https://aws.amazon.com/free) to a few dollars per month. Y
   - By default, API Gateway does not have the required permission to write logs to CloudWatch. It is necessary to specify an IAM Role. This can be accomplished by logging into the AWS console, switching to the region where you would like to deploy your geoprocessing function, and configuring this role.
   - https://coady.tech/aws-cloudwatch-logs-arn/
 
-## AWSCLI
+### Install AWSCLI
 
-If you are using a Docker devcontaine to develop reports you should already have access to the `aws` command. But if you are running directly on your host operating system you will need to install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) it with your IAM account credentials.
+If you are using a Docker devcontainer to develop reports you should already have access to the `aws` command.
 
-### Extra steps for Windows
+But if you are developing reports directly on your host operating system you will need to install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) it with your IAM account credentials.
 
-Windows you have the option of installing [awscli for Windows](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and then exposing your credentials in your Ubuntu container. This allows you to manage one set of credentials.
+### AWSCLI Credentials - Virtual
+
+If you are using a [virtual install](./Tutorials.md#virtual-install-with-docker-desktop) setup, it would have instructed you to create a `.env` file from the provided `.env.template` file. This is were you need to configure two environment variables with your AWS admin account credentials. When you start your devcontainer the variables will be loaded into your shell environment and picked up by all aws commands. The benefit of loading the variables this way is that they will persist and you won't have to set them every time.
+
+```
+AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY=YOUR_ACCESS_KEY
+```
+
+### AWSCLI Credentials - Windows
+
+When running on Windows you have two options for providing your AWS credentials
+
+1. configure credentials in Linux.
+2. load credentials from Windows
+
+#### Configure Credentials in WSL Linux
+
+Set environment variables in the `.bashrc` file in your Linux home directory.
+
+```bash
+nano ~/.bashrc
+AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY=YOUR_ACCESS_KEY
+
+Ctrl-o to save
+Ctrl-x to exit
+```
+
+Now, source the file into your current shell environment and verify the environment variables are set
+
+```bash
+source ~/.bashrc
+echo $AWS_ACCESS_KEY_ID
+echo $AWS_SECRET_ACCESS_KEY
+```
+
+#### Load Credentials From Windows
+
+you have the option of installing [awscli for Windows](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and then exposing your credentials in your WSL Linux environment. This allows you to manage one set of credentials for Windows and all Linux distros.
 
 Assuming your username is `alex`, once you've installed awscli in Windows, confirm you now have the following files under Windows.
 

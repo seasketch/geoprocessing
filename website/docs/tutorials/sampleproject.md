@@ -20,7 +20,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-beta.13 init 7.0.0-beta.13
+npx @seasketch/geoprocessing init
 ```
 
 ```text

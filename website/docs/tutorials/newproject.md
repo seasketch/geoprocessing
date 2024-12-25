@@ -74,7 +74,7 @@ Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-beta.13 init 7.0.0-beta.13
+npx @seasketch/geoprocessing init
 ```
 
 If you want to install anything other than the latest version you have to run a more specific command. Assume you want to init a new project using version 6.1.2. You would run:

@@ -1167,5 +1167,5 @@ types: string = "dist/src/index.d.ts";
 ### version
 
 ```ts
-version: string = "7.0.0-beta.13";
+version: string = "7.0.0";
 ```

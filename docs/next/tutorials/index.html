@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.5.2">
 <title data-rh="true">System Setup | SeaSketch Geoprocessing</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://seasketch.github.io/geoprocessing/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://seasketch.github.io/geoprocessing/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://seasketch.github.io/geoprocessing/docs/next/tutorials/"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="System Setup | SeaSketch Geoprocessing"><meta data-rh="true" name="description" content="These tutorials will walk you through creating and deploying a basic seasketch geoprocessing project. You should already have a basic working knowledge of your computer, its operating system, shell environment (command line), and web application development using NodeJS and React. Learn more about the skills required."><meta data-rh="true" property="og:description" content="These tutorials will walk you through creating and deploying a basic seasketch geoprocessing project. You should already have a basic working knowledge of your computer, its operating system, shell environment (command line), and web application development using NodeJS and React. Learn more about the skills required."><link data-rh="true" rel="icon" href="/geoprocessing/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://seasketch.github.io/geoprocessing/docs/next/tutorials/"><link data-rh="true" rel="alternate" href="https://seasketch.github.io/geoprocessing/docs/next/tutorials/" hreflang="en"><link data-rh="true" rel="alternate" href="https://seasketch.github.io/geoprocessing/docs/next/tutorials/" hreflang="x-default"><link rel="stylesheet" href="/geoprocessing/assets/css/styles.264bfde1.css">
-<script src="/geoprocessing/assets/js/runtime~main.2da3576f.js" defer="defer"></script>
+<script src="/geoprocessing/assets/js/runtime~main.63691428.js" defer="defer"></script>
 <script src="/geoprocessing/assets/js/main.ae3d2d03.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -138,13 +138,13 @@
 <p>Download the most recent <code>geoprocessing-workspace</code> zip file from the <a href="https://ucsb.box.com/s/k9477fqzzn0yel5kf5kj2y81tst09f4i" target="_blank" rel="noopener noreferrer">SeaSketch Box folder</a> to this tmp directory and then unzip it.</p>
 </li>
 <li>
-<p>Create a second directory to import the Geoprocessing tar image too, then import it:</p>
+<p>Create a second directory and import the distribution:</p>
 </li>
 </ul>
-<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">mkdir C:\WslDistributions\Geoprocessing</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">wsl --import Geoprocessing C:\WslDistributions\Geoprocessing\ C:\tmp\geoprocessing-workspace_20230627\geoprocessing-workspace_20230627_65bd30ba63a3.tar</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">mkdir C:\WslDistributions\gp-stable-20241223</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">wsl --import &quot;gp-stable-20241223&quot; C:\WslDistributions\gp-stable-20241223 C:\tmp\gp-stable_20241223.tar</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 <ul>
 <li>
-<p>Be sure to update the filename in the import command above to match the version you downloaded.</p>
+<p>Be sure to update the filename in the import command above to match your tar file.</p>
 </li>
 <li>
 <p>If import is started correctly, you will see the message <code>Import in progress, this may take a few minutes...</code>. Once done it should say <code>The operation completed successfully</code>. If it didn&#x27;t import successfully, try restarting your system, WSL may not have been running properly.</p>
@@ -152,7 +152,7 @@
 <li>
 <p>Setup Terminal Profile</p>
 <ul>
-<li>This will create a shortcut to start an instance of Geoprocessing in WSL.</li>
+<li>This will create a shortcut to start an instance of your geoprocessing workspace image.</li>
 <li>In PowerShell, click the down arrow in the tab bar, to the right of the (+) icon, then click Settings.</li>
 </ul>
 </li>
@@ -164,10 +164,9 @@
 </ul>
 <p><img decoding="async" loading="lazy" alt="Profile Duplicate" src="/geoprocessing/assets/images/terminal-duplicate-2d64bf1f69e69c27f39cbf4a661738db.jpg" title="Profile Duplicate" width="1716" height="913" class="img_ev3q"></p>
 <ul>
-<li>Change the name of the duplicated Ubuntu profiles to <code>Geoprocessing</code></li>
-<li>Change the profiles Terminal command from <code>C:\WINDOWS\system32\wsl.exe -d Ubuntu</code> to <code>C:\WINDOWS\system32\wsl.exe -u vscode -d Geoprocessing</code>. This will ensure that Geoprocessing starts with the correct user, instead of root.</li>
+<li>Change the profiles Terminal command from <code>C:\WINDOWS\system32\wsl.exe -d Ubuntu</code> to <code>C:\WINDOWS\system32\wsl.exe -u vscode -d gp-stable-20241223</code>. This will ensure that Geoprocessing starts with the correct image (<code>gp-stable-20241223</code>), and the right user (<code>vscode</code>).</li>
 <li>Save and exit your new profile</li>
-<li>The Terminal dropdown menu should now have a new <code>Geoprocessing</code> choice. Click this to start an instance of the Geoprocessing Distribution. It will open a shell, logged in with the vscode user.</li>
+<li>The Terminal dropdown menu should now have a new <code>gp-stable-20241223</code> choice. Click this to start an instance of the Geoprocessing Distribution. It will open a shell, logged in with the vscode user.</li>
 </ul>
 <p>In the Geoprocessing shell, setup the workspaces directory where you will create projects:</p>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">sudo mkdir /workspaces</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">sudo chmod 777 /workspaces</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">cd /workspaces</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
@@ -183,10 +182,10 @@
 <p>Check to make sure you have access to your Windows filesystem:</p>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">ls /mnt/c</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 <p>Follow the <a href="#final-configuration---all-install-options">final configuration steps</a> below, then move on to creating a new project.</p>
-<p><a href="/geoprocessing/docs/next/tutorials/upgrade/#upgrade-windows-geoprocessing">Upgrade</a> steps for the Geoprocessing Distribution are available.</p>
+<p><a href="/geoprocessing/docs/next/tutorials/upgrade/#windows-wsl-geoprocessing-distribution">Upgrade</a> steps for the Geoprocessing Distribution are available.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="default-ubuntu-distribution">Default Ubuntu Distribution<a href="#default-ubuntu-distribution" class="hash-link" aria-label="Direct link to Default Ubuntu Distribution" title="Direct link to Default Ubuntu Distribution">​</a></h3>
 <p>Only follow these install steps if you intend to setup and use the default Ubuntu Distribution in WSL <em>instead of</em> the pre-configured Geoprocessing Distribution (above).</p>
-<p>Supported Ubuntu version: <span>22.04 Jammy</span></p>
+<p>Supported Ubuntu version: <span>24.04 Noble</span></p>
 <ul>
 <li>Open Windows start menu -&gt; start typing <code>Ubuntu on Windows</code> -&gt; Select <code>Ubuntu on Windows</code>
 <ul>
@@ -203,12 +202,12 @@
 <li>Install recommended <a href="https://code.visualstudio.com/docs/editor/extension-marketplace" target="_blank" rel="noopener noreferrer">extensions</a> when prompted. If not prompted, go to the <code>Extensions</code> panel on the left side and install the extensions named in <a href="https://github.com/seasketch/geoprocessing/blob/dev/packages/geoprocessing/templates/project/.vscode/extensions.json" target="_blank" rel="noopener noreferrer">this file</a></li>
 </ul>
 </li>
-<li>Install <a href="https://nodejs.org/en/download/" target="_blank" rel="noopener noreferrer">Node JS</a> &gt;= <span>20.12</span> in Ubuntu<!-- -->
+<li>Install <a href="https://nodejs.org/en/download/" target="_blank" rel="noopener noreferrer">Node JS</a> &gt;= <span>22.12.0</span> in Ubuntu<!-- -->
 <ul>
 <li><a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noopener noreferrer">nvm</a> is great for this<!-- -->
 <ul>
 <li>First, install nvm. May ask you to first install XCode developer tools which is available through the App Store or follow the instructions provided.</li>
-<li>Then <code>nvm install v<span>20.12</span></code>.</li>
+<li>Then <code>nvm install v<span>22.12.0</span></code>.</li>
 </ul>
 </li>
 <li>Then open your Terminal app of choice and run <code>node -v</code> to check your node version</li>
@@ -222,7 +221,7 @@
 </li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="ubuntu-direct-install">Ubuntu Direct Install<a href="#ubuntu-direct-install" class="hash-link" aria-label="Direct link to Ubuntu Direct Install" title="Direct link to Ubuntu Direct Install">​</a></h2>
-<p>Requirement: Ubuntu <span>22.04 Jammy</span> or newer</p>
+<p>Requirement: Ubuntu <span>24.04 Noble</span> or newer</p>
 <p>Setup is for a physical machine running the Ubuntu operating system.</p>
 <p>From a Ubuntu terminal with root access, simply follow the steps above for <a href="#default-ubuntu-distribution">default ubuntu installation</a></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="final-configuration---all-install-options">Final Configuration - all install options<a href="#final-configuration---all-install-options" class="hash-link" aria-label="Direct link to Final Configuration - all install options" title="Direct link to Final Configuration - all install options">​</a></h2>

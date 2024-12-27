@@ -131,29 +131,17 @@ These migration guides are a supplement to the [release notes](https://github.co
 
 ### 6.x to 7.x
 
-There are so many changes that the suggested way to migrate is just to initalize a fresh 7.0 project, and then migrate your assets over. If you do this:
-
 Migration examples:
 
 - [bermuda-reports](https://github.com/seasketch/bermuda-reports-next) which created a new git repository and left the [old one](https://github.com/mcclintock-lab/bermuda-reports) behind.
 
-#### Unstable Testing
+#### Running Multiple Versions of Geoprocessing Workspace
 
-If you are testing out a new `unstable` image you will need to pull using that tag instead:
+The latest version of the `geoprocessing-workspace` will only work with geoprocessing 7.x projects. This is due to a change in how GDAL produces flatgeobuf files. If you suddenly see errors of `"Not a FlatGeobuf file"` when trying to read your file, this is likely the reason.
 
-```bash
-docker pull seasketch/geoprocessing-workspace:unstable
-```
+In order to continue to develop older 6.x and lower geoprocessing projects at the same time, you will need to start your devcontainer using the `local-dev-pre-7x` environment. This is pinned to an older version of the docker image - `seasketch/geoprocessing-workspace:sha-69bb889`
 
-Then, when restarting your VSCode devcontainer, choose the `unstable` version.
-
-If you get an error when starting unstable, make sure that you have a .env file in your `local-dev-unstable` directory. You need to have one there, just as in the top-level stable devcontainer directory.
-
-#### When Using Geoprocessing Less Than 7.0
-
-The latest version of the `geoprocessing-workspace` will only work with geoprocessing 7.x projects. This is due to a change in how GDAL produces flatgeobuf files. If you suddenly see errors of `"Not a FlatGeobuf file"` when trying to read your file, this is likely the reason. In order to continue to develop older 6.x and lower geoprocessing projects you will need to start your devcontainer using the `local-dev-pre-7x` environment. This is pinned to an older version of the docker image - `seasketch/geoprocessing-workspace:sha-69bb889`
-
-#### Convert code to ESM
+#### Migrate Code To ESM
 
 As you migrate functions and report components from a pre 7.0 project to a 7.x project you will need to migrate your code to the format required by Node for ESM code. You will also need to make it Node 22 compliant.
 
@@ -163,7 +151,7 @@ Here's a summar of the changes required. VSCode should give you hints along the 
 - NodeJS when using the ES Module engine now requires explicit paths to code files. No longer can you import a module from a directory (e.g. `import foo from ./my/directory`) and expect it will look for an index.js file. You have to change this to`import foo form ./my/directory/index.js`.
   `__dirname` built-in must be changed to `import.meta.dirname`
 
-#### Migrate asset imports
+#### Migrate Asset Imports
 
 `require` is no longer allowed for importing images and other static assets. Vite expects you to import the assets [directly](https://vitejs.dev/guide/assets#importing-asset-as-url) as urls. SizeCard.tsx is one component installed by default with projects that will need to be updated.
 
@@ -191,6 +179,10 @@ At this point, VSCode will complain about your image import, it doesn't support 
 // Add Vite types to project
 // https://vitejs.dev/guide/features.html#client-types
 ```
+
+#### Migrate Preprocessing Functions
+
+[Preprocessing functions](https://github.com/seasketch/geoprocessing/blob/dev/packages/template-blank-project/src/functions/clipToOceanEez.ts) should be upgraded to the [newest form](https://github.com/seasketch/geoprocessing/blob/v7.0.0/packages/template-ocean-eez/src/functions/clipToLand.ts).
 
 #### Other Changes
 
@@ -222,7 +214,7 @@ const projectClient = new ProjectClientBase({
 export default projectClient;
 ```
 
-#### Migrate styled-components
+#### Migrate Styled Components
 
 - If you have report components that use styled-components for its styling, you will need to change all code imports of `styled-components` from
 
@@ -244,7 +236,7 @@ The solution is to switch to using `transient` prop names, or component prop nam
 
 - https://jakemccambley.medium.com/transient-props-in-styled-components-3105f16cb91f
 
-#### Stop importing directly from @seasketch/geoprocessing in report clients
+#### Stop Importing Directly From @seasketch/geoprocessing
 
 - Report client code must no longer import from geoprocessing libraries top level entry point `@seasketch/geoprocessing` or you may see a "require is not defined" error or other errors related to Node specific modules not found. The solution is to switch from for example:
 

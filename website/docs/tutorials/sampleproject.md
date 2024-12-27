@@ -272,6 +272,16 @@ Language translation is a multi-part process:
 
 This process is covered in more detail in a separate doc.
 
+### Download Project Data
+
+Download a data package prepared for FSM to your project space and unzip it:
+
+```bash
+wget -P data/src https://github.com/user-attachments/files/18030075/FSM_MSP_Data_Example_v2.zip
+unzip data/src/FSM_MSP_Data_Example_v2.zip -d data/src
+rm data/src/FSM_MSP_Data_Example_v2.zip
+```
+
 ### Generate Examples
 
 With a working geoprocessing function and report client already in place, you're ready to generate example sketches for testing them. We'll use the same `genRandomPolygon` script as before. But let's look closer at how we figured out the bounding box extent of the Micronesian planning area. First, use ogrinfo to inspect the Micronesia EEZ polygon data layer in your data package.
@@ -284,6 +294,11 @@ Deep in its output you will see a `geometryFields` property, which contains the 
 
 ```bash
 ogrinfo -so -json data/src/eez_withland_mr.fgb | jq -c .layers[0].geometryFields[0].extent
+```
+
+Output:
+
+```bash
 [135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]
 ```
 
@@ -597,15 +612,7 @@ Next you will create a coral reef report that uses the reef extent dataset. Here
 
 ### Import Data
 
-To access this datasource, first download a data package prepared for FSM to your project space and unzip it:
-
-```bash
-wget -P data/src https://github.com/user-attachments/files/18030075/FSM_MSP_Data_Example_v2.zip
-unzip data/src/FSM_MSP_Data_Example_v2.zip -d data/src
-rm data/src/FSM_MSP_Data_Example_v2.zip
-```
-
-Now import the datasource to your project.
+Now import a datasource to your project.
 
 ```bash
 npm run import:data

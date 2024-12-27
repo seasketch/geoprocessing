@@ -27,7 +27,7 @@ export * from "./src/helpers/callWithRetry.js";
 export * from "./src/datasources/helpers.js";
 export * from "./src/metrics/helpers.js";
 export * from "./src/iucn/helpers.js";
-
+export * from "./src/helpers/metricGroup.js";
 export * from "./src/iucn/iucnProtectionLevel.js";
 export * from "./src/rbcs/index.js";
 export * from "./src/project/ProjectClientBase.js";

@@ -20,7 +20,7 @@ Start the project `init` process, which will download the framework, and collect
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-beta.10 init 7.0.0-beta.10
+npx @seasketch/geoprocessing init
 ```
 
 ```text
@@ -86,6 +86,8 @@ In the `src/functions` directory you will find four preprocessing functions that
 - `clipToLand` - clips the shape to just the portion on land, as defined by OpenStreeMap land polygons. Includes validatePolygon.
 - `clipToOcean` - clips the shape to remove the portion on land, as defined by OpenStreetMap land polygons. Includes validatePolygon.
 - `clipToOceanEez` - clips the shape to keep the portion within the boundary from the coastline to the outer boundary of the EEZ. Includes validatePolygon.
+
+These functions use datasources published by the [global datasources](https://github.com/seasketch/global-datasources/tree/main) project. These datasources can be replaced with more authoritative ones in your own projects, or you can follow the instructions on the website to export the specific subset of the data relevant to your project, and import it directly into your project.
 
 ### Testing
 
@@ -270,6 +272,16 @@ Language translation is a multi-part process:
 
 This process is covered in more detail in a separate doc.
 
+### Download Project Data
+
+Download a data package prepared for FSM to your project space and unzip it:
+
+```bash
+wget -P data/src https://github.com/user-attachments/files/18030075/FSM_MSP_Data_Example_v2.zip
+unzip data/src/FSM_MSP_Data_Example_v2.zip -d data/src
+rm data/src/FSM_MSP_Data_Example_v2.zip
+```
+
 ### Generate Examples
 
 With a working geoprocessing function and report client already in place, you're ready to generate example sketches for testing them. We'll use the same `genRandomPolygon` script as before. But let's look closer at how we figured out the bounding box extent of the Micronesian planning area. First, use ogrinfo to inspect the Micronesia EEZ polygon data layer in your data package.
@@ -282,6 +294,11 @@ Deep in its output you will see a `geometryFields` property, which contains the 
 
 ```bash
 ogrinfo -so -json data/src/eez_withland_mr.fgb | jq -c .layers[0].geometryFields[0].extent
+```
+
+Output:
+
+```bash
 [135.31244183762126,-1.1731109652985907,165.67652822599732,13.445432925389298]
 ```
 
@@ -595,15 +612,7 @@ Next you will create a coral reef report that uses the reef extent dataset. Here
 
 ### Import Data
 
-To access this datasource, first download a data package prepared for FSM to your project space and unzip it:
-
-```bash
-wget -P data/src https://github.com/user-attachments/files/18030075/FSM_MSP_Data_Example_v2.zip
-unzip data/src/FSM_MSP_Data_Example_v2.zip -d data/src
-rm data/src/FSM_MSP_Data_Example_v2.zip
-```
-
-Now import the datasource to your project.
+Now import a datasource to your project.
 
 ```bash
 npm run import:data
@@ -789,11 +798,14 @@ export async function coralReef(
   let childSketchAreas: CoralReefResults["childSketchAreas"] = [];
   if (sketch.properties.isCollection) {
     childSketchAreas = toSketchArray(sketch).map((sketch) => {
-      const sketchReefOverlap = clipMultiMerge(
-        sketch,
-        featureCollection(reefFeatures),
-        "intersection",
-      );
+      const sketchReefOverlap =
+        reefFeatures.length > 0
+          ? clipMultiMerge(
+              sketch,
+              featureCollection(reefFeatures),
+              "intersection",
+            )
+          : null;
       return {
         name: sketch.properties.name,
         area: sketchReefOverlap ? area(sketchReefOverlap) : 0,
@@ -815,11 +827,14 @@ export async function coralReef(
       clipFeature = sketch;
     }
     //Merge reefFeatures into a single multipolygon, then intersect
-    const sketchReefOverlap = clipMultiMerge(
-      clipFeature,
-      featureCollection(reefFeatures),
-      "intersection",
-    );
+    const sketchReefOverlap =
+      reefFeatures.length > 0
+        ? clipMultiMerge(
+            clipFeature,
+            featureCollection(reefFeatures),
+            "intersection",
+          )
+        : null;
     return sketchReefOverlap ? area(sketchReefOverlap) : 0;
   })();
 
@@ -868,11 +883,14 @@ Next, if the sketch is a collection, it calculates how much coral reef overlaps 
 let childSketchAreas: CoralReefResults["childSketchAreas"] = [];
 if (sketch.properties.isCollection) {
   childSketchAreas = toSketchArray(sketch).map((sketch) => {
-    const sketchReefOverlap = clipMultiMerge(
-      sketch,
-      featureCollection(reefFeatures),
-      "intersection",
-    );
+    const sketchReefOverlap =
+      reefFeatures.length > 0
+        ? clipMultiMerge(
+            sketch,
+            featureCollection(reefFeatures),
+            "intersection",
+          )
+        : null;
     return {
       name: sketch.properties.name,
       area: sketchReefOverlap ? area(sketchReefOverlap) : 0,
@@ -902,11 +920,14 @@ const sketchArea = (() => {
     clipFeature = sketch;
   }
   //Merge reefFeatures into a single multipolygon, then intersect
-  const sketchReefOverlap = clipMultiMerge(
-    clipFeature,
-    featureCollection(reefFeatures),
-    "intersection",
-  );
+  const sketchReefOverlap =
+    reefFeatures.length > 0
+      ? clipMultiMerge(
+          clipFeature,
+          featureCollection(reefFeatures),
+          "intersection",
+        )
+      : null;
   return sketchReefOverlap ? area(sketchReefOverlap) : 0;
 })();
 
@@ -924,10 +945,10 @@ Now run tests to generate updated output for each of the sample sketches:
 npm run test
 ```
 
-Confirm that the output looks as expected.
+Confirm that the output looks as expected. It is possible none of your test sketches will overlap with any coral reef features in which case all area values will have a `0` value.
 
 <details>
-<summary>Example sketch collection output</summary>
+<summary>examples/output/sketchCollection1/coralReef.json</summary>
 
 ```text
 {
@@ -1123,7 +1144,7 @@ There are multiple things worth noticing:
 - `percentWithEdge` and `roundDecimalFormat` helper functions are used to format values to be more human readable. Will use locale settings of the users browser when formatting decimal and percent.
 - `HorizontalStackedBar` and `ObjectiveStatus` core UI components present information in a more visually interesting way that can be reused across reports. See core [storybook](/storybook) for more examples of their use.
 
-Now, start storybook and view the result:
+Now, start storybook and view the result. You will find the CoralReefCard under the `Components` section:
 
 ```bash
 npm run storybook
@@ -1133,7 +1154,7 @@ When viewing a sketch example, it should display the following:
 
 ![CoralReefCard sketch view](./assets/coral-reef-card-sketch.jpg)
 
-Keep in mind your sketch polygon examples are randomly generated so your numbers will vary thw ones shown.
+Keep in mind your sketch polygon examples are randomly generated so your numbers will vary from the ones shown.
 
 And when viewing a sketch collection example, it should display the additional "Show By Sketch" list:
 
@@ -1246,7 +1267,7 @@ Adding benthic-rock record in project/datasources.json file
 
 ### Precalc Data
 
-Before you can use your benthic report, you need to precalculate the area of your benthic polygons. Rather than writing your own script for this, the `precalc:data` command is available that will inspect your vector datasources and precalculate basic summary metrics (total feature area, total feature count, etc). Let's look at the datasource record generated for our benthic-rock datasource to understand what precalc will do.
+Before you can use your benthic report, you need to precalculate the area of your benthic polygons. Rather than writing your own script for this, as was done for coral reefs, the `precalc:data` command is available that will inspect your vector datasource and precalculate basic summary metrics (total feature area, total feature count, etc). Let's look at the datasource record generated for our benthic-rock datasource to understand what precalc will do.
 
 <details>
 <summary>project/datasources.json</summary>
@@ -1778,7 +1799,7 @@ Now look at project/precalc.json. You should see 4 new precalculated metrics for
 
 The area calculation is made possible by the fact that the raster is in an equal area projection, making all raster cells a consistent size. Area is calculated as:
 
-- `area = raster cell width in meters x cell height in meters x number of valid cells
+- area = raster cell width in meters x cell height in meters x number of valid cells
 
 Notice that the precalculated `sum` and `valid` values are the same at `1365`. That is because the valid cells all have a value of 1 and the sum of the values in valid cells is the same as the count of valid cells.
 
@@ -2027,7 +2048,7 @@ npm test
 Confirm that the output looks as expected.
 
 <details>
-<summary>Example sketch collection output</summary>
+<summary>examples/output/sketchCollection1/seamounts.json</summary>
 
 ```text
 {
@@ -2306,7 +2327,7 @@ Storybook should update on save and display the following:
 
 ### Data Complexity
 
-The rise in complexity of the results you started to see in the last report is something to be aware of. Imagine if a report needed to calculate a metric with 10 different classes of data. Now imagine each sketch is assigned to 1 of 4 different protection levels. Finally imagine the planning process is also split out into 3 different subregions. Now imagine you need to calculate metrics for every combination of sketch, data class, protection level, and subregion. How would you design the structure of your JSON result data structure to accommodate the data? How would you do it in a way that is flexible and reusable so that components of the framework can build on it?
+Results can get even more complex than the last report. Imagine if a report needed to calculate a metric with 10 different classes of data. And each sketch can be assigned to 1 of 4 different protection levels. The planning process is also split out into 3 different subregions. Now imagine you need to calculate metrics for every combination of data class, protection level, and subregion. How would you design the structure of your result to accommodate the data? How would you do it in a way that is flexible and reusable so that components of the framework can build on it?
 
 The `Metric` data type is designed to accommodate this type of multi-dimensional data. You see a glimpse of it in the precalc output, and in the Coral Reef report. Each `Metric` object represents a single measurement/value for one or more dimensions of data. A simple array of these Metric objects can represent your entire result payload.
 
@@ -2486,7 +2507,7 @@ Open `project/objectives.json` and add an objective for each data class:
 
 ### Create Report
 
-Now create the report
+Now create the report:
 
 ```text
 npm run create:report
@@ -2508,6 +2529,12 @@ sum - sum of value of valid cells overlapping with sketch
 
 ✔ Created coralspecies report
 ✔ Registered report assets in project/geoprocessing.json
+```
+
+Then run smoke tests:
+
+```bash
+npm run test
 ```
 
 ### Add To Tab Report

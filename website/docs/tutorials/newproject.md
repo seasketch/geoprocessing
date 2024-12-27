@@ -74,7 +74,13 @@ Start with initializing a new project:
 
 ```sh
 cd /workspaces
-npx @seasketch/geoprocessing@7.0.0-beta.10 init 7.0.0-beta.10
+npx @seasketch/geoprocessing init
+```
+
+If you want to install anything other than the latest version you have to run a more specific command. Assume you want to init a new project using version 6.1.2. You would run:
+
+```sh
+npx @seasketch/geoprocessing@6.1.2 init 6.1.2
 ```
 
 Tips:
@@ -94,6 +100,8 @@ Learn more about your projects [structure](../structure.md)
 - [High-level vector report](./sampleproject.md#benthic-habitat-report)
 - [Low-level raster report](./sampleproject.md#seamount-report)
 - [High-level raster report](./sampleproject.md#coral-species-report)
+
+If you use the Metric Group feature, there are [examples](../concepts/Concepts.md) of variations for creating them based on the structure of your data.
 
 ## Build Your Project
 
@@ -143,7 +151,14 @@ It will ask you if you want to publish all datasources, or choose from a list.
 
 Your datasources will need to have already been imported using `import:data` and exist in the `data/dist` for this to work.
 
-Note if you don't publish your datasources, then your local smoke tests may work properly, but your geoprocessing functions will throw file not found errors in production.
+Note, if you don't publish your datasources, then your local smoke tests may work properly, but your geoprocessing functions will throw file not found errors in production.
+
+Note, you can use any and all `aws` commands to look at your datasets bucket or to copy files to/from it.
+
+```bash
+aws s3 ls s3://gp-my-project-datasets
+aws s3 cp data/dist/myFile.fgb s3://gp-my-project-datasets
+```
 
 ## Integrate With SeaSketch
 

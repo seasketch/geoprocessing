@@ -1,10 +1,17 @@
 # Upgrading
 
-Instructions to migrate existing geoprocessing projects to newer versions.
+Before you upgrade your project to use a newer version of the geoprocessing library, look in package.json -> devDependences to see what version of `@seasketch/geoprocessing` you have. Then see what the [latest version](https://www.npmjs.com/package/@seasketch/geoprocessing) of geoprocessing is.
 
-## Upgrade Geoprocessing
+Read the [release notes](https://github.com/seasketch/geoprocessing/releases) and check for any further [migration](#migration) steps below and decide what version you will upgrade to. Look for
 
-Your project will be pinned to a specific version of the geoprocessing library in package.json, under `devDependencies`. To update to the latest version, first, make sure you don't have any unsaved work and your git repository is in a clean state. Then update the version, and run the upgrade script:
+Any upgrade to a new major version (e.g. 6.x to 7.x) can be a significant undertaking. For this reason you will need to choose your upgrade path. See the release notes for a recommendation.
+
+- [Upgrade script](#upgrade-script)
+- [Create new project and migrate assets](#create-new-project-and-migrate-assets)
+
+## Upgrade script
+
+First, make sure you don't have any uncommitted work and your git repository is in a clean state. Then run the following:
 
 ```bash
 npm update @seasketch/geoprocessing@latest
@@ -12,11 +19,7 @@ npm install
 npm run upgrade
 ```
 
-The upgrade command may alter or overwrite a significant number of files including configuration, scripts, package.json dependencies and scripts, etc. The upgrade command may overwrite any customizations you have made such as to scripts, in which case you would need to manually recover them by studying the git diffs.
-
-If you are upgrading to a new major version (e.g 6.1.x to 7.0.x), then there will be breaking changes that may affect your project, covered in this document. Check the [release notes](https://github.com/seasketch/geoprocessing/releases) for any additional required steps.
-
-It is suggested that you upgrade only one major version at a time if there are significant manual steps required to migrate your project. If you need to upgrade 2 or more major versions, consider simply creating a new project from scratch, them migrating everything over one at a time (datasources, metric groups, functions and report clients).
+The upgrade command is designed to bring your project up to date to work with the latest release. It may alter or overwrite a significant number of files in your project including configuration, scripts, package.json dependencies, scripts, i18n strings, etc. This includes overwriting any customizations you may have made to these resource. After upgrade, inspect the git changes and recover any customizations at this time.
 
 After upgrading you should always rerun your tests and storybook to verify everything is working properly and test output changes are as expected.
 
@@ -32,36 +35,30 @@ npm run build
 npm run deploy
 ```
 
-After deploy, breaking changes may require you to take additional steps. Follow the steps for your particular migration. If you are seeing errors or unexpected behavior, try any one of the following steps:
+If you are seeing errors or unexpected behavior, try any one of the following steps:
 
 - Rebuild dependencies: `rm -rf node_modules && rm package-lock.json && npm install`
 - Reimport all datasources: `npm run reimport:data`
 - Republish all datasources: `npm run publish:data`
 - Clear AWS cache: `npm run clear-results`, then `all`
 
-## Test Stack
+## Create New Project And Migrate Assets
 
-If you'd like to deploy to a test stack first, alongside your existing production stack, to make sure everything is working properly:
+This is a heavy-handed alternative to the [update and upgrade](#update-and-upgrade) path.
 
-- Change the `name` field of your project in package.json (e.g. `"name": "my-reports"` becomes `"name": "my-reports-7x".
-- Then `npm run build` and `npm run deploy`. This will deploy to a new AWS CloudFormation stack, separate from your production stack.
-- Once deployed, repoint your existing sketch classes to the new geoprocessing service, or create separate "admin only" sketch classes that point to your new test service. Make sure that all required sketch class attributes are in place.
-- When you are ready to update production, change the `name` in package.json back, and rerun `build` and `deploy`.
+- Follow the tutorial to [init a new project](https://seasketch.github.io/geoprocessing/docs/next/tutorials/newproject/) for the version you are interested in.
+- Consider choosing a `name` for your project in package.json that is different from your older project so that can be tested side-by-side.
+- Migrate your assets over one piece at a time
+  - Migrate your project folder including - datasources.json, metric.json, basic.json. Be on the lookout for any schema changes for these files.
+  - `npm run reimport:data`
+  - Copy over your geoprocessing functions and preprocessing functions. Fix any error and look for clues in release notes or migration guide for changes needed. Get all tests running again properly. make sure output matches your old project or if different verify the reason. Often newer versions will increase the accuracy of results but should not decrease without explanation.
+  - Migrate report clients over fixing any errors. Look at the sample tutorial, release notes, and migration guide for clues on what is needed. Get storybook rendering reports properly for all smoke test output and matching the previous version.
+- Now build and [Deploy a test stack alongside production](#deploy-test-stack-alongside-production).
+- When you're ready, point the production sketch classes over to your new function and reports.
 
-# Migration
+## Upgrade Environment
 
-## 6.x to 7.x
-
-Numerous manual migration steps are required, including a number of breaking changes:
-
-- Testing framework switched from Jest to Vite
-- Required use of new Node features (e.g. switch from \_\_dirname to import.meta.dirname)
-- Required use of ES Module structure and import style
-- Lambda functions are now maintained in one or more LambdaStack(s) nested within the root CloudFormation stack. The number of nested stacks auto-scales as functions are added to the project (about 15-20 functions per LambdaStack). This change typically will cause an error when re-deploying an existing project, because the logical ID's for lambda functions are unique and fixed and migrating functions from the root stack to a nested LambdaStack causes a `duplicate identifier` error. If you see this error, the solution is to run `npm run destroy` to delete your stack first. Then run `deploy` again. You will need to `publish` your datasources again after deploy. Follow the instructions up top for how to use a `test stack`
-
-See [fsm-reports](https://github.com/seasketch/fsm-nearshore-reports/pull/3) for a migration from 6.x to 7.x and [brazil-reports](https://github.com/seasketch/brazil-reports/pull/10) for migration from 3.x to 7.x which was done by starting with a freshly created project in a git branch and slowly migrating the datasources, metric groups, functions, and report clients over.
-
-### Upgrade Devcontainer
+### Devcontainer
 
 If you're using `geoprocessing-devcontainer` to develop in a Docker environment, you will need to update this repo and the underlying `geoprocessing-workspace` docker image to the latest. First, make sure Docker Desktop is running, then:
 
@@ -93,85 +90,68 @@ Dev Containers: Rebuild Without Cache and Reopen In Container
 
 ![Simple Card View](./assets/rebuild-without-cache.jpg)
 
-### Unstable Testing
+### Windows WSL Geoprocessing Distribution
 
-If you are testing out a new `unstable` image you will need to pull using that tag instead:
+If you previously installed a version of the Geoprocessing distribution for running in WSL, you can nstall a new one right alongside it.
 
-```bash
-docker pull seasketch/geoprocessing-workspace:unstable
-```
+Upgrading your WSL Geoprocessing Distribution means installing a new image using the [system setup instructions](./Tutorials.md#geoprocessing-distribution), re-adding all your projects to it, then leaving your old one behind. You can run both images at the same time in different shells.
 
-Then, when restarting your VSCode devcontainer, choose the `unstable` version.
+You can backup and remove a WSL distribution as follows:
 
-If you get an error when starting unstable, make sure that you have a .env file in your `local-dev-unstable` directory. You need to have one there, just as in the top-level stable devcontainer directory.
-
-### When Using Geoprocessing Less Than 7.0
-
-The latest version of the `geoprocessing-workspace` will only work with geoprocessing 7.x projects. This is due to a change in how GDAL produces flatgeobuf files. If you suddenly see errors of `"Not a FlatGeobuf file"` when trying to read your file, this is likely the reason. In order to continue to develop older 6.x and lower geoprocessing projects you will need to start your devcontainer using the `local-dev-pre-7x` environment. This is pinned to an older version of the docker image - `seasketch/geoprocessing-workspace:sha-69bb889`
-
-### Upgrade Windows Geoprocessing
-
-#### Upgrade Geoprocessing Distribution
-
-If you previously installed a version of the Geoprocessing distribution for running in WSL, and now want to replace it with a new one, first backup your existing Geoprocessing distribution (if needed):
+- First open Windows Explorer and go to C:\WslDistributions. Find the name of the distribution you want to remove. For example, say it is `gp-stable-20241223`
+- Now export this image to a backup directory.
 
 ```bash
 mkdir C:\tmp\WslBackups\Geoprocessing
-wsl --export Geoprocessing C:\tmp\WslBackups\20241104_Geoprocessing.tar
+wsl --export Geoprocessing C:\tmp\WslBackups\gp-stable-20241223.tar
 ```
 
-Then unregister it:
+To unregister and delete this old image do the following:
+
+- First, close all shells and VSCode sessions using this image, then unregister it in PowerShell:
 
 ```bash
 wsl --unregister Geoprocessing
 ```
 
-Then follow the instructions above to install WSL Geoprocessing image again
+Now delete the folder `C:\WslDistributions\gp-stable-20241223`
 
-### Upgrade Script
+## Deploy Test Stack Alongside Production
 
-As of v7.0-beta.5 there is a new `upgrade` script that automates installing/updating assets in your project from the gp library. As of now it upgrades:
+If you'd like to deploy to a test stack first, alongside your existing production stack, to make sure everything is working properly:
 
-- package.json - updates scripts, dependencies, devDependencies
-- .storybook - installs directory
-- .vscode - overwrites `.vscode` directory with new files
-- i18n - creates a new `project/i18n.json` file. overwrites `src/i18n` directory with new files.
+- Change the `name` field of your project in package.json (e.g. `"name": "my-reports"` becomes `"name": "my-reports-7x".
+- Then `npm run build` and `npm run deploy`. This will deploy to a new AWS CloudFormation stack, separate from your production stack.
+- Once deployed, repoint your existing sketch classes to the new geoprocessing service, or create separate "admin only" sketch classes that point to your new test service. Make sure that all required sketch class attributes are in place.
+- When you are ready to update production, change the `name` in package.json back, and rerun `build` and `deploy`.
 
-Some of these upgrades are destructive and will simply overwrite the director in your project (.storybook, .vscode, src/i18n). If you have customized any of these parts of your project, then be sure to look at the git changelog and bring back any of your work.
+## Migration Guide
 
-This includes: package.json, i18n, storybook, vscode.
+These migration guides are a supplement to the [release notes](https://github.com/seasketch/geoprocessing/releases). They offer manual steps to be taken to bring your code up to date to work with a specific version of the geoprocessing library, whether you chose to use the `upgrade` script or init a new project and copy your assets over.
 
-Add it to your projects package.json `scripts` section
+### 6.x to 7.x
 
-```
-"upgrade": "geoprocessing upgrade"
-```
+Migration examples:
 
-Then run it:
+- [bermuda-reports](https://github.com/seasketch/bermuda-reports-next) which created a new git repository and left the [old one](https://github.com/mcclintock-lab/bermuda-reports) behind.
 
-```bash
-npm run upgrade
-```
+#### Running Multiple Versions of Geoprocessing Workspace
 
-### Convert project to ES Modules
+The latest version of the `geoprocessing-workspace` will only work with geoprocessing 7.x projects. This is due to a change in how GDAL produces flatgeobuf files. If you suddenly see errors of `"Not a FlatGeobuf file"` when trying to read your file, this is likely the reason.
 
-This is the biggest breaking change in v7. You will need to change your project to an `ES Module` structure or `ESM` for short. With this change, Node will use an `ESM` runtime, instead of the original `CommonJS`, which will necessitate some additional code changes covered below.
+In order to continue to develop older 6.x and lower geoprocessing projects at the same time, you will need to start your devcontainer using the `local-dev-pre-7x` environment. This is pinned to an older version of the docker image - `seasketch/geoprocessing-workspace:sha-69bb889`
 
-Use the [base project](https://github.com/seasketch/geoprocessing/tree/dev/packages/base-project) that gets installed when you init a new geoprocessing project as a guide.
+#### Migrate Code To ESM
 
-First, in package.json:
+As you migrate functions and report components from a pre 7.0 project to a 7.x project you will need to migrate your code to the format required by Node for ESM code. You will also need to make it Node 22 compliant.
 
-- Add `"type": "module",`
-
-Then reload your VSCode window to make sure it picks up that your project is now an ESM project. You can do this with `Cmd-Shift-P` on Mac or `Ctrl-Shift-P` on Windows and then start typing `reload` and select the `Developer: Reload Window` option. Or just close and restart the VSCode app as you normally would.
-
-Now you need to update all of your projects source files to be ESM and Node v20 compliant. VSCode should give you hints along the way, so basically just click through all the source files looking for red squiggle underlined text. You will focus in the `src` directory.
+Here's a summar of the changes required. VSCode should give you hints along the way, so basically just click through all the source files looking for red squiggle underlined text. You will focus in the `src` directory.
 
 - For each import of a local module (e.g. `import project from ../project`), use a full explicit path and include a `.js` extension on the end, even if you are importing a `.ts` file. The example would become `import project from ../project/projectClient.js`.
 - NodeJS when using the ES Module engine now requires explicit paths to code files. No longer can you import a module from a directory (e.g. `import foo from ./my/directory`) and expect it will look for an index.js file. You have to change this to`import foo form ./my/directory/index.js`.
   `__dirname` built-in must be changed to `import.meta.dirname`
 
-### Migrate asset imports
+#### Migrate Asset Imports
 
 `require` is no longer allowed for importing images and other static assets. Vite expects you to import the assets [directly](https://vitejs.dev/guide/assets#importing-asset-as-url) as urls. SizeCard.tsx is one component installed by default with projects that will need to be updated.
 
@@ -200,9 +180,13 @@ At this point, VSCode will complain about your image import, it doesn't support 
 // https://vitejs.dev/guide/features.html#client-types
 ```
 
-### Other Changes
+#### Migrate Preprocessing Functions
 
-- Rename babel.config.js to babel.config.cjs. This babel config is used only by the translation library.
+[Preprocessing functions](https://github.com/seasketch/geoprocessing/blob/dev/packages/template-blank-project/src/functions/clipToOceanEez.ts) should be upgraded to the [newest form](https://github.com/seasketch/geoprocessing/blob/v7.0.0/packages/template-ocean-eez/src/functions/clipToLand.ts).
+
+#### Other Changes
+
+- Any .js file in your codebase may need to be changed to have a .cjs extension to make Node happy.
 - update project/projectClient.ts with type assertion syntax
 
 ```typescript
@@ -230,7 +214,7 @@ const projectClient = new ProjectClientBase({
 export default projectClient;
 ```
 
-### Migrate styled-components
+#### Migrate Styled Components
 
 - If you have report components that use styled-components for its styling, you will need to change all code imports of `styled-components` from
 
@@ -252,7 +236,7 @@ The solution is to switch to using `transient` prop names, or component prop nam
 
 - https://jakemccambley.medium.com/transient-props-in-styled-components-3105f16cb91f
 
-# Stop importing directly from @seasketch/geoprocessing in report clients
+#### Stop Importing Directly From @seasketch/geoprocessing
 
 - Report client code must no longer import from geoprocessing libraries top level entry point `@seasketch/geoprocessing` or you may see a "require is not defined" error or other errors related to Node specific modules not found. The solution is to switch from for example:
 
@@ -268,7 +252,7 @@ import { ProjectClientBase } from "@seasketch/geoprocessing/client-core";
 
 The use of the top-level entry point has persisted in some code because the previous Webpack code bundler did some extra magic to not let Node modules be bundled into report client browser code. The new Vite code bundler does not do this magic and leaves it to you to track your imports. The geoprocessing library offers both the `client-core` and `client-ui` entry points which should be used. These should offer everything you need.
 
-## 6.0 to 6.1
+### 6.0 to 6.1
 
 - Run `reimport:data` to ensure that all raster datasources in `data/dist` are in an equal area projection.
 - Run `precalc:data` for all raster datasources to precalculate additional metrics including `sum`, `area`, `valid`, `count`.
@@ -277,11 +261,11 @@ The use of the top-level entry point has persisted in some code because the prev
 - any use of geoblaze directly, that passes a polygon feature for overlap, must reproject the feature to an equal area projection first, using `toRasterProjection`. See [getSum](https://github.com/seasketch/geoprocessing/blob/5b2c3dd1381343733e0908d91c22d51597151f1b/packages/geoprocessing/src/toolbox/geoblaze/geoblaze.ts#L34) for an example.
 - any use of the deprecated `loadCogWindow()` should be replaced with the newer `loadCog()`. The former doesnt' appear to work correctly with functions like `rasterStats()` and `rasterMetrics()`.
 
-## 5.x to 6.x
+### 5.x to 6.x
 
 - Add `explodeMulti: true` to all vector datasources in `project/datasources.json`. You can set this to false if you know for sure you need to maintain multipolygons in the datasource. Otherwise breaking them up can speed up geoprocessing function by not fetching an operating on extra polygons outside the bounding box of a sketch.
 
-## 4.x to 5.x
+### 4.x to 5.x
 
 ### package.json
 
@@ -332,7 +316,7 @@ const projectClient = new ProjectClientBase({
 export default projectClient;
 ```
 
-### Geographies
+#### Geographies
 
 Geographies are a new construct, most commonly used for planning boundaries. You are required to define at least one per project and you can have more than one. Projects have always had them, but they were implicitly defined based on how data was clipped, which was both unclear to the report developer and very limiting. Geographies are explicit. There is no longer confusion about whether and how to clip datasources to one or more planning boundaries. You just define what the geography boundaries are, by associating it with a datasource. Then the precalc command will clip the datasource (whether vector or raster) to each geographies features (intersection) and precompute metrics with what remains (total area, count, sum). This replaces what was `keyStats` in datasources.json. Preclac metrics are typically used as the denominator when calculating % sketch overlap in reports. Geoprocessing functions also clip the current sketch to one or more geographies at runtime when calculating metrics. These are often used as the numerator when when calculating sketch % overlap in reports.
 
@@ -389,7 +373,7 @@ To setup your projects default geography, create a new file `project/geographies
 ]
 ```
 
-### Datasources
+#### Datasources
 
 Based on your geography choice above, add the corresponding datasource for this geography to your `datasources.json` file.
 
@@ -456,7 +440,7 @@ Finally, you need to add a `precalc` setting to all other datasources in your `d
 - Add `"precalc": true` to all datasources in `project/datasources.json` that metrics should be precalculated for. This is typically limited to datasources that you need to precalc the overall summary metric of the datasource (total area, total feature count) so that you can report the % of the total that a sketch overlaps with. Otherwise you don't need to precalc.
 - Set all other datasources to `"precalc": false`. This includes global datasources or datasources that are only a source for `geography` features and otherwise aren't used in reports. Setting these to true will at best just precalculate extra metrics that won't be used. At worst it will try to fetch entire global datasources and fail at the task, because the necessary filters aren't in place.
 
-### Precalc
+#### Precalc
 
 Once you have your `geographies` and `datasources` properly configured, you're ready to run the `precalc:data` command.
 
@@ -468,7 +452,7 @@ npm run precalc:data
 
 This will precompute metrics for all combinations of geographies and datasources. It will also strip any existing `keyStats` properties from `datasources.json` and populate `precalc.json`.
 
-### Geoprocessing functions
+#### Geoprocessing functions
 
 - Update `clipToGeography` function, to allow geographies to use external datasources. To copy the file from the gp library to your project space, run the following from a terminal in the top-level of your project.
 
@@ -482,7 +466,7 @@ mkdir -p src/util && cp -r node_modules/@seasketch/geoprocessing/dist/base-proje
   - clip the current sketch to the geography
   - see [azores-nearshore-reports](https://github.com/seasketch/azores-nearshore-reports/blob/0816a8013de648783159af29071e00e9d8ce547e/src/functions/geomorphAreaOverlap.ts#L30) for examples.
 
-### Report Clients
+#### Report Clients
 
 Reports clients should migrate to new boilerplate code. See [azores-nearshore-reports](https://github.com/seasketch/azores-nearshore-reports/blob/0816a8013de648783159af29071e00e9d8ce547e/src/components/Geomorphology.tsx#L35) for examples, specifically:
 
@@ -495,7 +479,7 @@ Reports clients should migrate to new boilerplate code. See [azores-nearshore-re
 
 If you would like to allow the user to switch between planning geographies from the report UI, you can add a `GeographySwitcher` at the top level of the report client (see [azores-nearshore-reports](https://github.com/seasketch/azores-nearshore-reports/blob/0816a8013de648783159af29071e00e9d8ce547e/src/clients/MpaTabReport.tsx#L34) example). The user chosen geography ID is then passed into each `ResultsCard` and on to each geoprocessing function as `extraParams`
 
-### Language Translation
+#### Language Translation
 
 - Geography display names in geographies.json are now extracted with `npm run extract:translations`. Then translate these strings per your current workflow and GeographySwitcher will use them automatically. The same is true for objectives.json and metrics.json.
 - Update src/i18n/i18nAsync.ts to latest. Copy the following file in the gp library to your project space to overwrite.

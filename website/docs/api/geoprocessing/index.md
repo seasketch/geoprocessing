@@ -104,6 +104,7 @@
 | [batchDelete](functions/batchDelete.md) | - |
 | [batchDeleteTasks](functions/batchDeleteTasks.md) | Batch delete array of tasks |
 | [bboxOverlap](functions/bboxOverlap.md) | Returns whether bounding box A overlaps with or touches bounding box B |
+| [biggestPolygon](functions/biggestPolygon.md) | If feature is a MultiPolygon, scans and returns the polygon with the largest area. |
 | [booleanOverlap](functions/booleanOverlap.md) | Returns all B items that overlap with a A items Not all Feature types are supported, see typedoc A and B must have the same geometry dimension (single or multi). Builds on @turf/boolean-overlap. |
 | [byteSize](functions/byteSize.md) | Get length of string in bytes |
 | [callWithRetry](functions/callWithRetry.md) | Calls given function and if error thrown, it recursively retries function up to maxTry times, then just rethrows the error |
@@ -294,6 +295,7 @@
 | [toChildProperties](functions/toChildProperties.md) | Returns SketchProperties for each child sketch in a SketchCollection |
 | [toFeatureArray](functions/toFeatureArray.md) | Helper to convert a Feature or a FeatureCollection to a Feature array |
 | [toFeaturePolygonArray](functions/toFeaturePolygonArray.md) | - |
+| [toJsonFile](functions/toJsonFile.md) | - |
 | [toMultiPolygon](functions/toMultiPolygon.md) | Converts collection of polygons or multipolygons to a single multipolygon |
 | [toNullSketch](functions/toNullSketch.md) | Returns sketch or sketch collection with null geometry |
 | [toNullSketchArray](functions/toNullSketchArray.md) | Helper to convert a NullSketch or NullSketchCollection to a NullSketch array |

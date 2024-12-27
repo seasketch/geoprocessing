@@ -1,10 +1,8 @@
 {
-  "bbox": [
-    135.312441837621, -1.17311096529859, 165.676528225997, 13.4454329253893
-  ],
+  "bbox": [-180, -90, 180, 90],
   "languages": [],
-  "planningAreaType": "eez",
-  "planningAreaId": "Micronesia",
-  "planningAreaName": "Micronesia",
+  "planningAreaType": "other",
+  "planningAreaId": "World",
+  "planningAreaName": "World",
   "externalLinks": {}
 }

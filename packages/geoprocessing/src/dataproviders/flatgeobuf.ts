@@ -28,7 +28,7 @@ export function fgBoundingBox(box: BBox): FgBoundingBox {
  * @param url url of flatgeobuf file
  * @param bbox optional bounding box to fetch features that intersect with
  * @returns feature array
- * @deprecated Use `loadCog` instead.
+ * @deprecated Use `loadFgb` instead.
  */
 export async function fgbFetchAll<F extends Feature<Geometry>>(
   url: string,

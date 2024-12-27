@@ -6,7 +6,6 @@ import {
   useSketchProperties,
 } from "@seasketch/geoprocessing/client-ui";
 import { GeogProp, ReportResult } from "@seasketch/geoprocessing/client-core";
-import project from "../../project/projectClient.js";
 
 /**
  * BlankCard component
@@ -25,7 +24,7 @@ export const BlankCard: React.FunctionComponent<GeogProp> = (props) => {
           <ReportError>
             <p>
               <Trans i18nKey="BlankCard Sketch Message">
-                This is a blank {sketchStr} with result {dataStr}.
+                This is a blank {{ sketchStr }} with result {{ dataStr }}.
               </Trans>
             </p>
           </ReportError>

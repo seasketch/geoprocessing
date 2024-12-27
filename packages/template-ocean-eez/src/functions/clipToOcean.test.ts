@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, afterEach, assert } from "vitest";
 import { clipToOcean } from "./clipToOcean.js";
-import { area, featureCollection, polygon } from "@turf/turf";
+import { area, polygon } from "@turf/turf";
 
 const landFeature = polygon([
   [
@@ -54,14 +54,12 @@ describe("clipToOcean", () => {
     vi.restoreAllMocks();
   });
 
-  // Mock VectorDataSource fetchUnion method to return clipFeature
+  // Mock loadFgb method to return landFeature
+  // @ts-ignore
   vi.mock(import("@seasketch/geoprocessing"), async (importOriginal) => {
     const actual = await importOriginal();
-    const VectorDataSource = vi.fn();
-    VectorDataSource.prototype.fetchUnion = vi.fn(() =>
-      featureCollection([landFeature]),
-    );
-    return { ...actual, VectorDataSource };
+    const loadFgb = vi.fn(() => [landFeature]);
+    return { ...actual, loadFgb };
   });
 
   test("clipToOcean - feature inside of land feature should throw", async () => {
@@ -69,7 +67,7 @@ describe("clipToOcean", () => {
       await clipToOcean(insideLand);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        expect(error.message).toBe("Feature is outside of boundary");
+        expect(error.message).toBe("Feature is not in the ocean");
         return;
       }
     }

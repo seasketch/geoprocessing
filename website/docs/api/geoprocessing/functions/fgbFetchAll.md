@@ -28,4 +28,4 @@ feature array
 
 ## Deprecated
 
-Use `loadCog` instead.
+Use `loadFgb` instead.

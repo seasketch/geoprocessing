@@ -5,8 +5,6 @@ import ora from "ora";
 import { LoadedPackage, loadedPackageSchema } from "../../src/types/package.js";
 import { $ } from "zx";
 import { updatePackageJson } from "./updatePackage.js";
-import { getTemplatePackages } from "../template/templatePackages.js";
-import { TemplateType } from "../types.js";
 import { rekeyObject } from "../../src/index.js";
 
 $.verbose = false;
@@ -101,20 +99,7 @@ const basePkgRaw: GeoprocessingJsonConfig = fs.readJSONSync(
 loadedPackageSchema.parse(basePkgRaw); // parsing loses undefined fields so don't use result
 const validPkg = basePkgRaw as unknown as LoadedPackage; // use the raw object we know is valid and cast
 
-const templatesPath = getTemplatesPath("starter-template");
-const starterTemplatePkgs = await getTemplatePackages(
-  "starter-template",
-  templatesPath,
-);
-const addonTemplatePkgs = await getTemplatePackages(
-  "add-on-template",
-  templatesPath,
-);
-
-const updatedPkg = updatePackageJson(projectPkg, validPkg, [
-  ...addonTemplatePkgs,
-  ...starterTemplatePkgs,
-]);
+const updatedPkg = updatePackageJson(projectPkg, validPkg);
 
 // Remove old scripts
 delete updatedPkg.scripts["install:scripts"];
@@ -249,26 +234,3 @@ console.log(`Upgrade complete!
 
 See upgrade tutorial for additional steps - https://github.com/seasketch/geoprocessing/wiki/Tutorials/#upgrading-your-project  
 `);
-
-/**
- * @param templateType
- * @returns path to template directories, given template type
- */
-function getTemplatesPath(templateType: TemplateType): string {
-  // published bundle path exists if this is being run from the published geoprocessing package
-  // (e.g. via geoprocessing init or add:template)
-  const publishedBundlePath = path.join(
-    import.meta.dirname,
-    "..",
-    "..",
-    "templates",
-    `${templateType}s`,
-  );
-  if (fs.existsSync(publishedBundlePath)) {
-    // Use bundled templates if user running published version, e.g. via geoprocessing init
-    return publishedBundlePath;
-  } else {
-    // Use src templates
-    return path.join(import.meta.dirname, "..", "..", "..");
-  }
-}

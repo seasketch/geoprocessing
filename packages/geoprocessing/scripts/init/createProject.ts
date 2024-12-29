@@ -1,5 +1,3 @@
-import { copyTemplates } from "../template/addTemplate.js";
-import { TemplateMetadata } from "../types.js";
 import ora from "ora";
 import fs from "fs-extra";
 import chalk from "chalk";
@@ -13,7 +11,7 @@ $.verbose = false;
 
 const exec = promisify(child.exec);
 
-export interface CreateProjectMetadata extends TemplateMetadata {
+export interface CreateProjectMetadata {
   name: string;
   description: string;
   author: string;
@@ -207,18 +205,6 @@ export async function createProject(
   await fs.writeJSON(configPath, i18nConfig, { spaces: 2 });
 
   spinner.succeed("added i18n");
-
-  if (metadata.templates.length > 0) {
-    // Should always be a single name if single select question used
-    const templateNames = Array.isArray(metadata.templates)
-      ? metadata.templates
-      : [metadata.templates];
-    // We are adding a starter template
-    await copyTemplates("starter-template", templateNames, {
-      skipInstall: true,
-      projectPath,
-    });
-  }
 
   // Install dependencies including adding GP.
   if (interactive) {

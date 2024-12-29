@@ -1,6 +1,5 @@
 import fs from "fs-extra";
 import { $ } from "zx";
-import { TemplateType } from "../types.js";
 import path from "node:path";
 
 $.verbose = true;
@@ -74,175 +73,142 @@ async function bundleBaseProject() {
 }
 
 /**
- * Copy template type from their standalone package to dist
+ * Copy report assets standalone package to dist
  */
-async function bundleTemplates(templateType: TemplateType) {
-  const distDirName = `${templateType}s`;
-  const distTemplatesPath = path.join(distPath, "templates", distDirName);
+async function bundleReportAssets() {
+  const assetDirName = "report-assets";
+  const srcAssetsPath = path.join(packagesPath, assetDirName);
+  const distAssetsPath = path.join(distPath, assetDirName);
 
-  // Delete old template bundles if they exist
-  if (fs.existsSync(path.join(distTemplatesPath))) {
-    fs.rmSync(distTemplatesPath, { recursive: true });
+  // Delete old report-assets if they exist
+  if (fs.existsSync(path.join(distAssetsPath))) {
+    fs.rmSync(distAssetsPath, { recursive: true });
   }
-  // Stub out template dir
-  fs.ensureDir(distTemplatesPath);
+  // Stub out assets dir
+  fs.ensureDir(distAssetsPath);
 
-  if (!fs.existsSync(path.join(distPath, "templates"))) {
-    fs.mkdirSync(path.join(distPath, "templates"));
+  if (fs.existsSync(srcAssetsPath)) {
+    console.log(`bundling template ${assetDirName}`);
+  } else {
+    console.error(
+      `Could not find template ${assetDirName} in ${srcAssetsPath}`,
+    );
+    process.exit();
   }
 
-  // Find packages with keyword 'template'
-  const templateNames = (await fs.readdir(packagesPath))
-    .filter((name) => fs.statSync(path.join(packagesPath, name)).isDirectory())
-    .filter((dirName) => {
-      try {
-        const templatePackageMetaPath = path.join(
-          packagesPath,
-          dirName,
-          "package.json",
-        );
-        return JSON.parse(
-          fs.readFileSync(templatePackageMetaPath).toString(),
-        )?.keywords?.includes(templateType);
-      } catch (error) {
-        console.error(
-          `Missing package.json or its description for template ${dirName}`,
-        );
-        console.error(error);
-        process.exit();
-      }
-    });
+  await fs.copy(
+    path.join(srcAssetsPath, "package.json"),
+    path.join(distAssetsPath, "package.json"),
+  );
 
-  for (const templateName of templateNames) {
-    const templatePath = path.join(packagesPath, templateName);
-    const distTemplatePath = path.join(distTemplatesPath, templateName);
+  await fs.copy(
+    path.join(srcAssetsPath, "project", "geoprocessing.json"),
+    path.join(distAssetsPath, "project", "geoprocessing.json"),
+  );
 
-    if (fs.existsSync(templatePath)) {
-      console.log(`bundling template ${templateName}`);
-    } else {
-      console.error(
-        `Could not find template ${templateName} in ${templatePath}`,
-      );
-      process.exit();
+  if (!fs.existsSync(path.join(distAssetsPath, "src"))) {
+    fs.mkdirSync(path.join(distAssetsPath, "src"));
+  }
+
+  if (fs.existsSync(path.join(srcAssetsPath, "src", "functions"))) {
+    if (!fs.existsSync(path.join(distAssetsPath, "src", "functions"))) {
+      fs.mkdirSync(path.join(distAssetsPath, "src", "functions"));
     }
-
     await fs.copy(
-      path.join(templatePath, "package.json"),
-      path.join(distTemplatePath, "package.json"),
+      path.join(srcAssetsPath, "src", "functions"),
+      path.join(distAssetsPath, "src", "functions"),
     );
+  }
 
+  if (fs.existsSync(path.join(srcAssetsPath, "src", "clients"))) {
+    if (!fs.existsSync(path.join(distAssetsPath, "src", "clients"))) {
+      fs.mkdirSync(path.join(distAssetsPath, "src", "clients"));
+    }
     await fs.copy(
-      path.join(templatePath, "project", "geoprocessing.json"),
-      path.join(distTemplatePath, "project", "geoprocessing.json"),
+      path.join(srcAssetsPath, "src", "clients"),
+      path.join(distAssetsPath, "src", "clients"),
     );
+    if (fs.existsSync(`${distAssetsPath}/src/clients/.story-cache`)) {
+      await fs.rm(`${distAssetsPath}/src/clients/.story-cache`, {
+        recursive: true,
+      });
+    }
+  }
 
-    if (!fs.existsSync(path.join(distTemplatePath, "src"))) {
-      fs.mkdirSync(path.join(distTemplatePath, "src"));
+  if (fs.existsSync(path.join(srcAssetsPath, "src", "components"))) {
+    if (!fs.existsSync(path.join(distAssetsPath, "src", "components"))) {
+      fs.mkdirSync(path.join(distAssetsPath, "src", "components"));
+    }
+    await fs.copy(
+      path.join(srcAssetsPath, "src", "components"),
+      path.join(distAssetsPath, "src", "components"),
+    );
+    if (fs.existsSync(`${distAssetsPath}/src/components/.story-cache`)) {
+      await fs.rm(`${distAssetsPath}/src/components/.story-cache`, {
+        recursive: true,
+      });
+    }
+  }
+
+  if (fs.existsSync(path.join(srcAssetsPath, "src", "assets"))) {
+    if (!fs.existsSync(path.join(distAssetsPath, "src", "assets"))) {
+      fs.mkdirSync(path.join(distAssetsPath, "src", "assets"));
+    }
+    await fs.copy(
+      path.join(srcAssetsPath, "src", "assets"),
+      path.join(distAssetsPath, "src", "assets"),
+    );
+  }
+
+  if (fs.existsSync(path.join(srcAssetsPath, "examples"))) {
+    if (!fs.existsSync(path.join(distAssetsPath, "examples"))) {
+      fs.mkdirSync(path.join(distAssetsPath, "examples"));
     }
 
-    if (fs.existsSync(path.join(templatePath, "src", "functions"))) {
-      if (!fs.existsSync(path.join(distTemplatePath, "src", "functions"))) {
-        fs.mkdirSync(path.join(distTemplatePath, "src", "functions"));
-      }
+    if (
+      fs.existsSync(path.join(srcAssetsPath, "examples", "features")) &&
+      !fs.existsSync(path.join(distAssetsPath, "examples", "features"))
+    ) {
+      fs.mkdirSync(path.join(distAssetsPath, "examples", "features"));
+    }
+
+    if (
+      fs.existsSync(path.join(srcAssetsPath, "examples", "sketches")) &&
+      !fs.existsSync(path.join(distAssetsPath, "examples", "sketches"))
+    ) {
+      fs.mkdirSync(path.join(distAssetsPath, "examples", "sketches"));
+    }
+
+    // data, copy everything except .env, docker-compose.yml
+    if (fs.existsSync(path.join(srcAssetsPath, "data"))) {
       await fs.copy(
-        path.join(templatePath, "src", "functions"),
-        path.join(distTemplatePath, "src", "functions"),
-      );
-    }
-
-    if (fs.existsSync(path.join(templatePath, "src", "clients"))) {
-      if (!fs.existsSync(path.join(distTemplatePath, "src", "clients"))) {
-        fs.mkdirSync(path.join(distTemplatePath, "src", "clients"));
-      }
-      await fs.copy(
-        path.join(templatePath, "src", "clients"),
-        path.join(distTemplatePath, "src", "clients"),
-      );
-      if (fs.existsSync(`${distTemplatePath}/src/clients/.story-cache`)) {
-        await fs.rm(`${distTemplatePath}/src/clients/.story-cache`, {
-          recursive: true,
-        });
-      }
-    }
-
-    if (fs.existsSync(path.join(templatePath, "src", "components"))) {
-      if (!fs.existsSync(path.join(distTemplatePath, "src", "components"))) {
-        fs.mkdirSync(path.join(distTemplatePath, "src", "components"));
-      }
-      await fs.copy(
-        path.join(templatePath, "src", "components"),
-        path.join(distTemplatePath, "src", "components"),
-      );
-      if (fs.existsSync(`${distTemplatePath}/src/components/.story-cache`)) {
-        await fs.rm(`${distTemplatePath}/src/components/.story-cache`, {
-          recursive: true,
-        });
-      }
-    }
-
-    if (fs.existsSync(path.join(templatePath, "src", "assets"))) {
-      if (!fs.existsSync(path.join(distTemplatePath, "src", "assets"))) {
-        fs.mkdirSync(path.join(distTemplatePath, "src", "assets"));
-      }
-      await fs.copy(
-        path.join(templatePath, "src", "assets"),
-        path.join(distTemplatePath, "src", "assets"),
-      );
-    }
-
-    if (fs.existsSync(path.join(templatePath, "examples"))) {
-      if (!fs.existsSync(path.join(distTemplatePath, "examples"))) {
-        fs.mkdirSync(path.join(distTemplatePath, "examples"));
-      }
-
-      if (
-        fs.existsSync(path.join(templatePath, "examples", "features")) &&
-        !fs.existsSync(path.join(distTemplatePath, "examples", "features"))
-      ) {
-        fs.mkdirSync(path.join(distTemplatePath, "examples", "features"));
-      }
-
-      if (
-        fs.existsSync(path.join(templatePath, "examples", "sketches")) &&
-        !fs.existsSync(path.join(distTemplatePath, "examples", "sketches"))
-      ) {
-        fs.mkdirSync(path.join(distTemplatePath, "examples", "sketches"));
-      }
-
-      // data, copy everything except .env, docker-compose.yml
-      if (fs.existsSync(path.join(templatePath, "data"))) {
-        await fs.copy(
-          path.join(templatePath, "data"),
-          path.join(distTemplatePath, "data"),
-          {
-            filter: (srcPath) => {
-              if (path.basename(srcPath) == ".env") return false;
-              if (path.basename(srcPath) == "docker-compose.yml") return false;
-              return true;
-            },
+        path.join(srcAssetsPath, "data"),
+        path.join(distAssetsPath, "data"),
+        {
+          filter: (srcPath) => {
+            if (path.basename(srcPath) == ".env") return false;
+            if (path.basename(srcPath) == "docker-compose.yml") return false;
+            return true;
           },
-        );
-      }
+        },
+      );
+    }
 
-      // Rename file so npm pack doesn't exclude it.
-      if (fs.existsSync(path.join(templatePath, ".gitignore"))) {
-        await fs.copy(
-          path.join(templatePath, ".gitignore"),
-          path.join(distTemplatePath, "_gitignore"),
-        );
-      }
+    // Rename file so npm pack doesn't exclude it.
+    if (fs.existsSync(path.join(srcAssetsPath, ".gitignore"))) {
+      await fs.copy(
+        path.join(srcAssetsPath, ".gitignore"),
+        path.join(distAssetsPath, "_gitignore"),
+      );
     }
   }
 }
 
 await bundleAssets();
-console.log("finished bundling assets");
+console.log("finished bundling static assets");
 
-await bundleTemplates("starter-template");
-console.log("finished bundling starter templates");
-
-await bundleTemplates("add-on-template");
-console.log("finished bundling add-on templates");
+await bundleReportAssets();
+console.log("finished bundling report assets");
 
 await bundleBaseProject();
 console.log("finished bundling base project");

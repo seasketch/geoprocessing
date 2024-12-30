@@ -12,7 +12,6 @@
   "license": "",
   "scripts": {
     "__test": "TEST_ROOT=$(pwd) geoprocessing test",
-    "add:template": "geoprocessing add:template",
     "bootstrap": "geoprocessing bootstrap",
     "build": "geoprocessing build:lambda && geoprocessing build:client",
     "build:client": "geoprocessing build:client",

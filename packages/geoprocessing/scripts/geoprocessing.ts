@@ -32,13 +32,6 @@ if (process.argv.length < 3) {
       );
       break;
     }
-    case "add:template": {
-      spawn("node", [`${import.meta.dirname}/template/addTemplate.js`], {
-        cwd: process.cwd(),
-        stdio: "inherit",
-      });
-      break;
-    }
     case "import:data": {
       spawn(`${import.meta.dirname}/../../scripts/dataPrep/import-data.sh`, {
         cwd: process.cwd(),

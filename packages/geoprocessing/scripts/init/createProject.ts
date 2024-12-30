@@ -94,8 +94,8 @@ export async function createProject(
     await $`rm -f ${projectPath}/package-lock.json`;
     await $`rm -f ${projectPath}/project/geoprocessing.json`;
     await $`rm -rf ${projectPath}/examples/outputs/*.*`;
-    await $`rm -rf ${projectPath}/examples/features/*.*`;
-    await $`rm -rf ${projectPath}/examples/sketches/*/*`;
+    await $`rm -rf ${projectPath}/examples/features/*.json`;
+    await $`rm -rf ${projectPath}/examples/sketches/*.json`;
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.log("Base project copy failed");

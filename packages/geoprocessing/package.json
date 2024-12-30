@@ -29,7 +29,6 @@
     "test:browser:matching": "vitest run -c vitest.config.browser.js -t",
     "test:e2e": "start-server-and-test start:data 8080 'vitest run -c vitest.config.e2e.js'",
     "test:e2e:matching": "vitest run -c vitest.config.e2e.js -t",
-    "test:scripts:update": "npm run test:scripts -- --updateSnapshot",
     "storybook": "storybook dev -p 6006",
     "build:storybook": "rm -rf ../../../gp-storybook/Next && storybook build -o ../../../gp-storybook/Next",
     "start:typedoc": "npx typedoc --watch --name 'SeaSketch Geoprocessing' --includeVersion --excludeExternals --readme none",

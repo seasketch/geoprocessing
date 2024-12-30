@@ -1146,12 +1146,6 @@ test:node: string = "vitest run -c vitest.config.node.js";
 test:node:matching: string = "vitest run -c vitest.config.node.js -t";
 ```
 
-### scripts.test:scripts:update
-
-```ts
-test:scripts:update: string = "npm run test:scripts -- --updateSnapshot";
-```
-
 ### type
 
 ```ts
@@ -1167,5 +1161,5 @@ types: string = "dist/src/index.d.ts";
 ### version
 
 ```ts
-version: string = "7.0.0";
+version: string = "7.0.1";
 ```

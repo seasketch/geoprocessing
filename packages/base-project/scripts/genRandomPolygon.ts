@@ -143,7 +143,7 @@ const sketch = (() => {
       },
     ];
 
-    sc.features.forEach((f, i) => {
+    for (const [i, f] of sc.features.entries()) {
       sc.features[i].properties.userAttributes = [
         {
           label: "Type",
@@ -159,7 +159,7 @@ const sketch = (() => {
           fieldType: "TextArea",
         },
       ];
-    });
+    }
 
     if (numFeatures === 1) {
       return sc.features[0];

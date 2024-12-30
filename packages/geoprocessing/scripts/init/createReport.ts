@@ -10,8 +10,8 @@ import {
   GeoprocessingJsonConfig,
 } from "../../src/types/index.js";
 import {
-  getOceanEEZComponentPath,
-  getOceanEEZFunctionPath,
+  getReportAssetComponentPath,
+  getReportAssetFunctionPath,
   getProjectComponentPath,
   getProjectConfigPath,
   getProjectFunctionPath,
@@ -179,10 +179,10 @@ export async function makeReport(
   const projectFunctionPath = getProjectFunctionPath(basePath);
   const projectComponentPath = getProjectComponentPath(basePath);
 
-  const templateFuncPath = getOceanEEZFunctionPath();
+  const templateFuncPath = getReportAssetFunctionPath();
   const templateFuncTestPath = `${templateFuncPath}/blankFunctionSmoke.test.ts`;
-  const templateCompPath = getOceanEEZComponentPath();
-  const templateCompStoriesPath = `${getOceanEEZComponentPath()}/BlankCard.example-stories.ts`;
+  const templateCompPath = getReportAssetComponentPath();
+  const templateCompStoriesPath = `${getReportAssetComponentPath()}/BlankCard.example-stories.ts`;
 
   if (!fs.existsSync(path.join(basePath, "src"))) {
     fs.mkdirSync(path.join(basePath, "src"));

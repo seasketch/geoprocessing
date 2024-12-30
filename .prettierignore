@@ -4,3 +4,6 @@
 **/node_modules
 packages/*/examples
 website/docs/api
+website/build
+website/versioned
+website/.docusaurus

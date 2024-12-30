@@ -10,7 +10,7 @@ import {
   getBaseFunctionPath,
   getProjectFunctionPath,
   getProjectConfigPath,
-  getBlankFunctionPath,
+  getReportAssetFunctionPath,
 } from "../util/getPaths.js";
 import { pathToFileURL } from "node:url";
 
@@ -99,7 +99,7 @@ export async function makeGeoprocessingHandler(
   // rename metadata in function definition
   const projectFunctionPath = getProjectFunctionPath(basePath);
   // Copy from template-blank-project
-  const functionTemplatePath = `${getBlankFunctionPath()}`;
+  const functionTemplatePath = `${getReportAssetFunctionPath()}`;
   const handlerCode = await fs.readFile(
     `${functionTemplatePath}/simpleFunction.ts`,
   );

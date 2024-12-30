@@ -26,7 +26,6 @@ describe("createProject", () => {
         repositoryUrl: "https://github.com/test/test-project",
         region: "us-west-1",
         languages: ["EN"],
-        templates: [],
         bboxMaxLat: 0,
         bboxMinLat: 0,
         bboxMaxLng: 0,
@@ -57,7 +56,7 @@ describe("createProject", () => {
     expect(gpConfig.clients.length).toBe(0);
   }, 120_000);
 
-  it("createProject - should create project using eez selection", async () => {
+  it("createProject - should create project", async () => {
     const projectName = "test-project-empty";
     await createProject(
       {
@@ -70,40 +69,10 @@ describe("createProject", () => {
         repositoryUrl: "https://github.com/test/test-project",
         region: "us-west-1",
         languages: ["EN"],
-        templates: [],
       },
       false,
       rootPath,
     );
-  }, 120_000);
-
-  it("createProject - should create project with template", async () => {
-    const projectName = "test-project-template";
-    const projectPath = path.join(rootPath, projectName);
-    await createProject(
-      {
-        name: projectName,
-        description: "Test project",
-        author: "Test",
-        email: "test@test.com",
-        license: "UNLICENSED",
-        organization: "Test Org",
-        repositoryUrl: "https://github.com/test/test-project",
-        region: "us-west-1",
-        languages: ["EN"],
-        templates: ["template-ocean-eez"],
-      },
-      false,
-      rootPath,
-    );
-
-    const gpConfig = JSON.parse(
-      fs.readFileSync(projectPath + "/project/geoprocessing.json").toString(),
-    ) as GeoprocessingJsonConfig;
-
-    expect(gpConfig.preprocessingFunctions.length).toBeGreaterThanOrEqual(1);
-    expect(gpConfig.geoprocessingFunctions.length).toBeGreaterThan(0);
-    expect(gpConfig.clients.length).toBeGreaterThan(0);
   }, 120_000);
 
   it("createProject - should create empty project with all defaults", async () => {
@@ -120,7 +89,6 @@ describe("createProject", () => {
         repositoryUrl: "",
         region: "us-west-1",
         languages: ["EN"],
-        templates: [],
       },
       false,
       rootPath,

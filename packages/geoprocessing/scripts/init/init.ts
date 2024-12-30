@@ -117,7 +117,6 @@ async function init(gpVersion?: string) {
     },
   ]);
 
-  answers.templates = ["template-blank-project"];
   answers.planningAreaType = "other";
   answers.gpVersion = gpVersion;
   answers.bboxMinLng = -180;

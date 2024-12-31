@@ -59,5 +59,4 @@ Once you've imported and published your subdivided dataset, the flatgeobuf clien
 
 How to subdivide data:
 
-- QGIS Subdivide
-- [Spatialite Subdivide](https://www.gaia-gis.it/fossil/libspatialite/wiki?name=About+ST_Subdivide%28%29) can be used with the [ogr2ogr](https://gdal.org/en/stable/drivers/vector/sqlite.html) command.
+- QGIS Subdivide. The default parameter value of 256 nodes per subdivision is a pretty good default.

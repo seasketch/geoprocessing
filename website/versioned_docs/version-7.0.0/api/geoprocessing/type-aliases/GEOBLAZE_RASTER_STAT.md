@@ -1,0 +1,5 @@
+# GEOBLAZE_RASTER_STAT
+
+```ts
+type GEOBLAZE_RASTER_STAT: typeof GEOBLAZE_RASTER_STATS[number];
+```

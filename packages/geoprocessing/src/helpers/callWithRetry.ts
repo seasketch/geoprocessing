@@ -31,7 +31,11 @@ export async function callWithRetry<T extends (...arg0: any[]) => any>(
   } catch (error: unknown) {
     if (error instanceof Error) {
       // if error message does not include errorMsgSubstring, rethrow
-      if (errorFilter && !error.message.includes(errorFilter)) {
+      if (
+        errorFilter &&
+        !error.message.includes(errorFilter) &&
+        !error.message.includes("socket")
+      ) {
         throw error;
       }
       if (logEachFailure) {

@@ -72,8 +72,9 @@ export async function buildProjectClients(
         </Suspense>
       );
     };
-  
-    ReactDOM.render(<ReportApp />, document.getElementById("root"));
+
+    const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+    root.render(<ReportApp />);
   `,
   );
 

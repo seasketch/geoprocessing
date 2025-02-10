@@ -2,11 +2,16 @@ import { describe, test, expect, beforeAll } from "vitest";
 import { createMetric, isMetricArray } from "../metrics/helpers.js";
 import TaskModel from "./tasks.js";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient, CreateTableCommand } from "@aws-sdk/client-dynamodb";
+import {
+  DynamoDBClient,
+  CreateTableCommand,
+  ListTablesCommand,
+  DeleteTableCommand,
+} from "@aws-sdk/client-dynamodb";
 import deepEqual from "fast-deep-equal";
 
 const dynamodb = new DynamoDBClient({
-  endpoint: "http://localhost:8000",
+  endpoint: "http://dynamodb:8000",
   credentials: {
     accessKeyId: "localaccesskey",
     secretAccessKey: "localsecretkey",
@@ -320,5 +325,15 @@ describe("DynamoDB local", () => {
     expect(JSON.parse(response.body).error).toBe("It broken");
     expect(item && item.Item && item.Item.status).toBe("failed");
     expect(item && item.Item && item.Item.duration).toBeGreaterThan(0);
+  });
+
+  afterAll(async () => {
+    // Delete all tables so the next test run starts fresh
+    const { TableNames } = await dynamodb.send(new ListTablesCommand({}));
+    if (TableNames) {
+      for (const tableName of TableNames) {
+        await dynamodb.send(new DeleteTableCommand({ TableName: tableName }));
+      }
+    }
   });
 });

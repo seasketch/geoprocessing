@@ -38,6 +38,11 @@ export default [
   eslintPluginUnicorn.configs["flat/recommended"],
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "warn",
@@ -54,6 +59,7 @@ export default [
       "unicorn/no-array-reduce": "off",
       "unicorn/no-array-for-each": "warn",
       "unicorn/explicit-length-check": "off",
+      "unicorn/expiring-todo-comments": "off",
       "unicorn/prefer-object-from-entries": "off",
       "unicorn/prefer-array-flat": "warn",
       "unicorn/no-array-push-push": "warn",

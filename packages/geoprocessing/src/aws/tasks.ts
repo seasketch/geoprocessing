@@ -8,6 +8,7 @@ import {
   paginateQuery,
   DynamoDBDocumentPaginationConfiguration,
   QueryCommandInput,
+  DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { updateCommandsSync } from "./dynamodb/updateCommandsSync.js";
 
@@ -339,22 +340,13 @@ export default class TasksModel {
     task.duration = Date.now() - new Date(task.startedAt).getTime();
     task.error = errorDescription;
 
-    // Update task status to failed but don't cache error data
+    // Delete the task completely from database to allow fresh retries
     await this.db.send(
-      new UpdateCommand({
+      new DeleteCommand({
         TableName: this.table,
         Key: {
           id: task.id,
           service: task.service,
-        },
-        UpdateExpression: "set #status = :status, #duration = :duration",
-        ExpressionAttributeNames: {
-          "#status": "status",
-          "#duration": "duration",
-        },
-        ExpressionAttributeValues: {
-          ":status": task.status,
-          ":duration": task.duration,
         },
       }),
     );

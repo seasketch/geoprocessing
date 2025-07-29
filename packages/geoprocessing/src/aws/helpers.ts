@@ -24,6 +24,8 @@ import { byteSize } from "../util/byteSize.js";
  * @param region AWS region specified in geoprocessing.json
  * @param functionParameters parameters required by lambda worker function
  * @param request
+ * @param options
+ * @param options.enableCache Whether cache of worker task should be enabled, defaults to false
  * @returns Lambda invocation response
  */
 export async function runLambdaWorker(
@@ -99,17 +101,30 @@ export function parseLambdaResponse(
 
     const payload = JSON.parse(Buffer.from(lambdaResult.Payload).toString());
 
-    if (payload.statusCode !== 200)
-      throw new Error(
-        `Lambda result parsing failed: ${JSON.stringify(JSON.parse(payload.body))}`,
-      );
+    if (payload.statusCode !== 200) {
+      let errorMessage = `Lambda result parsing failed`;
+      try {
+        const body = JSON.parse(payload.body);
+        if (body.error) {
+          errorMessage = body.error;
+        } else if (body.data && body.data.error) {
+          errorMessage = body.data.error;
+        }
+      } catch {
+        errorMessage = `Lambda result parsing failed: ${JSON.stringify(payload.body)}`;
+      }
+      throw new Error(errorMessage);
+    }
 
     return JSON.parse(payload.body).data;
-  } catch {
+  } catch (error) {
     console.log(
       "Failed to parse response from lambdaResult",
       JSON.stringify(lambdaResult, null, 2),
     );
+    if (error instanceof Error) {
+      throw error;
+    }
     throw new Error(`Failed to parse response from AWS lambda`);
   }
 }

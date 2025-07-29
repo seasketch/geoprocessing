@@ -339,38 +339,30 @@ export default class TasksModel {
     task.duration = Date.now() - new Date(task.startedAt).getTime();
     task.error = errorDescription;
 
-    const shouldCache =
-      task.disableCache === undefined || task.disableCache === false;
-
-    if (shouldCache) {
-      await this.db.send(
-        new UpdateCommand({
-          TableName: this.table,
-          Key: {
-            id: task.id,
-            service: task.service,
-          },
-          UpdateExpression:
-            "set #error = :error, #status = :status, #duration = :duration",
-          ExpressionAttributeNames: {
-            "#error": "error",
-            "#status": "status",
-            "#duration": "duration",
-          },
-          ExpressionAttributeValues: {
-            ":error": errorDescription,
-            ":status": task.status,
-            ":duration": task.duration,
-          },
-        }),
-      );
-    }
+    // Update task status to failed but don't cache error data
+    await this.db.send(
+      new UpdateCommand({
+        TableName: this.table,
+        Key: {
+          id: task.id,
+          service: task.service,
+        },
+        UpdateExpression: "set #status = :status, #duration = :duration",
+        ExpressionAttributeNames: {
+          "#status": "status",
+          "#duration": "duration",
+        },
+        ExpressionAttributeValues: {
+          ":status": task.status,
+          ":duration": task.duration,
+        },
+      }),
+    );
 
     return {
       statusCode: 500,
       headers: {
         ...commonHeaders,
-        "Cache-Control": "max-age=0",
       },
       body: JSON.stringify(task),
     };

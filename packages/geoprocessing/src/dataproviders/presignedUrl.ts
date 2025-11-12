@@ -2,33 +2,25 @@ import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 /**
- * Generates a presigned URL for an S3 object if running in Lambda environment
+ * Generates a presigned URL for an S3 object if in Lambda environment
  * and the URL points to an S3 bucket. Otherwise returns the original URL.
  *
- * @param url - The S3 URL to potentially convert to a presigned URL
- * @param expiresIn - Number of seconds until the presigned URL expires (default: 3600 = 1 hour)
+ * @param url - The S3 URL to convert to a presigned URL
+ * @param expiresIn - Seconds until the presigned URL expires (default: 15 minutes)
  * @returns Presigned URL if in Lambda with S3 URL, otherwise original URL
  */
 export async function genPresignedUrl(
   url: string,
   expiresIn: number = 900,
 ): Promise<string> {
-  // Only generate presigned URLs when running in Lambda (not in test or local dev)
-  const isLambda = process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
+  // Only presign in Lambda
+  if (process.env.AWS_LAMBDA_FUNCTION_NAME === undefined) return url;
 
-  if (!isLambda) {
-    return url;
-  }
-
-  // Check if this is an S3 URL that needs signing
+  // Check this is an S3 URL
   const s3UrlMatch = url.match(
     /^https:\/\/([^.]+)\.s3\.([^.]+)\.amazonaws\.com\/(.+)$/,
   );
-
-  if (!s3UrlMatch) {
-    // Not an S3 URL, return as-is
-    return url;
-  }
+  if (!s3UrlMatch) return url;
 
   const [, bucket, region, key] = s3UrlMatch;
 

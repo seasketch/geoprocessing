@@ -11,13 +11,8 @@ export const createPublicBuckets = (
     dataset: new Bucket(stack, `GpDatasetBucket`, {
       bucketName: `gp-${stack.props.projectName}-datasets`,
       versioned: false,
-      blockPublicAccess: new BlockPublicAccess({
-        blockPublicPolicy: false,
-        blockPublicAcls: false,
-        restrictPublicBuckets: false,
-        ignorePublicAcls: false,
-      }),
-      publicReadAccess: true,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      publicReadAccess: false,
       cors: [
         {
           allowedOrigins: ["*"],

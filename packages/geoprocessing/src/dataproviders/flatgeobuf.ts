@@ -4,6 +4,7 @@ import { takeAsync } from "flatgeobuf/lib/mjs/streams/utils.js";
 import { deserialize } from "flatgeobuf/lib/mjs/geojson.js";
 import { BBox, Feature, FeatureCollection, Geometry } from "../types/index.js";
 import { callWithRetry } from "../helpers/callWithRetry.js";
+import { genPresignedUrl } from "./presignedUrl.js";
 import "./fetchPolyfill.js";
 
 export interface FgBoundingBox {
@@ -48,6 +49,9 @@ export async function loadFgb<F extends Feature<Geometry>>(
   url: string,
   bbox?: BBox,
 ) {
+  // Convert to presigned URL if running in Lambda with private S3 bucket
+  const signedUrl = await genPresignedUrl(url);
+
   const fgBox = (() => {
     if (!bbox && !Array.isArray(bbox)) {
       return fgBoundingBox([-180, -90, 180, 90]); // fallback to entire world
@@ -64,7 +68,7 @@ export async function loadFgb<F extends Feature<Geometry>>(
     takeAsync(deserialize(url, fgBox) as AsyncGenerator);
 
   // retry up to 3 times if SocketError
-  const features: F[] = (await callWithRetry(takeFeatures, [url, fgBox], {
+  const features: F[] = (await callWithRetry(takeFeatures, [signedUrl, fgBox], {
     ifErrorMsgContains: "fetch failed",
   })) as F[];
 

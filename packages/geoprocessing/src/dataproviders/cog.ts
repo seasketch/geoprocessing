@@ -1,5 +1,6 @@
 import geoblaze from "geoblaze";
 import { callWithRetry } from "../helpers/callWithRetry.js";
+import { genPresignedUrl } from "./presignedUrl.js";
 import "./fetchPolyfill.js";
 
 /**
@@ -11,7 +12,11 @@ import "./fetchPolyfill.js";
  */
 export const loadCog = async (url: string) => {
   if (process.env.NODE_ENV !== "test") console.log("loadCog", url);
-  return await callWithRetry(geoblaze.parse, [url], {
+
+  // Convert to presigned URL if running in Lambda with private S3 bucket
+  const signedUrl = await genPresignedUrl(url);
+
+  return await callWithRetry(geoblaze.parse, [signedUrl], {
     ifErrorMsgContains: "fetch failed",
   });
 };

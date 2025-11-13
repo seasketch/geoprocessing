@@ -49,13 +49,14 @@ export interface GpDynamoTables {
 
 export interface GpPublicBuckets {
   /**
-   * Publicly accessible bucket for large datasets that need to be stored outside of project code assets
-   * Location is not published or able to be listed.  Can be read by gp functions whether in Lambda, local, or CI
+   * Private bucket for large datasets that need to be stored outside of project code assets.
+   * Access is restricted to Lambda functions deployed in the stack via IAM policies.
+   * Can be read by gp functions in Lambda with proper permissions.
    */
   dataset: Bucket;
   /**
-   * Create publicly accessible bucket for function results that aren't simple JSON serializable
-   * Location is not published or able to be listed.
+   * Private bucket for function results that aren't simple JSON serializable.
+   * Access is restricted to Lambda functions deployed in the stack via IAM policies.
    */
   result?: Bucket;
 }

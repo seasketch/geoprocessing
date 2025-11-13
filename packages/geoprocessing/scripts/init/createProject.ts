@@ -156,9 +156,24 @@ export async function createProject(
         author: geoAuthor,
         organization: organization || "",
         region,
-        clients: [],
-        preprocessingFunctions: [],
-        geoprocessingFunctions: [],
+        clients: [
+          {
+            name: "TabReport",
+            description: "Report with tab navigation",
+            source: "src/clients/TabReport.tsx",
+          },
+          {
+            name: "SimpleReport",
+            description: "Simple report",
+            source: "src/clients/SimpleReport.tsx",
+          },
+        ],
+        preprocessingFunctions: [
+          "src/functions/clipToLand.ts",
+          "src/functions/clipToOcean.ts",
+          "src/functions/clipToOceanEez.ts",
+        ],
+        geoprocessingFunctions: ["src/functions/simpleFunction.ts"],
       },
       null,
       "  ",

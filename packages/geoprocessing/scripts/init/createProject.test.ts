@@ -51,9 +51,6 @@ describe("createProject", () => {
     expect(gpConfig.author).toBe("Test <test@test.com>");
     expect(gpConfig.organization).toBe("Test Org");
     expect(gpConfig.region).toBe("us-west-1");
-    expect(gpConfig.preprocessingFunctions.length).toBe(0);
-    expect(gpConfig.geoprocessingFunctions.length).toBe(0);
-    expect(gpConfig.clients.length).toBe(0);
   }, 120_000);
 
   it("createProject - should create project", async () => {
@@ -110,8 +107,5 @@ describe("createProject", () => {
     expect(gpConfig.author).toBe("");
     expect(gpConfig.organization).toBe("");
     expect(gpConfig.region).toBe("us-west-1");
-    expect(gpConfig.preprocessingFunctions.length).toBe(0);
-    expect(gpConfig.geoprocessingFunctions.length).toBe(0);
-    expect(gpConfig.clients.length).toBe(0);
   }, 120_000);
 });

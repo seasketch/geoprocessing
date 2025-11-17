@@ -10,10 +10,9 @@ import {
   isSketchCollection,
   roundDecimal,
 } from "../helpers/index.js";
-import { clip } from "./clip.js";
 import { createMetric } from "../metrics/index.js";
 import { MultiPolygon } from "../types/geojson.js";
-import { featureCollection, truncate as truncateGeom } from "@turf/turf";
+import { booleanIntersects, truncate as truncateGeom } from "@turf/turf";
 
 /**
  * Calculates area overlap between sketch(es) and an array of polygon features.
@@ -132,13 +131,7 @@ export const intersectSum = (
   // intersect and get sum of remainder
   const sketchValue = featuresB
     .map((curFeature, index) => {
-      // Optimization: can this be done with turf.booleanIntersects?
-      const rem = clip(
-        featureCollection([featureA, curFeature]),
-        "intersection",
-      );
-
-      if (!rem) return 0;
+      if (!booleanIntersects(featureA, curFeature)) return 0;
 
       indices.push(index);
 

@@ -14,6 +14,13 @@ describe("area", () => {
     expect(metrics[0].value).toBeCloseTo(12_363_718_145.180_046);
   });
 
+  test("area - sketch multipolygon", async () => {
+    const metrics = await area(fix.insideTwoByMultipolySketch);
+    expect(metrics.length).toBe(1);
+    expect(metrics[0].value).toBeCloseTo(12_363_718_145.180_046);
+    expect(metrics[0].metricId).toBe("area");
+  });
+
   test("area - sketch polygon set metric id", async () => {
     const metrics = await area(fix.insideTwoByPolySketch, {
       metricId: "specialArea",

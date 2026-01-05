@@ -1,5 +1,5 @@
 import { GeoprocessingTask, GeoprocessingTaskStatus } from "../aws/tasks.js";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { useDeepEqualMemo } from "./useDeepEqualMemo.js";
 import { ReportContext } from "../context/index.js";
 import {
@@ -56,11 +56,18 @@ export const useFunction = <ResultType>(
     loading: true,
   });
   const memoizedExtraParams = useDeepEqualMemo(extraParams);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  let socket: WebSocket;
+  let socket: WebSocket | undefined;
 
   useEffect(() => {
     const abortController = new AbortController();
+
+    // Clear any existing timeout from previous run
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
 
     setState({
       loading: true,
@@ -79,7 +86,7 @@ export const useFunction = <ResultType>(
       }
       // create a fake GeoprocessingTask record and set state, returning value
       setState({
-        loading: context.simulateLoading ? context.simulateLoading : false,
+        loading: context.simulateLoading || false,
         task: {
           id: "abc123",
           location: "https://localhost/abc123",
@@ -91,10 +98,10 @@ export const useFunction = <ResultType>(
           startedAt: new Date().toISOString(),
           duration: 0,
           data: (data || {}).results as ResultType,
-          error: context.simulateError ? context.simulateError : undefined,
+          error: context.simulateError || undefined,
           estimate: 0,
         },
-        error: context.simulateError ? context.simulateError : undefined,
+        error: context.simulateError || undefined,
       });
     } else {
       if (!context.projectUrl && context.geometryUri) {
@@ -126,6 +133,7 @@ export const useFunction = <ResultType>(
         }
         let url: string;
         let executionMode: string;
+        let serviceTimeout: number | undefined;
         if (functionTitle.startsWith("https:")) {
           url = functionTitle;
         } else {
@@ -142,6 +150,7 @@ export const useFunction = <ResultType>(
           }
           url = service.endpoint;
           executionMode = service?.executionMode;
+          serviceTimeout = service?.timeout;
         }
 
         // fetch task/results
@@ -199,6 +208,23 @@ export const useFunction = <ResultType>(
             task: undefined,
             error: undefined,
           });
+
+          // client-side timeout to detect Lambda timeouts
+          // uses timeout + 30s buffer or 15min default
+          const timeoutMs = serviceTimeout
+            ? serviceTimeout * 1000 + 30_000
+            : 500 * 1000;
+          timeoutRef.current = setTimeout(() => {
+            setState((prev) =>
+              prev.loading
+                ? {
+                    ...prev,
+                    loading: false,
+                    error: `Function "${functionTitle}" timed out.`,
+                  }
+                : prev,
+            );
+          }, timeoutMs);
 
           pendingRequest = runTask(
             url,
@@ -315,6 +341,7 @@ export const useFunction = <ResultType>(
     // functionTitle context vars are changed, or if the component is being
     // unmounted
     return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       abortController.abort();
     };
   }, [
@@ -388,7 +415,7 @@ const getSocket = (
 
   // if task complete message received on socket (the only message type supported)
   // then finish the task (because results aren't sent on the socket, too big)
-  socket.onmessage = function (event) {
+  socket.addEventListener("message", function (event) {
     const incomingData = JSON.parse(event.data);
 
     if (event.data.timestamp) {
@@ -425,18 +452,18 @@ const getSocket = (
         );
       }
     }
-  };
+  });
   socket.addEventListener("close", function () {
     //no op
   });
-  socket.onerror = function () {
+  socket.addEventListener("error", function () {
     if (socket.url?.length > 0) {
       setState({
         loading: false,
         error: "Error loading results. Unexpected socket error.",
       });
     }
-  };
+  });
 
   return socket;
 };

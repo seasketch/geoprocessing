@@ -210,9 +210,9 @@ export const useFunction = <ResultType>(
           });
 
           // client-side timeout to detect Lambda timeouts
-          // uses timeout + 30s buffer or 15min default
+          // uses timeout + 10s buffer or 15min default
           const timeoutMs = serviceTimeout
-            ? serviceTimeout * 1000 + 30_000
+            ? serviceTimeout * 1000 + 10_000
             : 500 * 1000;
           timeoutRef.current = setTimeout(() => {
             setState((prev) =>
@@ -220,7 +220,7 @@ export const useFunction = <ResultType>(
                 ? {
                     ...prev,
                     loading: false,
-                    error: `Function "${functionTitle}" timed out.`,
+                    error: `Function timed out.`,
                   }
                 : prev,
             );

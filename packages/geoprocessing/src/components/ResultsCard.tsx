@@ -76,8 +76,7 @@ export function ResultsCard<T>({
   if (task && task.estimate) {
     taskEstimate = Math.round(task.estimate / 1000);
   }
-
-  if (task && !task.data && !loading) {
+  if (!theError && task && !task.data && !loading) {
     if (task.error) {
       theError = task.error;
     } else {

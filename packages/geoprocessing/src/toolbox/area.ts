@@ -1,4 +1,10 @@
-import { Sketch, SketchCollection, Polygon, Metric } from "../types/index.js";
+import {
+  Sketch,
+  SketchCollection,
+  Polygon,
+  MultiPolygon,
+  Metric,
+} from "../types/index.js";
 import { isSketchCollection } from "../helpers/index.js";
 import { createMetric } from "../metrics/index.js";
 import { featureCollection, featureEach, area as turfArea } from "@turf/turf";
@@ -9,7 +15,9 @@ import { clip } from "./clip.js";
  */
 export async function area(
   /** single sketch or collection. */
-  sketch: Sketch<Polygon> | SketchCollection<Polygon>,
+  sketch:
+    | Sketch<Polygon | MultiPolygon>
+    | SketchCollection<Polygon | MultiPolygon>,
   options: {
     /** Optional metric identifier, defaults to 'area' */
     metricId?: string;

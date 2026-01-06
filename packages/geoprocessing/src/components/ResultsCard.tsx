@@ -71,26 +71,18 @@ export function ResultsCard<T>({
   };
 
   const { task, loading, error } = useFunction(functionName, extraParams);
-  let theError = error;
   let taskEstimate = 5;
-  if (task && task.estimate) {
-    taskEstimate = Math.round(task.estimate / 1000);
-  }
+  if (task?.estimate) taskEstimate = Math.round(task.estimate / 1000);
 
-  if (task && !task.data && !loading) {
-    if (task.error) {
-      theError = task.error;
-    } else {
-      theError = resultsCardNoResultMsg;
-    }
-  }
+  const noResultsReturned = !loading && task && !task.data && !error;
+  const errored = noResultsReturned ? resultsCardNoResultMsg : error;
 
   let contents: JSX.Element;
-  if (theError) {
+  if (errored) {
     contents = (
       <Card {...cardProps}>
         <div role="alert" aria-label="Error alert">
-          <ErrorStatus msg={<>{theError}</>} />
+          <ErrorStatus msg={<>{errored}</>} />
         </div>
       </Card>
     );

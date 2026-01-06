@@ -8,6 +8,7 @@ import {
   paginateQuery,
   DynamoDBDocumentPaginationConfiguration,
   QueryCommandInput,
+  DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { updateCommandsSync } from "./dynamodb/updateCommandsSync.js";
 
@@ -339,38 +340,21 @@ export default class TasksModel {
     task.duration = Date.now() - new Date(task.startedAt).getTime();
     task.error = errorDescription;
 
-    const shouldCache =
-      task.disableCache === undefined || task.disableCache === false;
-
-    if (shouldCache) {
-      await this.db.send(
-        new UpdateCommand({
-          TableName: this.table,
-          Key: {
-            id: task.id,
-            service: task.service,
-          },
-          UpdateExpression:
-            "set #error = :error, #status = :status, #duration = :duration",
-          ExpressionAttributeNames: {
-            "#error": "error",
-            "#status": "status",
-            "#duration": "duration",
-          },
-          ExpressionAttributeValues: {
-            ":error": errorDescription,
-            ":status": task.status,
-            ":duration": task.duration,
-          },
-        }),
-      );
-    }
+    // Delete the task completely from database to allow fresh retries
+    await this.db.send(
+      new DeleteCommand({
+        TableName: this.table,
+        Key: {
+          id: task.id,
+          service: task.service,
+        },
+      }),
+    );
 
     return {
       statusCode: 500,
       headers: {
         ...commonHeaders,
-        "Cache-Control": "max-age=0",
       },
       body: JSON.stringify(task),
     };

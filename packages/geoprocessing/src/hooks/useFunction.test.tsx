@@ -56,7 +56,10 @@ const ContextWrapper: React.FunctionComponent<{
 // });
 
 beforeEach(() => {
-  fetchMock.resetHistory();
+  if (fetchMock.resetHistory) {
+    fetchMock.resetHistory();
+  }
+  vi.restoreAllMocks();
 });
 
 test.skip("useFunction won't accept unrecognizable responses", async () => {
@@ -178,6 +181,7 @@ const TestReport = () => {
 
 interface TestContainerProps {
   children: React.ReactNode;
+  sketchProperties?: SketchProperties;
 }
 
 const TestContainer: React.FC<TestContainerProps> = (props) => {
@@ -186,7 +190,6 @@ const TestContainer: React.FC<TestContainerProps> = (props) => {
     <ReportContext.Provider
       value={{
         sketchProperties:
-          // @ts-expect-error type mismatch
           props.sketchProperties || makeSketchProperties(sketchId.toString()),
         geometryUri: `https://example.com/geometry/${sketchId}`,
         projectUrl: "https://example.com/project",
@@ -368,7 +371,6 @@ test.skip("useFunction uses a local cache for repeat requests", async () => {
     { overwriteRoutes: true },
   );
   const { getByRole, getByText, getAllByText } = render(
-    // @ts-expect-error type mismatch
     <TestContainer sketchProperties={sketchProperties}>
       <TestReport />
     </TestContainer>,
@@ -383,7 +385,6 @@ test.skip("useFunction uses a local cache for repeat requests", async () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const queries = render(
-    // @ts-expect-error type mismatch
     <TestContainer sketchProperties={sketchProperties}>
       <TestReport />
     </TestContainer>,
@@ -430,4 +431,203 @@ test.skip("Exposes error to client if project metadata can't be fetched", async 
     vi.runAllTimers();
   });
   expect(result.current.error).toContain("metadata");
+});
+
+// Timeout functionality tests
+test("useFunction shows timeout error when Lambda times out", async () => {
+  vi.useFakeTimers();
+  useFunction.reset();
+
+  // Mock fetch to return project metadata then a pending task that never completes
+  const mockFetch = vi.fn();
+  // First call: project metadata
+  mockFetch.mockResolvedValueOnce({
+    json: () =>
+      Promise.resolve({
+        geoprocessingServices: [
+          {
+            title: "calcFoo",
+            endpoint: "https://example.com/calcFoo",
+            executionMode: "sync",
+            timeout: 10, // 10 second timeout
+          },
+        ],
+        preprocessingServices: [],
+        clients: [],
+        feedbackClients: [],
+      }),
+  });
+  // Second call: task that stays pending (simulating a Lambda that will timeout)
+  mockFetch.mockResolvedValueOnce({
+    json: () =>
+      Promise.resolve({
+        id: "test-task-id",
+        service: "calcFoo",
+        location: "https://example.com/calcFoo/test-task-id",
+        logUriTemplate: "https://example.com/calcFoo/test-task-id/logs",
+        geometryUri: "https://example.com/geometry/123",
+        status: "pending",
+        wss: "",
+        startedAt: new Date().toISOString(),
+        estimate: 5000,
+      } as GeoprocessingTask),
+  });
+
+  globalThis.fetch = mockFetch;
+
+  const { result } = renderHook(() => useFunction("calcFoo"), {
+    wrapper: ContextWrapper,
+  });
+
+  expect(result.current.loading).toBe(true);
+  expect(result.current.error).toBeUndefined();
+
+  // Let initial fetches complete
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(100);
+  });
+
+  // Should still be loading (pending task)
+  expect(result.current.loading).toBe(true);
+
+  // Advance time past the timeout (10s + 30s buffer = 40s)
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(41_000);
+  });
+
+  expect(result.current.loading).toBe(false);
+  expect(result.current.error).toContain("timed out");
+
+  vi.useRealTimers();
+});
+
+test("useFunction clears timeout when task completes before timeout", async () => {
+  vi.useFakeTimers();
+  useFunction.reset();
+
+  const mockFetch = vi.fn();
+  // First call: project metadata
+  mockFetch.mockResolvedValueOnce({
+    json: () =>
+      Promise.resolve({
+        geoprocessingServices: [
+          {
+            title: "calcFoo",
+            endpoint: "https://example.com/calcFoo",
+            executionMode: "sync",
+            timeout: 60, // 60 second timeout
+          },
+        ],
+        preprocessingServices: [],
+        clients: [],
+        feedbackClients: [],
+      }),
+  });
+  // Second call: completed task
+  mockFetch.mockResolvedValueOnce({
+    json: () =>
+      Promise.resolve({
+        id: "test-task-id",
+        service: "calcFoo",
+        location: "https://example.com/calcFoo/test-task-id",
+        logUriTemplate: "https://example.com/calcFoo/test-task-id/logs",
+        geometryUri: "https://example.com/geometry/123",
+        status: "completed",
+        wss: "",
+        startedAt: new Date().toISOString(),
+        duration: 1000,
+        estimate: 5000,
+        data: { result: "success" },
+      } as GeoprocessingTask),
+  });
+
+  globalThis.fetch = mockFetch;
+
+  const { result } = renderHook(() => useFunction("calcFoo"), {
+    wrapper: ContextWrapper,
+  });
+
+  expect(result.current.loading).toBe(true);
+
+  // Let promises resolve
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(100);
+  });
+
+  // Task should be complete
+  expect(result.current.loading).toBe(false);
+  expect(result.current.error).toBeUndefined();
+  expect(result.current.task?.status).toBe("completed");
+
+  // Advance past what would have been the timeout
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(100_000);
+  });
+
+  // Should still be complete, no timeout error
+  expect(result.current.loading).toBe(false);
+  expect(result.current.error).toBeUndefined();
+  expect(result.current.task?.data).toEqual({ result: "success" });
+
+  vi.useRealTimers();
+});
+
+test("useFunction clears timeout on unmount", async () => {
+  vi.useFakeTimers();
+  useFunction.reset();
+  const clearTimeoutSpy = vi.spyOn(globalThis, "clearTimeout");
+
+  const mockFetch = vi.fn();
+  mockFetch.mockResolvedValueOnce({
+    json: () =>
+      Promise.resolve({
+        geoprocessingServices: [
+          {
+            title: "calcFoo",
+            endpoint: "https://example.com/calcFoo",
+            executionMode: "sync",
+            timeout: 60,
+          },
+        ],
+        preprocessingServices: [],
+        clients: [],
+        feedbackClients: [],
+      }),
+  });
+  mockFetch.mockResolvedValueOnce({
+    json: () =>
+      Promise.resolve({
+        id: "test-task-id",
+        service: "calcFoo",
+        location: "https://example.com/calcFoo/test-task-id",
+        logUriTemplate: "https://example.com/calcFoo/test-task-id/logs",
+        geometryUri: "https://example.com/geometry/123",
+        status: "pending",
+        wss: "",
+        startedAt: new Date().toISOString(),
+        estimate: 5000,
+      } as GeoprocessingTask),
+  });
+
+  globalThis.fetch = mockFetch;
+
+  const { result, unmount } = renderHook(() => useFunction("calcFoo"), {
+    wrapper: ContextWrapper,
+  });
+
+  // Let the timeout be set
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(100);
+  });
+
+  expect(result.current.loading).toBe(true);
+
+  // Unmount the component
+  unmount();
+
+  // clearTimeout should have been called during cleanup
+  expect(clearTimeoutSpy).toHaveBeenCalled();
+
+  clearTimeoutSpy.mockRestore();
+  vi.useRealTimers();
 });

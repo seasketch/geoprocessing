@@ -1,6 +1,6 @@
 {
   "name": "@seasketch/geoprocessing",
-  "version": "7.0.2-beta.0",
+  "version": "7.0.2-beta.2",
   "description": "Geoprocessing and reporting framework for SeaSketch 2.0",
   "type": "module",
   "main": "dist/src/index.js",
@@ -64,6 +64,7 @@
     "@aws-sdk/client-lambda": "^3.637.0",
     "@aws-sdk/client-s3": "^3.637.0",
     "@aws-sdk/lib-dynamodb": "^3.637.0",
+    "@aws-sdk/s3-request-presigner": "^3.637.0",
     "@babel/core": "^7.25.2",
     "@babel/plugin-transform-class-properties": "^7.25.4",
     "@babel/plugin-transform-nullish-coalescing-operator": "7.24.7",

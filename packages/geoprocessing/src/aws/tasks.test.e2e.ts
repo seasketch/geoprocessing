@@ -321,10 +321,43 @@ describe("DynamoDB local", () => {
         service: SERVICE_NAME,
       },
     });
+    expect(item && item.Item).toBeUndefined(); // Task should be completely deleted
     expect(response.statusCode).toBe(500);
+    expect(JSON.parse(response.body).status).toBe("failed"); // Status in response should be failed
     expect(JSON.parse(response.body).error).toBe("It broken");
-    expect(item && item.Item && item.Item.status).toBe("failed");
-    expect(item && item.Item && item.Item.duration).toBeGreaterThan(0);
+    expect(JSON.parse(response.body).duration).toBeGreaterThan(0);
+
+    //  Try to get the same task - should not find anything
+    const cachedResult = await Tasks.get(SERVICE_NAME, task.id);
+    expect(cachedResult).toBeUndefined(); // Should not find any cached task
+
+    // Complete the same task with success (creates new task with same ID)
+    const successData = {
+      metrics: [createMetric({ value: 42, sketchId: "test" })],
+    };
+    const successResponse = await Tasks.complete(task, successData);
+    expect(successResponse.statusCode).toBe(200);
+
+    // Verify the success is  cached
+    const successItem = await docClient.get({
+      TableName: "tasks-core",
+      Key: {
+        id: task.id,
+        service: SERVICE_NAME,
+      },
+    });
+    expect(successItem && successItem.Item && successItem.Item.status).toBe(
+      "completed",
+    );
+    expect(
+      successItem && successItem.Item && successItem.Item.data,
+    ).toBeDefined();
+
+    // Verify retrieval of result
+    const finalCachedResult = await Tasks.get(SERVICE_NAME, task.id);
+    expect(finalCachedResult).toBeDefined();
+    expect(finalCachedResult?.status).toBe("completed");
+    expect(finalCachedResult?.data).toEqual(successData);
   });
 
   afterAll(async () => {
